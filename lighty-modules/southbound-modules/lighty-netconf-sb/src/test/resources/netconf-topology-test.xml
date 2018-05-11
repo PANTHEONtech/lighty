@@ -1,0 +1,20 @@
+<!--
+  Copyright (c) 2018 Pantheon Technologies s.r.o. All Rights Reserved.
+
+  This Source Code Form is subject to the terms of the LIGHTY.IO LICENSE,
+  version 1.0. If a copy of the license was not distributed with this file,
+  You can obtain one at https://lighty.io/license/1.0/
+-->
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Netconf southbound suite" verbose="1">
+    <test name="Netconf topology test" group-by-instances="true">
+        <classes>
+            <class name="io.lighty.modules.southbound.netconf.tests.TopologyPluginsTest"/>
+        </classes>
+    </test>
+    <test name="Netconf call home test">
+        <classes>
+            <class name="io.lighty.modules.southbound.netconf.tests.CallhomePluginTest"/>
+        </classes>
+    </test>
+</suite>

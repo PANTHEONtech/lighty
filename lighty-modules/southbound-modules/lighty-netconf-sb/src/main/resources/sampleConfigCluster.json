@@ -1,0 +1,65 @@
+{
+    "controller":{
+        "restoreDirectoryPath":"./clustered-datastore-restore",
+        "maxDataBrokerFutureCallbackQueueSize":1000,
+        "maxDataBrokerFutureCallbackPoolSize":10,
+        "metricCaptureEnabled":false,
+        "mailboxCapacity":1000,
+        "domNotificationRouterConfig":{
+            "queueDepth":65536,
+            "spinTime":0,
+            "parkTime":0,
+            "unit":"MILLISECONDS"
+        },
+        "actorSystemConfig":{
+            "akkaConfigPath":"singlenode/akka-default.conf",
+            "factoryAkkaConfigPath":"singlenode/factory-akka-default.conf"
+        },
+        "schemaServiceConfig":{
+            "modelArtifactsPaths":[
+                "./odl-artifacts/iana-afn-safi-2013.07.04.12.0-SNAPSHOT.jar",
+                "./odl-artifacts/iana-if-type-2014-05-08-2014.05.08.12.0-SNAPSHOT.jar",
+                "./odl-artifacts/ietf-access-control-list-0.10.0-SNAPSHOT.jar",
+                "./odl-artifacts/ietf-inet-types-2010.09.24.12.0-SNAPSHOT.jar",
+                "./odl-artifacts/ietf-inet-types-2013-07-15-1.4.0-SNAPSHOT.jar",
+                "./odl-artifacts/ietf-interfaces-2014.05.08.12.0-SNAPSHOT.jar",
+                "./odl-artifacts/ietf-lisp-address-types-2015-11-05-1.1.0-SNAPSHOT.jar",
+                "./odl-artifacts/ietf-network-2015-06-08-1.4.0-SNAPSHOT.jar",
+                "./odl-artifacts/ietf-packet-fields-0.10.0-SNAPSHOT.jar",
+                "./odl-artifacts/ietf-restconf-1.7.0-SNAPSHOT.jar",
+                "./odl-artifacts/ietf-restconf-2013.10.19.12.0-SNAPSHOT.jar",
+                "./odl-artifacts/ietf-restconf-monitoring-1.7.0-SNAPSHOT.jar",
+                "./odl-artifacts/ietf-ted-2013.10.21.12.0-SNAPSHOT.jar",
+                "./odl-artifacts/ietf-topology-2013.10.21.12.0-SNAPSHOT.jar",
+                "./odl-artifacts/ietf-topology-isis-2013.10.21.12.0-SNAPSHOT.jar",
+                "./odl-artifacts/ietf-topology-l3-unicast-igp-2013.10.21.12.0-SNAPSHOT.jar",
+                "./odl-artifacts/ietf-topology-ospf-2013.10.21.12.0-SNAPSHOT.jar",
+                "./odl-artifacts/ietf-type-util-2.0.0-SNAPSHOT.jar",
+                "./odl-artifacts/ietf-yang-library-1.7.0-SNAPSHOT.jar",
+                "./odl-artifacts/ietf-yang-types-2010.09.24.12.0-SNAPSHOT.jar",
+                "./odl-artifacts/ietf-yang-types-20130715-2013.07.15.12.0-SNAPSHOT.jar",
+                "./odl-artifacts/yang-ext-2013.09.07.12.0-SNAPSHOT.jar",
+                "./odl-artifacts/opendaylight-l2-types-2013.08.27.12.0-SNAPSHOT.jar",
+                "./odl-artifacts/sal-cluster-admin-api-1.7.0-SNAPSHOT.jar",
+                "./odl-artifacts/sal-clustering-commons-1.7.0-SNAPSHOT.jar",
+                "./odl-artifacts/sal-common-api-1.7.0-SNAPSHOT.jar",
+                "./odl-artifacts/sal-distributed-datastore-1.7.0-SNAPSHOT.jar",
+                "./odl-artifacts/sal-inmemory-datastore-1.7.0-SNAPSHOT.jar",
+                "./odl-artifacts/sal-netconf-connector-1.7.0-SNAPSHOT.jar",
+                "./odl-artifacts/callhome-model-1.4.0-SNAPSHOT.jar"
+            ]
+        }
+    },
+    "restconf":{
+        "inetAddress": "127.0.0.1",
+        "httpPort":8888,
+        "webSocketPort": 8185,
+        "restconfServletContextPath":"/restconf",
+        "jsonRestconfServiceType": "DRAFT_02"
+    },
+    "netconf":{
+        "topologyId": "topology-netconf",
+        "writeTxTimeout": 0,
+        "clusterEnabled": true
+    }
+}

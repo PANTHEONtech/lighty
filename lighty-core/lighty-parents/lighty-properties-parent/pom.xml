@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2018 Pantheon Technologies s.r.o. All Rights Reserved.
+
+  This Source Code Form is subject to the terms of the lighty.io-core
+  Fair License 5, version 0.9.1. You may obtain a copy of the License
+  at: https://github.com/PantheonTechnologies/lighty-core/LICENSE.md
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- This only defines properties. This is an ancestor of all parents. -->
+
+    <groupId>io.lighty.core.parents</groupId>
+    <artifactId>lighty-properties-parent</artifactId>
+    <version>8.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <servlet.version>3.1.0</servlet.version>
+        <leveldb.version>0.7</leveldb.version>
+        <jersey.version>1.19.1</jersey.version>
+        <jetty.version>9.3.11.v20160721</jetty.version>
+        <lighty.version>8.0.0-SNAPSHOT</lighty.version>
+        <snmp.version>0.1.0-SNAPSHOT</snmp.version>
+
+        <!-- test dependencies -->
+        <testng.version>6.13</testng.version>
+    </properties>
+
+</project>

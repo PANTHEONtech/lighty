@@ -1,0 +1,97 @@
+/*
+ * Copyright (c) 2018 Pantheon Technologies s.r.o. All Rights Reserved.
+ *
+ * This Source Code Form is subject to the terms of the lighty.io-core
+ * Fair License 5, version 0.9.1. You may obtain a copy of the License
+ * at: https://github.com/PantheonTechnologies/lighty-core/LICENSE.md
+ */
+package io.lighty.codecs;
+
+import com.google.common.base.Preconditions;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import org.apache.commons.lang3.StringUtils;
+import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.util.DataSchemaContextNode;
+import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
+import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.Module;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+
+public class DeserializeIdentifierCodec {
+
+    private final DataSchemaContextTree dataSchemaContextTree;
+    private final SchemaContext schemaContext;
+
+    public DeserializeIdentifierCodec(final SchemaContext schemaContext) {
+        this.schemaContext = schemaContext;
+        this.dataSchemaContextTree = DataSchemaContextTree.from(schemaContext);
+    }
+
+    public final String deserialize(final YangInstanceIdentifier identifier) {
+        final List<YangInstanceIdentifier.PathArgument> pathArguments = identifier.getPathArguments();
+        final QName nodeType = pathArguments.get(0).getNodeType();
+        final List<String> elements = new ArrayList<>();
+        DataSchemaContextNode<?> current = this.dataSchemaContextTree.getRoot();
+        for (final YangInstanceIdentifier.PathArgument arg : pathArguments) {
+            current = current.getChild(arg);
+            Preconditions.checkArgument(current != null, "Invalid input %s: schema for argument %s not found",
+                    identifier, arg);
+
+            if (current.isMixin()) {
+                continue;
+            }
+            if (arg instanceof YangInstanceIdentifier.NodeIdentifierWithPredicates) {
+                elements.add(buildListArg(arg, current.getDataSchemaNode()));
+            } else if (arg instanceof YangInstanceIdentifier.NodeWithValue) {
+                elements.add(buildLeafListArg(arg));
+            } else {
+                elements.add(arg.getNodeType().getLocalName());
+            }
+        }
+        String revision;
+        final Optional<Module> module;
+        if (nodeType.getRevision().isPresent()) {
+            revision = nodeType.getRevision().get().toString();
+            module = this.schemaContext.findModule(nodeType.getNamespace(),
+                nodeType.getRevision().get());
+        } else {
+            revision = "[not present]";
+            module = this.schemaContext.findModule(nodeType.getNamespace());
+        }
+        if (! module.isPresent()) {
+            throw new IllegalStateException("Module with namespace " + nodeType.getNamespace() + " and revision "
+                    + revision + " not found");
+        }
+        return "/" + module.get().getName() + ":" + StringUtils.join(elements, "/");
+    }
+
+    private static String buildLeafListArg(final YangInstanceIdentifier.PathArgument pathArgument) {
+        Preconditions.checkState(pathArgument instanceof YangInstanceIdentifier.NodeWithValue<?>);
+        final YangInstanceIdentifier.NodeWithValue<?> node = (YangInstanceIdentifier.NodeWithValue<?>) pathArgument;
+        return node.getNodeType().getLocalName() + "=" + node.getValue();
+    }
+
+    private static String buildListArg(final YangInstanceIdentifier.PathArgument pathArgument,
+            final DataSchemaNode schemaNode) {
+        final YangInstanceIdentifier.NodeIdentifierWithPredicates listId = (YangInstanceIdentifier.NodeIdentifierWithPredicates) pathArgument;
+        Preconditions.checkState(schemaNode instanceof ListSchemaNode);
+        final ListSchemaNode listSchemaNode = (ListSchemaNode) schemaNode;
+        final List<QName> keyDefinition = listSchemaNode.getKeyDefinition();
+        final StringBuilder builder = new StringBuilder(listId.getNodeType().getLocalName());
+        builder.append("=");
+        final List<String> keyValue = new ArrayList<>();
+        for (final QName qName : keyDefinition) {
+            final Object value = listId.getKeyValues().get(qName);
+            if (value == null) {
+                throw new IllegalStateException("all key values must be present");
+            }
+            keyValue.add(value.toString());
+        }
+        builder.append(StringUtils.join(keyValue, ","));
+        return builder.toString();
+    }
+}

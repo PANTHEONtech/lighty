@@ -1,0 +1,82 @@
+module test-models {
+    yang-version 1;
+
+    namespace "http://pantheon.tech/ns/test-models";
+
+    prefix models;
+
+    organization "Pantheon Technologies";
+
+    description "Test models used for serialization and deserialization purposes and RESTCONF client testing";
+
+    revision "2018-01-19" {
+        description "Test models";
+    }
+
+    grouping container-group {
+        container sample-container {
+            description
+                "This is a sample container used for serialization and deserialization";
+            leaf name {
+                type string;
+            }
+            leaf value {
+                type uint32;
+            }
+        }
+    }
+
+    container top-level-container {
+        uses container-group;
+    }
+
+    container simple-container {
+        description
+            "Container without inner resources except leaves";
+        leaf simple-string-leaf {
+            type string;
+        }
+    }
+
+    list sample-list {
+        description
+            "This is a sample list used for testing";
+        key "name";
+
+        leaf name {
+            type string;
+        }
+
+        leaf value {
+            type uint8;
+        }
+    }
+
+    rpc simple-input-output-rpc {
+        description 
+            "RPC with simple input and output";
+        input {
+            leaf input-obj {
+                type string;
+            }
+        }
+        output {
+            leaf output-obj {
+                type string;
+            }
+        }
+    }
+
+    rpc container-io-rpc {
+        description
+            "RPC with container input and output";
+        input {
+            uses container-group;
+        }
+
+        output {
+            uses container-group;
+        }
+    }
+
+}

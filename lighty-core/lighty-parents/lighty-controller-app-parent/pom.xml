@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2018 Pantheon Technologies s.r.o. All Rights Reserved.
+
+  This Source Code Form is subject to the terms of the lighty.io-core
+  Fair License 5, version 0.9.1. You may obtain a copy of the License
+  at: https://github.com/PantheonTechnologies/lighty-core/LICENSE.md
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.lighty.core.parents</groupId>
+        <artifactId>lighty-parent</artifactId>
+        <version>8.0.0-SNAPSHOT</version>
+        <relativePath>../lighty-parent/</relativePath>
+    </parent>
+
+    <groupId>io.lighty.kit.examples.parents</groupId>
+    <artifactId>lighty-controller-app-parent</artifactId>
+    <version>8.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <application.main.class>default.value</application.main.class>
+        <application.attach.zip>false</application.attach.zip>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>lighty-controller-app</id>
+            <activation>
+                <file>
+                    <exists>src/main/java</exists>
+                </file>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>io.lighty.core</groupId>
+                    <artifactId>lighty-controller</artifactId>
+                    <version>${lighty.version}</version>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <mainClass>${application.main.class}</mainClass>
+                                    <!--
+                                        Config json uses unlocked snapshot filenames,
+                                        this is needed for the generated Class-Path to also have unlocked names.
+                                        https://stackoverflow.com/questions/41982167/maven-jar-plugin-wrong-class-path-entry-for-snapshot-dependency
+                                    -->
+                                    <useUniqueVersions>false</useUniqueVersions>
+                                    <!--
+                                        Setting Class-Path value to lib/ directly does not work for jars,
+                                        http://todayguesswhat.blogspot.sk/2011/03/jar-manifestmf-class-path-referencing.html
+                                    -->
+                                    <classpathPrefix>lib/</classpathPrefix>
+                                </manifest>
+                            </archive>
+                            <!--
+                                Exclude known resources from jar, so they are available for zip.
+                                https://stackoverflow.com/questions/4018394/having-maven2-copy-resources-to-the-build-directory-but-not-bundle-them-in-the
+                            -->
+                            <excludes>
+                                <exclude>/assembly/**</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <!--
+                                    A block of various resources, to be unpacked from artifacts
+                                    in order to avoid duplicates in source tree.
+                                    Part one, files that belong inside the jar.
+                                -->
+                                <id>unpack-jar-resources</id>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>io.lighty.resources</groupId>
+                                            <artifactId>log4j-properties</artifactId>
+                                            <version>${lighty.version}</version>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <excludes>META-INF\/**</excludes>
+                                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>copy-dependencies</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>copy-dependencies</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <!--
+                                    A block of various resources, to be unpacked from artifacts
+                                    in order to avoid duplicates in source tree.
+                                    Part two, files that belong outside the jar.
+                                -->
+                                <id>unpack-zip-resources</id>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <phase>prepare-package</phase>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>io.lighty.resources</groupId>
+                                            <artifactId>singlenode-configuration</artifactId>
+                                            <version>${lighty.version}</version>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>io.lighty.resources</groupId>
+                                            <artifactId>controller-application-assembly</artifactId>
+                                            <version>${lighty.version}</version>
+                                            <!-- This is a build time resource, not to be packaged. -->
+                                            <outputDirectory>${project.build.directory}/resources</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <excludes>META-INF\/**</excludes>
+                                    <!-- Other resources belong to the package. -->
+                                    <outputDirectory>${project.build.directory}/assembly/resources</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Copy additional project-specific resources, typically json config files. -->
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-resources</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <resources>
+                                        <resource>
+                                            <directory>src/main/assembly/resources</directory>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                    <outputDirectory>${project.build.directory}/assembly/resources</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <!-- Finally this has to be run at the end to create the zip. -->
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>${project.build.directory}/resources/assembly-zip.xml</descriptor>
+                            </descriptors>
+                            <attach>${application.attach.zip}</attach>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>make-assembly</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2018 Pantheon Technologies s.r.o. All Rights Reserved.
+
+  This Source Code Form is subject to the terms of the lighty.io-core
+  Fair License 5, version 0.9.1. You may obtain a copy of the License
+  at: https://github.com/PantheonTechnologies/lighty-core/LICENSE.md
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.lighty.kit.examples.parents</groupId>
+        <artifactId>lighty-controller-app-parent</artifactId>
+        <version>8.0.0-SNAPSHOT</version>
+        <relativePath>../lighty-controller-app-parent/</relativePath>
+    </parent>
+
+    <groupId>io.lighty.kit.examples.parents</groupId>
+    <artifactId>lighty-community-restconf-app-parent</artifactId>
+    <version>8.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <profiles>
+        <profile>
+            <id>lighty-community-restconf-app</id>
+            <activation>
+                <file>
+                    <exists>src/main/java</exists>
+                </file>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>io.lighty.modules.northbound.restconf</groupId>
+                    <artifactId>lighty-restconf-nb-community</artifactId>
+                    <version>${lighty.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+</project>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2018 Pantheon Technologies s.r.o. All Rights Reserved.
+
+  This Source Code Form is subject to the terms of the lighty.io-core
+  Fair License 5, version 0.9.1. You may obtain a copy of the License
+  at: https://github.com/PantheonTechnologies/lighty-core/LICENSE.md
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.lighty.core.parents</groupId>
+        <artifactId>lighty-parent</artifactId>
+        <version>8.0.0-SNAPSHOT</version>
+        <relativePath>../lighty-parent/</relativePath>
+    </parent>
+
+    <!--
+        This is a parent suitable for packaging Yang models with their Java v1 bindings.
+        The binding-parent from ODL activates too many unimportant plugins.
+    -->
+    <groupId>io.lighty.core.parents</groupId>
+    <artifactId>lighty-binding-parent</artifactId>
+    <version>8.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <salGeneratorPath>target/generated-sources/mdsal-binding</salGeneratorPath>
+        <yangFilesPath>src/main/yang</yangFilesPath>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>yang-binding</artifactId>
+        </dependency>
+        <!-- Oxygen v1 generator needs javax.annotation.CheckReturnValue for RPCs. -->
+        <!-- spotbugs should be used instead of findbugs -->
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>annotations</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Yangtools, generate yang -->
+            <plugin>
+                <groupId>org.opendaylight.yangtools</groupId>
+                <artifactId>yang-maven-plugin</artifactId>
+                <version>2.0.3</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.opendaylight.mdsal</groupId>
+                        <artifactId>maven-sal-api-gen-plugin</artifactId>
+                        <version>0.12.2-SNAPSHOT</version>
+                        <type>jar</type>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>binding</id>
+                        <goals>
+                            <goal>generate-sources</goal>
+                        </goals>
+                        <configuration>
+                            <yangFilesRootDir>${yangFilesPath}</yangFilesRootDir>
+                            <codeGenerators>
+                                <generator>
+                                    <codeGeneratorClass>org.opendaylight.mdsal.binding.maven.api.gen.plugin.CodeGeneratorImpl</codeGeneratorClass>
+                                    <outputBaseDir>${salGeneratorPath}</outputBaseDir>
+                                </generator>
+                            </codeGenerators>
+                            <inspectDependencies>true</inspectDependencies>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${salGeneratorPath}</directory>
+                            <includes>
+                                <include>**</include>
+                            </includes>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+            <!-- add generated yang classes to build -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-yang-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${salGeneratorPath}</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
