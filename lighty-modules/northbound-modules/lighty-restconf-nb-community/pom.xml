@@ -28,6 +28,12 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>io.lighty.server</groupId>
+            <artifactId>lighty-server</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <dependency>
             <groupId>org.opendaylight.netconf</groupId>
             <artifactId>restconf-nb-bierman02</artifactId>
         </dependency>

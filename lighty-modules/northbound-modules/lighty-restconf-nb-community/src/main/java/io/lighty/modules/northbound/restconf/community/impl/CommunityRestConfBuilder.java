@@ -8,6 +8,7 @@
 package io.lighty.modules.northbound.restconf.community.impl;
 
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
+import io.lighty.server.LightyServerBuilder;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -17,13 +18,14 @@ public class CommunityRestConfBuilder {
 
     private RestConfConfiguration restconfConfiguration;
     private ExecutorService executorService = null;
+    private LightyServerBuilder lightyServerBuilder = null;
 
     /**
      * Create new instance of {@link CommunityRestConfBuilder} from {@link RestConfConfiguration}.
      * @param restconfConfiguration input RestConf configuration.
      * @return instance of {@link CommunityRestConfBuilder}.
      */
-    public CommunityRestConfBuilder from(RestConfConfiguration restconfConfiguration) {
+    public CommunityRestConfBuilder from(final RestConfConfiguration restconfConfiguration) {
         this.restconfConfiguration = restconfConfiguration;
         return this;
     }
@@ -33,8 +35,19 @@ public class CommunityRestConfBuilder {
      * @param executorService
      * @return instance of {@link CommunityRestConfBuilder}.
      */
-    public CommunityRestConfBuilder withExecutorService(ExecutorService executorService) {
+    public CommunityRestConfBuilder withExecutorService(final ExecutorService executorService) {
         this.executorService = executorService;
+        return this;
+    }
+
+    /**
+     * Inject lighty server builder
+     *
+     * @param lightyServerBuilder
+     * @return instance of {@link CommunityRestConfBuilder}.
+     */
+    public CommunityRestConfBuilder withLightyServer(final LightyServerBuilder lightyServerBuilder) {
+        this.lightyServerBuilder = lightyServerBuilder;
         return this;
     }
 
@@ -43,11 +56,12 @@ public class CommunityRestConfBuilder {
      * @return instance of CommunityRestConf.
      */
     public CommunityRestConf build() {
-        return new CommunityRestConf(restconfConfiguration.getDomDataBroker(), restconfConfiguration.getSchemaService(),
-                restconfConfiguration.getDomRpcService(), restconfConfiguration.getDomNotificationService(),
-                restconfConfiguration.getDomMountPointService(), restconfConfiguration.getWebSocketPort(),
-                restconfConfiguration.getJsonRestconfServiceType(), restconfConfiguration.getDomSchemaService(),
-                restconfConfiguration.getInetAddress(), restconfConfiguration.getHttpPort(),
-                restconfConfiguration.getRestconfServletContextPath(), executorService);
+        return new CommunityRestConf(this.restconfConfiguration.getDomDataBroker(), this.restconfConfiguration.getSchemaService(),
+                this.restconfConfiguration.getDomRpcService(), this.restconfConfiguration.getDomNotificationService(),
+                this.restconfConfiguration.getDomMountPointService(), this.restconfConfiguration.getWebSocketPort(),
+                this.restconfConfiguration.getJsonRestconfServiceType(), this.restconfConfiguration.getDomSchemaService(),
+                this.restconfConfiguration.getInetAddress(), this.restconfConfiguration.getHttpPort(),
+                this.restconfConfiguration.getRestconfServletContextPath(), this.executorService,
+                this.lightyServerBuilder);
     }
 }
