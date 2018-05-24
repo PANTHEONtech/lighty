@@ -19,7 +19,6 @@
     <modules>
         <module>northbound-modules</module>
         <module>southbound-modules</module>
-        <module>lighty-server</module>
     </modules>
 
 </project>
