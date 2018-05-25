@@ -10,6 +10,7 @@ package io.lighty.modules.northbound.restconf.community.impl;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.modules.northbound.restconf.community.impl.config.JsonRestConfServiceType;
+import io.lighty.server.LightyServerBuilder;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.concurrent.ExecutorService;
@@ -42,26 +43,28 @@ public class CommunityRestConf extends AbstractLightyModule {
     private final DOMMountPointService domMountPointService;
     private final PortNumber webSocketPort;
     private final JsonRestConfServiceType jsonRestconfServiceType;
-
-    private RestconfProviderImpl restconfProvider;
-    private RestConnectorProvider restConnectorProvider;
     private final DOMSchemaService domSchemaService;
     private final int httpPort;
     private final InetAddress inetAddress;
     private final String restconfServletContextPath;
+
+    private RestconfProviderImpl restconfProvider;
+    private RestConnectorProvider<ServicesWrapperImpl> restConnectorProvider;
     private Server jettyServer;
+    private LightyServerBuilder lightyServerBuilder;
 
     public CommunityRestConf(final DOMDataBroker domDataBroker, final SchemaService schemaService,
             final DOMRpcService domRpcService, final DOMNotificationService domNotificationService,
             final DOMMountPointService domMountPointService, final int webSocketPort,
             final JsonRestConfServiceType jsonRestconfServiceType, final DOMSchemaService domSchemaService,
             final InetAddress inetAddress, final int httpPort, final String restconfServletContextPath,
-            final ExecutorService executorService) {
+            final ExecutorService executorService, final LightyServerBuilder serverBuilder) {
         this.domDataBroker = domDataBroker;
         this.schemaService = schemaService;
         this.domRpcService = domRpcService;
         this.domNotificationService = domNotificationService;
         this.domMountPointService = domMountPointService;
+        this.lightyServerBuilder = serverBuilder;
         this.webSocketPort = new PortNumber(webSocketPort);
         this.jsonRestconfServiceType = jsonRestconfServiceType;
         this.domSchemaService = domSchemaService;
@@ -76,26 +79,37 @@ public class CommunityRestConf extends AbstractLightyModule {
          */
     }
 
+    public CommunityRestConf(final DOMDataBroker domDataBroker, final SchemaService schemaService,
+            final DOMRpcService domRpcService, final DOMNotificationService domNotificationService,
+            final DOMMountPointService domMountPointService, final int webSocketPort,
+            final JsonRestConfServiceType jsonRestconfServiceType, final DOMSchemaService domSchemaService,
+            final InetAddress inetAddress, final int httpPort, final String restconfServletContextPath,
+            final ExecutorService executorService) {
+        this(domDataBroker, schemaService, domRpcService, domNotificationService, domMountPointService, webSocketPort,
+                jsonRestconfServiceType, domSchemaService, inetAddress, httpPort, restconfServletContextPath,
+                executorService, null);
+    }
+
     @Override
     protected boolean initProcedure() {
         final long startTime = System.nanoTime();
-        LOG.info("Starting RestConfProvider websocket port: {}", webSocketPort);
-        restconfProvider =
-                new RestconfProviderImpl(domDataBroker, schemaService, domRpcService, domNotificationService,
-                        domMountPointService, domSchemaService,
-                        IpAddressBuilder.getDefaultInstance(inetAddress.getHostAddress()), webSocketPort);
-        restconfProvider.start();
+        LOG.info("Starting RestConfProvider websocket port: {}", this.webSocketPort);
+        this.restconfProvider =
+                new RestconfProviderImpl(this.domDataBroker, this.schemaService, this.domRpcService, this.domNotificationService,
+                        this.domMountPointService, this.domSchemaService,
+                        IpAddressBuilder.getDefaultInstance(this.inetAddress.getHostAddress()), this.webSocketPort);
+        this.restconfProvider.start();
 
         LOG.info("Starting RestConnectorProvider");
-        restConnectorProvider =
-                new RestConnectorProvider<>(domDataBroker, schemaService, domRpcService,
-                        domNotificationService, domMountPointService, ServicesWrapperImpl.getInstance());
-        restConnectorProvider.start();
+        this.restConnectorProvider =
+                new RestConnectorProvider<>(this.domDataBroker, this.schemaService, this.domRpcService,
+                        this.domNotificationService, this.domMountPointService, ServicesWrapperImpl.getInstance());
+        this.restConnectorProvider.start();
 
         final ServletHolder jaxrs = new ServletHolder(ServletContainer.class);
 
-        LOG.info("Starting jsonRestconfService {}", jsonRestconfServiceType.name());
-        switch (jsonRestconfServiceType) {
+        LOG.info("Starting jsonRestconfService {}", this.jsonRestconfServiceType.name());
+        switch (this.jsonRestconfServiceType) {
             case DRAFT_02:
                 jaxrs.setInitParameter(JAVAX_WS_RS_APPLICATION,
                         "org.opendaylight.netconf.sal.rest.impl.RestconfApplication");
@@ -104,26 +118,31 @@ public class CommunityRestConf extends AbstractLightyModule {
                 jaxrs.setInitParameter(JAVAX_WS_RS_APPLICATION, "org.opendaylight.restconf.nb.rfc8040.RestconfApplication");
                 break;
             default:
-                throw new UnsupportedOperationException("unsupported restconf service type: " + jsonRestconfServiceType.name());
+                throw new UnsupportedOperationException("unsupported restconf service type: " + this.jsonRestconfServiceType.name());
         }
         LOG.info("RestConf init complete, starting Jetty");
-        LOG.info("http address:port {}:{}, url prefix: {}", inetAddress.toString(), httpPort,
-                restconfServletContextPath);
+        LOG.info("http address:port {}:{}, url prefix: {}", this.inetAddress.toString(), this.httpPort,
+                this.restconfServletContextPath);
 
-        //Start jetty server here and wire up
         try {
-            final InetSocketAddress inetSocketAddress = new InetSocketAddress(inetAddress, httpPort);
-            jettyServer = new Server(inetSocketAddress);
+            final InetSocketAddress inetSocketAddress = new InetSocketAddress(this.inetAddress, this.httpPort);
             final ContextHandlerCollection contexts = new ContextHandlerCollection();
-            jettyServer.setHandler(contexts);
             final ServletContextHandler mainHandler =
-                    new ServletContextHandler(contexts, restconfServletContextPath, true, false);
+                    new ServletContextHandler(contexts, this.restconfServletContextPath, true, false);
             mainHandler.addServlet(jaxrs, "/*");
-            jettyServer.start();
+
+            boolean startDefault = false;
+            if (this.lightyServerBuilder == null) {
+                this.lightyServerBuilder = new LightyServerBuilder(inetSocketAddress);
+                startDefault = true;
+            }
+            this.lightyServerBuilder.addContextHandler(contexts);
+            if (startDefault) {
+                startServer();
+            }
         } catch (final Exception e) {
             LOG.error("Failed to start jetty: ", e);
         }
-        LOG.info("Jetty started");
         final float delay = (System.nanoTime() - startTime) / 1_000_000f;
         LOG.info("Lighty RestConf started in {}ms", delay);
         return true;
@@ -132,29 +151,45 @@ public class CommunityRestConf extends AbstractLightyModule {
     @Override
     protected boolean stopProcedure() {
         boolean stopFailed = false;
-        if (restConnectorProvider != null) {
+        if (this.restConnectorProvider != null) {
             try {
-                restConnectorProvider.close();
+                this.restConnectorProvider.close();
                 LOG.info("RestConnectorProvider closed");
-            } catch (Exception e) {
-                LOG.error("{} failed to close!", restConnectorProvider.getClass(), e);
+            } catch (final Exception e) {
+                LOG.error("{} failed to close!", this.restConnectorProvider.getClass(), e);
                 stopFailed = true;
             }
         }
-        if (restconfProvider != null) {
-            restconfProvider.close();
+        if (this.restconfProvider != null) {
+            this.restconfProvider.close();
             LOG.info("RestconfProvider closed");
         }
-        if (jettyServer != null) {
+        if (this.jettyServer != null) {
             try {
-                jettyServer.stop();
+                this.jettyServer.stop();
                 LOG.info("Jetty stopped");
-            } catch (Exception e) {
-                LOG.error("{} failed to stop!", jettyServer.getClass(), e);
+            } catch (final Exception e) {
+                LOG.error("{} failed to stop!", this.jettyServer.getClass(), e);
                 stopFailed = true;
             }
+        }
+        if (this.lightyServerBuilder != null) {
+            this.lightyServerBuilder = null;
         }
         return !stopFailed;
     }
 
+    public void startServer() {
+        if ((this.jettyServer != null) && !this.jettyServer.isStopped()) {
+            return;
+        }
+        try {
+            this.jettyServer = this.lightyServerBuilder.build();
+            this.jettyServer.start();
+            LOG.info("Jetty started");
+        } catch (final Exception e) {
+            LOG.error("Failed to start jetty: ", e);
+            throw new RuntimeException(e);
+        }
+    }
 }

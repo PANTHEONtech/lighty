@@ -18,6 +18,7 @@
 
     <modules>
         <module>lighty-restconf-nb-community</module>
+        <module>lighty-server</module>
     </modules>
 
 </project>
