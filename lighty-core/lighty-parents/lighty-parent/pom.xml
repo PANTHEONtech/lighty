@@ -25,6 +25,21 @@
     <version>8.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <properties>
+        <suitesFile>${project.build.testOutputDirectory}/suites/all/suiteOfSuites.xml</suitesFile>
+        <alpn-boot-version>8.1.11.v20170118</alpn-boot-version>
+        <boot-class-path>
+            bootclasspath/p:${settings.localRepository}/org/mortbay/jetty/alpn/alpn-boot/${alpn-boot-version}/alpn-boot-${alpn-boot-version}.jar
+        </boot-class-path>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -158,6 +173,14 @@
                             </execution>
                         </executions>
                         <configuration>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>
+                                    ${suitesFile}
+                                </suiteXmlFile>
+                            </suiteXmlFiles>
+                            <argLine>
+                                -X${boot-class-path}
+                            </argLine>
                             <includes>
                                 <include>**/*TestIT.java</include>
                             </includes>
@@ -178,3 +201,4 @@
     </profiles>
 
 </project>
+
