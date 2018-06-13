@@ -55,8 +55,8 @@
             <version>${lighty.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.lighty.kit.models</groupId>
-            <artifactId>lighty-kit-sample-models</artifactId>
+            <groupId>io.lighty.models.test</groupId>
+            <artifactId>lighty-toaster</artifactId>
             <version>${lighty.version}</version>
         </dependency>
 
