@@ -1,6 +1,6 @@
 lighty.io SpringBoot integration example
 =========================================
-This is simple demo application which uses Lighty with NetConf Southbound plugin inside Springboot.
+This is simple demo application which uses Lighty with NETCONF Southbound plugin inside Springboot.
 
 Application initializes OpenDaylight core components (MD-SAL, yangtools and controller) and NetConf Southbound plugin
 inside spring framework environment.
@@ -9,7 +9,7 @@ There is initialized fully functional md-sal inside the spring. The DataBroker i
 injection subsystem services and used in exposed REST endpoints. The REST endpoints provides very simple functionality
 for network-topology model inside global datastore.
 
-Alongside the basic data broker, there is also integrated NetConf Southbound plugin and some very basic NetConf
+Alongside the basic data broker, there is also integrated NETCONF Southbound plugin and some very basic NetConf
 functionality exposed through REST endpoints. The "lighty-toaster-device" was used as a NetConf device which uses
 toaster model from ODL ([link](https://github.com/YangModels/yang/blob/19fea483099dbf2864b3c3186a789d12d919f4db/experimental/odp/toaster.yang)). 
 
@@ -23,7 +23,7 @@ mvn clean install
 Start
 -----
 It is necessary to copy toaster@2009-11-20.yang file to $WORKING_DIR/cache/schema/toaster@2009-11-20.yang, to be 
-possible to read NetConf data from testing device (lighty-toaster-device).
+possible to read NETCONF data from testing device (lighty-toaster-device).
 ```
 mvn spring-boot:run
 ```
@@ -61,7 +61,7 @@ delete existing topology with topology id "test-topology-id"
 curl -X DELETE "http://localhost:8080/topology/id/test-topology-id"
 ```
 ##### GET /netconf/list
-list all NetConf devices with its connection status and "darknessFactor" data loaded from device
+list all NETCONF devices with its connection status and "darknessFactor" data loaded from device
 (darknessFactor is contained in toaster model from ODL)
 ```
 curl -X GET "http://localhost:8080/netconf/list"
@@ -81,7 +81,7 @@ curl -X PUT \
 "http://localhost:8080/netconf/id/test-device"
 ```
 ##### DELETE /netconf/id/{netconfDeviceId}
-disconnect NetConf device "test-device"
+disconnect NETCONF device "test-device"
 ```
 curl -X DELETE "http://localhost:8080/netconf/id/test-device"
 ```
@@ -100,7 +100,7 @@ Notable Sources
 - uses beans defined in class LightyConfiguration for modifying topologies in ODL md-sal
 
 #### NetconfDeviceRestService
-- REST endpoints definition for ODL netconf
+- REST endpoints definition for ODL NETCONF
 - uses beans defined in class LightyConfiguration for connecting, disconnecting and listing NetConf devices
 
 #### pom.xml
@@ -125,7 +125,7 @@ io.lighty.resources/singlenode-configuration
 
 io.lighty.modules.southbound.netconf/lighty-netconf-sb
 
-- lighty.io NetConf plugin
+- lighty.io NETCONF plugin
 
 io.lighty.kit.models/lighty-kit-sample-models
 
