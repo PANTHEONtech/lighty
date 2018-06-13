@@ -31,6 +31,7 @@ import org.opendaylight.controller.sal.binding.api.NotificationProviderService;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.controller.sal.core.api.model.SchemaService;
 import org.opendaylight.controller.sal.core.api.model.YangTextSourceProvider;
+import org.opendaylight.infrautils.ready.SystemReadyMonitor;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
@@ -50,6 +51,8 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
  * @author juraj.veverka
  */
 public interface LightyServices {
+
+    SystemReadyMonitor getSystemReadyMonitor();
 
     ActorSystemProvider getActorSystemProvider();
 

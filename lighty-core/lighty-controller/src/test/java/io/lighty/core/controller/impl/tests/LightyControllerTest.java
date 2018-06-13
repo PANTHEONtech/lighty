@@ -10,7 +10,6 @@ package io.lighty.core.controller.impl.tests;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.core.controller.api.LightyController;
-
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +24,8 @@ import org.opendaylight.controller.md.sal.dom.api.DOMNotification;
 import org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.controller.md.sal.dom.api.DOMNotificationService;
 import org.opendaylight.controller.sal.core.api.mount.MountProvisionListener;
+import org.opendaylight.infrautils.ready.SystemReadyMonitor;
+import org.opendaylight.infrautils.ready.SystemState;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -40,6 +41,9 @@ public class LightyControllerTest extends LightyControllerTestBase {
         LightyController lightyController = getLightyController();
         Assert.assertNotNull(lightyController);
         Assert.assertNotNull(lightyController.getServices());
+        final SystemReadyMonitor monitor = lightyController.getServices().getSystemReadyMonitor();
+        Assert.assertNotNull(monitor);
+        Assert.assertEquals(monitor.getSystemState(), SystemState.ACTIVE);
         Assert.assertNotNull(lightyController.getServices().getActorSystemProvider());
         Assert.assertNotNull(lightyController.getServices().getActorSystemProvider().getActorSystem());
         Assert.assertNotNull(lightyController.getServices().getDOMSchemaService());

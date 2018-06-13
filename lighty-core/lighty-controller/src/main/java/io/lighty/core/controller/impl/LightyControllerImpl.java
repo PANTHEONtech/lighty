@@ -84,6 +84,8 @@ import org.opendaylight.controller.sal.core.api.model.SchemaService;
 import org.opendaylight.controller.sal.core.api.model.YangTextSourceProvider;
 import org.opendaylight.controller.sal.core.spi.data.DOMStore;
 import org.opendaylight.controller.sal.schema.service.impl.GlobalBundleScanningSchemaServiceImpl;
+import org.opendaylight.infrautils.ready.SystemReadyMonitor;
+import org.opendaylight.infrautils.ready.SystemState;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
@@ -151,6 +153,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private final int mailboxCapacity;
     private final String moduleShardsConfig;
     private final String modulesConfig;
+    private final LightySystemReadyMonitorImpl systemReadyMonitor;
 
     private BindingDOMNotificationPublishServiceAdapter bindingDOMNotificationPublishServiceAdapter;
     private HeliumNotificationProviderServiceWithInterestListeners bindingNotificationProviderService;
@@ -188,6 +191,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.moduleShardsConfig = moduleShardsConfig;
         this.configDatastoreContext = configDatastoreContext;
         this.operDatastoreContext = operDatastoreContext;
+        this.systemReadyMonitor = LightySystemReadyMonitorImpl.getInstance();
     }
 
     /**
@@ -284,11 +288,13 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         try {
             clusterCountDownLatch.await();
         } catch (InterruptedException e) {
+            this.systemReadyMonitor.setState(SystemState.FAILURE);
             LOG.error("Exception thrown while waiting for cluster to form!", e);
             return false;
         }
         delay = (System.nanoTime() - startTime) / 1_000_000f;
         LOG.info("Lighty controller initialization finished in {}ms", delay);
+        this.systemReadyMonitor.setState(SystemState.ACTIVE);
         return true;
     }
 
@@ -365,6 +371,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     public LightyServices getServices() {
         return this;
+    }
+
+    @Override
+    public SystemReadyMonitor getSystemReadyMonitor() {
+        return systemReadyMonitor;
     }
 
     @Override
