@@ -127,6 +127,6 @@ io.lighty.modules.southbound.netconf/lighty-netconf-sb
 
 - lighty.io NETCONF plugin
 
-io.lighty.kit.models/lighty-kit-sample-models
+io.lighty.models.test/lighty-toaster
 
-- lighty.io models 
+- lighty.io toaster model
