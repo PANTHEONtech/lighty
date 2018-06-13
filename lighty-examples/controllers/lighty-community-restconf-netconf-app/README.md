@@ -1,5 +1,6 @@
 Lighty NETCONF/RESTCONF Application
 ==========================
+This application provides RESTCONF north-bound interface and utilizes NETCONF south-bound plugin to manage NETCONF devices on the network. 
 
 This application starts:
 * Lighty Controller

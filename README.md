@@ -14,7 +14,7 @@ The final SDN application architecture is up to the user.
 * __lighty-models__ - example YANG models and YANG model artifacts
 * __lighty-modules__ - [OpenDaylight](https://www.opendaylight.org/) NorthBound (NB) and SouthBound (SB) plugin initializers
 * __lighty-resources__ - resource artifacts
-* __lighty-examples__ - lighty.io [examples and applications](lighty-examples/controllers/lighty-community-restconf-netconf-app/README.md)
+* __lighty-examples__ - lighty.io [examples and applications](lighty-examples/controllers/README.md)
 
 ## Build and Install
 In order to build and install lighty.io artifacts, follow the procedure below:
