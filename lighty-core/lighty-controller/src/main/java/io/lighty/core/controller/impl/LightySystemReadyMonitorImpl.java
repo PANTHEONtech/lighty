@@ -33,7 +33,6 @@ public final class LightySystemReadyMonitorImpl implements SystemReadyMonitor {
 
     public void init() {
         final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        // 60 seconds should be enought to start Lighty controller
 
         scheduledFuture = executor.scheduleAtFixedRate(new Runnable() {
             @Override
@@ -54,7 +53,6 @@ public final class LightySystemReadyMonitorImpl implements SystemReadyMonitor {
                 }
             }
         }, 0, 1, TimeUnit.SECONDS);
-
     }
 
     @Override
