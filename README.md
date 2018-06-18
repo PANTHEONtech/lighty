@@ -25,5 +25,5 @@ In order to build and install lighty.io artifacts, follow the procedure below:
 
 ## Support and use cases
 If you are interested, technical support, blogs, technical articles and more examples are available at 
-[lighty.io](https://lighty.io/)  
+[lighty.io](https://lighty.io/)
 
