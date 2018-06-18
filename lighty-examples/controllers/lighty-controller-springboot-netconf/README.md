@@ -31,7 +31,7 @@ mvn spring-boot:run
 or
 
 ```
-java -jar target/lighty-controller-springboot-8.0.0-SNAPSHOT.jar
+java -jar target/lighty-controller-springboot-8.2.0.jar
 ```
 
 or in any IDE, run the method
