@@ -14,13 +14,13 @@
     <parent>
         <groupId>io.lighty.core.parents</groupId>
         <artifactId>lighty-parent</artifactId>
-        <version>8.0.0-SNAPSHOT</version>
+        <version>8.2.0-SNAPSHOT</version>
         <relativePath>../lighty-parent/</relativePath>
     </parent>
 
     <groupId>io.lighty.kit.examples.parents</groupId>
     <artifactId>lighty-controller-app-parent</artifactId>
-    <version>8.0.0-SNAPSHOT</version>
+    <version>8.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>

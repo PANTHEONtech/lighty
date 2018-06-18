@@ -15,7 +15,7 @@
         <groupId>io.lighty.core.parents</groupId>
         <!-- TODO: Prefer explicit versions over properties. -->
         <artifactId>lighty-properties-parent</artifactId>
-        <version>8.0.0-SNAPSHOT</version>
+        <version>8.2.0-SNAPSHOT</version>
         <relativePath>../lighty-properties-parent/</relativePath>
     </parent>
 
@@ -27,7 +27,7 @@
 
     <groupId>io.lighty.core.parents</groupId>
     <artifactId>lighty-dependency-artifacts</artifactId>
-    <version>8.0.0-SNAPSHOT</version>
+    <version>8.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <dependencyManagement>
