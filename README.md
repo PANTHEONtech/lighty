@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/PantheonTechnologies/lighty-core.svg?branch=8.2.0)](https://travis-ci.org/PantheonTechnologies/lighty-core)
+
 # lighty.io
 lighty.io is a Software Development Kit powered by [OpenDaylight](https://www.opendaylight.org/) to support, ease and accelerate development of
 Software-Defined Networking (SDN) solutions in Java.
