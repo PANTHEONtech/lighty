@@ -25,7 +25,6 @@ import org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.controller.md.sal.dom.api.DOMNotificationService;
 import org.opendaylight.controller.md.sal.dom.api.DOMRpcProviderService;
 import org.opendaylight.controller.md.sal.dom.api.DOMRpcService;
-import org.opendaylight.controller.md.sal.dom.clustering.impl.LegacyEntityOwnershipServiceAdapter;
 import org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry;
 import org.opendaylight.controller.sal.binding.api.NotificationProviderService;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
@@ -96,8 +95,6 @@ public interface LightyServices {
     DOMEntityOwnershipService getDOMEntityOwnershipService();
 
     EntityOwnershipService getEntityOwnershipService();
-
-    LegacyEntityOwnershipServiceAdapter getLegacyEntityOwnershipService();
 
     ClusterAdminService getClusterAdminRPCService();
 

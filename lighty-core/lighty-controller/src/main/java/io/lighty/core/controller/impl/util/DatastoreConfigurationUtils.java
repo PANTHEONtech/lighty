@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import org.opendaylight.controller.cluster.datastore.DatastoreContext;
 import org.opendaylight.controller.config.yang.config.distributed_datastore_provider.ConfigProperties;
 import org.opendaylight.controller.config.yang.config.distributed_datastore_provider.OperationalProperties;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 
 public final class DatastoreConfigurationUtils {
 
@@ -24,7 +24,7 @@ public final class DatastoreConfigurationUtils {
     private DatastoreConfigurationUtils() {
     }
 
-    public static DatastoreContext createDatastoreContext(JsonNode configNode, LogicalDatastoreType logicalDatastoreType) {
+    public static DatastoreContext createDatastoreContext(final JsonNode configNode, final LogicalDatastoreType logicalDatastoreType) {
         return DatastoreContext.newBuilder()
                 .shardTransactionIdleTimeout(configNode.path("shardTransactionIdleTimeout").asLong(), TimeUnit.MILLISECONDS)
                 .operationTimeoutInMillis(configNode.path("operationTimeoutInMillis").asLong())
