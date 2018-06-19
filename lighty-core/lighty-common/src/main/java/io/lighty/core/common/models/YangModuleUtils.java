@@ -7,14 +7,10 @@
  */
 package io.lighty.core.common.models;
 
-import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +19,10 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
+import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class YangModuleUtils {
 
@@ -55,7 +55,7 @@ public final class YangModuleUtils {
      * @return
      *    Filtered set of top-level models only.
      */
-    public static Set<YangModuleInfo> filterTopLevelModels(Set<YangModuleInfo> models) {
+    public static Set<YangModuleInfo> filterTopLevelModels(final Set<YangModuleInfo> models) {
         Set<YangModuleInfo> result = new HashSet<>();
         for (YangModuleInfo yangModuleInfo: models) {
             if (!isDependentModel(models, yangModuleInfo)) {
@@ -73,11 +73,11 @@ public final class YangModuleUtils {
      * @return
      *   Filtered set of unique models only.
      */
-    public static Set<YangModuleInfo> filterUniqueModels(Set<YangModuleInfo> models) {
+    public static Set<YangModuleInfo> filterUniqueModels(final Collection<YangModuleInfo> models) {
         Map<ModuleId, YangModuleInfo> result = new HashMap<>();
         for (YangModuleInfo yangModuleInfo: models) {
             result.put(ModuleId.from(yangModuleInfo), yangModuleInfo);
-            for (YangModuleInfo yangModuleInfoDep: filterUniqueModels(yangModuleInfo.getImportedModules())) {
+            for (YangModuleInfo yangModuleInfoDep : filterUniqueModels(yangModuleInfo.getImportedModules())) {
                 result.put(ModuleId.from(yangModuleInfoDep), yangModuleInfoDep);
             }
         }
@@ -92,7 +92,7 @@ public final class YangModuleUtils {
      *   Collection top-level modules and all of imported yang module dependencies recursively.
      *   Empty collection is returned if no suitable modules are found.
      */
-    public static Set<YangModuleInfo> getModelsFromClasspath(Set<ModuleId> filter) {
+    public static Set<YangModuleInfo> getModelsFromClasspath(final Set<ModuleId> filter) {
         Map<ModuleId, YangModuleInfo> resolvedModules = new HashMap<>();
         ServiceLoader<YangModelBindingProvider> yangProviderLoader = ServiceLoader.load(YangModelBindingProvider.class);
         for (ModuleId moduleId: filter) {
@@ -121,7 +121,7 @@ public final class YangModuleUtils {
         return Collections.unmodifiableList(new ArrayList<>(modelUrls.values()));
     }
 
-    private static Map<ModuleId, URL> getYangsFromYangModuleInfo(final Set<YangModuleInfo> models) throws YangClasspathResolutionException {
+    private static Map<ModuleId, URL> getYangsFromYangModuleInfo(final Collection<YangModuleInfo> models) throws YangClasspathResolutionException {
         try {
             Map<ModuleId, URL> modelUrls = new HashMap<>();
             for (YangModuleInfo yangModuleInfo : models) {
@@ -140,27 +140,26 @@ public final class YangModuleUtils {
         }
     }
 
-    private static void addDependencies(Map<ModuleId, YangModuleInfo> resolvedModules, Set<YangModuleInfo> importedModules) {
-        for (YangModuleInfo yangModuleInfo: importedModules) {
+    private static void addDependencies(final Map<ModuleId, YangModuleInfo> resolvedModules, final Collection<YangModuleInfo> importedModules) {
+        for (YangModuleInfo yangModuleInfo : importedModules) {
             resolvedModules.put(ModuleId.from(yangModuleInfo), yangModuleInfo);
             LOG.info("Adding [{}] module into known modules", yangModuleInfo);
             addDependencies(resolvedModules, yangModuleInfo.getImportedModules());
         }
     }
 
-    private static Set<YangModuleInfo> filterYangModelBindingProviders(ModuleId moduleId,
-                                                                       ServiceLoader<YangModelBindingProvider> yangProviderLoader) {
+    private static Set<YangModuleInfo> filterYangModelBindingProviders(final ModuleId moduleId,
+                                                                       final ServiceLoader<YangModelBindingProvider> yangProviderLoader) {
         Set<YangModuleInfo> filteredSet = new HashSet<>();
         for (YangModelBindingProvider yangModelBindingProvider : yangProviderLoader) {
-            if (moduleId.getName().equals(yangModelBindingProvider.getModuleInfo().getName())
-                    && moduleId.getRevision().equals(yangModelBindingProvider.getModuleInfo().getRevision())) {
+            if (moduleId.getQName().equals(yangModelBindingProvider.getModuleInfo().getName())) {
                 filteredSet.add(yangModelBindingProvider.getModuleInfo());
             }
         }
         return filteredSet;
     }
 
-    private static boolean isDependentModel(Set<YangModuleInfo> models, YangModuleInfo yangModuleInfo) {
+    private static boolean isDependentModel(final Set<YangModuleInfo> models, final YangModuleInfo yangModuleInfo) {
         for (YangModuleInfo moduleInfo: models) {
             if (hasDependency(moduleInfo, yangModuleInfo)) {
                 return true;
@@ -169,15 +168,13 @@ public final class YangModuleUtils {
         return false;
     }
 
-    private static boolean hasDependency(YangModuleInfo superiorModel, YangModuleInfo dependency) {
+    private static boolean hasDependency(final YangModuleInfo superiorModel, final YangModuleInfo dependency) {
         for (YangModuleInfo moduleInfo:  superiorModel.getImportedModules()) {
-            if (moduleInfo.getNamespace().equals(dependency.getNamespace())
-                    && moduleInfo.getName().equals(dependency.getName())
-                    && moduleInfo.getRevision().equals(dependency.getRevision()) ) {
+            if (moduleInfo.getName().equals(dependency.getName())) {
                 return true;
-            } else {
-                hasDependency(moduleInfo, dependency);
             }
+
+            hasDependency(moduleInfo, dependency);
         }
         return false;
     }

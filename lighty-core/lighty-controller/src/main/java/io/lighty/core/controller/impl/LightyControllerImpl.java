@@ -27,6 +27,7 @@ import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
+import org.opendaylight.controller.cluster.akka.impl.ActorSystemProviderImpl;
 import org.opendaylight.controller.cluster.common.actor.QuarantinedMonitorActor;
 import org.opendaylight.controller.cluster.databroker.ConcurrentDOMDataBroker;
 import org.opendaylight.controller.cluster.datastore.AbstractDataStore;
@@ -47,7 +48,6 @@ import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
 import org.opendaylight.controller.config.threadpool.ThreadPool;
 import org.opendaylight.controller.config.threadpool.util.FixedThreadPoolWrapper;
 import org.opendaylight.controller.config.threadpool.util.ScheduledThreadPoolWrapper;
-import org.opendaylight.controller.config.yang.config.actor_system_provider.impl.ActorSystemProviderImpl;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.MountPointService;
 import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
@@ -62,7 +62,6 @@ import org.opendaylight.controller.md.sal.binding.impl.BindingDOMRpcProviderServ
 import org.opendaylight.controller.md.sal.binding.impl.BindingDOMRpcServiceAdapter;
 import org.opendaylight.controller.md.sal.binding.impl.BindingToNormalizedNodeCodec;
 import org.opendaylight.controller.md.sal.binding.impl.BindingToNormalizedNodeCodecFactory;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.dom.api.DOMDataBroker;
 import org.opendaylight.controller.md.sal.dom.api.DOMMountPointService;
 import org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService;
@@ -73,7 +72,6 @@ import org.opendaylight.controller.md.sal.dom.broker.impl.DOMNotificationRouter;
 import org.opendaylight.controller.md.sal.dom.broker.impl.DOMRpcRouter;
 import org.opendaylight.controller.md.sal.dom.broker.impl.PingPongDataBroker;
 import org.opendaylight.controller.md.sal.dom.broker.impl.mount.DOMMountPointServiceImpl;
-import org.opendaylight.controller.md.sal.dom.clustering.impl.LegacyEntityOwnershipServiceAdapter;
 import org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry;
 import org.opendaylight.controller.remote.rpc.RemoteRpcProvider;
 import org.opendaylight.controller.remote.rpc.RemoteRpcProviderConfig;
@@ -82,18 +80,19 @@ import org.opendaylight.controller.sal.binding.api.NotificationProviderService;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.controller.sal.core.api.model.SchemaService;
 import org.opendaylight.controller.sal.core.api.model.YangTextSourceProvider;
-import org.opendaylight.controller.sal.core.spi.data.DOMStore;
 import org.opendaylight.controller.sal.schema.service.impl.GlobalBundleScanningSchemaServiceImpl;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
 import org.opendaylight.mdsal.dom.broker.schema.ScanningSchemaServiceProvider;
+import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.binding.dom.adapter.BindingDOMEntityOwnershipServiceAdapter;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
@@ -121,8 +120,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private final String restoreDirectoryPath;
     private final Properties distributedEosProperties;
     private DatastoreSnapshotRestore datastoreSnapshotRestore;
-    private DatastoreContext configDatastoreContext;
-    private DatastoreContext operDatastoreContext;
+    private final DatastoreContext configDatastoreContext;
+    private final DatastoreContext operDatastoreContext;
     private AbstractDataStore configDatastore;
     private AbstractDataStore operDatastore;
     private ExecutorService listenableFutureExecutor;
@@ -137,7 +136,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private RemoteRpcProvider remoteRpcProvider;
     private DistributedEntityOwnershipService distributedEntityOwnershipService;
     private BindingDOMEntityOwnershipServiceAdapter bindingDOMEntityOwnershipServiceAdapter;
-    private LegacyEntityOwnershipServiceAdapter legacyEntityOwnershipServiceAdapter;
     private ClusterAdminRpcService clusterAdminRpcService;
     private ListenerRegistration<SchemaContextListener> bindingCodecRegistration;
     private DOMClusterSingletonServiceProviderImpl clusterSingletonServiceProvider;
@@ -230,8 +228,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
         bindingDOMEntityOwnershipServiceAdapter = new BindingDOMEntityOwnershipServiceAdapter(
                 distributedEntityOwnershipService, bindingToNormalizedNodeCodec);
-        legacyEntityOwnershipServiceAdapter =
-                new LegacyEntityOwnershipServiceAdapter(distributedEntityOwnershipService);
         clusterAdminRpcService =
                 new ClusterAdminRpcService(configDatastore, operDatastore, bindingToNormalizedNodeCodec);
 
@@ -310,9 +306,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         }
         if (distributedEntityOwnershipService != null) {
             distributedEntityOwnershipService.close();
-        }
-        if (legacyEntityOwnershipServiceAdapter != null) {
-            legacyEntityOwnershipServiceAdapter.close();
         }
         if (operDatastore != null) {
             operDatastore.close();
@@ -480,11 +473,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     public EntityOwnershipService getEntityOwnershipService() {
         return bindingDOMEntityOwnershipServiceAdapter;
-    }
-
-    @Override
-    public LegacyEntityOwnershipServiceAdapter getLegacyEntityOwnershipService() {
-        return legacyEntityOwnershipServiceAdapter;
     }
 
     @Override

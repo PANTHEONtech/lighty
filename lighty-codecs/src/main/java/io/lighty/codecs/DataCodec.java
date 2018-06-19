@@ -23,9 +23,8 @@ import javax.xml.transform.dom.DOMSource;
 import org.opendaylight.controller.config.util.xml.XmlElement;
 import org.opendaylight.controller.config.util.xml.XmlUtil;
 import org.opendaylight.controller.md.sal.binding.impl.BindingToNormalizedNodeCodec;
-import org.opendaylight.controller.sal.binding.codegen.impl.SingletonHolder;
+import org.opendaylight.controller.md.sal.binding.impl.BindingToNormalizedNodeCodecFactory;
 import org.opendaylight.mdsal.binding.dom.codec.gen.impl.StreamWriterGenerator;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.restconf.common.errors.RestconfDocumentedException;
 import org.opendaylight.yangtools.rfc8040.model.api.YangDataSchemaNode;
@@ -73,10 +72,8 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
     private final SchemaContext schemaContext;
 
     public DataCodec(final SchemaContext schemaContext) {
-        final BindingNormalizedNodeCodecRegistry codecRegistry = new BindingNormalizedNodeCodecRegistry(
-                StreamWriterGenerator.create(SingletonHolder.JAVASSIST));
-        this.codec = new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
-                codecRegistry);
+        this.codec = BindingToNormalizedNodeCodecFactory.newInstance(
+                GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy());
         this.schemaContext = schemaContext;
         this.codec.onGlobalContextUpdated(schemaContext);
         this.deserializeIdentifierCodec = new DeserializeIdentifierCodec(schemaContext);
