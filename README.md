@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/PantheonTechnologies/lighty-core.svg?branch=master)](https://travis-ci.org/PantheonTechnologies/lighty-core)
+[![Build Status](https://travis-ci.org/PantheonTechnologies/lighty-core.svg?branch=8.3.x)](https://travis-ci.org/PantheonTechnologies/lighty-core)
 
 # lighty.io
 lighty.io is a Software Development Kit powered by [OpenDaylight](https://www.opendaylight.org/) to support, ease and accelerate development of
