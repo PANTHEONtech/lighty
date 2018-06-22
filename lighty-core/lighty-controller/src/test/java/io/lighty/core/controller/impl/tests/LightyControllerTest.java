@@ -11,6 +11,7 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.core.controller.api.LightyController;
 
+import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -45,6 +46,9 @@ public class LightyControllerTest extends LightyControllerTestBase {
         Assert.assertNotNull(lightyController.getServices().getDOMSchemaService());
         Assert.assertNotNull(lightyController.getServices().getDOMYangTextSourceProvider());
         Assert.assertNotNull(lightyController.getServices().getSchemaContextProvider());
+        Assert.assertNotNull(lightyController.getServices().getLightyDiagStatusService());
+        Assert.assertEquals(Collections.emptyList(),
+                lightyController.getServices().getLightyDiagStatusService().getAllServiceDescriptors());
         Assert.assertNotNull(lightyController.getServices().getConfigDatastore());
         Assert.assertNotNull(lightyController.getServices().getOperationalDatastore());
         Assert.assertNotNull(lightyController.getServices().getClusteredDOMDataBroker());
