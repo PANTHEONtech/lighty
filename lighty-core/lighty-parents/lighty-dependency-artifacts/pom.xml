@@ -40,14 +40,6 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- infrautils dependency-->
-            <dependency>
-                <groupId>org.opendaylight.infrautils</groupId>
-                <artifactId>infrautils-artifacts</artifactId>
-                <version>1.3.3-SNAPSHOT</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <!-- aaa dependency -->
             <dependency>
                 <groupId>org.opendaylight.aaa</groupId>
