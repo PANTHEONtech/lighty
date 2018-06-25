@@ -14,6 +14,7 @@ import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.core.controller.impl.actor.ClusterEventActor;
 import io.lighty.core.controller.impl.actor.ClusterEventActorCreator;
+import io.lighty.core.controller.impl.services.LightyDiagStatusServiceImpl;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.HashedWheelTimer;
@@ -151,6 +152,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private final int mailboxCapacity;
     private final String moduleShardsConfig;
     private final String modulesConfig;
+    private final LightyDiagStatusServiceImpl lightyDiagStatusService;
 
     private BindingDOMNotificationPublishServiceAdapter bindingDOMNotificationPublishServiceAdapter;
     private HeliumNotificationProviderServiceWithInterestListeners bindingNotificationProviderService;
@@ -188,6 +190,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.moduleShardsConfig = moduleShardsConfig;
         this.configDatastoreContext = configDatastoreContext;
         this.operDatastoreContext = operDatastoreContext;
+        this.lightyDiagStatusService = new LightyDiagStatusServiceImpl();
     }
 
     /**
@@ -365,6 +368,10 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     public LightyServices getServices() {
         return this;
+    }
+
+    public LightyDiagStatusServiceImpl getLightyDiagStatusService() {
+        return lightyDiagStatusService;
     }
 
     @Override
