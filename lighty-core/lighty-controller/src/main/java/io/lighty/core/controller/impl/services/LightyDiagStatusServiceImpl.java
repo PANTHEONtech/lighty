@@ -7,6 +7,9 @@
  */
 package io.lighty.core.controller.impl.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -48,6 +51,26 @@ public class LightyDiagStatusServiceImpl implements DiagStatusService {
             serviceDescriptors.add(descriptors.get(key));
         }
         return serviceDescriptors;
+    }
+
+    @Override
+    public String getAllServiceDescriptorsAsJSON() {
+        final Collection<ServiceDescriptor> allServiceDescriptors = getAllServiceDescriptors();
+        if (allServiceDescriptors.isEmpty()) {
+            return "{}";
+        } else {
+            ObjectMapper mapper = new ObjectMapper();
+            final ArrayNode arrayNode = mapper.createArrayNode();
+            for (ServiceDescriptor status : allServiceDescriptors) {
+                ObjectNode serviceDescriptor = mapper.createObjectNode();
+                serviceDescriptor.put("serviceName", status.getModuleServiceName());
+                serviceDescriptor.put("effectiveStatus", status.getServiceState().name());
+                serviceDescriptor.put("reportedStatusDescription", status.getStatusDesc());
+                serviceDescriptor.put("statusTimestamp", status.getTimestamp().toString());
+                arrayNode.add(serviceDescriptor);
+            }
+            return arrayNode.toString();
+        }
     }
 
     private final class LightyDiagStatusServiceRegistration implements ServiceRegistration {
