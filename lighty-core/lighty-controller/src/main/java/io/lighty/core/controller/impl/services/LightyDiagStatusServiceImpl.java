@@ -73,6 +73,16 @@ public class LightyDiagStatusServiceImpl implements DiagStatusService {
         }
     }
 
+    @Override
+    public boolean isOperational() {
+        for (ServiceDescriptor sd : getAllServiceDescriptors()) {
+            if(sd.getServiceState() != ServiceState.OPERATIONAL) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private final class LightyDiagStatusServiceRegistration implements ServiceRegistration {
 
         private final String descriptorId;
