@@ -27,7 +27,7 @@
 
     <properties>
         <suitesFile>${project.build.testOutputDirectory}/suites/all/suiteOfSuites.xml</suitesFile>
-        <alpn-boot-version>8.1.11.v20170118</alpn-boot-version>
+        <alpn-boot-version>8.1.12.v20180117</alpn-boot-version>
         <boot-class-path>
             bootclasspath/p:${settings.localRepository}/org/mortbay/jetty/alpn/alpn-boot/${alpn-boot-version}/alpn-boot-${alpn-boot-version}.jar
         </boot-class-path>
