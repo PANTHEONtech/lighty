@@ -22,13 +22,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <servlet.version>3.1.0</servlet.version>
         <leveldb.version>0.7</leveldb.version>
-        <jersey.version>1.19.1</jersey.version>
-        <jetty.version>9.3.11.v20160721</jetty.version>
         <lighty.version>8.2.0-SNAPSHOT</lighty.version>
         <snmp.version>0.1.0-SNAPSHOT</snmp.version>
-
         <!-- test dependencies -->
         <testng.version>6.13</testng.version>
     </properties>
