@@ -5,4 +5,4 @@ java -jar lighty-community-restconf-netconf-app-8.2.0-SNAPSHOT.jar sampleConfigS
 
 
 #start controller with java 10 or later
-#java -add-modules java.xml.bind -jar lighty-community-restconf-netconf-app-8.2.0-SNAPSHOT.jar sampleConfigSingleNode.json
+#java --add-modules java.xml.bind -jar lighty-community-restconf-netconf-app-8.2.0-SNAPSHOT.jar sampleConfigSingleNode.json
