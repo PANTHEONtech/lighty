@@ -18,7 +18,7 @@ before_install:
 addons:
   coverity_scan:
     project:
-      name: "PantheonTechnologies/lighty-core"
+      name: "lighty-core"
       description: "lighty.io"
     notification_email: ""
     build_command_prepend: ""
