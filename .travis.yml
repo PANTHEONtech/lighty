@@ -1,8 +1,12 @@
 language: java
+
 jdk:
  - oraclejdk8
+
 before_install:
- - wget https://raw.githubusercontent.com/opendaylight/odlparent/master/settings.xml; cp ./settings.xml $HOME/.m2/settings.xml
+  - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+  - wget https://raw.githubusercontent.com/opendaylight/odlparent/master/settings.xml; cp ./settings.xml $HOME/.m2/settings.xml
+
 script: if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then mvn clean install ; fi
 
 env:
@@ -11,16 +15,10 @@ env:
    #   via the "travis encrypt" command using the project repo's public key
    - secure: "RT5SUoUk+tW3pIAmGoFhZsnQeWWBoFzyoj9ElFT15phYCTD5l5Z+7uqCitW2mQ0Lbd8kXff+xs1mkTsuSUBQQCpYmBQD5qD2dQBzLEKoJKVMG4VAOruSxpRu42atB6NkRk8aLwTWqoOFl0tGmh03UqmuzVLB3rw6M6QG7JZFB28cunJA3rgGkLnBD5X9yxvudcnIHmm/vIFJPO5AeRhCR8HrqdbH7shtKTLkTwvSy+gdqbCW6SMQ/fgZ4GgzuKQZQ/opfBXyFV1U/Hco/Jc8P/LzbdEmR9IQJb/lfnaSPb+1g6bINQgnNrkWTcgw3ieB7ds1Qim3EvKMy9nB67CjeqPJ1oSY9BgVoDdUR/apaF3WY7O+BML7x2Bl74TB31vBsrJGO9Q4R9XEBc+T+O3RDkO5viD8WREDoRYuFz3RxIn9NEexXcq8Hch8tLbSlLa3c7Tz3VDAWIRAK03Vkkrs0IZosMtQtn4++Rd4S9lSJVv/xdMwscVbDeKL2uAtmdrkIi+Vea4SaqY0ODmV0XerKuB4uqjQ7OgiOQKS+SyhHpBSDllBYPltbPJaebJjBnLJJwnMLbeUaN0YRUyva0ppX4FF0et9VV3FPFhj9sU6uxxIrqaEwP+4qtR5dRJAKynGtGaPIhOaaLRn87V5cMSzp+R7DSiieXbvjLBYEDjREAo="
 
-before_install:
-  - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
-  - wget https://raw.githubusercontent.com/opendaylight/odlparent/master/settings.xml; cp ./settings.xml $HOME/.m2/settings.xml
-
 addons:
   coverity_scan:
     project:
-      name: "lighty-core"
-      description: "lighty.io"
-    notification_email: ""
-    build_command_prepend: ""
-    build_command: "mvn clean install"
+      name: lighty-core
+      description: lighty.io
+    build_command: mvn clean install
     branch_pattern: 8.3.x
