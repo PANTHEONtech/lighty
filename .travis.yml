@@ -20,5 +20,6 @@ addons:
     project:
       name: lighty-core
       description: lighty.io
+    notification_email: juraj.veverka@pantheon.tech
     build_command: mvn clean install
     branch_pattern: 8.3.x
