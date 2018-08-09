@@ -1,27 +1,25 @@
 language: java
+
 jdk:
  - oraclejdk8
+
 before_install:
- - wget https://raw.githubusercontent.com/opendaylight/odlparent/master/settings.xml; cp ./settings.xml $HOME/.m2/settings.xml
-script: mvn clean install
+  - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+  - wget https://raw.githubusercontent.com/opendaylight/odlparent/master/settings.xml; cp ./settings.xml $HOME/.m2/settings.xml
+
+script: if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then mvn clean install ; fi
 
 env:
   global:
    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
    #   via the "travis encrypt" command using the project repo's public key
-   - secure: "TKu/ed8bsHBdIk7ccFiF0g3os+ri5E40k0BM9268apvGYo5fRhSnEIZ8E59fk/BmQ6s/LE9FT//cP45YY9skcoB0EGvmPMPiuqerZIyYcbIiv5xVPnbxb91k9b/O82qmTVevAXB19Ekah9PFJtAn7FFlSg6TVxM9cWZ33SDZC3LSDb7IrYYtq2elxEuKOTli4kUsQscosFovdvl6/xae//cZU8zBDOW6cHXzBbMriSb9zgbTNJg9bVQ9xADxX4+N4cWJk7pZpo5UMjWybMhHpW07zyo+h3lQGGiN5OoIOxHdnnKibH7mKxfR7tC3vkwMDecrF3H4t0ATKVQb/OJICz+ZcKbWkp8oW3dn+JdXBk0z5T6SOXJpN4gePceNKI5o4D0Tf+NWAaW8rxv1I6+sbXhn3MtRAoIt7uEP5CHBgpQT6IPU+Usx146VzOZriYdxKSVBN8i2GlIOZOcgSY6tlZbblfPrYOn16E+PmWl/0i92ZYWar9KO4Zu4Dx1CONtCQEZ1BvrRIjWOWzCfyxefIb32l7Jg2Yw4PXdr9+QEfLhqNA8Uas1CEqVjbE3OrmPQsOM/Pdx9mfjD6hmH0rtvpIUclOl6uj0p3bWen68OnGuZnnnGFiJkcJk5y9RS70urt5xMVyUUcg/gxdJ7ZWNEKjoeUx/TupgvtiL303KX1fE="
-
-before_install:
-  - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
-  - wget https://raw.githubusercontent.com/opendaylight/odlparent/master/settings.xml; cp ./settings.xml $HOME/.m2/settings.xml
+   - secure: "RT5SUoUk+tW3pIAmGoFhZsnQeWWBoFzyoj9ElFT15phYCTD5l5Z+7uqCitW2mQ0Lbd8kXff+xs1mkTsuSUBQQCpYmBQD5qD2dQBzLEKoJKVMG4VAOruSxpRu42atB6NkRk8aLwTWqoOFl0tGmh03UqmuzVLB3rw6M6QG7JZFB28cunJA3rgGkLnBD5X9yxvudcnIHmm/vIFJPO5AeRhCR8HrqdbH7shtKTLkTwvSy+gdqbCW6SMQ/fgZ4GgzuKQZQ/opfBXyFV1U/Hco/Jc8P/LzbdEmR9IQJb/lfnaSPb+1g6bINQgnNrkWTcgw3ieB7ds1Qim3EvKMy9nB67CjeqPJ1oSY9BgVoDdUR/apaF3WY7O+BML7x2Bl74TB31vBsrJGO9Q4R9XEBc+T+O3RDkO5viD8WREDoRYuFz3RxIn9NEexXcq8Hch8tLbSlLa3c7Tz3VDAWIRAK03Vkkrs0IZosMtQtn4++Rd4S9lSJVv/xdMwscVbDeKL2uAtmdrkIi+Vea4SaqY0ODmV0XerKuB4uqjQ7OgiOQKS+SyhHpBSDllBYPltbPJaebJjBnLJJwnMLbeUaN0YRUyva0ppX4FF0et9VV3FPFhj9sU6uxxIrqaEwP+4qtR5dRJAKynGtGaPIhOaaLRn87V5cMSzp+R7DSiieXbvjLBYEDjREAo="
 
 addons:
   coverity_scan:
     project:
-      name: "jveverka/lighty-core"
-      description: "lighty.io"
-    notification_email: juraj.veverka@inter-net.sk
-    build_command_prepend: ""
-    build_command: "mvn clean install"
+      name: lighty-core
+      description: lighty.io
+    notification_email: juraj.veverka@pantheon.tech
+    build_command: mvn clean install
     branch_pattern: 8.3.x
-
