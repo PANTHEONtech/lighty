@@ -61,11 +61,11 @@ public class YangModelUtilsTests {
                         new HashSet<>(Arrays.asList(new String[] { "network-topology", "ietf-inet-types"}))
                 },
                 {
-                        new HashSet<>(Arrays.asList(new ModuleId[] { new ModuleId("urn:TBD:params:xml:ns:yang:network-topology", "ietf-yang-types", "2013-07-15") })),
+                        new HashSet<>(Arrays.asList(new ModuleId[] { new ModuleId("urn:ietf:params:xml:ns:yang:ietf-yang-types", "ietf-yang-types", "2013-07-15") })),
                         new HashSet<>(Arrays.asList(new String[] { "ietf-yang-types" }))
                 },
                 {
-                        new HashSet<>(Arrays.asList(new ModuleId[] { new ModuleId("urn:TBD:params:xml:ns:yang:network-topology", "ietf-inet-types", "2013-07-15") })),
+                        new HashSet<>(Arrays.asList(new ModuleId[] { new ModuleId("urn:ietf:params:xml:ns:yang:ietf-inet-types", "ietf-inet-types", "2013-07-15") })),
                         new HashSet<>(Arrays.asList(new String[] { "ietf-inet-types" }))
                 },
 
@@ -96,7 +96,7 @@ public class YangModelUtilsTests {
         Set<YangModuleInfo> allModelsFromClasspath = YangModuleUtils.getAllModelsFromClasspath();
         Assert.assertNotNull(allModelsFromClasspath);
         for (String expectedModuleName : expectedModuleNames) {
-            long foundModelCount = allModelsFromClasspath.stream().filter(m -> m.getName().equals(expectedModuleName)).count();
+            long foundModelCount = allModelsFromClasspath.stream().filter(m -> m.getName().getLocalName().equals(expectedModuleName)).count();
             Assert.assertTrue(foundModelCount > 0, expectedModuleName + " not found !");
         }
     }
@@ -109,7 +109,7 @@ public class YangModelUtilsTests {
     public void testLoadFilteredModules(Set<ModuleId> filter, Set<String> expectedModuleNames) {
         Set<YangModuleInfo> filteredModelsFromClasspath = YangModuleUtils.getModelsFromClasspath(filter);
         for (String expectedModuleName : expectedModuleNames) {
-            long foundModelCount = filteredModelsFromClasspath.stream().filter(m -> m.getName().equals(expectedModuleName)).count();
+            long foundModelCount = filteredModelsFromClasspath.stream().filter(m -> m.getName().getLocalName().equals(expectedModuleName)).count();
             Assert.assertTrue(foundModelCount > 0, expectedModuleName + " not found !");
         }
     }

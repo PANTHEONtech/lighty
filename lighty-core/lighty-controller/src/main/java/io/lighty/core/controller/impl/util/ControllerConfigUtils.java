@@ -25,7 +25,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,9 +43,7 @@ public final class ControllerConfigUtils {
     public static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana.afn.safi.rev130704.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev131019.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.$YangModuleInfoImpl.getInstance(),
@@ -54,22 +52,15 @@ public final class ControllerConfigUtils {
             org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.isis.topology.rev131021.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.ospf.topology.rev131021.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.nt.l3.unicast.igp.topology.rev131021.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev150608.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.packet.fields.rev160218.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.access.control.list.rev160218.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.lisp.address.types.rev151105.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.opendaylight.yang.extension.yang.ext.rev130709.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.config.actor.system.provider.impl.rev151005.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.config.concurrent.data.broker.rev141124.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.config.distributed.datastore.provider.rev140612.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.clustering.entity.owners.rev150804.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.clustering.prefix.shard.configuration.rev170110.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.config.actor.system.provider.service.rev151005.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.core.general.entity.rev150820.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.core.spi.entity.ownership.service.rev150810.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.inmemory.datastore.provider.rev140617.$YangModuleInfoImpl.getInstance()
+            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.$YangModuleInfoImpl.getInstance()
     );
 
     public static final String CONTROLLER_CONFIG_ROOT_ELEMENT_NAME = "controller";
@@ -87,7 +78,7 @@ public final class ControllerConfigUtils {
      * @throws ConfigurationException
      *   Thrown in case that JSON configuration is not readable or incorrect, or yang model resources cannot be loaded.
      */
-    public static ControllerConfiguration getConfiguration(InputStream jsonConfigInputStream)
+    public static ControllerConfiguration getConfiguration(final InputStream jsonConfigInputStream)
             throws ConfigurationException {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode configNode;
@@ -192,7 +183,7 @@ public final class ControllerConfigUtils {
      *    Instance of LightyController configuration data.
      * @throws ConfigurationException if unable to find akka config files
      */
-    public static ControllerConfiguration getDefaultSingleNodeConfiguration(Set<YangModuleInfo> additionalModels)
+    public static ControllerConfiguration getDefaultSingleNodeConfiguration(final Set<YangModuleInfo> additionalModels)
             throws ConfigurationException {
         ControllerConfiguration controllerConfiguration = new ControllerConfiguration();
         injectActorSystemConfigToControllerConfig(controllerConfiguration);
@@ -207,7 +198,7 @@ public final class ControllerConfigUtils {
         return controllerConfiguration;
     }
 
-    private static void injectActorSystemConfigToControllerConfig(ControllerConfiguration controllerConfiguration)
+    private static void injectActorSystemConfigToControllerConfig(final ControllerConfiguration controllerConfiguration)
             throws ConfigurationException {
         Config akkaConfig = getAkkaConfigFromPath(
                 controllerConfiguration.getActorSystemConfig().getAkkaConfigPath());
@@ -220,7 +211,7 @@ public final class ControllerConfigUtils {
         controllerConfiguration.getActorSystemConfig().setConfig(finalConfig);
     }
 
-    private static Config getAkkaConfigFromPath(String pathToConfig) throws ConfigurationException {
+    private static Config getAkkaConfigFromPath(final String pathToConfig) throws ConfigurationException {
         Config akkaConfig = null;
         try {
             akkaConfig = ConfigFactory.parseFile(new File(pathToConfig));
