@@ -3,7 +3,7 @@ Lighty Spring.io Dependency Injection Extension
 This project provides Lighty Core module for
 [Spring.io](https://spring.io/)
 Dependency Injection Extension. This extension is available for Lighty projects
-application projects using [spring.io](https://spring.io/) as runtime environment.
+application projects using [Spring.io](https://spring.io/) as runtime environment.
 
 ```
 io.lighty.core.controller.spring.LightyCoreSpringConfiguration
@@ -21,7 +21,7 @@ How to use it
 ```
 
 2. Extend ```LightyCoreSpringConfiguration``` class to apply lighty.io services bean configuration and 
-initialize ```LightyConttroller``` as spring bean with whichever custom configuration you want
+initialize ```LightyController``` as spring bean with whichever custom configuration you want
 ```
 @Configuration
 public class LightyConfiguration extends LightyCoreSpringConfiguration {

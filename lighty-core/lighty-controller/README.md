@@ -2,7 +2,7 @@ Lighty Controller
 =================
 ```LightyController``` is key component of Lighty project. It represents
 runtime of all important ODL subsystems such as:
-* __MD-SAL__ - model-driven adaptation layer
+* __MD-SAL__ - model-driven service abstraction layer
 * __controller__ - MD-SAL and related ODL services
 * __yangtools__ - tooling and libraries providing support of NETCONF and YANG for Java
 * __clustering__ - akka actor system with clustering 
@@ -53,7 +53,7 @@ instance of LightyController.
 
 2. Load configuration from JSON file.
 ```
-  Path configPath = Paths.get("/path/to/odlControllerConfig.json");
+  Path configPath = Paths.get("/path/to/testLightyControllerConfig.json");
   InputStream is = Files.newInputStream(configPath);
   ControllerConfiguration singleNodeConfiguration
                           = ControllerConfigUtils.getSingleNodeConfiguration(is);
@@ -81,8 +81,8 @@ instance of LightyController.
 * __module-shards.conf__
 * __modules.conf__
 
-#### odlControllerConfig.json
-Example configuration file is located [here](src/test/resources/odlControllerConfig.json)
+#### testLightyControllerConfig.json
+Example configuration file is located [here](src/test/resources/testLightyControllerConfig.json)
 LightyController configuration is expected under JSON "controller" element.
 
 Default Models
