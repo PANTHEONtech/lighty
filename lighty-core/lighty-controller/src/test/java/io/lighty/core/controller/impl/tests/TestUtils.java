@@ -9,11 +9,9 @@ package io.lighty.core.controller.impl.tests;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
-
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -40,7 +38,7 @@ class TestUtils {
             new TopologyBuilder().setTopologyId(new TopologyId(TOPOLOGY_ID)).build();
     static final InstanceIdentifier<Topology> TOPOLOGY_IID =
             InstanceIdentifier.builder(NetworkTopology.class)
-                    .child(Topology.class, TOPOLOGY.getKey()).build();
+                    .child(Topology.class, TOPOLOGY.key()).build();
 
     static YangInstanceIdentifier createNetworkTopologyYIID() {
         final YangInstanceIdentifier.InstanceIdentifierBuilder builder =
@@ -67,7 +65,7 @@ class TestUtils {
     }
 
     static void readFromTopology(final DataBroker bindingDataBroker, final String testTopoId,
-            int expectedCount) throws InterruptedException, ExecutionException, TimeoutException {
+            final int expectedCount) throws InterruptedException, ExecutionException, TimeoutException {
         ReadOnlyTransaction readOnlyTransaction = bindingDataBroker.newReadOnlyTransaction();
 
         InstanceIdentifier<NetworkTopology> networkTopologyInstanceIdentifier =

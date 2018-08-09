@@ -26,12 +26,9 @@ import org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.controller.md.sal.dom.api.DOMNotificationService;
 import org.opendaylight.controller.md.sal.dom.api.DOMRpcProviderService;
 import org.opendaylight.controller.md.sal.dom.api.DOMRpcService;
-import org.opendaylight.controller.md.sal.dom.clustering.impl.LegacyEntityOwnershipServiceAdapter;
 import org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry;
 import org.opendaylight.controller.sal.binding.api.NotificationProviderService;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
-import org.opendaylight.controller.sal.core.api.model.SchemaService;
-import org.opendaylight.controller.sal.core.api.model.YangTextSourceProvider;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
@@ -166,16 +163,6 @@ public class LightyCoreSpringConfiguration {
     }
 
     @Bean
-    public SchemaService getSchemaService() {
-        return lightyController.getServices().getSchemaService();
-    }
-
-    @Bean
-    public YangTextSourceProvider getYangTextSourceProvider() {
-        return lightyController.getServices().getYangTextSourceProvider();
-    }
-
-    @Bean
     public BindingNormalizedNodeSerializer getBindingNormalizedNodeSerializer() {
         return lightyController.getServices().getBindingNormalizedNodeSerializer();
     }
@@ -193,11 +180,6 @@ public class LightyCoreSpringConfiguration {
     @Bean
     public EntityOwnershipService getEntityOwnershipService() {
         return lightyController.getServices().getEntityOwnershipService();
-    }
-
-    @Bean
-    public LegacyEntityOwnershipServiceAdapter getLegacyEntityOwnershipService() {
-        return lightyController.getServices().getLegacyEntityOwnershipService();
     }
 
     @Bean

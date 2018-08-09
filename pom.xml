@@ -17,12 +17,12 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>lighty-codecs</module>
+        <!--<module>lighty-codecs</module>-->
         <module>lighty-core</module>
         <module>lighty-modules</module>
         <module>lighty-models</module>
         <module>lighty-resources</module>
-        <module>lighty-examples</module>
+        <!--<module>lighty-examples</module>-->
     </modules>
 
 </project>

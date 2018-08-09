@@ -10,9 +10,7 @@ package io.lighty.core.controller.impl.util;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.concurrent.TimeUnit;
 import org.opendaylight.controller.cluster.datastore.DatastoreContext;
-import org.opendaylight.controller.config.yang.config.distributed_datastore_provider.ConfigProperties;
-import org.opendaylight.controller.config.yang.config.distributed_datastore_provider.OperationalProperties;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 
 public final class DatastoreConfigurationUtils {
 
@@ -24,7 +22,7 @@ public final class DatastoreConfigurationUtils {
     private DatastoreConfigurationUtils() {
     }
 
-    public static DatastoreContext createDatastoreContext(JsonNode configNode, LogicalDatastoreType logicalDatastoreType) {
+    public static DatastoreContext createDatastoreContext(final JsonNode configNode, final LogicalDatastoreType logicalDatastoreType) {
         return DatastoreContext.newBuilder()
                 .shardTransactionIdleTimeout(configNode.path("shardTransactionIdleTimeout").asLong(), TimeUnit.MILLISECONDS)
                 .operationTimeoutInMillis(configNode.path("operationTimeoutInMillis").asLong())
@@ -58,94 +56,17 @@ public final class DatastoreConfigurationUtils {
     }
 
     public static DatastoreContext createDefaultOperationalDatastoreContext() {
-        OperationalProperties props = new OperationalProperties();
         return DatastoreContext.newBuilder()
                 .logicalStoreType(LogicalDatastoreType.OPERATIONAL)
                 .tempFileDirectory(TEMP_FILE_DIRECTORY)
-                .fileBackedStreamingThresholdInMegabytes(props.getFileBackedStreamingThresholdInMegabytes()
-                        .getValue().intValue())
-                .maxShardDataChangeExecutorPoolSize(props.getMaxShardDataChangeExecutorPoolSize().getValue().intValue())
-                .maxShardDataChangeExecutorQueueSize(props.getMaxShardDataChangeExecutorQueueSize()
-                        .getValue().intValue())
-                .maxShardDataChangeListenerQueueSize(props.getMaxShardDataChangeListenerQueueSize()
-                        .getValue().intValue())
-                .maxShardDataStoreExecutorQueueSize(props.getMaxShardDataStoreExecutorQueueSize().getValue().intValue())
-                .shardTransactionIdleTimeoutInMinutes(props.getShardTransactionIdleTimeoutInMinutes().getValue())
-                .operationTimeoutInSeconds(props.getOperationTimeoutInSeconds().getValue())
-                .shardJournalRecoveryLogBatchSize(props.getShardJournalRecoveryLogBatchSize()
-                        .getValue().intValue())
-                .shardSnapshotBatchCount(props.getShardSnapshotBatchCount().getValue().intValue())
-                .shardSnapshotDataThresholdPercentage(props.getShardSnapshotDataThresholdPercentage()
-                        .getValue().intValue())
-                .shardHeartbeatIntervalInMillis(props.getShardHeartbeatIntervalInMillis().getValue())
-                .shardInitializationTimeoutInSeconds(props.getShardInitializationTimeoutInSeconds().getValue())
-                .shardLeaderElectionTimeoutInSeconds(props.getShardLeaderElectionTimeoutInSeconds().getValue())
-                .shardTransactionCommitTimeoutInSeconds(
-                        props.getShardTransactionCommitTimeoutInSeconds().getValue().intValue())
-                .shardTransactionCommitQueueCapacity(
-                        props.getShardTransactionCommitQueueCapacity().getValue().intValue())
                 .persistent(false)
-                .shardIsolatedLeaderCheckIntervalInMillis(
-                        props.getShardIsolatedLeaderCheckIntervalInMillis().getValue())
-                .shardElectionTimeoutFactor(props.getShardElectionTimeoutFactor().getValue())
-                .transactionCreationInitialRateLimit(props.getTransactionCreationInitialRateLimit().getValue())
-                .shardBatchedModificationCount(props.getShardBatchedModificationCount().getValue().intValue())
-                .shardCommitQueueExpiryTimeoutInSeconds(
-                        props.getShardCommitQueueExpiryTimeoutInSeconds().getValue().intValue())
-                .transactionDebugContextEnabled(props.getTransactionDebugContextEnabled())
-                .customRaftPolicyImplementation(props.getCustomRaftPolicyImplementation())
-                .maximumMessageSliceSize(props.getMaximumMessageSliceSize().getValue().intValue())
-                .useTellBasedProtocol(props.getUseTellBasedProtocol())
-                .syncIndexThreshold(props.getSyncIndexThreshold().getValue())
-                .backendAlivenessTimerIntervalInSeconds(props.getBackendAlivenessTimerIntervalInSeconds().getValue())
-                .frontendRequestTimeoutInSeconds(props.getFrontendRequestTimeoutInSeconds().getValue())
-                .frontendNoProgressTimeoutInSeconds(props.getFrontendNoProgressTimeoutInSeconds().getValue())
                 .build();
     }
 
     public static DatastoreContext createDefaultConfigDatastoreContext() {
-        ConfigProperties props = new ConfigProperties();
         return DatastoreContext.newBuilder()
                 .logicalStoreType(LogicalDatastoreType.CONFIGURATION)
                 .tempFileDirectory(TEMP_FILE_DIRECTORY)
-                .fileBackedStreamingThresholdInMegabytes(props.getFileBackedStreamingThresholdInMegabytes()
-                        .getValue().intValue())
-                .maxShardDataChangeExecutorPoolSize(props.getMaxShardDataChangeExecutorPoolSize().getValue().intValue())
-                .maxShardDataChangeExecutorQueueSize(props.getMaxShardDataChangeExecutorQueueSize()
-                        .getValue().intValue())
-                .maxShardDataChangeListenerQueueSize(props.getMaxShardDataChangeListenerQueueSize()
-                        .getValue().intValue())
-                .maxShardDataStoreExecutorQueueSize(props.getMaxShardDataStoreExecutorQueueSize().getValue().intValue())
-                .shardTransactionIdleTimeoutInMinutes(props.getShardTransactionIdleTimeoutInMinutes().getValue())
-                .operationTimeoutInSeconds(props.getOperationTimeoutInSeconds().getValue())
-                .shardJournalRecoveryLogBatchSize(props.getShardJournalRecoveryLogBatchSize()
-                        .getValue().intValue())
-                .shardSnapshotBatchCount(props.getShardSnapshotBatchCount().getValue().intValue())
-                .shardSnapshotDataThresholdPercentage(props.getShardSnapshotDataThresholdPercentage()
-                        .getValue().intValue())
-                .shardHeartbeatIntervalInMillis(props.getShardHeartbeatIntervalInMillis().getValue())
-                .shardInitializationTimeoutInSeconds(props.getShardInitializationTimeoutInSeconds().getValue())
-                .shardLeaderElectionTimeoutInSeconds(props.getShardLeaderElectionTimeoutInSeconds().getValue())
-                .shardTransactionCommitTimeoutInSeconds(
-                        props.getShardTransactionCommitTimeoutInSeconds().getValue().intValue())
-                .shardTransactionCommitQueueCapacity(
-                        props.getShardTransactionCommitQueueCapacity().getValue().intValue())
-                .persistent(props.getPersistent().booleanValue())
-                .shardIsolatedLeaderCheckIntervalInMillis(
-                        props.getShardIsolatedLeaderCheckIntervalInMillis().getValue())
-                .shardElectionTimeoutFactor(props.getShardElectionTimeoutFactor().getValue())
-                .transactionCreationInitialRateLimit(props.getTransactionCreationInitialRateLimit().getValue())
-                .shardBatchedModificationCount(props.getShardBatchedModificationCount().getValue().intValue())
-                .shardCommitQueueExpiryTimeoutInSeconds(
-                        props.getShardCommitQueueExpiryTimeoutInSeconds().getValue().intValue())
-                .transactionDebugContextEnabled(props.getTransactionDebugContextEnabled())
-                .customRaftPolicyImplementation(props.getCustomRaftPolicyImplementation())
-                .maximumMessageSliceSize(props.getMaximumMessageSliceSize().getValue().intValue())
-                .useTellBasedProtocol(props.getUseTellBasedProtocol())
-                .syncIndexThreshold(props.getSyncIndexThreshold().getValue())
-                .backendAlivenessTimerIntervalInSeconds(props.getBackendAlivenessTimerIntervalInSeconds().getValue())
-                .frontendRequestTimeoutInSeconds(props.getFrontendRequestTimeoutInSeconds().getValue())
-                .frontendNoProgressTimeoutInSeconds(props.getFrontendNoProgressTimeoutInSeconds().getValue())
                 .build();
     }
 
