@@ -7,16 +7,12 @@
  */
 package io.lighty.core.controller.impl;
 
-import io.lighty.core.common.models.YangModuleUtils;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
-import java.net.URL;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import org.opendaylight.controller.md.sal.dom.broker.impl.DOMNotificationRouter;
-import org.opendaylight.mdsal.dom.broker.schema.ScanningSchemaServiceProvider;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 
 /**
@@ -58,9 +54,6 @@ public class LightyControllerBuilder {
     public LightyController build() throws ConfigurationException {
         try {
             Set<YangModuleInfo> modelSet = controllerConfiguration.getSchemaServiceConfig().getModels();
-            List<URL> yangUrls = YangModuleUtils.searchYangsInYangModuleInfo(modelSet);
-            final ScanningSchemaServiceProvider scanningSchemaServiceProvider = new ScanningSchemaServiceProvider();
-            scanningSchemaServiceProvider.registerAvailableYangs(yangUrls);
             final DOMNotificationRouter domNotificationRouter = DOMNotificationRouter.create(
                     controllerConfiguration.getDomNotificationRouterConfig().getQueueDepth(),
                     controllerConfiguration.getDomNotificationRouterConfig().getSpinTime(),
@@ -69,7 +62,6 @@ public class LightyControllerBuilder {
             return new LightyControllerImpl(executorService,
                     controllerConfiguration.getActorSystemConfig().getConfig(),
                     controllerConfiguration.getActorSystemConfig().getClassLoader(),
-                    scanningSchemaServiceProvider,
                     domNotificationRouter,
                     controllerConfiguration.getRestoreDirectoryPath(),
                     controllerConfiguration.getMaxDataBrokerFutureCallbackQueueSize(),
@@ -80,7 +72,8 @@ public class LightyControllerBuilder {
                     controllerConfiguration.getModuleShardsConfig(),
                     controllerConfiguration.getModulesConfig(),
                     controllerConfiguration.getConfigDatastoreContext(),
-                    controllerConfiguration.getOperDatastoreContext()
+                    controllerConfiguration.getOperDatastoreContext(),
+                    modelSet
             );
         } catch (Exception e) {
             throw new ConfigurationException(e);

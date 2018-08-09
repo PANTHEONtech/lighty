@@ -119,7 +119,7 @@ public class DataCodecTest extends AbstractCodecTest {
     @Test
     public void convertToNormalizedNode_list() {
         SampleList sampleList =
-                new SampleListBuilder().setKey(new SampleListKey("name")).setName("name").setValue((short) 1).build();
+                new SampleListBuilder().withKey(new SampleListKey("name")).setName("name").setValue((short) 1).build();
         DataCodec<SampleList> codec = new DataCodec<>(this.schemaContext);
 
         Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> convertToNormalizedNode =
@@ -132,7 +132,7 @@ public class DataCodecTest extends AbstractCodecTest {
         DataCodec<SampleList> codec = new DataCodec<>(this.schemaContext);
         SampleList convertToBindingAwareData = codec.convertToBindingAwareData(
                 YangInstanceIdentifier.of(SampleList.QNAME), testedSampleListNormalizedNodes);
-        Assert.assertNotNull(convertToBindingAwareData.getKey());
+        Assert.assertNotNull(convertToBindingAwareData.key());
     }
 
     @Test
