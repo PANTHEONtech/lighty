@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.opendaylight.controller.cluster.datastore.DatastoreContext;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -173,13 +173,13 @@ public class ConfigLoadingTest {
         Assert.assertTrue(models.size() > 2);
 
         for (String expectedModuleName: expectedModuleNames) {
-            long expectedModuleCount = models.stream().filter( m -> m.getName().equals(expectedModuleName) ).count();
+            long expectedModuleCount = models.stream().filter( m -> m.getName().getLocalName().equals(expectedModuleName) ).count();
             Assert.assertTrue(expectedModuleCount > 0);
         }
 
     }
 
-    private DatastoreContext loadDatastoreContext(String contextName, LogicalDatastoreType logicalDatastoreType) throws IOException {
+    private DatastoreContext loadDatastoreContext(final String contextName, final LogicalDatastoreType logicalDatastoreType) throws IOException {
         InputStream inputStream = this.getClass().getResourceAsStream("/testLightyControllerConfig.json");
         ObjectMapper mapper = new ObjectMapper();
         JsonNode configNode = mapper.readTree(inputStream);

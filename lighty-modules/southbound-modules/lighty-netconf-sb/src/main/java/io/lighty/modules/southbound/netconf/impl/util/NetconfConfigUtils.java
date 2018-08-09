@@ -13,13 +13,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableSet;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.core.controller.impl.config.ConfigurationException;
+import io.lighty.modules.southbound.netconf.impl.AAAEncryptionServiceImpl;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+import java.util.Base64;
 import java.util.Set;
 
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
-import org.opendaylight.aaa.encrypt.AAAEncryptionServiceImpl;
 import org.opendaylight.netconf.client.NetconfClientDispatcher;
 import org.opendaylight.netconf.client.NetconfClientDispatcherImpl;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.AaaEncryptServiceConfig;
@@ -27,6 +33,14 @@ import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev1
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 
 public class NetconfConfigUtils {
 
@@ -41,7 +55,7 @@ public class NetconfConfigUtils {
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.monitoring.rev101004.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.monitoring.extension.rev131210.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160409.$YangModuleInfoImpl.getInstance()
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621.$YangModuleInfoImpl.getInstance()
     );
 
     public static final Set<YangModuleInfo> NETCONF_CALLHOME_MODELS = ImmutableSet.of(
@@ -100,15 +114,8 @@ public class NetconfConfigUtils {
      * @return Netconf southbound configuration with injected services from Lighty core.
      */
     public static NetconfConfiguration injectServicesToConfig(
-            final NetconfConfiguration configuration, final LightyServices lightyServices) {
-        final AaaEncryptServiceConfig aaaConfig =
-                new AaaEncryptServiceConfigBuilder().setEncryptKey("V1S1ED4OMeEh")
-                        .setPasswordLength(12).setEncryptSalt("TdtWeHbch/7xP52/rp3Usw==")
-                        .setEncryptMethod("PBKDF2WithHmacSHA1").setEncryptType("AES")
-                        .setEncryptIterationCount(32768).setEncryptKeyLength(128)
-                        .setCipherTransforms("AES/CBC/PKCS5Padding").build();
-        final AAAEncryptionService aaa =
-                new AAAEncryptionServiceImpl(aaaConfig, lightyServices.getBindingDataBroker());
+            final NetconfConfiguration configuration, final LightyServices lightyServices) throws ConfigurationException {
+        final AAAEncryptionService aaa = NetconfConfigUtils.createAAAEncryptionService(getDefaultAaaEncryptServiceConfig());
         configuration.setAaaService(aaa);
         return configuration;
     }
@@ -120,10 +127,51 @@ public class NetconfConfigUtils {
      * @return Netconf southbound topology configuration with injected services from Lighty core.
      */
     public static NetconfConfiguration injectServicesToTopologyConfig(
-            final NetconfConfiguration configuration, final LightyServices lightyServices) {
+            final NetconfConfiguration configuration, final LightyServices lightyServices) throws ConfigurationException {
         injectServicesToConfig(configuration, lightyServices);
         injectClient(lightyServices, configuration);
         return configuration;
+    }
+
+    /**
+     * Create default configuration for {@link AAAEncryptionService}
+     * @return default configuration.
+     */
+    public static AaaEncryptServiceConfig getDefaultAaaEncryptServiceConfig() {
+        return new AaaEncryptServiceConfigBuilder().setEncryptKey("V1S1ED4OMeEh")
+                .setPasswordLength(12).setEncryptSalt("TdtWeHbch/7xP52/rp3Usw==")
+                .setEncryptMethod("PBKDF2WithHmacSHA1").setEncryptType("AES")
+                .setEncryptIterationCount(32768).setEncryptKeyLength(128)
+                .setCipherTransforms("AES/CBC/PKCS5Padding").build();
+    }
+
+    /**
+     * Create an instance of {@link AAAEncryptionService} from provided configuration.
+     * @param encrySrvConfig service configuration holder.
+     * @return configured instance of {@link AAAEncryptionService}
+     * @throws ConfigurationException in case provided configuration is not valid.
+     */
+    public static AAAEncryptionService createAAAEncryptionService(AaaEncryptServiceConfig encrySrvConfig) throws ConfigurationException {
+        final byte[] encryptionKeySalt = Base64.getDecoder().decode(encrySrvConfig.getEncryptSalt());
+        try {
+            final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(encrySrvConfig.getEncryptMethod());
+            final KeySpec keySpec = new PBEKeySpec(encrySrvConfig.getEncryptKey().toCharArray(), encryptionKeySalt,
+                    encrySrvConfig.getEncryptIterationCount(), encrySrvConfig.getEncryptKeyLength());
+            SecretKey key = new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(), encrySrvConfig.getEncryptType());
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(encryptionKeySalt);
+
+            Cipher encryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
+            encryptCipher.init(Cipher.ENCRYPT_MODE, key, ivParameterSpec);
+
+            Cipher decryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
+            decryptCipher.init(Cipher.DECRYPT_MODE, key, ivParameterSpec);
+
+            return new AAAEncryptionServiceImpl(encryptCipher, decryptCipher);
+
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException
+                | InvalidAlgorithmParameterException | InvalidKeyException e) {
+            throw new ConfigurationException(e);
+        }
     }
 
     /**
