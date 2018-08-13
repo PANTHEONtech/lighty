@@ -29,6 +29,7 @@ public class DOMSchemaServiceImpl implements DOMSchemaService {
 
     @Override
     public ListenerRegistration<SchemaContextListener> registerSchemaContextListener(SchemaContextListener listener) {
+        listener.onGlobalContextUpdated(moduleInfoBackedContext.getSchemaContext());
         return new SchemaContextListenerRegistration(listener);
     }
 
