@@ -157,12 +157,12 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private DOMSchemaService domSchemaService;
 
     public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
-            final ClassLoader actorSystemClassLoader,
-            final DOMNotificationRouter domNotificationRouter, final String restoreDirectoryPath,
-            final int maxDataBrokerFutureCallbackQueueSize, final int maxDataBrokerFutureCallbackPoolSize,
-            final boolean metricCaptureEnabled, final int mailboxCapacity, final Properties distributedEosProperties,
-            final String moduleShardsConfig, final String modulesConfig, final DatastoreContext configDatastoreContext,
-            final DatastoreContext operDatastoreContext, Set<YangModuleInfo> modelSet) {
+                                final ClassLoader actorSystemClassLoader,
+                                final DOMNotificationRouter domNotificationRouter, final String restoreDirectoryPath,
+                                final int maxDataBrokerFutureCallbackQueueSize, final int maxDataBrokerFutureCallbackPoolSize,
+                                final boolean metricCaptureEnabled, final int mailboxCapacity, final Properties distributedEosProperties,
+                                final String moduleShardsConfig, final String modulesConfig, final DatastoreContext configDatastoreContext,
+                                final DatastoreContext operDatastoreContext, Set<YangModuleInfo> modelSet) {
         super(executorService);
         initSunXMLWriterProperty();
         this.actorSystemConfig = actorSystemConfig;
@@ -192,9 +192,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     protected boolean initProcedure() {
         final long startTime = System.nanoTime();
-        final ConfigurationImpl configConfiguration = new ConfigurationImpl(moduleShardsConfig, modulesConfig);
-        final ConfigurationImpl operConfiguration = new ConfigurationImpl(moduleShardsConfig, modulesConfig);
 
+        //INIT actor system provider
         actorSystemProvider = new ActorSystemProviderImpl(actorSystemClassLoader,
                 QuarantinedMonitorActor.props(() -> {}), actorSystemConfig);
         datastoreSnapshotRestore = DatastoreSnapshotRestore.instance(restoreDirectoryPath);
@@ -212,11 +211,14 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         //create binding notification service
         final BindingNormalizedNodeCodecRegistry codecRegistry = bindingToNormalizedNodeCodec.getCodecRegistry();
         codecRegistry.onBindingRuntimeContextUpdated(bindingRuntimeContext);
-        
+
         // CONFIG DATASTORE
-        configDatastore = prepareDataStore(configDatastoreContext, configConfiguration);
+        configDatastore = prepareDataStore(configDatastoreContext, moduleShardsConfig, modulesConfig, bindingToNormalizedNodeCodec,
+                domSchemaService, datastoreSnapshotRestore, actorSystemProvider);
         // OPERATIONAL DATASTORE
-        operDatastore = prepareDataStore(operDatastoreContext, operConfiguration);
+        operDatastore = prepareDataStore(operDatastoreContext, moduleShardsConfig, modulesConfig, bindingToNormalizedNodeCodec,
+                domSchemaService, datastoreSnapshotRestore, actorSystemProvider);
+
         createConcurrentDOMDataBroker();
         distributedShardedDOMDataTree = new DistributedShardedDOMDataTree(actorSystemProvider, operDatastore,
                 configDatastore);
@@ -276,8 +278,13 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         return true;
     }
 
-    private AbstractDataStore prepareDataStore(final DatastoreContext datastoreContext,
-            final Configuration configuration) {
+    private AbstractDataStore prepareDataStore(final DatastoreContext datastoreContext, final String moduleShardsConfig,
+                                               final String modulesConfig,
+                                               final BindingToNormalizedNodeCodec bindingToNormalizedNodeCodec,
+                                               final DOMSchemaService domSchemaService,
+                                               final DatastoreSnapshotRestore datastoreSnapshotRestore,
+                                               final ActorSystemProvider actorSystemProvider) {
+        final ConfigurationImpl configuration = new ConfigurationImpl(moduleShardsConfig, modulesConfig);
         final DatastoreContextIntrospector introspector = new DatastoreContextIntrospector(datastoreContext, bindingToNormalizedNodeCodec);
         final DatastoreContextPropertiesUpdater updater = new DatastoreContextPropertiesUpdater(introspector, null);
         return DistributedDataStoreFactory.createInstance(domSchemaService, datastoreContext,
