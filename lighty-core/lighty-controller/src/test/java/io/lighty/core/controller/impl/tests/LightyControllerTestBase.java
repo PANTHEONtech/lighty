@@ -29,7 +29,7 @@ public abstract class LightyControllerTestBase {
 
     private LightyController lightyController;
 
-    @BeforeClass(timeOut = 600_000)
+    @BeforeClass(timeOut = 120_000)
     public void startLighty() throws Exception {
         LOG.info("startLighty from TestBase called");
         LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
@@ -57,7 +57,7 @@ public abstract class LightyControllerTestBase {
             LOG.info("Shutting down Lighty controller");
             ListenableFuture<Boolean> shutdown = lightyController.shutdown();
             shutdown.get();
-            Thread.sleep(10_000);
+            Thread.sleep(1_000);
         }
     }
 

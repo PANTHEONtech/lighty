@@ -41,7 +41,7 @@ import org.testng.annotations.Test;
 
 public class LightyControllerTest extends LightyControllerTestBase {
 
-    @Test(enabled = false, groups = "boot")
+    @Test(groups = "boot")
     public void controllerSimpleTest() {
         LightyController lightyController = getLightyController();
         Assert.assertNotNull(lightyController);
