@@ -11,7 +11,7 @@ import com.typesafe.config.Config;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyServices;
-import io.lighty.core.controller.impl.schema.DOMSchemaServiceImpl;
+import io.lighty.core.controller.impl.schema.SchemaServiceProvider;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.HashedWheelTimer;
@@ -36,7 +36,6 @@ import org.opendaylight.controller.cluster.datastore.DatastoreSnapshotRestore;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreFactory;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
-import org.opendaylight.controller.cluster.datastore.config.Configuration;
 import org.opendaylight.controller.cluster.datastore.config.ConfigurationImpl;
 import org.opendaylight.controller.cluster.datastore.entityownership.DistributedEntityOwnershipService;
 import org.opendaylight.controller.cluster.datastore.entityownership.selectionstrategy.EntityOwnerSelectionStrategyConfigReader;
@@ -154,7 +153,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     private ModuleInfoBackedContext moduleInfoBackedContext;
     private Set<YangModuleInfo> modelSet;
-    private DOMSchemaService domSchemaService;
+    private SchemaServiceProvider schemaServiceProvider;
 
     public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
                                 final ClassLoader actorSystemClassLoader,
@@ -203,7 +202,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         modelSet.forEach( m -> {
             moduleInfoBackedContext.registerModuleInfo(m);
         });
-        domSchemaService = new DOMSchemaServiceImpl(moduleInfoBackedContext);
+        schemaServiceProvider = new SchemaServiceProvider(moduleInfoBackedContext);
         // INIT CODEC FACTORY
         bindingToNormalizedNodeCodec = BindingToNormalizedNodeCodecFactory.newInstance(moduleInfoBackedContext);
         BindingRuntimeContext bindingRuntimeContext =
@@ -214,10 +213,10 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
         // CONFIG DATASTORE
         configDatastore = prepareDataStore(configDatastoreContext, moduleShardsConfig, modulesConfig, bindingToNormalizedNodeCodec,
-                domSchemaService, datastoreSnapshotRestore, actorSystemProvider);
+                schemaServiceProvider, datastoreSnapshotRestore, actorSystemProvider);
         // OPERATIONAL DATASTORE
         operDatastore = prepareDataStore(operDatastoreContext, moduleShardsConfig, modulesConfig, bindingToNormalizedNodeCodec,
-                domSchemaService, datastoreSnapshotRestore, actorSystemProvider);
+                schemaServiceProvider, datastoreSnapshotRestore, actorSystemProvider);
 
         createConcurrentDOMDataBroker();
         distributedShardedDOMDataTree = new DistributedShardedDOMDataTree(actorSystemProvider, operDatastore,
@@ -226,7 +225,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         legacyDOMDataBrokerAdapter = new LegacyDOMDataBrokerAdapter(concurrentDOMDataBroker);
         pingPongDataBroker = new PingPongDataBroker(legacyDOMDataBrokerAdapter);
 
-        domRpcRouter = DOMRpcRouter.newInstance(domSchemaService);
+        domRpcRouter = DOMRpcRouter.newInstance(schemaServiceProvider);
         legacyDomRpcRouter = new org.opendaylight.controller.md.sal.dom.broker.impl.DOMRpcRouter(
                 domRpcRouter.getRpcService(), domRpcRouter.getRpcProviderService());
 
@@ -361,13 +360,12 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     public DOMSchemaService getDOMSchemaService() {
-        return domSchemaService;
+        return schemaServiceProvider;
     }
 
     @Override
     public DOMYangTextSourceProvider getDOMYangTextSourceProvider() {
-        //TODO: finish implementation
-        throw new UnsupportedOperationException("not implemented");
+        return schemaServiceProvider;
     }
 
     @Override
