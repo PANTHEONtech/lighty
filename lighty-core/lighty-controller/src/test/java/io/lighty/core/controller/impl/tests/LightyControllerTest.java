@@ -7,30 +7,27 @@
  */
 package io.lighty.core.controller.impl.tests;
 
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.core.controller.api.LightyController;
-
 import java.util.Collection;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
-import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
-import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.dom.api.DOMMountPoint;
-import org.opendaylight.controller.md.sal.dom.api.DOMMountPointService;
-import org.opendaylight.controller.md.sal.dom.api.DOMNotification;
-import org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService;
-import org.opendaylight.controller.md.sal.dom.api.DOMNotificationService;
+import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
+import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
+import org.opendaylight.mdsal.binding.api.DataTreeModification;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMMountPointListener;
+import org.opendaylight.mdsal.dom.api.DOMMountPointService;
+import org.opendaylight.mdsal.dom.api.DOMNotification;
+import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
+import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -43,7 +40,7 @@ public class LightyControllerTest extends LightyControllerTestBase {
 
     @Test(groups = "boot")
     public void controllerSimpleTest() {
-        LightyController lightyController = getLightyController();
+        final LightyController lightyController = getLightyController();
         Assert.assertNotNull(lightyController);
         Assert.assertNotNull(lightyController.getServices());
         Assert.assertNotNull(lightyController.getServices().getActorSystemProvider());
@@ -72,7 +69,7 @@ public class LightyControllerTest extends LightyControllerTestBase {
         Assert.assertNotNull(lightyController.getServices().getClusterSingletonServiceProvider());
         Assert.assertNotNull(lightyController.getServices().getRpcProviderRegistry());
         Assert.assertNotNull(lightyController.getServices().getBindingMountPointService());
-        Assert.assertNotNull(lightyController.getServices().getBindingNotificationService());
+        Assert.assertNotNull(lightyController.getServices().getNotificationService());
         Assert.assertNotNull(lightyController.getServices().getBindingNotificationPublishService());
         Assert.assertNotNull(lightyController.getServices().getNotificationProviderService());
         Assert.assertNotNull(lightyController.getServices().getNotificationService());
@@ -80,33 +77,18 @@ public class LightyControllerTest extends LightyControllerTestBase {
         Assert.assertNotNull(lightyController.getServices().getBindingPingPongDataBroker());
     }
 
-    @Test(enabled = false, dependsOnGroups = "boot")
+    @Test(dependsOnGroups = "boot")
     public void controllerDataBrokerTest() throws Exception {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
-        LightyController lightyController = getLightyController();
-        DataBroker bindingDataBroker = lightyController.getServices().getBindingDataBroker();
-        /*
-        bindingDataBroker.registerDataTreeChangeListener(LogicalDatastoreType.OPERATIONAL, TestUtils.TOPOLOGY_IID,
-                change -> {
-                    if (countDownLatch.getCount() == 2) {
-                        // on first time - write
-                        Assert.assertEquals(change.getOriginalData().size(), 0);
-                        Assert.assertEquals(change.getCreatedData().size(), 1);
-                    } else if (countDownLatch.getCount() == 1) {
-                        // on second time - delete
-                        Assert.assertEquals(change.getOriginalData().size(), 1);
-                        Assert.assertEquals(change.getCreatedData().size(), 0);
-                    } else {
-                        Assert.fail("Too many DataTreeChange events, expected two");
-                    }
-                    countDownLatch.countDown();
-                }, AsyncDataBroker.DataChangeScope.SUBTREE);
-                */
-        bindingDataBroker.registerDataTreeChangeListener(new DataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
+        final CountDownLatch countDownLatch = new CountDownLatch(2);
+        final LightyController lightyController = getLightyController();
+        final org.opendaylight.mdsal.binding.api.DataBroker bindingDataBroker = lightyController.getServices()
+                .getBindingDataBroker();
+        bindingDataBroker.registerDataTreeChangeListener(DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
                 TestUtils.TOPOLOGY_IID), new DataTreeChangeListener<Topology>() {
+
             @Override
-            public void onDataTreeChanged(@Nonnull Collection<DataTreeModification<Topology>> changes) {
-                for (DataTreeModification<Topology> change: changes) {
+            public void onDataTreeChanged(final Collection<DataTreeModification<Topology>> changes) {
+                for (final DataTreeModification<Topology> change: changes) {
                     if (countDownLatch.getCount() == 2) {
                         // on first time - write
                         Assert.assertNull(change.getRootNode().getDataBefore());
@@ -130,20 +112,73 @@ public class LightyControllerTest extends LightyControllerTestBase {
         TestUtils.readFromTopology(bindingDataBroker, TestUtils.TOPOLOGY_ID, 1);
 
         //3. delete from TOPOLOGY model
-        WriteTransaction deleteTransaction = bindingDataBroker.newWriteOnlyTransaction();
+        final WriteTransaction deleteTransaction = bindingDataBroker.newWriteOnlyTransaction();
         deleteTransaction.delete(LogicalDatastoreType.OPERATIONAL, TestUtils.TOPOLOGY_IID);
+        deleteTransaction.commit().get();
+
+        //4. read from TOPOLOGY model
+        TestUtils.readFromTopology(bindingDataBroker, TestUtils.TOPOLOGY_ID, 0);
+
+        // check data change listener
+        countDownLatch.await(10, TimeUnit.SECONDS);
+    }
+
+    @Test(enabled = false, dependsOnGroups = "boot")
+    public void controllerDataBrokerOldTest() throws Exception {
+        final CountDownLatch countDownLatch = new CountDownLatch(2);
+        final LightyController lightyController = getLightyController();
+        final DataBroker bindingDataBroker = lightyController.getServices()
+                .getBindingDataBrokerOld();
+        bindingDataBroker.registerDataTreeChangeListener(
+                new org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier(
+                        org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL,
+                        TestUtils.TOPOLOGY_IID),
+                new org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener<Topology>() {
+
+                    @Override
+                    public void onDataTreeChanged(final Collection<
+                            org.opendaylight.controller.md.sal.binding.api.DataTreeModification<Topology>> changes) {
+                        for (final org.opendaylight.controller.md.sal.binding.api.DataTreeModification<
+                                Topology> change : changes) {
+                            if (countDownLatch.getCount() == 2) {
+                                // on first time - write
+                                Assert.assertNull(change.getRootNode().getDataBefore());
+                                Assert.assertNotNull(change.getRootNode().getDataAfter());
+                            } else if (countDownLatch.getCount() == 1) {
+                                // on second time - delete
+                                Assert.assertNotNull(change.getRootNode().getDataBefore());
+                                Assert.assertNull(change.getRootNode().getDataAfter());
+                            } else {
+                                Assert.fail("Too many DataTreeChange events, expected two");
+                            }
+                            countDownLatch.countDown();
+                        }
+                    }
+                });
+
+        //1. write to TOPOLOGY model
+        TestUtils.writeToTopology(bindingDataBroker, TestUtils.TOPOLOGY_IID, TestUtils.TOPOLOGY);
+
+        //2. read from TOPOLOGY model
+        TestUtils.readFromTopology(bindingDataBroker, TestUtils.TOPOLOGY_ID, 1);
+
+        //3. delete from TOPOLOGY model
+        final org.opendaylight.controller.md.sal.binding.api.WriteTransaction deleteTransaction = bindingDataBroker
+                .newWriteOnlyTransaction();
+        deleteTransaction.delete(org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL,
+                TestUtils.TOPOLOGY_IID);
         deleteTransaction.submit().get();
 
         //4. read from TOPOLOGY model
         TestUtils.readFromTopology(bindingDataBroker, TestUtils.TOPOLOGY_ID, 0);
 
         // check data change listener
-        countDownLatch.await(5, TimeUnit.SECONDS);
+        countDownLatch.await(10, TimeUnit.SECONDS);
     }
 
-    @Test(enabled = false, dependsOnGroups = "boot")
+    @Test(dependsOnGroups = "boot")
     public void domMountPointServiceTest() throws Exception {
-        LightyController lightyController = getLightyController();
+        final LightyController lightyController = getLightyController();
         final DOMMountPointService domMountPointService =
                 lightyController.getServices().getDOMMountPointService();
 
@@ -185,9 +220,9 @@ public class LightyControllerTest extends LightyControllerTestBase {
         Assert.assertEquals(listenerMethodsCalled[1], 1);
     }
 
-    @Test(enabled = false, dependsOnGroups = "boot")
+    @Test(dependsOnGroups = "boot")
     public void domNotificationServiceTest() throws InterruptedException, ExecutionException {
-        LightyController lightyController = getLightyController();
+        final LightyController lightyController = getLightyController();
 
         // setup
         final SchemaPath schemaPath = SchemaPath.ROOT;
@@ -207,7 +242,7 @@ public class LightyControllerTest extends LightyControllerTestBase {
         final int[] listenerMethodsCalled = {0};
 
         //1. register DOMNotificationListener
-        DOMNotificationService domNotificationService =
+        final DOMNotificationService domNotificationService =
                 lightyController.getServices().getDOMNotificationService();
         domNotificationService.registerNotificationListener(notification -> {
             Assert.assertEquals(notification, testNotification);
@@ -215,9 +250,9 @@ public class LightyControllerTest extends LightyControllerTestBase {
         }, schemaPath);
 
         //2. put, offer notification
-        DOMNotificationPublishService domNotificationPublishService =
+        final DOMNotificationPublishService domNotificationPublishService =
                 lightyController.getServices().getDOMNotificationPublishService();
-        ListenableFuture<?> putListenFuture =
+        final ListenableFuture<?> putListenFuture =
                 domNotificationPublishService.putNotification(testNotification);
         putListenFuture.get();
         final ListenableFuture<?> offerListenFuture =
