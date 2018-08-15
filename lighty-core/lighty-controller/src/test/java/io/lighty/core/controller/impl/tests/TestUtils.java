@@ -7,15 +7,18 @@
  */
 package io.lighty.core.controller.impl.tests;
 
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
@@ -38,7 +41,7 @@ class TestUtils {
             new TopologyBuilder().setTopologyId(new TopologyId(TOPOLOGY_ID)).build();
     static final InstanceIdentifier<Topology> TOPOLOGY_IID =
             InstanceIdentifier.builder(NetworkTopology.class)
-                    .child(Topology.class, TOPOLOGY.key()).build();
+            .child(Topology.class, TOPOLOGY.key()).build();
 
     static YangInstanceIdentifier createNetworkTopologyYIID() {
         final YangInstanceIdentifier.InstanceIdentifierBuilder builder =
@@ -50,36 +53,66 @@ class TestUtils {
         final YangInstanceIdentifier.InstanceIdentifierBuilder builder =
                 YangInstanceIdentifier.builder(createNetworkTopologyYIID());
         builder.node(Topology.QNAME)
-                .nodeWithKey(Topology.QNAME, QName.create(Topology.QNAME, "TOPOLOGY-id"),
-                        TOPOLOGY_ID).node(Node.QNAME)
-                .nodeWithKey(Node.QNAME, QName.create(Node.QNAME, "node-id"), NODE_ID);
+        .nodeWithKey(Topology.QNAME, QName.create(Topology.QNAME, "TOPOLOGY-id"),
+                TOPOLOGY_ID).node(Node.QNAME)
+        .nodeWithKey(Node.QNAME, QName.create(Node.QNAME, "node-id"), NODE_ID);
         return builder.build();
     }
 
     static void writeToTopology(final DataBroker bindingDataBroker,
             final InstanceIdentifier<Topology> topologyInstanceIdentifier, final Topology topology)
-            throws ExecutionException, InterruptedException {
-        WriteTransaction writeTransaction = bindingDataBroker.newWriteOnlyTransaction();
+                    throws ExecutionException, InterruptedException {
+        final WriteTransaction writeTransaction = bindingDataBroker.newWriteOnlyTransaction();
         writeTransaction.put(LogicalDatastoreType.OPERATIONAL, topologyInstanceIdentifier, topology);
+        writeTransaction.commit().get();
+    }
+
+    static void writeToTopology(final org.opendaylight.controller.md.sal.binding.api.DataBroker bindingDataBroker,
+            final InstanceIdentifier<Topology> topologyInstanceIdentifier, final Topology topology)
+                    throws ExecutionException, InterruptedException {
+        final org.opendaylight.controller.md.sal.binding.api.WriteTransaction writeTransaction = bindingDataBroker
+                .newWriteOnlyTransaction();
+        writeTransaction.put(org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL,
+                topologyInstanceIdentifier, topology);
         writeTransaction.submit().get();
     }
 
     static void readFromTopology(final DataBroker bindingDataBroker, final String testTopoId,
             final int expectedCount) throws InterruptedException, ExecutionException, TimeoutException {
-        ReadOnlyTransaction readOnlyTransaction = bindingDataBroker.newReadOnlyTransaction();
+        final ReadTransaction readOnlyTransaction = bindingDataBroker.newReadOnlyTransaction();
 
-        InstanceIdentifier<NetworkTopology> networkTopologyInstanceIdentifier =
+        final InstanceIdentifier<NetworkTopology> networkTopologyInstanceIdentifier =
                 InstanceIdentifier.builder(NetworkTopology.class).build();
 
-        ListenableFuture<Optional<NetworkTopology>> upcommingRead = readOnlyTransaction
+        final FluentFuture<Optional<NetworkTopology>> upcommingRead = readOnlyTransaction
                 .read(LogicalDatastoreType.OPERATIONAL, networkTopologyInstanceIdentifier);
-        Optional<NetworkTopology> networkTopologyOptional =
+        final Optional<NetworkTopology> networkTopologyOptional =
                 upcommingRead.get(40, TimeUnit.MILLISECONDS);
-        NetworkTopology networkTopology = networkTopologyOptional.get();
+        final NetworkTopology networkTopology = networkTopologyOptional.get();
 
-        long count = networkTopology.getTopology().stream()
+        final long count = networkTopology.getTopology().stream()
                 .filter(t -> testTopoId.equals(t.getTopologyId().getValue())).count();
         Assert.assertEquals(count, expectedCount);
     }
 
+    static void readFromTopology(final org.opendaylight.controller.md.sal.binding.api.DataBroker bindingDataBroker,
+            final String testTopoId, final int expectedCount) throws InterruptedException, ExecutionException,
+    TimeoutException {
+        final ReadOnlyTransaction readOnlyTransaction = bindingDataBroker.newReadOnlyTransaction();
+
+        final InstanceIdentifier<NetworkTopology> networkTopologyInstanceIdentifier = InstanceIdentifier.builder(
+                NetworkTopology.class).build();
+
+        final CheckedFuture<com.google.common.base.Optional<NetworkTopology>, ReadFailedException> upcommingRead =
+                readOnlyTransaction.read(
+                        org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL,
+                        networkTopologyInstanceIdentifier);
+        final com.google.common.base.Optional<NetworkTopology> networkTopologyOptional = upcommingRead.get(40,
+                TimeUnit.MILLISECONDS);
+        final NetworkTopology networkTopology = networkTopologyOptional.get();
+
+        final long count = networkTopology.getTopology().stream().filter(t -> testTopoId.equals(t.getTopologyId()
+                .getValue())).count();
+        Assert.assertEquals(count, expectedCount);
+    }
 }

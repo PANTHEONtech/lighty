@@ -79,187 +79,187 @@ public class LightyCoreSpringConfiguration {
 
     @Bean
     public ActorSystemProvider getActorSystemProvider() {
-        return lightyController.getServices().getActorSystemProvider();
+        return this.lightyController.getServices().getActorSystemProvider();
     }
 
     @Bean
     public SchemaContextProvider getSchemaContextProvider() {
-        return lightyController.getServices().getSchemaContextProvider();
+        return this.lightyController.getServices().getSchemaContextProvider();
     }
 
     @Bean
     public DOMSchemaService getDOMSchemaService() {
-        return lightyController.getServices().getDOMSchemaService();
+        return this.lightyController.getServices().getDOMSchemaService();
     }
 
     @Bean
     public DOMYangTextSourceProvider getDOMYangTextSourceProvider() {
-        return lightyController.getServices().getDOMYangTextSourceProvider();
+        return this.lightyController.getServices().getDOMYangTextSourceProvider();
     }
 
     @Bean
     public DOMMountPointService getDOMMountPointService() {
-        return lightyController.getServices().getDOMMountPointService();
+        return this.lightyController.getServices().getDOMMountPointServiceOld();
     }
 
     @Bean
     public DOMNotificationPublishService getDOMNotificationPublishService() {
-        return lightyController.getServices().getDOMNotificationPublishService();
+        return this.lightyController.getServices().getDOMNotificationPublishServiceOld();
     }
 
     @Bean
     public DOMNotificationService getDOMNotificationService() {
-        return lightyController.getServices().getDOMNotificationService();
+        return this.lightyController.getServices().getDOMNotificationServiceOld();
     }
 
     @Bean
     public DOMNotificationSubscriptionListenerRegistry getDOMNotificationSubscriptionListenerRegistry() {
-        return lightyController.getServices().getDOMNotificationSubscriptionListenerRegistry();
+        return this.lightyController.getServices().getDOMNotificationSubscriptionListenerRegistryOld();
     }
 
     @Bean(name = "ConfigDatastore")
     public DistributedDataStoreInterface getConfigDatastore() {
-        return lightyController.getServices().getConfigDatastore();
+        return this.lightyController.getServices().getConfigDatastore();
     }
 
     @Bean(name = "OperationalDatastore")
     public DistributedDataStoreInterface getOperationalDatastore() {
-        return lightyController.getServices().getOperationalDatastore();
+        return this.lightyController.getServices().getOperationalDatastore();
     }
 
     @Bean(name = "ClusteredDOMDataBroker")
     public DOMDataBroker getClusteredDOMDataBroker() {
-        return lightyController.getServices().getClusteredDOMDataBroker();
+        return this.lightyController.getServices().getClusteredDOMDataBrokerOld();
     }
 
     @Bean(name = "PingPongDataBroker")
     public DOMDataBroker getPingPongDataBroker() {
-        return lightyController.getServices().getPingPongDataBroker();
+        return this.lightyController.getServices().getPingPongDataBrokerOld();
     }
 
     @Bean
     public DOMDataTreeShardingService getDOMDataTreeShardingService() {
-        return lightyController.getServices().getDOMDataTreeShardingService();
+        return this.lightyController.getServices().getDOMDataTreeShardingService();
     }
 
     @Bean
     public DOMDataTreeService getDOMDataTreeService() {
-        return lightyController.getServices().getDOMDataTreeService();
+        return this.lightyController.getServices().getDOMDataTreeService();
     }
 
     @Bean
     public DistributedShardFactory getDistributedShardFactory() {
-        return lightyController.getServices().getDistributedShardFactory();
+        return this.lightyController.getServices().getDistributedShardFactory();
     }
 
     @Bean
     public DOMRpcService getDOMRpcService() {
-        return lightyController.getServices().getDOMRpcService();
+        return this.lightyController.getServices().getDOMRpcServiceOld();
     }
 
     @Bean
     public DOMRpcProviderService getDOMRpcProviderService() {
-        return lightyController.getServices().getDOMRpcProviderService();
+        return this.lightyController.getServices().getDOMRpcProviderServiceOld();
     }
 
     @Bean
     public BindingNormalizedNodeSerializer getBindingNormalizedNodeSerializer() {
-        return lightyController.getServices().getBindingNormalizedNodeSerializer();
+        return this.lightyController.getServices().getBindingNormalizedNodeSerializer();
     }
 
     @Bean
     public BindingCodecTreeFactory getBindingCodecTreeFactory() {
-        return lightyController.getServices().getBindingCodecTreeFactory();
+        return this.lightyController.getServices().getBindingCodecTreeFactory();
     }
 
     @Bean
     public DOMEntityOwnershipService getDOMEntityOwnershipService() {
-        return lightyController.getServices().getDOMEntityOwnershipService();
+        return this.lightyController.getServices().getDOMEntityOwnershipService();
     }
 
     @Bean
     public EntityOwnershipService getEntityOwnershipService() {
-        return lightyController.getServices().getEntityOwnershipService();
+        return this.lightyController.getServices().getEntityOwnershipService();
     }
 
     @Bean
     public ClusterAdminService getClusterAdminRPCService() {
-        return lightyController.getServices().getClusterAdminRPCService();
+        return this.lightyController.getServices().getClusterAdminRPCService();
     }
 
     @Bean
     public ClusterSingletonServiceProvider getClusterSingletonServiceProvider() {
-        return lightyController.getServices().getClusterSingletonServiceProvider();
+        return this.lightyController.getServices().getClusterSingletonServiceProvider();
     }
 
     @Bean
     public RpcProviderRegistry getRpcProviderRegistry() {
-        return lightyController.getServices().getRpcProviderRegistry();
+        return this.lightyController.getServices().getRpcProviderRegistryOld();
     }
 
     @Bean
     public MountPointService getBindingMountPointService() {
-        return lightyController.getServices().getBindingMountPointService();
+        return this.lightyController.getServices().getBindingMountPointServiceOld();
     }
 
     @Bean
     public NotificationService getBindingNotificationService() {
-        return lightyController.getServices().getBindingNotificationService();
+        return this.lightyController.getServices().getBindingNotificationServiceOld();
     }
 
     @Bean
     public NotificationPublishService getBindingNotificationPublishService() {
-        return lightyController.getServices().getBindingNotificationPublishService();
+        return this.lightyController.getServices().getBindingNotificationPublishServiceOld();
     }
 
     @Bean
     public NotificationProviderService getNotificationProviderService() {
-        return lightyController.getServices().getNotificationProviderService();
+        return this.lightyController.getServices().getNotificationProviderService();
     }
 
     @Bean
     public org.opendaylight.controller.sal.binding.api.NotificationService getNotificationService() {
-        return lightyController.getServices().getNotificationService();
+        return this.lightyController.getServices().getNotificationProviderService();
     }
 
     @Bean(name = "BindingDataBroker")
     public DataBroker getBindingDataBroker() {
-        return lightyController.getServices().getBindingDataBroker();
+        return this.lightyController.getServices().getBindingDataBrokerOld();
     }
 
     @Bean(name = "BindingPingPongDataBroker")
     public DataBroker getBindingPingPongDataBroker() {
-        return lightyController.getServices().getBindingPingPongDataBroker();
+        return this.lightyController.getServices().getBindingPingPongDataBrokerOld();
     }
 
     @Bean
     public EventExecutor getEventExecutor() {
-        return lightyController.getServices().getEventExecutor();
+        return this.lightyController.getServices().getEventExecutor();
     }
 
     @Bean(name = "BossGroup")
     public EventLoopGroup getBossGroup() {
-        return lightyController.getServices().getBossGroup();
+        return this.lightyController.getServices().getBossGroup();
     }
 
     @Bean(name = "WorkerGroup")
     public EventLoopGroup getWorkerGroup() {
-        return lightyController.getServices().getWorkerGroup();
+        return this.lightyController.getServices().getWorkerGroup();
     }
 
     @Bean
     public ThreadPool getThreadPool() {
-        return lightyController.getServices().getThreadPool();
+        return this.lightyController.getServices().getThreadPool();
     }
 
     @Bean
     public ScheduledThreadPool getScheduledThreaPool() {
-        return lightyController.getServices().getScheduledThreaPool();
+        return this.lightyController.getServices().getScheduledThreaPool();
     }
 
     @Bean
     public Timer getTimer() {
-        return lightyController.getServices().getTimer();
+        return this.lightyController.getServices().getTimer();
     }
 
 }
