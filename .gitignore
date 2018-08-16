@@ -1,6 +1,9 @@
 *.class
 **/target
 **/test-output
+**/journal
+**/snapshots
+
 bin/
 dist
 .idea

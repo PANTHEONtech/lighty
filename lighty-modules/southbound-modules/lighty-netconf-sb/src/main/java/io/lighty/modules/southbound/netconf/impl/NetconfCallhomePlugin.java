@@ -24,29 +24,30 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
     private final IetfZeroTouchCallHomeServerProvider provider;
 
     public NetconfCallhomePlugin(final LightyServices lightyServices, final String topologyId,
-            ExecutorService executorService, final AAAEncryptionService encryptionService) {
+            final ExecutorService executorService, final AAAEncryptionService encryptionService) {
         super(executorService);
         final SchemaRepositoryProvider schemaRepositoryProvider =
                 new SchemaRepositoryProviderImpl("shared-schema-repository-impl");
         final CallHomeMountDispatcher dispatcher = new CallHomeMountDispatcher(topologyId,
                 lightyServices.getEventExecutor(), lightyServices.getScheduledThreaPool(), lightyServices.getThreadPool(),
-                schemaRepositoryProvider, lightyServices.getBindingDataBroker(),
-                lightyServices.getDOMMountPointService(), encryptionService);
-        provider = new IetfZeroTouchCallHomeServerProvider(lightyServices.getBindingDataBroker(), dispatcher);
+                schemaRepositoryProvider, lightyServices.getControllerBindingDataBroker(), lightyServices
+                .getControllerDOMMountPointService(), encryptionService);
+        this.provider = new IetfZeroTouchCallHomeServerProvider(lightyServices.getControllerBindingDataBroker(),
+                dispatcher);
     }
 
     @Override
     protected boolean initProcedure() {
-        provider.init();
+        this.provider.init();
         return true;
     }
 
     @Override
     protected boolean stopProcedure() {
         try {
-            provider.close();
-        } catch (Exception e) {
-            LOG.error("{} failed to close!", provider.getClass(), e);
+            this.provider.close();
+        } catch (final Exception e) {
+            LOG.error("{} failed to close!", this.provider.getClass(), e);
             return false;
         }
         return true;
