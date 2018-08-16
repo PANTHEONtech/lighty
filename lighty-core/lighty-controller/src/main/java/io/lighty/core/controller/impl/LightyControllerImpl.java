@@ -94,6 +94,7 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.mdsal.singleton.dom.impl.DOMClusterSingletonServiceProviderImpl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
+import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
@@ -614,6 +615,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     public org.opendaylight.controller.md.sal.binding.api.NotificationPublishService
     getControllerBindingNotificationPublishService() {
         return this.notificationPublishServiceOld;
+    }
+
+    @Override
+    public ObjectRegistration<YangModuleInfo> registerModuleInfo(YangModuleInfo yangModuleInfo) {
+        return moduleInfoBackedContext.registerModuleInfo(yangModuleInfo);
     }
 
     @Override
