@@ -99,22 +99,22 @@ public class LightyCoreSpringConfiguration {
 
     @Bean
     public DOMMountPointService getDOMMountPointService() {
-        return this.lightyController.getServices().getDOMMountPointServiceOld();
+        return this.lightyController.getServices().getControllerDOMMountPointService();
     }
 
     @Bean
     public DOMNotificationPublishService getDOMNotificationPublishService() {
-        return this.lightyController.getServices().getDOMNotificationPublishServiceOld();
+        return this.lightyController.getServices().getControllerDOMNotificationPublishService();
     }
 
     @Bean
     public DOMNotificationService getDOMNotificationService() {
-        return this.lightyController.getServices().getDOMNotificationServiceOld();
+        return this.lightyController.getServices().getControllerDOMNotificationService();
     }
 
     @Bean
     public DOMNotificationSubscriptionListenerRegistry getDOMNotificationSubscriptionListenerRegistry() {
-        return this.lightyController.getServices().getDOMNotificationSubscriptionListenerRegistryOld();
+        return this.lightyController.getServices().getControllerDOMNotificationSubscriptionListenerRegistry();
     }
 
     @Bean(name = "ConfigDatastore")
@@ -129,12 +129,12 @@ public class LightyCoreSpringConfiguration {
 
     @Bean(name = "ClusteredDOMDataBroker")
     public DOMDataBroker getClusteredDOMDataBroker() {
-        return this.lightyController.getServices().getClusteredDOMDataBrokerOld();
+        return this.lightyController.getServices().getControllerClusteredDOMDataBroker();
     }
 
     @Bean(name = "PingPongDataBroker")
     public DOMDataBroker getPingPongDataBroker() {
-        return this.lightyController.getServices().getPingPongDataBrokerOld();
+        return this.lightyController.getServices().getControllerPingPongDataBroker();
     }
 
     @Bean
@@ -154,12 +154,12 @@ public class LightyCoreSpringConfiguration {
 
     @Bean
     public DOMRpcService getDOMRpcService() {
-        return this.lightyController.getServices().getDOMRpcServiceOld();
+        return this.lightyController.getServices().getControllerDOMRpcService();
     }
 
     @Bean
     public DOMRpcProviderService getDOMRpcProviderService() {
-        return this.lightyController.getServices().getDOMRpcProviderServiceOld();
+        return this.lightyController.getServices().getControllerDOMRpcProviderService();
     }
 
     @Bean
@@ -194,42 +194,42 @@ public class LightyCoreSpringConfiguration {
 
     @Bean
     public RpcProviderRegistry getRpcProviderRegistry() {
-        return this.lightyController.getServices().getRpcProviderRegistryOld();
+        return this.lightyController.getServices().getControllerRpcProviderRegistry();
     }
 
     @Bean
     public MountPointService getBindingMountPointService() {
-        return this.lightyController.getServices().getBindingMountPointServiceOld();
+        return this.lightyController.getServices().getControllerBindingMountPointService();
     }
 
     @Bean
     public NotificationService getBindingNotificationService() {
-        return this.lightyController.getServices().getBindingNotificationServiceOld();
+        return this.lightyController.getServices().getControllerBindingNotificationService();
     }
 
     @Bean
     public NotificationPublishService getBindingNotificationPublishService() {
-        return this.lightyController.getServices().getBindingNotificationPublishServiceOld();
+        return this.lightyController.getServices().getControllerBindingNotificationPublishService();
     }
 
     @Bean
     public NotificationProviderService getNotificationProviderService() {
-        return this.lightyController.getServices().getNotificationProviderService();
+        return this.lightyController.getServices().getControllerNotificationProviderService();
     }
 
     @Bean
     public org.opendaylight.controller.sal.binding.api.NotificationService getNotificationService() {
-        return this.lightyController.getServices().getNotificationProviderService();
+        return this.lightyController.getServices().getControllerNotificationProviderService();
     }
 
     @Bean(name = "BindingDataBroker")
     public DataBroker getBindingDataBroker() {
-        return this.lightyController.getServices().getBindingDataBrokerOld();
+        return this.lightyController.getServices().getControllerBindingDataBroker();
     }
 
     @Bean(name = "BindingPingPongDataBroker")
     public DataBroker getBindingPingPongDataBroker() {
-        return this.lightyController.getServices().getBindingPingPongDataBrokerOld();
+        return this.lightyController.getServices().getControllerBindingPingPongDataBroker();
     }
 
     @Bean

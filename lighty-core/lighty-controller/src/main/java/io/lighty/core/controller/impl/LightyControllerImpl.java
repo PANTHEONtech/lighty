@@ -415,7 +415,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     public org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry
-    getDOMNotificationSubscriptionListenerRegistryOld() {
+    getControllerDOMNotificationSubscriptionListenerRegistry() {
         return this.domNotificationRouterOld;
     }
 
@@ -510,7 +510,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public org.opendaylight.controller.md.sal.dom.api.DOMMountPointService getDOMMountPointServiceOld() {
+    public org.opendaylight.controller.md.sal.dom.api.DOMMountPointService getControllerDOMMountPointService() {
         return this.domMountPointServiceOld;
     }
 
@@ -521,7 +521,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     public org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService
-    getDOMNotificationPublishServiceOld() {
+    getControllerDOMNotificationPublishService() {
         return this.domNotificationRouterOld;
     }
 
@@ -531,7 +531,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public org.opendaylight.controller.md.sal.dom.api.DOMNotificationService getDOMNotificationServiceOld() {
+    public org.opendaylight.controller.md.sal.dom.api.DOMNotificationService getControllerDOMNotificationService() {
         return this.domNotificationRouterOld;
     }
 
@@ -541,7 +541,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public org.opendaylight.controller.md.sal.dom.api.DOMDataBroker getClusteredDOMDataBrokerOld() {
+    public org.opendaylight.controller.md.sal.dom.api.DOMDataBroker getControllerClusteredDOMDataBroker() {
         return this.concurrentDOMDataBrokerOld;
     }
 
@@ -551,7 +551,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public org.opendaylight.controller.md.sal.dom.api.DOMDataBroker getPingPongDataBrokerOld() {
+    public org.opendaylight.controller.md.sal.dom.api.DOMDataBroker getControllerPingPongDataBroker() {
         return this.pingPongDataBrokerOld;
     }
 
@@ -561,7 +561,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public org.opendaylight.controller.md.sal.dom.api.DOMRpcService getDOMRpcServiceOld() {
+    public org.opendaylight.controller.md.sal.dom.api.DOMRpcService getControllerDOMRpcService() {
         return this.domRpcRouterOld;
     }
 
@@ -571,7 +571,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public org.opendaylight.controller.md.sal.dom.api.DOMRpcProviderService getDOMRpcProviderServiceOld() {
+    public org.opendaylight.controller.md.sal.dom.api.DOMRpcProviderService getControllerDOMRpcProviderService() {
         return this.domRpcRouterOld;
     }
 
@@ -581,7 +581,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public RpcProviderRegistry getRpcProviderRegistryOld() {
+    public RpcProviderRegistry getControllerRpcProviderRegistry() {
         return this.rpcProviderRegistry;
     }
 
@@ -591,7 +591,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public org.opendaylight.controller.md.sal.binding.api.MountPointService getBindingMountPointServiceOld() {
+    public org.opendaylight.controller.md.sal.binding.api.MountPointService getControllerBindingMountPointService() {
         return this.mountPointServiceOld;
     }
 
@@ -601,7 +601,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public org.opendaylight.controller.md.sal.binding.api.NotificationService getBindingNotificationServiceOld() {
+    public org.opendaylight.controller.md.sal.binding.api.NotificationService getControllerBindingNotificationService() {
         return this.notificatoinServiceOld;
     }
 
@@ -612,12 +612,12 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     public org.opendaylight.controller.md.sal.binding.api.NotificationPublishService
-    getBindingNotificationPublishServiceOld() {
+    getControllerBindingNotificationPublishService() {
         return this.notificationPublishServiceOld;
     }
 
     @Override
-    public NotificationProviderService getNotificationProviderService() {
+    public NotificationProviderService getControllerNotificationProviderService() {
         return this.notificationProviderServiceOld;
     }
 
@@ -627,7 +627,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public org.opendaylight.controller.md.sal.binding.api.DataBroker getBindingDataBrokerOld() {
+    public org.opendaylight.controller.md.sal.binding.api.DataBroker getControllerBindingDataBroker() {
         return this.domDataBrokerOld;
     }
 
@@ -637,7 +637,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public org.opendaylight.controller.md.sal.binding.api.DataBroker getBindingPingPongDataBrokerOld() {
+    public org.opendaylight.controller.md.sal.binding.api.DataBroker getControllerBindingPingPongDataBroker() {
         return this.domPingPongDataBrokerOld;
     }
 }

@@ -46,7 +46,7 @@ public class LightyControllerTest extends LightyControllerTestBase {
         Assert.assertNotNull(lightyController.getServices().getBindingMountPointService());
         Assert.assertNotNull(lightyController.getServices().getNotificationService());
         Assert.assertNotNull(lightyController.getServices().getBindingNotificationPublishService());
-        Assert.assertNotNull(lightyController.getServices().getNotificationProviderService());
+        Assert.assertNotNull(lightyController.getServices().getControllerNotificationProviderService());
         Assert.assertNotNull(lightyController.getServices().getNotificationService());
         Assert.assertNotNull(lightyController.getServices().getBindingDataBroker());
         Assert.assertNotNull(lightyController.getServices().getBindingPingPongDataBroker());
