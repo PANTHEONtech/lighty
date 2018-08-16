@@ -56,12 +56,12 @@ public class CommunityRestConfBuilder {
      * @return instance of CommunityRestConf.
      */
     public CommunityRestConf build() {
-        return new CommunityRestConf(this.restconfConfiguration.getDomDataBroker(), this.restconfConfiguration.getSchemaService(),
-                this.restconfConfiguration.getDomRpcService(), this.restconfConfiguration.getDomNotificationService(),
-                this.restconfConfiguration.getDomMountPointService(), this.restconfConfiguration.getWebSocketPort(),
-                this.restconfConfiguration.getJsonRestconfServiceType(), this.restconfConfiguration.getDomSchemaService(),
-                this.restconfConfiguration.getInetAddress(), this.restconfConfiguration.getHttpPort(),
-                this.restconfConfiguration.getRestconfServletContextPath(), this.executorService,
-                this.lightyServerBuilder);
+        return new CommunityRestConf(this.restconfConfiguration.getDomDataBroker(), this.restconfConfiguration
+                .getDomSchemaService(), this.restconfConfiguration.getDomRpcService(), this.restconfConfiguration
+                .getDomNotificationService(), this.restconfConfiguration.getDomMountPointService(),
+                this.restconfConfiguration.getWebSocketPort(), this.restconfConfiguration.getJsonRestconfServiceType(),
+                this.restconfConfiguration.getDomSchemaService(), this.restconfConfiguration.getInetAddress(),
+                this.restconfConfiguration.getHttpPort(), this.restconfConfiguration.getRestconfServletContextPath(),
+                this.executorService, this.lightyServerBuilder);
     }
 }

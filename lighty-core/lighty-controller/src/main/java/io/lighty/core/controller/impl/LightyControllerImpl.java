@@ -233,6 +233,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
         this.codecOld = new org.opendaylight.controller.md.sal.binding.impl.BindingToNormalizedNodeCodec(
                 this.moduleInfoBackedContext, codecRegistry);
+
         this.schemaServiceProvider.registerSchemaContextListener(this.codecOld);
 
         // CONFIG DATASTORE

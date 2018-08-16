@@ -17,8 +17,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <!--<module>integration-tests</module>-->
-        <!--<module>northbound-modules</module>-->
+        <module>integration-tests</module>
+        <module>northbound-modules</module>
         <module>southbound-modules</module>
     </modules>
 

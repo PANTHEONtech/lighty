@@ -53,7 +53,7 @@ import java.util.function.BiFunction;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-@Test(enabled = false)
+@Test
 public class TopologyPluginsTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(TopologyPluginsTest.class);
@@ -109,7 +109,7 @@ public class TopologyPluginsTest {
         }
     }
 
-    @Test(enabled = false)
+    @Test
     public void testStart() throws Exception {
         lightyController = LightyTestUtils.startController();
         restConf = LightyTestUtils.startRestconf(lightyController.getServices());
@@ -117,7 +117,7 @@ public class TopologyPluginsTest {
         netconfPlugin.start();
     }
 
-    @Test(enabled = false, dependsOnMethods = "testStart")
+    @Test(dependsOnMethods = "testStart")
     public void testMountDevice() throws Exception {
         final NodeId nodeId = new NodeId("device1");
         final Credentials loginPassword = new LoginPasswordBuilder()
@@ -139,7 +139,7 @@ public class TopologyPluginsTest {
         final InstanceIdentifier<Node> path = InstanceIdentifier.create(NetworkTopology.class)
                 .child(Topology.class, new TopologyKey(new TopologyId("topology-netconf")))
                 .child(Node.class, nodeKey);
-        final DataBroker bindingDataBroker = lightyController.getServices().getBindingDataBroker();
+        final DataBroker bindingDataBroker = lightyController.getServices().getBindingDataBrokerOld();
         final WriteTransaction writeTransaction = bindingDataBroker.newWriteOnlyTransaction();
         writeTransaction.put(LogicalDatastoreType.CONFIGURATION, path, node);
         writeTransaction.submit().get();

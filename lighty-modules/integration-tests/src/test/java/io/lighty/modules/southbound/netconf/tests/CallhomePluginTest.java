@@ -27,7 +27,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 
-@Test(enabled = false)
+@Test
 public class CallhomePluginTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(CallhomePluginTest.class);
@@ -66,7 +66,7 @@ public class CallhomePluginTest {
         }
     }
 
-    @Test(enabled = false)
+    @Test
     public void testStart() throws Exception {
         netconfPlugin.start().get();
         // check, whether TCP server is running on port
