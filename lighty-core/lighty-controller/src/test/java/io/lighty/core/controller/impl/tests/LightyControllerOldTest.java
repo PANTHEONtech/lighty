@@ -22,7 +22,7 @@ public class LightyControllerOldTest extends LightyControllerTestBase {
     public void controllerDataBrokerOldTest() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(2);
         final LightyController lightyController = getLightyController();
-        final DataBroker bindingDataBroker = lightyController.getServices().getBindingDataBrokerOld();
+        final DataBroker bindingDataBroker = lightyController.getServices().getControllerBindingDataBroker();
         bindingDataBroker.registerDataTreeChangeListener(
                 new org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier(
                         org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL,

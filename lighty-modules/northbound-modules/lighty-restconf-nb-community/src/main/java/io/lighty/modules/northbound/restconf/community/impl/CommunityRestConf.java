@@ -115,6 +115,7 @@ public class CommunityRestConf extends AbstractLightyModule {
         final TransactionChainHandler transactionChainHandler = new TransactionChainHandler(this.domDataBroker);
         final SchemaContextHandler schemaCtxHandler = SchemaContextHandler.newInstance(transactionChainHandler,
                 this.domSchemaService);
+        schemaCtxHandler.init();
         final DOMMountPointServiceHandler domMountPointServiceHandler = DOMMountPointServiceHandler.newInstance(
                 this.domMountPointService);
         final DOMDataBrokerHandler domDataBrokerHandler = new DOMDataBrokerHandler(this.domDataBroker);

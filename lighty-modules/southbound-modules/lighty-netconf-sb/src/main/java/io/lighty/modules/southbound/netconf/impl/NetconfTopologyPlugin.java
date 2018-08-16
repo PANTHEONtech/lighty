@@ -32,13 +32,13 @@ public class NetconfTopologyPlugin extends AbstractLightyModule implements Netco
             final NetconfClientDispatcher clientDispatcher, final ExecutorService executorService,
             final AAAEncryptionService encryptionService) {
         super(executorService);
-        this.domMountPointService = lightyServices.getDOMMountPointServiceOld();
+        this.domMountPointService = lightyServices.getControllerDOMMountPointService();
         final SchemaRepositoryProvider schemaRepositoryProvider =
                 new SchemaRepositoryProviderImpl("shared-schema-repository-impl");
         this.topology = new NetconfTopologyImpl(topologyId, clientDispatcher,
                 lightyServices.getEventExecutor(), lightyServices.getScheduledThreaPool(),
                 lightyServices.getThreadPool(), schemaRepositoryProvider,
-                lightyServices.getBindingDataBrokerOld(), lightyServices.getDOMMountPointServiceOld(),
+                lightyServices.getControllerBindingDataBroker(), lightyServices.getControllerDOMMountPointService(),
                 encryptionService);
     }
 

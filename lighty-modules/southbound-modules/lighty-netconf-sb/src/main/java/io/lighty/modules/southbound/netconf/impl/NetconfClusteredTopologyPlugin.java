@@ -32,15 +32,15 @@ public class NetconfClusteredTopologyPlugin extends AbstractLightyModule impleme
             final NetconfClientDispatcher clientDispatcher, final Integer writeTxIdleTimeout,
             final ExecutorService executorService, final AAAEncryptionService encryptionService) {
         super(executorService);
-        this.domMountPointService = lightyServices.getDOMMountPointServiceOld();
+        this.domMountPointService = lightyServices.getControllerDOMMountPointService();
         final Config config = new ConfigBuilder()
                 .setWriteTransactionIdleTimeout(writeTxIdleTimeout)
                 .build();
-        this.topology = new NetconfTopologyManager(lightyServices.getBindingDataBrokerOld(), lightyServices
-                .getRpcProviderRegistryOld(), lightyServices.getClusterSingletonServiceProvider(),
+        this.topology = new NetconfTopologyManager(lightyServices.getControllerBindingDataBroker(), lightyServices
+                .getControllerRpcProviderRegistry(), lightyServices.getClusterSingletonServiceProvider(),
                 lightyServices.getScheduledThreaPool(), lightyServices.getThreadPool(),
                 lightyServices.getActorSystemProvider(), lightyServices.getEventExecutor(), clientDispatcher,
-                topologyId, config, lightyServices.getDOMMountPointServiceOld(), encryptionService);
+                topologyId, config, lightyServices.getControllerDOMMountPointService(), encryptionService);
     }
 
     @Override

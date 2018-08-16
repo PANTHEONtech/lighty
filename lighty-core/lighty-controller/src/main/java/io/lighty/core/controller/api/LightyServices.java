@@ -119,34 +119,36 @@ public interface LightyServices {
 
     DataBroker getBindingPingPongDataBroker();
 
-    NotificationProviderService getNotificationProviderService();
+    NotificationProviderService getControllerNotificationProviderService();
 
     org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry
-    getDOMNotificationSubscriptionListenerRegistryOld();
+            getControllerDOMNotificationSubscriptionListenerRegistry();
 
-    org.opendaylight.controller.md.sal.dom.api.DOMMountPointService getDOMMountPointServiceOld();
+    org.opendaylight.controller.md.sal.dom.api.DOMMountPointService getControllerDOMMountPointService();
 
-    org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService getDOMNotificationPublishServiceOld();
+    org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService
+            getControllerDOMNotificationPublishService();
 
-    org.opendaylight.controller.md.sal.dom.api.DOMNotificationService getDOMNotificationServiceOld();
+    org.opendaylight.controller.md.sal.dom.api.DOMNotificationService getControllerDOMNotificationService();
 
-    org.opendaylight.controller.md.sal.dom.api.DOMDataBroker getClusteredDOMDataBrokerOld();
+    org.opendaylight.controller.md.sal.dom.api.DOMDataBroker getControllerClusteredDOMDataBroker();
 
-    org.opendaylight.controller.md.sal.dom.api.DOMDataBroker getPingPongDataBrokerOld();
+    org.opendaylight.controller.md.sal.dom.api.DOMDataBroker getControllerPingPongDataBroker();
 
-    org.opendaylight.controller.md.sal.dom.api.DOMRpcService getDOMRpcServiceOld();
+    org.opendaylight.controller.md.sal.dom.api.DOMRpcService getControllerDOMRpcService();
 
-    org.opendaylight.controller.md.sal.dom.api.DOMRpcProviderService getDOMRpcProviderServiceOld();
+    org.opendaylight.controller.md.sal.dom.api.DOMRpcProviderService getControllerDOMRpcProviderService();
 
-    RpcProviderRegistry getRpcProviderRegistryOld();
+    RpcProviderRegistry getControllerRpcProviderRegistry();
 
-    org.opendaylight.controller.md.sal.binding.api.MountPointService getBindingMountPointServiceOld();
+    org.opendaylight.controller.md.sal.binding.api.MountPointService getControllerBindingMountPointService();
 
-    org.opendaylight.controller.md.sal.binding.api.NotificationService getBindingNotificationServiceOld();
+    org.opendaylight.controller.md.sal.binding.api.NotificationService getControllerBindingNotificationService();
 
-    org.opendaylight.controller.md.sal.binding.api.DataBroker getBindingDataBrokerOld();
+    org.opendaylight.controller.md.sal.binding.api.DataBroker getControllerBindingDataBroker();
 
-    org.opendaylight.controller.md.sal.binding.api.DataBroker getBindingPingPongDataBrokerOld();
+    org.opendaylight.controller.md.sal.binding.api.DataBroker getControllerBindingPingPongDataBroker();
 
-    org.opendaylight.controller.md.sal.binding.api.NotificationPublishService getBindingNotificationPublishServiceOld();
+    org.opendaylight.controller.md.sal.binding.api.NotificationPublishService
+            getControllerBindingNotificationPublishService();
 }

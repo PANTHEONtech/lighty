@@ -7,6 +7,10 @@
  */
 package io.lighty.modules.southbound.netconf.tests;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
@@ -17,6 +21,7 @@ import io.lighty.modules.southbound.netconf.impl.NetconfTopologyPluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
 import io.netty.util.concurrent.Future;
+import java.util.function.BiFunction;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -48,11 +53,6 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
 
-import java.util.function.BiFunction;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-
 @Test
 public class TopologyPluginsTest {
 
@@ -77,33 +77,33 @@ public class TopologyPluginsTest {
         final NetconfTopologyProvider startSingleNodeNetconf = TopologyPluginsTest::startSingleNodeNetconf;
         final NetconfTopologyProvider startClusteredNetconf = TopologyPluginsTest::startClusteredNetconf;
         return new Object[][]{
-                {startSingleNodeNetconf},
-                {startClusteredNetconf}
+            {startSingleNodeNetconf},
+            {startClusteredNetconf}
         };
     }
 
     @BeforeClass
     public void beforeClass() {
         MockitoAnnotations.initMocks(this);
-        when(dispatcher.createReconnectingClient(any())).thenReturn(initFuture);
+        when(this.dispatcher.createReconnectingClient(any())).thenReturn(this.initFuture);
     }
 
     @AfterClass
     public void afterClass() throws Exception {
-        if (netconfPlugin != null) {
+        if (this.netconfPlugin != null) {
             LOG.info("Shutting down Netconf topology Plugin");
-            final ListenableFuture<Boolean> shutdown = netconfPlugin.shutdown();
+            final ListenableFuture<Boolean> shutdown = this.netconfPlugin.shutdown();
             shutdown.get();
         }
-        if (restConf != null) {
+        if (this.restConf != null) {
             LOG.info("Shutting down CommunityRestConf");
-            final ListenableFuture<Boolean> shutdown = restConf.shutdown();
+            final ListenableFuture<Boolean> shutdown = this.restConf.shutdown();
             shutdown.get();
             Thread.sleep(5_000);
         }
-        if (lightyController != null) {
+        if (this.lightyController != null) {
             LOG.info("Shutting down LightyController");
-            final ListenableFuture<Boolean> shutdown = lightyController.shutdown();
+            final ListenableFuture<Boolean> shutdown = this.lightyController.shutdown();
             shutdown.get();
             Thread.sleep(10_000);
         }
@@ -111,10 +111,10 @@ public class TopologyPluginsTest {
 
     @Test
     public void testStart() throws Exception {
-        lightyController = LightyTestUtils.startController();
-        restConf = LightyTestUtils.startRestconf(lightyController.getServices());
-        netconfPlugin = netconfProvider.apply(lightyController.getServices(), dispatcher);
-        netconfPlugin.start();
+        this.lightyController = LightyTestUtils.startController();
+        this.restConf = LightyTestUtils.startRestconf(this.lightyController.getServices());
+        this.netconfPlugin = this.netconfProvider.apply(this.lightyController.getServices(), this.dispatcher);
+        this.netconfPlugin.start();
     }
 
     @Test(dependsOnMethods = "testStart")
@@ -139,15 +139,15 @@ public class TopologyPluginsTest {
         final InstanceIdentifier<Node> path = InstanceIdentifier.create(NetworkTopology.class)
                 .child(Topology.class, new TopologyKey(new TopologyId("topology-netconf")))
                 .child(Node.class, nodeKey);
-        final DataBroker bindingDataBroker = lightyController.getServices().getBindingDataBrokerOld();
+        final DataBroker bindingDataBroker = this.lightyController.getServices().getControllerBindingDataBroker();
         final WriteTransaction writeTransaction = bindingDataBroker.newWriteOnlyTransaction();
         writeTransaction.put(LogicalDatastoreType.CONFIGURATION, path, node);
         writeTransaction.submit().get();
-        verify(dispatcher, timeout(10000)).createReconnectingClient(any());
+        verify(this.dispatcher, timeout(10000)).createReconnectingClient(any());
     }
 
     private static LightyModule startSingleNodeNetconf(final LightyServices services,
-                                                                  final NetconfClientDispatcher dispatcher) {
+            final NetconfClientDispatcher dispatcher) {
         try {
             final NetconfConfiguration config = NetconfConfigUtils.createDefaultNetconfConfiguration();
             NetconfConfigUtils.injectServicesToConfig(config, services);
@@ -155,28 +155,28 @@ public class TopologyPluginsTest {
             return new NetconfTopologyPluginBuilder()
                     .from(config, services)
                     .build();
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             return null;
         }
     }
 
     private static LightyModule startClusteredNetconf(final LightyServices services,
-                                                                 final NetconfClientDispatcher dispatcher) {
+            final NetconfClientDispatcher dispatcher) {
         try {
             final NetconfConfiguration config =
-                NetconfConfigUtils.createDefaultNetconfConfiguration();
+                    NetconfConfigUtils.createDefaultNetconfConfiguration();
             NetconfConfigUtils.injectServicesToConfig(config, services);
             config.setClientDispatcher(dispatcher);
             return new NetconfTopologyPluginBuilder()
-                .from(config, services)
-                .build();
-        } catch (ConfigurationException e) {
+                    .from(config, services)
+                    .build();
+        } catch (final ConfigurationException e) {
             return null;
         }
     }
 
     private interface NetconfTopologyProvider
-            extends BiFunction<LightyServices, NetconfClientDispatcher, LightyModule> {
+    extends BiFunction<LightyServices, NetconfClientDispatcher, LightyModule> {
     }
 
 }
