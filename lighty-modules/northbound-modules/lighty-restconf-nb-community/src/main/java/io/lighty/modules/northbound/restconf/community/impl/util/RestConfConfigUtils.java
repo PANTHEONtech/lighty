@@ -16,12 +16,10 @@ import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import java.io.IOException;
 import java.io.InputStream;
-
+import java.util.Set;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Set;
 
 public final class RestConfConfigUtils {
 
@@ -30,7 +28,7 @@ public final class RestConfConfigUtils {
     public static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.monitoring.rev170126.$YangModuleInfoImpl.getInstance()
-    );
+            );
 
     private RestConfConfigUtils() {
         throw new UnsupportedOperationException();
@@ -45,24 +43,24 @@ public final class RestConfConfigUtils {
      * @throws ConfigurationException
      *   In case InputStream does not contain valid JSON data or cannot bind Json tree to type.
      */
-    public static RestConfConfiguration getRestConfConfiguration(InputStream jsonConfigInputStream)
+    public static RestConfConfiguration getRestConfConfiguration(final InputStream jsonConfigInputStream)
             throws ConfigurationException {
-        ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = new ObjectMapper();
         JsonNode configNode;
         try {
             configNode = mapper.readTree(jsonConfigInputStream);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new ConfigurationException("Cannot deserialize Json content to Json tree nodes", e);
         }
         if (!configNode.has(RESTCONF_CONFIG_ROOT_ELEMENT_NAME)) {
             LOG.warn("Json config does not contain {} element. Using defaults.", RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
             return new RestConfConfiguration();
         }
-        JsonNode restconfNode = configNode.path(RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
+        final JsonNode restconfNode = configNode.path(RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
         RestConfConfiguration restconfConfiguration = null;
         try {
             restconfConfiguration = mapper.treeToValue(restconfNode, RestConfConfiguration.class);
-        } catch (JsonProcessingException e) {
+        } catch (final JsonProcessingException e) {
             throw new ConfigurationException(String.format("Cannot bind Json tree to type: %s",
                     RestConfConfiguration.class), e);
         }
@@ -88,27 +86,27 @@ public final class RestConfConfigUtils {
         JsonNode configNode;
         try {
             configNode = mapper.readTree(jsonConfigInputStream);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new ConfigurationException("Cannot deserialize Json content to Json tree nodes", e);
         }
         if (!configNode.has(RESTCONF_CONFIG_ROOT_ELEMENT_NAME)) {
             LOG.warn("Json config does not contain {} element. Using defaults.", RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
             return getDefaultRestConfConfiguration(lightyServices);
         }
-        JsonNode restconfNode = configNode.path(RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
+        final JsonNode restconfNode = configNode.path(RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
 
         RestConfConfiguration restconfConfiguration = null;
         try {
             restconfConfiguration = mapper.treeToValue(restconfNode, RestConfConfiguration.class);
-        } catch (JsonProcessingException e) {
+        } catch (final JsonProcessingException e) {
             throw new ConfigurationException(String.format("Cannot bind Json tree to type: %s",
                     RestConfConfiguration.class), e);
         }
-        restconfConfiguration.setDomDataBroker(lightyServices.getClusteredDOMDataBroker());
-        restconfConfiguration.setSchemaService(lightyServices.getSchemaService());
-        restconfConfiguration.setDomRpcService(lightyServices.getDOMRpcService());
-        restconfConfiguration.setDomNotificationService(lightyServices.getDOMNotificationService());
-        restconfConfiguration.setDomMountPointService(lightyServices.getDOMMountPointService());
+        restconfConfiguration.setDomDataBroker(lightyServices.getClusteredDOMDataBrokerOld());
+        restconfConfiguration.setSchemaService(lightyServices.getDOMSchemaService());
+        restconfConfiguration.setDomRpcService(lightyServices.getDOMRpcServiceOld());
+        restconfConfiguration.setDomNotificationService(lightyServices.getDOMNotificationServiceOld());
+        restconfConfiguration.setDomMountPointService(lightyServices.getDOMMountPointServiceOld());
         restconfConfiguration.setDomSchemaService(lightyServices.getDOMSchemaService());
 
         return restconfConfiguration;
@@ -123,12 +121,9 @@ public final class RestConfConfigUtils {
      */
     public static RestConfConfiguration getDefaultRestConfConfiguration(final LightyServices lightyServices) {
         return new RestConfConfiguration(
-                lightyServices.getClusteredDOMDataBroker(),
-                lightyServices.getSchemaService(),
-                lightyServices.getDOMRpcService(),
-                lightyServices.getDOMNotificationService(),
-                lightyServices.getDOMMountPointService(),
-                lightyServices.getDOMSchemaService());
+                lightyServices.getClusteredDOMDataBrokerOld(), lightyServices.getDOMSchemaService(),
+                lightyServices.getDOMRpcServiceOld(), lightyServices.getDOMNotificationServiceOld(), lightyServices
+                .getDOMMountPointServiceOld(), lightyServices.getDOMSchemaService());
     }
 
     /**
@@ -151,13 +146,13 @@ public final class RestConfConfigUtils {
      *   Object representation of configuration data.
      */
     public static RestConfConfiguration getRestConfConfiguration(final RestConfConfiguration restConfConfiguration,
-                                                                 final LightyServices lightyServices) {
+            final LightyServices lightyServices) {
         final RestConfConfiguration config = new RestConfConfiguration(restConfConfiguration);
-        config.setDomDataBroker(lightyServices.getClusteredDOMDataBroker());
-        config.setSchemaService(lightyServices.getSchemaService());
-        config.setDomRpcService(lightyServices.getDOMRpcService());
-        config.setDomNotificationService(lightyServices.getDOMNotificationService());
-        config.setDomMountPointService(lightyServices.getDOMMountPointService());
+        config.setDomDataBroker(lightyServices.getClusteredDOMDataBrokerOld());
+        config.setSchemaService(lightyServices.getDOMSchemaService());
+        config.setDomRpcService(lightyServices.getDOMRpcServiceOld());
+        config.setDomNotificationService(lightyServices.getDOMNotificationServiceOld());
+        config.setDomMountPointService(lightyServices.getDOMMountPointServiceOld());
         config.setDomSchemaService(lightyServices.getDOMSchemaService());
         return config;
     }
