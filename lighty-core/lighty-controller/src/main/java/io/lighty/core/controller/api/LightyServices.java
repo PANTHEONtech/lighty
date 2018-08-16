@@ -119,36 +119,51 @@ public interface LightyServices {
 
     DataBroker getBindingPingPongDataBroker();
 
+    @Deprecated
     NotificationProviderService getControllerNotificationProviderService();
 
+    @Deprecated
     org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry
-            getControllerDOMNotificationSubscriptionListenerRegistry();
+    getControllerDOMNotificationSubscriptionListenerRegistry();
 
+    @Deprecated
     org.opendaylight.controller.md.sal.dom.api.DOMMountPointService getControllerDOMMountPointService();
 
+    @Deprecated
     org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService
-            getControllerDOMNotificationPublishService();
+    getControllerDOMNotificationPublishService();
 
+    @Deprecated
     org.opendaylight.controller.md.sal.dom.api.DOMNotificationService getControllerDOMNotificationService();
 
+    @Deprecated
     org.opendaylight.controller.md.sal.dom.api.DOMDataBroker getControllerClusteredDOMDataBroker();
 
+    @Deprecated
     org.opendaylight.controller.md.sal.dom.api.DOMDataBroker getControllerPingPongDataBroker();
 
+    @Deprecated
     org.opendaylight.controller.md.sal.dom.api.DOMRpcService getControllerDOMRpcService();
 
+    @Deprecated
     org.opendaylight.controller.md.sal.dom.api.DOMRpcProviderService getControllerDOMRpcProviderService();
 
+    @Deprecated
     RpcProviderRegistry getControllerRpcProviderRegistry();
 
+    @Deprecated
     org.opendaylight.controller.md.sal.binding.api.MountPointService getControllerBindingMountPointService();
 
+    @Deprecated
     org.opendaylight.controller.md.sal.binding.api.NotificationService getControllerBindingNotificationService();
 
+    @Deprecated
     org.opendaylight.controller.md.sal.binding.api.DataBroker getControllerBindingDataBroker();
 
+    @Deprecated
     org.opendaylight.controller.md.sal.binding.api.DataBroker getControllerBindingPingPongDataBroker();
 
+    @Deprecated
     org.opendaylight.controller.md.sal.binding.api.NotificationPublishService
-            getControllerBindingNotificationPublishService();
+    getControllerBindingNotificationPublishService();
 }
