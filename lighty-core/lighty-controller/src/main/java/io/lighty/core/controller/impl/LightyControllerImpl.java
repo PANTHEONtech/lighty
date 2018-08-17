@@ -94,6 +94,7 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.mdsal.singleton.dom.impl.DOMClusterSingletonServiceProviderImpl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
+import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
@@ -238,11 +239,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
         // CONFIG DATASTORE
         this.configDatastore = prepareDataStore(this.configDatastoreContext, this.moduleShardsConfig,
-                this.modulesConfig, this.codec, this.schemaServiceProvider, this.datastoreSnapshotRestore,
+                this.modulesConfig, this.schemaServiceProvider, this.datastoreSnapshotRestore,
                 this.actorSystemProvider);
         // OPERATIONAL DATASTORE
         this.operDatastore = prepareDataStore(this.operDatastoreContext, this.moduleShardsConfig, this.modulesConfig,
-                this.codec, this.schemaServiceProvider, this.datastoreSnapshotRestore, this.actorSystemProvider);
+                this.schemaServiceProvider, this.datastoreSnapshotRestore, this.actorSystemProvider);
 
         createConcurrentDOMDataBroker();
         this.distributedShardedDOMDataTree = new DistributedShardedDOMDataTree(this.actorSystemProvider,
@@ -327,7 +328,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     private AbstractDataStore prepareDataStore(final DatastoreContext datastoreContext, final String moduleShardsConfig,
             final String modulesConfig,
-            final BindingToNormalizedNodeCodec bindingToNormalizedNodeCodec,
             final DOMSchemaService domSchemaService,
             final DatastoreSnapshotRestore datastoreSnapshotRestore,
             final ActorSystemProvider actorSystemProvider) {
@@ -637,7 +637,13 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
+    public ObjectRegistration<YangModuleInfo> registerModuleInfo(YangModuleInfo yangModuleInfo) {
+        return moduleInfoBackedContext.registerModuleInfo(yangModuleInfo);
+    }
+
+    @Override
     public org.opendaylight.controller.md.sal.binding.api.DataBroker getControllerBindingPingPongDataBroker() {
         return this.domPingPongDataBrokerOld;
     }
+
 }
