@@ -39,6 +39,8 @@ import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
+import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
 
 /**
@@ -118,6 +120,8 @@ public interface LightyServices {
     DataBroker getBindingDataBroker();
 
     DataBroker getBindingPingPongDataBroker();
+
+    ObjectRegistration<YangModuleInfo> registerModuleInfo(final YangModuleInfo yangModuleInfo);
 
     @Deprecated
     NotificationProviderService getControllerNotificationProviderService();
