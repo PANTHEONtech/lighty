@@ -9,11 +9,9 @@ package io.lighty.modules.southbound.netconf.impl;
 
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyServices;
-
+import io.lighty.modules.southbound.netconf.impl.util.NetconfUtils;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
-
-import io.lighty.modules.southbound.netconf.impl.util.NetconfUtils;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.opendaylight.controller.md.sal.dom.api.DOMMountPoint;
 import org.opendaylight.controller.md.sal.dom.api.DOMMountPointService;
@@ -31,22 +29,22 @@ public class NetconfTopologyPlugin extends AbstractLightyModule implements Netco
     private final DOMMountPointService domMountPointService;
 
     NetconfTopologyPlugin(final LightyServices lightyServices, final String topologyId,
-            final NetconfClientDispatcher clientDispatcher, ExecutorService executorService,
+            final NetconfClientDispatcher clientDispatcher, final ExecutorService executorService,
             final AAAEncryptionService encryptionService) {
         super(executorService);
-        this.domMountPointService = lightyServices.getDOMMountPointService();
+        this.domMountPointService = lightyServices.getControllerDOMMountPointService();
         final SchemaRepositoryProvider schemaRepositoryProvider =
                 new SchemaRepositoryProviderImpl("shared-schema-repository-impl");
-        topology = new NetconfTopologyImpl(topologyId, clientDispatcher,
+        this.topology = new NetconfTopologyImpl(topologyId, clientDispatcher,
                 lightyServices.getEventExecutor(), lightyServices.getScheduledThreaPool(),
                 lightyServices.getThreadPool(), schemaRepositoryProvider,
-                lightyServices.getBindingDataBroker(), lightyServices.getDOMMountPointService(),
+                lightyServices.getControllerBindingDataBroker(), lightyServices.getControllerDOMMountPointService(),
                 encryptionService);
     }
 
     @Override
     protected boolean initProcedure() {
-        topology.init();
+        this.topology.init();
         return true;
     }
 
@@ -61,12 +59,12 @@ public class NetconfTopologyPlugin extends AbstractLightyModule implements Netco
     }
 
     @Override
-    public Optional<NetconfBaseService> getNetconfBaseService(NodeId nodeId) {
-        YangInstanceIdentifier yangInstanceIdentifier = NetconfUtils.createNetConfNodeMountPointYII(nodeId);
-        com.google.common.base.Optional<DOMMountPoint> mountPoint = domMountPointService.getMountPoint(yangInstanceIdentifier);
+    public Optional<NetconfBaseService> getNetconfBaseService(final NodeId nodeId) {
+        final YangInstanceIdentifier yangInstanceIdentifier = NetconfUtils.createNetConfNodeMountPointYII(nodeId);
+        final com.google.common.base.Optional<DOMMountPoint> mountPoint = this.domMountPointService.getMountPoint(yangInstanceIdentifier);
         if (mountPoint.isPresent()) {
-            DOMMountPoint domMountPoint = mountPoint.get();
-            com.google.common.base.Optional<DOMRpcService> optionalDOMMountPoint = domMountPoint.getService(DOMRpcService.class);
+            final DOMMountPoint domMountPoint = mountPoint.get();
+            final com.google.common.base.Optional<DOMRpcService> optionalDOMMountPoint = domMountPoint.getService(DOMRpcService.class);
             if (optionalDOMMountPoint.isPresent()) {
                 return Optional.of(new NetconfBaseServiceImpl(nodeId, optionalDOMMountPoint.get(), domMountPoint.getSchemaContext()));
             }
