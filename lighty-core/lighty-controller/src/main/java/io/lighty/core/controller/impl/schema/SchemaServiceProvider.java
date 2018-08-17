@@ -18,13 +18,9 @@ import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaContextResolver
 public class SchemaServiceProvider implements DOMSchemaService, DOMYangTextSourceProvider {
 
     private ModuleInfoBackedContext moduleInfoBackedContext;
-    private final YangTextSchemaContextResolver contextResolver = YangTextSchemaContextResolver.create("global-bundle");
 
     public SchemaServiceProvider(ModuleInfoBackedContext moduleInfoBackedContext) {
         this.moduleInfoBackedContext = moduleInfoBackedContext;
-        this.moduleInfoBackedContext.getSchemaContext().getModules().forEach(m->{
-            //TODO: populate YangTextSchemaContextResolver with modules from ModuleInfoBackedContext
-        });
     }
 
     @Override
@@ -51,7 +47,7 @@ public class SchemaServiceProvider implements DOMSchemaService, DOMYangTextSourc
 
     @Override
     public ListenableFuture<? extends YangTextSchemaSource> getSource(SourceIdentifier sourceIdentifier) {
-        return contextResolver.getSource(sourceIdentifier);
+        return moduleInfoBackedContext.getSource(sourceIdentifier);
     }
 
 }
