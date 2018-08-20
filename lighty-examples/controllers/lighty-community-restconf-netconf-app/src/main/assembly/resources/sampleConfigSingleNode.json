@@ -70,7 +70,7 @@
         "httpPort":8888,
         "webSocketPort": 8185,
         "restconfServletContextPath":"/restconf",
-        "jsonRestconfServiceType": "DRAFT_02"
+        "jsonRestconfServiceType": "DRAFT_18"
     },
     "netconf":{
         "topologyId":"topology-netconf"

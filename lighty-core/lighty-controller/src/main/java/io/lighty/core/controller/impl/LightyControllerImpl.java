@@ -12,6 +12,7 @@ import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.core.controller.impl.schema.SchemaServiceProvider;
+import io.lighty.core.controller.impl.services.LightyDiagStatusServiceImpl;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.HashedWheelTimer;
@@ -146,6 +147,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private BindingDOMDataBrokerAdapter domDataBroker;
     private org.opendaylight.controller.md.sal.binding.api.DataBroker domDataBrokerOld;
     private BindingDOMDataBrokerAdapter domPingPongDataBroker;
+    private final LightyDiagStatusServiceImpl lightyDiagStatusService;
     private EventExecutor eventExecutor;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
@@ -197,6 +199,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.configDatastoreContext = configDatastoreContext;
         this.operDatastoreContext = operDatastoreContext;
         this.modelSet = modelSet;
+        this.lightyDiagStatusService = new LightyDiagStatusServiceImpl();
     }
 
     /**
@@ -386,6 +389,10 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     public LightyServices getServices() {
         return this;
+    }
+
+    public LightyDiagStatusServiceImpl getLightyDiagStatusService() {
+        return lightyDiagStatusService;
     }
 
     @Override

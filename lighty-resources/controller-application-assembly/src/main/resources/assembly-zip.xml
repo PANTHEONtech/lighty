@@ -40,7 +40,17 @@
             </includes>
         </fileSet>
 
-        <!-- Add resources from build directory, usually copied from elsewhere during build. -->
+        <!-- Add .sh resources from build directory with executable permissions -->
+        <fileSet>
+            <directory>${project.build.directory}/assembly/resources</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>*.sh</include>
+            </includes>
+            <fileMode>0755</fileMode>
+        </fileSet>
+
+        <!-- Add other resources from build directory, usually copied from elsewhere during build. -->
         <fileSet>
             <directory>${project.build.directory}/assembly/resources</directory>
             <outputDirectory></outputDirectory>

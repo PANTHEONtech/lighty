@@ -7,6 +7,7 @@
  */
 package io.lighty.core.controller.api;
 
+import io.lighty.core.controller.impl.services.LightyDiagStatusServiceImpl;
 import io.netty.channel.EventLoopGroup;
 import io.netty.util.Timer;
 import io.netty.util.concurrent.EventExecutor;
@@ -50,6 +51,8 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
  * @author juraj.veverka
  */
 public interface LightyServices {
+
+    LightyDiagStatusServiceImpl getLightyDiagStatusService();
 
     ActorSystemProvider getActorSystemProvider();
 

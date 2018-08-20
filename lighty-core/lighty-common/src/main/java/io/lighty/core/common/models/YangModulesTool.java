@@ -21,51 +21,52 @@ public class YangModulesTool {
     private static final int PREFIX = 2;
 
     public static void main(final String[] args) {
-        Set<YangModuleInfo> allModelsFromClasspath = YangModuleUtils.getAllModelsFromClasspath();
+        final Set<YangModuleInfo> allModelsFromClasspath = YangModuleUtils.getAllModelsFromClasspath();
         printModelInfo(allModelsFromClasspath);
     }
 
     public static void printModelInfo(final Set<YangModuleInfo> allModelsFromClasspath) {
-        int prefixLength = 0;
-        Set<YangModuleInfo> topLevelModels = YangModuleUtils.filterTopLevelModels(allModelsFromClasspath);
+        final int prefixLength = 0;
+        final Set<YangModuleInfo> topLevelModels = YangModuleUtils.filterTopLevelModels(allModelsFromClasspath);
         LOG.info("# top-level models tree: {}", topLevelModels.size());
-        for (YangModuleInfo yangModuleInfo : topLevelModels) {
+        for (final YangModuleInfo yangModuleInfo : topLevelModels) {
             final QName qname = yangModuleInfo.getName();
             LOG.info("{}", qname.getNamespace(), qname.getLocalName(), qname.getRevision());
             printDependencies(yangModuleInfo.getImportedModules(), prefixLength + PREFIX);
         }
         LOG.info("# top-level models list: {}", topLevelModels.size());
-        for (YangModuleInfo yangModuleInfo : topLevelModels) {
+        for (final YangModuleInfo yangModuleInfo : topLevelModels) {
             final QName qname = yangModuleInfo.getName();
-            LOG.info("{}", qname.getNamespace(), qname.getLocalName(), qname.getRevision());
+            LOG.info("{} {} {}", qname.getNamespace(), qname.getLocalName(), qname.getRevision());
         }
-        Set<YangModuleInfo> uniqueModels = YangModuleUtils.filterUniqueModels(allModelsFromClasspath);
+        final Set<YangModuleInfo> uniqueModels = YangModuleUtils.filterUniqueModels(allModelsFromClasspath);
         LOG.info("# unique models list   : {}", uniqueModels.size());
-        for (YangModuleInfo yangModuleInfo : uniqueModels) {
+        for (final YangModuleInfo yangModuleInfo : uniqueModels) {
             final QName qname = yangModuleInfo.getName();
-            LOG.info("{}", qname.getNamespace(), qname.getLocalName(), qname.getRevision());
+            LOG.info("{} {} {}", qname.getNamespace(), qname.getLocalName(), qname.getRevision());
         }
     }
 
     public static void printConfiguration(final Set<YangModuleInfo> allModelsFromClasspath) {
-        Set<YangModuleInfo> topLevelModels = YangModuleUtils.filterTopLevelModels(allModelsFromClasspath);
+        final Set<YangModuleInfo> topLevelModels = YangModuleUtils.filterTopLevelModels(allModelsFromClasspath);
         LOG.info("# top-level models list: {}", topLevelModels.size());
-        for (YangModuleInfo yangModuleInfo : topLevelModels) {
+        for (final YangModuleInfo yangModuleInfo : topLevelModels) {
             final QName qname = yangModuleInfo.getName();
             System.out.println("{ \"nameSpace\": \"" + qname.getNamespace() + "\", \"name\": \""
-                            + qname.getLocalName() + "\", \"revision\": \"" + qname.getRevision().orElse(null) + "\" },");
+                    + qname.getLocalName() + "\", \"revision\": \"" + qname.getRevision().orElse(null) + "\" },");
         }
         LOG.info("# top-level models list: {}", topLevelModels.size());
-        for (YangModuleInfo yangModuleInfo: topLevelModels) {
+        for (final YangModuleInfo yangModuleInfo: topLevelModels) {
             System.out.println(yangModuleInfo.getClass().getCanonicalName() + ".getInstance(),");
         }
     }
 
     private static void printDependencies(final Collection<YangModuleInfo> yangModuleInfos, final int prefixLength) {
-        for (YangModuleInfo yangModuleInfo : yangModuleInfos) {
+        for (final YangModuleInfo yangModuleInfo : yangModuleInfos) {
             final QName qname = yangModuleInfo.getName();
             LOG.info("{}{} {} {}", Strings.repeat(" ", prefixLength), qname.getNamespace(), qname.getLocalName(), qname.getRevision());
             printDependencies(yangModuleInfo.getImportedModules(), prefixLength + PREFIX);
         }
     }
+
 }
