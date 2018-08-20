@@ -9,12 +9,9 @@ package io.lighty.core.common.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.net.URI;
 import java.util.Objects;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.common.QNameModule;
-import org.opendaylight.yangtools.yang.common.Revision;
 
 /**
  * This class represents unique identifier of yang module.
@@ -23,33 +20,32 @@ import org.opendaylight.yangtools.yang.common.Revision;
  */
 public final class ModuleId {
 
-    private final QName qname;
+    private final String nameSpace;
+    private final String name;
+    private final String revision;
 
     @JsonCreator
-    public ModuleId(@JsonProperty("nameSpace") final String nameSpace,
-                    @JsonProperty("name") final String name,
-                    @JsonProperty("revision") final String revision) {
-        this(QName.create(QNameModule.create(URI.create(nameSpace), Revision.ofNullable(revision)), name));
-    }
-
-    public ModuleId(final QName qname) {
-        this.qname = Objects.requireNonNull(qname);
-    }
-
-    public QName getQName() {
-        return qname;
+    public ModuleId(@JsonProperty("nameSpace") final String nameSpace, @JsonProperty("name") final String name,
+            @JsonProperty("revision") final String revision) {
+        this.nameSpace = nameSpace;
+        this.name = name;
+        this.revision = revision;
     }
 
     public String getName() {
-        return qname.getLocalName();
+        return this.name;
     }
 
     public String getRevision() {
-        return qname.getModule().getRevision().map(Revision::toString).orElse(null);
+        return this.revision;
     }
 
     public String getNameSpace() {
-        return qname.getModule().getNamespace().toString();
+        return this.nameSpace;
+    }
+
+    public QName getQName() {
+        return QName.create(this.nameSpace, this.revision, this.name);
     }
 
     @Override
@@ -57,12 +53,17 @@ public final class ModuleId {
         if (this == o) {
             return true;
         }
-        return o instanceof ModuleId && qname.equals(((ModuleId) o).qname);
+        if (!(o instanceof ModuleId)) {
+            return false;
+        }
+        final ModuleId moduleId = (ModuleId) o;
+        return Objects.equals(this.name, moduleId.name) && Objects.equals(this.revision, moduleId.revision) && Objects
+                .equals(this.nameSpace, moduleId.nameSpace);
     }
 
     @Override
     public int hashCode() {
-        return qname.hashCode();
+        return Objects.hash(this.nameSpace, this.name, this.revision);
     }
 
     public static ModuleId from(final String nameSpace, final String name, final String revision) {
@@ -70,11 +71,12 @@ public final class ModuleId {
     }
 
     public static ModuleId from(final YangModuleInfo yangModuleInfo) {
-        return new ModuleId(yangModuleInfo.getName());
+        final QName name = yangModuleInfo.getName();
+        return new ModuleId(name.getNamespace().toString(), name.getLocalName(), name.getRevision().get().toString());
     }
 
     @Override
     public String toString() {
-        return getNameSpace() + ":" + getName() + "@" + getRevision();
+        return this.nameSpace + ":" + this.name + "@" + this.revision;
     }
 }

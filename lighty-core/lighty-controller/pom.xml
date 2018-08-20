@@ -48,6 +48,12 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
+        <!--odl-infrautils-->
+        <dependency>
+            <groupId>org.opendaylight.infrautils</groupId>
+            <artifactId>diagstatus-api</artifactId>
+            <version>1.3.3-SNAPSHOT</version>
+        </dependency>
         <!--odl-yangtools-common-->
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>

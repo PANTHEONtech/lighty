@@ -39,7 +39,7 @@ public class NetconfTopologyPlugin extends AbstractLightyModule implements Netco
                 lightyServices.getEventExecutor(), lightyServices.getScheduledThreaPool(),
                 lightyServices.getThreadPool(), schemaRepositoryProvider,
                 lightyServices.getControllerBindingDataBroker(), lightyServices.getControllerDOMMountPointService(),
-                encryptionService);
+                encryptionService, new LightyDeviceActionFactory());
     }
 
     @Override

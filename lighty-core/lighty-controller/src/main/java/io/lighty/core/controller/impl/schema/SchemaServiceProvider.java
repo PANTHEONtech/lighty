@@ -3,7 +3,6 @@ package io.lighty.core.controller.impl.schema;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.util.concurrent.ListenableFuture;
-import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaServiceExtension;
@@ -17,36 +16,36 @@ import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaContextResolver
 
 public class SchemaServiceProvider implements DOMSchemaService, DOMYangTextSourceProvider {
 
-    private ModuleInfoBackedContext moduleInfoBackedContext;
+    private final ModuleInfoBackedContext moduleInfoBackedContext;
 
-    public SchemaServiceProvider(ModuleInfoBackedContext moduleInfoBackedContext) {
+    public SchemaServiceProvider(final ModuleInfoBackedContext moduleInfoBackedContext) {
         this.moduleInfoBackedContext = moduleInfoBackedContext;
     }
 
     @Override
     public SchemaContext getSessionContext() {
-        return moduleInfoBackedContext.getSchemaContext();
+        return this.moduleInfoBackedContext.getSchemaContext();
     }
 
     @Override
     public SchemaContext getGlobalContext() {
-        return moduleInfoBackedContext.getSchemaContext();
+        return this.moduleInfoBackedContext.getSchemaContext();
     }
 
     @Override
-    public ListenerRegistration<SchemaContextListener> registerSchemaContextListener(SchemaContextListener listener) {
-        listener.onGlobalContextUpdated(moduleInfoBackedContext.getSchemaContext());
-        SchemaContextListenerRegistration registration = new SchemaContextListenerRegistration(listener);
+    public ListenerRegistration<SchemaContextListener> registerSchemaContextListener(final SchemaContextListener listener) {
+        listener.onGlobalContextUpdated(this.moduleInfoBackedContext.getSchemaContext());
+        final SchemaContextListenerRegistration registration = new SchemaContextListenerRegistration(listener);
         return registration;
     }
 
     @Override
-    public @NonNull ClassToInstanceMap<DOMSchemaServiceExtension> getExtensions() {
+    public ClassToInstanceMap<DOMSchemaServiceExtension> getExtensions() {
         return ImmutableClassToInstanceMap.of(DOMYangTextSourceProvider.class, this);
     }
 
     @Override
-    public ListenableFuture<? extends YangTextSchemaSource> getSource(SourceIdentifier sourceIdentifier) {
+    public ListenableFuture<? extends YangTextSchemaSource> getSource(final SourceIdentifier sourceIdentifier) {
         return moduleInfoBackedContext.getSource(sourceIdentifier);
     }
 

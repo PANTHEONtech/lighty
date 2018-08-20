@@ -8,6 +8,7 @@
 package io.lighty.core.controller.impl.tests;
 
 import io.lighty.core.controller.api.LightyController;
+import java.util.Collections;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -23,6 +24,9 @@ public class LightyControllerTest extends LightyControllerTestBase {
         Assert.assertNotNull(lightyController.getServices().getDOMSchemaService());
         Assert.assertNotNull(lightyController.getServices().getDOMYangTextSourceProvider());
         Assert.assertNotNull(lightyController.getServices().getSchemaContextProvider());
+        Assert.assertNotNull(lightyController.getServices().getLightyDiagStatusService());
+        Assert.assertEquals(Collections.emptyList(),
+                lightyController.getServices().getLightyDiagStatusService().getAllServiceDescriptors());
         Assert.assertNotNull(lightyController.getServices().getConfigDatastore());
         Assert.assertNotNull(lightyController.getServices().getOperationalDatastore());
         Assert.assertNotNull(lightyController.getServices().getClusteredDOMDataBroker());

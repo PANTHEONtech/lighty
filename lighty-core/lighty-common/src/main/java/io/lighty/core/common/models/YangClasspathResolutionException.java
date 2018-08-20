@@ -7,13 +7,14 @@
  */
 package io.lighty.core.common.models;
 
+@SuppressWarnings("serial")
 public class YangClasspathResolutionException extends Exception {
 
     public YangClasspathResolutionException() {
     }
 
-    public YangClasspathResolutionException(Exception e) {
+    public YangClasspathResolutionException(final Exception e) {
         super(e);
     }
-    
+
 }
