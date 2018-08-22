@@ -27,7 +27,7 @@ public class NetconfDeviceResponse {
     }
 
     public static NetconfDeviceResponse from(final Node node) {
-        final NetconfNode netconfNode = node.getAugmentation(NetconfNode.class);
+        final NetconfNode netconfNode = node.augmentation(NetconfNode.class);
 
         final ConnectionStatus connectionStatus = netconfNode != null ? netconfNode.getConnectionStatus() : null;
 

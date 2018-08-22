@@ -112,7 +112,7 @@ public interface LightyServices {
 
     DOMRpcProviderService getDOMRpcProviderService();
 
-    RpcProviderService getRpcProviderRegistry();
+    RpcProviderService getRpcProviderService();
 
     MountPointService getBindingMountPointService();
 

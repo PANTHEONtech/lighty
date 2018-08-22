@@ -14,12 +14,12 @@ build the project: ```mvn clean install```
 ### Start this demo example
 * build the project using ```mvn clean install```
 * got to target directory ```cd lighty-examples/controllers/lighty-community-restconf-netconf-app/target``` 
-* unzip example application bundle ```unzip  lighty-community-restconf-netconf-app-8.2.0-SNAPSHOT-bin.zip```
-* go to unzipped application directory ```cd lighty-community-restconf-netconf-app-8.2.0-SNAPSHOT```
-* start controller example controller application ```java -jar lighty-community-restconf-netconf-app-8.2.0-SNAPSHOT.jar``` 
+* unzip example application bundle ```unzip  lighty-community-restconf-netconf-app-9.0.0-SNAPSHOT-bin.zip```
+* go to unzipped application directory ```cd lighty-community-restconf-netconf-app-9.0.0-SNAPSHOT```
+* start controller example controller application ```java -jar lighty-community-restconf-netconf-app-9.0.0-SNAPSHOT.jar``` 
 
 ### Test example application
-Once example application has been started using command ```java -jar lighty-community-restconf-netconf-app-8.2.0-SNAPSHOT.jar``` 
+Once example application has been started using command ```java -jar lighty-community-restconf-netconf-app-9.0.0-SNAPSHOT.jar``` 
 RESTCONF web interface is available at URL ```http://localhost:8888/restconf/*```
 
 ##### URLs to start with
@@ -29,7 +29,7 @@ RESTCONF web interface is available at URL ```http://localhost:8888/restconf/*``
 
 ### Use custom config files
 There are two separated config files: for NETCONF SBP single node and for cluster.
-`java -jar lighty-community-restconf-netconf-app-8.2.0-SNAPSHOT.jar /path/to/singleNodeConfig.json`
+`java -jar lighty-community-restconf-netconf-app-9.0.0-SNAPSHOT.jar /path/to/singleNodeConfig.json`
 
 Example configuration for single node is [here](src/main/assembly/resources/sampleConfigSingleNode.json)
 
