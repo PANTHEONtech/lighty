@@ -1,15 +1,16 @@
 /*
  * Copyright (c) 2018 Pantheon Technologies s.r.o. All Rights Reserved.
  *
- * This Source Code Form is subject to the terms of the lighty.io-core
- * Fair License 5, version 0.9.1. You may obtain a copy of the License
- * at: https://github.com/PantheonTechnologies/lighty-core/LICENSE.md
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 package io.lighty.codecs.api;
 
 import java.io.Reader;
 import java.io.Writer;
-import org.opendaylight.controller.config.util.xml.XmlElement;
+
+import io.lighty.codecs.xml.XmlElement;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
