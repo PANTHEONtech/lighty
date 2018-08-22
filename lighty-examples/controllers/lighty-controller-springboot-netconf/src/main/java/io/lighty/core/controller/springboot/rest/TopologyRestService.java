@@ -8,17 +8,18 @@
 
 package io.lighty.core.controller.springboot.rest;
 
-import com.google.common.base.Optional;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
@@ -62,7 +63,7 @@ public class TopologyRestService {
         tx.put(LogicalDatastoreType.OPERATIONAL, iid, topology);
 
         try {
-            tx.submit().get(TIMEOUT, TimeUnit.SECONDS);
+            tx.commit().get(TIMEOUT, TimeUnit.SECONDS);
             LOG.info("Topology was stored to datastore: {}", topology);
             return ResponseEntity.ok().build();
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -76,7 +77,7 @@ public class TopologyRestService {
     public ResponseEntity getAllTopologyIdsOperational()
         throws InterruptedException, ExecutionException, TimeoutException {
 
-        try (final ReadOnlyTransaction tx = databroker.newReadOnlyTransaction()) {
+        try (final ReadTransaction tx = databroker.newReadOnlyTransaction()) {
             final InstanceIdentifier<NetworkTopology> iid =
                 InstanceIdentifier.create(NetworkTopology.class);
             final Optional<NetworkTopology> readData =
@@ -104,7 +105,7 @@ public class TopologyRestService {
         tx.delete(LogicalDatastoreType.OPERATIONAL, iid);
 
         try {
-            tx.submit().get(TIMEOUT, TimeUnit.SECONDS);
+            tx.commit().get(TIMEOUT, TimeUnit.SECONDS);
             LOG.info("Topology {} was deleted from datastore", topologyId);
             return ResponseEntity.ok().build();
         } catch (InterruptedException | ExecutionException | TimeoutException e) {

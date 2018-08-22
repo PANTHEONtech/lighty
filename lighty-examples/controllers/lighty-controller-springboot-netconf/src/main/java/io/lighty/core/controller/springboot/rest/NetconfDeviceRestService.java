@@ -8,20 +8,21 @@
 
 package io.lighty.core.controller.springboot.rest;
 
-import com.google.common.base.Optional;
 import io.lighty.core.controller.springboot.rest.dto.NetconfDeviceRequest;
 import io.lighty.core.controller.springboot.rest.dto.NetconfDeviceResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.MountPoint;
-import org.opendaylight.controller.md.sal.binding.api.MountPointService;
-import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.MountPoint;
+import org.opendaylight.mdsal.binding.api.MountPointService;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Host;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -51,7 +52,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "netconf")
+@RequestMapping(path = "/netconf")
 public class NetconfDeviceRestService {
 
     private static final InstanceIdentifier<Topology> NETCONF_TOPOLOGY_IID = InstanceIdentifier
@@ -69,25 +70,25 @@ public class NetconfDeviceRestService {
 
     @GetMapping(path = "/list")
     public ResponseEntity getNetconfDevicesIds() throws InterruptedException, ExecutionException, TimeoutException {
-        try (final ReadOnlyTransaction tx = dataBroker.newReadOnlyTransaction()) {
+        try (final ReadTransaction tx = dataBroker.newReadOnlyTransaction()) {
             final Optional<Topology> netconfTopoOptional =
                 tx.read(LogicalDatastoreType.OPERATIONAL, NETCONF_TOPOLOGY_IID).get(TIMEOUT, TimeUnit.SECONDS);
+            final List<NetconfDeviceResponse> response = new ArrayList<>();
 
             if (netconfTopoOptional.isPresent() && netconfTopoOptional.get().getNode() != null) {
-                final List<NetconfDeviceResponse> response = new ArrayList<>();
                 for (Node node : netconfTopoOptional.get().getNode()) {
                     final NetconfDeviceResponse nodeResponse = NetconfDeviceResponse.from(node);
                     response.add(nodeResponse);
 
-                    final Optional<MountPoint> netconfMountPoint =
+                    final com.google.common.base.Optional<MountPoint> netconfMountPoint =
                         mountPointService.getMountPoint(NETCONF_TOPOLOGY_IID
                             .child(Node.class, new NodeKey(node.getNodeId())));
 
                     if (netconfMountPoint.isPresent()) {
-                        final Optional<DataBroker> netconfDataBroker =
+                        final com.google.common.base.Optional<DataBroker> netconfDataBroker =
                             netconfMountPoint.get().getService(DataBroker.class);
                         if (netconfDataBroker.isPresent()) {
-                            final ReadOnlyTransaction netconfReadTx =
+                            final ReadTransaction netconfReadTx =
                                 netconfDataBroker.get().newReadOnlyTransaction();
 
                             final Optional<Toaster> toasterData = netconfReadTx
@@ -100,10 +101,8 @@ public class NetconfDeviceRestService {
                     }
                 }
 
-                return ResponseEntity.ok(response);
-            } else {
-                return ResponseEntity.notFound().build();
             }
+            return ResponseEntity.ok(response);
         }
     }
 
@@ -131,7 +130,7 @@ public class NetconfDeviceRestService {
             .build();
         tx.put(LogicalDatastoreType.CONFIGURATION, netconfDeviceIID, netconfDeviceData);
 
-        tx.submit().get(TIMEOUT, TimeUnit.SECONDS);
+        tx.commit().get(TIMEOUT, TimeUnit.SECONDS);
 
         return ResponseEntity.ok().build();
     }
@@ -147,7 +146,7 @@ public class NetconfDeviceRestService {
 
         tx.delete(LogicalDatastoreType.CONFIGURATION, netconfDeviceIID);
 
-        tx.submit().get(TIMEOUT, TimeUnit.SECONDS);
+        tx.commit().get(TIMEOUT, TimeUnit.SECONDS);
 
         return ResponseEntity.ok().build();
     }

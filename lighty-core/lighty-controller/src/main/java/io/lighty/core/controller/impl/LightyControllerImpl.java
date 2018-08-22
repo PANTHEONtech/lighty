@@ -583,7 +583,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public RpcProviderService getRpcProviderRegistry() {
+    public RpcProviderService getRpcProviderService() {
         return this.rpcProviderService;
     }
 

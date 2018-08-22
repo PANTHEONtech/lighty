@@ -16,25 +16,24 @@ import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterfa
 import org.opendaylight.controller.cluster.sharding.DistributedShardFactory;
 import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
 import org.opendaylight.controller.config.threadpool.ThreadPool;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.MountPointService;
-import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
-import org.opendaylight.controller.md.sal.binding.api.NotificationService;
-import org.opendaylight.controller.md.sal.dom.api.DOMDataBroker;
-import org.opendaylight.controller.md.sal.dom.api.DOMMountPointService;
-import org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService;
-import org.opendaylight.controller.md.sal.dom.api.DOMNotificationService;
-import org.opendaylight.controller.md.sal.dom.api.DOMRpcProviderService;
-import org.opendaylight.controller.md.sal.dom.api.DOMRpcService;
-import org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry;
-import org.opendaylight.controller.sal.binding.api.NotificationProviderService;
-import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.MountPointService;
+import org.opendaylight.mdsal.binding.api.NotificationPublishService;
+import org.opendaylight.mdsal.binding.api.NotificationService;
+import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingService;
+import org.opendaylight.mdsal.dom.api.DOMMountPointService;
+import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
+import org.opendaylight.mdsal.dom.api.DOMNotificationService;
+import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
+import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
+import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListenerRegistry;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
@@ -98,23 +97,43 @@ public class LightyCoreSpringConfiguration {
     }
 
     @Bean
-    public DOMMountPointService getDOMMountPointService() {
+    public org.opendaylight.controller.md.sal.dom.api.DOMMountPointService getControllerDOMMountPointService() {
         return this.lightyController.getServices().getControllerDOMMountPointService();
     }
 
     @Bean
-    public DOMNotificationPublishService getDOMNotificationPublishService() {
+    public DOMMountPointService getDOMMountPointService() {
+        return this.lightyController.getServices().getDOMMountPointService();
+    }
+
+    @Bean
+    public org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService getControllerDOMNotificationPublishService() {
         return this.lightyController.getServices().getControllerDOMNotificationPublishService();
     }
 
     @Bean
-    public DOMNotificationService getDOMNotificationService() {
+    public DOMNotificationPublishService getDOMNotificationPublishService() {
+        return this.lightyController.getServices().getDOMNotificationPublishService();
+    }
+
+    @Bean
+    public org.opendaylight.controller.md.sal.dom.api.DOMNotificationService getControllerDOMNotificationService() {
         return this.lightyController.getServices().getControllerDOMNotificationService();
     }
 
     @Bean
-    public DOMNotificationSubscriptionListenerRegistry getDOMNotificationSubscriptionListenerRegistry() {
+    public DOMNotificationService getDOMNotificationService() {
+        return this.lightyController.getServices().getDOMNotificationService();
+    }
+
+    @Bean
+    public org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry getControllerDOMNotificationSubscriptionListenerRegistry() {
         return this.lightyController.getServices().getControllerDOMNotificationSubscriptionListenerRegistry();
+    }
+
+    @Bean
+    public DOMNotificationSubscriptionListenerRegistry getDOMNotificationSubscriptionListenerRegistry() {
+        return this.lightyController.getServices().getDOMNotificationSubscriptionListenerRegistry();
     }
 
     @Bean(name = "ConfigDatastore")
@@ -127,14 +146,24 @@ public class LightyCoreSpringConfiguration {
         return this.lightyController.getServices().getOperationalDatastore();
     }
 
+    @Bean(name = "ControllerClusteredDOMDataBroker")
+    public org.opendaylight.controller.md.sal.dom.api.DOMDataBroker getControllerClusteredDOMDataBroker() {
+        return this.lightyController.getServices().getControllerClusteredDOMDataBroker();
+    }
+
     @Bean(name = "ClusteredDOMDataBroker")
     public DOMDataBroker getClusteredDOMDataBroker() {
-        return this.lightyController.getServices().getControllerClusteredDOMDataBroker();
+        return this.lightyController.getServices().getClusteredDOMDataBroker();
+    }
+
+    @Bean(name = "ControllerPingPongDataBroker")
+    public org.opendaylight.controller.md.sal.dom.api.DOMDataBroker getControllerPingPongDataBroker() {
+        return this.lightyController.getServices().getControllerPingPongDataBroker();
     }
 
     @Bean(name = "PingPongDataBroker")
     public DOMDataBroker getPingPongDataBroker() {
-        return this.lightyController.getServices().getControllerPingPongDataBroker();
+        return this.lightyController.getServices().getPingPongDataBroker();
     }
 
     @Bean
@@ -153,13 +182,23 @@ public class LightyCoreSpringConfiguration {
     }
 
     @Bean
-    public DOMRpcService getDOMRpcService() {
+    public org.opendaylight.controller.md.sal.dom.api.DOMRpcService getControllerDOMRpcService() {
         return this.lightyController.getServices().getControllerDOMRpcService();
     }
 
     @Bean
-    public DOMRpcProviderService getDOMRpcProviderService() {
+    public DOMRpcService getDOMRpcService() {
+        return this.lightyController.getServices().getDOMRpcService();
+    }
+
+    @Bean
+    public org.opendaylight.controller.md.sal.dom.api.DOMRpcProviderService getControllerDOMRpcProviderService() {
         return this.lightyController.getServices().getControllerDOMRpcProviderService();
+    }
+
+    @Bean
+    public DOMRpcProviderService getDOMRpcProviderService() {
+        return this.lightyController.getServices().getDOMRpcProviderService();
     }
 
     @Bean
@@ -193,43 +232,73 @@ public class LightyCoreSpringConfiguration {
     }
 
     @Bean
-    public RpcProviderRegistry getRpcProviderRegistry() {
+    public org.opendaylight.controller.sal.binding.api.RpcProviderRegistry getControllerRpcProviderRegistry() {
         return this.lightyController.getServices().getControllerRpcProviderRegistry();
     }
 
     @Bean
-    public MountPointService getBindingMountPointService() {
+    public RpcProviderService getRpcProviderRegistry() {
+        return this.lightyController.getServices().getRpcProviderService();
+    }
+
+    @Bean
+    public org.opendaylight.controller.md.sal.binding.api.MountPointService getControllerBindingMountPointService() {
         return this.lightyController.getServices().getControllerBindingMountPointService();
     }
 
     @Bean
-    public NotificationService getBindingNotificationService() {
+    public MountPointService getBindingMountPointService() {
+        return this.lightyController.getServices().getBindingMountPointService();
+    }
+
+    @Bean
+    public org.opendaylight.controller.md.sal.binding.api.NotificationService getControllerBindingNotificationService() {
         return this.lightyController.getServices().getControllerBindingNotificationService();
     }
 
     @Bean
-    public NotificationPublishService getBindingNotificationPublishService() {
+    public NotificationService getNotificationService() {
+        return this.lightyController.getServices().getNotificationService();
+    }
+
+    @Bean
+    public org.opendaylight.controller.md.sal.binding.api.NotificationPublishService getControllerBindingNotificationPublishService() {
         return this.lightyController.getServices().getControllerBindingNotificationPublishService();
     }
 
     @Bean
-    public NotificationProviderService getNotificationProviderService() {
+    public NotificationPublishService getBindingNotificationPublishService() {
+        return this.lightyController.getServices().getBindingNotificationPublishService();
+    }
+
+    @Bean
+    public org.opendaylight.controller.sal.binding.api.NotificationProviderService getNotificationProviderService() {
         return this.lightyController.getServices().getControllerNotificationProviderService();
     }
 
     @Bean
-    public org.opendaylight.controller.sal.binding.api.NotificationService getNotificationService() {
+    public org.opendaylight.controller.sal.binding.api.NotificationService getControllerNotificationProviderService() {
         return this.lightyController.getServices().getControllerNotificationProviderService();
+    }
+
+    @Bean(name = "ControllerBindingDataBroker")
+    public org.opendaylight.controller.md.sal.binding.api.DataBroker getControllerBindingDataBroker() {
+        return this.lightyController.getServices().getControllerBindingDataBroker();
     }
 
     @Bean(name = "BindingDataBroker")
     public DataBroker getBindingDataBroker() {
-        return this.lightyController.getServices().getControllerBindingDataBroker();
+        return this.lightyController.getServices().getBindingDataBroker();
+    }
+
+    @Bean(name = "ControllerBindingPingPongDataBroker")
+    public org.opendaylight.controller.md.sal.binding.api.DataBroker getControllerBindingPingPongDataBroker() {
+        return this.lightyController.getServices().getControllerBindingPingPongDataBroker();
     }
 
     @Bean(name = "BindingPingPongDataBroker")
     public DataBroker getBindingPingPongDataBroker() {
-        return this.lightyController.getServices().getControllerBindingPingPongDataBroker();
+        return this.lightyController.getServices().getBindingPingPongDataBroker();
     }
 
     @Bean

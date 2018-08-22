@@ -12,6 +12,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
+import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import io.lighty.core.controller.spring.LightyCoreSpringConfiguration;
 import io.lighty.modules.southbound.netconf.impl.NetconfSBPlugin;
@@ -54,7 +55,8 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
     }
 
     @Bean
-    NetconfSBPlugin initNetconfSBP(LightyController lightyController) throws ExecutionException, InterruptedException {
+    NetconfSBPlugin initNetconfSBP(LightyController lightyController)
+            throws ExecutionException, InterruptedException, ConfigurationException {
         final NetconfConfiguration netconfSBPConfiguration = NetconfConfigUtils.injectServicesToTopologyConfig(
             NetconfConfigUtils.createDefaultNetconfConfiguration(), lightyController.getServices());
         NetconfTopologyPluginBuilder netconfSBPBuilder = new NetconfTopologyPluginBuilder();
