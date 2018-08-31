@@ -55,7 +55,7 @@ public final class LightyDOMActionService implements DOMActionService {
                 Preconditions.checkNotNull(result);
                 if (result.getErrors().isEmpty()) {
                     final DOMActionResult actionResult = LightyDOMActionService.this.messageTransformer.toActionResult(
-                            type, actionRequest);
+                            type, result.getResult());
                     settableFuture.set(actionResult);
                 } else {
                     final SimpleDOMActionResult simpleDOMActionResult = new SimpleDOMActionResult(result.getErrors());
