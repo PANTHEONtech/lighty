@@ -13,7 +13,7 @@ To use RESTCONF in your project:
   <dependency>
     <groupId>io.lighty.modules.northbound.restconf</groupId>
     <artifactId>lighty-restconf-nb-community</artifactId>
-    <version>8.2.0-SNAPSHOT</version>
+    <version>8.3.0</version>
   </dependency>
 ```
 
@@ -65,8 +65,8 @@ Default Models
 --------------
 CommunityRestConf requires following models to be loaded by LightyController.
 ```
-  "mvn:org.opendaylight.netconf/ietf-yang-library/1.7.0-SNAPSHOT",
-  "mvn:org.opendaylight.netconf/ietf-restconf-monitoring/1.7.0-SNAPSHOT"
+  "mvn:org.opendaylight.netconf/ietf-yang-library/1.7.3",
+  "mvn:org.opendaylight.netconf/ietf-restconf-monitoring/1.7.3"
 ```
 
 Clustering
