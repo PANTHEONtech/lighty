@@ -15,7 +15,7 @@
         <groupId>io.lighty.core.parents</groupId>
         <!-- TODO: Prefer explicit versions over properties. -->
         <artifactId>lighty-properties-parent</artifactId>
-        <version>8.2.0-SNAPSHOT</version>
+        <version>8.3.0</version>
         <relativePath>../lighty-properties-parent/</relativePath>
     </parent>
 
@@ -24,10 +24,7 @@
         This way, parent poms with unrelated parents can import versions defined here,
         in such a place which gives them control over maven version conflict resolution.
     -->
-
-    <groupId>io.lighty.core.parents</groupId>
     <artifactId>lighty-dependency-artifacts</artifactId>
-    <version>8.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <dependencyManagement>

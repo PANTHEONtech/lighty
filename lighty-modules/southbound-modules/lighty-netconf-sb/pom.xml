@@ -13,7 +13,7 @@
     <parent>
         <groupId>io.lighty.core.parents</groupId>
         <artifactId>lighty-community-restconf-parent</artifactId>
-        <version>8.2.0-SNAPSHOT</version>
+        <version>8.3.0</version>
         <relativePath>../../../lighty-core/lighty-parents/lighty-community-restconf-parent</relativePath>
     </parent>
 
