@@ -14,15 +14,13 @@
     <parent>
         <groupId>io.lighty.core.parents</groupId>
         <artifactId>lighty-parent-no-plugins</artifactId>
-        <version>8.2.0-SNAPSHOT</version>
+        <version>8.3.0</version>
         <relativePath>../lighty-parent-no-plugins/</relativePath>
     </parent>
 
     <!-- This is the main parent for building LightyModule jars. -->
 
-    <groupId>io.lighty.core.parents</groupId>
     <artifactId>lighty-parent</artifactId>
-    <version>8.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
