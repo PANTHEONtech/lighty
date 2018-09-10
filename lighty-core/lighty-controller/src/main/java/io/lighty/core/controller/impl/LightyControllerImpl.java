@@ -57,16 +57,17 @@ import org.opendaylight.controller.sal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.controller.sal.core.compat.LegacyDOMDataBrokerAdapter;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
+import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.mdsal.binding.dom.adapter.BindingAdapterFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMDataBrokerAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMMountPointServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationPublishServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationServiceAdapter;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcProviderServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
@@ -74,6 +75,7 @@ import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecR
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingService;
@@ -166,10 +168,13 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private MountPointService mountPointService;
     private org.opendaylight.controller.md.sal.binding.api.MountPointService mountPointServiceOld;
     private HeliumNotificationProviderServiceWithInterestListeners notificationProviderServiceOld;
-
     private org.opendaylight.controller.md.sal.binding.api.DataBroker domPingPongDataBrokerOld;
-
     private org.opendaylight.controller.md.sal.binding.impl.BindingDOMNotificationServiceAdapter notificatoinServiceOld;
+    private BindingAdapterFactory bindingAdapterFactory;
+    private org.opendaylight.controller.md.sal.dom.api.DOMActionProviderService controllerDomActionProviderService;
+    private DOMActionProviderService domActionProviderService;
+    private org.opendaylight.controller.md.sal.binding.api.ActionProviderService controllerActionProviderService;
+    private ActionProviderService actionProviderService;
 
     public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
             final ClassLoader actorSystemClassLoader,
@@ -228,6 +233,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         // INIT CODEC FACTORY
         this.codec = BindingToNormalizedNodeCodec.newInstance(this.moduleInfoBackedContext, this.schemaServiceProvider);
         this.schemaServiceProvider.registerSchemaContextListener(this.codec);
+        this.bindingAdapterFactory = new BindingAdapterFactory(this.codec);
 
         final BindingRuntimeContext bindingRuntimeContext =
                 BindingRuntimeContext.create(this.moduleInfoBackedContext, this.moduleInfoBackedContext
@@ -280,8 +286,16 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                 new DOMClusterSingletonServiceProviderImpl(this.distributedEntityOwnershipService);
         this.clusterSingletonServiceProvider.initializeProvider();
 
-        this.rpcProviderService = new BindingDOMRpcProviderServiceAdapter(this.domRpcRouter
-                .getRpcProviderService(), this.codec);
+        this.rpcProviderService = this.bindingAdapterFactory.createRpcProviderService(this.domRpcRouter
+                .getRpcProviderService());
+        this.domActionProviderService = this.domRpcRouter.getActionProviderService();
+        this.actionProviderService = this.bindingAdapterFactory.createActionProviderService(
+                this.domActionProviderService);
+        this.controllerDomActionProviderService = new LightyDOMActionProviderServiceDelegator(
+                this.domActionProviderService);
+        this.controllerActionProviderService = new LightyActionProviderServiceDelegator(
+                this.actionProviderService);
+
         final org.opendaylight.controller.md.sal.binding.impl.BindingDOMRpcProviderServiceAdapter domRpcProvAdapterOld =
                 new org.opendaylight.controller.md.sal.binding.impl.BindingDOMRpcProviderServiceAdapter(
                         this.domRpcRouterOld, this.codecOld);
@@ -394,7 +408,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     public DiagStatusService getDiagStatusService() {
-        return lightyDiagStatusService;
+        return this.lightyDiagStatusService;
     }
 
     @Override
@@ -646,12 +660,37 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public ObjectRegistration<YangModuleInfo> registerModuleInfo(YangModuleInfo yangModuleInfo) {
-        return moduleInfoBackedContext.registerModuleInfo(yangModuleInfo);
+    public ObjectRegistration<YangModuleInfo> registerModuleInfo(final YangModuleInfo yangModuleInfo) {
+        return this.moduleInfoBackedContext.registerModuleInfo(yangModuleInfo);
     }
 
     @Override
     public org.opendaylight.controller.md.sal.binding.api.DataBroker getControllerBindingPingPongDataBroker() {
         return this.domPingPongDataBrokerOld;
+    }
+
+    @Override
+    public ActionProviderService getActionProviderService() {
+        return this.actionProviderService;
+    }
+
+    @Override
+    public org.opendaylight.controller.md.sal.binding.api.ActionProviderService getControllerActionProviderService() {
+        return this.controllerActionProviderService;
+    }
+
+    @Override
+    public DOMActionProviderService getDOMActionProviderService() {
+        return this.domActionProviderService;
+    }
+
+    @Override
+    public org.opendaylight.controller.md.sal.dom.api.DOMActionProviderService getControllerDomActionProviderService() {
+        return this.controllerDomActionProviderService;
+    }
+
+    @Override
+    public BindingAdapterFactory getBindingAdapterFactory() {
+        return this.bindingAdapterFactory;
     }
 }

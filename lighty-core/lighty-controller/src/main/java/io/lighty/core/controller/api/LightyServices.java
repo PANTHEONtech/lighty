@@ -18,13 +18,20 @@ import org.opendaylight.controller.config.threadpool.ThreadPool;
 import org.opendaylight.controller.sal.binding.api.NotificationProviderService;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
+import org.opendaylight.mdsal.binding.api.ActionProviderService;
+import org.opendaylight.mdsal.binding.api.ActionService;
+import org.opendaylight.mdsal.binding.api.BindingService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.DataTreeService;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
+import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.mdsal.binding.dom.adapter.BindingAdapterFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingService;
@@ -34,6 +41,7 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
+import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
 import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListenerRegistry;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
@@ -49,6 +57,23 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
  * @author juraj.veverka
  */
 public interface LightyServices extends LightyModuleRegistryService {
+
+    /**
+     * Allows to create {@link BindingService Binding service} from {@link DOMService DOM service}:
+     * <ul>
+     * <li>{@link DataBroker}</li>
+     * <li>{@link DataTreeService}</li>
+     * <li>{@link MountPointService}</li>
+     * <li>{@link NotificationService}</li>
+     * <li>{@link NotificationPublishService}</li>
+     * <li>{@link RpcConsumerRegistry}</li>
+     * <li>{@link RpcProviderRegistry}</li>
+     * <li>{@link ActionService}</li>
+     * <li>{@link ActionProviderService}</li>
+     * </ul>
+     * @return factory for binding services
+     */
+    BindingAdapterFactory getBindingAdapterFactory();
 
     DiagStatusService getDiagStatusService();
 
@@ -122,6 +147,10 @@ public interface LightyServices extends LightyModuleRegistryService {
 
     DataBroker getBindingPingPongDataBroker();
 
+    ActionProviderService getActionProviderService();
+
+    DOMActionProviderService getDOMActionProviderService();
+
     @Deprecated
     NotificationProviderService getControllerNotificationProviderService();
 
@@ -170,4 +199,9 @@ public interface LightyServices extends LightyModuleRegistryService {
     org.opendaylight.controller.md.sal.binding.api.NotificationPublishService
     getControllerBindingNotificationPublishService();
 
+    @Deprecated
+    org.opendaylight.controller.md.sal.dom.api.DOMActionProviderService getControllerDomActionProviderService();
+
+    @Deprecated
+    org.opendaylight.controller.md.sal.binding.api.ActionProviderService getControllerActionProviderService();
 }
