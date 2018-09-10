@@ -7,7 +7,6 @@
  */
 package io.lighty.core.controller.api;
 
-import io.lighty.core.controller.impl.services.LightyDiagStatusServiceImpl;
 import io.netty.channel.EventLoopGroup;
 import io.netty.util.Timer;
 import io.netty.util.concurrent.EventExecutor;
@@ -18,6 +17,7 @@ import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
 import org.opendaylight.controller.config.threadpool.ThreadPool;
 import org.opendaylight.controller.sal.binding.api.NotificationProviderService;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
+import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
@@ -40,8 +40,6 @@ import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
 
 /**
@@ -50,9 +48,9 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
  *
  * @author juraj.veverka
  */
-public interface LightyServices {
+public interface LightyServices extends LightyModuleRegistryService {
 
-    LightyDiagStatusServiceImpl getLightyDiagStatusService();
+    DiagStatusService getDiagStatusService();
 
     ActorSystemProvider getActorSystemProvider();
 
@@ -124,8 +122,6 @@ public interface LightyServices {
 
     DataBroker getBindingPingPongDataBroker();
 
-    ObjectRegistration<YangModuleInfo> registerModuleInfo(final YangModuleInfo yangModuleInfo);
-
     @Deprecated
     NotificationProviderService getControllerNotificationProviderService();
 
@@ -173,4 +169,5 @@ public interface LightyServices {
     @Deprecated
     org.opendaylight.controller.md.sal.binding.api.NotificationPublishService
     getControllerBindingNotificationPublishService();
+
 }

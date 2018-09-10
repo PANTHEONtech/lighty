@@ -8,6 +8,7 @@
 package io.lighty.core.controller.spring;
 
 import io.lighty.core.controller.api.LightyController;
+import io.lighty.core.controller.api.LightyModuleRegistryService;
 import io.netty.channel.EventLoopGroup;
 import io.netty.util.Timer;
 import io.netty.util.concurrent.EventExecutor;
@@ -16,6 +17,7 @@ import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterfa
 import org.opendaylight.controller.cluster.sharding.DistributedShardFactory;
 import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
 import org.opendaylight.controller.config.threadpool.ThreadPool;
+import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
@@ -75,6 +77,16 @@ public class LightyCoreSpringConfiguration {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private LightyController lightyController;
+
+    @Bean
+    public LightyModuleRegistryService getLightyModuleRegistryService() {
+        return this.lightyController.getServices();
+    }
+
+    @Bean
+    public DiagStatusService getDiagStatusService() {
+        return this.lightyController.getServices().getDiagStatusService();
+    }
 
     @Bean
     public ActorSystemProvider getActorSystemProvider() {
