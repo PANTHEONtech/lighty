@@ -58,6 +58,7 @@ import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.controller.sal.core.compat.LegacyDOMDataBrokerAdapter;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.mdsal.binding.api.ActionProviderService;
+import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
@@ -76,6 +77,7 @@ import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
+import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingService;
@@ -291,9 +293,9 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.domActionProviderService = this.domRpcRouter.getActionProviderService();
         this.actionProviderService = this.bindingAdapterFactory.createActionProviderService(
                 this.domActionProviderService);
-        this.controllerDomActionProviderService = new LightyDOMActionProviderServiceDelegator(
+        this.controllerDomActionProviderService = new LightyDOMActionProviderServiceAdapter(
                 this.domActionProviderService);
-        this.controllerActionProviderService = new LightyActionProviderServiceDelegator(
+        this.controllerActionProviderService = new LightyActionProviderServiceAdapter(
                 this.actionProviderService);
 
         final org.opendaylight.controller.md.sal.binding.impl.BindingDOMRpcProviderServiceAdapter domRpcProvAdapterOld =
@@ -690,7 +692,26 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public BindingAdapterFactory getBindingAdapterFactory() {
-        return this.bindingAdapterFactory;
+    public ActionService getActionService(
+            final org.opendaylight.controller.md.sal.binding.api.ActionService controllerActionService) {
+        return new LightyActionServiceAdapter(controllerActionService);
+    }
+
+    @Override
+    public ActionService getActinoService(final DOMActionService domActionService) {
+        return this.bindingAdapterFactory.createActionService(domActionService);
+    }
+
+    @Override
+    public org.opendaylight.mdsal.dom.api.DOMActionService getDOMActionService(
+            final org.opendaylight.controller.md.sal.dom.api.DOMActionService controllerDomActionService) {
+        return controllerDomActionService;
+    }
+
+    @Override
+    public org.opendaylight.controller.md.sal.binding.api.ActionService getControllerActionService(
+            final org.opendaylight.controller.md.sal.dom.api.DOMActionService controllerDomActionService) {
+        return new LightyActionServiceAdapter(this.bindingAdapterFactory.createActionService(
+                controllerDomActionService));
     }
 }
