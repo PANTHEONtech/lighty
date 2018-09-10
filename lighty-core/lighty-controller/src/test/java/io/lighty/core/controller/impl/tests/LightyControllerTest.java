@@ -19,9 +19,9 @@ public class LightyControllerTest extends LightyControllerTestBase {
         final LightyController lightyController = getLightyController();
         Assert.assertNotNull(lightyController);
         Assert.assertNotNull(lightyController.getServices());
-        Assert.assertNotNull(lightyController.getServices().getLightyDiagStatusService());
+        Assert.assertNotNull(lightyController.getServices().getDiagStatusService());
         Assert.assertEquals(Collections.emptyList(),
-                lightyController.getServices().getLightyDiagStatusService().getAllServiceDescriptors());
+                lightyController.getServices().getDiagStatusService().getAllServiceDescriptors());
         Assert.assertNotNull(lightyController.getServices().getActorSystemProvider());
         Assert.assertNotNull(lightyController.getServices().getActorSystemProvider().getActorSystem());
         Assert.assertNotNull(lightyController.getServices().getSchemaContextProvider());

@@ -391,7 +391,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         return this;
     }
 
-    public LightyDiagStatusServiceImpl getLightyDiagStatusService() {
+    @Override
+    public LightyDiagStatusServiceImpl getDiagStatusService() {
         return lightyDiagStatusService;
     }
 
