@@ -1,11 +1,13 @@
 [![Build Status](https://travis-ci.org/PantheonTechnologies/lighty-core.svg?branch=8.2.0)](https://travis-ci.org/PantheonTechnologies/lighty-core)
 
-# lighty.io
-lighty.io is a Software Development Kit powered by [OpenDaylight](https://www.opendaylight.org/) to support, ease and accelerate development of
+# lighty.io 8.2
+__lighty.io__ is a Software Development Kit powered by [OpenDaylight](https://www.opendaylight.org/) to support, ease and accelerate development of
 Software-Defined Networking (SDN) solutions in Java.
 lighty.io is a toolkit for SDN application programmers and solution architects that can be used to build and integrate SDN controllers.
 It utilizes core [OpenDaylight](https://www.opendaylight.org/) components, which are available as a set of libraries.
 The final SDN application architecture is up to the user.
+
+_This branch maintains compatibility with __OpenDaylight Oxygen SR2__ release._
 
 ## Example SDN controller architecture
 ![architecture](docs/lighty.io-controller-architecture.svg)
