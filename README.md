@@ -10,7 +10,7 @@ lighty.io is a toolkit for SDN application programmers and solution architects t
 It utilizes core [OpenDaylight](https://www.opendaylight.org/) components, which are available as a set of libraries.
 The final SDN application architecture is up to the user.
 
-_This branch maintains compatibility with __OpenDaylight Oxygene SR3__ release._
+_This branch maintains compatibility with __OpenDaylight Oxygen SR3__ release._
 
 ## Example SDN controller architecture
 ![architecture](docs/lighty.io-controller-architecture.svg)
