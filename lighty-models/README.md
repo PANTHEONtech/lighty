@@ -1,5 +1,5 @@
 # YANG models in lighty.io
-[YANG models](https://tools.ietf.org/html/rfc6020) are essential part of programming for [OpenDaylight](https://www.opendaylight.org/) __model-driven architecture__.
+[YANG 1.0](https://tools.ietf.org/html/rfc6020) and [YANG 1.1](https://tools.ietf.org/html/rfc7950) models are essential part of programming for [OpenDaylight](https://www.opendaylight.org/) __model-driven architecture__.
 Standardized yang models are already available as maven artifacts as part of OpenDaylight project.
 To mention just some:
 
@@ -8,7 +8,7 @@ To mention just some:
 
 In case your project requires special Yang model or needs to alter existing one, follow procedures below or check links below for YANG repositories.
 
-### Create and deploy own Yang model
+### Create and deploy own YANG model
 This guide explains in detail how to create your own Yang model, 
 use it in lighty.io project and add it into LightyController global schema context.
 
@@ -34,7 +34,7 @@ module my-model.yang {
 }
 ```
 
-#### 2. Create maven project with your model
+#### 2. Create maven project for your model
 Bare yang file can not be used without generating java bindings for it. OepnDaylighty provides for this purpose 
 maven plugin which makes this step really easy. Generated java binding code is used in your projects, so you can
 access model nad DataStore in type safe way.
