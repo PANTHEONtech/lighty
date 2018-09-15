@@ -1,12 +1,11 @@
-Lighty RESTCONF NETCONF - Community
-======================================
+# RESTCONF north-bound plugin
 ```io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf``` provides northbound interface to
 running Opendaylight services via HTTP and WebSocket protocol. CommunityRestConf requires initialized services
 from LightyController. CommunityRestConf starts it's own servlet container and WebsSocket end-point, using
 two ports.
 
-How to use it
--------------
+## How to use it
+This plugin requires LightyController instance in order to run.
 To use RESTCONF in your project:
 1. Add dependency in your pom.xml file.
 ```
@@ -27,9 +26,8 @@ To use RESTCONF in your project:
   odlRestConf.start();
 ```
 
-Configuration
--------------
-1. Use ControllerConfigUtils to get default configuration.
+## Configuration
+1. Use RestConfConfigUtils to get default configuration.
 ```
   RestConfConfiguration restConfConfig
       = RestConfConfigUtils.getDefaultRestConfConfiguration();
@@ -37,38 +35,42 @@ Configuration
 
 2. Load configuration from JSON file.
 ```
-  Path configPath = Paths.get("/path/to/odlControllerConfig.json");
+  Path configPath = Paths.get("/path/to/lightyControllerConfig.json");
   InputStream is = Files.newInputStream(configPath);
   RestConfConfiguration restConfConfig
-      = RestConfConfigUtils.getRestConfConfiguration();
+      = RestConfConfigUtils.getRestConfConfiguration(is);
 ```
 
 3. Load configuration from classpath JSON resource.
 ```
   InputStream is = this.getClass().getClassLoader().getResourceAsStream("/resoures/restConfConfig.json");
   RestConfConfiguration restConfConfig
-      = RestConfConfigUtils.getRestConfConfiguration();
+      = RestConfConfigUtils.getRestConfConfiguration(is);
 ```
 
-4. Create configuration programmatically
+4. Create configuration programmatically.
 ```
-  RestConfConfiguration restConfConfiguration = new RestConfConfiguration();
+  RestConfConfiguration restConfConfig = new RestConfConfiguration();
   restConfConfiguration.setHttpPort(8888);
   restConfConfiguration.setInetAddress(InetAddress.getLoopbackAddress());
+  ...
+```
+5. Last step before using RestConfConfiguration is to inject LightyServices into configuration instance loaded previously.
+```
+  ...
+  RestConfConfiguration restConfConfiguration = getRestConfConfiguration(restConfConfig, lightyServices);
   ...
 ```
 
 ### Configuration file restConfConfig.json
 Example configuration file is located [here](src/main/resources/restConfConfig.json)
 
-Default Models
---------------
+### Default Models
 CommunityRestConf requires following models to be loaded by LightyController.
 ```
-  "mvn:org.opendaylight.netconf/ietf-yang-library/1.7.3",
-  "mvn:org.opendaylight.netconf/ietf-restconf-monitoring/1.7.3"
+  "org.opendaylight.mdsal.model:rfc7895:1.0.1-SNAPSHOT",
+  "org.opendaylight.netconf:ietf-restconf-monitoring:1.8.1-SNAPSHOT"
 ```
 
-Clustering
-----------
+### Clustering
 As RESTCONF provides northbound interface, clustering has no effect on this component.
