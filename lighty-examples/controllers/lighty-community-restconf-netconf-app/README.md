@@ -1,11 +1,17 @@
 Lighty NETCONF/RESTCONF Application
 ==========================
 This application provides RESTCONF north-bound interface and utilizes NETCONF south-bound plugin to manage NETCONF devices on the network. 
+Application works as standalone SDN controller. It is capable to connect to NETCONF devices and expose connected devices over RESTCONF north-bound APIs.
 
 This application starts:
 * Lighty Controller
-* Opendaylight RESTCONF plugin
-* NETCONF Southbound plugin
+* OpenDaylight RESTCONF plugin
+* NETCONF south-bound plugin
+
+This roughly translates to OpenDaylight feature set installed by karaf command:
+```
+feature:install odl-netconf-all
+```
 
 Build and Run
 -------------
