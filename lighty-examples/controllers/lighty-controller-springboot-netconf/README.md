@@ -22,7 +22,7 @@ mvn clean install
 
 Start
 -----
-It is necessary to copy toaster@2009-11-20.yang file to $WORKING_DIR/cache/schema/toaster@2009-11-20.yang, to be 
+It is necessary to copy [toaster@2009-11-20.yang](https://github.com/PantheonTechnologies/lighty-core/blob/master/lighty-models/test/lighty-toaster/src/main/yang/toaster%402009-11-20.yang) file to $WORKING_DIR/cache/schema/toaster@2009-11-20.yang, to be 
 possible to read NETCONF data from testing device (lighty-toaster-device).
 ```
 mvn spring-boot:run
