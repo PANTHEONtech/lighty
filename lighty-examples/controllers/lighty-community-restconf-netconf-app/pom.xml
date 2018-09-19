@@ -73,5 +73,12 @@
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-servlet</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-client</artifactId>
+            <version>9.3.21.v20170918</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

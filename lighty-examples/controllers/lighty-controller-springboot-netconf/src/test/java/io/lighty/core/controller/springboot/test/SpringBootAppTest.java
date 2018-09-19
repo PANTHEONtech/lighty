@@ -97,6 +97,7 @@ public class SpringBootAppTest {
         if (restClient != null) {
             try {
                 restClient.close();
+                Thread.sleep(1_000);
             } catch (Exception e) {
                 LOG.error("Exception: ", e);
             }
