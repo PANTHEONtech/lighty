@@ -36,7 +36,13 @@ public class Main {
 
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
-    public static void main(String[] args) {
+    private ShutdownHook shutdownHook;
+
+    public void start() {
+        start(new String[] {}, false);
+    }
+
+    public void start(String[] args, boolean registerShutdownHook) {
         long startTime = System.nanoTime();
         LOG.info(".__  .__       .__     __              .__           _________________    _______");
         LOG.info("|  | |__| ____ |  |___/  |_ ___.__.    |__| ____    /   _____/\\______ \\   \\      \\");
@@ -60,7 +66,7 @@ public class Main {
                 //3. NETCONF SBP configuration
                 NetconfConfiguration netconfSBPConfiguration
                         = NetconfConfigUtils.createNetconfConfiguration(Files.newInputStream(configPath));
-                startLighty(singleNodeConfiguration, restConfConfiguration, netconfSBPConfiguration);
+                startLighty(singleNodeConfiguration, restConfConfiguration, netconfSBPConfiguration, registerShutdownHook);
             } else {
                 LOG.info("using default configuration ...");
                 Set<YangModuleInfo> modelPaths = Stream.concat(RestConfConfigUtils.YANG_MODELS.stream(),
@@ -73,7 +79,7 @@ public class Main {
                         RestConfConfigUtils.getDefaultRestConfConfiguration();
                 //3. NETCONF SBP configuration
                 NetconfConfiguration netconfSBPConfig = NetconfConfigUtils.createDefaultNetconfConfiguration();
-                startLighty(defaultSingleNodeConfiguration, restConfConfig, netconfSBPConfig);
+                startLighty(defaultSingleNodeConfiguration, restConfConfig, netconfSBPConfig, registerShutdownHook);
             }
             float duration = (System.nanoTime() - startTime)/1_000_000f;
             LOG.info("lighty.io and RESTCONF-NETCONF started in {}ms", duration);
@@ -82,8 +88,9 @@ public class Main {
         }
     }
 
-    private static void startLighty(ControllerConfiguration controllerConfiguration,
-            RestConfConfiguration restConfConfiguration, NetconfConfiguration netconfSBPConfiguration)
+    private void startLighty(ControllerConfiguration controllerConfiguration,
+                             RestConfConfiguration restConfConfiguration,
+                             NetconfConfiguration netconfSBPConfiguration, boolean registerShutdownHook)
             throws ConfigurationException, ExecutionException, InterruptedException {
 
         //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
@@ -96,7 +103,7 @@ public class Main {
         CommunityRestConf communityRestConf = communityRestConfBuilder.from(RestConfConfigUtils
                 .getRestConfConfiguration(restConfConfiguration, lightyController.getServices()))
                 .build();
-        communityRestConf.start();
+        communityRestConf.start().get();
 
         //3. start NetConf SBP
         LightyModule netconfSouthboundPlugin;
@@ -106,13 +113,23 @@ public class Main {
         netconfSouthboundPlugin = netconfSBPBuilder
                 .from(netconfSBPConfiguration, lightyController.getServices())
                 .build();
-        netconfSouthboundPlugin.start();
+        netconfSouthboundPlugin.start().get();
 
         //4. Register shutdown hook for graceful shutdown.
-        Runtime.getRuntime().addShutdownHook(
-                new ShutdownHook(lightyController, communityRestConf, netconfSouthboundPlugin));
+        shutdownHook = new ShutdownHook(lightyController, communityRestConf, netconfSouthboundPlugin);
+        if (registerShutdownHook) {
+            Runtime.getRuntime().addShutdownHook(shutdownHook);
+        }
     }
 
+    public void shutdown() {
+        shutdownHook.run();
+    }
+
+    public static void main(String[] args) {
+        Main app = new Main();
+        app.start(args, true);
+    }
 
     private static class ShutdownHook extends Thread {
 
@@ -133,17 +150,17 @@ public class Main {
             LOG.info("lighty.io and RESTCONF-NETCONF shutting down ...");
             long startTime = System.nanoTime();
             try {
-                communityRestConf.shutdown();
+                communityRestConf.shutdown().get();
             } catch (Exception e) {
                 LOG.error("Exception while shutting down RESTCONF:", e);
             }
             try {
-                netconfSouthboundPlugin.shutdown();
+                netconfSouthboundPlugin.shutdown().get();
             } catch (Exception e) {
                 LOG.error("Exception while shutting down NETCONF:", e);
             }
             try {
-                lightyController.shutdown();
+                lightyController.shutdown().get();
             } catch (Exception e) {
                 LOG.error("Exception while shutting down lighty.io controller:", e);
             }
