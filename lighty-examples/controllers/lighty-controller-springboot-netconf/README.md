@@ -1,6 +1,6 @@
-lighty.io SpringBoot integration example
-=========================================
-This is simple demo application which uses Lighty with NETCONF Southbound plugin inside Springboot.
+# lighty.io SpringBoot integration example
+
+This is simple demo application which uses Lighty with NETCONF Southbound plugin inside Spring Boot.
 
 Application initializes OpenDaylight core components (MD-SAL, yangtools and controller) and NetConf Southbound plugin
 inside spring framework environment.
@@ -13,15 +13,13 @@ Alongside the basic data broker, there is also integrated NETCONF Southbound plu
 functionality exposed through REST endpoints. The "lighty-toaster-device" was used as a NetConf device which uses
 toaster model from ODL ([link](https://github.com/YangModels/yang/blob/19fea483099dbf2864b3c3186a789d12d919f4db/experimental/odp/toaster.yang)). 
 
-Build
------
+## Build
 ```
 mvn clean install
 ```
 
 
-Start
------
+## Start
 It is necessary to copy toaster@2009-11-20.yang file to $WORKING_DIR/cache/schema/toaster@2009-11-20.yang, to be 
 possible to read NETCONF data from testing device (lighty-toaster-device).
 ```
@@ -41,8 +39,7 @@ io.lighty.core.controller.springboot.LightyControllerSpringbootApplication.main
 ```
 
 
-Using
------
+## Using REST APIs
 When application has started, the REST endpoints are provided:
 
 ##### GET /topology/list
@@ -86,7 +83,6 @@ disconnect NETCONF device "test-device"
 curl -X DELETE "http://localhost:8080/netconf/id/test-device"
 ```
 
-
 Notable Sources
 ---------------
 #### LightyControllerSpringbootApplication.java
@@ -102,31 +98,3 @@ Notable Sources
 #### NetconfDeviceRestService
 - REST endpoints definition for ODL NETCONF
 - uses beans defined in class LightyConfiguration for connecting, disconnecting and listing NetConf devices
-
-#### pom.xml
-- spring-boot-starter-parent
-
-default springboot parent
-
-##### maven dependencies:
-
-org.springframework.boot/spring-boot-starter-web
-
-- springboot dependency providing REST server running on spring environment
-
-io.lighty.core/lighty-controller
-
-- lighty.io core services
-
-io.lighty.resources/singlenode-configuration
-
-- lighty.io akka configuration providing the mandatory akka config on classpath
-- this configuration is necessary to properly start lighty.io
-
-io.lighty.modules.southbound.netconf/lighty-netconf-sb
-
-- lighty.io NETCONF plugin
-
-io.lighty.models.test/lighty-toaster
-
-- lighty.io toaster model
