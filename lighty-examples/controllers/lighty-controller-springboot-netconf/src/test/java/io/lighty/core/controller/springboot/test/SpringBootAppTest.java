@@ -8,7 +8,6 @@
 
 package io.lighty.core.controller.springboot.test;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.lighty.core.controller.springboot.MainApp;
 import org.eclipse.jetty.client.api.ContentResponse;
@@ -22,8 +21,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -49,7 +48,6 @@ public class SpringBootAppTest {
     @Test
     public void simpleApplicationTest() {
         ContentResponse contentResponse = null;
-        JsonNode jsonData = null;
         ObjectMapper mapper = new ObjectMapper();
         String netconfTopologyId = "topology-netconf";
         String topologyId = "test-topology";
@@ -61,31 +59,30 @@ public class SpringBootAppTest {
             //   only one topology ID "topology-netconf" is expected
             contentResponse = restClient.GET("topology/list");
             Assert.assertEquals(contentResponse.getStatus(), 200);
-            String[] topologyIds = mapper.readValue(contentResponse.getContent(), String[].class);
+            ArrayList<String> topologyIds = mapper.readValue(contentResponse.getContent(), ArrayList.class);
             Assert.assertNotNull(topologyIds);
-            Assert.assertEquals(topologyIds.length, 1);
-            Assert.assertEquals(topologyIds[0], netconfTopologyId);
+            Assert.assertEquals(topologyIds.size(), 1);
+            Assert.assertEquals(topologyIds.get(0), netconfTopologyId);
 
             //2. create new empty topology and check if it was created
             //   this step creates empty topology instance in global data store
             contentResponse = restClient.PUT("topology/id/" + topologyId);
             Assert.assertEquals(contentResponse.getStatus(), 200);
             contentResponse = restClient.GET("topology/list");
-            topologyIds = mapper.readValue(contentResponse.getContent(), String[].class);
+            topologyIds = mapper.readValue(contentResponse.getContent(), ArrayList.class);
             Assert.assertNotNull(topologyIds);
-            Assert.assertEquals(topologyIds.length, 2);
-            Collection<String> d = Arrays.asList(topologyIds);
-            Assert.assertTrue(d.containsAll(Arrays.asList(expectedTopologyIds)));
+            Assert.assertEquals(topologyIds.size(), 2);
+            Assert.assertTrue(topologyIds.containsAll(Arrays.asList(expectedTopologyIds)));
 
             //3. delete created topology and check if it was deleted
             //   this step removes created topology
             contentResponse = restClient.DELETE("topology/id/" + topologyId);
             Assert.assertEquals(contentResponse.getStatus(), 200);
             contentResponse = restClient.GET("topology/list");
-            topologyIds = mapper.readValue(contentResponse.getContent(), String[].class);
+            topologyIds = mapper.readValue(contentResponse.getContent(), ArrayList.class);
             Assert.assertNotNull(topologyIds);
-            Assert.assertEquals(topologyIds.length, 1);
-            Assert.assertEquals(topologyIds[0], netconfTopologyId);
+            Assert.assertEquals(topologyIds.size(), 1);
+            Assert.assertEquals(topologyIds.get(0), netconfTopologyId);
 
         } catch (IOException | TimeoutException | ExecutionException | InterruptedException e) {
             Assert.fail();
