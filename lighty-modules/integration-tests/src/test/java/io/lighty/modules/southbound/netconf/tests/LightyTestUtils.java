@@ -66,7 +66,7 @@ public class LightyTestUtils {
             LOG.info("Starting CommunityRestConf (waiting 10s after start)");
             final ListenableFuture<Boolean> restconfStart = communityRestConf.start();
             restconfStart.get();
-            Thread.sleep(10_000);
+            Thread.sleep(3_000);
             LOG.info("CommunityRestConf started");
             return communityRestConf;
         } catch (InterruptedException | ExecutionException e) {

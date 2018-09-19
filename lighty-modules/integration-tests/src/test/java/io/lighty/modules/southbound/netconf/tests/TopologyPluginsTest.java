@@ -99,13 +99,13 @@ public class TopologyPluginsTest {
             LOG.info("Shutting down CommunityRestConf");
             final ListenableFuture<Boolean> shutdown = this.restConf.shutdown();
             shutdown.get();
-            Thread.sleep(5_000);
+            Thread.sleep(3_000);
         }
         if (this.lightyController != null) {
             LOG.info("Shutting down LightyController");
             final ListenableFuture<Boolean> shutdown = this.lightyController.shutdown();
             shutdown.get();
-            Thread.sleep(10_000);
+            Thread.sleep(1_000);
         }
     }
 

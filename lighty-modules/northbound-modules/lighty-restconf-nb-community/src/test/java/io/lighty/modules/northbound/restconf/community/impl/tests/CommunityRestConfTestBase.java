@@ -52,7 +52,6 @@ public abstract class CommunityRestConfTestBase {
 
         LOG.info("Starting CommunityRestConf (waiting 10s after start)");
         communityRestConf.start();
-        Thread.sleep(10_000);
         LOG.info("CommunityRestConf started");
     }
 
@@ -74,13 +73,13 @@ public abstract class CommunityRestConfTestBase {
             LOG.info("Shutting down CommunityRestConf");
             ListenableFuture<Boolean> shutdown = communityRestConf.shutdown();
             shutdown.get();
-            Thread.sleep(5_000);
+            Thread.sleep(3_000);
         }
         if (lightyController != null) {
             LOG.info("Shutting down LightyController");
             ListenableFuture<Boolean> shutdown = lightyController.shutdown();
             shutdown.get();
-            Thread.sleep(10_000);
+            Thread.sleep(1_000);
         }
     }
 
