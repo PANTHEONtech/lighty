@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/PantheonTechnologies/lighty-core.svg?branch=master)](https://travis-ci.org/PantheonTechnologies/lighty-core)
+[![Build Status](https://travis-ci.org/PantheonTechnologies/lighty-core.svg?branch=9.0.x)](https://travis-ci.org/PantheonTechnologies/lighty-core)
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/16327/badge.svg)](https://scan.coverity.com/projects/lighty-core) 
 
 
