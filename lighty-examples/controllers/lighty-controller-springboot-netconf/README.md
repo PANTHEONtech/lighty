@@ -29,7 +29,7 @@ mvn spring-boot:run
 or
 
 ```
-java -jar target/lighty-controller-springboot-9.0.0-SNAPSHOT.jar
+java -jar target/lighty-controller-springboot-9.0.0.jar
 ```
 
 or in any IDE, run the method
