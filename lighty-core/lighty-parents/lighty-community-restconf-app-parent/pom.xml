@@ -36,6 +36,12 @@
                     <groupId>io.lighty.modules.northbound.restconf</groupId>
                     <artifactId>lighty-restconf-nb-community</artifactId>
                     <version>${lighty.version}</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>javax.ws.rs</groupId>
+                            <artifactId>javax.ws.rs-api</artifactId>
+                        </exclusion>
+                    </exclusions>
                 </dependency>
             </dependencies>
         </profile>
