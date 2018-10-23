@@ -19,6 +19,7 @@
     <modules>
         <module>lighty-restconf-nb-community</module>
         <module>lighty-server</module>
+        <module>lighty-aaa</module>
     </modules>
 
 </project>
