@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2018 Pantheon Technologies s.r.o. All Rights Reserved.
+
+  This program and the accompanying materials are made available under the
+  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+  and is available at https://www.eclipse.org/legal/epl-v10.html
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.lighty.kit.examples.parents</groupId>
+        <artifactId>lighty-controller-app-parent</artifactId>
+        <version>9.1.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>io.lighty.kit.examples.controllers</groupId>
+    <artifactId>lighty-community-aaa-restconf-app</artifactId>
+    <version>9.1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <!-- Used for running ODL retconf tests in Jenkins. -->
+        <application.attach.zip>true</application.attach.zip>
+        <application.main.class>io.lighty.kit.examples.community.aaa.restconf.Main</application.main.class>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.lighty.aaa</groupId>
+            <artifactId>lighty-aaa</artifactId>
+            <version>${lighty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.modules.northbound.restconf</groupId>
+            <artifactId>lighty-restconf-nb-community</artifactId>
+            <version>${lighty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.resources</groupId>
+            <artifactId>singlenode-configuration</artifactId>
+            <version>${lighty.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <!--<version>${jetty.version}</version>-->
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <!--<version>${servlet.version}</version>-->
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-webapp</artifactId>
+            <!--<version>${jetty.version}</version>-->
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlets</artifactId>
+            <!--<version>${jetty.version}</version>-->
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-server</artifactId>
+            <!--<version>${jersey.version}</version>-->
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-core</artifactId>
+            <!--<version>${jersey.version}</version>-->
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-servlet</artifactId>
+            <!--<version>${jersey.version}</version>-->
+        </dependency>
+    </dependencies>
+
+</project>
