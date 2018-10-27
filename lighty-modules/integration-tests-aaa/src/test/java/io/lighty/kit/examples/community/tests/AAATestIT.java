@@ -286,7 +286,6 @@ public class AAATestIT {
 
         LOG.info("shutdown.");
         final ExecutorService executorService = Executors.newFixedThreadPool(5);
-        executorService.submit(Main::shutdown);
         executorService.shutdown();
         executorService.awaitTermination(15, TimeUnit.SECONDS);
     }

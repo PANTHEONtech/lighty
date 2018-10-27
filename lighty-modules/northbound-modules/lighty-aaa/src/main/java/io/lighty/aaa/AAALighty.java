@@ -93,15 +93,15 @@ public final class AAALighty extends AbstractLightyModule {
         return true;
     }
 
-    private class AAAShiroProviderHandler {
+    private static class AAAShiroProviderHandler {
 
         AAALightyShiroProvider aaaLightyShiroProvider;
 
-        public void setAaaLightyShiroProvider(final AAALightyShiroProvider aaaLightyShiroProvider) {
+        void setAaaLightyShiroProvider(final AAALightyShiroProvider aaaLightyShiroProvider) {
             this.aaaLightyShiroProvider = aaaLightyShiroProvider;
         }
 
-        public AAALightyShiroProvider getAaaLightyShiroProvider() {
+        AAALightyShiroProvider getAaaLightyShiroProvider() {
             return this.aaaLightyShiroProvider;
         }
     }
