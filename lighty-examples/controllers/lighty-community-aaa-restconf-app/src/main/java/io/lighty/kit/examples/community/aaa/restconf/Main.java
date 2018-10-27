@@ -46,8 +46,6 @@ public class Main {
 
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
-    private static ShutdownHook shutdownHook;
-
     public static void main(final String[] args) throws Exception {
         final long startTime = System.nanoTime();
         try {
@@ -112,18 +110,11 @@ public class Main {
 
         communityRestConf.startServer();
 
-        shutdownHook = new ShutdownHook(lightyController, communityRestConf, aaaLighty);
-        Runtime.getRuntime().addShutdownHook(shutdownHook);
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook(lightyController, communityRestConf, aaaLighty));
     }
 
     public static void start() throws Exception {
         main(new String[]{});
-    }
-
-    public static void shutdown() {
-        if (shutdownHook != null) {
-            shutdownHook.run();
-        }
     }
 
     private static void addCallback(final ListenableFuture<Boolean> start)

@@ -9,6 +9,7 @@ package io.lighty.kit.examples.community.tests;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,9 +17,11 @@ import java.io.InputStreamReader;
 final class TestUtils {
 
     static String readResource(final String classPath) throws IOException {
-        final InputStream inputStream = TestUtils.class.getResourceAsStream(classPath);
-        final String result = CharStreams.toString(new InputStreamReader(
-                inputStream, Charsets.UTF_8));
+        String result;
+        try (InputStream inputStream = TestUtils.class.getResourceAsStream(classPath)) {
+            result = CharStreams.toString(new InputStreamReader(
+                    inputStream, Charsets.UTF_8));
+        }
         return result;
     }
 
