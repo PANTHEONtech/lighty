@@ -18,6 +18,7 @@
 
     <modules>
         <module>integration-tests</module>
+        <module>integration-tests-aaa</module>
         <module>northbound-modules</module>
         <module>southbound-modules</module>
     </modules>
