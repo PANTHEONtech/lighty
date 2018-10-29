@@ -1,0 +1,10 @@
+<aaa-encrypt-service-config xmlns="config:aaa:authn:encrypt:service:config">
+    <encrypt-key>V1S1ED4OMeEh</encrypt-key>
+    <password-length>12</password-length>
+    <encrypt-salt>TdtWeHbch/7xP52/rp3Usw==</encrypt-salt>
+    <encrypt-method>PBKDF2WithHmacSHA1</encrypt-method>
+    <encrypt-type>AES</encrypt-type>
+    <encrypt-iteration-count>32768</encrypt-iteration-count>
+    <encrypt-key-length>128</encrypt-key-length>
+    <cipher-transforms>AES/CBC/PKCS5Padding</cipher-transforms>
+</aaa-encrypt-service-config>

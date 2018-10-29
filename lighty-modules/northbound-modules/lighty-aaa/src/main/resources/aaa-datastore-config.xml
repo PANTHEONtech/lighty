@@ -1,0 +1,5 @@
+<datastore-config xmlns="urn:opendaylight:aaa:app:config">
+  <store>h2-data-store</store>
+  <time-to-live>36000</time-to-live>
+  <time-to-wait>3600</time-to-wait>
+</datastore-config>
