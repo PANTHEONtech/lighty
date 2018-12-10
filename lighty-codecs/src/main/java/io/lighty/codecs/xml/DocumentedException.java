@@ -81,6 +81,7 @@ public class DocumentedException extends Exception {
 
         /**
          * @deprecated Use {@link #getTypeValue()} instead.
+         * @return type value.
          */
         @Deprecated
         public String getTagValue() {
@@ -157,6 +158,7 @@ public class DocumentedException extends Exception {
 
         /**
          * @deprecated Use {@link #getSeverityValue()} instead.
+         * @return severity value.
          */
         @Deprecated
         public String getTagValue() {

@@ -48,7 +48,7 @@ public interface NodeConverter {
      *        {@link ConverterUtils#loadRpc(SchemaContext, QName)} and input/output definition
      * @param normalizedNode normalized nodes to be serialized
      * @return string representation of the given nodes starting with input or output tag
-     * @throws SerializationException
+     * @throws SerializationException thrown in case serialization fails.
      */
     Writer serializeRpc(SchemaNode schemaNode, NormalizedNode<?, ?> normalizedNode) throws SerializationException;
 

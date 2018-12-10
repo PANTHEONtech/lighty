@@ -8,8 +8,7 @@
 package io.lighty.codecs.xml;
 
 /**
- * Can be thrown during
- * {@link ConfigRegistry#commitConfig(javax.management.ObjectName)} to indicate
+ * Can be thrown during commitConfig to indicate
  * that the transaction cannot be committed due to the fact that another
  * transaction was committed after creating this transaction. Clients can create
  * new transaction and merge the changes.

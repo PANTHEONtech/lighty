@@ -86,8 +86,8 @@ public final class ConverterUtils {
      * This method extracts from the given {@link XmlElement} the name and namespace from the first
      * element and creates a {@link QName}
      *
-     * @param xmlElement
-     * @return
+     * @param xmlElement input data.
+     * @return {@link QName} for input data or empty.
      */
     public static Optional<QName> getRpcQName(XmlElement xmlElement) {
         Optional<String> optionalNamespace = xmlElement.getNamespaceOptionally().toJavaUtil();
@@ -117,8 +117,8 @@ public final class ConverterUtils {
     /**
      * @see ConverterUtils#getRpcQName(XmlElement)
      * @throws IllegalArgumentException if there was a problem during parsing the XML document
-     * @param inputString
-     * @return
+     * @param inputString RPC name
+     * @return {@link QName} for RPC name or empty.
      */
     public static Optional<QName> getRpcQName(String inputString) {
         try {
@@ -137,9 +137,9 @@ public final class ConverterUtils {
      * useful when converting the input of a rpc. The provided namespace will be used for the input tag
      * document
      *
-     * @param inputXmlElement
-     * @param namespace
-     * @return
+     * @param inputXmlElement input xml data to wrap.
+     * @param namespace namespace
+     * @return wrapped xml data.
      */
     public static XmlElement rpcAsInput(XmlElement inputXmlElement, String namespace) {
         return wrapNodes("input", namespace, inputXmlElement.getChildElements());
@@ -150,8 +150,8 @@ public final class ConverterUtils {
      *
      * @see ConverterUtils#rpcAsOutput(XmlElement, String)
      * @see XmlUtil
-     * @param inputXmlElement
-     * @return
+     * @param inputXmlElement input rpc element data.
+     * @return wrapped xml element.
      */
     public static XmlElement rpcAsOutput(XmlElement inputXmlElement) {
         return rpcAsOutput(inputXmlElement, "");
@@ -162,9 +162,9 @@ public final class ConverterUtils {
      * useful when the output rpc is created. The namespace will be used for the output tag.
      *
      * @see XmlUtil
-     * @param inputXmlElement
-     * @param namespace
-     * @return
+     * @param inputXmlElement input rpc element data.
+     * @param namespace namespace
+     * @return wrapped xml element.
      */
     public static XmlElement rpcAsOutput(XmlElement inputXmlElement, String namespace) {
         return wrapNodes("output", namespace, inputXmlElement.getChildElements());
@@ -183,12 +183,6 @@ public final class ConverterUtils {
         return DataSchemaContextTree.from(schemaContext).getChild(YangInstanceIdentifier.of(qName)).getDataSchemaNode();
     }
 
-    /**
-     * 
-     * @param schemaContext
-     * @param yangInstanceIdentifier
-     * @return
-     */
     public static SchemaNode getSchemaNode(SchemaContext schemaContext, YangInstanceIdentifier yangInstanceIdentifier) {
         return DataSchemaContextTree.from(schemaContext).getChild(yangInstanceIdentifier).getDataSchemaNode();
     }
