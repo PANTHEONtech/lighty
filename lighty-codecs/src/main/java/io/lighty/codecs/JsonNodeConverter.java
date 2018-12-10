@@ -124,7 +124,7 @@ public class JsonNodeConverter implements NodeConverter {
      *        {@link ConverterUtils#getSchemaNode(SchemaContext, QName)} or
      *        {@link ConverterUtils#getSchemaNode(SchemaContext, String, String, String)} or
      *        {@link ConverterUtils#loadRpc(SchemaContext, QName)} depending on the input/output
-     * @param inputData
+     * @param inputData reader containing input data.
      * @return {@link NormalizedNode} representation of input data
      * @throws SerializationException if there was a problem during deserialization or reading the input
      *         data

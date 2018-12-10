@@ -425,6 +425,8 @@ public final class XmlElement {
      * returns {"th-java","urn:.."}. If no prefix is matched, then default
      * namespace is returned with empty string as key. If no default namespace
      * is found value will be null.
+     * @return prefix - namespace map.
+     * @throws DocumentedException namespaces cannot be extracted.
      */
     public Map.Entry<String/* prefix */, String/* namespace */> findNamespaceOfTextContent() throws DocumentedException {
         Map<String, String> namespaces = extractNamespaces();
