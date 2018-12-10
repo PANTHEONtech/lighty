@@ -8,9 +8,8 @@
 package io.lighty.modules.southbound.netconf.tests;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
@@ -143,7 +142,7 @@ public class TopologyPluginsTest {
         final WriteTransaction writeTransaction = bindingDataBroker.newWriteOnlyTransaction();
         writeTransaction.put(LogicalDatastoreType.CONFIGURATION, path, node);
         writeTransaction.submit().get();
-        verify(this.dispatcher, timeout(10000)).createReconnectingClient(any());
+        verify(this.dispatcher, timeout(20000)).createReconnectingClient(any());
     }
 
     private static LightyModule startSingleNodeNetconf(final LightyServices services,

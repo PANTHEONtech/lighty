@@ -18,6 +18,7 @@ import org.opendaylight.controller.config.threadpool.ThreadPool;
 import org.opendaylight.controller.sal.binding.api.NotificationProviderService;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
+import org.opendaylight.infrautils.ready.SystemReadyMonitor;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
@@ -51,6 +52,8 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
 public interface LightyServices extends LightyModuleRegistryService {
 
     DiagStatusService getDiagStatusService();
+
+    SystemReadyMonitor getSystemReadyMonitor();
 
     ActorSystemProvider getActorSystemProvider();
 
