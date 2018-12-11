@@ -7,6 +7,7 @@
  */
 package io.lighty.core.controller.api;
 
+import io.lighty.core.controller.impl.services.LightySystemReadyService;
 import io.netty.channel.EventLoopGroup;
 import io.netty.util.Timer;
 import io.netty.util.concurrent.EventExecutor;
@@ -54,6 +55,8 @@ public interface LightyServices extends LightyModuleRegistryService {
     DiagStatusService getDiagStatusService();
 
     SystemReadyMonitor getSystemReadyMonitor();
+
+    LightySystemReadyService getLightySystemReadyService();
 
     ActorSystemProvider getActorSystemProvider();
 

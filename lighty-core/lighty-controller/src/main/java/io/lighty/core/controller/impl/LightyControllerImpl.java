@@ -13,7 +13,8 @@ import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.core.controller.impl.schema.SchemaServiceProvider;
 import io.lighty.core.controller.impl.services.LightyDiagStatusServiceImpl;
-import io.lighty.core.controller.impl.services.SystemReadyMonitorImpl;
+import io.lighty.core.controller.impl.services.LightySystemReadyMonitorImpl;
+import io.lighty.core.controller.impl.services.LightySystemReadyService;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.HashedWheelTimer;
@@ -170,7 +171,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private HeliumNotificationProviderServiceWithInterestListeners notificationProviderServiceOld;
     private org.opendaylight.controller.md.sal.binding.api.DataBroker domPingPongDataBrokerOld;
     private org.opendaylight.controller.md.sal.binding.impl.BindingDOMNotificationServiceAdapter notificatoinServiceOld;
-    private final SystemReadyMonitorImpl systemReadyMonitor;
+    private final LightySystemReadyMonitorImpl systemReadyMonitor;
 
     public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
             final ClassLoader actorSystemClassLoader,
@@ -202,7 +203,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.operDatastoreContext = operDatastoreContext;
         this.modelSet = modelSet;
         this.lightyDiagStatusService = new LightyDiagStatusServiceImpl();
-        this.systemReadyMonitor = new SystemReadyMonitorImpl();
+        this.systemReadyMonitor = new LightySystemReadyMonitorImpl();
     }
 
     /**
@@ -214,129 +215,121 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     protected boolean initProcedure() {
-        try {
-            final long startTime = System.nanoTime();
+        final long startTime = System.nanoTime();
 
-            //INIT actor system provider
-            this.actorSystemProvider = new ActorSystemProviderImpl(this.actorSystemClassLoader,
-                    QuarantinedMonitorActor.props(() -> {
-                    }), this.actorSystemConfig);
-            this.datastoreSnapshotRestore = DatastoreSnapshotRestore.instance(this.restoreDirectoryPath);
+        //INIT actor system provider
+        this.actorSystemProvider = new ActorSystemProviderImpl(this.actorSystemClassLoader,
+                QuarantinedMonitorActor.props(() -> {}), this.actorSystemConfig);
+        this.datastoreSnapshotRestore = DatastoreSnapshotRestore.instance(this.restoreDirectoryPath);
 
-            //INIT schema context
-            this.moduleInfoBackedContext = ModuleInfoBackedContext.create();
-            this.modelSet.forEach(m -> {
-                this.moduleInfoBackedContext.registerModuleInfo(m);
-            });
-            this.schemaServiceProvider = new SchemaServiceProvider(this.moduleInfoBackedContext);
-            // INIT CODEC FACTORY
-            this.codec = BindingToNormalizedNodeCodec.newInstance(this.moduleInfoBackedContext, this.schemaServiceProvider);
-            this.schemaServiceProvider.registerSchemaContextListener(this.codec);
+        //INIT schema context
+        this.moduleInfoBackedContext = ModuleInfoBackedContext.create();
+        this.modelSet.forEach( m -> {
+            this.moduleInfoBackedContext.registerModuleInfo(m);
+        });
+        this.schemaServiceProvider = new SchemaServiceProvider(this.moduleInfoBackedContext);
+        // INIT CODEC FACTORY
+        this.codec = BindingToNormalizedNodeCodec.newInstance(this.moduleInfoBackedContext, this.schemaServiceProvider);
+        this.schemaServiceProvider.registerSchemaContextListener(this.codec);
 
-            final BindingRuntimeContext bindingRuntimeContext =
-                    BindingRuntimeContext.create(this.moduleInfoBackedContext, this.moduleInfoBackedContext
-                            .getSchemaContext());
-            //create binding notification service
-            final BindingNormalizedNodeCodecRegistry codecRegistry = this.codec.getCodecRegistry();
-            codecRegistry.onBindingRuntimeContextUpdated(bindingRuntimeContext);
+        final BindingRuntimeContext bindingRuntimeContext =
+                BindingRuntimeContext.create(this.moduleInfoBackedContext, this.moduleInfoBackedContext
+                        .getSchemaContext());
+        //create binding notification service
+        final BindingNormalizedNodeCodecRegistry codecRegistry = this.codec.getCodecRegistry();
+        codecRegistry.onBindingRuntimeContextUpdated(bindingRuntimeContext);
 
-            this.codecOld = new org.opendaylight.controller.md.sal.binding.impl.BindingToNormalizedNodeCodec(
-                    this.moduleInfoBackedContext, codecRegistry);
+        this.codecOld = new org.opendaylight.controller.md.sal.binding.impl.BindingToNormalizedNodeCodec(
+                this.moduleInfoBackedContext, codecRegistry);
 
-            this.schemaServiceProvider.registerSchemaContextListener(this.codecOld);
+        this.schemaServiceProvider.registerSchemaContextListener(this.codecOld);
 
-            // CONFIG DATASTORE
-            this.configDatastore = prepareDataStore(this.configDatastoreContext, this.moduleShardsConfig,
-                    this.modulesConfig, this.schemaServiceProvider, this.datastoreSnapshotRestore,
-                    this.actorSystemProvider);
-            // OPERATIONAL DATASTORE
-            this.operDatastore = prepareDataStore(this.operDatastoreContext, this.moduleShardsConfig, this.modulesConfig,
-                    this.schemaServiceProvider, this.datastoreSnapshotRestore, this.actorSystemProvider);
+        // CONFIG DATASTORE
+        this.configDatastore = prepareDataStore(this.configDatastoreContext, this.moduleShardsConfig,
+                this.modulesConfig, this.schemaServiceProvider, this.datastoreSnapshotRestore,
+                this.actorSystemProvider);
+        // OPERATIONAL DATASTORE
+        this.operDatastore = prepareDataStore(this.operDatastoreContext, this.moduleShardsConfig, this.modulesConfig,
+                this.schemaServiceProvider, this.datastoreSnapshotRestore, this.actorSystemProvider);
 
-            createConcurrentDOMDataBroker();
-            this.distributedShardedDOMDataTree = new DistributedShardedDOMDataTree(this.actorSystemProvider,
-                    this.operDatastore,
-                    this.configDatastore);
-            this.distributedShardedDOMDataTree.init();
+        createConcurrentDOMDataBroker();
+        this.distributedShardedDOMDataTree = new DistributedShardedDOMDataTree(this.actorSystemProvider,
+                this.operDatastore,
+                this.configDatastore);
+        this.distributedShardedDOMDataTree.init();
 
-            this.pingPongDataBroker = new PingPongDataBroker(this.concurrentDOMDataBroker);
-            final LegacyDOMDataBrokerAdapter pingPongLegacyDOMDataBrokerAdapter = new LegacyDOMDataBrokerAdapter(
-                    this.pingPongDataBroker);
-            this.pingPongDataBrokerOld = new org.opendaylight.controller.md.sal.dom.broker.impl.PingPongDataBroker(
-                    pingPongLegacyDOMDataBrokerAdapter);
+        this.pingPongDataBroker = new PingPongDataBroker(this.concurrentDOMDataBroker);
+        final LegacyDOMDataBrokerAdapter pingPongLegacyDOMDataBrokerAdapter = new LegacyDOMDataBrokerAdapter(
+                this.pingPongDataBroker);
+        this.pingPongDataBrokerOld = new org.opendaylight.controller.md.sal.dom.broker.impl.PingPongDataBroker(
+                pingPongLegacyDOMDataBrokerAdapter);
 
-            this.domRpcRouter = DOMRpcRouter.newInstance(this.schemaServiceProvider);
-            this.domRpcRouterOld = new org.opendaylight.controller.md.sal.dom.broker.impl.DOMRpcRouter(this.domRpcRouter
-                    .getRpcService(), this.domRpcRouter.getRpcProviderService());
-            createRemoteRPCProvider();
+        this.domRpcRouter = DOMRpcRouter.newInstance(this.schemaServiceProvider);
+        this.domRpcRouterOld = new org.opendaylight.controller.md.sal.dom.broker.impl.DOMRpcRouter(this.domRpcRouter
+                .getRpcService(), this.domRpcRouter.getRpcProviderService());
+        createRemoteRPCProvider();
 
-            // ENTITY OWNERSHIP
-            this.distributedEntityOwnershipService = DistributedEntityOwnershipService.start(this.operDatastore
-                    .getActorContext(), EntityOwnerSelectionStrategyConfigReader.loadStrategyWithConfig(
-                    this.distributedEosProperties));
+        // ENTITY OWNERSHIP
+        this.distributedEntityOwnershipService = DistributedEntityOwnershipService.start(this.operDatastore
+                .getActorContext(), EntityOwnerSelectionStrategyConfigReader.loadStrategyWithConfig(
+                this.distributedEosProperties));
 
-            this.bindingDOMEntityOwnershipServiceAdapter = new BindingDOMEntityOwnershipServiceAdapter(
-                    this.distributedEntityOwnershipService, this.codec);
-            this.clusterAdminRpcService =
-                    new ClusterAdminRpcService(this.configDatastore, this.operDatastore, this.codec);
+        this.bindingDOMEntityOwnershipServiceAdapter = new BindingDOMEntityOwnershipServiceAdapter(
+                this.distributedEntityOwnershipService, this.codec);
+        this.clusterAdminRpcService =
+                new ClusterAdminRpcService(this.configDatastore, this.operDatastore, this.codec);
 
-            this.clusterSingletonServiceProvider =
-                    new DOMClusterSingletonServiceProviderImpl(this.distributedEntityOwnershipService);
-            this.clusterSingletonServiceProvider.initializeProvider();
+        this.clusterSingletonServiceProvider =
+                new DOMClusterSingletonServiceProviderImpl(this.distributedEntityOwnershipService);
+        this.clusterSingletonServiceProvider.initializeProvider();
 
-            this.rpcProviderService = new BindingDOMRpcProviderServiceAdapter(this.domRpcRouter
-                    .getRpcProviderService(), this.codec);
-            final org.opendaylight.controller.md.sal.binding.impl.BindingDOMRpcProviderServiceAdapter domRpcProvAdapterOld =
-                    new org.opendaylight.controller.md.sal.binding.impl.BindingDOMRpcProviderServiceAdapter(
-                            this.domRpcRouterOld, this.codecOld);
-            final RpcConsumerRegistry rpcServiceAdapterOld = new BindingDOMRpcServiceAdapter(this.domRpcRouterOld,
-                    this.codecOld);
-            this.rpcProviderRegistry = new HeliumRpcProviderRegistry(rpcServiceAdapterOld, domRpcProvAdapterOld);
+        this.rpcProviderService = new BindingDOMRpcProviderServiceAdapter(this.domRpcRouter
+                .getRpcProviderService(), this.codec);
+        final org.opendaylight.controller.md.sal.binding.impl.BindingDOMRpcProviderServiceAdapter domRpcProvAdapterOld =
+                new org.opendaylight.controller.md.sal.binding.impl.BindingDOMRpcProviderServiceAdapter(
+                        this.domRpcRouterOld, this.codecOld);
+        final RpcConsumerRegistry rpcServiceAdapterOld = new BindingDOMRpcServiceAdapter(this.domRpcRouterOld,
+                this.codecOld);
+        this.rpcProviderRegistry = new HeliumRpcProviderRegistry(rpcServiceAdapterOld, domRpcProvAdapterOld);
 
-            //create binding mount point service
-            this.mountPointService = new BindingDOMMountPointServiceAdapter(this.domMountPointService, this.codec);
-            this.mountPointServiceOld =
-                    new org.opendaylight.controller.md.sal.binding.impl.BindingDOMMountPointServiceAdapter(
-                            this.domMountPointServiceOld, this.codecOld);
+        //create binding mount point service
+        this.mountPointService = new BindingDOMMountPointServiceAdapter(this.domMountPointService, this.codec);
+        this.mountPointServiceOld =
+                new org.opendaylight.controller.md.sal.binding.impl.BindingDOMMountPointServiceAdapter(
+                        this.domMountPointServiceOld, this.codecOld);
 
-            this.notificationService = new BindingDOMNotificationServiceAdapter(this.domNotificationRouter,
-                    this.codec);
-            this.notificationPublishService =
-                    new BindingDOMNotificationPublishServiceAdapter(this.domNotificationRouter, this.codec);
-            this.notificationPublishServiceOld =
-                    new org.opendaylight.controller.md.sal.binding.impl.BindingDOMNotificationPublishServiceAdapter(
-                            this.codecOld, this.domNotificationRouterOld);
-            this.notificatoinServiceOld =
-                    new org.opendaylight.controller.md.sal.binding.impl.BindingDOMNotificationServiceAdapter(this.codecOld,
-                            this.domNotificationRouterOld);
-            this.notificationProviderServiceOld = new HeliumNotificationProviderServiceWithInterestListeners(
-                    this.notificationPublishServiceOld, this.notificatoinServiceOld, this.domNotificationRouterOld);
+        this.notificationService = new BindingDOMNotificationServiceAdapter(this.domNotificationRouter,
+                this.codec);
+        this.notificationPublishService =
+                new BindingDOMNotificationPublishServiceAdapter(this.domNotificationRouter, this.codec);
+        this.notificationPublishServiceOld =
+                new org.opendaylight.controller.md.sal.binding.impl.BindingDOMNotificationPublishServiceAdapter(
+                        this.codecOld, this.domNotificationRouterOld);
+        this.notificatoinServiceOld =
+                new org.opendaylight.controller.md.sal.binding.impl.BindingDOMNotificationServiceAdapter(this.codecOld,
+                        this.domNotificationRouterOld);
+        this.notificationProviderServiceOld = new HeliumNotificationProviderServiceWithInterestListeners(
+                this.notificationPublishServiceOld, this.notificatoinServiceOld, this.domNotificationRouterOld);
 
-            //create binding data broker
-            this.domDataBroker = new BindingDOMDataBrokerAdapter(this.concurrentDOMDataBroker, this.codec);
-            this.domDataBrokerOld = new org.opendaylight.controller.md.sal.binding.impl.BindingDOMDataBrokerAdapter(
-                    this.concurrentDOMDataBrokerOld, this.codecOld);
+        //create binding data broker
+        this.domDataBroker = new BindingDOMDataBrokerAdapter(this.concurrentDOMDataBroker, this.codec);
+        this.domDataBrokerOld = new org.opendaylight.controller.md.sal.binding.impl.BindingDOMDataBrokerAdapter(
+                this.concurrentDOMDataBrokerOld, this.codecOld);
 
-            this.domPingPongDataBroker = new BindingDOMDataBrokerAdapter(this.pingPongDataBroker, this.codec);
-            this.domPingPongDataBrokerOld = new org.opendaylight.controller.md.sal.binding.impl.BindingDOMDataBrokerAdapter(
-                    this.pingPongDataBrokerOld, this.codecOld);
+        this.domPingPongDataBroker = new BindingDOMDataBrokerAdapter(this.pingPongDataBroker, this.codec);
+        this.domPingPongDataBrokerOld = new org.opendaylight.controller.md.sal.binding.impl.BindingDOMDataBrokerAdapter(
+                this.pingPongDataBrokerOld, this.codecOld);
 
-            this.bossGroup = new NioEventLoopGroup();
-            this.workerGroup = new NioEventLoopGroup();
-            this.eventExecutor = new DefaultEventExecutor();
-            this.timer = new HashedWheelTimer();
-            this.threadPool =
-                    new FixedThreadPoolWrapper(2, new DefaultThreadFactory("default-pool"));
-            this.scheduledThreadPool =
-                    new ScheduledThreadPoolWrapper(2, new DefaultThreadFactory("default-scheduled-pool"));
-            this.systemReadyMonitor.onSystemBootReady();
-            final float delay = (System.nanoTime() - startTime) / 1_000_000f;
-            LOG.info("Lighty controller started in {}ms", delay);
-        } catch (Exception e) {
-            this.systemReadyMonitor.onSystemBootFailed();
-            LOG.error("Lighty controller failed to start.", e);
-            return false;
-        }
+        this.bossGroup = new NioEventLoopGroup();
+        this.workerGroup = new NioEventLoopGroup();
+        this.eventExecutor = new DefaultEventExecutor();
+        this.timer = new HashedWheelTimer();
+        this.threadPool =
+                new FixedThreadPoolWrapper(2, new DefaultThreadFactory("default-pool"));
+        this.scheduledThreadPool =
+                new ScheduledThreadPoolWrapper(2, new DefaultThreadFactory("default-scheduled-pool"));
+        final float delay = (System.nanoTime() - startTime) / 1_000_000f;
+        LOG.info("Lighty controller started in {}ms", delay);
         return true;
     }
 
@@ -409,6 +402,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     public SystemReadyMonitor getSystemReadyMonitor() {
+        return this.systemReadyMonitor;
+    }
+
+    @Override
+    public LightySystemReadyService getLightySystemReadyService() {
         return this.systemReadyMonitor;
     }
 
@@ -669,4 +667,5 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     public org.opendaylight.controller.md.sal.binding.api.DataBroker getControllerBindingPingPongDataBroker() {
         return this.domPingPongDataBrokerOld;
     }
+
 }
