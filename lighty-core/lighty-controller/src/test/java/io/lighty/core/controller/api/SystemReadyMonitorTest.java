@@ -7,7 +7,7 @@
  */
 package io.lighty.core.controller.api;
 
-import io.lighty.core.controller.impl.services.SystemReadyMonitorImpl;
+import io.lighty.core.controller.impl.services.LightySystemReadyMonitorImpl;
 import org.mockito.Mockito;
 import org.opendaylight.infrautils.ready.SystemReadyListener;
 import org.opendaylight.infrautils.ready.SystemState;
@@ -23,7 +23,7 @@ public class SystemReadyMonitorTest {
     public void testSystemBootFailed() {
         SystemReadyListener listener1 = Mockito.mock(SystemReadyListener.class);
         SystemReadyListener listener2 = Mockito.mock(SystemReadyListener.class);
-        SystemReadyMonitorImpl systemReadyMonitor = new SystemReadyMonitorImpl();
+        LightySystemReadyMonitorImpl systemReadyMonitor = new LightySystemReadyMonitorImpl();
         Assert.assertTrue(SystemState.BOOTING.equals(systemReadyMonitor.getSystemState()));
         systemReadyMonitor.registerListener(listener1);
         systemReadyMonitor.registerListener(listener2);
@@ -45,7 +45,7 @@ public class SystemReadyMonitorTest {
     public void testSystemBootOK() {
         SystemReadyListener listener1 = Mockito.mock(SystemReadyListener.class);
         SystemReadyListener listener2 = Mockito.mock(SystemReadyListener.class);
-        SystemReadyMonitorImpl systemReadyMonitor = new SystemReadyMonitorImpl();
+        LightySystemReadyMonitorImpl systemReadyMonitor = new LightySystemReadyMonitorImpl();
         Assert.assertTrue(SystemState.BOOTING.equals(systemReadyMonitor.getSystemState()));
         systemReadyMonitor.registerListener(listener1);
         systemReadyMonitor.registerListener(listener2);

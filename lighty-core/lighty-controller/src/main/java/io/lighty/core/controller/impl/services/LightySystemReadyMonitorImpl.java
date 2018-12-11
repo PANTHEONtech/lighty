@@ -16,14 +16,14 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SystemReadyMonitorImpl implements SystemReadyMonitor {
+public class LightySystemReadyMonitorImpl implements LightySystemReadyService, SystemReadyMonitor {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SystemReadyMonitorImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LightySystemReadyMonitorImpl.class);
 
     private final List<SystemReadyListener> listeners;
     private SystemState state;
 
-    public SystemReadyMonitorImpl() {
+    public LightySystemReadyMonitorImpl() {
         this.listeners = new ArrayList<>();
         this.state = SystemState.BOOTING;
         LOG.info("SystemReadyMonitorImpl: {}", state);
@@ -53,6 +53,7 @@ public class SystemReadyMonitorImpl implements SystemReadyMonitor {
         return state;
     }
 
+    @Override
     public synchronized int onSystemBootReady() {
         state = SystemState.ACTIVE;
         LOG.info("onSystemBootReady {} {}", state, listeners.size());
@@ -64,6 +65,7 @@ public class SystemReadyMonitorImpl implements SystemReadyMonitor {
         return size;
     }
 
+    @Override
     public synchronized int onSystemBootFailed() {
         state = SystemState.FAILURE;
         LOG.warn("onSystemBootFailed {} {}", state, listeners.size());
