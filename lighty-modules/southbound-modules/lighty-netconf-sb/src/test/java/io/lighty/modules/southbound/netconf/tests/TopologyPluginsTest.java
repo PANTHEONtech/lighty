@@ -143,7 +143,7 @@ public class TopologyPluginsTest {
         final WriteTransaction writeTransaction = bindingDataBroker.newWriteOnlyTransaction();
         writeTransaction.put(LogicalDatastoreType.CONFIGURATION, path, node);
         writeTransaction.submit().get();
-        verify(dispatcher, timeout(10000)).createReconnectingClient(any());
+        verify(dispatcher, timeout(20000)).createReconnectingClient(any());
     }
 
     private static LightyModule startSingleNodeNetconf(final LightyServices services,
