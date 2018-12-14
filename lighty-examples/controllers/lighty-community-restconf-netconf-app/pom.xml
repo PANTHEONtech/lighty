@@ -15,7 +15,7 @@
         <groupId>io.lighty.kit.examples.parents</groupId>
         <artifactId>lighty-community-restconf-app-parent</artifactId>
         <version>8.3.0</version>
-        <relativePath>../../../lighty-core/lighty-parents/lighty-community-restconf-app-parent/</relativePath>
+        <relativePath>../../../lighty-core/lighty-parents/lighty-community-restconf-parent/</relativePath>
     </parent>
 
     <groupId>io.lighty.kit.examples.controllers</groupId>
@@ -25,9 +25,18 @@
     <properties>
         <application.main.class>io.lighty.examples.controllers.restconfapp.Main</application.main.class>
         <application.attach.zip>true</application.attach.zip>
+        <jetty.version>9.3.11.v20160721</jetty.version>
+        <servlet-api.version>3.1.0</servlet-api.version>
+        <jersey.version>2.23</jersey.version>
+        <jaxrs.version>3.0.12.Final</jaxrs.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>io.lighty.modules.northbound.restconf</groupId>
+            <artifactId>lighty-restconf-nb-community</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>io.lighty.modules.southbound.netconf</groupId>
             <artifactId>lighty-netconf-sb</artifactId>
@@ -43,34 +52,76 @@
             <artifactId>log4j-properties</artifactId>
             <version>${lighty.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.lighty.swagger</groupId>
+            <artifactId>lighty-swagger</artifactId>
+            <version>${lighty.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-server</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>javax.servlet-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-webapp</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-servlets</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.glassfish.jersey.core</groupId>
+                    <artifactId>jersey-server</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-servlet</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
+            <version>${servlet-api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlets</artifactId>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.sun.jersey</groupId>
+            <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-server</artifactId>
+            <version>${jersey.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-core</artifactId>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlet</artifactId>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-servlet</artifactId>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>jaxrs-api</artifactId>
+            <version>${jaxrs.version}</version>
         </dependency>
     </dependencies>
 </project>
