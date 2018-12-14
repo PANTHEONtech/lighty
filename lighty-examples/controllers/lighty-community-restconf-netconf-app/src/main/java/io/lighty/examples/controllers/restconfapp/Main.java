@@ -21,10 +21,13 @@ import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigU
 import io.lighty.modules.southbound.netconf.impl.NetconfTopologyPluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
+import io.lighty.server.LightyServerBuilder;
+import io.lighty.swagger.SwaggerLighty;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -94,12 +97,20 @@ public class Main {
 
         //2. start RestConf server
         CommunityRestConfBuilder communityRestConfBuilder = new CommunityRestConfBuilder();
+        LightyServerBuilder jettyServerBuilder = new LightyServerBuilder(new InetSocketAddress(
+                restConfConfiguration.getInetAddress(), restConfConfiguration.getHttpPort()));
         CommunityRestConf communityRestConf = communityRestConfBuilder.from(RestConfConfigUtils
-                .getRestConfConfiguration(restConfConfiguration, lightyController.getServices()))
+                .getRestConfConfiguration(restConfConfiguration, lightyController.getServices())).withLightyServer(
+                jettyServerBuilder)
                 .build();
-        communityRestConf.start();
 
-        //3. start NetConf SBP
+        //3. start swagger
+        SwaggerLighty swagger = new SwaggerLighty(jettyServerBuilder, lightyController.getServices());
+        swagger.start().get();
+        communityRestConf.start().get();
+        communityRestConf.startServer();
+
+        //4. start NetConf SBP
         LightyModule netconfSouthboundPlugin;
         netconfSBPConfiguration = NetconfConfigUtils.injectServicesToTopologyConfig(
                 netconfSBPConfiguration, lightyController.getServices());
@@ -107,11 +118,11 @@ public class Main {
         netconfSouthboundPlugin = netconfSBPBuilder
                 .from(netconfSBPConfiguration, lightyController.getServices())
                 .build();
-        netconfSouthboundPlugin.start();
+        netconfSouthboundPlugin.start().get();
 
         //4. Register shutdown hook for graceful shutdown.
         Runtime.getRuntime().addShutdownHook(
-                new ShutdownHook(lightyController, communityRestConf, netconfSouthboundPlugin));
+                new ShutdownHook(lightyController, communityRestConf, netconfSouthboundPlugin, swagger));
     }
 
 
@@ -121,18 +132,25 @@ public class Main {
         private final LightyController lightyController;
         private final CommunityRestConf communityRestConf;
         private final LightyModule netconfSouthboundPlugin;
+        private final SwaggerLighty swagger;
 
         ShutdownHook(LightyController lightyController, CommunityRestConf communityRestConf,
-                LightyModule netconfSouthboundPlugin) {
+                LightyModule netconfSouthboundPlugin, SwaggerLighty swagger) {
             this.lightyController = lightyController;
             this.communityRestConf = communityRestConf;
             this.netconfSouthboundPlugin = netconfSouthboundPlugin;
+            this.swagger = swagger;
         }
 
         @Override
         public void run() {
             LOG.info("lighty.io and RESTCONF-NETCONF shutting down ...");
             long startTime = System.nanoTime();
+            try {
+                swagger.shutdown();
+            } catch (Exception e) {
+                LOG.error("Exception while shutting down lighty.io swagger:", e);
+            }
             try {
                 communityRestConf.shutdown();
             } catch (Exception e) {

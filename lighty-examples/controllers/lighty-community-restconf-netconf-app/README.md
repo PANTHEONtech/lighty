@@ -33,6 +33,11 @@ RESTCONF web interface is available at URL ```http://localhost:8888/restconf/*``
 * __GET__ ```http://localhost:8888/restconf/data/network-topology:network-topology?content=config```
 * __GET__ ```http://localhost:8888/restconf/data/network-topology:network-topology?content=nonconfig```
 
+##### Swagger UI
+This application example has active swagger UI for RESTCONF. 
+* __Swagger APIs__ ``http://localhost:8888/apidoc/apis`` 
+* __Swagger UI__ ``http://localhost:8888/apidoc/explorer/index.html`` 
+
 ### Use custom config files
 There are two separated config files: for NETCONF SBP single node and for cluster.
 `java -jar lighty-community-restconf-netconf-app-8.3.0.jar /path/to/singleNodeConfig.json`
