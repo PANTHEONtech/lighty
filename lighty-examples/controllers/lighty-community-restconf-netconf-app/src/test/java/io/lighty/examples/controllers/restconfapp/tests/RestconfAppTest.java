@@ -40,21 +40,37 @@ public class RestconfAppTest {
     public static void init() {
         restconfApp = new Main();
         restconfApp.start();
-        restClient = new RestClient("http://localhost:8888/restconf/");
+        restClient = new RestClient("http://localhost:8888/");
     }
 
     /**
-     * Perform basic GET operations via RESTCONF
+     * Perform basic GET operations via RESTCONF.
      */
     @Test
     public void simpleApplicationTest() {
         ContentResponse operations = null;
         try {
-            operations = restClient.GET("operations");
+            operations = restClient.GET("restconf/operations");
             Assert.assertEquals(operations.getStatus(), 200);
-            operations = restClient.GET("data/network-topology:network-topology?content=config");
+            operations = restClient.GET("restconf/data/network-topology:network-topology?content=config");
             Assert.assertEquals(operations.getStatus(), 200);
-            operations = restClient.GET("data/network-topology:network-topology?content=nonconfig");
+            operations = restClient.GET("restconf/data/network-topology:network-topology?content=nonconfig");
+            Assert.assertEquals(operations.getStatus(), 200);
+        } catch (TimeoutException | ExecutionException | InterruptedException e) {
+            Assert.fail();
+        }
+    }
+
+    /**
+     * Check if Swagger service and UI is responding.
+     */
+    @Test
+    public void swaggerURLsTest() {
+        ContentResponse operations = null;
+        try {
+            operations = restClient.GET("apidoc/18/apis");
+            Assert.assertEquals(operations.getStatus(), 200);
+            operations = restClient.GET("apidoc/18/explorer/index.html");
             Assert.assertEquals(operations.getStatus(), 200);
         } catch (TimeoutException | ExecutionException | InterruptedException e) {
             Assert.fail();
