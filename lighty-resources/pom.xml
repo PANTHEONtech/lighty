@@ -14,7 +14,7 @@
     <groupId>io.lighty.resources</groupId>
     <artifactId>lighty-resources-aggregator</artifactId>
     <packaging>pom</packaging>
-    <version>9.0.0</version>
+    <version>9.0.1</version>
 
     <modules>
         <module>log4j-properties</module>

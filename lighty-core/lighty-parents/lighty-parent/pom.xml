@@ -14,7 +14,7 @@
     <parent>
         <groupId>io.lighty.core.parents</groupId>
         <artifactId>lighty-parent-no-plugins</artifactId>
-        <version>9.0.0</version>
+        <version>9.0.1</version>
         <relativePath>../lighty-parent-no-plugins/</relativePath>
     </parent>
 
@@ -22,7 +22,7 @@
 
     <groupId>io.lighty.core.parents</groupId>
     <artifactId>lighty-parent</artifactId>
-    <version>9.0.0</version>
+    <version>9.0.1</version>
     <packaging>pom</packaging>
 
     <properties>
