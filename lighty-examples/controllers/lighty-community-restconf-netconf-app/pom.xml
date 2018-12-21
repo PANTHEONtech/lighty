@@ -14,13 +14,13 @@
     <parent>
         <groupId>io.lighty.kit.examples.parents</groupId>
         <artifactId>lighty-community-restconf-app-parent</artifactId>
-        <version>9.0.0</version>
+        <version>9.0.1</version>
         <relativePath>../../../lighty-core/lighty-parents/lighty-community-restconf-app-parent/</relativePath>
     </parent>
 
     <groupId>io.lighty.kit.examples.controllers</groupId>
     <artifactId>lighty-community-restconf-netconf-app</artifactId>
-    <version>9.0.0</version>
+    <version>9.0.1</version>
     <packaging>jar</packaging>
 
     <properties>
