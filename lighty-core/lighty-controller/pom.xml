@@ -447,7 +447,8 @@
         <dependency>
             <groupId>org.iq80.leveldb</groupId>
             <artifactId>leveldb-api</artifactId>
-            <version>${leveldb.version}</version><!--TODO Find a way to inherit me from ODL-->
+            <!-- TODO: Find a way to inherit me from ODL-->
+            <version>0.7</version>
         </dependency>
         <dependency>
             <groupId>org.fusesource.leveldbjni</groupId>
