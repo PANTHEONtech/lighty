@@ -16,11 +16,15 @@
     <version>9.1.1</version>
     <packaging>pom</packaging>
 
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.install.skip>true</maven.install.skip>
+    </properties>
+
     <modules>
         <module>integration-tests</module>
         <module>integration-tests-aaa</module>
         <module>northbound-modules</module>
         <module>southbound-modules</module>
     </modules>
-
 </project>
