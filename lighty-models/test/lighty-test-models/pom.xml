@@ -14,7 +14,7 @@
     <parent>
         <groupId>io.lighty.core.parents</groupId>
         <artifactId>lighty-binding-parent</artifactId>
-        <version>8.3.0</version>
+        <version>8.3.1-SNAPSHOT</version>
         <relativePath>../../../lighty-core/lighty-parents/lighty-binding-parent/</relativePath>
     </parent>
 

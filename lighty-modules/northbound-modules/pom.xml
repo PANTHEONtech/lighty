@@ -13,7 +13,7 @@
 
     <groupId>io.lighty.modules.northbound</groupId>
     <artifactId>lighty-northbound-modules-aggregator</artifactId>
-    <version>8.3.0</version>
+    <version>8.3.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
