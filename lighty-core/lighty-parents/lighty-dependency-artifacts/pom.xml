@@ -177,7 +177,7 @@
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
-                <version>${testng.version}</version>
+                <version>6.13</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
