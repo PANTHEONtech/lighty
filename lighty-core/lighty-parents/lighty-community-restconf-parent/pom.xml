@@ -14,13 +14,13 @@
     <parent>
         <groupId>io.lighty.core.parents</groupId>
         <artifactId>lighty-parent</artifactId>
-        <version>9.1.1</version>
+        <version>9.1.2-SNAPSHOT</version>
         <relativePath>../lighty-parent/</relativePath>
     </parent>
 
     <groupId>io.lighty.core.parents</groupId>
     <artifactId>lighty-community-restconf-parent</artifactId>
-    <version>9.1.1</version>
+    <version>9.1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
