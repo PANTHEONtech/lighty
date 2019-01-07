@@ -16,12 +16,16 @@
     <version>8.4.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.install.skip>true</maven.install.skip>
+    </properties>
+
     <modules>
         <module>lighty-common</module>
         <module>lighty-parents</module>
         <module>lighty-controller</module>
         <module>lighty-controller-spring-di</module>
     </modules>
-
 </project>
 
