@@ -71,7 +71,7 @@
             <dependency>
                 <groupId>org.opendaylight.infrautils</groupId>
                 <artifactId>diagstatus-api</artifactId>
-                <version>1.4.0</version>
+                <version>1.4.1</version>
             </dependency>
 
             <dependency>
@@ -86,14 +86,14 @@
             <dependency>
                 <groupId>org.opendaylight.aaa</groupId>
                 <artifactId>aaa-artifacts</artifactId>
-                <version>0.8.0</version>
+                <version>0.8.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.controller</groupId>
                 <artifactId>config-artifacts</artifactId>
-                <version>0.9.0</version>
+                <version>0.9.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -116,14 +116,14 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>mdsal-model-artifacts</artifactId>
-                <version>0.13.0</version>
+                <version>0.13.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.netconf</groupId>
                 <artifactId>restconf-artifacts</artifactId>
-                <version>1.8.0</version>
+                <version>1.8.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

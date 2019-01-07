@@ -72,4 +72,8 @@ public class LightySystemReadyMonitorImpl implements LightySystemReadyService, S
         return listeners.size();
     }
 
+    @Override
+    public String getFailureCause() {
+        return "";
+    }
 }
