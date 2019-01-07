@@ -23,10 +23,6 @@
     <artifactId>lighty-parent</artifactId>
     <packaging>pom</packaging>
 
-    <properties>
-        <suitesFile>${project.build.testOutputDirectory}/suites/all/suiteOfSuites.xml</suitesFile>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.testng</groupId>
@@ -170,7 +166,7 @@
                         <configuration>
                             <suiteXmlFiles>
                                 <suiteXmlFile>
-                                    ${suitesFile}
+                                    ${project.build.testOutputDirectory}/suites/all/suiteOfSuites.xml
                                 </suiteXmlFile>
                             </suiteXmlFiles>
                             <includes>
