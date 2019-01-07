@@ -25,10 +25,6 @@
     <version>9.1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <properties>
-        <suitesFile>${project.build.testOutputDirectory}/suites/all/suiteOfSuites.xml</suitesFile>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.testng</groupId>
@@ -175,7 +171,7 @@
                         <configuration>
                             <suiteXmlFiles>
                                 <suiteXmlFile>
-                                    ${suitesFile}
+                                    ${project.build.testOutputDirectory}/suites/all/suiteOfSuites.xml
                                 </suiteXmlFile>
                             </suiteXmlFiles>
                             <includes>
