@@ -78,267 +78,267 @@ public class LightyCoreSpringConfiguration {
     @Autowired
     private LightyController lightyController;
 
-    @Bean
+    @Bean(destroyMethod = "")
     public LightyModuleRegistryService getLightyModuleRegistryService() {
         return this.lightyController.getServices();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public DiagStatusService getDiagStatusService() {
         return this.lightyController.getServices().getDiagStatusService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public ActorSystemProvider getActorSystemProvider() {
         return this.lightyController.getServices().getActorSystemProvider();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public SchemaContextProvider getSchemaContextProvider() {
         return this.lightyController.getServices().getSchemaContextProvider();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public DOMSchemaService getDOMSchemaService() {
         return this.lightyController.getServices().getDOMSchemaService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public DOMYangTextSourceProvider getDOMYangTextSourceProvider() {
         return this.lightyController.getServices().getDOMYangTextSourceProvider();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public org.opendaylight.controller.md.sal.dom.api.DOMMountPointService getControllerDOMMountPointService() {
         return this.lightyController.getServices().getControllerDOMMountPointService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public DOMMountPointService getDOMMountPointService() {
         return this.lightyController.getServices().getDOMMountPointService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService getControllerDOMNotificationPublishService() {
         return this.lightyController.getServices().getControllerDOMNotificationPublishService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public DOMNotificationPublishService getDOMNotificationPublishService() {
         return this.lightyController.getServices().getDOMNotificationPublishService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public org.opendaylight.controller.md.sal.dom.api.DOMNotificationService getControllerDOMNotificationService() {
         return this.lightyController.getServices().getControllerDOMNotificationService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public DOMNotificationService getDOMNotificationService() {
         return this.lightyController.getServices().getDOMNotificationService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry getControllerDOMNotificationSubscriptionListenerRegistry() {
         return this.lightyController.getServices().getControllerDOMNotificationSubscriptionListenerRegistry();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public DOMNotificationSubscriptionListenerRegistry getDOMNotificationSubscriptionListenerRegistry() {
         return this.lightyController.getServices().getDOMNotificationSubscriptionListenerRegistry();
     }
 
-    @Bean(name = "ConfigDatastore")
+    @Bean(name = "ConfigDatastore", destroyMethod = "")
     public DistributedDataStoreInterface getConfigDatastore() {
         return this.lightyController.getServices().getConfigDatastore();
     }
 
-    @Bean(name = "OperationalDatastore")
+    @Bean(name = "OperationalDatastore", destroyMethod = "")
     public DistributedDataStoreInterface getOperationalDatastore() {
         return this.lightyController.getServices().getOperationalDatastore();
     }
 
-    @Bean(name = "ControllerClusteredDOMDataBroker")
+    @Bean(name = "ControllerClusteredDOMDataBroker", destroyMethod = "")
     public org.opendaylight.controller.md.sal.dom.api.DOMDataBroker getControllerClusteredDOMDataBroker() {
         return this.lightyController.getServices().getControllerClusteredDOMDataBroker();
     }
 
-    @Bean(name = "ClusteredDOMDataBroker")
+    @Bean(name = "ClusteredDOMDataBroker", destroyMethod = "")
     public DOMDataBroker getClusteredDOMDataBroker() {
         return this.lightyController.getServices().getClusteredDOMDataBroker();
     }
 
-    @Bean(name = "ControllerPingPongDataBroker")
+    @Bean(name = "ControllerPingPongDataBroker", destroyMethod = "")
     public org.opendaylight.controller.md.sal.dom.api.DOMDataBroker getControllerPingPongDataBroker() {
         return this.lightyController.getServices().getControllerPingPongDataBroker();
     }
 
-    @Bean(name = "PingPongDataBroker")
+    @Bean(name = "PingPongDataBroker", destroyMethod = "")
     public DOMDataBroker getPingPongDataBroker() {
         return this.lightyController.getServices().getPingPongDataBroker();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public DOMDataTreeShardingService getDOMDataTreeShardingService() {
         return this.lightyController.getServices().getDOMDataTreeShardingService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public DOMDataTreeService getDOMDataTreeService() {
         return this.lightyController.getServices().getDOMDataTreeService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public DistributedShardFactory getDistributedShardFactory() {
         return this.lightyController.getServices().getDistributedShardFactory();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public org.opendaylight.controller.md.sal.dom.api.DOMRpcService getControllerDOMRpcService() {
         return this.lightyController.getServices().getControllerDOMRpcService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public DOMRpcService getDOMRpcService() {
         return this.lightyController.getServices().getDOMRpcService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public org.opendaylight.controller.md.sal.dom.api.DOMRpcProviderService getControllerDOMRpcProviderService() {
         return this.lightyController.getServices().getControllerDOMRpcProviderService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public DOMRpcProviderService getDOMRpcProviderService() {
         return this.lightyController.getServices().getDOMRpcProviderService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public BindingNormalizedNodeSerializer getBindingNormalizedNodeSerializer() {
         return this.lightyController.getServices().getBindingNormalizedNodeSerializer();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public BindingCodecTreeFactory getBindingCodecTreeFactory() {
         return this.lightyController.getServices().getBindingCodecTreeFactory();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public DOMEntityOwnershipService getDOMEntityOwnershipService() {
         return this.lightyController.getServices().getDOMEntityOwnershipService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public EntityOwnershipService getEntityOwnershipService() {
         return this.lightyController.getServices().getEntityOwnershipService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public ClusterAdminService getClusterAdminRPCService() {
         return this.lightyController.getServices().getClusterAdminRPCService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public ClusterSingletonServiceProvider getClusterSingletonServiceProvider() {
         return this.lightyController.getServices().getClusterSingletonServiceProvider();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public org.opendaylight.controller.sal.binding.api.RpcProviderRegistry getControllerRpcProviderRegistry() {
         return this.lightyController.getServices().getControllerRpcProviderRegistry();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public RpcProviderService getRpcProviderRegistry() {
         return this.lightyController.getServices().getRpcProviderService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public org.opendaylight.controller.md.sal.binding.api.MountPointService getControllerBindingMountPointService() {
         return this.lightyController.getServices().getControllerBindingMountPointService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public MountPointService getBindingMountPointService() {
         return this.lightyController.getServices().getBindingMountPointService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public org.opendaylight.controller.md.sal.binding.api.NotificationService getControllerBindingNotificationService() {
         return this.lightyController.getServices().getControllerBindingNotificationService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public NotificationService getNotificationService() {
         return this.lightyController.getServices().getNotificationService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public org.opendaylight.controller.md.sal.binding.api.NotificationPublishService getControllerBindingNotificationPublishService() {
         return this.lightyController.getServices().getControllerBindingNotificationPublishService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public NotificationPublishService getBindingNotificationPublishService() {
         return this.lightyController.getServices().getBindingNotificationPublishService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public org.opendaylight.controller.sal.binding.api.NotificationProviderService getNotificationProviderService() {
         return this.lightyController.getServices().getControllerNotificationProviderService();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public org.opendaylight.controller.sal.binding.api.NotificationService getControllerNotificationProviderService() {
         return this.lightyController.getServices().getControllerNotificationProviderService();
     }
 
-    @Bean(name = "ControllerBindingDataBroker")
+    @Bean(name = "ControllerBindingDataBroker", destroyMethod = "")
     public org.opendaylight.controller.md.sal.binding.api.DataBroker getControllerBindingDataBroker() {
         return this.lightyController.getServices().getControllerBindingDataBroker();
     }
 
-    @Bean(name = "BindingDataBroker")
+    @Bean(name = "BindingDataBroker", destroyMethod = "")
     public DataBroker getBindingDataBroker() {
         return this.lightyController.getServices().getBindingDataBroker();
     }
 
-    @Bean(name = "ControllerBindingPingPongDataBroker")
+    @Bean(name = "ControllerBindingPingPongDataBroker", destroyMethod = "")
     public org.opendaylight.controller.md.sal.binding.api.DataBroker getControllerBindingPingPongDataBroker() {
         return this.lightyController.getServices().getControllerBindingPingPongDataBroker();
     }
 
-    @Bean(name = "BindingPingPongDataBroker")
+    @Bean(name = "BindingPingPongDataBroker", destroyMethod = "")
     public DataBroker getBindingPingPongDataBroker() {
         return this.lightyController.getServices().getBindingPingPongDataBroker();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public EventExecutor getEventExecutor() {
         return this.lightyController.getServices().getEventExecutor();
     }
 
-    @Bean(name = "BossGroup")
+    @Bean(name = "BossGroup", destroyMethod = "")
     public EventLoopGroup getBossGroup() {
         return this.lightyController.getServices().getBossGroup();
     }
 
-    @Bean(name = "WorkerGroup")
+    @Bean(name = "WorkerGroup", destroyMethod = "")
     public EventLoopGroup getWorkerGroup() {
         return this.lightyController.getServices().getWorkerGroup();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public ThreadPool getThreadPool() {
         return this.lightyController.getServices().getThreadPool();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public ScheduledThreadPool getScheduledThreaPool() {
         return this.lightyController.getServices().getScheduledThreaPool();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public Timer getTimer() {
         return this.lightyController.getServices().getTimer();
     }
