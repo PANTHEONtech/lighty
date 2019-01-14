@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/PantheonTechnologies/lighty-core.svg?branch=8.3.x)](https://travis-ci.org/PantheonTechnologies/lighty-core)
-[![Coverity Scan Build Status](https://scan.coverity.com/projects/16327/badge.svg)](https://scan.coverity.com/projects/lighty-core) 
 
 
 # lighty.io 8.3
