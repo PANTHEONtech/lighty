@@ -28,6 +28,10 @@
     <version>9.1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -39,5 +43,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
 </project>
