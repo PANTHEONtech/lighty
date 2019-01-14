@@ -40,7 +40,7 @@
                 <dependency>
                     <groupId>io.lighty.core</groupId>
                     <artifactId>lighty-controller</artifactId>
-                    <version>${lighty.version}</version>
+                    <version>${project.version}</version>
                 </dependency>
             </dependencies>
             <build>
@@ -94,7 +94,7 @@
                                         <artifactItem>
                                             <groupId>io.lighty.resources</groupId>
                                             <artifactId>log4j-properties</artifactId>
-                                            <version>${lighty.version}</version>
+                                            <version>9.1.2-SNAPSHOT</version>
                                         </artifactItem>
                                     </artifactItems>
                                     <excludes>META-INF\/**</excludes>
@@ -127,12 +127,12 @@
                                         <artifactItem>
                                             <groupId>io.lighty.resources</groupId>
                                             <artifactId>singlenode-configuration</artifactId>
-                                            <version>${lighty.version}</version>
+                                            <version>9.1.2-SNAPSHOT</version>
                                         </artifactItem>
                                         <artifactItem>
                                             <groupId>io.lighty.resources</groupId>
                                             <artifactId>controller-application-assembly</artifactId>
-                                            <version>${lighty.version}</version>
+                                            <version>9.1.2-SNAPSHOT</version>
                                             <!-- This is a build time resource, not to be packaged. -->
                                             <outputDirectory>${project.build.directory}/resources</outputDirectory>
                                         </artifactItem>
