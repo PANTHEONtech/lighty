@@ -19,9 +19,6 @@
     <packaging>pom</packaging>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
         <lighty.version>8.4.1-SNAPSHOT</lighty.version>
     </properties>
 
