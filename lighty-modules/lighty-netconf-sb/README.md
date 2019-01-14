@@ -40,7 +40,7 @@ To use NETCONF in your project:
 1. Add dependency in your pom.xml file.
 ```
   <dependency>
-    <groupId>io.lighty.modules.southbound.netconf</groupId>
+    <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-netconf-sb</artifactId>
     <version>9.1.1</version>
   </dependency>  

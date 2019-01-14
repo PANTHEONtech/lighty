@@ -30,7 +30,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.lighty.modules.southbound.netconf</groupId>
+            <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-netconf-sb</artifactId>
             <version>${project.version}</version>
         </dependency>
