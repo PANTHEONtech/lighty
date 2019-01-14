@@ -42,7 +42,7 @@
         <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>log4j-properties</artifactId>
-            <version>${lighty.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!--Tests-->

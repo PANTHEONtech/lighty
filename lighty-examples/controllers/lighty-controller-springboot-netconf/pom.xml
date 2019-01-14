@@ -9,6 +9,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.5.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
 
     <groupId>io.lighty.core</groupId>
     <artifactId>lighty-controller-springboot</artifactId>
@@ -18,18 +24,10 @@
     <name>lighty-controller-springboot</name>
     <description>Demo lighty.io project for SpringBoot</description>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.2.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <lighty.version>8.4.1-SNAPSHOT</lighty.version>
     </properties>
 
     <dependencies>
@@ -41,22 +39,22 @@
         <dependency>
             <groupId>io.lighty.core</groupId>
             <artifactId>lighty-controller-spring-di</artifactId>
-            <version>${lighty.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>singlenode-configuration</artifactId>
-            <version>${lighty.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.modules.southbound.netconf</groupId>
             <artifactId>lighty-netconf-sb</artifactId>
-            <version>${lighty.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.models.test</groupId>
             <artifactId>lighty-toaster</artifactId>
-            <version>${lighty.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

@@ -11,19 +11,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>io.lighty.core.parents</groupId>
-        <artifactId>lighty-properties-parent</artifactId>
-        <version>8.4.1-SNAPSHOT</version>
-        <relativePath>../lighty-properties-parent/</relativePath>
-    </parent>
-
     <!--
         This imports dependencyManagement section.
         This does not contain any plugins, as not every potential descendant needs them.
     -->
-
+    <groupId>io.lighty.core.parents</groupId>
     <artifactId>lighty-parent-no-plugins</artifactId>
+    <version>8.4.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -35,7 +29,7 @@
             <dependency>
                 <groupId>io.lighty.core.parents</groupId>
                 <artifactId>lighty-dependency-artifacts</artifactId>
-                <version>${lighty.version}</version>
+                <version>8.4.1-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

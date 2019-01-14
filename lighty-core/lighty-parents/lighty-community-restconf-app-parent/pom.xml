@@ -33,7 +33,7 @@
                 <dependency>
                     <groupId>io.lighty.modules.northbound.restconf</groupId>
                     <artifactId>lighty-restconf-nb-community</artifactId>
-                    <version>${lighty.version}</version>
+                    <version>${project.version}</version>
                 </dependency>
             </dependencies>
         </profile>

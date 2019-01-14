@@ -33,7 +33,7 @@
         <dependency>
             <groupId>io.lighty.core</groupId>
             <artifactId>lighty-common</artifactId>
-            <version>${lighty.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -52,7 +52,6 @@
         <dependency>
             <groupId>org.opendaylight.infrautils</groupId>
             <artifactId>diagstatus-api</artifactId>
-            <version>1.3.4</version>
         </dependency>
         <!--odl-yangtools-common-->
         <dependency>
