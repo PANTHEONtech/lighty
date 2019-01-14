@@ -27,6 +27,26 @@
         <application.attach.zip>false</application.attach.zip>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>io.lighty.resources</groupId>
+            <artifactId>log4j-properties</artifactId>
+            <version>8.4.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.resources</groupId>
+            <artifactId>singlenode-configuration</artifactId>
+            <version>8.4.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.resources</groupId>
+            <artifactId>controller-application-assembly</artifactId>
+            <version>8.4.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
     <profiles>
         <profile>
             <id>lighty-controller-app</id>
@@ -85,18 +105,14 @@
                                 -->
                                 <id>unpack-jar-resources</id>
                                 <goals>
-                                    <goal>unpack</goal>
+                                    <goal>unpack-dependencies</goal>
                                 </goals>
                                 <phase>generate-resources</phase>
                                 <configuration>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>io.lighty.resources</groupId>
-                                            <artifactId>log4j-properties</artifactId>
-                                            <version>8.4.1-SNAPSHOT</version>
-                                        </artifactItem>
-                                    </artifactItems>
+                                    <includeGroupIds>io.lighty.resources</includeGroupIds>
+                                    <includeArtifactIds>log4j-properties</includeArtifactIds>
                                     <excludes>META-INF\/**</excludes>
+                                    <excludeTransitive>true</excludeTransitive>
                                     <outputDirectory>${project.build.directory}/classes</outputDirectory>
                                 </configuration>
                             </execution>
@@ -110,33 +126,37 @@
                                     <outputDirectory>${project.build.directory}/lib</outputDirectory>
                                 </configuration>
                             </execution>
+                            <!--
+                                A block of various resources, to be unpacked from artifacts
+                                in order to avoid duplicates in source tree.
+                                Part two, files that belong outside the jar.
+                            -->
                             <execution>
-                                <!--
-                                    A block of various resources, to be unpacked from artifacts
-                                    in order to avoid duplicates in source tree.
-                                    Part two, files that belong outside the jar.
-                                -->
-                                <id>unpack-zip-resources</id>
+                                <id>unpack-assembly</id>
                                 <goals>
-                                    <goal>unpack</goal>
+                                    <goal>unpack-dependencies</goal>
                                 </goals>
                                 <phase>prepare-package</phase>
                                 <configuration>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>io.lighty.resources</groupId>
-                                            <artifactId>singlenode-configuration</artifactId>
-                                            <version>8.4.1-SNAPSHOT</version>
-                                        </artifactItem>
-                                        <artifactItem>
-                                            <groupId>io.lighty.resources</groupId>
-                                            <artifactId>controller-application-assembly</artifactId>
-                                            <version>8.4.1-SNAPSHOT</version>
-                                            <!-- This is a build time resource, not to be packaged. -->
-                                            <outputDirectory>${project.build.directory}/resources</outputDirectory>
-                                        </artifactItem>
-                                    </artifactItems>
+                                    <includeGroupIds>io.lighty.resources</includeGroupIds>
+                                    <includeArtifactIds>controller-application-assembly</includeArtifactIds>
                                     <excludes>META-INF\/**</excludes>
+                                    <excludeTransitive>true</excludeTransitive>
+                                    <!-- This is a build time resource, not to be packaged. -->
+                                    <outputDirectory>${project.build.directory}/resources</outputDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>unpack-singlenode-configuration</id>
+                                <goals>
+                                    <goal>unpack-dependencies</goal>
+                                </goals>
+                                <phase>prepare-package</phase>
+                                <configuration>
+                                    <includeGroupIds>io.lighty.resources</includeGroupIds>
+                                    <includeArtifactIds>singlenode-configuration</includeArtifactIds>
+                                    <excludes>META-INF\/**</excludes>
+                                    <excludeTransitive>true</excludeTransitive>
                                     <!-- Other resources belong to the package. -->
                                     <outputDirectory>${project.build.directory}/assembly/resources</outputDirectory>
                                 </configuration>
