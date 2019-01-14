@@ -18,7 +18,7 @@
         <relativePath>../../../lighty-core/lighty-parents/lighty-community-restconf-parent/</relativePath>
     </parent>
 
-    <groupId>io.lighty.aaa</groupId>
+    <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-aaa</artifactId>
 
     <dependencies>

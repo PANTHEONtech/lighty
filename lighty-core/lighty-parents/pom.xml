@@ -22,7 +22,6 @@
     </properties>
 
     <modules>
-        <module>lighty-properties-parent</module>
         <module>lighty-dependency-artifacts</module>
         <module>lighty-parent-no-plugins</module>
         <module>lighty-parent</module>

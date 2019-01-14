@@ -30,7 +30,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.lighty.aaa</groupId>
+            <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-aaa</artifactId>
             <version>${project.version}</version>
         </dependency>

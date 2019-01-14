@@ -11,20 +11,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>io.lighty.core.parents</groupId>
-        <!-- TODO: Prefer explicit versions over properties. -->
-        <artifactId>lighty-properties-parent</artifactId>
-        <version>9.1.2-SNAPSHOT</version>
-        <relativePath>../lighty-properties-parent/</relativePath>
-    </parent>
-
     <!--
         This is not a parent, this is an artifact pom.
         This way, parent poms with unrelated parents can import versions defined here,
         in such a place which gives them control over maven version conflict resolution.
     -->
-
     <properties>
         <netty.version>4.1.30.Final</netty.version>
     </properties>
@@ -36,7 +27,6 @@
 
     <dependencyManagement>
         <dependencies>
-
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-common</artifactId>
