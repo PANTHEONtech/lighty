@@ -22,9 +22,11 @@
     </properties>
 
     <modules>
+        <module>lighty-aaa</module>
+        <module>lighty-jetty-server</module>
+        <module>lighty-netconf-sb</module>
+        <module>lighty-restconf-nb-community</module>
         <module>integration-tests</module>
         <module>integration-tests-aaa</module>
-        <module>northbound-modules</module>
-        <module>lighty-netconf-sb</module>
     </modules>
 </project>

@@ -10,7 +10,7 @@ To use RESTCONF in your project:
 1. Add dependency in your pom.xml file.
 ```
   <dependency>
-    <groupId>io.lighty.modules.northbound.restconf</groupId>
+    <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-restconf-nb-community</artifactId>
     <version>9.1.1</version>
   </dependency>

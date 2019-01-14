@@ -22,8 +22,6 @@
     </properties>
 
     <modules>
-        <module>lighty-aaa</module>
-        <module>lighty-restconf-nb-community</module>
         <module>lighty-server</module>
     </modules>
 </project>
