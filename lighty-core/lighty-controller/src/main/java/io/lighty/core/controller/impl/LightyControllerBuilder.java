@@ -73,6 +73,7 @@ public class LightyControllerBuilder {
                     this.controllerConfiguration.getModulesConfig(),
                     this.controllerConfiguration.getConfigDatastoreContext(),
                     this.controllerConfiguration.getOperDatastoreContext(),
+                    this.controllerConfiguration.getDatastoreProperties(),
                     modelSet
                     );
         } catch (final Exception e) {
