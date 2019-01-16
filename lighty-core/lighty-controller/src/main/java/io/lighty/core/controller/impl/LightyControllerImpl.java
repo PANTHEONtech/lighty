@@ -121,6 +121,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private final Properties distributedEosProperties;
     private final DatastoreContext configDatastoreContext;
     private final DatastoreContext operDatastoreContext;
+    private final Map<String, Object> datastoreProperties;
     private final String moduleShardsConfig;
     private final String modulesConfig;
     private final String restoreDirectoryPath;
@@ -179,7 +180,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             final int maxDataBrokerFutureCallbackQueueSize, final int maxDataBrokerFutureCallbackPoolSize,
             final boolean metricCaptureEnabled, final int mailboxCapacity, final Properties distributedEosProperties,
             final String moduleShardsConfig, final String modulesConfig, final DatastoreContext configDatastoreContext,
-            final DatastoreContext operDatastoreContext, final Set<YangModuleInfo> modelSet) {
+            final DatastoreContext operDatastoreContext, final Map<String, Object> datastoreProperties,
+            final Set<YangModuleInfo> modelSet) {
         super(executorService);
         initSunXMLWriterProperty();
         this.actorSystemConfig = actorSystemConfig;
@@ -201,6 +203,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.moduleShardsConfig = moduleShardsConfig;
         this.configDatastoreContext = configDatastoreContext;
         this.operDatastoreContext = operDatastoreContext;
+        this.datastoreProperties = datastoreProperties;
         this.modelSet = modelSet;
         this.lightyDiagStatusService = new LightyDiagStatusServiceImpl();
         this.systemReadyMonitor = new LightySystemReadyMonitorImpl();
@@ -341,7 +344,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         final ConfigurationImpl configuration = new ConfigurationImpl(moduleShardsConfig, modulesConfig);
         final DatastoreContextIntrospector introspector = new DatastoreContextIntrospector(datastoreContext,
                 this.codecOld);
-        final DatastoreContextPropertiesUpdater updater = new DatastoreContextPropertiesUpdater(introspector, null);
+        final DatastoreContextPropertiesUpdater updater = new DatastoreContextPropertiesUpdater(introspector,
+                datastoreProperties);
         return DistributedDataStoreFactory.createInstance(domSchemaService, datastoreContext,
                 datastoreSnapshotRestore, actorSystemProvider, introspector, updater, configuration);
     }

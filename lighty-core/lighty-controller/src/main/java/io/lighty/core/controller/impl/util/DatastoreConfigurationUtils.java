@@ -8,6 +8,8 @@
 package io.lighty.core.controller.impl.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.opendaylight.controller.cluster.datastore.DatastoreContext;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -68,6 +70,12 @@ public final class DatastoreConfigurationUtils {
                 .logicalStoreType(LogicalDatastoreType.CONFIGURATION)
                 .tempFileDirectory(TEMP_FILE_DIRECTORY)
                 .build();
+    }
+
+    public static Map<String, Object> getDefaultDatastoreProperties() {
+        Map<String, Object> props = new HashMap<>();
+        props.put("operational.persistent", "false");
+        return props;
     }
 
 }

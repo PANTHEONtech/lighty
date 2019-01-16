@@ -13,6 +13,7 @@ import com.google.common.base.Objects;
 import com.typesafe.config.Config;
 import io.lighty.core.controller.impl.util.DatastoreConfigurationUtils;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -45,6 +46,8 @@ public class ControllerConfiguration {
     @JsonIgnore
     private DatastoreContext operDatastoreContext;
 
+    private Map<String, Object> datastoreProperties;
+
     public ControllerConfiguration() {
         this.domNotificationRouterConfig = new DOMNotificationRouterConfig();
         this.actorSystemConfig = new ActorSystemConfig();
@@ -52,6 +55,7 @@ public class ControllerConfiguration {
         this.distributedEosProperties = new Properties();
         this.configDatastoreContext = DatastoreConfigurationUtils.createDefaultConfigDatastoreContext();
         this.operDatastoreContext = DatastoreConfigurationUtils.createDefaultOperationalDatastoreContext();
+        this.datastoreProperties = DatastoreConfigurationUtils.getDefaultDatastoreProperties();
     }
 
     public static class  DOMNotificationRouterConfig {
@@ -331,6 +335,14 @@ public class ControllerConfiguration {
 
     public void setOperDatastoreContext(DatastoreContext operDatastoreContext) {
         this.operDatastoreContext = operDatastoreContext;
+    }
+
+    public Map<String, Object> getDatastoreProperties() {
+        return datastoreProperties;
+    }
+
+    public void setDatastoreProperties(Map<String, Object> datastoreProperties) {
+        this.datastoreProperties = datastoreProperties;
     }
 
     @Override
