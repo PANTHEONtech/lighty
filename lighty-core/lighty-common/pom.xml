@@ -12,15 +12,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.lighty.core.parents</groupId>
+        <groupId>io.lighty.core</groupId>
         <artifactId>lighty-parent</artifactId>
         <version>9.1.2-SNAPSHOT</version>
-        <relativePath>../lighty-parents/lighty-parent</relativePath>
+        <relativePath>../lighty-parent</relativePath>
     </parent>
 
     <groupId>io.lighty.core</groupId>
     <artifactId>lighty-common</artifactId>
-    <version>9.1.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -58,6 +57,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 </project>
 

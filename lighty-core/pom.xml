@@ -23,6 +23,10 @@
 
     <modules>
         <module>dependency-versions</module>
+        <module>lighty-binding-parent</module>
+        <module>lighty-minimal-parent</module>
+        <module>lighty-parent</module>
+
         <module>lighty-codecs</module>
         <module>lighty-common</module>
         <module>lighty-parents</module>
