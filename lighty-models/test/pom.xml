@@ -16,10 +16,14 @@
     <version>9.1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.install.skip>true</maven.install.skip>
+    </properties>
+
     <modules>
         <module>lighty-toaster</module>
         <module>lighty-test-models</module>
         <module>lighty-example-data-center</module>
     </modules>
-
 </project>
