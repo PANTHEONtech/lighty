@@ -11,10 +11,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.lighty.kit.examples.parents</groupId>
-        <artifactId>lighty-controller-app-parent</artifactId>
+        <groupId>io.lighty.core</groupId>
+        <artifactId>lighty-app-parent</artifactId>
         <version>9.1.2-SNAPSHOT</version>
-        <relativePath>../../lighty-core/lighty-parents/lighty-controller-app-parent/</relativePath>
+        <relativePath>../../lighty-core/lighty-app-parent</relativePath>
     </parent>
 
     <groupId>io.lighty.kit.examples.controllers</groupId>
