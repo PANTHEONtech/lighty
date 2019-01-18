@@ -27,7 +27,6 @@
         <application.attach.zip>true</application.attach.zip>
 
         <maven.deploy.skip>true</maven.deploy.skip>
-        <maven.install.skip>true</maven.install.skip>
     </properties>
 
     <dependencies>
