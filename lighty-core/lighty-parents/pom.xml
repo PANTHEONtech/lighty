@@ -23,6 +23,5 @@
 
     <modules>
         <module>lighty-controller-app-parent</module>
-        <module>lighty-community-restconf-app-parent</module>
     </modules>
 </project>
