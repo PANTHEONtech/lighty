@@ -33,7 +33,6 @@
         <dependency>
             <groupId>io.lighty.core</groupId>
             <artifactId>lighty-common</artifactId>
-            <version>9.1.2-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -517,7 +516,6 @@
         <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>singlenode-configuration</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

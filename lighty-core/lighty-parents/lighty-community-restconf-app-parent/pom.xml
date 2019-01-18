@@ -20,7 +20,6 @@
 
     <groupId>io.lighty.kit.examples.parents</groupId>
     <artifactId>lighty-community-restconf-app-parent</artifactId>
-    <version>9.1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <profiles>
@@ -35,7 +34,6 @@
                 <dependency>
                     <groupId>io.lighty.modules</groupId>
                     <artifactId>lighty-restconf-nb-community</artifactId>
-                    <version>${project.version}</version>
                     <exclusions>
                         <exclusion>
                             <groupId>javax.ws.rs</groupId>

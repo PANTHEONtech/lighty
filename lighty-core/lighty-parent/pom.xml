@@ -22,7 +22,6 @@
 
     <groupId>io.lighty.core</groupId>
     <artifactId>lighty-parent</artifactId>
-    <version>9.1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>
         Parent pom for code artifacts using Lighty.io.
