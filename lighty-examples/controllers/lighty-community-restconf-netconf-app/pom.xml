@@ -20,7 +20,6 @@
 
     <groupId>io.lighty.kit.examples.controllers</groupId>
     <artifactId>lighty-community-restconf-netconf-app</artifactId>
-    <version>9.1.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -32,17 +31,14 @@
         <dependency>
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-netconf-sb</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>singlenode-configuration</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>log4j-properties</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>

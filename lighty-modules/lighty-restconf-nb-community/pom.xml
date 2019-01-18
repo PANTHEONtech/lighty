@@ -12,10 +12,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.lighty.core.parents</groupId>
-        <artifactId>lighty-community-restconf-parent</artifactId>
+        <groupId>io.lighty.core</groupId>
+        <artifactId>lighty-parent</artifactId>
         <version>9.1.2-SNAPSHOT</version>
-        <relativePath>../../lighty-core/lighty-parents/lighty-community-restconf-parent</relativePath>
+        <relativePath>../../lighty-core/lighty-parent</relativePath>
     </parent>
 
     <groupId>io.lighty.modules</groupId>
@@ -25,12 +25,10 @@
         <dependency>
             <groupId>io.lighty.core</groupId>
             <artifactId>lighty-controller</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-jetty-server</artifactId>
-            <version>${project.version}</version>
         </dependency>
         
         <dependency>
@@ -46,37 +44,30 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>${servlet.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
-            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlets</artifactId>
-            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-server</artifactId>
-            <version>${jersey.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-core</artifactId>
-            <version>${jersey.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-servlet</artifactId>
-            <version>${jersey.version}</version>
         </dependency>
 
         <!--Tests-->
@@ -88,7 +79,6 @@
         <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>singlenode-configuration</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

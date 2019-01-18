@@ -12,19 +12,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.lighty.core.parents</groupId>
+        <groupId>io.lighty.core</groupId>
         <artifactId>lighty-parent</artifactId>
         <version>9.1.2-SNAPSHOT</version>
-        <relativePath>../lighty-parent/</relativePath>
+        <relativePath>../lighty-parent</relativePath>
     </parent>
 
     <!--
         This is a parent suitable for packaging Yang models with their Java v1 bindings.
         The binding-parent from ODL activates too many unimportant plugins.
     -->
-    <groupId>io.lighty.core.parents</groupId>
+    <groupId>io.lighty.core</groupId>
     <artifactId>lighty-binding-parent</artifactId>
-    <version>9.1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>

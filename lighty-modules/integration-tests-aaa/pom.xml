@@ -11,10 +11,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.lighty.core.parents</groupId>
-        <artifactId>lighty-community-restconf-parent</artifactId>
+        <groupId>io.lighty.core</groupId>
+        <artifactId>lighty-parent</artifactId>
         <version>9.1.2-SNAPSHOT</version>
-        <relativePath>../../lighty-core/lighty-parents/lighty-community-restconf-parent/</relativePath>
+        <relativePath>../../lighty-core/lighty-parent</relativePath>
     </parent>
 
     <groupId>io.lighty.kit.examples.tests</groupId>
@@ -69,7 +69,6 @@
         <dependency>
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-restconf-nb-community</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.kit.examples.controllers</groupId>

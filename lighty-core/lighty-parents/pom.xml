@@ -22,12 +22,7 @@
     </properties>
 
     <modules>
-        <module>lighty-dependency-artifacts</module>
-        <module>lighty-parent-no-plugins</module>
-        <module>lighty-parent</module>
-        <module>lighty-binding-parent</module>
         <module>lighty-controller-app-parent</module>
         <module>lighty-community-restconf-app-parent</module>
-        <module>lighty-community-restconf-parent</module>
     </modules>
 </project>

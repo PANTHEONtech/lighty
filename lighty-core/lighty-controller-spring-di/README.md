@@ -16,7 +16,6 @@ How to use it
    <dependency>
       <groupId>io.lighty.core</groupId>
       <artifactId>lighty-controller-spring-di</artifactId>
-      <version>${lighty.version}</version>
    </dependency>
 ```
 

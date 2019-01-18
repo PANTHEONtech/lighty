@@ -12,15 +12,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.lighty.core.parents</groupId>
+        <groupId>io.lighty.core</groupId>
         <artifactId>lighty-parent</artifactId>
         <version>9.1.2-SNAPSHOT</version>
-        <relativePath>../lighty-parents/lighty-parent</relativePath>
+        <relativePath>../lighty-parent</relativePath>
     </parent>
 
     <groupId>io.lighty.core</groupId>
     <artifactId>lighty-common</artifactId>
-    <version>9.1.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -40,13 +39,12 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
         </dependency>
+
+        <!--Tests-->
         <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>log4j-properties</artifactId>
-            <version>9.1.2-SNAPSHOT</version>
         </dependency>
-
-        <!--Tests-->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
@@ -58,6 +56,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 </project>
 

@@ -10,60 +10,17 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <!--
-        This is not a parent, this is an artifact pom.
-        This way, parent poms with unrelated parents can import versions defined here,
-        in such a place which gives them control over maven version conflict resolution.
-    -->
-    <properties>
-        <netty.version>4.1.30.Final</netty.version>
-    </properties>
-
-    <groupId>io.lighty.core.parents</groupId>
-    <artifactId>lighty-dependency-artifacts</artifactId>
+    <groupId>io.lighty.core</groupId>
+    <artifactId>dependency-versions</artifactId>
     <version>9.1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <description>
+        This artifact contains dependencyManagement declarations of upstream
+        versions.
+    </description>
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-common</artifactId>
-                <version>${netty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-codec</artifactId>
-                <version>${netty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-codec-http</artifactId>
-                <version>${netty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-buffer</artifactId>
-                <version>${netty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-handler</artifactId>
-                <version>${netty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-transport</artifactId>
-                <version>${netty.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.opendaylight.infrautils</groupId>
-                <artifactId>diagstatus-api</artifactId>
-                <version>1.4.1</version>
-            </dependency>
-
             <dependency>
                 <groupId>org.opendaylight.odlparent</groupId>
                 <artifactId>odlparent</artifactId>
@@ -72,7 +29,27 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- aaa dependency -->
+            <!-- Overrides of odlparent -->
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>2.8.11.20181123</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>1.60</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- OpenDaylight projects -->
             <dependency>
                 <groupId>org.opendaylight.aaa</groupId>
                 <artifactId>aaa-artifacts</artifactId>
@@ -94,8 +71,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
-            <!-- mdsal dependencies -->
+            <dependency>
+                <groupId>org.opendaylight.infrautils</groupId>
+                <artifactId>infrautils-artifacts</artifactId>
+                <version>1.4.1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-artifacts</artifactId>
@@ -112,15 +94,15 @@
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.netconf</groupId>
-                <artifactId>restconf-artifacts</artifactId>
-                <version>1.8.1</version>
+                <artifactId>netconf-artifacts</artifactId>
+                <version>1.5.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.netconf</groupId>
-                <artifactId>netconf-artifacts</artifactId>
-                <version>1.5.1</version>
+                <artifactId>restconf-artifacts</artifactId>
+                <version>1.8.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -131,28 +113,8 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson</groupId>
-                <artifactId>jackson-bom</artifactId>
-                <version>2.8.11.20181123</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.sshd</groupId>
-                <artifactId>sshd-core</artifactId>
-                <version>2.0.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.bouncycastle</groupId>
-                <artifactId>bcprov-jdk15on</artifactId>
-                <version>1.60</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>1.7.25</version>
-            </dependency>
+
+            <!-- Other third-party stuff -->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
@@ -163,7 +125,6 @@
                 <artifactId>guice</artifactId>
                 <version>4.1.0</version>
             </dependency>
-            <!-- test dependencies -->
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
@@ -174,18 +135,6 @@
                 <groupId>com.beust</groupId>
                 <artifactId>jcommander</artifactId>
                 <version>1.72</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>1.10.19</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.12</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

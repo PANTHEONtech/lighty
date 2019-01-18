@@ -12,18 +12,20 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.lighty.core.parents</groupId>
-        <artifactId>lighty-parent-no-plugins</artifactId>
+        <groupId>io.lighty.core</groupId>
+        <artifactId>lighty-minimal-parent</artifactId>
         <version>9.1.2-SNAPSHOT</version>
-        <relativePath>../lighty-parent-no-plugins/</relativePath>
+        <relativePath>../lighty-minimal-parent</relativePath>
     </parent>
 
     <!-- This is the main parent for building LightyModule jars. -->
 
-    <groupId>io.lighty.core.parents</groupId>
+    <groupId>io.lighty.core</groupId>
     <artifactId>lighty-parent</artifactId>
-    <version>9.1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <description>
+        Parent pom for code artifacts using Lighty.io.
+    </description>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -114,8 +116,9 @@
                     <executions>
                         <execution>
                             <id>attach-sources</id>
+                            <phase>verify</phase>
                             <goals>
-                                <goal>jar</goal>
+                                <goal>jar-no-fork</goal>
                             </goals>
                         </execution>
                     </executions>
