@@ -20,11 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 /**
  * This test starts lighty.io and spring boot application.
@@ -46,47 +43,43 @@ public class SpringBootAppTest {
     }
 
     @Test
-    public void simpleApplicationTest() {
+    public void simpleApplicationTest() throws Exception {
         ContentResponse contentResponse = null;
         ObjectMapper mapper = new ObjectMapper();
         String netconfTopologyId = "topology-netconf";
         String topologyId = "test-topology";
         String[] expectedTopologyIds = new String[] { netconfTopologyId, topologyId };
-        try {
-            Assert.assertNotNull(appContext);
 
-            //1. get list of topology Ids
-            //   only one topology ID "topology-netconf" is expected
-            contentResponse = restClient.GET("topology/list");
-            Assert.assertEquals(contentResponse.getStatus(), 200);
-            ArrayList<String> topologyIds = mapper.readValue(contentResponse.getContent(), ArrayList.class);
-            Assert.assertNotNull(topologyIds);
-            Assert.assertEquals(topologyIds.size(), 1);
-            Assert.assertEquals(topologyIds.get(0), netconfTopologyId);
+        Assert.assertNotNull(appContext);
 
-            //2. create new empty topology and check if it was created
-            //   this step creates empty topology instance in global data store
-            contentResponse = restClient.PUT("topology/id/" + topologyId);
-            Assert.assertEquals(contentResponse.getStatus(), 200);
-            contentResponse = restClient.GET("topology/list");
-            topologyIds = mapper.readValue(contentResponse.getContent(), ArrayList.class);
-            Assert.assertNotNull(topologyIds);
-            Assert.assertEquals(topologyIds.size(), 2);
-            Assert.assertTrue(topologyIds.containsAll(Arrays.asList(expectedTopologyIds)));
+        //1. get list of topology Ids
+        //   only one topology ID "topology-netconf" is expected
+        contentResponse = restClient.GET("topology/list");
+        Assert.assertEquals(200, contentResponse.getStatus());
+        ArrayList<String> topologyIds = mapper.readValue(contentResponse.getContent(), ArrayList.class);
+        Assert.assertNotNull(topologyIds);
+        Assert.assertEquals(1, topologyIds.size(), 1);
+        Assert.assertEquals(netconfTopologyId, topologyIds.get(0));
 
-            //3. delete created topology and check if it was deleted
-            //   this step removes created topology
-            contentResponse = restClient.DELETE("topology/id/" + topologyId);
-            Assert.assertEquals(contentResponse.getStatus(), 200);
-            contentResponse = restClient.GET("topology/list");
-            topologyIds = mapper.readValue(contentResponse.getContent(), ArrayList.class);
-            Assert.assertNotNull(topologyIds);
-            Assert.assertEquals(topologyIds.size(), 1);
-            Assert.assertEquals(topologyIds.get(0), netconfTopologyId);
+        //2. create new empty topology and check if it was created
+        //   this step creates empty topology instance in global data store
+        contentResponse = restClient.PUT("topology/id/" + topologyId);
+        Assert.assertEquals(200, contentResponse.getStatus());
+        contentResponse = restClient.GET("topology/list");
+        topologyIds = mapper.readValue(contentResponse.getContent(), ArrayList.class);
+        Assert.assertNotNull(topologyIds);
+        Assert.assertEquals(2, topologyIds.size());
+        Assert.assertTrue(topologyIds.containsAll(Arrays.asList(expectedTopologyIds)));
 
-        } catch (IOException | TimeoutException | ExecutionException | InterruptedException e) {
-            Assert.fail();
-        }
+        //3. delete created topology and check if it was deleted
+        //   this step removes created topology
+        contentResponse = restClient.DELETE("topology/id/" + topologyId);
+        Assert.assertEquals(contentResponse.getStatus(), 200);
+        contentResponse = restClient.GET("topology/list");
+        topologyIds = mapper.readValue(contentResponse.getContent(), ArrayList.class);
+        Assert.assertNotNull(topologyIds);
+        Assert.assertEquals(1, topologyIds.size(), 1);
+        Assert.assertEquals(netconfTopologyId, topologyIds.get(0));
     }
 
     @AfterClass
