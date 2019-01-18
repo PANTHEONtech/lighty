@@ -19,7 +19,7 @@ build the project: ```mvn clean install```
 
 ### Start this demo example
 * build the project using ```mvn clean install```
-* got to target directory ```cd lighty-examples/controllers/lighty-community-restconf-netconf-app/target``` 
+* go to target directory ```cd lighty-examples/lighty-community-restconf-netconf-app/target``` 
 * unzip example application bundle ```unzip  lighty-community-restconf-netconf-app-9.1.1-bin.zip```
 * go to unzipped application directory ```cd lighty-community-restconf-netconf-app-9.1.1```
 * start controller example controller application ```java -jar lighty-community-restconf-netconf-app-9.1.1.jar``` 

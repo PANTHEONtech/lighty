@@ -22,4 +22,7 @@
     <artifactId>controller-application-assembly</artifactId>
     <packaging>jar</packaging>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/PantheonTechnologies/lighty-core</url>
+
 </project>

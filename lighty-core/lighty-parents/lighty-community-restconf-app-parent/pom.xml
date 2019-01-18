@@ -22,6 +22,9 @@
     <artifactId>lighty-community-restconf-app-parent</artifactId>
     <packaging>pom</packaging>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/PantheonTechnologies/lighty-core</url>
+
     <profiles>
         <profile>
             <id>lighty-community-restconf-app</id>

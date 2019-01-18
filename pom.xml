@@ -15,6 +15,7 @@
     <artifactId>lighty-aggregator</artifactId>
     <version>9.1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <name>lighty-core</name>
 
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>

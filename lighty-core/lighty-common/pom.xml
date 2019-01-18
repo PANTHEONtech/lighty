@@ -21,6 +21,8 @@
     <groupId>io.lighty.core</groupId>
     <artifactId>lighty-common</artifactId>
     <packaging>jar</packaging>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/PantheonTechnologies/lighty-core</url>
 
     <dependencies>
         <dependency>

@@ -21,6 +21,9 @@
     <groupId>io.lighty.core</groupId>
     <artifactId>lighty-controller-spring-di</artifactId>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/PantheonTechnologies/lighty-core</url>
+
     <dependencies>
         <dependency>
             <groupId>io.lighty.core</groupId>
