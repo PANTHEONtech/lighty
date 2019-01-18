@@ -22,6 +22,8 @@
     </properties>
 
     <modules>
-        <module>controllers</module>
+        <module>lighty-community-aaa-restconf-app</module>
+        <module>lighty-community-restconf-netconf-app</module>
+        <module>lighty-controller-springboot-netconf</module>
     </modules>
 </project>

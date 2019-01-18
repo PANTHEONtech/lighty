@@ -21,4 +21,7 @@
     <groupId>io.lighty.models.test</groupId>
     <artifactId>lighty-test-models</artifactId>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/PantheonTechnologies/lighty-core</url>
+
 </project>

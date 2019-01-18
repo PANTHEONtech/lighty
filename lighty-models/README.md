@@ -115,5 +115,5 @@ If you need standardized [IETF](https://www.ietf.org/) models, or include existi
 * [OpenConfig standard IETF models](https://github.com/openconfig/yang)
 
 ### More examples
-This repository contains [example projects](../lighty-examples/controllers/README.md) where you can see how YANG models are used.
+This repository contains [example projects](../lighty-examples/README.md) where you can see how YANG models are used.
 See also __example-data-center__, __lighty-test-models__ and __lighty-toaster__ as model maven artifacts examples in this project.

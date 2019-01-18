@@ -12,10 +12,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.lighty.kit.examples.parents</groupId>
-        <artifactId>lighty-community-restconf-app-parent</artifactId>
+        <groupId>io.lighty.core</groupId>
+        <artifactId>lighty-app-parent</artifactId>
         <version>9.1.2-SNAPSHOT</version>
-        <relativePath>../../../lighty-core/lighty-parents/lighty-community-restconf-app-parent/</relativePath>
+        <relativePath>../../lighty-core/lighty-app-parent</relativePath>
     </parent>
 
     <groupId>io.lighty.kit.examples.controllers</groupId>
@@ -25,6 +25,8 @@
     <properties>
         <application.main.class>io.lighty.examples.controllers.restconfapp.Main</application.main.class>
         <application.attach.zip>true</application.attach.zip>
+
+        <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
 
     <dependencies>
@@ -32,6 +34,18 @@
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-netconf-sb</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.lighty.modules</groupId>
+            <artifactId>lighty-restconf-nb-community</artifactId>
+            <exclusions>
+                <!-- FIXME: why is this exclusion needed? can we move it somewhere else? -->
+                <exclusion>
+                    <groupId>javax.ws.rs</groupId>
+                    <artifactId>javax.ws.rs-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>singlenode-configuration</artifactId>

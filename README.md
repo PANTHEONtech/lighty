@@ -17,7 +17,7 @@ _This branch maintains compatibility with __OpenDaylight Fluorine SR1__ release.
 * __lighty-core__ - [OpenDaylight](https://www.opendaylight.org/) [core services](lighty-core/lighty-controller/README.md): MD-SAL, controller, yangtools, clustering
   - [google guice extension](lighty-core/lighty-controller-guice-di/README.md) - dependency injection extension for [google guice](https://github.com/google/guice)
   - [spring extension](lighty-core/lighty-controller-spring-di/README.md) - dependency injection extension for [spring.io](https://spring.io/)  
-* __lighty-examples__ - lighty.io [examples and applications](lighty-examples/controllers/README.md)
+* __lighty-examples__ - lighty.io [examples and applications](lighty-examples/README.md)
 * __lighty-models__ - example [YANG models](lighty-models/README.md) and YANG model artifacts
 * __lighty-modules__ - [OpenDaylight](https://www.opendaylight.org/) NorthBound (NB) and SouthBound (SB) plugin initializers
   - [RESTCONF north-bound plugin](lighty-modules/northbound-modules/lighty-restconf-nb-community)
@@ -32,7 +32,7 @@ In order to build and install lighty.io artifacts locally, follow the procedure 
 * __build and install locally__ - by running command: ``mvn clean install -DskipTests``
 
 ## Build SDN controller
-lighty.io offers simplified SDN application development procedure. Follow [this](lighty-examples/controllers/README.md) manual to create your own SDN controller project.
+lighty.io offers simplified SDN application development procedure. Follow [this](lighty-examples/README.md) manual to create your own SDN controller project.
 
 ![controller startup sequence](docs/lighty.io-controller-startup-sequence.svg)
 
