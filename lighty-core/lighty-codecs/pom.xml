@@ -13,11 +13,11 @@
         <groupId>io.lighty.core.parents</groupId>
         <artifactId>lighty-parent</artifactId>
         <version>9.1.2-SNAPSHOT</version>
-        <relativePath>../lighty-core/lighty-parents/lighty-parent</relativePath>
+        <relativePath>../lighty-parents/lighty-parent</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>io.lighty.codecs</groupId>
+    <groupId>io.lighty.core</groupId>
     <artifactId>lighty-codecs</artifactId>
     <packaging>jar</packaging>
 
