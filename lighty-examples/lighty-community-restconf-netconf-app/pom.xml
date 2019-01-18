@@ -31,7 +31,6 @@
         <jaxrs.version>3.0.12.Final</jaxrs.version>
 
         <maven.deploy.skip>true</maven.deploy.skip>
-        <maven.install.skip>true</maven.install.skip>
     </properties>
 
     <dependencies>

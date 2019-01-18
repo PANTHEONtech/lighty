@@ -28,7 +28,6 @@
         <application.main.class>io.lighty.kit.examples.community.aaa.restconf.Main</application.main.class>
 
         <maven.deploy.skip>true</maven.deploy.skip>
-        <maven.install.skip>true</maven.install.skip>
     </properties>
 
     <dependencies>
