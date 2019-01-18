@@ -25,6 +25,9 @@
     <properties>
         <application.main.class>default.value</application.main.class>
         <application.attach.zip>false</application.attach.zip>
+
+        <!-- Property controlling verbosity of unpack process -->
+        <lighty.silent.unpack>true</lighty.silent.unpack>
     </properties>
 
     <dependencies>
@@ -40,7 +43,6 @@
         <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>controller-application-assembly</artifactId>
-            <version>8.4.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -111,6 +113,7 @@
                                     <excludes>META-INF\/**</excludes>
                                     <excludeTransitive>true</excludeTransitive>
                                     <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                                    <silent>${lighty.silent.unpack}</silent>
                                 </configuration>
                             </execution>
                             <execution>
@@ -121,6 +124,7 @@
                                 </goals>
                                 <configuration>
                                     <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                                    <silent>${lighty.silent.unpack}</silent>
                                 </configuration>
                             </execution>
                             <!--
@@ -141,6 +145,7 @@
                                     <excludeTransitive>true</excludeTransitive>
                                     <!-- This is a build time resource, not to be packaged. -->
                                     <outputDirectory>${project.build.directory}/resources</outputDirectory>
+                                    <silent>${lighty.silent.unpack}</silent>
                                 </configuration>
                             </execution>
                             <execution>
@@ -156,6 +161,7 @@
                                     <excludeTransitive>true</excludeTransitive>
                                     <!-- Other resources belong to the package. -->
                                     <outputDirectory>${project.build.directory}/assembly/resources</outputDirectory>
+                                    <silent>${lighty.silent.unpack}</silent>
                                 </configuration>
                             </execution>
                         </executions>
