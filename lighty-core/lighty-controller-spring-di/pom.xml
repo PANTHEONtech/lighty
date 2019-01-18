@@ -25,7 +25,6 @@
         <dependency>
             <groupId>io.lighty.core</groupId>
             <artifactId>lighty-controller</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

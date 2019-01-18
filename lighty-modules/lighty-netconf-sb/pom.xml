@@ -42,7 +42,6 @@
         <dependency>
             <groupId>io.lighty.core</groupId>
             <artifactId>lighty-controller</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.modules</groupId>
@@ -110,7 +109,6 @@
         <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>singlenode-configuration</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

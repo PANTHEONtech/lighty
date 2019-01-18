@@ -39,13 +39,12 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
         </dependency>
+
+        <!--Tests-->
         <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>log4j-properties</artifactId>
-            <version>${project.version}</version>
         </dependency>
-
-        <!--Tests-->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>

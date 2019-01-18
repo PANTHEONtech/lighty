@@ -31,13 +31,11 @@
         <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>log4j-properties</artifactId>
-            <version>8.4.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>singlenode-configuration</artifactId>
-            <version>8.4.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.resources</groupId>
@@ -59,7 +57,6 @@
                 <dependency>
                     <groupId>io.lighty.core</groupId>
                     <artifactId>lighty-controller</artifactId>
-                    <version>${project.version}</version>
                 </dependency>
             </dependencies>
             <build>
