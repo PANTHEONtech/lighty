@@ -12,36 +12,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.lighty.core.parents</groupId>
-        <artifactId>lighty-community-restconf-parent</artifactId>
+        <groupId>io.lighty.core</groupId>
+        <artifactId>lighty-parent</artifactId>
         <version>8.4.1-SNAPSHOT</version>
-        <relativePath>../../../lighty-core/lighty-parents/lighty-community-restconf-parent</relativePath>
+        <relativePath>../../lighty-core/lighty-parent</relativePath>
     </parent>
 
-    <groupId>io.lighty.swagger</groupId>
-    <artifactId>lighty-swagger</artifactId>
+    <groupId>io.lighty.modules</groupId>
+    <artifactId>lighty-jetty-server</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>io.lighty.core</groupId>
-            <artifactId>lighty-controller</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.lighty.server</groupId>
-            <artifactId>lighty-server</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.aaa</groupId>
-            <artifactId>aaa-shiro</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.netconf</groupId>
-            <artifactId>sal-rest-docgen</artifactId>
-        </dependency>
-
-        <!-- Jersey + Jetty for RESTCONF -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
@@ -75,12 +55,6 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.lighty.resources</groupId>
-            <artifactId>singlenode-configuration</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

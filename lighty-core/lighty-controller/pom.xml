@@ -12,10 +12,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.lighty.core.parents</groupId>
+        <groupId>io.lighty.core</groupId>
         <artifactId>lighty-parent</artifactId>
         <version>8.4.1-SNAPSHOT</version>
-        <relativePath>../lighty-parents/lighty-parent</relativePath>
+        <relativePath>../lighty-parent</relativePath>
     </parent>
 
     <groupId>io.lighty.core</groupId>
@@ -33,7 +33,6 @@
         <dependency>
             <groupId>io.lighty.core</groupId>
             <artifactId>lighty-common</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -513,7 +512,6 @@
         <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>singlenode-configuration</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

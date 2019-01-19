@@ -16,32 +16,21 @@
     <version>8.4.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.install.skip>true</maven.install.skip>
+    </properties>
+
     <modules>
-        <module>lighty-resources</module>
-        <module>lighty-codecs</module>
         <module>lighty-core</module>
-        <module>lighty-modules</module>
-        <module>lighty-models</module>
         <module>lighty-examples</module>
+        <module>lighty-models</module>
+        <module>lighty-modules</module>
+        <module>lighty-resources</module>
     </modules>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>

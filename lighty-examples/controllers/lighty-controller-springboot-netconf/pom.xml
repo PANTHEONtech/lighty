@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.5.RELEASE</version>
+        <version>2.0.8.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -30,6 +30,18 @@
         <java.version>1.8</java.version>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.lighty.core</groupId>
+                <artifactId>lighty-bom</artifactId>
+                <version>8.4.1-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -39,22 +51,19 @@
         <dependency>
             <groupId>io.lighty.core</groupId>
             <artifactId>lighty-controller-spring-di</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>singlenode-configuration</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-netconf-sb</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.models.test</groupId>
             <artifactId>lighty-toaster</artifactId>
-            <version>${project.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>

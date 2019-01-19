@@ -23,9 +23,10 @@
 
     <modules>
         <module>lighty-aaa</module>
+        <module>lighty-jetty-server</module>
         <module>lighty-netconf-sb</module>
         <module>lighty-restconf-nb-community</module>
-        <module>northbound-modules</module>
+        <module>lighty-swagger</module>
         <module>integration-tests-aaa</module>
     </modules>
 </project>
