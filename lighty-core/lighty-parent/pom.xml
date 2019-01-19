@@ -12,16 +12,19 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.lighty.core.parents</groupId>
-        <artifactId>lighty-parent-no-plugins</artifactId>
+        <groupId>io.lighty.core</groupId>
+        <artifactId>lighty-minimal-parent</artifactId>
         <version>8.4.1-SNAPSHOT</version>
-        <relativePath>../lighty-parent-no-plugins/</relativePath>
+        <relativePath>../lighty-minimal-parent</relativePath>
     </parent>
 
     <!-- This is the main parent for building LightyModule jars. -->
 
     <artifactId>lighty-parent</artifactId>
     <packaging>pom</packaging>
+    <description>
+        Parent pom for code artifacts using Lighty.io.
+    </description>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>

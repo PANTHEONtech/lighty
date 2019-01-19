@@ -12,10 +12,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.lighty.core.parents</groupId>
+        <groupId>io.lighty.core</groupId>
         <artifactId>lighty-parent</artifactId>
         <version>8.4.1-SNAPSHOT</version>
-        <relativePath>../lighty-parents/lighty-parent</relativePath>
+        <relativePath>../lighty-parent</relativePath>
     </parent>
 
     <groupId>io.lighty.core</groupId>
