@@ -25,6 +25,8 @@
     <groupId>io.lighty.core</groupId>
     <artifactId>lighty-binding-parent</artifactId>
     <packaging>pom</packaging>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/PantheonTechnologies/lighty-core</url>
 
     <properties>
         <salGeneratorPath>target/generated-sources/mdsal-binding</salGeneratorPath>

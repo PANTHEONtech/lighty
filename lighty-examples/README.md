@@ -23,8 +23,8 @@ ODL core services represent MD-SAL layer, controller, DataStore, global schema c
 ```
 
 2. Optionally add dependencies on south-bound or north-bound plugins.
- * [RESTCONF NBP](../../lighty-modules/northbound-modules/lighty-restconf-nb-community/README.md)
- * [NETCONF SBP](../../lighty-modules/southbound-modules/lighty-netconf-sb/README.md)
+ * [RESTCONF NBP](../lighty-modules/northbound-modules/lighty-restconf-nb-community/README.md)
+ * [NETCONF SBP](../lighty-modules/southbound-modules/lighty-netconf-sb/README.md)
 
 3. Initialize and start LightyController
 ```
@@ -37,7 +37,7 @@ lightyController.start().get();
 Controller startup sequence consists of 5 easy steps.
 Step #4 is optional.
 
-![startup-sequence](../../docs/lighty.io-controller-startup-sequence.svg)
+![startup-sequence](../docs/lighty.io-controller-startup-sequence.svg)
 
 ## Controller types
 lighty.io supports development of two basic controller types:

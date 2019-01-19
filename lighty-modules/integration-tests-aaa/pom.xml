@@ -17,7 +17,11 @@
         <relativePath>../../lighty-core/lighty-parent</relativePath>
     </parent>
 
-    <groupId>io.lighty.kit.examples.tests</groupId>
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
+    <groupId>io.lighty.modules.tests</groupId>
     <artifactId>integration-tests-aaa</artifactId>
 
     <build>
@@ -73,7 +77,7 @@
         <dependency>
             <groupId>io.lighty.kit.examples.controllers</groupId>
             <artifactId>lighty-community-aaa-restconf-app</artifactId>
-            <version>${project.version}</version>
+            <version>8.4.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
