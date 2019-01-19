@@ -14,10 +14,10 @@
         <groupId>io.lighty.core.parents</groupId>
         <artifactId>lighty-community-restconf-parent</artifactId>
         <version>8.4.1-SNAPSHOT</version>
-        <relativePath>../../../lighty-core/lighty-parents/lighty-community-restconf-parent</relativePath>
+        <relativePath>../../lighty-core/lighty-parents/lighty-community-restconf-parent</relativePath>
     </parent>
 
-    <groupId>io.lighty.modules.southbound.netconf</groupId>
+    <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-netconf-sb</artifactId>
 
     <build>
