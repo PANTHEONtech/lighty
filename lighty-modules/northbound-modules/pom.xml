@@ -22,9 +22,7 @@
     </properties>
 
     <modules>
-        <module>lighty-restconf-nb-community</module>
         <module>lighty-server</module>
-        <module>lighty-aaa</module>
         <module>lighty-swagger</module>
     </modules>
 </project>
