@@ -27,8 +27,8 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>io.lighty.core.parents</groupId>
-                <artifactId>lighty-dependency-artifacts</artifactId>
+                <groupId>io.lighty.core</groupId>
+                <artifactId>dependency-versions</artifactId>
                 <version>8.4.1-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
