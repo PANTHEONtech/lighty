@@ -37,7 +37,6 @@
         <dependency>
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-restconf-nb-community</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.modules</groupId>
@@ -54,7 +53,6 @@
         <dependency>
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-swagger</artifactId>
-            <version>${project.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.eclipse.jetty</groupId>
