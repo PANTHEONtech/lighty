@@ -15,10 +15,10 @@
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-parent</artifactId>
         <version>8.4.1-SNAPSHOT</version>
-        <relativePath>../../../lighty-core/lighty-parent</relativePath>
+        <relativePath>../../lighty-core/lighty-parent</relativePath>
     </parent>
 
-    <groupId>io.lighty.swagger</groupId>
+    <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-swagger</artifactId>
 
     <dependencies>
