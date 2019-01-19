@@ -23,6 +23,7 @@
 
     <modules>
         <module>dependency-versions</module>
+        <module>lighty-app-parent</module>
         <module>lighty-bom</module>
         <module>lighty-binding-parent</module>
         <module>lighty-minimal-parent</module>
@@ -30,7 +31,6 @@
 
         <module>lighty-codecs</module>
         <module>lighty-common</module>
-        <module>lighty-parents</module>
         <module>lighty-controller</module>
         <module>lighty-controller-spring-di</module>
     </modules>

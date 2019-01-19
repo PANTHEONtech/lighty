@@ -15,16 +15,19 @@
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-parent</artifactId>
         <version>8.4.1-SNAPSHOT</version>
-        <relativePath>../../lighty-parent</relativePath>
+        <relativePath>../lighty-parent</relativePath>
     </parent>
 
-    <groupId>io.lighty.kit.examples.parents</groupId>
-    <artifactId>lighty-controller-app-parent</artifactId>
+    <groupId>io.lighty.core</groupId>
+    <artifactId>lighty-app-parent</artifactId>
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <url>https://github.com/PantheonTechnologies/lighty-core</url>
-
+    <description>
+        Utility parent for packaging final controller applications.
+    </description>
+ 
     <properties>
         <application.main.class>default.value</application.main.class>
         <application.attach.zip>false</application.attach.zip>
