@@ -24,6 +24,7 @@
     <modules>
         <module>lighty-aaa</module>
         <module>lighty-netconf-sb</module>
+        <module>lighty-restconf-nb-community</module>
         <module>northbound-modules</module>
         <module>integration-tests-aaa</module>
     </modules>

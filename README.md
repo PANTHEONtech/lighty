@@ -20,7 +20,7 @@ _This branch maintains compatibility with __OpenDaylight Oxygen SR4__ release._
 * __lighty-examples__ - lighty.io [examples and applications](lighty-examples/controllers/README.md)
 * __lighty-models__ - example [YANG models](lighty-models/README.md) and YANG model artifacts
 * __lighty-modules__ - [OpenDaylight](https://www.opendaylight.org/) NorthBound (NB) and SouthBound (SB) plugin initializers
-  - [RESTCONF north-bound plugin](lighty-modules/northbound-modules/lighty-restconf-nb-community)
+  - [RESTCONF north-bound plugin](lighty-modules/lighty-restconf-nb-community)
   - [NETCONF south-bound plugin](lighty-modules/lighty-netconf-sb) 
 * __lighty-resources__ - resource artifacts
 
