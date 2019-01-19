@@ -13,9 +13,9 @@
 
     <parent>
         <groupId>io.lighty.kit.examples.parents</groupId>
-        <artifactId>lighty-community-restconf-app-parent</artifactId>
+        <artifactId>lighty-controller-app-parent</artifactId>
         <version>8.4.1-SNAPSHOT</version>
-        <relativePath>../../lighty-core/lighty-parents/lighty-community-restconf-app-parent/</relativePath>
+        <relativePath>../../lighty-core/lighty-parents/lighty-controller-app-parent/</relativePath>
     </parent>
 
     <groupId>io.lighty.kit.examples.controllers</groupId>
