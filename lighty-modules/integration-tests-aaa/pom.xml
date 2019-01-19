@@ -13,7 +13,7 @@
     <parent>
         <groupId>io.lighty.core.parents</groupId>
         <artifactId>lighty-community-restconf-parent</artifactId>
-        <version>8.4.0-SNAPSHOT</version>
+        <version>8.4.1-SNAPSHOT</version>
         <relativePath>../../lighty-core/lighty-parents/lighty-community-restconf-parent</relativePath>
     </parent>
 
@@ -69,7 +69,7 @@
         <dependency>
             <groupId>io.lighty.modules.northbound.restconf</groupId>
             <artifactId>lighty-restconf-nb-community</artifactId>
-            <version>${lighty.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.kit.examples.controllers</groupId>

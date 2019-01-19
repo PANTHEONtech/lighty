@@ -14,7 +14,7 @@
     <parent>
         <groupId>io.lighty.core.parents</groupId>
         <artifactId>lighty-parent</artifactId>
-        <version>8.4.0-SNAPSHOT</version>
+        <version>8.4.1-SNAPSHOT</version>
         <relativePath>../lighty-parents/lighty-parent</relativePath>
     </parent>
 
@@ -33,7 +33,7 @@
         <dependency>
             <groupId>io.lighty.core</groupId>
             <artifactId>lighty-common</artifactId>
-            <version>${lighty.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -52,7 +52,6 @@
         <dependency>
             <groupId>org.opendaylight.infrautils</groupId>
             <artifactId>diagstatus-api</artifactId>
-            <version>1.3.4</version>
         </dependency>
         <!--odl-yangtools-common-->
         <dependency>
@@ -447,7 +446,8 @@
         <dependency>
             <groupId>org.iq80.leveldb</groupId>
             <artifactId>leveldb-api</artifactId>
-            <version>${leveldb.version}</version><!--TODO Find a way to inherit me from ODL-->
+            <!-- TODO: Find a way to inherit me from ODL-->
+            <version>0.7</version>
         </dependency>
         <dependency>
             <groupId>org.fusesource.leveldbjni</groupId>

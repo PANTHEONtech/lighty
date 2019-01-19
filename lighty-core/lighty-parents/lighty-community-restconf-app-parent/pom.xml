@@ -14,7 +14,7 @@
     <parent>
         <groupId>io.lighty.kit.examples.parents</groupId>
         <artifactId>lighty-controller-app-parent</artifactId>
-        <version>8.4.0-SNAPSHOT</version>
+        <version>8.4.1-SNAPSHOT</version>
         <relativePath>../lighty-controller-app-parent/</relativePath>
     </parent>
 
@@ -33,7 +33,7 @@
                 <dependency>
                     <groupId>io.lighty.modules.northbound.restconf</groupId>
                     <artifactId>lighty-restconf-nb-community</artifactId>
-                    <version>${lighty.version}</version>
+                    <version>${project.version}</version>
                 </dependency>
             </dependencies>
         </profile>

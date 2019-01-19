@@ -13,11 +13,15 @@
 
     <groupId>io.lighty.kit.examples</groupId>
     <artifactId>example-applications-aggregator</artifactId>
-    <version>8.4.0-SNAPSHOT</version>
+    <version>8.4.1-SNAPSHOT</version>
     <packaging>pom</packaging>
+
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.install.skip>true</maven.install.skip>
+    </properties>
 
     <modules>
         <module>controllers</module>
     </modules>
-
 </project>
