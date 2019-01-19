@@ -14,6 +14,9 @@
     <artifactId>lighty-minimal-parent</artifactId>
     <version>8.4.1-SNAPSHOT</version>
     <packaging>pom</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/PantheonTechnologies/lighty-core</url>
     <description>
         Minimal parent pom, which only defines source encoding and imports
         lighty's dependencies.
