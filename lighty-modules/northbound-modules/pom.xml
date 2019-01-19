@@ -22,7 +22,6 @@
     </properties>
 
     <modules>
-        <module>lighty-server</module>
         <module>lighty-swagger</module>
     </modules>
 </project>

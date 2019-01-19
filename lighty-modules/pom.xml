@@ -23,6 +23,7 @@
 
     <modules>
         <module>lighty-aaa</module>
+        <module>lighty-jetty-server</module>
         <module>lighty-netconf-sb</module>
         <module>lighty-restconf-nb-community</module>
         <module>northbound-modules</module>
