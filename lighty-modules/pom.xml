@@ -22,8 +22,9 @@
     </properties>
 
     <modules>
-        <module>integration-tests-aaa</module>
-        <module>northbound-modules</module>
+        <module>lighty-aaa</module>
         <module>lighty-netconf-sb</module>
+        <module>northbound-modules</module>
+        <module>integration-tests-aaa</module>
     </modules>
 </project>
