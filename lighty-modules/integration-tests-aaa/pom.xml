@@ -17,7 +17,11 @@
         <relativePath>../../lighty-core/lighty-parent</relativePath>
     </parent>
 
-    <groupId>io.lighty.kit.examples.tests</groupId>
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
+    <groupId>io.lighty.modules.tests</groupId>
     <artifactId>integration-tests-aaa</artifactId>
 
     <!--<build>-->

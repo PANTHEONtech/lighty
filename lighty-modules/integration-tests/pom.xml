@@ -20,6 +20,10 @@
     <groupId>io.lighty.modules.tests</groupId>
     <artifactId>integration-tests</artifactId>
 
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
