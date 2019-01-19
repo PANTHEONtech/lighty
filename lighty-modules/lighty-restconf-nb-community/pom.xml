@@ -20,6 +20,8 @@
 
     <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-restconf-nb-community</artifactId>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/PantheonTechnologies/lighty-core</url>
 
     <dependencies>
         <dependency>
