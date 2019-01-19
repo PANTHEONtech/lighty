@@ -9,4 +9,5 @@ script: mvn clean install
 cache:
   directories:
     - '$HOME/.m2/repository'
-
+before_cache:
+  - rm -rf $HOME/.m2/repository/io/lighty
