@@ -205,8 +205,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.operDatastoreContext = operDatastoreContext;
         this.datastoreProperties = datastoreProperties;
         this.modelSet = modelSet;
-        this.lightyDiagStatusService = new LightyDiagStatusServiceImpl();
         this.systemReadyMonitor = new LightySystemReadyMonitorImpl();
+        this.lightyDiagStatusService = new LightyDiagStatusServiceImpl(systemReadyMonitor);
     }
 
     /**
@@ -663,7 +663,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public ObjectRegistration<YangModuleInfo> registerModuleInfo(YangModuleInfo yangModuleInfo) {
+    public ObjectRegistration<YangModuleInfo> registerModuleInfo(final YangModuleInfo yangModuleInfo) {
         return moduleInfoBackedContext.registerModuleInfo(yangModuleInfo);
     }
 

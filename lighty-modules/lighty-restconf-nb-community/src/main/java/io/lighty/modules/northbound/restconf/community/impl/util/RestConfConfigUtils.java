@@ -102,11 +102,11 @@ public final class RestConfConfigUtils {
             throw new ConfigurationException(String.format("Cannot bind Json tree to type: %s",
                     RestConfConfiguration.class), e);
         }
-        restconfConfiguration.setDomDataBroker(lightyServices.getControllerClusteredDOMDataBroker());
+        restconfConfiguration.setDomDataBroker(lightyServices.getClusteredDOMDataBroker());
         restconfConfiguration.setSchemaService(lightyServices.getDOMSchemaService());
-        restconfConfiguration.setDomRpcService(lightyServices.getControllerDOMRpcService());
-        restconfConfiguration.setDomNotificationService(lightyServices.getControllerDOMNotificationService());
-        restconfConfiguration.setDomMountPointService(lightyServices.getControllerDOMMountPointService());
+        restconfConfiguration.setDomRpcService(lightyServices.getDOMRpcService());
+        restconfConfiguration.setDomNotificationService(lightyServices.getDOMNotificationService());
+        restconfConfiguration.setDomMountPointService(lightyServices.getDOMMountPointService());
         restconfConfiguration.setDomSchemaService(lightyServices.getDOMSchemaService());
 
         return restconfConfiguration;
@@ -121,9 +121,9 @@ public final class RestConfConfigUtils {
      */
     public static RestConfConfiguration getDefaultRestConfConfiguration(final LightyServices lightyServices) {
         return new RestConfConfiguration(
-                lightyServices.getControllerClusteredDOMDataBroker(), lightyServices.getDOMSchemaService(),
-                lightyServices.getControllerDOMRpcService(), lightyServices.getControllerDOMNotificationService(),
-                lightyServices.getControllerDOMMountPointService(), lightyServices.getDOMSchemaService());
+                lightyServices.getClusteredDOMDataBroker(), lightyServices.getDOMSchemaService(),
+                lightyServices.getDOMRpcService(), lightyServices.getDOMNotificationService(),
+                lightyServices.getDOMMountPointService(), lightyServices.getDOMSchemaService());
     }
 
     /**
@@ -148,14 +148,12 @@ public final class RestConfConfigUtils {
     public static RestConfConfiguration getRestConfConfiguration(final RestConfConfiguration restConfConfiguration,
             final LightyServices lightyServices) {
         final RestConfConfiguration config = new RestConfConfiguration(restConfConfiguration);
-        config.setDomDataBroker(lightyServices.getControllerClusteredDOMDataBroker());
+        config.setDomDataBroker(lightyServices.getClusteredDOMDataBroker());
         config.setSchemaService(lightyServices.getDOMSchemaService());
-        config.setDomRpcService(lightyServices.getControllerDOMRpcService());
-        config.setDomNotificationService(lightyServices.getControllerDOMNotificationService());
-        config.setDomMountPointService(lightyServices.getControllerDOMMountPointService());
+        config.setDomRpcService(lightyServices.getDOMRpcService());
+        config.setDomNotificationService(lightyServices.getDOMNotificationService());
+        config.setDomMountPointService(lightyServices.getDOMMountPointService());
         config.setDomSchemaService(lightyServices.getDOMSchemaService());
         return config;
     }
-
-
 }

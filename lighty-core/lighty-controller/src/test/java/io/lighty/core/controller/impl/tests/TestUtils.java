@@ -86,12 +86,14 @@ class TestUtils {
 
         final FluentFuture<Optional<NetworkTopology>> upcommingRead = readOnlyTransaction
                 .read(LogicalDatastoreType.OPERATIONAL, networkTopologyInstanceIdentifier);
-        final Optional<NetworkTopology> networkTopologyOptional =
-                upcommingRead.get(40, TimeUnit.MILLISECONDS);
-        final NetworkTopology networkTopology = networkTopologyOptional.get();
-
-        final long count = networkTopology.getTopology().stream()
-                .filter(t -> testTopoId.equals(t.getTopologyId().getValue())).count();
+        final Optional<NetworkTopology> networkTopologyOptional = upcommingRead.get(40, TimeUnit.MILLISECONDS);
+        final long count;
+        if (networkTopologyOptional.isPresent()) {
+            count = networkTopologyOptional.get().nonnullTopology().stream()
+                    .filter(t -> testTopoId.equals(t.getTopologyId().getValue())).count();
+        } else {
+            count = 0;
+        }
         Assert.assertEquals(count, expectedCount);
     }
 
@@ -109,10 +111,14 @@ class TestUtils {
                         networkTopologyInstanceIdentifier);
         final com.google.common.base.Optional<NetworkTopology> networkTopologyOptional = upcommingRead.get(40,
                 TimeUnit.MILLISECONDS);
-        final NetworkTopology networkTopology = networkTopologyOptional.get();
+        final long count;
+        if (networkTopologyOptional.isPresent()) {
+            count = networkTopologyOptional.get().nonnullTopology().stream()
+                    .filter(t -> testTopoId.equals(t.getTopologyId().getValue())).count();
+        } else {
+            count = 0;
+        }
 
-        final long count = networkTopology.getTopology().stream().filter(t -> testTopoId.equals(t.getTopologyId()
-                .getValue())).count();
         Assert.assertEquals(count, expectedCount);
     }
 }

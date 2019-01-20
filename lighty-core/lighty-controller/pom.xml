@@ -64,18 +64,6 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>object-cache-guava</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>object-cache-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>object-cache-noop</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-common</artifactId>
         </dependency>
         <dependency>
@@ -204,16 +192,16 @@
             <artifactId>iana-afn-safi</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>iana-if-type-2014-05-08</artifactId>
+            <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
+            <artifactId>iana-if-type</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>ietf-interfaces</artifactId>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc6991</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>ietf-yang-types-20130715</artifactId>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc7223</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
@@ -242,10 +230,6 @@
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>ietf-topology-l3-unicast-igp</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>ietf-inet-types-2013-07-15</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
@@ -343,10 +327,6 @@
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>sal-inmemory-datastore</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>threadpool-config-impl</artifactId>
-        </dependency>
         <!--odl-akka-scala-2.12-->
         <dependency>
             <groupId>org.scala-lang</groupId>
@@ -427,6 +407,14 @@
             <artifactId>netty-handler</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.opendaylight.controller</groupId>
+            <artifactId>threadpool-config-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.controller</groupId>
+            <artifactId>threadpool-config-impl</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.uncommons.maths</groupId>
             <artifactId>uncommons-maths</artifactId>
         </dependency>
@@ -442,21 +430,25 @@
             <groupId>org.agrona</groupId>
             <artifactId>agrona</artifactId>
         </dependency>
-        <!--odl-akka-leveldb-0.7-->
+
+        <!-- See odl-akka-leveldb-0.10 -->
         <dependency>
             <groupId>org.iq80.leveldb</groupId>
             <artifactId>leveldb</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.iq80.leveldb</groupId>
-            <artifactId>leveldb-api</artifactId>
-            <!-- TODO: Find a way to inherit me from ODL-->
-            <version>0.7</version>
+            <version>0.10</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.iq80.leveldb</groupId>
+                    <artifactId>leveldb-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.fusesource.leveldbjni</groupId>
             <artifactId>leveldbjni-all</artifactId>
+            <version>1.8-odl</version>
         </dependency>
+
         <!--odl-mdsal-remoterpc-connector-->
         <dependency>
             <groupId>org.opendaylight.controller</groupId>

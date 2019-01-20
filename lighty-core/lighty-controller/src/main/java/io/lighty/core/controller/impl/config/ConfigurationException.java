@@ -11,20 +11,21 @@ package io.lighty.core.controller.impl.config;
  * author: vincent on 7.9.2017.
  */
 public class ConfigurationException extends Exception {
+    private static final long serialVersionUID = 1L;
 
     public ConfigurationException() {
         super();
     }
 
-    public ConfigurationException(String s) {
+    public ConfigurationException(final String s) {
         super(s);
     }
 
-    public ConfigurationException(String s, Throwable throwable) {
+    public ConfigurationException(final String s, final Throwable throwable) {
         super(s, throwable);
     }
 
-    public ConfigurationException(Throwable throwable) {
+    public ConfigurationException(final Throwable throwable) {
         super(throwable);
     }
 }

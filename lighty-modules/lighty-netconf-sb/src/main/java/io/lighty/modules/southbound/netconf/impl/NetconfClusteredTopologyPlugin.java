@@ -13,9 +13,9 @@ import io.lighty.modules.southbound.netconf.impl.util.NetconfUtils;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
-import org.opendaylight.controller.md.sal.dom.api.DOMMountPoint;
-import org.opendaylight.controller.md.sal.dom.api.DOMMountPointService;
-import org.opendaylight.controller.md.sal.dom.api.DOMRpcService;
+import org.opendaylight.mdsal.dom.api.DOMMountPoint;
+import org.opendaylight.mdsal.dom.api.DOMMountPointService;
+import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.netconf.client.NetconfClientDispatcher;
 import org.opendaylight.netconf.topology.singleton.impl.NetconfTopologyManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.topology.singleton.config.rev170419.Config;
@@ -32,15 +32,15 @@ public class NetconfClusteredTopologyPlugin extends AbstractLightyModule impleme
             final NetconfClientDispatcher clientDispatcher, final Integer writeTxIdleTimeout,
             final ExecutorService executorService, final AAAEncryptionService encryptionService) {
         super(executorService);
-        this.domMountPointService = lightyServices.getControllerDOMMountPointService();
+        this.domMountPointService = lightyServices.getDOMMountPointService();
         final Config config = new ConfigBuilder()
                 .setWriteTransactionIdleTimeout(writeTxIdleTimeout)
                 .build();
-        this.topology = new NetconfTopologyManager(lightyServices.getControllerBindingDataBroker(), lightyServices
-                .getControllerRpcProviderRegistry(), lightyServices.getClusterSingletonServiceProvider(),
+        this.topology = new NetconfTopologyManager(lightyServices.getBindingDataBroker(), lightyServices
+                .getDOMRpcProviderService(), lightyServices.getClusterSingletonServiceProvider(),
                 lightyServices.getScheduledThreaPool(), lightyServices.getThreadPool(),
                 lightyServices.getActorSystemProvider(), lightyServices.getEventExecutor(), clientDispatcher,
-                topologyId, config, lightyServices.getControllerDOMMountPointService(), encryptionService);
+                topologyId, config, lightyServices.getDOMMountPointService(), encryptionService);
     }
 
     @Override
@@ -62,12 +62,13 @@ public class NetconfClusteredTopologyPlugin extends AbstractLightyModule impleme
     @Override
     public Optional<NetconfBaseService> getNetconfBaseService(final NodeId nodeId) {
         final YangInstanceIdentifier yangInstanceIdentifier = NetconfUtils.createNetConfNodeMountPointYII(nodeId);
-        final com.google.common.base.Optional<DOMMountPoint> mountPoint = this.domMountPointService.getMountPoint(yangInstanceIdentifier);
+        final Optional<DOMMountPoint> mountPoint = this.domMountPointService.getMountPoint(yangInstanceIdentifier);
         if (mountPoint.isPresent()) {
             final DOMMountPoint domMountPoint = mountPoint.get();
-            final com.google.common.base.Optional<DOMRpcService> optionalDOMMountPoint = domMountPoint.getService(DOMRpcService.class);
+            final Optional<DOMRpcService> optionalDOMMountPoint = domMountPoint.getService(DOMRpcService.class);
             if (optionalDOMMountPoint.isPresent()) {
-                return Optional.of(new NetconfBaseServiceImpl(nodeId, optionalDOMMountPoint.get(), domMountPoint.getSchemaContext()));
+                return Optional.of(new NetconfBaseServiceImpl(nodeId, optionalDOMMountPoint.get(),
+                    domMountPoint.getSchemaContext()));
             }
         }
         return Optional.empty();

@@ -13,9 +13,9 @@ import io.lighty.modules.southbound.netconf.impl.util.NetconfUtils;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
-import org.opendaylight.controller.md.sal.dom.api.DOMMountPoint;
-import org.opendaylight.controller.md.sal.dom.api.DOMMountPointService;
-import org.opendaylight.controller.md.sal.dom.api.DOMRpcService;
+import org.opendaylight.mdsal.dom.api.DOMMountPoint;
+import org.opendaylight.mdsal.dom.api.DOMMountPointService;
+import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.netconf.client.NetconfClientDispatcher;
 import org.opendaylight.netconf.topology.api.SchemaRepositoryProvider;
 import org.opendaylight.netconf.topology.impl.NetconfTopologyImpl;
@@ -32,13 +32,13 @@ public class NetconfTopologyPlugin extends AbstractLightyModule implements Netco
             final NetconfClientDispatcher clientDispatcher, final ExecutorService executorService,
             final AAAEncryptionService encryptionService) {
         super(executorService);
-        this.domMountPointService = lightyServices.getControllerDOMMountPointService();
+        this.domMountPointService = lightyServices.getDOMMountPointService();
         final SchemaRepositoryProvider schemaRepositoryProvider =
                 new SchemaRepositoryProviderImpl("shared-schema-repository-impl");
         this.topology = new NetconfTopologyImpl(topologyId, clientDispatcher,
                 lightyServices.getEventExecutor(), lightyServices.getScheduledThreaPool(),
                 lightyServices.getThreadPool(), schemaRepositoryProvider,
-                lightyServices.getControllerBindingDataBroker(), lightyServices.getControllerDOMMountPointService(),
+                lightyServices.getBindingDataBroker(), lightyServices.getDOMMountPointService(),
                 encryptionService, new LightyDeviceActionFactory());
     }
 
@@ -61,10 +61,10 @@ public class NetconfTopologyPlugin extends AbstractLightyModule implements Netco
     @Override
     public Optional<NetconfBaseService> getNetconfBaseService(final NodeId nodeId) {
         final YangInstanceIdentifier yangInstanceIdentifier = NetconfUtils.createNetConfNodeMountPointYII(nodeId);
-        final com.google.common.base.Optional<DOMMountPoint> mountPoint = this.domMountPointService.getMountPoint(yangInstanceIdentifier);
+        final Optional<DOMMountPoint> mountPoint = this.domMountPointService.getMountPoint(yangInstanceIdentifier);
         if (mountPoint.isPresent()) {
             final DOMMountPoint domMountPoint = mountPoint.get();
-            final com.google.common.base.Optional<DOMRpcService> optionalDOMMountPoint = domMountPoint.getService(DOMRpcService.class);
+            final Optional<DOMRpcService> optionalDOMMountPoint = domMountPoint.getService(DOMRpcService.class);
             if (optionalDOMMountPoint.isPresent()) {
                 return Optional.of(new NetconfBaseServiceImpl(nodeId, optionalDOMMountPoint.get(), domMountPoint.getSchemaContext()));
             }

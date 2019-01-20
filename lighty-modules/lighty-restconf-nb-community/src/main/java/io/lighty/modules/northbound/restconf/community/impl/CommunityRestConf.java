@@ -19,10 +19,10 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.opendaylight.controller.md.sal.dom.api.DOMDataBroker;
-import org.opendaylight.controller.md.sal.dom.api.DOMMountPointService;
-import org.opendaylight.controller.md.sal.dom.api.DOMNotificationService;
-import org.opendaylight.controller.md.sal.dom.api.DOMRpcService;
+import org.opendaylight.mdsal.dom.api.DOMDataBroker;
+import org.opendaylight.mdsal.dom.api.DOMMountPointService;
+import org.opendaylight.mdsal.dom.api.DOMNotificationService;
+import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.netconf.sal.rest.impl.RestconfApplication;
 import org.opendaylight.netconf.sal.restconf.impl.BrokerFacade;
@@ -196,7 +196,7 @@ public class CommunityRestConf extends AbstractLightyModule {
     }
 
     public void startServer() {
-        if ((this.jettyServer != null) && !this.jettyServer.isStopped()) {
+        if (this.jettyServer != null && !this.jettyServer.isStopped()) {
             return;
         }
         try {

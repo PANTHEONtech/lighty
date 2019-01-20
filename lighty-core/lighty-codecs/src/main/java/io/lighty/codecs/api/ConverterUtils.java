@@ -116,9 +116,9 @@ public final class ConverterUtils {
 
     /**
      * @see ConverterUtils#getRpcQName(XmlElement)
-     * @throws IllegalArgumentException if there was a problem during parsing the XML document
      * @param inputString RPC name
      * @return {@link QName} for RPC name or empty.
+     * @throws IllegalArgumentException if there was a problem during parsing the XML document
      */
     public static Optional<QName> getRpcQName(String inputString) {
         try {
