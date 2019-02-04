@@ -11,7 +11,6 @@ import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.apache.commons.lang3.StringUtils;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextNode;
@@ -66,7 +65,7 @@ public class DeserializeIdentifierCodec {
             throw new IllegalStateException("Module with namespace " + nodeType.getNamespace() + " and revision "
                     + revision + " not found");
         }
-        return "/" + module.get().getName() + ":" + StringUtils.join(elements, "/");
+        return "/" + module.get().getName() + ":" + String.join("/", elements);
     }
 
     private static String buildLeafListArg(final YangInstanceIdentifier.PathArgument pathArgument) {
@@ -91,7 +90,7 @@ public class DeserializeIdentifierCodec {
             }
             keyValue.add(value.toString());
         }
-        builder.append(StringUtils.join(keyValue, ","));
+        builder.append(String.join(",", keyValue));
         return builder.toString();
     }
 }
