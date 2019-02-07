@@ -7,9 +7,8 @@
  */
 package io.lighty.core.controller.impl.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -18,15 +17,23 @@ import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.infrautils.diagstatus.ServiceDescriptor;
 import org.opendaylight.infrautils.diagstatus.ServiceRegistration;
 import org.opendaylight.infrautils.diagstatus.ServiceState;
+import org.opendaylight.infrautils.diagstatus.ServiceStatusSummary;
+import org.opendaylight.infrautils.ready.SystemReadyMonitor;
+import org.opendaylight.infrautils.ready.SystemState;
 
 public class LightyDiagStatusServiceImpl implements DiagStatusService {
 
     private final static String STATE_DESCRIPTION = "Service registration";
 
-    private Map<String, ServiceDescriptor> descriptors = new ConcurrentHashMap<>();
+    private final Map<String, ServiceDescriptor> descriptors = new ConcurrentHashMap<>();
+    private final SystemReadyMonitor systemReadyMonitor;
+
+    public LightyDiagStatusServiceImpl(final SystemReadyMonitor systemReadyMonitor) {
+        this.systemReadyMonitor = requireNonNull(systemReadyMonitor);
+    }
 
     @Override
-    public ServiceRegistration register(String serviceIdentifier) {
+    public ServiceRegistration register(final String serviceIdentifier) {
         final ServiceDescriptor serviceDescriptor = new ServiceDescriptor(serviceIdentifier,
                 ServiceState.STARTING, STATE_DESCRIPTION);
         descriptors.put(serviceIdentifier, serviceDescriptor);
@@ -35,12 +42,12 @@ public class LightyDiagStatusServiceImpl implements DiagStatusService {
     }
 
     @Override
-    public void report(ServiceDescriptor serviceDescriptor) {
+    public void report(final ServiceDescriptor serviceDescriptor) {
         descriptors.put(serviceDescriptor.getModuleServiceName(), serviceDescriptor);
     }
 
     @Override
-    public ServiceDescriptor getServiceDescriptor(String serviceIdentifier) {
+    public ServiceDescriptor getServiceDescriptor(final String serviceIdentifier) {
         return descriptors.get(serviceIdentifier);
     }
 
@@ -54,28 +61,19 @@ public class LightyDiagStatusServiceImpl implements DiagStatusService {
     }
 
     @Override
-    public String getAllServiceDescriptorsAsJSON() {
-        final Collection<ServiceDescriptor> allServiceDescriptors = getAllServiceDescriptors();
-        if (allServiceDescriptors.isEmpty()) {
-            return "{}";
-        } else {
-            ObjectMapper mapper = new ObjectMapper();
-            final ArrayNode arrayNode = mapper.createArrayNode();
-            for (ServiceDescriptor status : allServiceDescriptors) {
-                ObjectNode serviceDescriptor = mapper.createObjectNode();
-                serviceDescriptor.put("serviceName", status.getModuleServiceName());
-                serviceDescriptor.put("effectiveStatus", status.getServiceState().name());
-                serviceDescriptor.put("reportedStatusDescription", status.getStatusDesc());
-                serviceDescriptor.put("statusTimestamp", status.getTimestamp().toString());
-                arrayNode.add(serviceDescriptor);
-            }
-            return arrayNode.toString();
-        }
+    public ServiceStatusSummary getServiceStatusSummary() {
+        SystemState systemState = systemReadyMonitor.getSystemState();
+        Collection<ServiceDescriptor> serviceDescriptors = getAllServiceDescriptors();
+        return new ServiceStatusSummary(isOperational(systemState, serviceDescriptors),
+                systemState, systemReadyMonitor.getFailureCause(), serviceDescriptors);
     }
 
-    @Override
-    public boolean isOperational() {
-        for (ServiceDescriptor sd : getAllServiceDescriptors()) {
+    private static boolean isOperational(final SystemState systemState,
+            final Collection<ServiceDescriptor> serviceDescriptors) {
+        if (!systemState.equals(SystemState.ACTIVE)) {
+            return false;
+        }
+        for (ServiceDescriptor sd : serviceDescriptors) {
             if(sd.getServiceState() != ServiceState.OPERATIONAL) {
                 return false;
             }
@@ -87,7 +85,7 @@ public class LightyDiagStatusServiceImpl implements DiagStatusService {
 
         private final String descriptorId;
 
-        LightyDiagStatusServiceRegistration(String descriptorId) {
+        LightyDiagStatusServiceRegistration(final String descriptorId) {
             this.descriptorId = descriptorId;
         }
 

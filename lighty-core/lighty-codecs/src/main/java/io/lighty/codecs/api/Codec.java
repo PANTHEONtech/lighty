@@ -7,7 +7,7 @@
  */
 package io.lighty.codecs.api;
 
-import org.opendaylight.controller.md.sal.binding.impl.BindingToNormalizedNodeCodec;
+import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
@@ -25,9 +25,9 @@ public interface Codec<BA extends DataObject> extends Serializer<BA>, Deserializ
      * @return codec
      */
     BindingToNormalizedNodeCodec getCodec();
-    
+
     NodeConverter withJson();
-    
+
     NodeConverter withXml();
 
     SchemaContext getSchemaContext();

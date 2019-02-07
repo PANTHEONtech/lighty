@@ -20,10 +20,10 @@ import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTr
 import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.toId;
 
 import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import java.util.Optional;
 import org.opendaylight.controller.md.sal.dom.api.DOMRpcResult;
 import org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.copy.config.input.target.ConfigTarget;
@@ -66,7 +66,7 @@ public final class NetconfUtils {
     private NetconfUtils() {
     }
 
-    public static InstanceIdentifier<Node> createNetConfNodeMountPointII(NodeId nodeId) {
+    public static InstanceIdentifier<Node> createNetConfNodeMountPointII(final NodeId nodeId) {
         KeyedInstanceIdentifier<Topology, TopologyKey> instanceIdentifier =
                 InstanceIdentifier.create(NetworkTopology.class).child(Topology.class,
                         new TopologyKey(new TopologyId(TopologyNetconf.QNAME.getLocalName())));
@@ -75,7 +75,7 @@ public final class NetconfUtils {
         return netconfNodeIID;
     }
 
-    public static YangInstanceIdentifier createNetConfNodeMountPointYII(NodeId nodeId) {
+    public static YangInstanceIdentifier createNetConfNodeMountPointYII(final NodeId nodeId) {
         YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.builder()
                 .node(NetworkTopology.QNAME)
                 .node(Topology.QNAME)
@@ -97,7 +97,7 @@ public final class NetconfUtils {
             final DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?> dataNode =
                     ((ContainerNode) result.getResult()).getChild(
                             NetconfMessageTransformUtil.toId(NetconfMessageTransformUtil.NETCONF_DATA_QNAME)).get();
-            return Optional.fromJavaUtil(NormalizedNodes.findNode(dataNode, path.get().getPathArguments()));
+            return NormalizedNodes.findNode(dataNode, path.get().getPathArguments());
         });
     }
 

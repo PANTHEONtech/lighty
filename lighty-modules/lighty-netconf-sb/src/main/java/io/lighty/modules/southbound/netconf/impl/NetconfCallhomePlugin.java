@@ -29,11 +29,10 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
         final SchemaRepositoryProvider schemaRepositoryProvider =
                 new SchemaRepositoryProviderImpl("shared-schema-repository-impl");
         final CallHomeMountDispatcher dispatcher = new CallHomeMountDispatcher(topologyId,
-                lightyServices.getEventExecutor(), lightyServices.getScheduledThreaPool(), lightyServices.getThreadPool(),
-                schemaRepositoryProvider, lightyServices.getControllerBindingDataBroker(), lightyServices
-                .getControllerDOMMountPointService(), encryptionService);
-        this.provider = new IetfZeroTouchCallHomeServerProvider(lightyServices.getControllerBindingDataBroker(),
-                dispatcher);
+            lightyServices.getEventExecutor(), lightyServices.getScheduledThreaPool(), lightyServices.getThreadPool(),
+            schemaRepositoryProvider, lightyServices.getBindingDataBroker(), lightyServices.getDOMMountPointService(),
+            encryptionService);
+        this.provider = new IetfZeroTouchCallHomeServerProvider(lightyServices.getBindingDataBroker(), dispatcher);
     }
 
     @Override

@@ -47,18 +47,14 @@ public class RestconfAppTest {
      * Perform basic GET operations via RESTCONF
      */
     @Test
-    public void simpleApplicationTest() {
+    public void simpleApplicationTest() throws TimeoutException, ExecutionException, InterruptedException {
         ContentResponse operations = null;
-        try {
-            operations = restClient.GET("operations");
-            Assert.assertEquals(operations.getStatus(), 200);
-            operations = restClient.GET("data/network-topology:network-topology?content=config");
-            Assert.assertEquals(operations.getStatus(), 200);
-            operations = restClient.GET("data/network-topology:network-topology?content=nonconfig");
-            Assert.assertEquals(operations.getStatus(), 200);
-        } catch (TimeoutException | ExecutionException | InterruptedException e) {
-            Assert.fail();
-        }
+        operations = restClient.GET("operations");
+        Assert.assertEquals(operations.getStatus(), 200);
+        operations = restClient.GET("data/network-topology:network-topology?content=config");
+        Assert.assertEquals(operations.getStatus(), 200);
+        operations = restClient.GET("data/network-topology:network-topology?content=nonconfig");
+        Assert.assertEquals(operations.getStatus(), 200);
     }
 
     @AfterClass

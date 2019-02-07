@@ -9,10 +9,10 @@ package io.lighty.modules.northbound.restconf.community.impl.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.net.InetAddress;
-import org.opendaylight.controller.md.sal.dom.api.DOMDataBroker;
-import org.opendaylight.controller.md.sal.dom.api.DOMMountPointService;
-import org.opendaylight.controller.md.sal.dom.api.DOMNotificationService;
-import org.opendaylight.controller.md.sal.dom.api.DOMRpcService;
+import org.opendaylight.mdsal.dom.api.DOMDataBroker;
+import org.opendaylight.mdsal.dom.api.DOMMountPointService;
+import org.opendaylight.mdsal.dom.api.DOMNotificationService;
+import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 
 public class RestConfConfiguration {
@@ -157,7 +157,7 @@ public class RestConfConfiguration {
         if (this == o) {
             return true;
         }
-        if ((o == null) || (getClass() != o.getClass())) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
@@ -196,15 +196,15 @@ public class RestConfConfiguration {
     @Override
     public int hashCode() {
         int result = this.domDataBroker.hashCode();
-        result = (31 * result) + this.schemaService.hashCode();
-        result = (31 * result) + this.domRpcService.hashCode();
-        result = (31 * result) + this.domNotificationService.hashCode();
-        result = (31 * result) + this.domMountPointService.hashCode();
-        result = (31 * result) + this.webSocketPort;
-        result = (31 * result) + this.jsonRestconfServiceType.hashCode();
-        result = (31 * result) + this.httpPort;
-        result = (31 * result) + this.restconfServletContextPath.hashCode();
-        result = (31 * result) + this.domSchemaService.hashCode();
+        result = 31 * result + this.schemaService.hashCode();
+        result = 31 * result + this.domRpcService.hashCode();
+        result = 31 * result + this.domNotificationService.hashCode();
+        result = 31 * result + this.domMountPointService.hashCode();
+        result = 31 * result + this.webSocketPort;
+        result = 31 * result + this.jsonRestconfServiceType.hashCode();
+        result = 31 * result + this.httpPort;
+        result = 31 * result + this.restconfServletContextPath.hashCode();
+        result = 31 * result + this.domSchemaService.hashCode();
         return result;
     }
 }

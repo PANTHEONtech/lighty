@@ -36,7 +36,7 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,7 +94,7 @@ public class Main {
         addCallback(startRestconf);
         Security.addProvider(new BouncyCastleProvider());
 
-        final DataBroker bindingDataBroker = lightyController.getServices().getControllerBindingDataBroker();
+        final DataBroker bindingDataBroker = lightyController.getServices().getBindingDataBroker();
         final String moonEndpointPath = "/moon";
         final String oauth2EndpointPath = "/oauth2";
         final String dbUsername = "foo";

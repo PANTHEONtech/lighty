@@ -19,7 +19,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
-import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaContextResolver;
 
 public class SchemaServiceProvider implements DOMSchemaService, DOMYangTextSourceProvider {
 

@@ -7,37 +7,35 @@
  */
 package io.lighty.core.controller.impl.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.opendaylight.infrautils.ready.SystemReadyListener;
 import org.opendaylight.infrautils.ready.SystemReadyMonitor;
 import org.opendaylight.infrautils.ready.SystemState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class LightySystemReadyMonitorImpl implements LightySystemReadyService, SystemReadyMonitor {
-
     private static final Logger LOG = LoggerFactory.getLogger(LightySystemReadyMonitorImpl.class);
 
-    private final List<SystemReadyListener> listeners;
-    private SystemState state;
+    private final List<SystemReadyListener> listeners = new ArrayList<>();
+
+    private SystemState state = SystemState.BOOTING;
+    private Exception failureCause;
 
     public LightySystemReadyMonitorImpl() {
-        this.listeners = new ArrayList<>();
-        this.state = SystemState.BOOTING;
         LOG.info("SystemReadyMonitorImpl: {}", state);
     }
 
     @Override
-    public synchronized void registerListener(SystemReadyListener listener) {
+    public synchronized void registerListener(final SystemReadyListener listener) {
         LOG.info("registerListener: {}", state);
         switch (state) {
             case BOOTING:
                 listeners.add(listener);
                 break;
             case ACTIVE:
-                listener.onSystemBootReady();
+                notifyListener(listener);
                 break;
             case FAILURE:
                 LOG.warn("ignoring listener, system is in {} state", state);
@@ -46,6 +44,7 @@ public class LightySystemReadyMonitorImpl implements LightySystemReadyService, S
                 throw new UnsupportedOperationException("State " + state.name() + " is not supported !");
         }
     }
+
 
     @Override
     public SystemState getSystemState() {
@@ -57,9 +56,18 @@ public class LightySystemReadyMonitorImpl implements LightySystemReadyService, S
     public synchronized int onSystemBootReady() {
         state = SystemState.ACTIVE;
         LOG.info("onSystemBootReady {} {}", state, listeners.size());
-        listeners.forEach(l->{
-            l.onSystemBootReady();
-        });
+
+        for (SystemReadyListener listener : listeners) {
+            if (state != SystemState.ACTIVE) {
+                break;
+            }
+            notifyListener(listener);
+        }
+
+        if (failureCause != null) {
+            throw new IllegalStateException("Services failed to completely start", failureCause);
+        }
+
         int size = listeners.size();
         listeners.clear();
         return size;
@@ -69,11 +77,25 @@ public class LightySystemReadyMonitorImpl implements LightySystemReadyService, S
     public synchronized int onSystemBootFailed() {
         state = SystemState.FAILURE;
         LOG.warn("onSystemBootFailed {} {}", state, listeners.size());
+        failureCause = new Exception("Unknown reason");
         return listeners.size();
     }
 
     @Override
     public String getFailureCause() {
-        return "";
+        return failureCause == null ? "" : failureCause.getMessage();
+    }
+
+    private void notifyListener(final SystemReadyListener listener) {
+        try {
+            listener.onSystemBootReady();
+        } catch (Exception e) {
+            LOG.error("Listener {} failed", listener, e);
+            if (failureCause == null) {
+                failureCause = e;
+            } else {
+                failureCause.addSuppressed(e);
+            }
+        }
     }
 }
