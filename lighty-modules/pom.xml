@@ -27,5 +27,6 @@
         <module>lighty-restconf-nb-community</module>
         <module>integration-tests</module>
         <module>integration-tests-aaa</module>
+        <module>lighty-swagger</module>
     </modules>
 </project>
