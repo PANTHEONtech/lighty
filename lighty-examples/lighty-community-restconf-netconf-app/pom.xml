@@ -55,7 +55,6 @@
         <dependency>
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-swagger</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
