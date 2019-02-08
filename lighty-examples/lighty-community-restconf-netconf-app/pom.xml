@@ -52,6 +52,10 @@
             <groupId>io.lighty.resources</groupId>
             <artifactId>log4j-properties</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.lighty.modules</groupId>
+            <artifactId>lighty-swagger</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
