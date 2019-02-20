@@ -8,7 +8,6 @@
 package io.lighty.aaa;
 
 import com.google.common.base.Preconditions;
-import com.sun.jersey.spi.container.servlet.ServletContainer;
 import io.lighty.server.LightyServerBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +21,10 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.servlet.ServletContainer;
 import org.opendaylight.aaa.AAAShiroProvider;
+import org.opendaylight.aaa.api.ClaimCache;
 import org.opendaylight.aaa.api.CredentialAuth;
 import org.opendaylight.aaa.api.IDMStoreException;
 import org.opendaylight.aaa.api.IIDMStore;
@@ -74,6 +76,7 @@ public final class AAALightyShiroProvider {
     private final ICertificateManager certificateManager;
     private final ShiroConfiguration shiroConfiguration;
     private CredentialAuth<PasswordCredentials> credentialAuth;
+    private ClaimCache claimCache;
 
     private TokenStore tokenStore;
     private IdMServiceImpl idmService;
@@ -107,7 +110,9 @@ public final class AAALightyShiroProvider {
             return;
         }
         if(credentialAuth == null) {
-            this.credentialAuth = new IdmLightProxy(iidmStore, defaultPasswordHashService);
+            IdmLightProxy idmLightProxy = new IdmLightProxy(iidmStore, defaultPasswordHashService);
+            this.credentialAuth = idmLightProxy;
+            this.claimCache = idmLightProxy;
         }
         this.idmService = new IdMServiceImpl(iidmStore);
         try {
@@ -122,8 +127,9 @@ public final class AAALightyShiroProvider {
     private void initAAAonServer(final LightyServerBuilder server) {
         final ContextHandlerCollection contexts = new ContextHandlerCollection();
         final ServletContextHandler mainHandler = new ServletContextHandler(contexts, "/auth", true, false);
-        final ServletHolder idmLightServlet = new ServletHolder(new ServletContainer(IdmLightApplication.class));
-        idmLightServlet.setInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true");
+        final IdmLightApplication idmLightApplication = new IdmLightApplication(iidmStore, claimCache);
+        final ServletHolder idmLightServlet = new ServletHolder(new ServletContainer(ResourceConfig.forApplication(idmLightApplication)));
+        //idmLightServlet.setInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true");
         idmLightServlet.setInitParameter("jersey.config.server.provider.packages",
                 "org.opendaylight.aaa.impl.provider");
         mainHandler.addServlet(idmLightServlet, "/*");
