@@ -7,7 +7,6 @@
  */
 package io.lighty.modules.northbound.restconf.community.impl;
 
-import com.sun.jersey.spi.container.servlet.ServletContainer;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.modules.northbound.restconf.community.impl.config.JsonRestConfServiceType;
 import io.lighty.server.LightyServerBuilder;
@@ -19,6 +18,8 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.servlet.ServletContainer;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
@@ -132,14 +133,14 @@ public class CommunityRestConf extends AbstractLightyModule {
         switch (this.jsonRestconfServiceType) {
             case DRAFT_02:
                 final Application restconfApplication = new RestconfApplication(controllerContext, stats);
-                final ServletContainer servletContainer = new ServletContainer(restconfApplication);
+                final ServletContainer servletContainer = new ServletContainer(ResourceConfig.forApplication(restconfApplication));
                 jaxrs = new ServletHolder(servletContainer);
                 break;
             case DRAFT_18:
                 final Application restconfApplication8040 =
                 new org.opendaylight.restconf.nb.rfc8040.RestconfApplication(schemaCtxHandler,
                         domMountPointServiceHandler, servicesWrapper);
-                final ServletContainer servletContainer8040 = new ServletContainer(restconfApplication8040);
+                final ServletContainer servletContainer8040 = new ServletContainer(ResourceConfig.forApplication(restconfApplication8040));
                 jaxrs = new ServletHolder(servletContainer8040);
                 break;
             default:
