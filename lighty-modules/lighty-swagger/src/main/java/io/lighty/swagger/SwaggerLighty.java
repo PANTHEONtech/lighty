@@ -7,7 +7,6 @@
  */
 package io.lighty.swagger;
 
-import com.sun.jersey.spi.container.servlet.ServletContainer;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
@@ -16,6 +15,8 @@ import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.servlet.ServletContainer;
 import org.opendaylight.netconf.sal.rest.doc.api.ApiDocService;
 import org.opendaylight.netconf.sal.rest.doc.impl.ApiDocGeneratorDraftO2;
 import org.opendaylight.netconf.sal.rest.doc.impl.ApiDocGeneratorRFC8040;
@@ -67,7 +68,7 @@ public class SwaggerLighty extends AbstractLightyModule {
                 ApiDocService apiDocService = new ApiDocServiceDraft02(mountPointSwaggerGeneratorDraft02, apiDocGeneratorDraft02);
                 ApiDocApplication apiDocApplication = new ApiDocApplication(apiDocService);
 
-                ServletContainer restServletContainer = new ServletContainer(apiDocApplication);
+                ServletContainer restServletContainer = new ServletContainer(ResourceConfig.forApplication(apiDocApplication));
                 ServletHolder restServletHolder = new ServletHolder(restServletContainer);
 
                 LOG.info("initializing swagger doc generator at http(s)://{hostname:port}{}/apis", APIDOC_PATH);
@@ -83,7 +84,7 @@ public class SwaggerLighty extends AbstractLightyModule {
                 ApiDocService apiDocService = new ApiDocServiceRFC8040(mountPointSwaggerGeneratorRFC8040, apiDocGeneratorRFC8040);
                 ApiDocApplication apiDocApplication = new ApiDocApplication(apiDocService);
 
-                ServletContainer restServletContainer = new ServletContainer(apiDocApplication);
+                ServletContainer restServletContainer = new ServletContainer(ResourceConfig.forApplication(apiDocApplication));
                 ServletHolder restServletHolder = new ServletHolder(restServletContainer);
 
                 LOG.info("initializing swagger doc generator at http(s)://{hostname:port}{}/18/apis", APIDOC_PATH);
