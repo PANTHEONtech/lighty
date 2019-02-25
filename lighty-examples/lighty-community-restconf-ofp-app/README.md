@@ -11,9 +11,9 @@ Build and Run
 -------------
 Build the project using maven command: ```mvn clean install```.
 This will create *.zip* archive in target directory. Extract this archive
-and check if is used same version of alpn and java. After that run *.jar* file using java with command:
+and run *.jar* file using java with command:
 ```
-java -Xbootclasspath/p:lib/alpn-boot-8.1.12.v20180117.jar -jar lighty-restconf-ofp-app-9.1.0-SNAPSHOT.jar
+java -jar lighty-community-restconf-ofp-app-9.2.1-SNAPSHOT.jar
 ```
 
 ### Use custom config files
@@ -25,7 +25,7 @@ after build.
 
 When running application pass path to configuration file as argument:
 ```
-java -Xbootclasspath/p:lib/alpn-boot-8.1.12.v20180117.jar -jar lighty-restconf-ofp-app-9.1.0-SNAPSHOT.jar sampleConfigSingleNode.json
+java -jar lighty-community-restconf-ofp-app-9.2.1-SNAPSHOT.jar sampleConfigSingleNode.json
 ```
 
 Building and running Docker Image
