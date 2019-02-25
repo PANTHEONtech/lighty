@@ -23,5 +23,6 @@
         <module>lighty-community-aaa-restconf-app</module>
         <module>lighty-community-restconf-netconf-app</module>
         <module>lighty-controller-springboot-netconf</module>
+        <module>lighty-community-restconf-ofp-app</module>
     </modules>
 </project>
