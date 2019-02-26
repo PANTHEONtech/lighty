@@ -1,4 +1,4 @@
-FROM openjdk:8u202-jre-alpine
+FROM openjdk:8u191-jre-alpine
 
 COPY ./target/lighty-community-restconf-ovsdb-app-9.2.1-SNAPSHOT-bin.zip /
 
