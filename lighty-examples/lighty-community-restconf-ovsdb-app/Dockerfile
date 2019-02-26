@@ -11,10 +11,9 @@ RUN apk add --update libstdc++ curl && \
 
 WORKDIR /lighty-community-restconf-ovsdb-app-9.2.1-SNAPSHOT
 
-EXPOSE 8181
+EXPOSE 8185
 EXPOSE 8888
 EXPOSE 6640
 EXPOSE 2550
-EXPOSE 80
 
 CMD java -jar lighty-community-restconf-ovsdb-app-9.2.1-SNAPSHOT.jar sampleConfigSingleNode.json
