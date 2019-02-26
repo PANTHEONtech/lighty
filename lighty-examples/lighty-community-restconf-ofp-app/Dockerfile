@@ -1,4 +1,4 @@
-FROM openjdk:8u202-jre-alpine
+FROM openjdk:8u191-jre-alpine3.9
 
 COPY ./target/lighty-community-restconf-ofp-app-9.2.1-SNAPSHOT-bin.zip /
 
@@ -12,10 +12,10 @@ RUN apk add --update libstdc++ curl && \
 WORKDIR /lighty-community-restconf-ofp-app-9.2.1-SNAPSHOT
 
 EXPOSE 8888
+EXPOSE 8185
 EXPOSE 6633
-EXPOSE 6640
 EXPOSE 6653
 EXPOSE 2550
 EXPOSE 80
 
-CMD java -jar lighty-community-restconf-ofp-app-9.2.1-SNAPSHOT.jar
+CMD java -jar lighty-community-restconf-ofp-app-9.2.1-SNAPSHOT.jar sampleConfigSingleNode.json

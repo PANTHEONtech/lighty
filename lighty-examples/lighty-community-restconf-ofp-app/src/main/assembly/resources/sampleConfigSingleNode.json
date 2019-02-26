@@ -95,7 +95,7 @@
   "restconf": {
     "httpPort": 8888,
     "restconfServletContextPath": "/restconf",
-    "inetAddress": "127.0.0.1",
+    "inetAddress": "0.0.0.0",
     "jsonRestconfServiceType": "DRAFT_18"
   },
   "openflow": {
