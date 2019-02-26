@@ -23,7 +23,10 @@
         <module>lighty-community-aaa-restconf-app</module>
         <module>lighty-community-restconf-netconf-app</module>
         <module>lighty-controller-springboot-netconf</module>
+<<<<<<< HEAD
         <module>lighty-community-restconf-ofp-app</module>
+=======
         <module>lighty-community-restconf-ovsdb-app</module>
+>>>>>>> Add community-ovsdb into lighty-core
     </modules>
 </project>

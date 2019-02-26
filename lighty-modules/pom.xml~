@@ -9,10 +9,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.lighty.kit.examples</groupId>
-    <artifactId>example-applications-aggregator</artifactId>
+    <groupId>io.lighty.modules</groupId>
+    <artifactId>lighty-modules-aggregator</artifactId>
     <version>9.2.1-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <name>${project.groupId}:${project.artifactId}</name>
 
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
@@ -20,10 +21,17 @@
     </properties>
 
     <modules>
-        <module>lighty-community-aaa-restconf-app</module>
-        <module>lighty-community-restconf-netconf-app</module>
-        <module>lighty-controller-springboot-netconf</module>
-        <module>lighty-community-restconf-ofp-app</module>
-        <module>lighty-community-restconf-ovsdb-app</module>
+        <module>lighty-aaa</module>
+        <module>lighty-jetty-server</module>
+        <module>lighty-netconf-sb</module>
+        <module>lighty-restconf-nb-community</module>
+        <module>lighty-swagger</module>
+        <module>integration-tests</module>
+        <module>integration-tests-aaa</module>
+<<<<<<< HEAD
+        <module>lighty-openflow-sb</module>
+=======
+        <module>lighty-ovsdb-sb</module>
+>>>>>>> Add community-ovsdb into lighty-core
     </modules>
 </project>
