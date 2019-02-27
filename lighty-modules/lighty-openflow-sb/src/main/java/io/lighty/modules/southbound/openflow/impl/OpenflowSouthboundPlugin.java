@@ -117,7 +117,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
             }
 
             //start Stateful OFP
-            if(frmConfigBuilder != null) {
+            if (frmConfigBuilder != null) {
                 //ArbitratorReconciliation implementation
                 final ReconciliationManagerImpl reconciliationManagerImpl
                         = new ReconciliationManagerImpl(mastershipChangeServiceManager);
@@ -170,13 +170,13 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
                 this.flowCapableTopologyProvider.start();
 
                 LOG.info("OFP started as Stateful");
-            }else{
+            } else {
                 //Start Stateless
                 LOG.info("OFP started as Stateless");
             }
 
             //OFP packet listener initialize
-            if(this.packetProcessingListener != null){
+            if (this.packetProcessingListener != null) {
                 this.packetListenerNotificationRegistration
                         = this.lightyServices.getControllerNotificationProviderService()
                               .registerNotificationListener(this.packetProcessingListener);
@@ -192,7 +192,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
 
     @Override
     protected boolean stopProcedure() {
-        if(this.packetListenerNotificationRegistration != null){
+        if (this.packetListenerNotificationRegistration != null) {
             this.packetListenerNotificationRegistration.close();
         }
         destroy(this.flowCapableTopologyProvider);
@@ -224,7 +224,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
      */
     @Override
     public FrmReconciliationService getFrmReconciliationService() {
-        if (this.forwardingRulesManagerImpl == null){
+        if (this.forwardingRulesManagerImpl == null) {
             return null;
         }
         return this.lightyServices.getControllerRpcProviderRegistry().getRpcService(FrmReconciliationService.class);
