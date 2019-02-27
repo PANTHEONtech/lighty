@@ -102,6 +102,76 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.opendaylight.openflowplugin.model</groupId>
+                <artifactId>model-flow-base</artifactId>
+                <version>0.7.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.openflowplugin.model</groupId>
+                <artifactId>model-flow-service</artifactId>
+                <version>0.7.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.openflowplugin.model</groupId>
+                <artifactId>model-flow-statistics</artifactId>
+                <version>0.7.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.openflowplugin.applications</groupId>
+                <artifactId>forwardingrules-manager</artifactId>
+                <version>0.7.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.openflowplugin.applications</groupId>
+                <artifactId>arbitratorreconciliation-impl</artifactId>
+                <version>0.7.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.openflowplugin.applications</groupId>
+                <artifactId>of-switch-config-pusher</artifactId>
+                <version>0.7.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.openflowplugin.applications</groupId>
+                <artifactId>topology-manager</artifactId>
+                <version>0.7.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.openflowplugin.openflowjava</groupId>
+                <artifactId>openflow-protocol-impl</artifactId>
+                <version>0.7.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.openflowplugin</groupId>
+                <artifactId>openflowplugin-extension-api</artifactId>
+                <version>0.7.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.openflowplugin</groupId>
+                <artifactId>openflowplugin-extension-onf</artifactId>
+                <version>0.7.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.openflowplugin</groupId>
+                <artifactId>openflowplugin-impl</artifactId>
+                <version>0.7.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.openflowplugin.openflowjava</groupId>
+                <artifactId>openflow-protocol-spi</artifactId>
+                <version>0.7.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.openflowplugin</groupId>
+                <artifactId>openflowplugin-api</artifactId>
+                <version>0.7.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.serviceutils</groupId>
+                <artifactId>srm-impl</artifactId>
+                <version>0.2.1</version>
+            </dependency>
 
             <!-- Other third-party stuff -->
             <dependency>
