@@ -29,6 +29,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>io.lighty.core</groupId>
+                <artifactId>lighty-controller</artifactId>
+                <version>9.2.1-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>runtime</scope>
+            </dependency>
 
             <!-- Overrides of odlparent -->
             <dependency>
