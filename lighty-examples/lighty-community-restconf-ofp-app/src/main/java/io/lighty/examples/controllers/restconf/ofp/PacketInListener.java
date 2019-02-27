@@ -15,7 +15,7 @@ public class PacketInListener implements PacketProcessingListener {
 
     @Override
     public void onPacketReceived(PacketReceived notification) {
-        if (notification instanceof PacketIn){
+        if (notification instanceof PacketIn) {
             LOG.trace("PacketIn Recived.",notification);
         }
     }

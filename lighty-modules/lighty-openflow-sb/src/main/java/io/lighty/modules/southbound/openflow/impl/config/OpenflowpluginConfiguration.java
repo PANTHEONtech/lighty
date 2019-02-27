@@ -114,7 +114,7 @@ public class OpenflowpluginConfiguration {
      * Create configuration settings need for initialize ForwardingRulesManager
      * @return instance of {@link ForwardingRulesManagerConfigBuilder}
      */
-    public ForwardingRulesManagerConfigBuilder getFrmConfigBuilder(){
+    public ForwardingRulesManagerConfigBuilder getFrmConfigBuilder() {
         final ForwardingRulesManagerConfigBuilder frmConfigBuilder = new ForwardingRulesManagerConfigBuilder();
         frmConfigBuilder.setDisableReconciliation(this.isFrmDisableReconciliation);
         frmConfigBuilder.setStaleMarkingEnabled(this.isFrmStaleMarkingEnabled);

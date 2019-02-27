@@ -109,7 +109,7 @@ public class Main {
         Futures.addCallback(start,new FutureCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean result) {
-                if(result) {
+                if (result) {
                     lightyController.getServices().getLightySystemReadyService().onSystemBootReady();
                 } else {
                     LOG.error("OFP wasn unable to start correctly");

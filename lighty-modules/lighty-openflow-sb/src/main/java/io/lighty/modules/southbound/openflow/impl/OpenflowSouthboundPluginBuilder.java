@@ -70,7 +70,7 @@ public class OpenflowSouthboundPluginBuilder {
     public OpenflowSouthboundPlugin build() {
         // If is false, then is OFP set stateless. Sending flow can be done only by RPC call from SalFlowService.
         // Stateless OFP store configuration only in configured device. After restart device will be all his configuration lost.
-        if(ofpConfiguration.isStateful()){
+        if (ofpConfiguration.isStateful()) {
             //Set OFP stateful. OFP will provide FRM service to synchronized OFP config data-store with device.
             //Stateful OFP also provide sending FLOWs directly to device by RPC call.
             this.forwardingRulesManagerConfigBuilder = ofpConfiguration.getFrmConfigBuilder();
