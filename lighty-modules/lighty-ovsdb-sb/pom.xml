@@ -21,11 +21,6 @@
     <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-ovsdb-sb</artifactId>
 
-    <properties>
-        <jaxrs.version>2.1</jaxrs.version>
-        <jersey.version>2.26</jersey.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>io.lighty.core</groupId>
@@ -34,18 +29,17 @@
         <dependency>
             <groupId>org.opendaylight.ovsdb</groupId>
             <artifactId>southbound-api</artifactId>
-            <version>1.7.1</version>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.ovsdb</groupId>
             <artifactId>southbound-impl</artifactId>
-            <version>1.7.1</version>
         </dependency>
 
         <!-- Tests -->
         <dependency>
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-restconf-nb-community</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
