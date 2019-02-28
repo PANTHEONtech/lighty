@@ -33,16 +33,10 @@
         <dependency>
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-ovsdb-sb</artifactId>
-            <version>9.2.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>singlenode-configuration</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mortbay.jetty.alpn</groupId>
-            <artifactId>alpn-boot</artifactId>
-            <version>8.1.12.v20180117</version>
         </dependency>
     </dependencies>
 </project>
