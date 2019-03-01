@@ -36,6 +36,15 @@ public class Main {
 
     public static void main(final String[] args) throws Exception {
         final long startTime = System.nanoTime();
+        LOG.info(".__  .__       .__     __              .__         ________  ___________");
+        LOG.info("|  | |__| ____ |  |___/  |_ ___.__.    |__| ____   \\_____  \\ \\_   _____/");
+        LOG.info("|  | |  |/ ___\\|  |  \\   __<   |  |    |  |/  _ \\   /   |   \\ |    __)  ");
+        LOG.info("|  |_|  / /_/  >   Y  \\  |  \\___  |    |  (  <_> ) /    |    \\|     \\   ");
+        LOG.info("|____/__\\___  /|___|  /__|  / ____| /\\ |__|\\____/  \\_______  /\\___  /   ");
+        LOG.info("       /_____/      \\/      \\/      \\/                     \\/     \\/    ");
+        LOG.info("Starting lighty.io RESTCONF-OPENFLOW example application ...");
+        LOG.info("https://lighty.io/");
+        LOG.info("https://github.com/PantheonTechnologies/lighty-core");
         try {
             final ControllerConfiguration controllerConfiguration;
             final RestConfConfiguration restConfConfiguration;
