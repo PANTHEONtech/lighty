@@ -1,5 +1,4 @@
-Lighty openflow with lighty-restconf-nb-community
-================================
+# Lighty openflow with lighty-restconf-nb-community
 
 This application contains and will start these modules:
 * LightyController
@@ -7,8 +6,7 @@ This application contains and will start these modules:
 * Openflow plugin
 
 
-Build and Run
--------------
+## Build and Run
 Build the project using maven command: ```mvn clean install```.
 This will create *.zip* archive in target directory. Extract this archive
 and run *.jar* file using java with command:
@@ -28,8 +26,7 @@ When running application pass path to configuration file as argument:
 java -jar lighty-community-restconf-ofp-app-9.2.1-SNAPSHOT.jar sampleConfigSingleNode.json
 ```
 
-Building and running Docker Image
----------------------------------
+### Building and running Docker Image
 - Go into app main directory > lighty-community-restconf-ofp-app
 - Make sure your app is built beforehand.
 - Run ```docker build -t ofp .``` to build image under 'ofp' name.
@@ -40,8 +37,7 @@ Building and running Docker Image
  ```
  - Use the IP for your restconf calls.
 
-Openflow plugin Configuration
--------------
+### Openflow plugin Configuration
 If is need to add Packet-handler to program. It will be proceed in Main example code
 where is starting Openflow plugin:
 ```
@@ -83,8 +79,7 @@ After this change is need to rebuild program.
 ```
 Other way is start OFP with external configuration, where can be changed this property in json file.
 
-How to use Openflow example
--------------------
+## How to use Openflow example
 In order to try openflow application, follow these steps:
 - Start openflow exmaple application
 - Start mininet with at least one openflow switch ([download instructions](http://mininet.org/download/) use version 2.2.0 and higher)
@@ -365,8 +360,7 @@ curl --request POST \
 }'
 ```
 
-Setup logging
--------------
+## Setup logging
 Default logging configuration may be overwritten by JVM option
 ```-Dlog4j.configuration=/path/to/log4j.properties```
 
