@@ -29,5 +29,6 @@
         <module>integration-tests</module>
         <module>integration-tests-aaa</module>
         <module>lighty-ovsdb-sb</module>
+        <module>lighty-openflow-sb</module>
     </modules>
 </project>
