@@ -1,10 +1,9 @@
-# Openflow SouthBound Plugin
+# Openflow South-Bound Plugin
 
 Lighty-openflow (```io.lighty.modules```)
 is Lighty's version of openflow plugin.
 
-How to build and run openflow plugin
------------------------------------------
+## How to build and run openflow plugin
 
 1. Add maven dependency in your pom.xml file.
 ```
@@ -49,20 +48,16 @@ LOG.info("Openflow started");
 4. After executing code from previous steps all should be set and running.
 Openflow SouthBound plugin is now ready to use.
 
-Example switches connect
-----------
-
+## Example switches connect
 If openflow-plugin is running you can connect example switches with mininet.
 
 ```
 sudo mn --controller=remote,ip=<IP_OF_RUNNING_LIGHTY> --topo=tree,1 --switch ovsk,protocols=OpenFlow13
 ``` 
 
-Clustering
-----------
+## Clustering
 Clustering depends on configuration of underlying akka actor system.
 Openflowplugin itself does not have independent settings for clustering.
 
-Example Openflow plugin application
-----------------------------
+## Example Openflow plugin application
 Example application can be found under lighty-examples project.
