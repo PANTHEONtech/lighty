@@ -34,9 +34,5 @@
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-ovsdb-sb</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.lighty.resources</groupId>
-            <artifactId>singlenode-configuration</artifactId>
-        </dependency>
     </dependencies>
 </project>
