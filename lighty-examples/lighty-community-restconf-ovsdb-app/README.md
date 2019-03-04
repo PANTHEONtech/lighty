@@ -49,6 +49,8 @@ In order to try ovsdb application listening mode, follow these steps:
 
 If is not delete ovsdb configuration before turning off application. Ovsdb will be looking for this configuration in next launch. 
 
+NOTE: Make sure you're using node-id: 'ovsdb://HOST1' in you're requests. It is
+required by ODL implementation of OVSDB SB plugin (maybe an issue).
 
 Building and running Docker Image
 ---------------------------------
