@@ -78,6 +78,7 @@
         <dependency>
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-restconf-nb-community</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
