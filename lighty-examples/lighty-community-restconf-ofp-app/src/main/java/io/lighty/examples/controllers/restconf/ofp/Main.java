@@ -100,14 +100,14 @@ public class Main {
         final LightyController lightyController = lightyControllerBuilder.from(controllerConfiguration).build();
         lightyController.start().get();
 
-        //2. start Restconf server
+        //2. start RestConf server
         final CommunityRestConfBuilder communityRestConfBuilder = new CommunityRestConfBuilder();
         final CommunityRestConf communityRestConf = communityRestConfBuilder.from(RestConfConfigUtils
                 .getRestConfConfiguration(restConfConfiguration, lightyController.getServices()))
                 .build();
         communityRestConf.start();
 
-        //3. start openflow SBP
+        //3. start OpenFlow SBP
         final OpenflowSouthboundPlugin plugin;
         plugin = new OpenflowSouthboundPluginBuilder()
                 .from(configuration, lightyController.getServices())
@@ -131,7 +131,7 @@ public class Main {
             }
         }, Executors.newSingleThreadExecutor());
 
-        shutdownHook = new ShutdownHook(lightyController, communityRestConf, null);
+        shutdownHook = new ShutdownHook(lightyController, communityRestConf, plugin);
         Runtime.getRuntime().addShutdownHook(shutdownHook);
     }
 
