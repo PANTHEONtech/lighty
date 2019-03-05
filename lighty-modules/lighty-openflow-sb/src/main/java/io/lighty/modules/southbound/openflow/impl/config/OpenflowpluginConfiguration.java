@@ -43,7 +43,7 @@ public class OpenflowpluginConfiguration {
     private int frmReconciliationRetryCount = 5;
     private boolean isFrmBundleBasedReconciliationEnabled = false;
     private final NonZeroUint32Type nonZeroUint32Type = NonZeroUint32Type.getDefaultInstance("900000");
-    private boolean isStateful = true;
+    private boolean enableForwardingRulesManager = true;
 
     public OpenflowpluginConfiguration() {
         this.switchConfig = new SwitchConfig();
@@ -123,12 +123,12 @@ public class OpenflowpluginConfiguration {
         return frmConfigBuilder;
     }
 
-    public boolean isStateful() {
-        return isStateful;
+    public boolean isEnableForwardingRulesManager() {
+        return this.enableForwardingRulesManager;
     }
 
-    public void setStateful(boolean ofpStartAsStateful) {
-        isStateful = ofpStartAsStateful;
+    public void setEnableForwardingRulesManager(boolean enableForwardingRulesManager) {
+        this.enableForwardingRulesManager = enableForwardingRulesManager;
     }
 
     public boolean isFrmDisableReconciliation() {

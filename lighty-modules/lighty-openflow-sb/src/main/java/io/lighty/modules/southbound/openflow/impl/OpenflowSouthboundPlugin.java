@@ -77,7 +77,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
      * @param openflowProviderConfig Required configuration for OFP.
      * @param providers Required Providers.
      * @param executorService Optional ExecutorService for LightyModule.
-     * @param frmConfigBuilder If is not provide, OFP start as stateless. OFP will note store any flows in data-store.
+     * @param frmConfigBuilder If is not provide, OFP start without FRM.
      * @param packetProcessingListener If is not provide, OFP will be handling packets arrived to controller by default.
      */
     public OpenflowSouthboundPlugin(@Nonnull final LightyServices lightyServices,
@@ -116,7 +116,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
                 throw new RuntimeException("Openflow plugin provider initialization failed.");
             }
 
-            //start Stateful OFP
+            //start ForwardingRulesManager in OFP
             if (frmConfigBuilder != null) {
                 //ArbitratorReconciliation implementation
                 final ReconciliationManagerImpl reconciliationManagerImpl
@@ -153,27 +153,24 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
                         serviceRecoveryRegistryImpl);
                 this.forwardingRulesManagerImpl.start();
 
-                //Topology manager
-                this.operationProcessor = new OperationProcessor(this.lightyServices.getControllerBindingDataBroker());
-                this.operationProcessor.start();
-                TerminationPointChangeListenerImpl terminationPointChangeListener
-                        = new TerminationPointChangeListenerImpl(this.lightyServices.getControllerBindingDataBroker(),
-                                                                 this.operationProcessor);
-                NodeChangeListenerImpl nodeChangeListener
-                        = new NodeChangeListenerImpl(this.lightyServices.getControllerBindingDataBroker(),
-                                                     this.operationProcessor);
-                this.flowCapableTopologyProvider
-                        = new FlowCapableTopologyProvider(this.lightyServices.getControllerBindingDataBroker(),
-                                                          this.lightyServices.getControllerNotificationProviderService(),
-                                                          this.operationProcessor,
-                                                          this.lightyServices.getClusterSingletonServiceProvider());
-                this.flowCapableTopologyProvider.start();
-
-                LOG.info("OFP started as Stateful");
-            } else {
-                //Start Stateless
-                LOG.info("OFP started as Stateless");
+                LOG.info("OFP started with FRM & ARM");
             }
+
+            //Topology manager
+            this.operationProcessor = new OperationProcessor(this.lightyServices.getControllerBindingDataBroker());
+            this.operationProcessor.start();
+            TerminationPointChangeListenerImpl terminationPointChangeListener
+                    = new TerminationPointChangeListenerImpl(this.lightyServices.getControllerBindingDataBroker(),
+                    this.operationProcessor);
+            NodeChangeListenerImpl nodeChangeListener
+                    = new NodeChangeListenerImpl(this.lightyServices.getControllerBindingDataBroker(),
+                    this.operationProcessor);
+            this.flowCapableTopologyProvider
+                    = new FlowCapableTopologyProvider(this.lightyServices.getControllerBindingDataBroker(),
+                    this.lightyServices.getControllerNotificationProviderService(),
+                    this.operationProcessor,
+                    this.lightyServices.getClusterSingletonServiceProvider());
+            this.flowCapableTopologyProvider.start();
 
             //OFP packet listener initialize
             if (this.packetProcessingListener != null) {
@@ -192,9 +189,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
 
     @Override
     protected boolean stopProcedure() {
-        if (this.packetListenerNotificationRegistration != null) {
-            this.packetListenerNotificationRegistration.close();
-        }
+        destroy(this.packetListenerNotificationRegistration);
         destroy(this.flowCapableTopologyProvider);
         destroy(this.operationProcessor);
         destroy(this.forwardingRulesManagerImpl);
@@ -206,14 +201,14 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
 
     /**
      * Start close() method in AutoCloseable instance
-     * @param instance
+     * @param instance instance of {@link AutoCloseable}
      */
     private void destroy(AutoCloseable instance){
         if (instance != null) {
             try {
                 instance.close();
             } catch (final Exception e) {
-                LOG.warn("Exception was thrown during closing "+ instance.getClass().getSimpleName(), e);
+                LOG.warn("Exception was thrown during closing " + instance.getClass().getSimpleName(), e);
             }
         }
     }
