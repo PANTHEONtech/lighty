@@ -3,7 +3,7 @@
 This application contains and will start these modules:
 * LightyController
 * Lighty Community RestConf
-* Openflow plugin
+* Openflow plugin (OFP)
 
 
 ## Build and Run
@@ -17,7 +17,7 @@ java -jar lighty-community-restconf-ofp-app-9.2.1-SNAPSHOT.jar
 ### Use custom config files
 Previous command will run application with default configuration. In order
 to run it with custom configuration, edit (or create new) *json* configuration file.
-Example of *json* configuration can be found [here](src/main/assembly/resources/sampleConfig.json).
+Example of *json* configuration can be found [here](src/main/assembly/resources/sampleConfigSingleNode.json).
 This example configuration will be copied to *.zip* archive in target directory
 after build.
 
@@ -37,7 +37,7 @@ java -jar lighty-community-restconf-ofp-app-9.2.1-SNAPSHOT.jar sampleConfigSingl
  ```
  - Use the IP for your restconf calls.
 
-### Openflow plugin Configuration
+### Openflow plugin and RestConf configuration
 If is need to add Packet-handler to program. It will be proceed in Main example code
 where is starting Openflow plugin:
 ```
@@ -63,33 +63,46 @@ class "PacketProcessingListener".
      ListenableFuture<Boolean> start = plugin.start();
  ```
 
-Openflow plugin (OFP) can be start in stateless or stateful mode.
-- Stateless OFP can be used only for sending FLOWs directly to device by RPC call from SalFlowService.
-  OFP will not synchronized config data-store with device. So configuration will be
-  store only in configured device. After shutdown device will be all his modified configuration lost.
-- Stateful OFP could be used as stateless so can send FLOWs via RPC calls. Beside that will be start
-  Forwarding Rule Manager which will provide synchronizing config data-store with device. So all configuration
-  sent to OFP data-store will be there after restart device and provide them back.
+FLOWs can be added to OFP in two ways. 
+- First way is put FLOW to config data-store and ForwardingRulesManager (FRM) 
+will add this flow to device via RPC call. When is FRM enabled and FLOW is add to config data-store then will be this 
+FLOW persistent until user will decide to delete it.
+- Second way is by RPC call, which add FLOW directly to device. When will be device restart all flows added by RPC calls will be lost.
+RPC calls can be used with enabled FRM. 
 
-By default is set OFP to stateful. Default state can be change in main by setting property isStateful = true to isStateful = false.
-After this change is need to rebuild program.
+By default will be OFP plugin start with FRM but could be disabled in [main](src/main/java/io/lighty/examples/controllers/restconf/ofp/Main.java) class.
 ```
 //3. start openflow SBP
-     configuration.setStateful(false);
+     configuration.setEnableForwardingRulesManager(false);
 ```
-Other way is start OFP with external configuration, where can be changed this property in json file.
+Other way to disable FRM is start OFP with external configuration. In this json configuration can be changed 
+EnableForwardingRulesManager property to false.
+
+Restconf configuration could be changed in json config file mention before. 
+there is possible to change restconf port, ip address or version of restconf. 
+Now is version of restconf set to DRAFT_18 but could be also set to DRAFT_02.
+```
+"restconf": {
+    "httpPort": 8888,
+    "restconfServletContextPath": "/restconf",
+    "inetAddress": "0.0.0.0",
+    "jsonRestconfServiceType": "DRAFT_18"
+  },
+```
 
 ## How to use Openflow example
 In order to try openflow application, follow these steps:
-- Start openflow exmaple application
+- Start openflow example application
 - Start mininet with at least one openflow switch ([download instructions](http://mininet.org/download/) use version 2.2.0 and higher)
 
 ```
 sudo mn --controller=remote,ip=<IP_OF_RUNNING_LIGHTY> --topo=tree,1 --switch ovsk,protocols=OpenFlow13
 ```
+For explanation of OFP usage is RestConf set to DRAFT_18. All RestConf calls used in example, could be import from 
+[file](src/main/assembly/resources/OFP_postman_collection.json) in project resources to Postman.
 
-- Quick check that controller is owner of the connected device. If it is not, controller is not running
-or device is not properly connected. For this example is RestConf set to DRAFT_18.
+Quick check that controller is owner of the connected device. If it is not, controller is not running
+or device is not properly connected.
 
 ```
 curl -k --insecure --request GET \
@@ -177,10 +190,9 @@ Result json starts with:
       .
       .
 ```
-- Now try to add a flow, which will modified switch to send all not matched packet to controller via packet-in
-messages.
+-Now try to add table-miss flow, which will modified switch to send all not matched packet to controller via packet-in messages.
 
-To config data-store, works only in stateful mode:
+To config data-store:
 ```
 curl --request PUT \
   --url http://<IP_OF_RUNNING_LIGHTY>:8888/restconf/data/opendaylight-inventory:nodes/node=openflow%3A1/table=0/flow=1 \
@@ -337,7 +349,7 @@ Works same as adding flow. OFP will find flow openflow:1, table=0, flow=1 and up
 
 - Delete FLOW
 
-Stateful:
+From config data-store:
 ```
 curl --request DELETE \
   --url http://<IP_OF_RUNNING_LIGHTY>:8888/restconf/data/opendaylight-inventory:nodes/node=openflow%3A1/table=0/flow=1 \
@@ -346,7 +358,7 @@ curl --request DELETE \
   --data ''
 ```
 
-Stateless:
+via RPC calls:
 ```
 curl --request POST \
   --url http://<IP_OF_RUNNING_LIGHTY>:8888/restconf/operations/sal-flow:remove-flow \
