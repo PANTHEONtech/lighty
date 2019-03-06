@@ -1,8 +1,8 @@
 # Lighty openflow with lighty-restconf-nb-community
 
 This application contains and will start these modules:
-* LightyController
-* Lighty Community RestConf
+* Lighty Controller
+* Lighty Community RESTCONF
 * Openflow plugin (OFP)
 
 
@@ -35,9 +35,9 @@ java -jar lighty-community-restconf-ofp-app-9.2.1-SNAPSHOT.jar sampleConfigSingl
  ```
  docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" ofp_container
  ```
- - Use the IP for your restconf calls.
+ - Use the IP for your RESTCONF calls.
 
-### Openflow plugin and RestConf configuration
+### Openflow plugin and RESTCONF configuration
 If is need to add Packet-handler to program. It will be proceed in Main example code
 where is starting Openflow plugin:
 ```
@@ -78,9 +78,9 @@ By default will be OFP plugin start with FRM but could be disabled in [main](src
 Other way to disable FRM is start OFP with external configuration. In this json configuration can be changed 
 EnableForwardingRulesManager property to false.
 
-Restconf configuration could be changed in json config file mention before. 
-there is possible to change restconf port, ip address or version of restconf. 
-Now is version of restconf set to DRAFT_18 but could be also set to DRAFT_02.
+RESTCONF configuration could be changed in json config file mention before. 
+there is possible to change RESTCONF port, ip address or version of RESTCONF. 
+Now is version of RESTCONF set to DRAFT_18 but could be also set to DRAFT_02.
 ```
 "restconf": {
     "httpPort": 8888,
@@ -98,14 +98,14 @@ In order to try openflow application, follow these steps:
 ```
 sudo mn --controller=remote,ip=<IP_OF_RUNNING_LIGHTY> --topo=tree,1 --switch ovsk,protocols=OpenFlow13
 ```
-For explanation of OFP usage is RestConf set to DRAFT_18. All RestConf calls used in example, could be import from 
+For explanation of OFP usage is RESTCONF set to DRAFT_18. All RESTCONF calls used in example, could be import from 
 [file](src/main/assembly/resources/OFP_postman_collection.json) in project resources to Postman.
 
 Quick check that controller is owner of the connected device. If it is not, controller is not running
 or device is not properly connected.
 
 ```
-curl -k --insecure --request GET \
+curl --request GET \
   --url http://<IP_OF_RUNNING_LIGHTY>:8888/restconf/data/entity-owners:entity-owners \
   --header 'Authorization: Basic YWRtaW46YWRtaW4='
 ```
@@ -140,13 +140,13 @@ and only one device connected the result is:
 
 From config:
 ```
-curl -k --insecure --request GET \
+curl --request GET \
   --url http:///<IP_OF_RUNNING_LIGHTY>:8888/restconf/data/opendaylight-inventory:nodes/node=openflow%3A1 \
   --header 'Authorization: Basic YWRtaW46YWRtaW4='
 ```
 From operational:
 ```
-curl -k --insecure --request GET \
+curl --request GET \
   --url http:///<IP_OF_RUNNING_LIGHTY>:8888/restconf/data/opendaylight-inventory:nodes/node=openflow%3A1?content=nonconfig \
   --header 'Authorization: Basic YWRtaW46YWRtaW4='
 ```
