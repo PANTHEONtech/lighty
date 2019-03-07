@@ -25,5 +25,6 @@
         <module>lighty-controller-springboot-netconf</module>
         <module>lighty-community-restconf-ovsdb-app</module>
         <module>lighty-community-restconf-ofp-app</module>
+        <module>lighty-community-restconf-ofp-ovsdb-app</module>
     </modules>
 </project>
