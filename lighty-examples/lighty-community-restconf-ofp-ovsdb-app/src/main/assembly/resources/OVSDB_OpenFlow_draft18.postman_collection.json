@@ -1,0 +1,775 @@
+{
+	"info": {
+		"_postman_id": "c1a9a1b9-e4da-4a90-867e-99986b8dcedd",
+		"name": "OVSDB & OpenFlow - draft18",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "OVSDB - controller to connect to OVSDB",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "750bd509-c8a3-4f5d-86cf-33a73bdf08aa",
+						"exec": [
+							"pm.test(\"Successful PUT request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([201,200,204]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"network-topology:node\": [\n    {\n      \"node-id\": \"ovsdb://HOST1\",\n      \"connection-info\": {\n        \"ovsdb:remote-port\": \"6640\",\n        \"ovsdb:remote-ip\": \"10.14.0.103\"\n      }\n    }\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=ovsdb%3A1/node=ovsdb%3A%2F%2FHOST1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=ovsdb%3A1",
+						"node=ovsdb%3A%2F%2FHOST1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OVSDB network topology",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1d223d5f-5030-484e-98bd-1cd3dd6ce339",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=ovsdb%3A1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=ovsdb%3A1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OVSDB - Get specific host from the OVSDB topology",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5b9ccdd1-59a2-4167-8b7d-86a0b4779522",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=ovsdb%3A1/node=ovsdb%3A%2F%2FHOST1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=ovsdb%3A1",
+						"node=ovsdb%3A%2F%2FHOST1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OVSDB network topology - specific bridge",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=ovsdb%3A1/node=ovsdb%3A%2F%2FHOST1%2Fbridge%2Fbr-int",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=ovsdb%3A1",
+						"node=ovsdb%3A%2F%2FHOST1%2Fbridge%2Fbr-int"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OVSDB - Setup OpenFlow controller of br-int",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ec48869c-52b4-434a-b546-4ac16702089a",
+						"exec": [
+							"pm.test(\"Successful PUT request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([201,200,204]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Basic YWRtaW46YWRtaW4="
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"network-topology:node\": [\n        {\n          \"node-id\": \"ovsdb://HOST1/bridge/br-int\",\n             \"ovsdb:bridge-name\": \"br-int\",\n              \"ovsdb:controller-entry\": [\n                {\n                  \"target\": \"tcp:10.14.0.160:6633\"\n                }\n              ]\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8888/restconf/data/network-topology:network-topology/topology=ovsdb%3A1/node=ovsdb%3A%2F%2FHOST1%2Fbridge%2Fbr-int",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=ovsdb%3A1",
+						"node=ovsdb%3A%2F%2FHOST1%2Fbridge%2Fbr-int"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OVSDB - OpenFlow controller - check state",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "001fc085-3e53-4f01-b86e-16e1e5011992",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8888/restconf/data/network-topology:network-topology/topology=ovsdb%3A1/node=ovsdb%3A%2F%2FHOST1%2Fbridge%2Fbr-int/controller-entry=tcp%3A10.14.0.160%3A6633",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=ovsdb%3A1",
+						"node=ovsdb%3A%2F%2FHOST1%2Fbridge%2Fbr-int",
+						"controller-entry=tcp%3A10.14.0.160%3A6633"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OpenFlow - network topology",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1d223d5f-5030-484e-98bd-1cd3dd6ce339",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=flow%3A1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=flow%3A1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OpenFlow - nodes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "77ae56cb-acca-4d08-951d-3687b4b37302",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8888/restconf/data/opendaylight-inventory:nodes",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"opendaylight-inventory:nodes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OpenFlow - specific bridge",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "13bcc118-ba93-4607-9607-7c643ce15fca",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8888/restconf/data/opendaylight-inventory:nodes/node=openflow%3A143423481343818",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"opendaylight-inventory:nodes",
+						"node=openflow%3A143423481343818"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OpenFlow - bridge, specific table",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1e891728-6f12-4c5c-942c-92e225a63844",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8888/restconf/data/opendaylight-inventory:nodes/node=openflow%3A143423481343818/table=0",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"opendaylight-inventory:nodes",
+						"node=openflow%3A143423481343818",
+						"table=0"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE OVSDB - OpenFlow controller",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "adf51154-46ef-412f-9b27-ebd81996e65b",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,204]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"warning": "This is a duplicate header and will be overridden by the Authorization header generated by Postman.",
+						"key": "Authorization",
+						"type": "text",
+						"value": "Basic YWRtaW46YWRtaW4="
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8888/restconf/data/network-topology:network-topology/topology=ovsdb%3A1/node=ovsdb%3A%2F%2FHOST1%2Fbridge%2Fbr-int/controller-entry=tcp%3A10.14.0.160%3A6633",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=ovsdb%3A1",
+						"node=ovsdb%3A%2F%2FHOST1%2Fbridge%2Fbr-int",
+						"controller-entry=tcp%3A10.14.0.160%3A6633"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE OVSDB connection (OVS manager)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1ff51bc9-56f6-4052-a990-9e9163085aee",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,204]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=ovsdb%3A1/node=ovsdb%3A%2F%2FHOST1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=ovsdb%3A1",
+						"node=ovsdb%3A%2F%2FHOST1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
