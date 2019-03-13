@@ -492,6 +492,206 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "AddFlow s1 eth1->eth2",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"flow\": [\n        {\n            \"table_id\": \"0\",\n            \"id\": \"0\",\n            \"priority\": \"10\",\n            \"match\": {\n                \"in-port\": \"openflow:1:1\"\n            },\n            \"instructions\": {\n                \"instruction\": [\n                    {\n                        \"order\": 0,\n                        \"apply-actions\": {\n                            \"action\": [\n                                {\n                                    \"order\": 0,\n                                    \"output-action\": {\n                                        \"output-node-connector\": \"2\",\n                                        \"max-length\": \"65535\"\n                                    }\n                                }\n                            ]\n                        }\n                    }\n                ]\n            }\n        }\n     ]\n  }"
+				},
+				"url": {
+					"raw": "http://localhost:8888/restconf/data/opendaylight-inventory:nodes/node=openflow%3A1/table=0/flow=0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"opendaylight-inventory:nodes",
+						"node=openflow%3A1",
+						"table=0",
+						"flow=0"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddFlow s1 eth2->eth1,controller",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"flow\": [\n        {\n            \"table_id\": \"0\",\n            \"id\": \"1\",\n            \"priority\": \"10\",\n            \"match\": {\n                \"in-port\": \"openflow:1:2\"\n            },\n            \"instructions\": {\n                \"instruction\": [\n                    {\n                        \"order\": 0,\n                        \"apply-actions\": {\n                            \"action\": [\n                                {\n                                    \"order\": 0,\n                                    \"output-action\": {\n                                        \"output-node-connector\": \"1\",\n                                        \"max-length\": \"65535\"\n                                    }\n                                },\n                                {\n                                    \"order\": 1,\n                                    \"output-action\": {\n                                        \"output-node-connector\": \"CONTROLLER\",\n                                        \"max-length\": \"65535\"\n                                    }\n                                }\n                            ]\n                        }\n                    }\n                ]\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8888/restconf/data/opendaylight-inventory:nodes/node=openflow%3A1/table=0/flow=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"opendaylight-inventory:nodes",
+						"node=openflow%3A1",
+						"table=0",
+						"flow=1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddFlow s2 eth1->eth2",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"flow\": [\n        {\n            \"table_id\": \"0\",\n            \"id\": \"0\",\n            \"priority\": \"10\",\n            \"match\": {\n                \"in-port\": \"openflow:2:1\"\n            },\n            \"instructions\": {\n                \"instruction\": [\n                    {\n                        \"order\": 0,\n                        \"apply-actions\": {\n                            \"action\": [\n                                {\n                                    \"order\": 0,\n                                    \"output-action\": {\n                                        \"output-node-connector\": \"2\",\n                                        \"max-length\": \"65535\"\n                                    }\n                                }\n                            ]\n                        }\n                    }\n                ]\n            }\n        }\n    ]\n}\n"
+				},
+				"url": {
+					"raw": "http://localhost:8888/restconf/data/opendaylight-inventory:nodes/node=openflow%3A2/table=0/flow=0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"opendaylight-inventory:nodes",
+						"node=openflow%3A2",
+						"table=0",
+						"flow=0"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddFlow s2 eth2->eth1",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"flow\": [\n        {\n            \"table_id\": \"0\",\n            \"id\": \"1\",\n            \"priority\": \"10\",\n            \"match\": {\n                \"in-port\": \"openflow:2:2\"\n            },\n            \"instructions\": {\n                \"instruction\": [\n                    {\n                        \"order\": 0,\n                        \"apply-actions\": {\n                            \"action\": [\n                                {\n                                    \"order\": 0,\n                                    \"output-action\": {\n                                        \"output-node-connector\": \"1\",\n                                        \"max-length\": \"65535\"\n                                    }\n                                }\n                            ]\n                        }\n                    }\n                ]\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8888/restconf/data/opendaylight-inventory:nodes/node=openflow%3A2/table=0/flow=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"opendaylight-inventory:nodes",
+						"node=openflow%3A2",
+						"table=0",
+						"flow=1"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
