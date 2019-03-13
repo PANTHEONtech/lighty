@@ -119,7 +119,7 @@
     "frmStaleMarkingEnabled": false,
     "frmReconciliationRetryCount": 5,
     "frmBundleBasedReconciliationEnabled": false,
-    "enableForwardingRulesManager": false,
+    "enableForwardingRulesManager": true,
     "switchConfig": {
       "instanceName": "openflow-switch-connection-provider-default-impl",
       "port": 6653,

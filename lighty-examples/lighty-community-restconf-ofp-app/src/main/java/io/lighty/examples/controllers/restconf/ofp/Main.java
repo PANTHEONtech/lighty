@@ -100,7 +100,7 @@ public class Main {
         final LightyController lightyController = lightyControllerBuilder.from(controllerConfiguration).build();
         lightyController.start().get();
 
-        //2. start RestConf server
+        //2. start RESTCONF server
         final CommunityRestConfBuilder communityRestConfBuilder = new CommunityRestConfBuilder();
         final CommunityRestConf communityRestConf = communityRestConfBuilder.from(RestConfConfigUtils
                 .getRestConfConfiguration(restConfConfiguration, lightyController.getServices()))
@@ -161,7 +161,7 @@ public class Main {
             try {
                 this.restconf.shutdown();
             } catch (final Exception e) {
-                LOG.error("Restconf NBP shutdown failed:", e);
+                LOG.error("RESTCONF NBP shutdown failed:", e);
             }
             try {
                 this.lightyController.shutdown();
