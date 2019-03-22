@@ -54,7 +54,7 @@ public class SpringBootAppTest {
 
         //0. login as user with admin role
         //   only user with admin role is able to perform all operations
-        String loginRequest = "{ \"userName\": \"bob\", \"password\": \"secret\" }";
+        String loginRequest = "{ \"username\": \"bob\", \"password\": \"secret\" }";
         contentResponse = restClient.POST("services/security/login", loginRequest);
         Assert.assertEquals(200, contentResponse.getStatus());
 
