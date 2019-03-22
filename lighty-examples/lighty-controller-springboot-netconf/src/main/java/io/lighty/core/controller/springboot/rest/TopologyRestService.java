@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
+import io.lighty.core.controller.springboot.utils.Utils;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
@@ -31,6 +32,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,7 +42,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/topology")
+@RequestMapping(path = "/services/data/topology")
 public class TopologyRestService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TopologyRestService.class);
@@ -49,8 +52,33 @@ public class TopologyRestService {
     @Qualifier("BindingDataBroker")
     private DataBroker databroker;
 
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
+    @GetMapping("/list")
+    public ResponseEntity getAllTopologyIdsOperational(Authentication authentication)
+            throws InterruptedException, ExecutionException, TimeoutException {
+        Utils.logUserData(LOG, authentication);
+
+        try (final ReadTransaction tx = databroker.newReadOnlyTransaction()) {
+            final InstanceIdentifier<NetworkTopology> iid =
+                    InstanceIdentifier.create(NetworkTopology.class);
+            final Optional<NetworkTopology> readData =
+                    tx.read(LogicalDatastoreType.OPERATIONAL, iid).get(TIMEOUT, TimeUnit.SECONDS);
+
+            if (readData.isPresent()) {
+                final List<String> topology = readData.get().getTopology().stream()
+                        .map(topology1 -> topology1.getTopologyId().getValue())
+                        .collect(Collectors.toList());
+                return ResponseEntity.ok(topology);
+            } else {
+                return ResponseEntity.ok(Collections.emptyList());
+            }
+        }
+    }
+
+    @Secured({"ROLE_ADMIN"})
     @PutMapping("/id/{topologyId}")
-    public ResponseEntity putTopologyOperational(@PathVariable final String topologyId) {
+    public ResponseEntity putTopologyOperational(@PathVariable final String topologyId, Authentication authentication) {
+        Utils.logUserData(LOG, authentication);
 
         final WriteTransaction tx = databroker.newWriteOnlyTransaction();
 
@@ -73,29 +101,10 @@ public class TopologyRestService {
         }
     }
 
-    @GetMapping("/list")
-    public ResponseEntity getAllTopologyIdsOperational()
-        throws InterruptedException, ExecutionException, TimeoutException {
-
-        try (final ReadTransaction tx = databroker.newReadOnlyTransaction()) {
-            final InstanceIdentifier<NetworkTopology> iid =
-                InstanceIdentifier.create(NetworkTopology.class);
-            final Optional<NetworkTopology> readData =
-                tx.read(LogicalDatastoreType.OPERATIONAL, iid).get(TIMEOUT, TimeUnit.SECONDS);
-
-            if (readData.isPresent()) {
-                final List<String> topology = readData.get().getTopology().stream()
-                    .map(topology1 -> topology1.getTopologyId().getValue())
-                    .collect(Collectors.toList());
-                return ResponseEntity.ok(topology);
-            } else {
-                return ResponseEntity.ok(Collections.emptyList());
-            }
-        }
-    }
-
+    @Secured({"ROLE_ADMIN"})
     @DeleteMapping("/id/{topologyId}")
-    public ResponseEntity deleteTopologyOperational(@PathVariable final String topologyId) {
+    public ResponseEntity deleteTopologyOperational(@PathVariable final String topologyId, Authentication authentication) {
+        Utils.logUserData(LOG, authentication);
 
         final WriteTransaction tx = databroker.newWriteOnlyTransaction();
 
@@ -114,4 +123,5 @@ public class TopologyRestService {
             return ResponseEntity.status(500).build();
         }
     }
+
 }

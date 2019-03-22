@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import io.lighty.core.controller.springboot.utils.Utils;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -40,9 +41,13 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,8 +57,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/netconf")
+@RequestMapping(path = "/services/data/netconf")
 public class NetconfDeviceRestService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(NetconfDeviceRestService.class);
 
     private static final InstanceIdentifier<Topology> NETCONF_TOPOLOGY_IID = InstanceIdentifier
         .create(NetworkTopology.class)
@@ -68,8 +75,10 @@ public class NetconfDeviceRestService {
     @Autowired
     private MountPointService mountPointService;
 
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping(path = "/list")
-    public ResponseEntity getNetconfDevicesIds() throws InterruptedException, ExecutionException, TimeoutException {
+    public ResponseEntity getNetconfDevicesIds(Authentication authentication) throws InterruptedException, ExecutionException, TimeoutException {
+        Utils.logUserData(LOG, authentication);
         try (final ReadTransaction tx = dataBroker.newReadOnlyTransaction()) {
             final Optional<Topology> netconfTopoOptional =
                 tx.read(LogicalDatastoreType.OPERATIONAL, NETCONF_TOPOLOGY_IID).get(TIMEOUT, TimeUnit.SECONDS);
@@ -77,8 +86,7 @@ public class NetconfDeviceRestService {
 
             if (netconfTopoOptional.isPresent() && netconfTopoOptional.get().getNode() != null) {
                 for (Node node : netconfTopoOptional.get().getNode()) {
-                    final NetconfDeviceResponse nodeResponse = NetconfDeviceResponse.from(node);
-                    response.add(nodeResponse);
+                    NetconfDeviceResponse nodeResponse = NetconfDeviceResponse.from(node);
 
                     final com.google.common.base.Optional<MountPoint> netconfMountPoint =
                         mountPointService.getMountPoint(NETCONF_TOPOLOGY_IID
@@ -95,10 +103,11 @@ public class NetconfDeviceRestService {
                                 .read(LogicalDatastoreType.OPERATIONAL, TOASTER_IID).get(TIMEOUT, TimeUnit.SECONDS);
 
                             if (toasterData.isPresent() && toasterData.get().getDarknessFactor() != null) {
-                                nodeResponse.setDarknessFactor(toasterData.get().getDarknessFactor());
+                                nodeResponse = NetconfDeviceResponse.from(node, toasterData.get().getDarknessFactor());
                             }
                         }
                     }
+                    response.add(nodeResponse);
                 }
 
             }
@@ -106,11 +115,12 @@ public class NetconfDeviceRestService {
         }
     }
 
+    @Secured({"ROLE_ADMIN"})
     @PutMapping(path = "/id/{netconfDeviceId}")
     public ResponseEntity connectNetconfDevice(@PathVariable final String netconfDeviceId,
-                                               @RequestBody final NetconfDeviceRequest deviceInfo)
+                                               @RequestBody final NetconfDeviceRequest deviceInfo, Authentication authentication)
         throws InterruptedException, ExecutionException, TimeoutException {
-
+        Utils.logUserData(LOG, authentication);
         final WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         final NodeId nodeId = new NodeId(netconfDeviceId);
         final InstanceIdentifier<Node> netconfDeviceIID = NETCONF_TOPOLOGY_IID
@@ -135,10 +145,11 @@ public class NetconfDeviceRestService {
         return ResponseEntity.ok().build();
     }
 
+    @Secured({"ROLE_ADMIN"})
     @DeleteMapping(path = "/id/{netconfDeviceId}")
-    public ResponseEntity disconnectNetconfDevice(@PathVariable final String netconfDeviceId)
+    public ResponseEntity disconnectNetconfDevice(@PathVariable final String netconfDeviceId, Authentication authentication)
         throws InterruptedException, ExecutionException, TimeoutException {
-
+        Utils.logUserData(LOG, authentication);
         final WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         final NodeId nodeId = new NodeId(netconfDeviceId);
         final InstanceIdentifier<Node> netconfDeviceIID = NETCONF_TOPOLOGY_IID
@@ -150,4 +161,5 @@ public class NetconfDeviceRestService {
 
         return ResponseEntity.ok().build();
     }
+
 }
