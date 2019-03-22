@@ -39,7 +39,8 @@ public class RestClient implements AutoCloseable {
     }
 
     public ContentResponse GET(String uri) throws InterruptedException, ExecutionException, TimeoutException {
-        return httpClient.GET(baseUrl + uri);
+        Request request = httpClient.newRequest(baseUrl + uri);
+        return request.send();
     }
 
     public ContentResponse POST(String uri, String data) throws InterruptedException, ExecutionException, TimeoutException {
