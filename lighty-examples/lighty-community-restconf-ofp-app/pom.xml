@@ -34,37 +34,5 @@
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-openflow-sb</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.opendaylight.openflowplugin.model</groupId>
-            <artifactId>model-flow-base</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.openflowplugin.model</groupId>
-            <artifactId>model-flow-service</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.openflowplugin.model</groupId>
-            <artifactId>model-flow-statistics</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.openflowplugin.applications</groupId>
-            <artifactId>forwardingrules-manager</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.openflowplugin.applications</groupId>
-            <artifactId>arbitratorreconciliation-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.openflowplugin.applications</groupId>
-            <artifactId>of-switch-config-pusher</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.openflowplugin.applications</groupId>
-            <artifactId>topology-manager</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.serviceutils</groupId>
-            <artifactId>srm-impl</artifactId>
-        </dependency>
     </dependencies>
 </project>
