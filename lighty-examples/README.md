@@ -5,6 +5,8 @@ The best way how to start consume lighty.io services is to check example applica
  * Simple [RESTCONF-NETCONF SDN controller](lighty-community-restconf-netconf-app/README.md).
  * Simple [Spring Boot NETCONF SDN controller](lighty-controller-springboot-netconf/README.md).
  * Simple [OPENFLOW SDN controller](lighty-community-restconf-ofp-app/README.md).
+ * Simple [OVSDB SDN controller](lighty-community-restconf-ovsdb-app/README.md).
+ * Simple [OPENFLOW and OVSDB SDN controller](lighty-community-restconf-ofp-ovsdb-app).
 
 ## Setup controller project
 Typical controller project requires initialization of [ODL core services](../lighty-core/lighty-controller/src/main/java/io/lighty/core/controller/api/LightyServices.java), south-bound plugins and optionally RESTCONF north-bound plugin.
@@ -27,6 +29,7 @@ ODL core services represent MD-SAL layer, controller, DataStore, global schema c
  * [RESTCONF NBP](../lighty-modules/lighty-restconf-nb-community/README.md)
  * [NETCONF SBP](../lighty-modules/lighty-netconf-sb/README.md)
  * [OPENFLOW SBP](../lighty-modules/lighty-openflow-sb/README.md)
+ * [OVSDB SBP](../lighty-modules/lighty-ovsdb-sb)
 
 3. Initialize and start LightyController
 ```
