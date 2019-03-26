@@ -1,5 +1,4 @@
-SDN controller with RESTCONF NB and OpenFlow, OVSDB SBs
-================================
+# SDN controller with RESTCONF NB and OpenFlow, OVSDB SBs
 
 This application contains and will start these modules:
 * LightyController
@@ -7,8 +6,9 @@ This application contains and will start these modules:
 * OpenFlow southbound plugin
 * OVSDB southbound plugin
 
-Build and Run
--------------
+![architecture](docs/restconf-ofp-ovsdb-architecture.svg)
+
+## Build and Run
 Build the project using maven command: ```mvn clean install```.
 This will create *.zip* archive in target directory. Extract this archive
 and run *.jar* file using java with command:
@@ -28,8 +28,7 @@ When running application pass path to configuration file as argument:
 java -jar lighty-community-restconf-ofpovsdb-app-9.2.1-SNAPSHOT.jar sampleConfigSingleNode.json
 ```
 
-Building and running Docker Image
----------------------------------
+## Building and running Docker Image
 - Go into app main directory > lighty-community-restconf-ofp-ovsdb-app
 - Make sure your app is built beforehand.
 - Run ```docker build -t ofp-ovsdb .``` to build image under 'ofp-ovsdb' name.
@@ -41,16 +40,14 @@ Building and running Docker Image
  - Use the IP for your restconf calls.
 
 
-Setup logging
--------------
+## Setup logging
 Default logging configuration may be overwritten by JVM option
 ```-Dlog4j.configuration=/path/to/log4j.properties```
 
 Content of ```log4j.properties``` is described [here](https://logging.apache.org/log4j/2.x/manual/configuration.html).
 
 
-Open vSwitch orchestration over OVSDB and OpenFlow
-------------------------------------------------------------
+## Open vSwitch orchestration over OVSDB and OpenFlow
 This SDN controller application can be used for complete orchestration of any device
 supporting OVSDB, OpenFlow or both. An example of device which requires orchestration using
 OVSDB and OpenFlow simultaneously is Open vSwitch - [https://www.openvswitch.org/](https://www.openvswitch.org/).

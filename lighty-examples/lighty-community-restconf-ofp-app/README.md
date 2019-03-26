@@ -1,10 +1,11 @@
-# Lighty openflow with lighty-restconf-nb-community
+# Lighty OpenFlow with RESTCONF
 
 This application contains and will start these modules:
 * Lighty Controller
 * Lighty Community RESTCONF
 * Openflow plugin (OFP)
 
+![architecture](docs/restconf-ofp-architecture.svg)
 
 ## Build and Run
 Build the project using maven command: ```mvn clean install```.

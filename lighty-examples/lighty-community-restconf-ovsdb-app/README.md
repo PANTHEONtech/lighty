@@ -1,14 +1,13 @@
-Lighty ovsdb-sb with lighty-restconf-nb-community
-====================================
+# Lighty OVSDB with RESTCONF
 
 This application contains and will start these modules:
 * LightyController
 * Lighty Community RestConf
 * Ovsdb-sb plugin
 
+![architecture](docs/restconf-ovsdb-architecture.svg)
 
-Build and Run
--------------
+## Build and Run
 Build the project using maven command: ```mvn clean install``` from
 lighty-community-restconf-ovsdb-app directory. This will create *.zip* archive
 in target directory. Extract this archive. Start application from command line from unzipped
@@ -19,8 +18,7 @@ java -jar lighty-community-restconf-ovsdb-app-9.2.1-SNAPSHOT.jar sampleConfigSin
 To start with script, go into unzipped directory. Than run ```./start-ovsdb.sh```
 You can change sampleConfigSingleNode.json as needed, or create new configuration file.
 
-How to use Ovsdb example application
-------------------------------------
+## How to use Ovsdb example application
 In order to try ovsdb application talking mode, follow these steps:
 - Import postman collection from application resources. (You can also rewrite the commands
 into curl.)
@@ -52,8 +50,7 @@ If is not delete ovsdb configuration before turning off application. Ovsdb will 
 NOTE: Make sure you're using node-id: 'ovsdb://HOST1' in you're requests. It is
 required by ODL implementation of OVSDB SB plugin (maybe an issue).
 
-Building and running Docker Image
----------------------------------
+## Building and running Docker Image
 - Go into app main directory > lighty-community-restconf-ovsdb-app
 - Make sure your app is built beforehand.
 - Run ```docker build -t ovsdb .``` to build image under 'ovsdb' name.
@@ -64,13 +61,11 @@ Building and running Docker Image
  ```
  - Use the IP for your restconf calls.
 
-Setup logging
--------------
+## Setup logging
 Default logging configuration may be overwritten by JVM option
 ```-Dlog4j.configuration=/path/to/log4j.properties```
 
 Content of ```log4j.properties``` is described [here](https://logging.apache.org/log4j/2.x/manual/configuration.html).
 
-Further reading
----------------
+## Further reading
 [Opendaylight documentation](https://docs.opendaylight.org/en/stable-fluorine/user-guide/ovsdb-user-guide.html).
