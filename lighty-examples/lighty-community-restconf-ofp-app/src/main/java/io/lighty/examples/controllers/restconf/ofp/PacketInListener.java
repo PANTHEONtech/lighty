@@ -1,6 +1,5 @@
 package io.lighty.examples.controllers.restconf.ofp;
 
-import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketIn;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
 import org.slf4j.Logger;
@@ -15,8 +14,6 @@ public class PacketInListener implements PacketProcessingListener {
 
     @Override
     public void onPacketReceived(PacketReceived notification) {
-        if (notification instanceof PacketIn) {
-            LOG.trace("PacketIn Recived.",notification);
-        }
+        LOG.trace("PacketIn Recived. {}", notification);
     }
 }
