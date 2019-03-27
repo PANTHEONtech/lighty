@@ -111,6 +111,7 @@ public class Main {
         final OpenflowSouthboundPlugin plugin;
         plugin = new OpenflowSouthboundPluginBuilder()
                 .from(configuration, lightyController.getServices())
+                .withPacketListener(new PacketInListener())
                 .build();
         ListenableFuture<Boolean> start = plugin.start();
 
