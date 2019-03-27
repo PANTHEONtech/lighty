@@ -29,7 +29,7 @@ _This branch maintains compatibility with __OpenDaylight Fluorine SR2__ release.
 
 ## Build and Install
 In order to build and install lighty.io artifacts locally, follow the procedure below:
-* __install JDK__ - make sure [JDK 8](http://openjdk.java.net/install/) is installed
+* __install JDK__ - make sure [JDK 8](http://openjdk.java.net/install/) or [JDK 11](https://jdk.java.net/11/) is installed
 * __install maven__ - make sure you have maven 3.5.0 or later installed
 * __setup maven__ - make sure you have proper [settings.xml](https://github.com/opendaylight/odlparent/blob/master/settings.xml) in your ```~/.m2``` directory
 * __build and install locally__ - by running command: ``mvn clean install -DskipTests``
