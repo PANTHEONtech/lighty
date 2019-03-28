@@ -17,7 +17,7 @@ To use Lighty controller in your project:
   <dependency>
     <groupId>io.lighty.core</groupId>
     <artifactId>lighty-controller</artifactId>
-    <version>9.1.1</version>
+    <version>9.2.0</version>
   </dependency>
 ```
 
@@ -25,10 +25,10 @@ To use Lighty controller in your project:
 ```
   ControllerConfiguration defaultSingleNodeConfiguration
      = ControllerConfigUtils.getDefaultSingleNodeConfiguration();
-  ODLController odlController = new ODLControllerBuilder()
-     .from(controllerConfiguration)
+  LightyController lightyController = new LightyControllerBuilder()
+     .from(defaultSingleNodeConfiguration)
      .build();
-  odlController.start();
+  lightyController.start();
 ```
 
 3. Use LightyServices in your application
