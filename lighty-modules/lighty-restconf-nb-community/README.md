@@ -12,7 +12,7 @@ To use RESTCONF in your project:
   <dependency>
     <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-restconf-nb-community</artifactId>
-    <version>9.1.1</version>
+    <version>9.2.0</version>
   </dependency>
 ```
 
@@ -20,10 +20,10 @@ To use RESTCONF in your project:
 ```
   RestConfConfiguration restConfConfig
       = RestConfConfigUtils.getDefaultRestConfConfiguration();
-  ODLRestConf odlRestConf = new ODLRestConfBuilder()
-      .from(RestConfConfigUtils.getRestConfConfiguration(restConfConfig, odlController.getServices()))
+  CommunityRestConf communityRestConf = new CommunityRestConfBuilder()
+      .from(restConfConfig)
       .build();
-  odlRestConf.start();
+  communityRestConf.start();
 ```
 
 ## Configuration
