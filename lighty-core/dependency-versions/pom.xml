@@ -126,13 +126,6 @@
                 <artifactId>srm-impl</artifactId>
                 <version>0.2.1</version>
             </dependency>
-            <dependency>
-                <groupId>org.opendaylight.ovsdb</groupId>
-                <artifactId>southbound-artifacts</artifactId>
-                <version>1.7.1</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
 
             <!-- Other third-party stuff -->
             <dependency>
