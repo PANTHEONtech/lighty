@@ -96,6 +96,29 @@
                 <scope>import</scope>
             </dependency>
 
+            <dependency>
+                <groupId>org.opendaylight.openflowplugin</groupId>
+                <artifactId>openflowplugin-artifacts</artifactId>
+                <version>0.8.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.openflowplugin.applications</groupId>
+                <artifactId>arbitratorreconciliation-impl</artifactId>
+                <version>0.8.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.serviceutils</groupId>
+                <artifactId>srm-api</artifactId>
+                <version>0.3.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.serviceutils</groupId>
+                <artifactId>srm-impl</artifactId>
+                <version>0.3.0</version>
+            </dependency>
+
             <!-- Other third-party stuff -->
             <dependency>
                 <groupId>org.slf4j</groupId>
