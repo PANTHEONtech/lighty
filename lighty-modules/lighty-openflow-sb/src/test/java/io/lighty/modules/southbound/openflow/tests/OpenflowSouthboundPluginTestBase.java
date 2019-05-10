@@ -40,7 +40,7 @@ public abstract class OpenflowSouthboundPluginTestBase {
     private CommunityRestConf communityRestConf;
     private OpenflowSouthboundPlugin ofplugin;
 
-    @BeforeClass(timeOut = 60_000)
+    @BeforeClass(timeOut = 180_000)
     public void startOpenflowPlugin() throws Exception {
         LOG.info("Building LightyController");
         final Set<YangModuleInfo> models = new HashSet<>();
