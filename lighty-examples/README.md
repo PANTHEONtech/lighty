@@ -3,6 +3,7 @@
 The best way how to start consume lighty.io services is to check example applications in this project, usage of lighty core components as well as RESTCONF and NETCONF plugins.
 
  * Simple [RESTCONF-NETCONF SDN controller](lighty-community-restconf-netconf-app/README.md).
+ * Simple [OPENFLOW SDN controller](lighty-community-restconf-ofp-app/README.md).
  * Simple [Spring Boot NETCONF SDN controller](lighty-controller-springboot-netconf/README.md).
 
 ## Setup controller project
@@ -15,7 +16,7 @@ ODL core services represent MD-SAL layer, controller, DataStore, global schema c
    <dependency>
       <groupId>io.lighty.core.parents</groupId>
       <artifactId>lighty-dependency-artifacts</artifactId>
-      <version>9.1.1</version>
+      <version>10.0.1</version>
       <type>pom</type>
       <scope>import</scope>
    </dependency>
@@ -23,8 +24,8 @@ ODL core services represent MD-SAL layer, controller, DataStore, global schema c
 ```
 
 2. Optionally add dependencies on south-bound or north-bound plugins.
- * [RESTCONF NBP](../lighty-modules/northbound-modules/lighty-restconf-nb-community/README.md)
- * [NETCONF SBP](../lighty-modules/southbound-modules/lighty-netconf-sb/README.md)
+ * [RESTCONF NBP](../lighty-modules/lighty-restconf-nb-community/README.md)
+ * [NETCONF SBP](../lighty-modules/lighty-netconf-sb/README.md)
  * [OPENFLOW SBP](../lighty-modules/lighty-openflow-sb/README.md)
 
 3. Initialize and start LightyController
