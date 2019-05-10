@@ -8,42 +8,41 @@
 
 package io.lighty.core.controller.springboot.rest.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class NetconfDeviceRequest {
 
-    private String username;
-    private String password;
-    private String address;
-    private Integer port;
+    private final String username;
+    private final String password;
+    private final String address;
+    private final Integer port;
+
+    @JsonCreator
+    public NetconfDeviceRequest(@JsonProperty("username") String username,
+                                @JsonProperty("password") String password,
+                                @JsonProperty("address") String address,
+                                @JsonProperty("port") Integer port) {
+        this.username = username;
+        this.password = password;
+        this.address = address;
+        this.port = port;
+    }
 
     public String getUsername() {
         return username;
-    }
-
-    public void setUsername(final String username) {
-        this.username = username;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(final String password) {
-        this.password = password;
-    }
-
     public String getAddress() {
         return address;
-    }
-
-    public void setAddress(final String address) {
-        this.address = address;
     }
 
     public Integer getPort() {
         return port;
     }
 
-    public void setPort(final Integer port) {
-        this.port = port;
-    }
 }

@@ -6,11 +6,10 @@
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
 
-package io.lighty.core.controller.springboot;
+package io.lighty.core.controller.springboot.config;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.core.controller.api.LightyController;
-import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
@@ -19,15 +18,16 @@ import io.lighty.modules.southbound.netconf.impl.NetconfSBPlugin;
 import io.lighty.modules.southbound.netconf.impl.NetconfTopologyPluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.$YangModuleInfoImpl;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 @Configuration
 public class LightyConfiguration extends LightyCoreSpringConfiguration {
@@ -49,8 +49,6 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
         started.get();
         LOG.info("LightyController Core started");
 
-        Runtime.getRuntime().addShutdownHook(new LightyModuleShutdownHook(lightyController));
-
         return lightyController;
     }
 
@@ -65,7 +63,7 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
             .build();
         netconfSouthboundPlugin.start().get();
 
-        Runtime.getRuntime().addShutdownHook(new LightyModuleShutdownHook(netconfSouthboundPlugin));
+        Runtime.getRuntime().addShutdownHook(new LightyModuleShutdownHook(lightyController, netconfSouthboundPlugin));
 
         return netconfSouthboundPlugin;
     }
@@ -74,23 +72,32 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
 
         private static final Logger LOG = LoggerFactory.getLogger(LightyModuleShutdownHook.class);
 
-        private final LightyModule lightyModule;
+        private final LightyController lightyController;
+        private final NetconfSBPlugin netconfSouthboundPlugin;
 
-        public LightyModuleShutdownHook(LightyModule lightyModule) {
-            this.lightyModule = lightyModule;
+        public LightyModuleShutdownHook(LightyController lightyController, NetconfSBPlugin netconfSouthboundPlugin) {
+            this.lightyController = lightyController;
+            this.netconfSouthboundPlugin = netconfSouthboundPlugin;
         }
 
         @Override
         public void run() {
-            LOG.info("Lighty module {} shutting down ...", lightyModule);
             long startTime = System.nanoTime();
             try {
-                lightyModule.shutdown();
+                LOG.info("Lighty module {} shutting down NETCONF ...");
+                netconfSouthboundPlugin.shutdown();
             } catch (Exception e) {
-                LOG.error("Exception while shutting lighty module: {} :", lightyModule, e);
+                LOG.error("Exception while shutting NETCONF module: {} :", e);
+            }
+            LOG.info("Lighty module {} shutting down ...");
+            try {
+                LOG.info("Lighty module {} shutting down LightyController ...");
+                lightyController.shutdown();
+            } catch (Exception e) {
+                LOG.error("Exception while shutting LightyController module: {} :", e);
             }
             float duration = (System.nanoTime() - startTime)/1_000_000f;
-            LOG.info("Lighty module {} stopped in {}ms", lightyModule, duration);
+            LOG.info("Lighty module {} stopped in {}ms", duration);
         }
 
     }
