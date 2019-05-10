@@ -1,0 +1,36 @@
+{
+  "openflow": {
+    "isStatisticsPollingOn": true,
+    "barrierCountLimit": 1234,
+    "barrierIntervalTimeoutLimit": 3000,
+    "basicTimerDelay": 2690,
+    "echoReplyTimeout": 4000,
+    "globalNotificationQuota": 9000,
+    "maximumTimerDelay": 3679,
+    "rpcRequestsQuota": 2500,
+    "threadPoolMaxThreads": 1000,
+    "threadPoolMinThreads": 3,
+    "threadPoolTimeout": 60,
+    "enableFlowRemovedNotification": true,
+    "isStatisticsRpcEnabled": false,
+    "skipTableFeatures": true,
+    "switchFeaturesMandatory": false,
+    "useSingleLayerSerialization": true,
+    "switchConfig": {
+      "instanceName":"openflow-switch-connection-provider-default-impl",
+      "port":1234,
+      "transportProtocol":0,
+      "useBarrier":true,
+      "switchIdleTimeout":15001,
+      "keystore":"configuration/ssl/ctl.jks",
+      "keystoreType":0,
+      "keystorePathType":1,
+      "keystorePassword":"opendaylight",
+      "truststore":"configuration/ssl/truststore.jks",
+      "truststoreType":0,
+      "truststorePathType":1,
+      "truststorePassword":"opendaylight",
+      "certificatePassword":"opendaylight"
+    }
+  }
+}
