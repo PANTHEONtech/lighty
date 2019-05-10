@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 
 public class OpenflowSouthoundPluginTest extends OpenflowSouthboundPluginTestBase {
 
-    @Test(timeOut = 60_000)
+    @Test(timeOut = 180_000)
     public void testStartOfpPlugin() {
         Assert.assertNotNull(getLightyController());
         Assert.assertNotNull(getCommunityRestConf());
