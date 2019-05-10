@@ -118,9 +118,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
                     this.lightyServices.getEntityOwnershipService(),
                     mastershipChangeServiceManager, diagStat,
                     this.lightyServices.getSystemReadyMonitor());
-            if (this.openFlowPluginProvider == null) {
-                throw new RuntimeException("Openflow plugin provider initialization failed.");
-            }
+            this.openFlowPluginProvider.initialize();
 
             //start ForwardingRulesManager in OFP
             if (frmConfigBuilder != null) {
@@ -160,6 +158,8 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
                 this.forwardingRulesManagerImpl.start();
 
                 LOG.info("OFP started with FRM & ARM");
+            } else {
+                LOG.info("FRM already initialized !");
             }
 
             //Topology manager
@@ -184,6 +184,8 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
                         = this.lightyServices.getControllerNotificationProviderService()
                               .registerNotificationListener(this.packetProcessingListener);
                 LOG.info("OfpPacketListener Started.");
+            } else {
+                LOG.info("OfpPacketListener is null, skipping registration !");
             }
 
             return true;
