@@ -17,7 +17,7 @@ To use Lighty controller in your project:
   <dependency>
     <groupId>io.lighty.core</groupId>
     <artifactId>lighty-controller</artifactId>
-    <version>10.0.0</version>
+    <version>10.0.1</version>
   </dependency>
 ```
 
@@ -33,8 +33,8 @@ To use Lighty controller in your project:
 
 3. Use LightyServices in your application
 ```
-  ODLServices odlServices = odlController.getServices();
-  DataBroker dataBroker = odlServices.getBindingDataBroker();
+  LightyServices lightyServices = lightyController.getServices();
+  DataBroker dataBroker = lightyServices.getBindingDataBroker();
   WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
   ...
   writeTransaction.submit();
