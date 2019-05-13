@@ -9,15 +9,12 @@ package io.lighty.modules.southbound.openflow.tests;
 
 import io.lighty.modules.southbound.openflow.impl.config.OpenflowpluginConfiguration;
 import io.lighty.modules.southbound.openflow.impl.util.OpenflowConfigUtils;
-import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.FileInputStream;
 
 public class OFPJsonTest {
-
-    private DiagStatusService diagStatusService;
 
     @Test
     public void testDefaultConfig() {
