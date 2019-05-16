@@ -2,13 +2,13 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.lighty.core/lighty-bom/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.lighty.core/lighty-bom)
 [![License](https://img.shields.io/badge/License-EPL%201.0-blue.svg)](https://opensource.org/licenses/EPL-1.0)
 
-# lighty.io 10
+# lighty.io 11
 __lighty.io__ is a Software Development Kit powered by [OpenDaylight](https://www.opendaylight.org/) to support, ease and accelerate development of
 Software-Defined Networking (SDN) solutions in Java.
 lighty.io is a toolkit for SDN application programmers and solution architects that can be used to build and integrate SDN controllers.
 It utilizes core [OpenDaylight](https://www.opendaylight.org/) components, which are available as a set of libraries.
 
-_This branch maintains compatibility with __OpenDaylight Neon__ release._
+_This branch maintains compatibility with __OpenDaylight Sodium__ release._
 
 ## SDN controller architecture
 ![architecture](docs/lighty.io-controller-architecture.svg)
