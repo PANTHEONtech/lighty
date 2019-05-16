@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/PantheonTechnologies/lighty-core.svg?branch=master)](https://travis-ci.org/PantheonTechnologies/lighty-core)
+[![Build Status](https://travis-ci.org/PantheonTechnologies/lighty-core.svg?branch=10.0.x)](https://travis-ci.org/PantheonTechnologies/lighty-core)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.lighty.core/lighty-bom/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.lighty.core/lighty-bom)
 [![License](https://img.shields.io/badge/License-EPL%201.0-blue.svg)](https://opensource.org/licenses/EPL-1.0)
 
