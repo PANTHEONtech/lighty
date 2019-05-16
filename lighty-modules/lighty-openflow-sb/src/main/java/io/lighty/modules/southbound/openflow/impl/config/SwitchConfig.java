@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 public class SwitchConfig {
+    private final SwitchConnectionProviderFactoryImpl factory = new SwitchConnectionProviderFactoryImpl();
 
     @JsonIgnore
     private final SwitchConnectionConfig defaultSwitch;
@@ -99,8 +100,8 @@ public class SwitchConfig {
 
     public List<SwitchConnectionProvider> getDefaultProviders(DiagStatusService diagStatusService) {
         final List<SwitchConnectionProvider> switchConnectionProviderList = new ArrayList<>();
-        switchConnectionProviderList.add(new SwitchConnectionProviderFactoryImpl(diagStatusService).newInstance(this.defaultSwitch));
-        switchConnectionProviderList.add(new SwitchConnectionProviderFactoryImpl(diagStatusService).newInstance(this.legacySwitch));
+        switchConnectionProviderList.add(factory.newInstance(this.defaultSwitch, diagStatusService));
+        switchConnectionProviderList.add(factory.newInstance(this.legacySwitch, diagStatusService));
         return switchConnectionProviderList;
     }
 
@@ -154,11 +155,11 @@ public class SwitchConfig {
         final List<SwitchConnectionProvider> switchConnectionProviderList = new ArrayList<>();
 
         //add default switch connection provider
-        SwitchConnectionProvider defaultSwitchConnectionProvider = new SwitchConnectionProviderFactoryImpl(diagStatusService).newInstance(tmpDefaultSwitch);
+        SwitchConnectionProvider defaultSwitchConnectionProvider = factory.newInstance(tmpDefaultSwitch, diagStatusService);
         switchConnectionProviderList.add(defaultSwitchConnectionProvider);
 
         //add legacy switch connection provider
-        SwitchConnectionProvider legacySwitchConnectionProvider = new SwitchConnectionProviderFactoryImpl(diagStatusService).newInstance(tmpLegacySwitch);
+        SwitchConnectionProvider legacySwitchConnectionProvider = factory.newInstance(tmpLegacySwitch, diagStatusService);
         switchConnectionProviderList.add(legacySwitchConnectionProvider);
         return switchConnectionProviderList;
     }

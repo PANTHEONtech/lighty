@@ -21,10 +21,10 @@ import io.lighty.modules.southbound.netconf.impl.util.NetconfUtils;
 import java.util.Optional;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
+import org.opendaylight.netconf.api.ModifyAction;
 import org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.data.api.ModifyAction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -56,7 +56,8 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
     }
 
     @Override
-    public ListenableFuture<DOMRpcResult> getConfig(final QName sourceDatastore, final Optional<YangInstanceIdentifier> filterYII) {
+    public ListenableFuture<DOMRpcResult> getConfig(final QName sourceDatastore,
+            final Optional<YangInstanceIdentifier> filterYII) {
         Preconditions.checkNotNull(sourceDatastore);
 
         if (filterYII.isPresent() && !filterYII.get().isEmpty()) {
@@ -73,8 +74,9 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
     }
 
     @Override
-    public ListenableFuture<DOMRpcResult> editConfig(final QName targetDatastore, final Optional<NormalizedNode<?, ?>> data,
-            final YangInstanceIdentifier dataPath, final Optional<ModifyAction> dataModifyActionAttribute,
+    public ListenableFuture<DOMRpcResult> editConfig(final QName targetDatastore,
+            final Optional<NormalizedNode<?, ?>> data, final YangInstanceIdentifier dataPath,
+            final Optional<ModifyAction> dataModifyActionAttribute,
             final Optional<ModifyAction> defaultModifyAction, final boolean rollback) {
         Preconditions.checkNotNull(targetDatastore);
 

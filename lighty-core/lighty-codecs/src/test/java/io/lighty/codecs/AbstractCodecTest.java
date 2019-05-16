@@ -33,7 +33,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.impl.schema.builder.api.DataContainerNodeAttrBuilder;
+import org.opendaylight.yangtools.yang.data.impl.schema.builder.api.DataContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLeafNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapEntryNodeBuilder;
@@ -253,7 +253,7 @@ public abstract class AbstractCodecTest {
     }
 
     private static NormalizedNode<?, ?> sampleListNormalizedNodes() {
-        DataContainerNodeAttrBuilder<NodeIdentifierWithPredicates, MapEntryNode> create =
+        DataContainerNodeBuilder<NodeIdentifierWithPredicates, MapEntryNode> create =
                 ImmutableMapEntryNodeBuilder.create();
         QName keyQname = QName.create(SAMPLES_NAMESPACE, SAMPLES_REVISION, "name");
         QName valueQname = QName.create(SAMPLES_NAMESPACE, SAMPLES_REVISION, "value");

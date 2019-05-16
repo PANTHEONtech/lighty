@@ -54,7 +54,6 @@ import org.opendaylight.aaa.shiro.filters.AAAShiroFilter;
 import org.opendaylight.aaa.shiro.idm.IdmLightApplication;
 import org.opendaylight.aaa.shiro.idm.IdmLightProxy;
 import org.opendaylight.aaa.shiro.moon.MoonTokenEndpoint;
-import org.opendaylight.aaa.shiro.oauth2.OAuth2TokenServlet;
 import org.opendaylight.aaa.shiro.tokenauthrealm.auth.AuthenticationManager;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.DatastoreConfig;
@@ -83,7 +82,7 @@ public final class AAALightyShiroProvider {
 
     private AAALightyShiroProvider(final DataBroker dataBroker, final ICertificateManager certificateManager,
             final CredentialAuth<PasswordCredentials> credentialAuth, final ShiroConfiguration shiroConfiguration,
-            final String moonEndpointPath, final String oauth2EndpointPath, final DatastoreConfig datastoreConfig,
+            final String moonEndpointPath, final DatastoreConfig datastoreConfig,
             final String dbUsername, final String dbPassword, final LightyServerBuilder server) {
         this.dataBroker = dataBroker;
         this.certificateManager = certificateManager;
@@ -121,7 +120,7 @@ public final class AAALightyShiroProvider {
             LOG.error("Failed to initialize data in store", e);
         }
         final LocalHttpServer httpService = new LocalHttpServer(server);
-        registerServletContexts(httpService, moonEndpointPath, oauth2EndpointPath);
+        registerServletContexts(httpService, moonEndpointPath);
     }
 
     private void initAAAonServer(final LightyServerBuilder server) {
@@ -156,13 +155,12 @@ public final class AAALightyShiroProvider {
 
     public static CompletableFuture<AAALightyShiroProvider> newInstance(final DataBroker dataBroker,
             final ICertificateManager certificateManager, final CredentialAuth<PasswordCredentials> credentialAuth,
-            final ShiroConfiguration shiroConfiguration, final String moonEndpointPath, final String oauth2EndpointPath,
+            final ShiroConfiguration shiroConfiguration, final String moonEndpointPath,
             final DatastoreConfig datastoreConfig, final String dbUsername, final String dbPassword,
             final LightyServerBuilder server) {
         final CompletableFuture<AAALightyShiroProvider> completableFuture = new CompletableFuture<>();
         INSTANCE = new AAALightyShiroProvider(dataBroker, certificateManager, credentialAuth,
-                shiroConfiguration, moonEndpointPath, oauth2EndpointPath, datastoreConfig, dbUsername, dbPassword,
-                server);
+                shiroConfiguration, moonEndpointPath, datastoreConfig, dbUsername, dbPassword, server);
         completableFuture.complete(INSTANCE);
         return completableFuture;
     }
@@ -222,14 +220,11 @@ public final class AAALightyShiroProvider {
         });
     }
 
-    private void registerServletContexts(final LocalHttpServer httpService, final String moonEndpointPath,
-            final String oauth2EndpointPath) {
-        LOG.info("attempting registration of AAA moon, oauth2 and auth servlets");
+    private void registerServletContexts(final LocalHttpServer httpService, final String moonEndpointPath) {
+        LOG.info("attempting registration of AAA moon and auth servlets");
 
         Preconditions.checkNotNull(httpService, "httpService cannot be null");
         httpService.registerServlet(moonEndpointPath, new MoonTokenEndpoint(), null);
-        httpService.registerServlet(oauth2EndpointPath, new OAuth2TokenServlet(this.credentialAuth,
-                new AuthenticationManager(), this.tokenStore, this.idmService), null);
     }
 
     /**

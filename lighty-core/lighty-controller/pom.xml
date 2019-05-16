@@ -66,10 +66,6 @@
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-common</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>triemap</artifactId>
-        </dependency>
         <!--odl-mdsal-common-->
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>

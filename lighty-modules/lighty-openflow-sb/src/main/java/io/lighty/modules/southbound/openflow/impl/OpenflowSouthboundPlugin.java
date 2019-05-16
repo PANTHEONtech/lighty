@@ -12,6 +12,12 @@ import io.lighty.core.controller.api.LightyServices;
 import io.lighty.modules.southbound.openflow.impl.config.ConfigurationServiceFactory;
 import io.lighty.modules.southbound.openflow.impl.config.OpenflowpluginConfiguration;
 import io.lighty.modules.southbound.openflow.impl.config.SwitchConfig;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import org.opendaylight.openflowjava.protocol.api.connection.OpenflowDiagStatusProvider;
+import org.opendaylight.openflowjava.protocol.impl.core.OpenflowDiagStatusProviderImpl;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProviderList;
 import org.opendaylight.openflowplugin.api.openflow.OpenFlowPluginProvider;
@@ -27,8 +33,8 @@ import org.opendaylight.openflowplugin.applications.topology.manager.OperationPr
 import org.opendaylight.openflowplugin.applications.topology.manager.TerminationPointChangeListenerImpl;
 import org.opendaylight.openflowplugin.impl.ForwardingPingPongDataBroker;
 import org.opendaylight.openflowplugin.impl.OpenFlowPluginProviderImpl;
-import org.opendaylight.openflowplugin.impl.OpenflowPluginDiagStatusProvider;
 import org.opendaylight.openflowplugin.impl.mastership.MastershipChangeServiceManagerImpl;
+import org.opendaylight.serviceutils.srm.impl.ServiceRecoveryRegistryImpl;
 import org.opendaylight.serviceutils.upgrade.impl.UpgradeStateListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow.provider.config.rev160510.OpenflowProviderConfig;
@@ -40,11 +46,6 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import org.opendaylight.serviceutils.srm.impl.ServiceRecoveryRegistryImpl;
 
 public class OpenflowSouthboundPlugin extends AbstractLightyModule implements OpenflowServices {
 
@@ -102,18 +103,18 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
     @Override
     protected boolean initProcedure() {
         ForwardingPingPongDataBroker forwardingPingPongDataBroker =
-                new ForwardingPingPongDataBroker(lightyServices.getControllerBindingPingPongDataBroker());
+                new ForwardingPingPongDataBroker(lightyServices.getBindingDataBroker());
         SwitchConnectionProviderList switchConnectionProviders = new SwitchConnectionProviderList(providers);
         if (this.openFlowPluginProvider == null) {
             MastershipChangeServiceManagerImpl mastershipChangeServiceManager = new MastershipChangeServiceManagerImpl();
-            final OpenflowPluginDiagStatusProvider diagStat = new OpenflowPluginDiagStatusProvider(this.lightyServices
+            final OpenflowDiagStatusProvider diagStat = new OpenflowDiagStatusProviderImpl(this.lightyServices
                     .getDiagStatusService());
             this.openFlowPluginProvider = new OpenFlowPluginProviderImpl(
                     this.configurationService,
                     switchConnectionProviders,
                     forwardingPingPongDataBroker,
-                    this.lightyServices.getControllerRpcProviderRegistry(),
-                    this.lightyServices.getControllerBindingNotificationPublishService(),
+                    this.lightyServices.getRpcProviderService(),
+                    this.lightyServices.getBindingNotificationPublishService(),
                     this.lightyServices.getClusterSingletonServiceProvider(),
                     this.lightyServices.getEntityOwnershipService(),
                     mastershipChangeServiceManager, diagStat,
@@ -146,8 +147,9 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
                 final ServiceRecoveryRegistryImpl serviceRecoveryRegistryImpl = new ServiceRecoveryRegistryImpl();
                 this.openflowServiceRecoveryHandlerImpl = new OpenflowServiceRecoveryHandlerImpl(serviceRecoveryRegistryImpl);
                 this.forwardingRulesManagerImpl
-                        = new ForwardingRulesManagerImpl(this.lightyServices.getControllerBindingDataBroker(),
-                        this.lightyServices.getControllerRpcProviderRegistry(),
+                        = new ForwardingRulesManagerImpl(this.lightyServices.getBindingDataBroker(),
+                        null, // FIXME: rpcConsumerService
+                        this.lightyServices.getRpcProviderService(),
                         this.frmConfigBuilder.build(),
                         mastershipChangeServiceManager,
                         this.lightyServices.getClusterSingletonServiceProvider(),
@@ -163,17 +165,17 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
             }
 
             //Topology manager
-            this.operationProcessor = new OperationProcessor(this.lightyServices.getControllerBindingDataBroker());
+            this.operationProcessor = new OperationProcessor(this.lightyServices.getBindingDataBroker());
             this.operationProcessor.start();
             TerminationPointChangeListenerImpl terminationPointChangeListener
-                    = new TerminationPointChangeListenerImpl(this.lightyServices.getControllerBindingDataBroker(),
+                    = new TerminationPointChangeListenerImpl(this.lightyServices.getBindingDataBroker(),
                     this.operationProcessor);
             NodeChangeListenerImpl nodeChangeListener
-                    = new NodeChangeListenerImpl(this.lightyServices.getControllerBindingDataBroker(),
+                    = new NodeChangeListenerImpl(this.lightyServices.getBindingDataBroker(),
                     this.operationProcessor);
             this.flowCapableTopologyProvider
-                    = new FlowCapableTopologyProvider(this.lightyServices.getControllerBindingDataBroker(),
-                    this.lightyServices.getControllerNotificationProviderService(),
+                    = new FlowCapableTopologyProvider(this.lightyServices.getBindingDataBroker(),
+                    this.lightyServices.getNotificationService(),
                     this.operationProcessor,
                     this.lightyServices.getClusterSingletonServiceProvider());
             this.flowCapableTopologyProvider.start();
@@ -211,7 +213,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
      * Start close() method in AutoCloseable instance
      * @param instance instance of {@link AutoCloseable}
      */
-    private void destroy(AutoCloseable instance){
+    private void destroy(final AutoCloseable instance){
         if (instance != null) {
             try {
                 instance.close();

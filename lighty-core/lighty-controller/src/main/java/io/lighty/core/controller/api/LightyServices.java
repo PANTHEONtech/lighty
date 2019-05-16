@@ -110,8 +110,6 @@ public interface LightyServices extends LightyModuleRegistryService {
 
     DOMDataBroker getClusteredDOMDataBroker();
 
-    DOMDataBroker getPingPongDataBroker();
-
     DOMRpcService getDOMRpcService();
 
     DOMRpcProviderService getDOMRpcProviderService();
@@ -125,8 +123,6 @@ public interface LightyServices extends LightyModuleRegistryService {
     NotificationPublishService getBindingNotificationPublishService();
 
     DataBroker getBindingDataBroker();
-
-    DataBroker getBindingPingPongDataBroker();
 
     @Deprecated
     NotificationProviderService getControllerNotificationProviderService();

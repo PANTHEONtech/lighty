@@ -58,6 +58,7 @@ import org.opendaylight.controller.sal.binding.api.NotificationProviderService;
 import org.opendaylight.controller.sal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.controller.sal.core.compat.LegacyDOMDataBrokerAdapter;
+import org.opendaylight.controller.sal.core.compat.LegacyPingPongDOMDataBrokerAdapter;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.infrautils.ready.SystemReadyMonitor;
 import org.opendaylight.mdsal.binding.api.DataBroker;
@@ -90,7 +91,6 @@ import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
 import org.opendaylight.mdsal.dom.broker.DOMMountPointServiceImpl;
 import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.mdsal.dom.broker.DOMRpcRouter;
-import org.opendaylight.mdsal.dom.broker.pingpong.PingPongDataBroker;
 import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListenerRegistry;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
@@ -151,7 +151,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private org.opendaylight.controller.md.sal.binding.impl.BindingDOMNotificationPublishServiceAdapter notificationPublishServiceOld;
     private BindingDOMDataBrokerAdapter domDataBroker;
     private org.opendaylight.controller.md.sal.binding.api.DataBroker domDataBrokerOld;
-    private BindingDOMDataBrokerAdapter domPingPongDataBroker;
     private final LightyDiagStatusServiceImpl lightyDiagStatusService;
     private EventExecutor eventExecutor;
     private EventLoopGroup bossGroup;
@@ -163,7 +162,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private SchemaServiceProvider schemaServiceProvider;
     private BindingToNormalizedNodeCodec codec;
     private org.opendaylight.controller.md.sal.binding.impl.BindingToNormalizedNodeCodec codecOld;
-    private DOMDataBroker pingPongDataBroker;
     private org.opendaylight.controller.md.sal.dom.api.DOMDataBroker pingPongDataBrokerOld;
     private RpcProviderService rpcProviderService;
     private RpcProviderRegistry rpcProviderRegistry;
@@ -261,9 +259,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                 this.configDatastore);
         this.distributedShardedDOMDataTree.init();
 
-        this.pingPongDataBroker = new PingPongDataBroker(this.concurrentDOMDataBroker);
-        final LegacyDOMDataBrokerAdapter pingPongLegacyDOMDataBrokerAdapter = new LegacyDOMDataBrokerAdapter(
-                this.pingPongDataBroker);
+        final LegacyPingPongDOMDataBrokerAdapter pingPongLegacyDOMDataBrokerAdapter =
+                new LegacyPingPongDOMDataBrokerAdapter(this.concurrentDOMDataBroker);
         this.pingPongDataBrokerOld = new org.opendaylight.controller.md.sal.dom.broker.impl.PingPongDataBroker(
                 pingPongLegacyDOMDataBrokerAdapter);
 
@@ -274,7 +271,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
         // ENTITY OWNERSHIP
         this.distributedEntityOwnershipService = DistributedEntityOwnershipService.start(this.operDatastore
-                .getActorContext(), EntityOwnerSelectionStrategyConfigReader.loadStrategyWithConfig(
+                .getActorUtils(), EntityOwnerSelectionStrategyConfigReader.loadStrategyWithConfig(
                 this.distributedEosProperties));
 
         this.bindingDOMEntityOwnershipServiceAdapter = new BindingDOMEntityOwnershipServiceAdapter(
@@ -319,7 +316,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.domDataBrokerOld = new org.opendaylight.controller.md.sal.binding.impl.BindingDOMDataBrokerAdapter(
                 this.concurrentDOMDataBrokerOld, this.codecOld);
 
-        this.domPingPongDataBroker = new BindingDOMDataBrokerAdapter(this.pingPongDataBroker, this.codec);
         this.domPingPongDataBrokerOld = new org.opendaylight.controller.md.sal.binding.impl.BindingDOMDataBrokerAdapter(
                 this.pingPongDataBrokerOld, this.codecOld);
 
@@ -572,11 +568,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public DOMDataBroker getPingPongDataBroker() {
-        return this.pingPongDataBroker;
-    }
-
-    @Override
     public org.opendaylight.controller.md.sal.dom.api.DOMDataBroker getControllerPingPongDataBroker() {
         return this.pingPongDataBrokerOld;
     }
@@ -655,11 +646,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     public org.opendaylight.controller.md.sal.binding.api.DataBroker getControllerBindingDataBroker() {
         return this.domDataBrokerOld;
-    }
-
-    @Override
-    public DataBroker getBindingPingPongDataBroker() {
-        return this.domPingPongDataBroker;
     }
 
     @Override
