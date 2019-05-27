@@ -644,6 +644,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
+    public BindingToNormalizedNodeCodec getNormalizedNodeCodec() {
+        return this.codecOld;
+    }
+
+    @Override
     public org.opendaylight.controller.md.sal.binding.api.DataBroker getControllerBindingDataBroker() {
         return this.domDataBrokerOld;
     }

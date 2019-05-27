@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
+import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcServiceAdapter;
 import org.opendaylight.openflowjava.protocol.api.connection.OpenflowDiagStatusProvider;
 import org.opendaylight.openflowjava.protocol.impl.core.OpenflowDiagStatusProviderImpl;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
@@ -146,9 +148,12 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
                 //FRM implementation
                 final ServiceRecoveryRegistryImpl serviceRecoveryRegistryImpl = new ServiceRecoveryRegistryImpl();
                 this.openflowServiceRecoveryHandlerImpl = new OpenflowServiceRecoveryHandlerImpl(serviceRecoveryRegistryImpl);
+                final RpcConsumerRegistry rpcConsumerRegistry
+                        = new BindingDOMRpcServiceAdapter(this.lightyServices.getDOMRpcService()
+                                                         ,this.lightyServices.getNormalizedNodeCodec());
                 this.forwardingRulesManagerImpl
                         = new ForwardingRulesManagerImpl(this.lightyServices.getBindingDataBroker(),
-                        null, // FIXME: rpcConsumerService
+                        rpcConsumerRegistry,
                         this.lightyServices.getRpcProviderService(),
                         this.frmConfigBuilder.build(),
                         mastershipChangeServiceManager,
