@@ -96,13 +96,11 @@ public class Main {
 
         final DataBroker bindingDataBroker = lightyController.getServices().getBindingDataBroker();
         final String moonEndpointPath = "/moon";
-        final String oauth2EndpointPath = "/oauth2";
         final String dbUsername = "foo";
         final String dbPassword = "bar";
         final AAALighty aaaLighty = new AAALighty(bindingDataBroker, CertificateManagerConfig.getDefault(
                 bindingDataBroker), null, ShiroConfigurationConfig.getDefault(), moonEndpointPath,
-                oauth2EndpointPath, DatastoreConfigurationConfig.getDefault(), dbUsername, dbPassword,
-                jettyServerBuilder);
+                DatastoreConfigurationConfig.getDefault(), dbUsername, dbPassword, jettyServerBuilder);
         final ListenableFuture<Boolean> start = aaaLighty.start();
 
         addCallback(start);

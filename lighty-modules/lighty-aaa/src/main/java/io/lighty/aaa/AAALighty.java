@@ -39,7 +39,6 @@ public final class AAALighty extends AbstractLightyModule {
     private final String dbPassword;
     private final String dbUsername;
     private final DatastoreConfig datastoreConfig;
-    private final String oauth2EndpointPath;
     private final String moonEndpointPath;
     private final ShiroConfiguration shiroConfiguration;
     private final CredentialAuth<PasswordCredentials> credentialAuth;
@@ -48,14 +47,13 @@ public final class AAALighty extends AbstractLightyModule {
 
     public AAALighty(final DataBroker dataBroker, final ICertificateManager certificateManager, final CredentialAuth<
             PasswordCredentials> credentialAuth, final ShiroConfiguration shiroConfiguration,
-            final String moonEndpointPath, final String oauth2EndpointPath, final DatastoreConfig datastoreConfig,
+            final String moonEndpointPath, final DatastoreConfig datastoreConfig,
             final String dbUsername, final String dbPassword, final LightyServerBuilder server) {
         this.dataBroker = dataBroker;
         this.certificateManager = certificateManager;
         this.credentialAuth = credentialAuth;
         this.shiroConfiguration = shiroConfiguration;
         this.moonEndpointPath = moonEndpointPath;
-        this.oauth2EndpointPath = oauth2EndpointPath;
         this.datastoreConfig = datastoreConfig;
         this.dbUsername = dbUsername;
         this.dbPassword = dbPassword;
@@ -67,8 +65,7 @@ public final class AAALighty extends AbstractLightyModule {
     protected boolean initProcedure() {
         final CompletableFuture<AAALightyShiroProvider> newInstance = AAALightyShiroProvider.newInstance(
                 this.dataBroker, this.certificateManager, this.credentialAuth, this.shiroConfiguration,
-                this.moonEndpointPath, this.oauth2EndpointPath, this.datastoreConfig, this.dbUsername, this.dbPassword,
-                this.server);
+                this.moonEndpointPath, this.datastoreConfig, this.dbUsername, this.dbPassword, this.server);
         final CountDownLatch cdl = new CountDownLatch(1);
         newInstance.whenComplete((t, u) -> {
             AAALighty.this.aaaShiroProviderHandler.setAaaLightyShiroProvider(t);

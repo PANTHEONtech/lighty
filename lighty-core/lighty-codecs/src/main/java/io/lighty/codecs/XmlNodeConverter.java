@@ -18,7 +18,6 @@ import java.net.URISyntaxException;
 import java.util.Optional;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -162,8 +161,7 @@ public class XmlNodeConverter implements NodeConverter {
         try (NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
                 XmlParserStream xmlParser = XmlParserStream.create(streamWriter, this.schemaContext, schemaNode)) {
             xmlParser.parse(reader);
-        } catch (XMLStreamException | URISyntaxException | IOException | ParserConfigurationException
-                | SAXException e) {
+        } catch (XMLStreamException | URISyntaxException | IOException | SAXException e) {
             throw new SerializationException(e);
         } finally {
             closeQuietly(reader);

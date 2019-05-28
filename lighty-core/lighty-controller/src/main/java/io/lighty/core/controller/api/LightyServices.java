@@ -25,6 +25,7 @@ import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
@@ -110,8 +111,6 @@ public interface LightyServices extends LightyModuleRegistryService {
 
     DOMDataBroker getClusteredDOMDataBroker();
 
-    DOMDataBroker getPingPongDataBroker();
-
     DOMRpcService getDOMRpcService();
 
     DOMRpcProviderService getDOMRpcProviderService();
@@ -126,7 +125,8 @@ public interface LightyServices extends LightyModuleRegistryService {
 
     DataBroker getBindingDataBroker();
 
-    DataBroker getBindingPingPongDataBroker();
+    @Deprecated
+    BindingToNormalizedNodeCodec getNormalizedNodeCodec();
 
     @Deprecated
     NotificationProviderService getControllerNotificationProviderService();

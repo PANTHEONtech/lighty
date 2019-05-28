@@ -125,9 +125,6 @@ public class LightyControllerModule extends AbstractModule {
         bind(DOMDataBroker.class)
                 .annotatedWith(Names.named("ClusteredDOMDataBroker"))
                 .toInstance(lightyServices.getClusteredDOMDataBroker());
-        bind(DOMDataBroker.class)
-                .annotatedWith(Names.named("PingPongDOMDataBroker"))
-                .toInstance(lightyServices.getPingPongDataBroker());
         bind(DOMRpcService.class)
                 .toInstance(lightyServices.getDOMRpcService());
         bind(DOMRpcProviderService.class)
@@ -143,9 +140,6 @@ public class LightyControllerModule extends AbstractModule {
         bind(DataBroker.class)
                 .annotatedWith(Names.named("BindingDataBroker"))
                 .toInstance(lightyServices.getBindingDataBroker());
-        bind(DataBroker.class)
-                .annotatedWith(Names.named("BindingPingPongDataBroker"))
-                .toInstance(lightyServices.getBindingPingPongDataBroker());
         // Deprecated services
         bind(NotificationProviderService.class)
                 .toInstance(lightyServices.getControllerNotificationProviderService());

@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
 import javassist.ClassPool;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.dom.DOMSource;
@@ -167,8 +166,7 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
             final Element domElement = element.getDomElement();
             xmlParser.traverse(new DOMSource(domElement));
             return resultHolder.getResult();
-        } catch (SAXException | IOException | XMLStreamException | URISyntaxException
-                | ParserConfigurationException e) {
+        } catch (SAXException | IOException | XMLStreamException | URISyntaxException e) {
             throw new RestconfDocumentedException(e.getMessage(), e);
         }
     }

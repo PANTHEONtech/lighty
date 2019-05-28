@@ -173,11 +173,6 @@ public class LightyCoreSpringConfiguration {
         return this.lightyController.getServices().getControllerPingPongDataBroker();
     }
 
-    @Bean(name = "PingPongDataBroker", destroyMethod = "")
-    public DOMDataBroker getPingPongDataBroker() {
-        return this.lightyController.getServices().getPingPongDataBroker();
-    }
-
     @Bean(destroyMethod = "")
     public DOMDataTreeShardingService getDOMDataTreeShardingService() {
         return this.lightyController.getServices().getDOMDataTreeShardingService();
@@ -306,11 +301,6 @@ public class LightyCoreSpringConfiguration {
     @Bean(name = "ControllerBindingPingPongDataBroker", destroyMethod = "")
     public org.opendaylight.controller.md.sal.binding.api.DataBroker getControllerBindingPingPongDataBroker() {
         return this.lightyController.getServices().getControllerBindingPingPongDataBroker();
-    }
-
-    @Bean(name = "BindingPingPongDataBroker", destroyMethod = "")
-    public DataBroker getBindingPingPongDataBroker() {
-        return this.lightyController.getServices().getBindingPingPongDataBroker();
     }
 
     @Bean(destroyMethod = "")

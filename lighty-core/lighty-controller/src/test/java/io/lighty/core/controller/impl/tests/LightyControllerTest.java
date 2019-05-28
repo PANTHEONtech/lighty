@@ -51,7 +51,6 @@ public class LightyControllerTest extends LightyControllerTestBase {
         Assert.assertNotNull(lightyController.getServices().getDOMNotificationPublishService());
         Assert.assertNotNull(lightyController.getServices().getDOMNotificationService());
         Assert.assertNotNull(lightyController.getServices().getClusteredDOMDataBroker());
-        Assert.assertNotNull(lightyController.getServices().getPingPongDataBroker());
         Assert.assertNotNull(lightyController.getServices().getDOMRpcService());
         Assert.assertNotNull(lightyController.getServices().getDOMRpcProviderService());
         Assert.assertNotNull(lightyController.getServices().getRpcProviderService());
@@ -59,7 +58,6 @@ public class LightyControllerTest extends LightyControllerTestBase {
         Assert.assertNotNull(lightyController.getServices().getNotificationService());
         Assert.assertNotNull(lightyController.getServices().getBindingNotificationPublishService());
         Assert.assertNotNull(lightyController.getServices().getBindingDataBroker());
-        Assert.assertNotNull(lightyController.getServices().getBindingPingPongDataBroker());
         // Test deprecated services
         Assert.assertNotNull(lightyController.getServices().getControllerNotificationProviderService());
         Assert.assertNotNull(lightyController.getServices().getControllerDOMNotificationSubscriptionListenerRegistry());

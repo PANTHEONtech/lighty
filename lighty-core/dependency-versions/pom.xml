@@ -25,7 +25,7 @@
             <dependency>
                 <groupId>org.opendaylight.odlparent</groupId>
                 <artifactId>odlparent</artifactId>
-                <version>4.0.9</version>
+                <version>5.0.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -42,56 +42,56 @@
             <dependency>
                 <groupId>org.opendaylight.aaa</groupId>
                 <artifactId>aaa-artifacts</artifactId>
-                <version>0.9.0</version>
+                <version>0.10.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.controller</groupId>
                 <artifactId>config-artifacts</artifactId>
-                <version>0.10.0</version>
+                <version>0.11.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.controller</groupId>
                 <artifactId>mdsal-artifacts</artifactId>
-                <version>1.9.0</version>
+                <version>1.10.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.infrautils</groupId>
                 <artifactId>infrautils-artifacts</artifactId>
-                <version>1.5.0</version>
+                <version>1.6.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-artifacts</artifactId>
-                <version>3.0.6</version>
+                <version>4.0.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.netconf</groupId>
                 <artifactId>netconf-artifacts</artifactId>
-                <version>1.6.0</version>
+                <version>1.7.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.netconf</groupId>
                 <artifactId>restconf-artifacts</artifactId>
-                <version>1.9.0</version>
+                <version>1.10.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.yangtools</groupId>
                 <artifactId>yangtools-artifacts</artifactId>
-                <version>2.1.8</version>
+                <version>3.0.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -99,24 +99,26 @@
             <dependency>
                 <groupId>org.opendaylight.openflowplugin</groupId>
                 <artifactId>openflowplugin-artifacts</artifactId>
-                <version>0.8.0</version>
+                <version>0.9.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.openflowplugin.applications</groupId>
                 <artifactId>arbitratorreconciliation-impl</artifactId>
-                <version>0.8.0</version>
+                <version>0.9.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.serviceutils</groupId>
-                <artifactId>srm-api</artifactId>
-                <version>0.3.0</version>
+                <artifactId>serviceutils-artifacts</artifactId>
+                <version>0.4.0-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.serviceutils</groupId>
                 <artifactId>srm-impl</artifactId>
-                <version>0.3.0</version>
+                <version>0.4.0-SNAPSHOT</version>
             </dependency>
 
             <!-- Other third-party stuff -->

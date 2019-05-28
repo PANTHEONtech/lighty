@@ -19,12 +19,13 @@ import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTr
 import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.ROLLBACK_ON_ERROR_OPTION;
 import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.toId;
 
-import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Optional;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
+import org.opendaylight.netconf.api.ModifyAction;
 import org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.copy.config.input.target.ConfigTarget;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.edit.config.input.EditContent;
@@ -41,7 +42,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.data.api.ModifyAction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.AnyXmlNode;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -49,7 +49,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
-import org.opendaylight.yangtools.yang.data.impl.schema.builder.api.DataContainerNodeAttrBuilder;
+import org.opendaylight.yangtools.yang.data.impl.schema.builder.api.DataContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 public final class NetconfUtils {
@@ -91,14 +91,14 @@ public final class NetconfUtils {
 
     public static ListenableFuture<Optional<NormalizedNode<?, ?>>> extractDataFromRpcResult(
             final Optional<YangInstanceIdentifier> path, final ListenableFuture<DOMRpcResult> rpcFuture) {
-        return Futures.transform(rpcFuture, (Function<DOMRpcResult, Optional<NormalizedNode<?, ?>>>) result -> {
+        return Futures.transform(rpcFuture, result -> {
             Preconditions.checkArgument(
                     result.getErrors().isEmpty(), "Unable to read data: %s, errors: %s", path, result.getErrors());
             final DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?> dataNode =
                     ((ContainerNode) result.getResult()).getChild(
                             NetconfMessageTransformUtil.toId(NetconfMessageTransformUtil.NETCONF_DATA_QNAME)).get();
             return NormalizedNodes.findNode(dataNode, path.get().getPathArguments());
-        });
+        }, MoreExecutors.directExecutor());
     }
 
     public static DataContainerChild<?, ?> createEditConfigStructure(final SchemaContext schemaContext,
@@ -113,7 +113,7 @@ public final class NetconfUtils {
     public static ContainerNode getEditConfigContent(
             final QName targetDatastore, final DataContainerChild<?, ?> editStructure,
             final Optional<ModifyAction> defaultOperation, final boolean rollback) {
-        final DataContainerNodeAttrBuilder<YangInstanceIdentifier.NodeIdentifier, ContainerNode> editBuilder =
+        final DataContainerNodeBuilder<YangInstanceIdentifier.NodeIdentifier, ContainerNode> editBuilder =
                 Builders.containerBuilder().withNodeIdentifier(toId(NETCONF_EDIT_CONFIG_QNAME));
 
         // Target

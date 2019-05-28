@@ -9,13 +9,13 @@ package io.lighty.modules.southbound.netconf.impl;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MutableClassToInstanceMap;
-import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-import java.util.concurrent.Executors;
 import org.opendaylight.controller.md.sal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMActionServiceExtension;
@@ -42,8 +42,8 @@ public final class LightyDOMActionService implements DOMActionService {
     }
 
     @Override
-    public FluentFuture<? extends DOMActionResult> invokeAction(final SchemaPath type, final DOMDataTreeIdentifier path,
-            final ContainerNode input) {
+    public ListenableFuture<? extends DOMActionResult> invokeAction(final SchemaPath type,
+            final DOMDataTreeIdentifier path, final ContainerNode input) {
         final NetconfMessage actionRequest = this.messageTransformer.toActionRequest(type, path, input);
         final SettableFuture<DOMActionResult> settableFuture = SettableFuture.create();
         final ListenableFuture<RpcResult<NetconfMessage>> responseFuture = this.communicator.sendRequest(actionRequest,
@@ -65,9 +65,9 @@ public final class LightyDOMActionService implements DOMActionService {
 
             @Override
             public void onFailure(final Throwable t) {
-                new ActionRpcError(t);
+                settableFuture.set(new SimpleDOMActionResult(ImmutableSet.of(new ActionRpcError(t))));
             }
-        }, Executors.newSingleThreadExecutor());
+        }, MoreExecutors.directExecutor());
         return settableFuture;
     }
 
