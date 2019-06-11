@@ -12,6 +12,8 @@ import io.lighty.core.controller.api.LightyModuleRegistryService;
 import io.netty.channel.EventLoopGroup;
 import io.netty.util.Timer;
 import io.netty.util.concurrent.EventExecutor;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.sharding.DistributedShardFactory;
@@ -43,26 +45,35 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controll
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * Base lighty.io Configuration class for spring DI.
  * <p>
- * This configuration needs LightyController bean initialized in spring environment. If LightyController bean exists in
- * spring environment, this configuration initializes all core lighty.io services as spring beans.</p>
+ * This configuration needs to implement abstract method {@link #initLightyController()} which returns initialized
+ * {@link LightyController} and {@link #shutdownLightyController(LightyController)} which should handle proper
+ * {@link LightyController} shutdown process.</p>
+ * <p>This configuration initializes all core lighty.io services as spring
+ * beans.</p>
  * <p>
  * Example:
  * <pre>
  * &#64;Configuration
  * public class LightyConfiguration extends LightyCoreSprigConfiguration {
- *     &#64;Bean
- *     LightyController initLightyController() throws Exception {
+ *     &#64;Override
+ *     public LightyController initLightyController() throws ConfigurationException {
  *
  *         LightyController lightyController = ...
  *
  *         return lightyController;
+ *     }
+ *
+ *     &#64;Override
+ *     public void shutdownLightyController(&#64;Nonnull LightyController lightyController) throws LightyLaunchException {
+ *         ...
+ *         lightyController.shutdown();
+ *         ...
  *     }
  * }
  * </pre>
@@ -70,16 +81,52 @@ import org.springframework.context.annotation.Configuration;
  * @author juraj.veverka
  */
 @Configuration
-public class LightyCoreSpringConfiguration {
+public abstract class LightyCoreSpringConfiguration {
 
     private static final Logger LOG = LoggerFactory.getLogger(LightyCoreSpringConfiguration.class);
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    @Autowired
     private LightyController lightyController;
 
-    @Bean(destroyMethod = "")
-    public LightyModuleRegistryService getLightyModuleRegistryService() {
+    /**
+     * Initializes {@link LightyController} instance, which will be used in Spring to initializes all lighty.io services
+     * as beans.
+     *
+     * @return initialized lightyController
+     * @throws LightyLaunchException if any problem occurred during initialization
+     */
+    protected abstract LightyController initLightyController() throws LightyLaunchException, InterruptedException;
+
+    /**
+     * Method responsible for proper LightyController shutdown process. Possibly application can handle custom shutdown
+     * process of LightyController.
+     *
+     * @param lightyController lightyController previously initialized which needs to be shutdown
+     * @throws LightyLaunchException if any problem occurred during shutdown
+     */
+    protected abstract void shutdownLightyController(LightyController lightyController)
+            throws LightyLaunchException;
+
+    @PostConstruct
+    public void init() throws LightyLaunchException, InterruptedException {
+        lightyController = this.initLightyController();
+        LOG.debug("LightyCoreSpringConfiguration initialized {}", lightyController);
+    }
+
+    @PreDestroy
+    public void preDestroy() throws LightyLaunchException {
+        if (this.lightyController != null) {
+            this.shutdownLightyController(this.lightyController);
+        }
+        LOG.info("LightyCoreSpringConfiguration destroy");
+    }
+
+    @Bean(name = "LightyController", destroyMethod = "")
+    public LightyController getLightyController() {
+        return lightyController;
+    }
+
+    @Bean(name = "LightyModuleRegistryService", destroyMethod = "")
+    public LightyModuleRegistryService lightyModuleRegistryService() {
         return this.lightyController.getServices();
     }
 
