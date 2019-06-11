@@ -95,7 +95,6 @@ public class TopologyRestService {
             LOG.info("Topology was stored to datastore: {}", topology);
             return ResponseEntity.ok().build();
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
             LOG.error("Could not store topology to datastore: {}", topology, e);
             return ResponseEntity.status(500).build();
         }
@@ -118,7 +117,6 @@ public class TopologyRestService {
             LOG.info("Topology {} was deleted from datastore", topologyId);
             return ResponseEntity.ok().build();
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
             LOG.error("Could not delete topology {} from datastore", topologyId, e);
             return ResponseEntity.status(500).build();
         }
