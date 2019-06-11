@@ -8,7 +8,7 @@ It utilizes core [OpenDaylight](https://www.opendaylight.org/) components, which
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.lighty.core/lighty-bom/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.lighty.core/lighty-bom)
 [![License](https://img.shields.io/badge/License-EPL%201.0-blue.svg)](https://opensource.org/licenses/EPL-1.0)
 
-_This branch maintains compatibility with __OpenDaylight Sodium__ release._
+_This branch maintains compatibility with __OpenDaylight Neon__ release._
 
 ## Contents
 1. [__Features__](https://github.com/PantheonTechnologies/lighty-core/tree/10.0.x/docs/README.md#features)
