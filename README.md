@@ -6,7 +6,14 @@
 __lighty.io__ is a Software Development Kit powered by [OpenDaylight](https://www.opendaylight.org/) to support, ease and accelerate development of
 Software-Defined Networking (SDN) solutions in Java.
 lighty.io is a toolkit for SDN application programmers and solution architects that can be used to build and integrate SDN controllers.
-It utilizes core [OpenDaylight](https://www.opendaylight.org/) components, which are available as a set of libraries.
+It utilizes core [OpenDaylight](https://www.opendaylight.org/) components, which are available as a set off
+asd
+fdsa
+fdsa
+f
+sdaf
+dsa
+
 
 _This branch maintains compatibility with __OpenDaylight Neon__ release._
 
