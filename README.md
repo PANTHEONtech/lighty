@@ -13,15 +13,6 @@ fdsa
 f
 sdaf
 dsa
-fdsa
-f
-sdaf
-dsa
-fasd
-
-
-
-
 
 
 _This branch maintains compatibility with __OpenDaylight Neon__ release._
