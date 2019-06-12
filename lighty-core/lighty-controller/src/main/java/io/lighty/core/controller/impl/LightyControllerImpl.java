@@ -11,7 +11,6 @@ import com.typesafe.config.Config;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyServices;
-import io.lighty.core.controller.impl.schema.SchemaServiceProvider;
 import io.lighty.core.controller.impl.services.LightyDiagStatusServiceImpl;
 import io.lighty.core.controller.impl.services.LightySystemReadyMonitorImpl;
 import io.lighty.core.controller.impl.services.LightySystemReadyService;
@@ -92,6 +91,7 @@ import org.opendaylight.mdsal.dom.broker.DOMMountPointServiceImpl;
 import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.mdsal.dom.broker.DOMRpcRouter;
 import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListenerRegistry;
+import org.opendaylight.mdsal.dom.spi.FixedDOMSchemaService;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.binding.dom.adapter.BindingDOMEntityOwnershipServiceAdapter;
@@ -159,7 +159,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private ScheduledThreadPool scheduledThreadPool;
     private Timer timer;
     private ModuleInfoBackedContext moduleInfoBackedContext;
-    private SchemaServiceProvider schemaServiceProvider;
+    private DOMSchemaService schemaService;
     private BindingToNormalizedNodeCodec codec;
     private org.opendaylight.controller.md.sal.binding.impl.BindingToNormalizedNodeCodec codecOld;
     private org.opendaylight.controller.md.sal.dom.api.DOMDataBroker pingPongDataBrokerOld;
@@ -228,10 +228,12 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.modelSet.forEach( m -> {
             this.moduleInfoBackedContext.registerModuleInfo(m);
         });
-        this.schemaServiceProvider = new SchemaServiceProvider(this.moduleInfoBackedContext);
+        this.schemaService = FixedDOMSchemaService.of(this.moduleInfoBackedContext,
+            this.moduleInfoBackedContext);
+
         // INIT CODEC FACTORY
-        this.codec = BindingToNormalizedNodeCodec.newInstance(this.moduleInfoBackedContext, this.schemaServiceProvider);
-        this.schemaServiceProvider.registerSchemaContextListener(this.codec);
+        this.codec = BindingToNormalizedNodeCodec.newInstance(this.moduleInfoBackedContext, this.schemaService);
+        this.schemaService.registerSchemaContextListener(this.codec);
 
         final BindingRuntimeContext bindingRuntimeContext =
                 BindingRuntimeContext.create(this.moduleInfoBackedContext, this.moduleInfoBackedContext
@@ -243,15 +245,15 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.codecOld = new org.opendaylight.controller.md.sal.binding.impl.BindingToNormalizedNodeCodec(
                 this.moduleInfoBackedContext, codecRegistry);
 
-        this.schemaServiceProvider.registerSchemaContextListener(this.codecOld);
+        this.schemaService.registerSchemaContextListener(this.codecOld);
 
         // CONFIG DATASTORE
         this.configDatastore = prepareDataStore(this.configDatastoreContext, this.moduleShardsConfig,
-                this.modulesConfig, this.schemaServiceProvider, this.datastoreSnapshotRestore,
+                this.modulesConfig, this.schemaService, this.datastoreSnapshotRestore,
                 this.actorSystemProvider);
         // OPERATIONAL DATASTORE
         this.operDatastore = prepareDataStore(this.operDatastoreContext, this.moduleShardsConfig, this.modulesConfig,
-                this.schemaServiceProvider, this.datastoreSnapshotRestore, this.actorSystemProvider);
+                this.schemaService, this.datastoreSnapshotRestore, this.actorSystemProvider);
 
         createConcurrentDOMDataBroker();
         this.distributedShardedDOMDataTree = new DistributedShardedDOMDataTree(this.actorSystemProvider,
@@ -264,7 +266,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.pingPongDataBrokerOld = new org.opendaylight.controller.md.sal.dom.broker.impl.PingPongDataBroker(
                 pingPongLegacyDOMDataBrokerAdapter);
 
-        this.domRpcRouter = DOMRpcRouter.newInstance(this.schemaServiceProvider);
+        this.domRpcRouter = DOMRpcRouter.newInstance(this.schemaService);
         this.domRpcRouterOld = new org.opendaylight.controller.md.sal.dom.broker.impl.DOMRpcRouter(this.domRpcRouter
                 .getRpcService(), this.domRpcRouter.getRpcProviderService());
         createRemoteRPCProvider();
@@ -422,12 +424,12 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     public DOMSchemaService getDOMSchemaService() {
-        return this.schemaServiceProvider;
+        return this.schemaService;
     }
 
     @Override
     public DOMYangTextSourceProvider getDOMYangTextSourceProvider() {
-        return this.schemaServiceProvider;
+        return getDOMSchemaService().getExtensions().getInstance(DOMYangTextSourceProvider.class);
     }
 
     @Override
