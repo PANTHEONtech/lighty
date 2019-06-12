@@ -37,7 +37,6 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
-import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
 import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListenerRegistry;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
@@ -64,8 +63,6 @@ public interface LightyServices extends LightyModuleRegistryService {
     SchemaContextProvider getSchemaContextProvider();
 
     DOMSchemaService getDOMSchemaService();
-
-    DOMYangTextSourceProvider getDOMYangTextSourceProvider();
 
     DOMNotificationSubscriptionListenerRegistry getDOMNotificationSubscriptionListenerRegistry();
 
