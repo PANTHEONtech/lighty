@@ -36,12 +36,15 @@
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>yang-binding</artifactId>
         </dependency>
-        <!-- Oxygen v1 generator needs javax.annotation.CheckReturnValue for RPCs. -->
-        <!-- spotbugs should be used instead of findbugs -->
         <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>annotations</artifactId>
-            <version>3.0.1</version>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jdt</groupId>
+            <artifactId>org.eclipse.jdt.annotation</artifactId>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

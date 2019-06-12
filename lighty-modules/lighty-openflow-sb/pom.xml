@@ -39,6 +39,11 @@
             <artifactId>openflow-protocol-impl</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>org.opendaylight.openflowplugin</groupId>
             <artifactId>openflowplugin-extension-api</artifactId>
         </dependency>
