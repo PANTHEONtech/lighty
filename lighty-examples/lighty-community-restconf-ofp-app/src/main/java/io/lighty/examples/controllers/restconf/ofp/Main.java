@@ -86,7 +86,7 @@ public class Main {
 
     public static void shutdown() {
         if (shutdownHook != null) {
-            shutdownHook.run();
+            shutdownHook.start();
         }
     }
 

@@ -134,7 +134,7 @@ public class Main {
     }
 
     public void shutdown() {
-        shutdownHook.run();
+        shutdownHook.start();
     }
 
     public static void main(String[] args) {
