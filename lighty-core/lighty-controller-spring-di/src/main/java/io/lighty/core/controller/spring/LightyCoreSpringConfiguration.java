@@ -103,8 +103,7 @@ public abstract class LightyCoreSpringConfiguration {
      * @param lightyController lightyController previously initialized which needs to be shutdown
      * @throws LightyLaunchException if any problem occurred during shutdown
      */
-    protected abstract void shutdownLightyController(LightyController lightyController)
-            throws LightyLaunchException;
+    protected abstract void shutdownLightyController(LightyController lightyController) throws LightyLaunchException;
 
     @PostConstruct
     public void init() throws LightyLaunchException, InterruptedException {
