@@ -72,6 +72,9 @@ public final class ModuleId {
 
     public static ModuleId from(final YangModuleInfo yangModuleInfo) {
         final QName name = yangModuleInfo.getName();
+        if (!name.getRevision().isPresent()) {
+            throw new IllegalStateException("Revision missing for module "+name.getLocalName());
+        }
         return new ModuleId(name.getNamespace().toString(), name.getLocalName(), name.getRevision().get().toString());
     }
 
