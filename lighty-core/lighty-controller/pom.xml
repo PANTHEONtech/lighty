@@ -36,12 +36,6 @@
             <artifactId>lighty-common</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>annotations</artifactId>
-            <version>3.0.1</version>
-        </dependency>
-
         <!--ODL-->
         <!--odl-guava-22-->
         <dependency>

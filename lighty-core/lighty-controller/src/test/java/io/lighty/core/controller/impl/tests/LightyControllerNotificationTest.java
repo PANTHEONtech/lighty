@@ -10,7 +10,6 @@ package io.lighty.core.controller.impl.tests;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.core.controller.api.LightyController;
 import java.util.concurrent.ExecutionException;
-import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
@@ -29,13 +28,11 @@ public class LightyControllerNotificationTest extends LightyControllerTestBase {
         // setup
         final SchemaPath schemaPath = SchemaPath.ROOT;
         final DOMNotification testNotification = new DOMNotification() {
-            @Nonnull
             @Override
             public SchemaPath getType() {
                 return schemaPath;
             }
 
-            @Nonnull
             @Override
             public ContainerNode getBody() {
                 return ImmutableContainerNodeBuilder.create().build();
