@@ -65,6 +65,9 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
     private ListenerRegistration<NotificationListener> packetListenerNotificationRegistration;
     private OperationProcessor operationProcessor;
     private FlowCapableTopologyProvider flowCapableTopologyProvider;
+    private MastershipChangeServiceManagerImpl mastershipChangeServiceManager;
+    private TerminationPointChangeListenerImpl terminationPointChangeListener;
+    private NodeChangeListenerImpl nodeChangeListener;
 
     public OpenflowSouthboundPlugin(final LightyServices lightyServices, final ExecutorService executorService) {
 
@@ -108,7 +111,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
                 new ForwardingPingPongDataBroker(lightyServices.getBindingDataBroker());
         SwitchConnectionProviderList switchConnectionProviders = new SwitchConnectionProviderList(providers);
         if (this.openFlowPluginProvider == null) {
-            MastershipChangeServiceManagerImpl mastershipChangeServiceManager = new MastershipChangeServiceManagerImpl();
+            this.mastershipChangeServiceManager = new MastershipChangeServiceManagerImpl();
             final OpenflowDiagStatusProvider diagStat = new OpenflowDiagStatusProviderImpl(this.lightyServices
                     .getDiagStatusService());
             this.openFlowPluginProvider = new OpenFlowPluginProviderImpl(
@@ -119,7 +122,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
                     this.lightyServices.getBindingNotificationPublishService(),
                     this.lightyServices.getClusterSingletonServiceProvider(),
                     this.lightyServices.getEntityOwnershipService(),
-                    mastershipChangeServiceManager, diagStat,
+                    this.mastershipChangeServiceManager, diagStat,
                     this.lightyServices.getSystemReadyMonitor());
             this.openFlowPluginProvider.initialize();
 
@@ -127,7 +130,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
             if (frmConfigBuilder != null) {
                 //ArbitratorReconciliation implementation
                 final ReconciliationManagerImpl reconciliationManagerImpl
-                        = new ReconciliationManagerImpl(mastershipChangeServiceManager);
+                        = new ReconciliationManagerImpl(this.mastershipChangeServiceManager);
                 UpgradeStateListener upgradeStateListener
                         = new UpgradeStateListener(this.lightyServices.getControllerBindingDataBroker(),
                         new UpgradeConfigBuilder().build());
@@ -156,7 +159,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
                         rpcConsumerRegistry,
                         this.lightyServices.getRpcProviderService(),
                         this.frmConfigBuilder.build(),
-                        mastershipChangeServiceManager,
+                        this.mastershipChangeServiceManager,
                         this.lightyServices.getClusterSingletonServiceProvider(),
                         this.configurationService,
                         reconciliationManagerImpl,
@@ -172,10 +175,10 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
             //Topology manager
             this.operationProcessor = new OperationProcessor(this.lightyServices.getBindingDataBroker());
             this.operationProcessor.start();
-            TerminationPointChangeListenerImpl terminationPointChangeListener
+            this.terminationPointChangeListener
                     = new TerminationPointChangeListenerImpl(this.lightyServices.getBindingDataBroker(),
                     this.operationProcessor);
-            NodeChangeListenerImpl nodeChangeListener
+            this.nodeChangeListener
                     = new NodeChangeListenerImpl(this.lightyServices.getBindingDataBroker(),
                     this.operationProcessor);
             this.flowCapableTopologyProvider
@@ -210,7 +213,9 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
         destroy(this.forwardingRulesManagerImpl);
         destroy(this.arbitratorReconciliationManager);
         destroy(this.openFlowPluginProvider);
-
+        destroy(this.mastershipChangeServiceManager);
+        destroy(this.terminationPointChangeListener);
+        destroy(this.nodeChangeListener);
         return true;
     }
 
