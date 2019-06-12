@@ -21,17 +21,17 @@ How to use it
 
 2. Use ```LightyControllerModule``` to initialize Guice Injector
 ```
-  //1. initialize and start ODL controller (MD-SAL, Controller, YangTools, Akka)
-  ODLControllerBuilder odlControllerBuilder = new ODLControllerBuilder();
-  ODLController odlController = odlControllerBuilder
-     .from(controllerConfiguration)
-     .build();
-  odlController.start();
+  //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
+  LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
+  lightyController = lightyControllerBuilder
+                .from(defaultSingleNodeConfiguration)
+                .build();
+  lightyController.start().get();
 
-  //2. initialize ODL Controller Module custom application beans
-  ODLControllerModule odlModule = new ODLControllerModule(odlController.getServices());
+  //2. initialize Lighty Controller Module custom application beans
+  LightyControllerModule lightyModule = new LightyControllerModule(lightyController.getServices());
   MyApplicationModule myApplicationModule = new MyApplicationModule();
-  Injector injector = Guice.createInjector(odlModule, myApplicationModule);
+  Injector injector = Guice.createInjector(lightyModule, myApplicationModule);
   ...
 ```
 
@@ -45,10 +45,6 @@ public class DataStoreServiceImpl implements DataStoreService {
     @Inject
     @Named("BindingDataBroker")
     private DataBroker bindingDataBroker;
-
-    @Inject
-    @Named("BindingPingPongDataBroker")
-    private DataBroker bindingPingPongDataBroker;
 
     ...
 }
