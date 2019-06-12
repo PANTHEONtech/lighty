@@ -45,7 +45,6 @@ public final class XmlUtil {
     public static final String XMLNS_URI = "http://www.w3.org/2000/xmlns/";
     private static final DocumentBuilderFactory BUILDER_FACTORY;
     private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
-    private static final SchemaFactory SCHEMA_FACTORY = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
     static {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -199,7 +198,7 @@ public final class XmlUtil {
         }
 
         try {
-            return SCHEMA_FACTORY.newSchema(sources);
+            return SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(sources);
         } catch (final SAXException e) {
             throw new IllegalStateException("Failed to instantiate XML schema", e);
         }
