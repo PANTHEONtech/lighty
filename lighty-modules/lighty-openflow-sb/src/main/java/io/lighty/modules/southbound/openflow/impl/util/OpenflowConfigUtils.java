@@ -100,7 +100,13 @@ public final class OpenflowConfigUtils {
      * @return Default OFP configuration
      */
     public static OpenflowpluginConfiguration getDefaultOfpConfiguration() {
-        return new OpenflowpluginConfiguration();
+        try (InputStream inputStream = OpenflowConfigUtils.class.getClassLoader()
+                .getResourceAsStream("defaultOfpConfig.json")) {
+            return getOfpConfiguration(inputStream);
+        } catch (ConfigurationException | IOException e) {
+            LOG.error("Failed to load  default configuration for Openflow plugin!", e);
+        }
+        return null;
     }
 
     /**
@@ -121,7 +127,7 @@ public final class OpenflowConfigUtils {
         }
         if (!configNode.has(OFP_CONFIG_ROOT_ELEMENT_NAME)) {
             LOG.warn("Json config does not contain {} element. Using defaults.", OFP_CONFIG_ROOT_ELEMENT_NAME);
-            return new OpenflowpluginConfiguration();
+            return getDefaultOfpConfiguration();
         }
         final JsonNode ofpNode = configNode.path(OFP_CONFIG_ROOT_ELEMENT_NAME);
 
