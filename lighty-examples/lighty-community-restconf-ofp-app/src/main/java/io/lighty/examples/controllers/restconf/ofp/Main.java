@@ -86,7 +86,7 @@ public class Main {
 
     public static void shutdown() {
         if (shutdownHook != null) {
-            shutdownHook.run();
+            shutdownHook.execute();
         }
     }
 
@@ -152,6 +152,10 @@ public class Main {
 
         @Override
         public void run() {
+            this.execute();
+        }
+
+        public void execute() {
             LOG.info("Lighty and OFP shutting down ...");
             final long startTime = System.nanoTime();
             try {
