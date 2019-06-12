@@ -129,4 +129,14 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
         return nodeId;
     }
 
+    @Override
+    public DOMRpcService getDOMRpcService() {
+        return domRpcService;
+    }
+
+    @Override
+    public SchemaContext getSchemaContext() {
+        return schemaContext;
+    }
+
 }

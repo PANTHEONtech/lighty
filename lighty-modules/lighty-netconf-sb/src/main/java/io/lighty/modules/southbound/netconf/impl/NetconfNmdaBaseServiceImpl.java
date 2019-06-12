@@ -7,6 +7,7 @@
  */
 package io.lighty.modules.southbound.netconf.impl;
 
+import static java.util.Objects.requireNonNull;
 import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_OPERATION_QNAME;
 import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.toId;
 import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.toPath;
@@ -32,6 +33,9 @@ import org.opendaylight.yangtools.rfc7952.data.util.ImmutableNormalizedMetadata;
 import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeWithValue;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.AnydataNode;
 import org.opendaylight.yangtools.yang.data.api.schema.ChoiceNode;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
@@ -47,26 +51,37 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implements NetconfNmdaBaseService {
 
-    public static final QName NETCONF_NMDA_EXTENSION_QNAME = QName.create("urn:ietf:params:xml:ns:yang:ietf-netconf-nmda", "2019-01-07", "ietf-netconf-nmda").intern();
-    public static final QName NETCONF_GET_DATA_QNAME = QName.create(NETCONF_NMDA_EXTENSION_QNAME, "get-data");
+    public static final QName NETCONF_NMDA_EXTENSION_QNAME =
+            QName.create("urn:ietf:params:xml:ns:yang:ietf-netconf-nmda", "2019-01-07", "ietf-netconf-nmda").intern();
+    public static final QName NETCONF_GET_DATA_QNAME = QName.create(NETCONF_NMDA_EXTENSION_QNAME, "get-data").intern();
     public static final QName NETCONF_EDIT_DATA_QNAME = QName.create(NETCONF_NMDA_EXTENSION_QNAME, "edit-data").intern();
-    private static final YangInstanceIdentifier.NodeIdentifier NETCONF_FILTER_NODEID =
-            YangInstanceIdentifier.NodeIdentifier.create(QName.create(NETCONF_GET_DATA_QNAME, "subtree-filter"));
-    private static final YangInstanceIdentifier.NodeIdentifier NETCONF_FILTER_CHOICE_NODEID =
-            YangInstanceIdentifier.NodeIdentifier.create(QName.create(NETCONF_GET_DATA_QNAME, "filter-spec"));
-    private static final YangInstanceIdentifier.NodeIdentifier NETCONF_ORIGIN_FILTERS_CHOICE_NODEID =
-            YangInstanceIdentifier.NodeIdentifier.create(QName.create(NETCONF_GET_DATA_QNAME, "origin-filters"));
-    private static final QName NETCONF_OPERATION_QNAME_LEGACY = NETCONF_OPERATION_QNAME.withoutRevision().intern();
-    private static final YangInstanceIdentifier.NodeIdentifier NETCONF_EDIT_DATA_CONFIG_NODEID =
-            YangInstanceIdentifier.NodeIdentifier.create(QName.create(NETCONF_EDIT_DATA_QNAME, "config"));
+    private static final NodeIdentifier NETCONF_FILTER_NODEID =
+            NodeIdentifier.create(QName.create(NETCONF_GET_DATA_QNAME, "subtree-filter").intern());
+    private static final NodeIdentifier NETCONF_FILTER_CHOICE_NODEID =
+            NodeIdentifier.create(QName.create(NETCONF_GET_DATA_QNAME, "filter-spec").intern());
+    private static final NodeIdentifier NETCONF_ORIGIN_FILTERS_CHOICE_NODEID =
+            NodeIdentifier.create(QName.create(NETCONF_GET_DATA_QNAME, "origin-filters").intern());
+    private static final NodeIdentifier NETCONF_DATASTORE_NODEID =
+            NodeIdentifier.create(QName.create(NETCONF_GET_DATA_QNAME, "datastore").intern());
+    private static final NodeIdentifier NETCONF_CONFIG_FILTER_NODEID =
+            NodeIdentifier.create(QName.create(NETCONF_GET_DATA_QNAME, "config-filter").intern());
+    private static final NodeIdentifier NETCONF_MAX_DEPTH_NODEID =
+            NodeIdentifier.create(QName.create(NETCONF_GET_DATA_QNAME, "max-depth").intern());
+    private static final NodeIdentifier NETCONF_ORIGIN_FILTER_NODEID =
+            NodeIdentifier.create(QName.create(NETCONF_GET_DATA_QNAME, "origin-filter").intern());
+    private static final NodeIdentifier NETCONF_NEGATED_ORIGIN_FILTER_NODEID =
+            NodeIdentifier.create(QName.create(NETCONF_GET_DATA_QNAME, "negated-origin-filter").intern());
+private static final NodeIdentifier NETCONF_WITH_ORIGIN_NODEID =
+            NodeIdentifier.create(QName.create(NETCONF_GET_DATA_QNAME, "with-origin").intern());
 
-    private final DOMRpcService domRpcService;
-    private final SchemaContext schemaContext;
+    private static final QName NETCONF_OPERATION_QNAME_LEGACY = NETCONF_OPERATION_QNAME.withoutRevision().intern();
+    private static final NodeIdentifier NETCONF_EDIT_DATA_CONFIG_NODEID =
+            NodeIdentifier.create(QName.create(NETCONF_EDIT_DATA_QNAME, "config").intern());
+    private static final NodeIdentifier NETCONF_DEFAULT_OPERATION_NODEID =
+            NodeIdentifier.create(QName.create(NETCONF_EDIT_DATA_QNAME, "default-operation").intern());
 
     public NetconfNmdaBaseServiceImpl(NodeId nodeId, DOMRpcService domRpcService, SchemaContext schemaContext) {
         super(nodeId, domRpcService, schemaContext);
-        this.domRpcService = domRpcService;
-        this.schemaContext = schemaContext;
     }
 
     @Override
@@ -79,18 +94,17 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
                                                             Optional<Boolean> withOrigin) {
         List<DataContainerChild<?, ?>> getDataChildren = new ArrayList<>();
 
-        Preconditions.checkNotNull(sourceDatastore);
-        getDataChildren.add(getDatastoreNode(sourceDatastore));
+        getDataChildren.add(getDatastoreNode(requireNonNull(sourceDatastore)));
 
         if (filterYII.isPresent()) {
-            NormalizedNode<?, ?> filterNN = ImmutableNodes.fromInstanceId(schemaContext, filterYII.get());
+            NormalizedNode<?, ?> filterNN = ImmutableNodes.fromInstanceId(getSchemaContext(), filterYII.get());
             QName nodeType = filterNN.getNodeType();
-            Optional<DataSchemaNode> dataTreeChild = schemaContext.findDataTreeChild(nodeType);
+            Optional<DataSchemaNode> dataTreeChild = getSchemaContext().findDataTreeChild(nodeType);
 
             final AnydataNode<NormalizedAnydata> subtreeFilter =
                     ImmutableAnydataNodeBuilder.create(NormalizedAnydata.class)
                             .withNodeIdentifier(NETCONF_FILTER_NODEID)
-                            .withValue(new ImmutableNormalizedAnydata(schemaContext, dataTreeChild.get(), filterNN))
+                            .withValue(new ImmutableNormalizedAnydata(getSchemaContext(), dataTreeChild.get(), filterNN))
                             .build();
             final ChoiceNode filterSpecChoice =
                     Builders.choiceBuilder()
@@ -127,7 +141,7 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
         DataContainerChild<?, ?>[] getDataChildrenArray = new DataContainerChild<?, ?>[getDataChildren.size()];
         getDataChildrenArray = getDataChildren.toArray(getDataChildrenArray);
 
-        return domRpcService.invokeRpc(toPath(NETCONF_GET_DATA_QNAME),
+        return getDOMRpcService().invokeRpc(toPath(NETCONF_GET_DATA_QNAME),
                 NetconfMessageTransformUtil.wrap(NETCONF_GET_DATA_QNAME, getDataChildrenArray));
     }
 
@@ -137,40 +151,40 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
                                                              YangInstanceIdentifier dataPath,
                                                              Optional<ModifyAction> dataModifyActionAttribute,
                                                              Optional<ModifyAction> defaultModifyAction) {
-        Preconditions.checkNotNull(targetDatastore);
-
-        NormalizedNode<?, ?> editNNContent = ImmutableNodes.fromInstanceId(schemaContext, dataPath, data.get());
+        NormalizedNode<?, ?> editNNContent = ImmutableNodes.fromInstanceId(getSchemaContext(), dataPath, data.get());
         QName nodeType = editNNContent.getNodeType();
-        Optional<DataSchemaNode> dataTreeChild = schemaContext.findDataTreeChild(nodeType);
+        Optional<DataSchemaNode> dataTreeChild = getSchemaContext().findDataTreeChild(nodeType);
 
         final NormalizedMetadata metadata = dataModifyActionAttribute.map(oper -> leafMetadata(dataPath, oper)).orElse(null);
 
         final AnydataNode<NormalizedAnydata> editContent = ImmutableAnydataNodeBuilder.create(NormalizedAnydata.class)
                 .withNodeIdentifier(NETCONF_EDIT_DATA_CONFIG_NODEID)
-                .withValue(new ImmutableMetadataNormalizedAnydata(schemaContext, dataTreeChild.get(), editNNContent, metadata)).build();
+                .withValue(new ImmutableMetadataNormalizedAnydata(getSchemaContext(), dataTreeChild.get(),
+                        editNNContent, metadata)).build();
 
         ChoiceNode editStructure = Builders.choiceBuilder().withNodeIdentifier(toId(EditContent.QNAME))
                 .withChild(editContent).build();
 
         Preconditions.checkNotNull(editStructure);
 
-        return domRpcService.invokeRpc(toPath(NETCONF_EDIT_DATA_QNAME),
+        return getDOMRpcService().invokeRpc(toPath(NETCONF_EDIT_DATA_QNAME),
                 NetconfMessageTransformUtil.wrap(NETCONF_EDIT_DATA_QNAME,
-                        getDatastoreNode(targetDatastore), getDefaultOperationNode(dataModifyActionAttribute.get()), editStructure));
+                        getDatastoreNode(requireNonNull(targetDatastore)),
+                        getDefaultOperationNode(dataModifyActionAttribute.get()), editStructure));
     }
 
     private DataContainerChild<?, ?> getDatastoreNode(QName datastore) {
-        return Builders.leafBuilder().withNodeIdentifier(toId(QName.create(NETCONF_NMDA_EXTENSION_QNAME, "datastore")))
+        return Builders.leafBuilder().withNodeIdentifier(NETCONF_DATASTORE_NODEID)
                 .withValue(datastore).build();
     }
 
     private DataContainerChild<?, ?> getConfigFilterNode(Boolean configFilter) {
-        return Builders.leafBuilder().withNodeIdentifier(toId(QName.create(NETCONF_NMDA_EXTENSION_QNAME, "config-filter")))
+        return Builders.leafBuilder().withNodeIdentifier(NETCONF_CONFIG_FILTER_NODEID)
                 .withValue(configFilter).build();
     }
 
     private DataContainerChild<?, ?> getMaxDepthNode(Integer maxDepth) {
-        return Builders.leafBuilder().withNodeIdentifier(toId(QName.create(NETCONF_NMDA_EXTENSION_QNAME, "max-depth")))
+        return Builders.leafBuilder().withNodeIdentifier(NETCONF_MAX_DEPTH_NODEID)
                 .withValue(maxDepth).build();
     }
 
@@ -178,12 +192,11 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
         List<LeafSetEntryNode<Object>> leafSetEntryNodes = new ArrayList<>();
         originFilter.forEach(originFilterEntry -> {
             leafSetEntryNodes.add(Builders.leafSetEntryBuilder()
-                    .withNodeIdentifier(new YangInstanceIdentifier
-                            .NodeWithValue(QName.create(NETCONF_NMDA_EXTENSION_QNAME, "origin-filter"), originFilterEntry))
+                    .withNodeIdentifier(new NodeWithValue(NETCONF_ORIGIN_FILTER_NODEID.getNodeType(), originFilterEntry))
                     .withValue(originFilterEntry)
                     .build());
         });
-        return Builders.leafSetBuilder().withNodeIdentifier(toId(QName.create(NETCONF_NMDA_EXTENSION_QNAME, "origin-filter")))
+        return Builders.leafSetBuilder().withNodeIdentifier(NETCONF_ORIGIN_FILTER_NODEID)
                 .withValue(leafSetEntryNodes).build();
     }
 
@@ -191,33 +204,32 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
         List<LeafSetEntryNode<Object>> leafSetEntryNodes = new ArrayList<>();
         negatedOriginFilter.forEach(negatedOriginFilterEntry -> {
             leafSetEntryNodes.add(Builders.leafSetEntryBuilder()
-                    .withNodeIdentifier(new YangInstanceIdentifier
-                            .NodeWithValue(QName.create(NETCONF_NMDA_EXTENSION_QNAME, "negated-origin-filter"), negatedOriginFilterEntry))
+                    .withNodeIdentifier(new NodeWithValue(NETCONF_NEGATED_ORIGIN_FILTER_NODEID.getNodeType(), negatedOriginFilterEntry))
                     .withValue(negatedOriginFilterEntry)
                     .build());
         });
-        return Builders.leafSetBuilder().withNodeIdentifier(toId(QName.create(NETCONF_NMDA_EXTENSION_QNAME, "negated-origin-filter")))
+        return Builders.leafSetBuilder().withNodeIdentifier(NETCONF_NEGATED_ORIGIN_FILTER_NODEID)
                 .withValue(leafSetEntryNodes).build();
     }
 
     private DataContainerChild<?, ?> getWithOriginNode() {
-        return Builders.leafBuilder().withNodeIdentifier(toId(QName.create(NETCONF_NMDA_EXTENSION_QNAME, "with-origin")))
+        return Builders.leafBuilder().withNodeIdentifier(NETCONF_WITH_ORIGIN_NODEID)
                 .withValue(Empty.getInstance())
                 .build();
     }
 
     private DataContainerChild<?, ?> getDefaultOperationNode(ModifyAction defaultModifyAction) {
         final String opString = defaultModifyAction.name().toLowerCase();
-        return Builders.leafBuilder().withNodeIdentifier(toId(QName.create(NETCONF_NMDA_EXTENSION_QNAME, "default-operation")))
+        return Builders.leafBuilder().withNodeIdentifier(NETCONF_DEFAULT_OPERATION_NODEID)
                 .withValue(opString).build();
     }
 
     private NormalizedMetadata leafMetadata(YangInstanceIdentifier path, final ModifyAction oper) {
-        final List<YangInstanceIdentifier.PathArgument> args = path.getPathArguments();
+        final List<PathArgument> args = path.getPathArguments();
         final Deque<ImmutableNormalizedMetadata.Builder> builders = new ArrayDeque<>(args.size());
 
         // Step one: open builders
-        for (YangInstanceIdentifier.PathArgument arg : args) {
+        for (PathArgument arg : args) {
             builders.push(ImmutableNormalizedMetadata.builder().withIdentifier(arg));
         }
 
