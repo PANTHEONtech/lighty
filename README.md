@@ -10,19 +10,9 @@ It utilizes core [OpenDaylight](https://www.opendaylight.org/) components, which
 
 _This branch maintains compatibility with __OpenDaylight Neon__ release._
 
-## Contents
-1. [__Features__](https://github.com/PantheonTechnologies/lighty-core/tree/10.0.x/docs/README.md#features)
-2. [__Use Cases__](https://github.com/PantheonTechnologies/lighty-core/tree/10.0.x/docs/README.md#use-cases)
-3. [__Components__](https://github.com/PantheonTechnologies/lighty-core/tree/10.0.x/docs/README.md#components)
-4. [__Build & Install__](https://github.com/PantheonTechnologies/lighty-core/tree/10.0.x/docs/README.md#build--install)
-5. [__Migration from OpenDaylight to lighty.io__](https://github.com/PantheonTechnologies/lighty-core/tree/10.0.x/docs/README.md#migration-from-OpenDaylight-to-lighty.io)
-6. [__Run JUnit & IT Tests__](https://github.com/PantheonTechnologies/lighty-core/tree/10.0.x/docs/README.md#run-junit--it-tests)
-7. [__Support, FAQ & Use-Cases__](https://github.com/PantheonTechnologies/lighty-core/tree/10.0.x/docs/README.md#support-faq--use-cases)
-
 ## Features
 - [x] __Removed Karaf__: Having Java SE as a runtime, you can use a framework of your choice, not only Karaf
 - [x] __Improved Speed__: Improved memory management & speed
-- [x] __Extra Components__: YANG Codecs, NETCONF Device Library & Client Libraries (Java, Python & GO)
 - [x] __Modularity__: Your application code can start, stop & restart modules, as required
 
 ## Use Cases
@@ -33,7 +23,6 @@ _This branch maintains compatibility with __OpenDaylight Neon__ release._
 - [OVSDB & OpenFlow](https://pantheon.tech/lighty-io-ovsdb-openflow/)
 - [Migration of ONAP SDNC to lighty.io](https://lighty.io/migration-of-onap-sdnc-to-lighty-io/)
 - [NETCONF Device on ARM](https://lighty.io/lighty-io-netconf-device-on-arm/)
-- [HTTP Server](https://lighty.io/how-to-build-http-server-implementing-yang-modelled-rpc-in-java/)
 - [Migration of OpenDaylight TransportPCE to lighty.io](https://lighty.io/migration-of-odl-transportpce-to-lighty-io/)
 - [Rapid NETCONF Controller Integration Testing](https://lighty.io/netconf-performance-test/)
 - [Authentication Authorization & Accounting](https://lighty.io/aaa-integration/)
@@ -53,7 +42,7 @@ _This branch maintains compatibility with __OpenDaylight Neon__ release._
 
 ## Controller Architecture
 
-![architecture](docs/lighty.io-controller-architecture.png)
+![architecture](docs/lighty.io-controller-architecture.svg)
 
 ## Build & Install
 In order to build and install lighty.io artifacts locally, follow the steps below:
@@ -62,7 +51,7 @@ In order to build and install lighty.io artifacts locally, follow the steps belo
 3. __Setup maven__ - make sure you have the proper [settings.xml](https://github.com/opendaylight/odlparent/blob/master/settings.xml) in your ```~/.m2``` directory
 4. __Build & Install locally__ - by running command: ``mvn clean install -DskipTests``
 
-![controller startup sequence](docs/lighty.io-controller-startup-sequence.png)
+![controller startup sequence](docs/lighty.io-controller-startup-sequence.svg)
 
 ## Migration from OpenDaylight to lighty.io
 [This guide](docs/ODL-migration-guide.md) describes the migration procedure from OpenDaylight/Karaf application to lighty.io.
