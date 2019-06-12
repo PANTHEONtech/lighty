@@ -100,7 +100,7 @@ In order to try openflow application, follow these steps:
 sudo mn --controller=remote,ip=<IP_OF_RUNNING_LIGHTY> --topo=tree,1 --switch ovsk,protocols=OpenFlow13
 ```
 For explanation of OFP usage is RESTCONF set to DRAFT_18. All RESTCONF calls used in example, could be import from 
-[file](src/main/assembly/resources/OFP_postman_collection.json) in project resources to Postman.
+[file](docs/OFP_postman_collection.json) in project resources to Postman.
 
 Quick check that controller is owner of the connected device. If it is not, controller is not running
 or device is not properly connected.

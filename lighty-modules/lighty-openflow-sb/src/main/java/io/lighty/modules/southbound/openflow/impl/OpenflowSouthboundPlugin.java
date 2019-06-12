@@ -11,11 +11,12 @@ import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.modules.southbound.openflow.impl.config.ConfigurationServiceFactory;
 import io.lighty.modules.southbound.openflow.impl.config.OpenflowpluginConfiguration;
-import io.lighty.modules.southbound.openflow.impl.config.SwitchConfig;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import io.lighty.modules.southbound.openflow.impl.util.OpenflowConfigUtils;
 import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcServiceAdapter;
 import org.opendaylight.openflowjava.protocol.api.connection.OpenflowDiagStatusProvider;
@@ -69,12 +70,12 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
     public OpenflowSouthboundPlugin(final LightyServices lightyServices, final ExecutorService executorService) {
 
         super(executorService);
-
+        OpenflowpluginConfiguration defaultOfpConfiguration = OpenflowConfigUtils.getDefaultOfpConfiguration();
         this.lightyServices = lightyServices;
-        this.providers = new SwitchConfig().getDefaultProviders(lightyServices.getDiagStatusService());
+        this.providers = Objects.requireNonNull(defaultOfpConfiguration).getSwitchConfig()
+                .getDefaultProviders(lightyServices.getDiagStatusService());
         this.configurationService = new ConfigurationServiceFactory()
-                .newInstance(new OpenflowpluginConfiguration()
-                .getDefaultProviderConfig());
+                .newInstance(defaultOfpConfiguration.getDefaultProviderConfig());
     }
 
     /**
