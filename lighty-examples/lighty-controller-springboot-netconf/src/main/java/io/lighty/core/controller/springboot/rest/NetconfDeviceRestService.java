@@ -96,14 +96,16 @@ public class NetconfDeviceRestService {
                         final Optional<DataBroker> netconfDataBroker =
                             netconfMountPoint.get().getService(DataBroker.class);
                         if (netconfDataBroker.isPresent()) {
-                            final ReadTransaction netconfReadTx =
-                                netconfDataBroker.get().newReadOnlyTransaction();
+                            try (final ReadTransaction netconfReadTx =
+                                         netconfDataBroker.get().newReadOnlyTransaction()) {
+                                final Optional<Toaster> toasterData = netconfReadTx
+                                        .read(LogicalDatastoreType.OPERATIONAL, TOASTER_IID)
+                                        .get(TIMEOUT, TimeUnit.SECONDS);
 
-                            final Optional<Toaster> toasterData = netconfReadTx
-                                .read(LogicalDatastoreType.OPERATIONAL, TOASTER_IID).get(TIMEOUT, TimeUnit.SECONDS);
-
-                            if (toasterData.isPresent() && toasterData.get().getDarknessFactor() != null) {
-                                nodeResponse = NetconfDeviceResponse.from(node, toasterData.get().getDarknessFactor());
+                                if (toasterData.isPresent() && toasterData.get().getDarknessFactor() != null) {
+                                    nodeResponse = NetconfDeviceResponse.from(node, toasterData.get()
+                                            .getDarknessFactor());
+                                }
                             }
                         }
                     }
