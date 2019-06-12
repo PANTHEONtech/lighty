@@ -10,12 +10,14 @@ package io.lighty.modules.southbound.netconf.impl;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Optional;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
+import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.netconf.api.ModifyAction;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 /**
  * This service implements Netconf protocol operations as specified in
@@ -96,8 +98,22 @@ public interface NetconfBaseService extends DOMService {
     /**
      * Get Id of the Netconf device of this service instance.
      *
-     * @return future with RPC result
+     * @return Id of the Netconf device
      */
     NodeId getDeviceId();
+
+    /**
+     * Get DOMRpcService for the Netconf device of this service instance.
+     *
+     * @return DOMRpcService for the Netconf device
+     */
+    DOMRpcService getDOMRpcService();
+
+    /**
+     * Get SchemaContext for the Netconf device of this service instance.
+     *
+     * @return SchemaContext for the Netconf device
+     */
+    SchemaContext getSchemaContext();
 
 }
