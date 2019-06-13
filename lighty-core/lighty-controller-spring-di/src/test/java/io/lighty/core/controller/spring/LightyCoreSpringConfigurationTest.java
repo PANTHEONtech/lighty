@@ -81,34 +81,34 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
     SchemaContextProvider schemaContextProvider;
 
     @Autowired
-    DOMSchemaService dOMSchemaService;
+    DOMSchemaService domSchemaService;
 
     @Autowired
-    DOMYangTextSourceProvider dOMYangTextSourceProvider;
+    DOMYangTextSourceProvider domYangTextSourceProvider;
 
     @Autowired
     org.opendaylight.controller.md.sal.dom.api.DOMMountPointService controllerDOMMountPointService;
 
     @Autowired
-    DOMMountPointService dOMMountPointService;
+    DOMMountPointService domMountPointService;
 
     @Autowired
     org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService controllerDOMNotificationPublishService;
 
     @Autowired
-    DOMNotificationPublishService dOMNotificationPublishService;
+    DOMNotificationPublishService domNotificationPublishService;
 
     @Autowired
     org.opendaylight.controller.md.sal.dom.api.DOMNotificationService controllerDOMNotificationService;
 
     @Autowired
-    DOMNotificationService dOMNotificationService;
+    DOMNotificationService domNotificationService;
 
     @Autowired
     org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry controllerDOMNotificationSubscriptionListenerRegistry;
 
     @Autowired
-    DOMNotificationSubscriptionListenerRegistry dOMNotificationSubscriptionListenerRegistry;
+    DOMNotificationSubscriptionListenerRegistry domNotificationSubscriptionListenerRegistry;
 
     @Autowired
     @Qualifier("ConfigDatastore")
@@ -130,10 +130,10 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
     org.opendaylight.controller.md.sal.dom.api.DOMDataBroker controllerPingPongDataBroker;
 
     @Autowired
-    DOMDataTreeShardingService dOMDataTreeShardingService;
+    DOMDataTreeShardingService domDataTreeShardingService;
 
     @Autowired
-    DOMDataTreeService dOMDataTreeService;
+    DOMDataTreeService domDataTreeService;
 
     @Autowired
     DistributedShardFactory distributedShardFactory;
@@ -142,13 +142,13 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
     org.opendaylight.controller.md.sal.dom.api.DOMRpcService controllerDOMRpcService;
 
     @Autowired
-    DOMRpcService dOMRpcService;
+    DOMRpcService domRpcService;
 
     @Autowired
     org.opendaylight.controller.md.sal.dom.api.DOMRpcProviderService controllerDOMRpcProviderService;
 
     @Autowired
-    DOMRpcProviderService dOMRpcProviderService;
+    DOMRpcProviderService domRpcProviderService;
 
     @Autowired
     BindingNormalizedNodeSerializer bindingNormalizedNodeSerializer;
@@ -157,7 +157,7 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
     BindingCodecTreeFactory bindingCodecTreeFactory;
 
     @Autowired
-    DOMEntityOwnershipService dOMEntityOwnershipService;
+    DOMEntityOwnershipService domEntityOwnershipService;
 
     @Autowired
     EntityOwnershipService entityOwnershipService;
@@ -237,31 +237,31 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
         Assert.assertNotNull(diagStatusService);
         Assert.assertNotNull(actorSystemProvider);
         Assert.assertNotNull(schemaContextProvider);
-        Assert.assertNotNull(dOMSchemaService);
-        Assert.assertNotNull(dOMYangTextSourceProvider);
+        Assert.assertNotNull(domSchemaService);
+        Assert.assertNotNull(domYangTextSourceProvider);
         Assert.assertNotNull(controllerDOMMountPointService);
-        Assert.assertNotNull(dOMMountPointService);
+        Assert.assertNotNull(domMountPointService);
         Assert.assertNotNull(controllerDOMNotificationPublishService);
-        Assert.assertNotNull(dOMNotificationPublishService);
+        Assert.assertNotNull(domNotificationPublishService);
         Assert.assertNotNull(controllerDOMNotificationService);
-        Assert.assertNotNull(dOMNotificationService);
+        Assert.assertNotNull(domNotificationService);
         Assert.assertNotNull(controllerDOMNotificationSubscriptionListenerRegistry);
-        Assert.assertNotNull(dOMNotificationSubscriptionListenerRegistry);
+        Assert.assertNotNull(domNotificationSubscriptionListenerRegistry);
         Assert.assertNotNull(configDatastore);
         Assert.assertNotNull(operationalDatastore);
         Assert.assertNotNull(controllerClusteredDOMDataBroker);
         Assert.assertNotNull(clusteredDOMDataBroker);
         Assert.assertNotNull(controllerPingPongDataBroker);
-        Assert.assertNotNull(dOMDataTreeShardingService);
-        Assert.assertNotNull(dOMDataTreeService);
+        Assert.assertNotNull(domDataTreeShardingService);
+        Assert.assertNotNull(domDataTreeService);
         Assert.assertNotNull(distributedShardFactory);
         Assert.assertNotNull(controllerDOMRpcService);
-        Assert.assertNotNull(dOMRpcService);
+        Assert.assertNotNull(domRpcService);
         Assert.assertNotNull(controllerDOMRpcProviderService);
-        Assert.assertNotNull(dOMRpcProviderService);
+        Assert.assertNotNull(domRpcProviderService);
         Assert.assertNotNull(bindingNormalizedNodeSerializer);
         Assert.assertNotNull(bindingCodecTreeFactory);
-        Assert.assertNotNull(dOMEntityOwnershipService);
+        Assert.assertNotNull(domEntityOwnershipService);
         Assert.assertNotNull(entityOwnershipService);
         Assert.assertNotNull(clusterAdminRPCService);
         Assert.assertNotNull(clusterSingletonServiceProvider);
