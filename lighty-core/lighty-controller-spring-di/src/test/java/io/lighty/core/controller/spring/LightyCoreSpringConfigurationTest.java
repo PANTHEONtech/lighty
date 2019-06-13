@@ -72,55 +72,42 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
     LightyModuleRegistryService lightyModuleRegistryService;
 
     @Autowired
-    @Qualifier("DiagStatusService")
     DiagStatusService diagStatusService;
 
     @Autowired
-    @Qualifier("ActorSystemProvider")
     ActorSystemProvider actorSystemProvider;
 
     @Autowired
-    @Qualifier("SchemaContextProvider")
     SchemaContextProvider schemaContextProvider;
 
     @Autowired
-    @Qualifier("DOMSchemaService")
     DOMSchemaService dOMSchemaService;
 
     @Autowired
-    @Qualifier("DOMYangTextSourceProvider")
     DOMYangTextSourceProvider dOMYangTextSourceProvider;
 
     @Autowired
-    @Qualifier("ControllerDOMMountPointService")
     org.opendaylight.controller.md.sal.dom.api.DOMMountPointService controllerDOMMountPointService;
 
     @Autowired
-    @Qualifier("DOMMountPointService")
     DOMMountPointService dOMMountPointService;
 
     @Autowired
-    @Qualifier("ControllerDOMNotificationPublishService")
     org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService controllerDOMNotificationPublishService;
 
     @Autowired
-    @Qualifier("DOMNotificationPublishService")
     DOMNotificationPublishService dOMNotificationPublishService;
 
     @Autowired
-    @Qualifier("ControllerDOMNotificationService")
     org.opendaylight.controller.md.sal.dom.api.DOMNotificationService controllerDOMNotificationService;
 
     @Autowired
-    @Qualifier("DOMNotificationService")
     DOMNotificationService dOMNotificationService;
 
     @Autowired
-    @Qualifier("ControllerDOMNotificationSubscriptionListenerRegistry")
     org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry controllerDOMNotificationSubscriptionListenerRegistry;
 
     @Autowired
-    @Qualifier("DOMNotificationSubscriptionListenerRegistry")
     DOMNotificationSubscriptionListenerRegistry dOMNotificationSubscriptionListenerRegistry;
 
     @Autowired
@@ -136,7 +123,6 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
     org.opendaylight.controller.md.sal.dom.api.DOMDataBroker controllerClusteredDOMDataBroker;
 
     @Autowired
-    @Qualifier("ClusteredDOMDataBroker")
     DOMDataBroker clusteredDOMDataBroker;
 
     @Autowired
@@ -144,91 +130,69 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
     org.opendaylight.controller.md.sal.dom.api.DOMDataBroker controllerPingPongDataBroker;
 
     @Autowired
-    @Qualifier("DOMDataTreeShardingService")
     DOMDataTreeShardingService dOMDataTreeShardingService;
 
     @Autowired
-    @Qualifier("DOMDataTreeService")
     DOMDataTreeService dOMDataTreeService;
 
     @Autowired
-    @Qualifier("DistributedShardFactory")
     DistributedShardFactory distributedShardFactory;
 
     @Autowired
-    @Qualifier("ControllerDOMRpcService")
     org.opendaylight.controller.md.sal.dom.api.DOMRpcService controllerDOMRpcService;
 
     @Autowired
-    @Qualifier("DOMRpcService")
     DOMRpcService dOMRpcService;
 
     @Autowired
-    @Qualifier("ControllerDOMRpcProviderService")
     org.opendaylight.controller.md.sal.dom.api.DOMRpcProviderService controllerDOMRpcProviderService;
 
     @Autowired
-    @Qualifier("DOMRpcProviderService")
     DOMRpcProviderService dOMRpcProviderService;
 
     @Autowired
-    @Qualifier("BindingNormalizedNodeSerializer")
     BindingNormalizedNodeSerializer bindingNormalizedNodeSerializer;
 
     @Autowired
-    @Qualifier("BindingCodecTreeFactory")
     BindingCodecTreeFactory bindingCodecTreeFactory;
 
     @Autowired
-    @Qualifier("DOMEntityOwnershipService")
     DOMEntityOwnershipService dOMEntityOwnershipService;
 
     @Autowired
-    @Qualifier("EntityOwnershipService")
     EntityOwnershipService entityOwnershipService;
 
     @Autowired
-    @Qualifier("ClusterAdminRPCService")
     ClusterAdminService clusterAdminRPCService;
 
     @Autowired
-    @Qualifier("ClusterSingletonServiceProvider")
     ClusterSingletonServiceProvider clusterSingletonServiceProvider;
 
     @Autowired
-    @Qualifier("ControllerRpcProviderRegistry")
     org.opendaylight.controller.sal.binding.api.RpcProviderRegistry controllerRpcProviderRegistry;
 
     @Autowired
-    @Qualifier("RpcProviderRegistry")
     RpcProviderService rpcProviderRegistry;
 
     @Autowired
-    @Qualifier("ControllerBindingMountPointService")
     org.opendaylight.controller.md.sal.binding.api.MountPointService controllerBindingMountPointService;
 
     @Autowired
-    @Qualifier("BindingMountPointService")
     MountPointService bindingMountPointService;
 
     @Autowired
-    @Qualifier("ControllerBindingNotificationService")
     org.opendaylight.controller.md.sal.binding.api.NotificationService controllerBindingNotificationService;
 
     @Autowired
-    @Qualifier("NotificationService")
     NotificationService notificationService;
 
     @Autowired
-    @Qualifier("ControllerBindingNotificationPublishService")
     org.opendaylight.controller.md.sal.binding.api.NotificationPublishService controllerBindingNotificationPublishService;
 
     @Autowired
-    @Qualifier("BindingNotificationPublishService")
     NotificationPublishService bindingNotificationPublishService;
 
     @Autowired
-    @Qualifier("NotificationProviderService")
     org.opendaylight.controller.sal.binding.api.NotificationProviderService notificationProviderService;
 
     @Autowired
@@ -240,7 +204,6 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
     org.opendaylight.controller.md.sal.binding.api.DataBroker controllerBindingDataBroker;
 
     @Autowired
-    @Qualifier("BindingDataBroker")
     DataBroker bindingDataBroker;
 
     @Autowired
@@ -248,7 +211,6 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
     org.opendaylight.controller.md.sal.binding.api.DataBroker controllerBindingPingPongDataBroker;
 
     @Autowired
-    @Qualifier("EventExecutor")
     EventExecutor eventExecutor;
 
     @Autowired
@@ -260,15 +222,12 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
     EventLoopGroup workerGroup;
 
     @Autowired
-    @Qualifier("ThreadPool")
     ThreadPool threadPool;
 
     @Autowired
-    @Qualifier("ScheduledThreadPool")
     ScheduledThreadPool scheduledThreadPool;
 
     @Autowired
-    @Qualifier("Timer")
     Timer timer;
 
     @Test
