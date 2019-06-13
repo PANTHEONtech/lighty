@@ -64,226 +64,223 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
     private static final Logger LOG = LoggerFactory.getLogger(LightyCoreSpringConfigurationTest.class);
 
     @Autowired
-    @Qualifier("LightyController")
-    LightyController lightyController;
+    LightyController lightyControllerTestProperty;
 
     @Autowired
-    @Qualifier("LightyModuleRegistryService")
-    LightyModuleRegistryService lightyModuleRegistryService;
+    LightyModuleRegistryService lightyModuleRegistryServiceTestProperty;
 
     @Autowired
-    DiagStatusService diagStatusService;
+    DiagStatusService diagStatusServiceTestProperty;
 
     @Autowired
-    ActorSystemProvider actorSystemProvider;
+    ActorSystemProvider actorSystemProviderTestProperty;
 
     @Autowired
-    SchemaContextProvider schemaContextProvider;
+    SchemaContextProvider schemaContextProviderTestProperty;
 
     @Autowired
-    DOMSchemaService domSchemaService;
+    DOMSchemaService domSchemaServiceTestProperty;
 
     @Autowired
-    DOMYangTextSourceProvider domYangTextSourceProvider;
+    DOMYangTextSourceProvider domYangTextSourceProviderTestProperty;
 
     @Autowired
-    org.opendaylight.controller.md.sal.dom.api.DOMMountPointService controllerDOMMountPointService;
+    org.opendaylight.controller.md.sal.dom.api.DOMMountPointService controllerDOMMountPointServiceTestProperty;
 
     @Autowired
-    DOMMountPointService domMountPointService;
+    DOMMountPointService domMountPointServiceTestProperty;
 
     @Autowired
-    org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService controllerDOMNotificationPublishService;
+    org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService controllerDOMNotificationPublishServiceTestProperty;
 
     @Autowired
-    DOMNotificationPublishService domNotificationPublishService;
+    DOMNotificationPublishService domNotificationPublishServiceTestProperty;
 
     @Autowired
-    org.opendaylight.controller.md.sal.dom.api.DOMNotificationService controllerDOMNotificationService;
+    org.opendaylight.controller.md.sal.dom.api.DOMNotificationService controllerDOMNotificationServiceTestProperty;
 
     @Autowired
-    DOMNotificationService domNotificationService;
+    DOMNotificationService domNotificationServiceTestProperty;
 
     @Autowired
-    org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry controllerDOMNotificationSubscriptionListenerRegistry;
+    org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry controllerDOMNotificationSubscriptionListenerRegistryTestProperty;
 
     @Autowired
-    DOMNotificationSubscriptionListenerRegistry domNotificationSubscriptionListenerRegistry;
+    DOMNotificationSubscriptionListenerRegistry domNotificationSubscriptionListenerRegistryTestProperty;
 
     @Autowired
     @Qualifier("ConfigDatastore")
-    DistributedDataStoreInterface configDatastore;
+    DistributedDataStoreInterface configDatastoreTestProperty;
 
     @Autowired
     @Qualifier("OperationalDatastore")
-    DistributedDataStoreInterface operationalDatastore;
+    DistributedDataStoreInterface operationalDatastoreTestProperty;
 
     @Autowired
     @Qualifier("ControllerClusteredDOMDataBroker")
-    org.opendaylight.controller.md.sal.dom.api.DOMDataBroker controllerClusteredDOMDataBroker;
+    org.opendaylight.controller.md.sal.dom.api.DOMDataBroker controllerClusteredDOMDataBrokerTestProperty;
 
     @Autowired
-    DOMDataBroker clusteredDOMDataBroker;
+    DOMDataBroker clusteredDOMDataBrokerTestProperty;
 
     @Autowired
     @Qualifier("ControllerPingPongDataBroker")
-    org.opendaylight.controller.md.sal.dom.api.DOMDataBroker controllerPingPongDataBroker;
+    org.opendaylight.controller.md.sal.dom.api.DOMDataBroker controllerPingPongDataBrokerTestProperty;
 
     @Autowired
-    DOMDataTreeShardingService domDataTreeShardingService;
+    DOMDataTreeShardingService domDataTreeShardingServiceTestProperty;
 
     @Autowired
-    DOMDataTreeService domDataTreeService;
+    DOMDataTreeService domDataTreeServiceTestProperty;
 
     @Autowired
-    DistributedShardFactory distributedShardFactory;
+    DistributedShardFactory distributedShardFactoryTestProperty;
 
     @Autowired
-    org.opendaylight.controller.md.sal.dom.api.DOMRpcService controllerDOMRpcService;
+    org.opendaylight.controller.md.sal.dom.api.DOMRpcService controllerDOMRpcServiceTestProperty;
 
     @Autowired
-    DOMRpcService domRpcService;
+    DOMRpcService domRpcServiceTestProperty;
 
     @Autowired
-    org.opendaylight.controller.md.sal.dom.api.DOMRpcProviderService controllerDOMRpcProviderService;
+    org.opendaylight.controller.md.sal.dom.api.DOMRpcProviderService controllerDOMRpcProviderServiceTestProperty;
 
     @Autowired
-    DOMRpcProviderService domRpcProviderService;
+    DOMRpcProviderService domRpcProviderServiceTestProperty;
 
     @Autowired
-    BindingNormalizedNodeSerializer bindingNormalizedNodeSerializer;
+    BindingNormalizedNodeSerializer bindingNormalizedNodeSerializerTestProperty;
 
     @Autowired
-    BindingCodecTreeFactory bindingCodecTreeFactory;
+    BindingCodecTreeFactory bindingCodecTreeFactoryTestProperty;
 
     @Autowired
-    DOMEntityOwnershipService domEntityOwnershipService;
+    DOMEntityOwnershipService domEntityOwnershipServiceTestProperty;
 
     @Autowired
-    EntityOwnershipService entityOwnershipService;
+    EntityOwnershipService entityOwnershipServiceTestProperty;
 
     @Autowired
-    ClusterAdminService clusterAdminRPCService;
+    ClusterAdminService clusterAdminRPCServiceTestProperty;
 
     @Autowired
-    ClusterSingletonServiceProvider clusterSingletonServiceProvider;
+    ClusterSingletonServiceProvider clusterSingletonServiceProviderTestProperty;
 
     @Autowired
-    org.opendaylight.controller.sal.binding.api.RpcProviderRegistry controllerRpcProviderRegistry;
+    org.opendaylight.controller.sal.binding.api.RpcProviderRegistry controllerRpcProviderRegistryTestProperty;
 
     @Autowired
-    RpcProviderService rpcProviderRegistry;
+    RpcProviderService rpcProviderRegistryTestProperty;
 
     @Autowired
-    org.opendaylight.controller.md.sal.binding.api.MountPointService controllerBindingMountPointService;
+    org.opendaylight.controller.md.sal.binding.api.MountPointService controllerBindingMountPointServiceTestProperty;
 
     @Autowired
-    MountPointService bindingMountPointService;
+    MountPointService bindingMountPointServiceTestProperty;
 
     @Autowired
-    org.opendaylight.controller.md.sal.binding.api.NotificationService controllerBindingNotificationService;
+    org.opendaylight.controller.md.sal.binding.api.NotificationService controllerBindingNotificationServiceTestProperty;
 
     @Autowired
-    NotificationService notificationService;
+    NotificationService notificationServiceTestProperty;
 
     @Autowired
-    org.opendaylight.controller.md.sal.binding.api.NotificationPublishService controllerBindingNotificationPublishService;
+    org.opendaylight.controller.md.sal.binding.api.NotificationPublishService controllerBindingNotificationPublishServiceTestProperty;
 
     @Autowired
-    NotificationPublishService bindingNotificationPublishService;
+    NotificationPublishService bindingNotificationPublishServiceTestProperty;
 
     @Autowired
-    org.opendaylight.controller.sal.binding.api.NotificationProviderService notificationProviderService;
+    org.opendaylight.controller.sal.binding.api.NotificationProviderService notificationProviderServiceTestProperty;
 
     @Autowired
-    @Qualifier("ControllerNotificationProviderService")
-    org.opendaylight.controller.sal.binding.api.NotificationService controllerNotificationProviderService;
+    org.opendaylight.controller.sal.binding.api.NotificationService controllerNotificationProviderServiceTestProperty;
 
     @Autowired
     @Qualifier("ControllerBindingDataBroker")
-    org.opendaylight.controller.md.sal.binding.api.DataBroker controllerBindingDataBroker;
+    org.opendaylight.controller.md.sal.binding.api.DataBroker controllerBindingDataBrokerTestProperty;
 
     @Autowired
-    DataBroker bindingDataBroker;
+    DataBroker bindingDataBrokerTestProperty;
 
     @Autowired
     @Qualifier("ControllerBindingPingPongDataBroker")
-    org.opendaylight.controller.md.sal.binding.api.DataBroker controllerBindingPingPongDataBroker;
+    org.opendaylight.controller.md.sal.binding.api.DataBroker controllerBindingPingPongDataBrokerTestProperty;
 
     @Autowired
-    EventExecutor eventExecutor;
+    EventExecutor eventExecutorTestProperty;
 
     @Autowired
     @Qualifier("BossGroup")
-    EventLoopGroup bossGroup;
+    EventLoopGroup bossGroupTestProperty;
 
     @Autowired
     @Qualifier("WorkerGroup")
-    EventLoopGroup workerGroup;
+    EventLoopGroup workerGroupTestProperty;
 
     @Autowired
-    ThreadPool threadPool;
+    ThreadPool threadPoolTestProperty;
 
     @Autowired
-    ScheduledThreadPool scheduledThreadPool;
+    ScheduledThreadPool scheduledThreadPoolTestProperty;
 
     @Autowired
-    Timer timer;
+    Timer timerTestProperty;
 
     @Test
     void testLightyBeansExists() {
-        Assert.assertNotNull(lightyController);
-        Assert.assertNotNull(lightyModuleRegistryService);
-        Assert.assertNotNull(diagStatusService);
-        Assert.assertNotNull(actorSystemProvider);
-        Assert.assertNotNull(schemaContextProvider);
-        Assert.assertNotNull(domSchemaService);
-        Assert.assertNotNull(domYangTextSourceProvider);
-        Assert.assertNotNull(controllerDOMMountPointService);
-        Assert.assertNotNull(domMountPointService);
-        Assert.assertNotNull(controllerDOMNotificationPublishService);
-        Assert.assertNotNull(domNotificationPublishService);
-        Assert.assertNotNull(controllerDOMNotificationService);
-        Assert.assertNotNull(domNotificationService);
-        Assert.assertNotNull(controllerDOMNotificationSubscriptionListenerRegistry);
-        Assert.assertNotNull(domNotificationSubscriptionListenerRegistry);
-        Assert.assertNotNull(configDatastore);
-        Assert.assertNotNull(operationalDatastore);
-        Assert.assertNotNull(controllerClusteredDOMDataBroker);
-        Assert.assertNotNull(clusteredDOMDataBroker);
-        Assert.assertNotNull(controllerPingPongDataBroker);
-        Assert.assertNotNull(domDataTreeShardingService);
-        Assert.assertNotNull(domDataTreeService);
-        Assert.assertNotNull(distributedShardFactory);
-        Assert.assertNotNull(controllerDOMRpcService);
-        Assert.assertNotNull(domRpcService);
-        Assert.assertNotNull(controllerDOMRpcProviderService);
-        Assert.assertNotNull(domRpcProviderService);
-        Assert.assertNotNull(bindingNormalizedNodeSerializer);
-        Assert.assertNotNull(bindingCodecTreeFactory);
-        Assert.assertNotNull(domEntityOwnershipService);
-        Assert.assertNotNull(entityOwnershipService);
-        Assert.assertNotNull(clusterAdminRPCService);
-        Assert.assertNotNull(clusterSingletonServiceProvider);
-        Assert.assertNotNull(controllerRpcProviderRegistry);
-        Assert.assertNotNull(rpcProviderRegistry);
-        Assert.assertNotNull(controllerBindingMountPointService);
-        Assert.assertNotNull(bindingMountPointService);
-        Assert.assertNotNull(controllerBindingNotificationService);
-        Assert.assertNotNull(notificationService);
-        Assert.assertNotNull(controllerBindingNotificationPublishService);
-        Assert.assertNotNull(bindingNotificationPublishService);
-        Assert.assertNotNull(notificationProviderService);
-        Assert.assertNotNull(controllerNotificationProviderService);
-        Assert.assertNotNull(controllerBindingDataBroker);
-        Assert.assertNotNull(bindingDataBroker);
-        Assert.assertNotNull(controllerBindingPingPongDataBroker);
-        Assert.assertNotNull(eventExecutor);
-        Assert.assertNotNull(bossGroup);
-        Assert.assertNotNull(workerGroup);
-        Assert.assertNotNull(threadPool);
-        Assert.assertNotNull(scheduledThreadPool);
-        Assert.assertNotNull(timer);
+        Assert.assertNotNull(lightyControllerTestProperty);
+        Assert.assertNotNull(lightyModuleRegistryServiceTestProperty);
+        Assert.assertNotNull(diagStatusServiceTestProperty);
+        Assert.assertNotNull(actorSystemProviderTestProperty);
+        Assert.assertNotNull(schemaContextProviderTestProperty);
+        Assert.assertNotNull(domSchemaServiceTestProperty);
+        Assert.assertNotNull(domYangTextSourceProviderTestProperty);
+        Assert.assertNotNull(controllerDOMMountPointServiceTestProperty);
+        Assert.assertNotNull(domMountPointServiceTestProperty);
+        Assert.assertNotNull(controllerDOMNotificationPublishServiceTestProperty);
+        Assert.assertNotNull(domNotificationPublishServiceTestProperty);
+        Assert.assertNotNull(controllerDOMNotificationServiceTestProperty);
+        Assert.assertNotNull(domNotificationServiceTestProperty);
+        Assert.assertNotNull(controllerDOMNotificationSubscriptionListenerRegistryTestProperty);
+        Assert.assertNotNull(domNotificationSubscriptionListenerRegistryTestProperty);
+        Assert.assertNotNull(configDatastoreTestProperty);
+        Assert.assertNotNull(operationalDatastoreTestProperty);
+        Assert.assertNotNull(controllerClusteredDOMDataBrokerTestProperty);
+        Assert.assertNotNull(clusteredDOMDataBrokerTestProperty);
+        Assert.assertNotNull(controllerPingPongDataBrokerTestProperty);
+        Assert.assertNotNull(domDataTreeShardingServiceTestProperty);
+        Assert.assertNotNull(domDataTreeServiceTestProperty);
+        Assert.assertNotNull(distributedShardFactoryTestProperty);
+        Assert.assertNotNull(controllerDOMRpcServiceTestProperty);
+        Assert.assertNotNull(domRpcServiceTestProperty);
+        Assert.assertNotNull(controllerDOMRpcProviderServiceTestProperty);
+        Assert.assertNotNull(domRpcProviderServiceTestProperty);
+        Assert.assertNotNull(bindingNormalizedNodeSerializerTestProperty);
+        Assert.assertNotNull(bindingCodecTreeFactoryTestProperty);
+        Assert.assertNotNull(domEntityOwnershipServiceTestProperty);
+        Assert.assertNotNull(entityOwnershipServiceTestProperty);
+        Assert.assertNotNull(clusterAdminRPCServiceTestProperty);
+        Assert.assertNotNull(clusterSingletonServiceProviderTestProperty);
+        Assert.assertNotNull(controllerRpcProviderRegistryTestProperty);
+        Assert.assertNotNull(rpcProviderRegistryTestProperty);
+        Assert.assertNotNull(controllerBindingMountPointServiceTestProperty);
+        Assert.assertNotNull(bindingMountPointServiceTestProperty);
+        Assert.assertNotNull(controllerBindingNotificationServiceTestProperty);
+        Assert.assertNotNull(notificationServiceTestProperty);
+        Assert.assertNotNull(controllerBindingNotificationPublishServiceTestProperty);
+        Assert.assertNotNull(bindingNotificationPublishServiceTestProperty);
+        Assert.assertNotNull(notificationProviderServiceTestProperty);
+        Assert.assertNotNull(controllerNotificationProviderServiceTestProperty);
+        Assert.assertNotNull(controllerBindingDataBrokerTestProperty);
+        Assert.assertNotNull(bindingDataBrokerTestProperty);
+        Assert.assertNotNull(controllerBindingPingPongDataBrokerTestProperty);
+        Assert.assertNotNull(eventExecutorTestProperty);
+        Assert.assertNotNull(bossGroupTestProperty);
+        Assert.assertNotNull(workerGroupTestProperty);
+        Assert.assertNotNull(threadPoolTestProperty);
+        Assert.assertNotNull(scheduledThreadPoolTestProperty);
+        Assert.assertNotNull(timerTestProperty);
     }
 
     @TestConfiguration

@@ -27,7 +27,6 @@ import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -70,7 +69,7 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
 
 
     @Bean
-    NetconfSBPlugin initNetconfSBP(@Qualifier("LightyController") LightyController lightyController)
+    NetconfSBPlugin initNetconfSBP(LightyController lightyController)
             throws ExecutionException, InterruptedException, ConfigurationException {
         final NetconfConfiguration netconfSBPConfiguration = NetconfConfigUtils.injectServicesToTopologyConfig(
             NetconfConfigUtils.createDefaultNetconfConfiguration(), lightyController.getServices());

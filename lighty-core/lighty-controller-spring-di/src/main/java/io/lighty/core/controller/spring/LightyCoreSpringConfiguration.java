@@ -120,12 +120,13 @@ public abstract class LightyCoreSpringConfiguration {
         LOG.info("LightyCoreSpringConfiguration destroy");
     }
 
-    @Bean(name = "LightyController", destroyMethod = "")
+    @Bean(destroyMethod = "")
+    @Primary
     public LightyController lightyController() {
         return lightyController;
     }
 
-    @Bean(name = "LightyModuleRegistryService", destroyMethod = "")
+    @Bean(destroyMethod = "")
     public LightyModuleRegistryService lightyModuleRegistryService() {
         return this.lightyController.getServices();
     }
@@ -337,7 +338,7 @@ public abstract class LightyCoreSpringConfiguration {
         return this.lightyController.getServices().getControllerNotificationProviderService();
     }
 
-    @Bean(name = "ControllerNotificationProviderService", destroyMethod = "")
+    @Bean(destroyMethod = "")
     public org.opendaylight.controller.sal.binding.api.NotificationService controllerNotificationProviderService() {
         return this.lightyController.getServices().getControllerNotificationProviderService();
     }
