@@ -144,7 +144,7 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
     public NormalizedNode<?, ?> serializeXMLError(final String body) {
         final Optional<Revision> restconfRevision = Revision.ofNullable("2017-01-26");
         final Module restconfModule = this.schemaContext.findModule("ietf-restconf", restconfRevision)
-                .get();
+                .orElseThrow(() -> new IllegalStateException("ietf-restconf module was not found in schema context."));
         final List<UnknownSchemaNode> unknownSchemaNodes = restconfModule.getUnknownSchemaNodes();
         final QNameModule qNameRestconfModule = QNameModule
                 .create(URI.create("urn:ietf:params:xml:ns:yang:ietf-restconf"), restconfRevision);
@@ -153,14 +153,13 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
                 (YangDataSchemaNode) unknownSchemaNodes.stream()
                         .filter(unknownSchemaNode -> yangDataYangErrors.equals(unknownSchemaNode.getQName()))
                         .findFirst()
-                        .get();
+                        .orElseThrow(() -> new IllegalStateException("node yang-error wasn't found in ietf-restconf "));
 
         final DataSchemaNode schemaNode = yangDataNode.getContainerSchemaNode();
         final NormalizedNodeResult resultHolder = new NormalizedNodeResult();
         final NormalizedNodeStreamWriter writer = ImmutableNormalizedNodeStreamWriter.from(resultHolder);
-        final XmlParserStream xmlParser = XmlParserStream.create(writer, this.schemaContext, schemaNode);
 
-        try {
+        try (final XmlParserStream xmlParser = XmlParserStream.create(writer, this.schemaContext, schemaNode)) {
             final Document doc = XmlUtil.readXmlToDocument(body);
             final XmlElement element = XmlElement.fromDomDocument(doc);
             final Element domElement = element.getDomElement();
