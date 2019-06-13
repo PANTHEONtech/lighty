@@ -77,7 +77,8 @@ public class TopologyRestService {
 
     @Secured({"ROLE_ADMIN"})
     @PutMapping("/id/{topologyId}")
-    public ResponseEntity putTopologyOperational(@PathVariable final String topologyId, Authentication authentication) {
+    public ResponseEntity putTopologyOperational(@PathVariable final String topologyId, Authentication authentication)
+            throws InterruptedException {
         Utils.logUserData(LOG, authentication);
 
         final WriteTransaction tx = databroker.newWriteOnlyTransaction();
@@ -94,7 +95,7 @@ public class TopologyRestService {
             tx.commit().get(TIMEOUT, TimeUnit.SECONDS);
             LOG.info("Topology was stored to datastore: {}", topology);
             return ResponseEntity.ok().build();
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (ExecutionException | TimeoutException e) {
             LOG.error("Could not store topology to datastore: {}", topology, e);
             return ResponseEntity.status(500).build();
         }
@@ -102,7 +103,8 @@ public class TopologyRestService {
 
     @Secured({"ROLE_ADMIN"})
     @DeleteMapping("/id/{topologyId}")
-    public ResponseEntity deleteTopologyOperational(@PathVariable final String topologyId, Authentication authentication) {
+    public ResponseEntity deleteTopologyOperational(@PathVariable final String topologyId, Authentication authentication)
+            throws InterruptedException {
         Utils.logUserData(LOG, authentication);
 
         final WriteTransaction tx = databroker.newWriteOnlyTransaction();
@@ -116,7 +118,7 @@ public class TopologyRestService {
             tx.commit().get(TIMEOUT, TimeUnit.SECONDS);
             LOG.info("Topology {} was deleted from datastore", topologyId);
             return ResponseEntity.ok().build();
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (ExecutionException | TimeoutException e) {
             LOG.error("Could not delete topology {} from datastore", topologyId, e);
             return ResponseEntity.status(500).build();
         }

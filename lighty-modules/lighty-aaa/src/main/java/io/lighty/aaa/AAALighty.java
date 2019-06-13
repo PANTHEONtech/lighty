@@ -20,11 +20,8 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.DatastoreConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.ShiroConfiguration;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public final class AAALighty extends AbstractLightyModule {
-    private static final Logger LOG = LoggerFactory.getLogger(AAALighty.class);
 
     public static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
             org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.$YangModuleInfoImpl
@@ -62,7 +59,7 @@ public final class AAALighty extends AbstractLightyModule {
     }
 
     @Override
-    protected boolean initProcedure() {
+    protected boolean initProcedure() throws InterruptedException {
         final CompletableFuture<AAALightyShiroProvider> newInstance = AAALightyShiroProvider.newInstance(
                 this.dataBroker, this.certificateManager, this.credentialAuth, this.shiroConfiguration,
                 this.moonEndpointPath, this.datastoreConfig, this.dbUsername, this.dbPassword, this.server);
@@ -71,12 +68,8 @@ public final class AAALighty extends AbstractLightyModule {
             AAALighty.this.aaaShiroProviderHandler.setAaaLightyShiroProvider(t);
             cdl.countDown();
         });
-        try {
-            cdl.await();
-        } catch (final InterruptedException e) {
-            LOG.error(e.getMessage());
-            return false;
-        }
+
+        cdl.await();
         return true;
     }
 
