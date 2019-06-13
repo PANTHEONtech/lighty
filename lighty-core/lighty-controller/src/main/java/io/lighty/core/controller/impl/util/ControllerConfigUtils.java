@@ -10,6 +10,7 @@ package io.lighty.core.controller.impl.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigException;
@@ -80,6 +81,7 @@ public final class ControllerConfigUtils {
      */
     public static ControllerConfiguration getConfiguration(final InputStream jsonConfigInputStream)
             throws ConfigurationException {
+        Preconditions.checkNotNull(jsonConfigInputStream);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode configNode;
 
@@ -88,6 +90,10 @@ public final class ControllerConfigUtils {
             configNode = mapper.readTree(jsonConfigInputStream);
         } catch (IOException e) {
             throw new ConfigurationException("Cannot deserialize Json content to Json tree nodes", e);
+        }
+
+        if (configNode == null) {
+            throw new ConfigurationException("Configuration was not loaded, empty or missing configuration.");
         }
 
         StringBuilder jsonPath = new StringBuilder().append(CONTROLLER_CONFIG_ROOT_ELEMENT_NAME);
