@@ -97,6 +97,37 @@ public class ConfigLoadingTest {
         Assert.assertNotNull(configuration);
     }
 
+    @Test(expectedExceptions = NullPointerException.class)
+    public void loadMissingConfiguration() throws ConfigurationException {
+        InputStream inputStream = this.getClass().getResourceAsStream("/testMissingConfig.json");
+        ControllerConfigUtils.getConfiguration(inputStream);
+    }
+
+    @Test(expectedExceptions = ConfigurationException.class)
+    public void loadEmptyConfiguration() throws ConfigurationException {
+        InputStream inputStream = this.getClass().getResourceAsStream("/testEmptyConfig.json");
+        ControllerConfigUtils.getConfiguration(inputStream);
+    }
+
+    @Test
+    public void loadEmptyJsonConfiguration() throws ConfigurationException {
+        InputStream inputStream = this.getClass().getResourceAsStream("/testEmptyJsonConfig.json");
+        ControllerConfiguration configuration = ControllerConfigUtils.getConfiguration(inputStream);
+        Assert.assertNotNull(configuration);
+    }
+
+    @Test(expectedExceptions = ConfigurationException.class)
+    public void loadNonJsonConfiguration() throws ConfigurationException {
+        InputStream inputStream = this.getClass().getResourceAsStream("/testNonJsonConfig.json");
+        ControllerConfigUtils.getConfiguration(inputStream);
+    }
+
+    @Test(expectedExceptions = ConfigurationException.class)
+    public void loadDummyConfiguration() throws ConfigurationException {
+        InputStream inputStream = this.getClass().getResourceAsStream("/testBadConfig.json");
+        ControllerConfigUtils.getConfiguration(inputStream);
+    }
+
     @Test
     public void loadConfigDatastoreCtxTest() throws IOException {
         DatastoreContext dataStoreContext =
@@ -177,6 +208,17 @@ public class ConfigLoadingTest {
             Assert.assertTrue(expectedModuleCount > 0);
         }
 
+    }
+
+    @Test
+    public void loadConfigurationsAndCompareTest() throws Exception {
+        InputStream inputStream = this.getClass().getResourceAsStream("/testLightyControllerConfig-example.json");
+        final ControllerConfiguration configuration = ControllerConfigUtils.getConfiguration(inputStream);
+
+        inputStream = this.getClass().getResourceAsStream("/testLightyControllerConfig.json");
+        final ControllerConfiguration configuration2 = ControllerConfigUtils.getConfiguration(inputStream);
+
+        Assert.assertNotEquals(configuration2, configuration);
     }
 
     private DatastoreContext loadDatastoreContext(final String contextName, final LogicalDatastoreType logicalDatastoreType) throws IOException {
