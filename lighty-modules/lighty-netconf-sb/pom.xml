@@ -58,6 +58,14 @@
             <artifactId>mdsal-netconf-yang-library</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.opendaylight.netconf</groupId>
+            <artifactId>ietf-netconf-nmda</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.netconf</groupId>
+            <artifactId>ietf-netconf-with-defaults</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.opendaylight.aaa</groupId>
             <artifactId>aaa-encrypt-service</artifactId>
         </dependency>
