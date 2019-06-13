@@ -84,20 +84,20 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
         public void run() {
             long startTime = System.nanoTime();
             try {
-                LOG.info("Lighty module {} shutting down NETCONF ...");
+                LOG.info("Lighty module shutting down NETCONF ...");
                 netconfSouthboundPlugin.shutdown();
             } catch (Exception e) {
                 LOG.error("Exception while shutting NETCONF module: {} :", e);
             }
-            LOG.info("Lighty module {} shutting down ...");
+            LOG.info("Lighty module shutting down ...");
             try {
-                LOG.info("Lighty module {} shutting down LightyController ...");
+                LOG.info("Lighty module shutting down LightyController ...");
                 lightyController.shutdown();
             } catch (Exception e) {
                 LOG.error("Exception while shutting LightyController module: {} :", e);
             }
             float duration = (System.nanoTime() - startTime)/1_000_000f;
-            LOG.info("Lighty module {} stopped in {}ms", duration);
+            LOG.info("Lighty module stopped in {}ms", duration);
         }
 
     }
