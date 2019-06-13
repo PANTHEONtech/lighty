@@ -140,6 +140,10 @@ public class LightyControllerModule extends AbstractModule {
         bind(DataBroker.class)
                 .annotatedWith(Names.named("BindingDataBroker"))
                 .toInstance(lightyServices.getBindingDataBroker());
+        bind(LightyServices.class)
+                .toInstance(lightyServices);
+        bind(LightyModuleRegistryService.class)
+                .toInstance(lightyServices);
         // Deprecated services
         bind(NotificationProviderService.class)
                 .toInstance(lightyServices.getControllerNotificationProviderService());
@@ -175,10 +179,6 @@ public class LightyControllerModule extends AbstractModule {
                 .toInstance(lightyServices.getControllerBindingPingPongDataBroker());
         bind(org.opendaylight.controller.md.sal.binding.api.NotificationPublishService.class)
                 .toInstance(lightyServices.getControllerBindingNotificationPublishService());
-        bind(LightyServices.class)
-                .toInstance(lightyServices);
-        bind(LightyModuleRegistryService.class)
-                .toInstance(lightyServices);
         LOG.info("Lighty bindings initialized.");
     }
 

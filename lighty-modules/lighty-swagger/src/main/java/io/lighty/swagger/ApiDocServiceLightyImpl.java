@@ -35,8 +35,8 @@ public abstract class ApiDocServiceLightyImpl implements ApiDocService {
     @Override
     public synchronized Response getListOfMounts(final UriInfo uriInfo) {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (OutputStreamWriter streamWriter = new OutputStreamWriter(baos, StandardCharsets.UTF_8)) {
-            JsonGenerator writer = new JsonFactory().createGenerator(streamWriter);
+        try (OutputStreamWriter streamWriter = new OutputStreamWriter(baos, StandardCharsets.UTF_8);
+             JsonGenerator writer = new JsonFactory().createGenerator(streamWriter)) {
             writer.writeStartArray();
             for (final Map.Entry<String, Long> entry : mountPointSwagger.getInstanceIdentifiers()
                     .entrySet()) {
