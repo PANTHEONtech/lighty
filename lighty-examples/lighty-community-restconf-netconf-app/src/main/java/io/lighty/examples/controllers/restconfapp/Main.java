@@ -134,7 +134,7 @@ public class Main {
     }
 
     public void shutdown() {
-        shutdownHook.run();
+        shutdownHook.execute();
     }
 
     public static void main(String[] args) {
@@ -160,6 +160,10 @@ public class Main {
 
         @Override
         public void run() {
+            this.execute();
+        }
+
+        public void execute() {
             LOG.info("lighty.io and RESTCONF-NETCONF shutting down ...");
             long startTime = System.nanoTime();
             try {
@@ -182,10 +186,7 @@ public class Main {
             } catch (Exception e) {
                 LOG.error("Exception while shutting down lighty.io controller:", e);
             }
-            float duration = (System.nanoTime() - startTime)/1_000_000f;
-            LOG.info("lighty.io and RESTCONF-NETCONF stopped in {}ms", duration);
+            float duration = (System.nanoTime() - startTime) / 1_000_000f;
         }
-
     }
-
 }
