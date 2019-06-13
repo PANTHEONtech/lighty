@@ -170,7 +170,7 @@ private static final NodeIdentifier NETCONF_WITH_ORIGIN_NODEID =
         return getDOMRpcService().invokeRpc(toPath(NETCONF_EDIT_DATA_QNAME),
                 NetconfMessageTransformUtil.wrap(NETCONF_EDIT_DATA_QNAME,
                         getDatastoreNode(requireNonNull(targetDatastore)),
-                        getDefaultOperationNode(dataModifyActionAttribute.get()), editStructure));
+                        getDefaultOperationNode(defaultModifyAction.get()), editStructure));
     }
 
     private DataContainerChild<?, ?> getDatastoreNode(QName datastore) {
