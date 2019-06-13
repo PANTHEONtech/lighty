@@ -86,7 +86,7 @@ public abstract class AbstractLightyModule implements LightyModule {
      * Implementation of this method should initialize everything necessary.
      * @return success of initialization
      */
-    protected abstract boolean initProcedure();
+    protected abstract boolean initProcedure() throws InterruptedException;
 
     /**
      * This method is called in {@link AbstractLightyModule#shutdown()} method.
