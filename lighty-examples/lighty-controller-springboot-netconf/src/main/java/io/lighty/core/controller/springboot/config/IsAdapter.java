@@ -65,8 +65,9 @@ public class IsAdapter implements Adapter {
             is.close();
             br.close();
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new Error("IO error occurred");
+            IllegalStateException ioErr = new IllegalStateException("IO error occurred", e);
+            LOG.error("IO error occurred", ioErr);
+            throw ioErr;
         }
     }
 

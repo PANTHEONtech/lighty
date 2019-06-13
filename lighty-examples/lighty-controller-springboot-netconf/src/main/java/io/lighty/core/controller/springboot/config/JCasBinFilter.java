@@ -52,7 +52,8 @@ public class JCasBinFilter implements Filter {
 
             if (enforcer.enforce(user, path, method)) {
 
-                LOG.info("session is authorized: {} {} {} {}", sessionId, user, method, path);
+                LOG.info("session is authorized: {} {} {} {}", sessionId, userData.get().getUserName(),
+                        httpServletRequest.getMethod(), httpServletRequest.getRequestURI());
                 List<String> rolesForUser = enforcer.getRolesForUser(user);
                 SecurityContext securityContext = SecurityContextHolder.getContext();
                 securityContext.setAuthentication(new AuthenticationImpl(userData.get().getUserName(), rolesForUser));
@@ -62,7 +63,8 @@ public class JCasBinFilter implements Filter {
 
             } else {
 
-                LOG.error("session is not authorized: {} {} {} {}", sessionId, user, method, path);
+                LOG.error("session is not authorized: {} {} {} {}", sessionId, userData.get().getUserName(),
+                        httpServletRequest.getMethod(), httpServletRequest.getRequestURI());
                 HttpServletResponse httpServletResponse = (HttpServletResponse)response;
                 httpServletResponse.setStatus(HttpStatus.FORBIDDEN.value());
             }

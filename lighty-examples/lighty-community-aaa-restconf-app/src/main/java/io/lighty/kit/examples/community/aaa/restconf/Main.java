@@ -44,6 +44,8 @@ import org.slf4j.LoggerFactory;
 public class Main {
 
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
+    private static final String PASS = "bar";
+    private static final String USER = "foo";
 
     public static void main(final String[] args) throws Exception {
         final long startTime = System.nanoTime();
@@ -96,11 +98,10 @@ public class Main {
 
         final DataBroker bindingDataBroker = lightyController.getServices().getBindingDataBroker();
         final String moonEndpointPath = "/moon";
-        final String dbUsername = "foo";
-        final String dbPassword = "bar";
+        // this is example only real application should not use hardcoded credentials.
         final AAALighty aaaLighty = new AAALighty(bindingDataBroker, CertificateManagerConfig.getDefault(
                 bindingDataBroker), null, ShiroConfigurationConfig.getDefault(), moonEndpointPath,
-                DatastoreConfigurationConfig.getDefault(), dbUsername, dbPassword, jettyServerBuilder);
+                DatastoreConfigurationConfig.getDefault(), USER, PASS, jettyServerBuilder);
         final ListenableFuture<Boolean> start = aaaLighty.start();
 
         addCallback(start);
