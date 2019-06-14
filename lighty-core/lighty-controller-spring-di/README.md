@@ -25,23 +25,37 @@ initialize ```LightyController``` as spring bean with whichever custom configura
 @Configuration
 public class LightyConfiguration extends LightyCoreSpringConfiguration {
 
-    @Bean
-    LightyController initLightyController() throws Exception {
-        LOG.info("Building LightyController Core");
-        final LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
-        final Set<YangModuleInfo> mavenModelPaths = new HashSet<>();
-        mavenModelPaths.addAll(NetconfConfigUtils.NETCONF_TOPOLOGY_MODELS);
-        LightyController lightyController = lightyControllerBuilder
-            .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(mavenModelPaths))
-            .build();
-        LOG.info("Starting LightyController (waiting 10s after start)");
-        final ListenableFuture<Boolean> started = lightyController.start();
-        started.get();
-        LOG.info("LightyController Core started");
-    
-        Runtime.getRuntime().addShutdownHook(new LightyModuleShutdownHook(lightyController));
-    
-        return lightyController;
+    private static final Logger LOG = LoggerFactory.getLogger(LightyConfiguration.class);
+
+    @Override
+    protected LightyController initLightyController() throws LightyLaunchException, InterruptedException {
+        try {
+            LOG.info("Building LightyController Core");
+            final LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
+            final Set<YangModuleInfo> mavenModelPaths = new HashSet<>();
+            mavenModelPaths.addAll(NetconfConfigUtils.NETCONF_TOPOLOGY_MODELS);
+            final LightyController lightyController = lightyControllerBuilder
+                    .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(mavenModelPaths))
+                    .build();
+            LOG.info("Starting LightyController (waiting 10s after start)");
+            final ListenableFuture<Boolean> started = lightyController.start();
+            started.get();
+            LOG.info("LightyController Core started");
+
+            return lightyController;
+        } catch (ConfigurationException | ExecutionException e) {
+            throw new LightyLaunchException("Could not init LightyController", e);
+        }
+    }
+
+    @Override
+    protected void shutdownLightyController(@Nonnull LightyController lightyController) throws LightyLaunchException {
+        try {
+            LOG.info("Shutting down LightyController ...");
+            lightyController.shutdown();
+        } catch (Exception e) {
+            throw new LightyLaunchException("Could not shutdown LightyController", e);
+        }
     }
     ...
 }
