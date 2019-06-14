@@ -54,15 +54,14 @@ public class LightyControllerBuilder {
     public LightyController build() throws ConfigurationException {
         try {
             final Set<YangModuleInfo> modelSet = this.controllerConfiguration.getSchemaServiceConfig().getModels();
-            final DOMNotificationRouter domNotificationRouter = DOMNotificationRouter.create(
-                    this.controllerConfiguration.getDomNotificationRouterConfig().getQueueDepth(),
-                    this.controllerConfiguration.getDomNotificationRouterConfig().getSpinTime(),
-                    this.controllerConfiguration.getDomNotificationRouterConfig().getParkTime(),
-                    this.controllerConfiguration.getDomNotificationRouterConfig().getUnit());
             return new LightyControllerImpl(this.executorService,
                     this.controllerConfiguration.getActorSystemConfig().getConfig(),
                     this.controllerConfiguration.getActorSystemConfig().getClassLoader(),
-                    domNotificationRouter,
+                    DOMNotificationRouter.create(
+                            this.controllerConfiguration.getDomNotificationRouterConfig().getQueueDepth(),
+                            this.controllerConfiguration.getDomNotificationRouterConfig().getSpinTime(),
+                            this.controllerConfiguration.getDomNotificationRouterConfig().getParkTime(),
+                            this.controllerConfiguration.getDomNotificationRouterConfig().getUnit()),
                     this.controllerConfiguration.getRestoreDirectoryPath(),
                     this.controllerConfiguration.getMaxDataBrokerFutureCallbackQueueSize(),
                     this.controllerConfiguration.getMaxDataBrokerFutureCallbackPoolSize(),
