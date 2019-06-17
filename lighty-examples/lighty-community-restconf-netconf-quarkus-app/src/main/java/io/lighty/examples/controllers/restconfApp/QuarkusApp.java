@@ -13,8 +13,6 @@ import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
-import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
-import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import io.lighty.modules.southbound.netconf.impl.NetconfTopologyPluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
@@ -59,7 +57,7 @@ public class QuarkusApp {
         LOG.info("|  |_|  / /_/  >   Y  \\  |  \\___  |    |  (  <_> )  /        \\ |    `   \\/    |    \\");
         LOG.info("|____/__\\___  /|___|  /__|  / ____| /\\ |__|\\____/  /_______  //_______  /\\____|__  /");
         LOG.info("        /_____/     \\/      \\/      \\/                     \\/         \\/         \\/");
-        LOG.info("Starting lighty.io RESTCONF-NETCONF example application ...");
+        LOG.info("Starting lighty.io quarkus.io-NETCONF example application ...");
         LOG.info("https://lighty.io/");
         LOG.info("https://github.com/PantheonTechnologies/lighty-core");
         try {
@@ -69,21 +67,17 @@ public class QuarkusApp {
             //1. get controller configuration
             ControllerConfiguration defaultSingleNodeConfiguration =
                    ControllerConfigUtils.getDefaultSingleNodeConfiguration(modelPaths);
-            //2. get RESTCONF NBP configuration
-            RestConfConfiguration restConfConfig =
-                   RestConfConfigUtils.getDefaultRestConfConfiguration();
-            //3. NETCONF SBP configuration
+            //2. NETCONF SBP configuration
             NetconfConfiguration netconfSBPConfig = NetconfConfigUtils.createDefaultNetconfConfiguration();
-            startLighty(defaultSingleNodeConfiguration, restConfConfig, netconfSBPConfig);
+            startLighty(defaultSingleNodeConfiguration, netconfSBPConfig);
             float duration = (System.nanoTime() - startTime)/1_000_000f;
-            LOG.info("lighty.io and RESTCONF-NETCONF started in {}ms", duration);
+            LOG.info("lighty.io and quarkus.io-NETCONF started in {}ms", duration);
         } catch (Exception e) {
-            LOG.error("Main RESTCONF-NETCONF application exception: ", e);
+            LOG.error("Main quarkus.io-NETCONF application exception: ", e);
         }
     }
 
     private void startLighty(ControllerConfiguration controllerConfiguration,
-                             RestConfConfiguration restConfConfiguration,
                              NetconfConfiguration netconfSBPConfiguration)
             throws ConfigurationException, ExecutionException, InterruptedException {
 
@@ -101,12 +95,12 @@ public class QuarkusApp {
                 .from(netconfSBPConfiguration, lightyController.getServices())
                 .build();
         netconfSouthboundPlugin.start().get();
-        LOG.info("NET-CONF started");
+        LOG.info("NETCONF started");
     }
 
 
     public void shutdown() {
-        LOG.info("lighty.io and RESTCONF-NETCONF shutting down ...");
+        LOG.info("lighty.io and quarkus.io-NETCONF shutting down ...");
         long startTime = System.nanoTime();
         try {
             netconfSouthboundPlugin.shutdown().get();
@@ -119,7 +113,7 @@ public class QuarkusApp {
             LOG.error("Exception while shutting down lighty.io controller:", e);
         }
         float duration = (System.nanoTime() - startTime)/1_000_000f;
-        LOG.info("lighty.io and RESTCONF-NETCONF stopped in {}ms", duration);
+        LOG.info("lighty.io and quarkus.io-NETCONF stopped in {}ms", duration);
     }
 
     @Produces
