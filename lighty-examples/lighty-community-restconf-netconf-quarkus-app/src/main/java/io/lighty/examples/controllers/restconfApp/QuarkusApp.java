@@ -13,7 +13,6 @@ import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
-import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import io.lighty.modules.southbound.netconf.impl.NetconfTopologyPluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
@@ -21,17 +20,14 @@ import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 
 @ApplicationScoped
 public class QuarkusApp {
@@ -62,11 +58,9 @@ public class QuarkusApp {
         LOG.info("https://github.com/PantheonTechnologies/lighty-core");
         try {
             LOG.info("using default configuration ...");
-            Set<YangModuleInfo> modelPaths = Stream.concat(RestConfConfigUtils.YANG_MODELS.stream(),
-                   NetconfConfigUtils.NETCONF_TOPOLOGY_MODELS.stream()).collect(Collectors.toSet());
             //1. get controller configuration
             ControllerConfiguration defaultSingleNodeConfiguration =
-                   ControllerConfigUtils.getDefaultSingleNodeConfiguration(modelPaths);
+                   ControllerConfigUtils.getDefaultSingleNodeConfiguration(NetconfConfigUtils.NETCONF_TOPOLOGY_MODELS);
             //2. NETCONF SBP configuration
             NetconfConfiguration netconfSBPConfig = NetconfConfigUtils.createDefaultNetconfConfiguration();
             startLighty(defaultSingleNodeConfiguration, netconfSBPConfig);

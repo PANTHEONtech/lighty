@@ -1,4 +1,4 @@
-# Lighty NETCONF Application using Quarkus & GraalVM
+# Lighty NETCONF Application using Quarkus.io & GraalVM
 This application utilizes NETCONF south-bound plugin to manage NETCONF devices on the network. 
 Application works as standalone SDN controller. It is capable to connect to NETCONF devices 
 and expose connected devices over custom REST north-bound APIs.
@@ -18,7 +18,16 @@ export JAVA_HOME={YOUR_PATH}/graalvm-ce-19.0.0/
 ```
 
 ## Build & Run
-build and run the project: ```mvn compile quarkus:dev```
+build and run the project: ```mvn clean compile quarkus:dev```
+
+## Build package & Run
+```
+mvn package
+java -jar target/lighty-quarkus-restconf-netconf-app-1.0-SNAPSHOT-runner.jar
+```
+
+## Build native image
+build native image: ```mvn package -Pnative```
 
 ### Using REST APIs
 This [postman collection](docs/lighty.io-quarkus.io-demo.postman_collection.json) 

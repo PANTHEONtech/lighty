@@ -10,7 +10,6 @@ package io.lighty.examples.controllers.restconfApp.service;
 
 import io.lighty.examples.controllers.restconfApp.service.dto.NetconfDeviceRequest;
 import io.lighty.examples.controllers.restconfApp.service.dto.NetconfDeviceResponse;
-import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -55,7 +54,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-@RegisterRestClient
 @ApplicationScoped
 @Path("/services/data/netconf")
 @Produces(MediaType.APPLICATION_JSON)

@@ -11,7 +11,7 @@
   <properties>
     <application.main.class>io.lighty.examples.controllers.restconfApp.QuarkusApp</application.main.class>
     <surefire-plugin.version>2.22.0</surefire-plugin.version>
-    <quarkus.version>0.12.0</quarkus.version>
+    <quarkus.version>0.14.0</quarkus.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -32,11 +32,7 @@
   </dependencyManagement>
 
   <dependencies>
-    <dependency>
-      <groupId>org.glassfish.jersey.inject</groupId>
-      <artifactId>jersey-hk2</artifactId>
-      <version>2.26-b04</version>
-    </dependency>
+
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy</artifactId>
@@ -45,35 +41,10 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-jsonb</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.eclipse.microprofile.rest.client</groupId>
-      <artifactId>microprofile-rest-client-api</artifactId>
-      <version>1.2.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-      <version>4.5.7</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-      <version>4.5.7</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>27.0.1-jre</version>
-    </dependency>
 
     <dependency>
       <groupId>io.lighty.core</groupId>
       <artifactId>lighty-controller</artifactId>
-      <version>${lighty.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.lighty.modules</groupId>
-      <artifactId>lighty-swagger</artifactId>
       <version>${lighty.version}</version>
     </dependency>
     <dependency>
@@ -105,7 +76,6 @@
     </dependency>
 
   </dependencies>
-
 
   <build>
     <plugins>

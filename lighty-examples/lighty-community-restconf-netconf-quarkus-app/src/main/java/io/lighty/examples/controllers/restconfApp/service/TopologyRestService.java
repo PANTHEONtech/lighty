@@ -8,7 +8,6 @@
 
 package io.lighty.examples.controllers.restconfApp.service;
 
-import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
@@ -42,7 +41,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 
-@RegisterRestClient
 @ApplicationScoped
 @Path("/services/data/topology")
 @Produces(MediaType.APPLICATION_JSON)
