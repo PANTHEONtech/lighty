@@ -10,7 +10,7 @@
 		{
 			"name": "App Login - alice",
 			"request": {
-				"url": "http://localhost:8888/security/login",
+				"url": "http://localhost:8888/services/security/login",
 				"method": "POST",
 				"header": [
 					{
@@ -30,7 +30,7 @@
 		{
 			"name": "App Login - bob",
 			"request": {
-				"url": "http://localhost:8888/security/login",
+				"url": "http://localhost:8888/services/security/login",
 				"method": "POST",
 				"header": [
 					{
@@ -42,7 +42,6 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\n\t\"username\": \"bob\",\n\t\"password\": \"secret\"\n}"
-					"raw": "{\n\t\"username\": \"bob\",\n\t\"password\": \"secret\"\n}"
 				},
 				"description": ""
 			},
@@ -51,7 +50,7 @@
 		{
 			"name": "App logout",
 			"request": {
-				"url": "http://localhost:8888/security/logout",
+				"url": "http://localhost:8888/services/security/logout",
 				"method": "GET",
 				"header": [],
 				"body": {},
@@ -62,7 +61,7 @@
 		{
 			"name": "Get NETCONF devices",
 			"request": {
-				"url": "http://localhost:8888/netconf/list",
+				"url": "http://localhost:8888/services/data/netconf/list",
 				"method": "GET",
 				"header": [
 					{
@@ -85,10 +84,63 @@
 			"response": []
 		},
 		{
+			"name": "Connect NETCONF device",
+			"request": {
+				"url": "http://localhost:8888/services/data/netconf/id/test-device",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"admin\",\n    \"address\": \"127.0.0.1\",\n    \"port\": \"17830\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Disconnect NETCONF device",
+			"request": {
+				"url": "http://localhost:8888/services/data/netconf/id/test-device",
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "Get Topology content",
 			"request": {
-				"url": "http://localhost:8888/topology/list",
+				"url": "http://localhost:8888/services/data/topology/list",
 				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create Topology1",
+			"request": {
+				"url": "http://localhost:8888/services/data/topology/id/topology1",
+				"method": "PUT",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Topology1",
+			"request": {
+				"url": "http://localhost:8888/services/data/topology/id/topology1",
+				"method": "DELETE",
 				"header": [],
 				"body": {},
 				"description": ""
