@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-package io.lighty.examples.controllers.restconfApp;
+package io.lighty.examples.controllers.quarkus;
 
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;

@@ -6,10 +6,10 @@
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
 
-package io.lighty.examples.controllers.restconfApp.service;
+package io.lighty.examples.controllers.quarkus.service;
 
-import io.lighty.examples.controllers.restconfApp.service.dto.NetconfDeviceRequest;
-import io.lighty.examples.controllers.restconfApp.service.dto.NetconfDeviceResponse;
+import io.lighty.examples.controllers.quarkus.service.dto.NetconfDeviceRequest;
+import io.lighty.examples.controllers.quarkus.service.dto.NetconfDeviceResponse;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.binding.api.MountPointService;
