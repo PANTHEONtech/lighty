@@ -18,17 +18,41 @@ export JAVA_HOME={YOUR_PATH}/graalvm-ce-19.0.0/
 ```
 
 ## Build & Run
-build and run the project: ```mvn clean compile quarkus:dev```
+build and run the project: 
+```
+mvn clean compile quarkus:dev
+```
 
 ## Build package & Run
 ```
-mvn package
-java -jar target/lighty-quarkus-restconf-netconf-app-1.0-SNAPSHOT-runner.jar
+mvn clean package
+java -Xms128m -Xmx128m -XX:MaxMetaspaceSize=128m -jar target/lighty-quarkus-netconf-app-11.0.0-SNAPSHOT-runner.jar
 ```
 
 ## Build native image
-build native image: ```mvn package -Pnative```
+build native image: 
+```
+mvn clean package -Pnative
+```
 
 ### Using REST APIs
 This [postman collection](docs/lighty.io-quarkus.io-demo.postman_collection.json) 
 contains implemented REST API examples.
+
+### Performance measurements
+Parameters measured after application start.
+
+| Property Name                     | lighty.io **   |
+|-----------------------------------|----------------|
+| Build size                        |  72 MB         |
+| Startup Time                      |  ~4.8          |
+| Shutdown Time                     |  ~100ms        |
+| Process memory allocated (RSS)*** |  541 MB        |
+| HEAP memory (used/allocated)      |  25 / 128 MB   |
+| Metaspace (used/allocated)        |  66 / 62 MB    |
+| Threads (live/daemon)             |  86 / 17       |
+| Classes loaded                    |  12147         |
+| No. of jars                       |  254           |
+
+```** -Xms128m -Xmx128m -XX:MaxMetaspaceSize=128m```  
+```*** sudo ps -o pid,rss,user,command ax | grep java | grep quarkus```
