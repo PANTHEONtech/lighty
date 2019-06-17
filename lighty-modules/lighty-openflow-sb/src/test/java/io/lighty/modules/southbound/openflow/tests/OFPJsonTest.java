@@ -9,10 +9,9 @@ package io.lighty.modules.southbound.openflow.tests;
 
 import io.lighty.modules.southbound.openflow.impl.config.OpenflowpluginConfiguration;
 import io.lighty.modules.southbound.openflow.impl.util.OpenflowConfigUtils;
+import java.io.InputStream;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.io.FileInputStream;
 
 public class OFPJsonTest {
 
@@ -27,8 +26,10 @@ public class OFPJsonTest {
 
     @Test
     public void testJSONConfig() throws Exception {
-        OpenflowpluginConfiguration ofpJSONConfig =
-                OpenflowConfigUtils.getOfpConfiguration(new FileInputStream("src/test/resources/ofpConfig.json"));
+        final InputStream ofConfig = this.getClass().getClassLoader().getResourceAsStream("ofpConfig.json");
+
+        OpenflowpluginConfiguration ofpJSONConfig = OpenflowConfigUtils.getOfpConfiguration(ofConfig);
+
         Assert.assertNotNull(ofpJSONConfig);
         Assert.assertEquals(ofpJSONConfig.getBarrierCountLimit(), 1234);
         Assert.assertEquals(ofpJSONConfig.getSwitchConfig().getPort(), 1234);

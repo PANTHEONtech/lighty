@@ -8,7 +8,9 @@
 package io.lighty.modules.southbound.netconf.tests;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.core.controller.api.LightyController;
@@ -20,7 +22,6 @@ import io.lighty.modules.southbound.netconf.impl.NetconfTopologyPluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
 import io.netty.util.concurrent.Future;
-import java.util.function.BiFunction;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -48,8 +49,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
 
 @Test
@@ -57,7 +56,6 @@ public class TopologyPluginsTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(TopologyPluginsTest.class);
 
-    private final NetconfTopologyProvider netconfProvider;
     private LightyController lightyController;
     private CommunityRestConf restConf;
     private LightyModule netconfPlugin;
@@ -66,25 +64,28 @@ public class TopologyPluginsTest {
     @Mock
     private Future<Void> initFuture;
 
-    @Factory(dataProvider = "netconf-topology-plugins")
-    public TopologyPluginsTest(final NetconfTopologyProvider netconfProvider) {
-        this.netconfProvider = netconfProvider;
-    }
+    private static LightyModule startSingleNodeNetconf(final LightyServices services,
+                                                       final NetconfClientDispatcher dispatcher)
+            throws ConfigurationException {
 
-    @DataProvider(name = "netconf-topology-plugins")
-    public static Object[][] plugins() throws Exception {
-        final NetconfTopologyProvider startSingleNodeNetconf = TopologyPluginsTest::startSingleNodeNetconf;
-        final NetconfTopologyProvider startClusteredNetconf = TopologyPluginsTest::startClusteredNetconf;
-        return new Object[][]{
-            {startSingleNodeNetconf},
-            {startClusteredNetconf}
-        };
+            final NetconfConfiguration config = NetconfConfigUtils.createDefaultNetconfConfiguration();
+            NetconfConfigUtils.injectServicesToConfig(config, services);
+            config.setClientDispatcher(dispatcher);
+            return new NetconfTopologyPluginBuilder()
+                    .from(config, services)
+                    .build();
     }
 
     @BeforeClass
-    public void beforeClass() {
+    public void beforeClass() throws ConfigurationException {
         MockitoAnnotations.initMocks(this);
         when(this.dispatcher.createReconnectingClient(any())).thenReturn(this.initFuture);
+
+        this.lightyController = LightyTestUtils.startController();
+
+        this.restConf = LightyTestUtils.startRestconf(this.lightyController.getServices());
+        this.netconfPlugin = startSingleNodeNetconf(this.lightyController.getServices(), this.dispatcher);
+        this.netconfPlugin.start();
     }
 
     @AfterClass
@@ -109,14 +110,6 @@ public class TopologyPluginsTest {
     }
 
     @Test
-    public void testStart() throws Exception {
-        this.lightyController = LightyTestUtils.startController();
-        this.restConf = LightyTestUtils.startRestconf(this.lightyController.getServices());
-        this.netconfPlugin = this.netconfProvider.apply(this.lightyController.getServices(), this.dispatcher);
-        this.netconfPlugin.start();
-    }
-
-    @Test(dependsOnMethods = "testStart")
     public void testMountDevice() throws Exception {
         final NodeId nodeId = new NodeId("device1");
         final Credentials loginPassword = new LoginPasswordBuilder()
@@ -143,39 +136,6 @@ public class TopologyPluginsTest {
         writeTransaction.put(LogicalDatastoreType.CONFIGURATION, path, node);
         writeTransaction.submit().get();
         verify(this.dispatcher, timeout(20000)).createReconnectingClient(any());
-    }
-
-    private static LightyModule startSingleNodeNetconf(final LightyServices services,
-            final NetconfClientDispatcher dispatcher) {
-        try {
-            final NetconfConfiguration config = NetconfConfigUtils.createDefaultNetconfConfiguration();
-            NetconfConfigUtils.injectServicesToConfig(config, services);
-            config.setClientDispatcher(dispatcher);
-            return new NetconfTopologyPluginBuilder()
-                    .from(config, services)
-                    .build();
-        } catch (final ConfigurationException e) {
-            return null;
-        }
-    }
-
-    private static LightyModule startClusteredNetconf(final LightyServices services,
-            final NetconfClientDispatcher dispatcher) {
-        try {
-            final NetconfConfiguration config =
-                    NetconfConfigUtils.createDefaultNetconfConfiguration();
-            NetconfConfigUtils.injectServicesToConfig(config, services);
-            config.setClientDispatcher(dispatcher);
-            return new NetconfTopologyPluginBuilder()
-                    .from(config, services)
-                    .build();
-        } catch (final ConfigurationException e) {
-            return null;
-        }
-    }
-
-    private interface NetconfTopologyProvider
-    extends BiFunction<LightyServices, NetconfClientDispatcher, LightyModule> {
     }
 
 }
