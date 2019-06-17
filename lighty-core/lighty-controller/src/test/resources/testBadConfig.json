@@ -1,0 +1,8 @@
+{
+  "controller": {
+    "bad":
+    "dummy": {
+      "child": "dummyChild"
+    }
+  }
+}

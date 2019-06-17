@@ -69,7 +69,7 @@ public class TopologyPluginsTest {
             throws ConfigurationException {
 
             final NetconfConfiguration config = NetconfConfigUtils.createDefaultNetconfConfiguration();
-            NetconfConfigUtils.injectServicesToConfig(config, services);
+            NetconfConfigUtils.injectServicesToConfig(config);
             config.setClientDispatcher(dispatcher);
             return new NetconfTopologyPluginBuilder()
                     .from(config, services)

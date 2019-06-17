@@ -17,7 +17,6 @@ import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBui
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import io.lighty.modules.southbound.openflow.impl.OpenflowSouthboundPlugin;
 import io.lighty.modules.southbound.openflow.impl.OpenflowSouthboundPluginBuilder;
-import io.lighty.modules.southbound.openflow.impl.config.OpenflowpluginConfiguration;
 import io.lighty.modules.southbound.openflow.impl.util.OpenflowConfigUtils;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
@@ -72,7 +71,7 @@ public abstract class OpenflowSouthboundPluginTestBase {
         LOG.info("Starting openflow...");
         final OpenflowSouthboundPluginBuilder opfBuilder = new OpenflowSouthboundPluginBuilder();
         opfBuilder.from(
-                new OpenflowpluginConfiguration(),
+                OpenflowConfigUtils.getDefaultOfpConfiguration(),
                 this.lightyController.getServices()
         );
         this.ofplugin = opfBuilder.build();

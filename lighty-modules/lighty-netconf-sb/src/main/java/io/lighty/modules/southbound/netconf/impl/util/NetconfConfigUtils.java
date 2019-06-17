@@ -47,6 +47,9 @@ public class NetconfConfigUtils {
     private static final Logger LOG = LoggerFactory.getLogger(NetconfConfigUtils.class);
     public static final String NETCONF_CONFIG_ROOT_ELEMENT_NAME = "netconf";
 
+    private NetconfConfigUtils() {
+    }
+
     public static final Set<YangModuleInfo> NETCONF_TOPOLOGY_MODELS = ImmutableSet.of(
             org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.keystore.rev171017.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.$YangModuleInfoImpl.getInstance(),
@@ -110,11 +113,10 @@ public class NetconfConfigUtils {
     /**
      * Inject services from LightyServices to Netconf southbound configuration.
      * @param configuration Netconf southbound configuration where should be services injected.
-     * @param lightyServices LightyServices from running Lighty core.
      * @return Netconf southbound configuration with injected services from Lighty core.
      */
     public static NetconfConfiguration injectServicesToConfig(
-            final NetconfConfiguration configuration, final LightyServices lightyServices) throws ConfigurationException {
+            final NetconfConfiguration configuration) throws ConfigurationException {
         final AAAEncryptionService aaa = NetconfConfigUtils.createAAAEncryptionService(getDefaultAaaEncryptServiceConfig());
         configuration.setAaaService(aaa);
         return configuration;
@@ -128,7 +130,7 @@ public class NetconfConfigUtils {
      */
     public static NetconfConfiguration injectServicesToTopologyConfig(
             final NetconfConfiguration configuration, final LightyServices lightyServices) throws ConfigurationException {
-        injectServicesToConfig(configuration, lightyServices);
+        injectServicesToConfig(configuration);
         injectClient(lightyServices, configuration);
         return configuration;
     }
