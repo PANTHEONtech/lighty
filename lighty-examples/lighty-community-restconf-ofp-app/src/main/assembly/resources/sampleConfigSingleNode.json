@@ -119,6 +119,7 @@
     "frmStaleMarkingEnabled": false,
     "frmReconciliationRetryCount": 5,
     "frmBundleBasedReconciliationEnabled": false,
+    "nonZeroUint32Type": 900000,
     "enableForwardingRulesManager": true,
     "switchConfig": {
       "instanceName": "openflow-switch-connection-provider-default-impl",

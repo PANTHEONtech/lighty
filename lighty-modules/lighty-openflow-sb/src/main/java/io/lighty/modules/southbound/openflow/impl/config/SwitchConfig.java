@@ -35,24 +35,24 @@ public class SwitchConfig {
     @JsonIgnore
     private final int legacyPort = 6633;
 
-    private String instanceName = "openflow-switch-connection-provider-default-impl";
-    private int port = 6653;
-    private int transportProtocol = TransportProtocol.TCP.getIntValue();
-    private String address = null;
-    private boolean useBarrier = true;
-    private Long switchIdleTimeout = 15000L;
-    private String keystore = "configuration/ssl/ctl.jks";
-    private int keystoreType = KeystoreType.JKS.getIntValue();
-    private int keystorePathType = PathType.PATH.getIntValue();
-    private String keystorePassword = "opendaylight";
-    private String truststore = "configuration/ssl/truststore.jks";
-    private int truststoreType = KeystoreType.JKS.getIntValue();
-    private int truststorePathType = PathType.PATH.getIntValue();
-    private String truststorePassword = "opendaylight";
-    private String certificatePassword = "opendaylight";
-    private int channelOutboundQueueSize = 1024;
+    private String instanceName;
+    private int port;
+    private int transportProtocol;
+    private String address;
+    private boolean useBarrier;
+    private Long switchIdleTimeout;
+    private String keystore;
+    private int keystoreType;
+    private int keystorePathType;
+    private String keystorePassword;
+    private String truststore;
+    private int truststoreType;
+    private int truststorePathType;
+    private String truststorePassword;
+    private String certificatePassword;
+    private int channelOutboundQueueSize;
 
-    public SwitchConfig() {
+    protected SwitchConfig() {
         this.defaultSwitch =
                 new SwitchConnectionConfigBuilder()
                 .setInstanceName(this.instanceName)

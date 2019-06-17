@@ -22,30 +22,30 @@ public class OpenflowpluginConfiguration {
     private OpenflowProviderConfig defaultOpenflowProviderConfig = null;
 
     private SwitchConfig switchConfig;
-    private boolean isStatisticsPollingOn = true;
-    private int barrierCountLimit = 25600;
-    private long barrierIntervalTimeoutLimit = 500;
-    private long echoReplyTimeout = 2000;
-    private boolean enableFlowRemovedNotification = true;
-    private boolean skipTableFeatures = true;
-    private long basicTimerDelay = 3000;
-    private long maximumTimerDelay = 3679;
-    private boolean switchFeaturesMandatory = false;
-    private boolean isStatisticsRpcEnabled = false;
-    private boolean useSingleLayerSerialization = true;
-    private int rpcRequestsQuota = 20000;
-    private long globalNotificationQuota = 64000;
-    private int threadPoolMinThreads = 1;
-    private int threadPoolMaxThreads = 32000;
-    private long threadPoolTimeout = 60;
+    private boolean isStatisticsPollingOn;
+    private int barrierCountLimit;
+    private long barrierIntervalTimeoutLimit;
+    private long echoReplyTimeout;
+    private boolean enableFlowRemovedNotification;
+    private boolean skipTableFeatures;
+    private long basicTimerDelay;
+    private long maximumTimerDelay;
+    private boolean switchFeaturesMandatory;
+    private boolean isStatisticsRpcEnabled;
+    private boolean useSingleLayerSerialization;
+    private int rpcRequestsQuota;
+    private long globalNotificationQuota;
+    private int threadPoolMinThreads;
+    private int threadPoolMaxThreads;
+    private long threadPoolTimeout;
     private boolean isFrmDisableReconciliation = false;
     private boolean isFrmStaleMarkingEnabled = false;
-    private int frmReconciliationRetryCount = 5;
+    private int frmReconciliationRetryCount;
     private boolean isFrmBundleBasedReconciliationEnabled = false;
-    private final NonZeroUint32Type nonZeroUint32Type = NonZeroUint32Type.getDefaultInstance("900000");
-    private boolean enableForwardingRulesManager = true;
+    private long nonZeroUint32Type;
+    private boolean enableForwardingRulesManager;
 
-    public OpenflowpluginConfiguration() {
+    protected OpenflowpluginConfiguration() {
         this.switchConfig = new SwitchConfig();
     }
 
@@ -68,7 +68,7 @@ public class OpenflowpluginConfiguration {
                     .setThreadPoolMinThreads(this.threadPoolMinThreads)
                     .setThreadPoolMaxThreads(new NonZeroUint16Type(this.threadPoolMaxThreads))
                     .setThreadPoolTimeout(this.threadPoolTimeout)
-                    .setMaximumTimerDelay(this.nonZeroUint32Type)
+                    .setMaximumTimerDelay(new NonZeroUint32Type(this.nonZeroUint32Type))
                     .setIsQueueStatisticsPollingOn(true)
                     .setIsFlowStatisticsPollingOn(true)
                     .setIsTableStatisticsPollingOn(true)
@@ -99,7 +99,7 @@ public class OpenflowpluginConfiguration {
                 .setThreadPoolMinThreads(this.threadPoolMinThreads)
                 .setThreadPoolMaxThreads(new NonZeroUint16Type(this.threadPoolMaxThreads))
                 .setThreadPoolTimeout(this.threadPoolTimeout)
-                .setMaximumTimerDelay(this.nonZeroUint32Type)
+                .setMaximumTimerDelay(new NonZeroUint32Type(this.nonZeroUint32Type))
                 .setIsQueueStatisticsPollingOn(true)
                 .setIsFlowStatisticsPollingOn(true)
                 .setIsTableStatisticsPollingOn(true)
@@ -305,5 +305,13 @@ public class OpenflowpluginConfiguration {
 
     public void setSwitchConfig(final SwitchConfig switchConfig) {
         this.switchConfig = switchConfig;
+    }
+
+    public void setNonZeroUint32Type(long nonZeroUint32Type) {
+        this.nonZeroUint32Type = nonZeroUint32Type;
+    }
+
+    public long getNonZeroUint32Type() {
+        return this.nonZeroUint32Type;
     }
 }
