@@ -6,7 +6,7 @@
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
 
-package io.lighty.core.controller.impl.util;
+package io.lighty.core.common;
 
 import java.io.IOException;
 import java.net.ServerSocket;

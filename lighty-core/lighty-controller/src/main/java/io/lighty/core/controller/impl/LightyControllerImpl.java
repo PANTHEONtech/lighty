@@ -8,13 +8,13 @@
 package io.lighty.core.controller.impl;
 
 import com.typesafe.config.Config;
+import io.lighty.core.common.SocketAnalyzer;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.core.controller.impl.services.LightyDiagStatusServiceImpl;
 import io.lighty.core.controller.impl.services.LightySystemReadyMonitorImpl;
 import io.lighty.core.controller.impl.services.LightySystemReadyService;
-import io.lighty.core.controller.impl.util.SocketAnalyzer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.HashedWheelTimer;
