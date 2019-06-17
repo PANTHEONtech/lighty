@@ -14,6 +14,7 @@ import io.lighty.core.controller.api.LightyServices;
 import io.lighty.core.controller.impl.services.LightyDiagStatusServiceImpl;
 import io.lighty.core.controller.impl.services.LightySystemReadyMonitorImpl;
 import io.lighty.core.controller.impl.services.LightySystemReadyService;
+import io.lighty.core.controller.impl.util.SocketAnalyzer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.HashedWheelTimer;
@@ -25,7 +26,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.akka.impl.ActorSystemProviderImpl;
 import org.opendaylight.controller.cluster.common.actor.QuarantinedMonitorActor;
@@ -350,6 +354,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     protected boolean stopProcedure() {
+        LOG.debug("Lighty Controller stopProcedure");
         if (this.bindingDOMEntityOwnershipServiceAdapter != null) {
             this.bindingDOMEntityOwnershipServiceAdapter.close();
         }
@@ -367,6 +372,15 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         }
         if (this.actorSystemProvider != null) {
             this.actorSystemProvider.close();
+
+            final int actorSystemPort = this.actorSystemConfig.getInt("akka.remote.netty.tcp.port");
+            try {
+                this.actorSystemProvider.getActorSystem()
+                        .getWhenTerminated().toCompletableFuture().get(30, TimeUnit.SECONDS);
+                SocketAnalyzer.awaitPortAvailable(actorSystemPort, 30, TimeUnit.SECONDS);
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                LOG.error("Actor system port {} not released in last 30seconds", actorSystemPort, e);
+            }
         }
         return true;
     }
