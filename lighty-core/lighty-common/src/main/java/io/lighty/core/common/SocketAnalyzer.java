@@ -24,16 +24,12 @@ public class SocketAnalyzer {
         final long expectedEndTime = System.nanoTime() + timeUnit.toNanos(timeout);
 
         while (System.nanoTime() <= expectedEndTime) {
-            try {
-                LOG.debug("Check if port {} is available", port);
-
-                new ServerSocket(port).close();
-
+            LOG.debug("Check if port {} is available", port);
+            try (ServerSocket serverSocket = new ServerSocket(port)) {
                 LOG.debug("Port {} available", port);
                 return true;
-
             } catch (IOException e) {
-                LOG.info("Port {} not available - Awaiting port available 1s", port);
+                LOG.info("Port {} is not available - Awaiting port availability 1s", port);
                 Thread.sleep(SOCKET_PORT_WAIT_TIME);
             }
         }

@@ -7,6 +7,7 @@
  */
 package io.lighty.core.controller.impl;
 
+import akka.actor.Terminated;
 import com.typesafe.config.Config;
 import io.lighty.core.common.SocketAnalyzer;
 import io.lighty.core.controller.api.AbstractLightyModule;
@@ -26,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -114,6 +116,7 @@ import org.slf4j.LoggerFactory;
 public class LightyControllerImpl extends AbstractLightyModule implements LightyController, LightyServices {
 
     private static final Logger LOG = LoggerFactory.getLogger(LightyControllerImpl.class);
+    private static final int ACTOR_SYSTEM_TERMINATE_TIMEOUT = 30;
 
     private final Config actorSystemConfig;
     private final ClassLoader actorSystemClassLoader;
@@ -371,13 +374,17 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             this.remoteRpcProvider.close();
         }
         if (this.actorSystemProvider != null) {
+
+            final CompletableFuture<Terminated> actorSystemTerminatedFuture = this.actorSystemProvider
+                    .getActorSystem()
+                    .getWhenTerminated().toCompletableFuture();
+            final int actorSystemPort = this.actorSystemConfig.getInt("akka.remote.netty.tcp.port");
+
             this.actorSystemProvider.close();
 
-            final int actorSystemPort = this.actorSystemConfig.getInt("akka.remote.netty.tcp.port");
             try {
-                this.actorSystemProvider.getActorSystem()
-                        .getWhenTerminated().toCompletableFuture().get(30, TimeUnit.SECONDS);
-                SocketAnalyzer.awaitPortAvailable(actorSystemPort, 30, TimeUnit.SECONDS);
+                actorSystemTerminatedFuture.get(ACTOR_SYSTEM_TERMINATE_TIMEOUT, TimeUnit.SECONDS);
+                SocketAnalyzer.awaitPortAvailable(actorSystemPort, ACTOR_SYSTEM_TERMINATE_TIMEOUT, TimeUnit.SECONDS);
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
                 LOG.error("Actor system port {} not released in last 30seconds", actorSystemPort, e);
             }
