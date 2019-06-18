@@ -13,6 +13,7 @@ import io.lighty.core.common.SocketAnalyzer;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyServices;
+import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.services.LightyDiagStatusServiceImpl;
 import io.lighty.core.controller.impl.services.LightySystemReadyMonitorImpl;
 import io.lighty.core.controller.impl.services.LightySystemReadyService;
@@ -180,13 +181,14 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private final LightySystemReadyMonitorImpl systemReadyMonitor;
 
     public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
-            final ClassLoader actorSystemClassLoader,
-            final DOMNotificationRouter domNotificationRouter, final String restoreDirectoryPath,
-            final int maxDataBrokerFutureCallbackQueueSize, final int maxDataBrokerFutureCallbackPoolSize,
-            final boolean metricCaptureEnabled, final int mailboxCapacity, final Properties distributedEosProperties,
-            final String moduleShardsConfig, final String modulesConfig, final DatastoreContext configDatastoreContext,
-            final DatastoreContext operDatastoreContext, final Map<String, Object> datastoreProperties,
-            final Set<YangModuleInfo> modelSet) {
+                                final ClassLoader actorSystemClassLoader,
+                                final ControllerConfiguration.DOMNotificationRouterConfig domNotificationRouterConfig ,
+                                final String restoreDirectoryPath,
+                                final int maxDataBrokerFutureCallbackQueueSize, final int maxDataBrokerFutureCallbackPoolSize,
+                                final boolean metricCaptureEnabled, final int mailboxCapacity, final Properties distributedEosProperties,
+                                final String moduleShardsConfig, final String modulesConfig, final DatastoreContext configDatastoreContext,
+                                final DatastoreContext operDatastoreContext, final Map<String, Object> datastoreProperties,
+                                final Set<YangModuleInfo> modelSet) {
         super(executorService);
         initSunXMLWriterProperty();
         this.actorSystemConfig = actorSystemConfig;
@@ -195,7 +197,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.domMountPointServiceOld =
                 new org.opendaylight.controller.md.sal.dom.broker.impl.mount.DOMMountPointServiceImpl(
                         this.domMountPointService);
-        this.domNotificationRouter = domNotificationRouter;
+        this.domNotificationRouter = DOMNotificationRouter.create(
+                domNotificationRouterConfig.getQueueDepth(),
+                domNotificationRouterConfig.getSpinTime(),
+                domNotificationRouterConfig.getParkTime(),
+                domNotificationRouterConfig.getUnit());
         this.domNotificationRouterOld = org.opendaylight.controller.md.sal.dom.broker.impl.DOMNotificationRouter.create(
                 this.domNotificationRouter, this.domNotificationRouter, this.domNotificationRouter);
         this.restoreDirectoryPath = restoreDirectoryPath;
@@ -372,6 +378,9 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         }
         if (this.remoteRpcProvider != null) {
             this.remoteRpcProvider.close();
+        }
+        if (this.domNotificationRouter != null) {
+            this.domNotificationRouter.close();
         }
         if (this.actorSystemProvider != null) {
 
