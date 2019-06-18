@@ -57,11 +57,7 @@ public class LightyControllerBuilder {
             return new LightyControllerImpl(this.executorService,
                     this.controllerConfiguration.getActorSystemConfig().getConfig(),
                     this.controllerConfiguration.getActorSystemConfig().getClassLoader(),
-                    DOMNotificationRouter.create(
-                            this.controllerConfiguration.getDomNotificationRouterConfig().getQueueDepth(),
-                            this.controllerConfiguration.getDomNotificationRouterConfig().getSpinTime(),
-                            this.controllerConfiguration.getDomNotificationRouterConfig().getParkTime(),
-                            this.controllerConfiguration.getDomNotificationRouterConfig().getUnit()),
+                    controllerConfiguration.getDomNotificationRouterConfig(),
                     this.controllerConfiguration.getRestoreDirectoryPath(),
                     this.controllerConfiguration.getMaxDataBrokerFutureCallbackQueueSize(),
                     this.controllerConfiguration.getMaxDataBrokerFutureCallbackPoolSize(),
