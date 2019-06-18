@@ -10,6 +10,7 @@ package io.lighty.core.common.models.tests;
 import io.lighty.core.common.models.ModuleId;
 import io.lighty.core.common.models.YangModuleUtils;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -21,6 +22,10 @@ import java.util.List;
 import java.util.Set;
 
 public class YangModelUtilsTests {
+
+    private static final String TEST_NAMESPACE = "urn:ietf:params:xml:ns:yang:ietf-inet-types";
+    private static final String TEST_NAME = "ietf-inet-types";
+    private static final String TEST_REVISION = "2013-07-15";
 
     @DataProvider(name = "equalsTestData")
     public static Object[][] gatEqualsTestData() {
@@ -72,6 +77,22 @@ public class YangModelUtilsTests {
         };
     }
 
+    @DataProvider(name = "moduleIdStringInits")
+    public static Object[][] gatModuleIdStringInits() {
+        return new Object[][] {
+                //valid inits
+                {TEST_NAMESPACE, TEST_NAME, TEST_REVISION, true},
+                {"", TEST_NAME, TEST_REVISION, true},
+
+                //invalid inits
+                {TEST_NAMESPACE, TEST_NAME, "", false},
+                {TEST_NAMESPACE, TEST_NAME, null, false},
+                {null, TEST_NAME, TEST_REVISION, false},
+                {TEST_NAMESPACE, null, TEST_REVISION, false},
+                {TEST_NAMESPACE, "", TEST_REVISION, false},
+        };
+    }
+
     @Test(dataProvider = "equalsTestData")
     public void moduleIdEqualsTest(ModuleId moduleId, Object other, boolean expectedResult) {
         Assert.assertTrue(moduleId.equals(other) == expectedResult);
@@ -79,6 +100,16 @@ public class YangModelUtilsTests {
             Assert.assertTrue((moduleId.hashCode() == other.hashCode()) == expectedResult);
         } else {
             Assert.assertFalse(expectedResult);
+        }
+    }
+
+    @Test(dataProvider = "moduleIdStringInits")
+    public void testCreateInvalidModuleIdsFromStrings(String namespace, String name, String revision, boolean expected) {
+        try {
+            ModuleId testModule = ModuleId.from(namespace, name, revision);
+            Assert.assertTrue(testModule.getQName().equals(QName.create(namespace, revision, name)) == expected);
+        } catch (Exception e) {
+            Assert.assertTrue(expected == false);
         }
     }
 
@@ -113,5 +144,4 @@ public class YangModelUtilsTests {
             Assert.assertTrue(foundModelCount > 0, expectedModuleName + " not found !");
         }
     }
-
 }
