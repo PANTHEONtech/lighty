@@ -14,13 +14,16 @@ import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTr
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
+
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.netconf.api.ModifyAction;
@@ -71,7 +74,7 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
             NodeIdentifier.create(QName.create(NETCONF_GET_DATA_QNAME, "origin-filter").intern());
     private static final NodeIdentifier NETCONF_NEGATED_ORIGIN_FILTER_NODEID =
             NodeIdentifier.create(QName.create(NETCONF_GET_DATA_QNAME, "negated-origin-filter").intern());
-private static final NodeIdentifier NETCONF_WITH_ORIGIN_NODEID =
+    private static final NodeIdentifier NETCONF_WITH_ORIGIN_NODEID =
             NodeIdentifier.create(QName.create(NETCONF_GET_DATA_QNAME, "with-origin").intern());
 
     private static final QName NETCONF_OPERATION_QNAME_LEGACY = NETCONF_OPERATION_QNAME.withoutRevision().intern();
@@ -104,7 +107,10 @@ private static final NodeIdentifier NETCONF_WITH_ORIGIN_NODEID =
             final AnydataNode<NormalizedAnydata> subtreeFilter =
                     ImmutableAnydataNodeBuilder.create(NormalizedAnydata.class)
                             .withNodeIdentifier(NETCONF_FILTER_NODEID)
-                            .withValue(new ImmutableNormalizedAnydata(getSchemaContext(), dataTreeChild.get(), filterNN))
+                            .withValue(new ImmutableNormalizedAnydata(getSchemaContext(),
+                                    dataTreeChild.orElseThrow(() -> new NoSuchElementException(
+                                            String.format("Node [%s] was not found in schema context", nodeType.toString()))),
+                                    filterNN))
                             .build();
             final ChoiceNode filterSpecChoice =
                     Builders.choiceBuilder()
@@ -151,7 +157,8 @@ private static final NodeIdentifier NETCONF_WITH_ORIGIN_NODEID =
                                                              YangInstanceIdentifier dataPath,
                                                              Optional<ModifyAction> dataModifyActionAttribute,
                                                              Optional<ModifyAction> defaultModifyAction) {
-        NormalizedNode<?, ?> editNNContent = ImmutableNodes.fromInstanceId(getSchemaContext(), dataPath, data.get());
+        NormalizedNode<?, ?> editNNContent = ImmutableNodes.fromInstanceId(getSchemaContext(), dataPath,
+                data.orElseThrow(() -> new NoSuchElementException("Data is missing")));
         QName nodeType = editNNContent.getNodeType();
         Optional<DataSchemaNode> dataTreeChild = getSchemaContext().findDataTreeChild(nodeType);
 
@@ -159,7 +166,9 @@ private static final NodeIdentifier NETCONF_WITH_ORIGIN_NODEID =
 
         final AnydataNode<NormalizedAnydata> editContent = ImmutableAnydataNodeBuilder.create(NormalizedAnydata.class)
                 .withNodeIdentifier(NETCONF_EDIT_DATA_CONFIG_NODEID)
-                .withValue(new ImmutableMetadataNormalizedAnydata(getSchemaContext(), dataTreeChild.get(),
+                .withValue(new ImmutableMetadataNormalizedAnydata(getSchemaContext(),
+                        dataTreeChild.orElseThrow(() -> new NoSuchElementException(
+                                String.format("Node [%s] was not found in schema context", nodeType.toString()))),
                         editNNContent, metadata)).build();
 
         ChoiceNode editStructure = Builders.choiceBuilder().withNodeIdentifier(toId(EditContent.QNAME))
@@ -170,7 +179,8 @@ private static final NodeIdentifier NETCONF_WITH_ORIGIN_NODEID =
         return getDOMRpcService().invokeRpc(toPath(NETCONF_EDIT_DATA_QNAME),
                 NetconfMessageTransformUtil.wrap(NETCONF_EDIT_DATA_QNAME,
                         getDatastoreNode(requireNonNull(targetDatastore)),
-                        getDefaultOperationNode(defaultModifyAction.get()), editStructure));
+                        getDefaultOperationNode(defaultModifyAction.orElseThrow(() ->
+                                new NoSuchElementException("Default Modify Action is missing"))), editStructure));
     }
 
     private DataContainerChild<?, ?> getDatastoreNode(QName datastore) {
