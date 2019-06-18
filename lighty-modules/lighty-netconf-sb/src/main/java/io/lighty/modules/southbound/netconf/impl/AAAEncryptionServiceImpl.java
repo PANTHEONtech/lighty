@@ -35,8 +35,7 @@ public class AAAEncryptionServiceImpl implements AAAEncryptionService {
             try {
                 synchronized (encryptCipher) {
                     byte[] cryptobytes = encryptCipher.doFinal(data.getBytes(Charset.defaultCharset()));
-                    String cryptostring = DatatypeConverter.printBase64Binary(cryptobytes);
-                    return cryptostring;
+                    return DatatypeConverter.printBase64Binary(cryptobytes);
                 }
             } catch (IllegalBlockSizeException | BadPaddingException e) {
                 LOG.error("Failed to encrypt data.", e);
