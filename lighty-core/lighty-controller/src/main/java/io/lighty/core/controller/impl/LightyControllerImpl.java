@@ -356,7 +356,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    protected boolean stopProcedure() {
+    protected boolean stopProcedure() throws InterruptedException {
         LOG.debug("Lighty Controller stopProcedure");
         if (this.bindingDOMEntityOwnershipServiceAdapter != null) {
             this.bindingDOMEntityOwnershipServiceAdapter.close();
@@ -385,7 +385,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             try {
                 actorSystemTerminatedFuture.get(ACTOR_SYSTEM_TERMINATE_TIMEOUT, TimeUnit.SECONDS);
                 SocketAnalyzer.awaitPortAvailable(actorSystemPort, ACTOR_SYSTEM_TERMINATE_TIMEOUT, TimeUnit.SECONDS);
-            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            } catch (ExecutionException | TimeoutException e) {
                 LOG.error("Actor system port {} not released in last 30seconds", actorSystemPort, e);
             }
         }

@@ -94,7 +94,7 @@ public abstract class AbstractLightyModule implements LightyModule {
      * shutdown correctly (e.g. stop initialized beans, release resources, ...).
      * @return success of stop.
      */
-    protected abstract boolean stopProcedure();
+    protected abstract boolean stopProcedure() throws InterruptedException;
 
     @Override
     public synchronized ListenableFuture<Boolean> start() {
