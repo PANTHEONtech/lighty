@@ -10,6 +10,7 @@ package io.lighty.core.common.models.tests;
 import io.lighty.core.common.models.ModuleId;
 import io.lighty.core.common.models.YangModuleUtils;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -21,6 +22,10 @@ import java.util.List;
 import java.util.Set;
 
 public class YangModelUtilsTests {
+
+    private static final String TEST_NAMESPACE = "urn:ietf:params:xml:ns:yang:ietf-inet-types";
+    private static final String TEST_NAME = "ietf-inet-types";
+    private static final String TEST_REVISION = "2013-07-15";
 
     @DataProvider(name = "equalsTestData")
     public static Object[][] gatEqualsTestData() {
@@ -82,6 +87,31 @@ public class YangModelUtilsTests {
         }
     }
 
+    @Test
+    public void testCreateValidModuleIdsFromStrings() {
+        Assert.assertTrue(canCreateModuleId(TEST_NAMESPACE, TEST_NAME, TEST_REVISION));
+        Assert.assertTrue(canCreateModuleId("", TEST_NAME, TEST_REVISION));
+    }
+
+    @Test
+    public void testCreateInvalidModuleIdsFromStrings() {
+        Assert.assertFalse(canCreateModuleId(TEST_NAMESPACE, TEST_NAME, ""));
+        Assert.assertFalse(canCreateModuleId(TEST_NAMESPACE, TEST_NAME, null));
+        Assert.assertFalse(canCreateModuleId(null, TEST_NAME, TEST_REVISION));
+        Assert.assertFalse(canCreateModuleId(TEST_NAMESPACE, null, TEST_REVISION));
+        Assert.assertFalse(canCreateModuleId(TEST_NAMESPACE, "", TEST_REVISION));
+    }
+
+    private boolean canCreateModuleId(final String namespace, final String name, final String revision) {
+        try {
+            ModuleId testModule = ModuleId.from(namespace, name, revision);
+            Assert.assertTrue(testModule.getQName().equals(QName.create (namespace, revision, name)));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     /**
      * This test requires test dependency:
      * org.opendaylight.mdsal.model/ietf-topology
@@ -113,5 +143,4 @@ public class YangModelUtilsTests {
             Assert.assertTrue(foundModelCount > 0, expectedModuleName + " not found !");
         }
     }
-
 }
