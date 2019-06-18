@@ -1,0 +1,100 @@
+{
+	"variables": [],
+	"info": {
+		"name": "lighty.io-quarkus.io-demo",
+		"_postman_id": "2e2b4d81-11d3-8c21-50a6-286536ecf6f9",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get NETCONF devices",
+			"request": {
+				"url": "http://localhost:8080/services/data/netconf/list",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Connect NETCONF device",
+			"request": {
+				"url": "http://localhost:8080/services/data/netconf/id/test-device",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"admin\",\n    \"address\": \"127.0.0.1\",\n    \"port\": \"17830\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Disconnect NETCONF device",
+			"request": {
+				"url": "http://localhost:8080/services/data/netconf/id/test-device",
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Topology content",
+			"request": {
+				"url": "http://localhost:8080/services/data/topology/list",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create Topology1",
+			"request": {
+				"url": "http://localhost:8080/services/data/topology/id/topology1",
+				"method": "PUT",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Topology1",
+			"request": {
+				"url": "http://localhost:8080/services/data/topology/id/topology1",
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
