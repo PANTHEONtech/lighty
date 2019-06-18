@@ -7,6 +7,7 @@
  */
 package io.lighty.swagger;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
@@ -42,6 +43,7 @@ public class SwaggerLighty extends AbstractLightyModule {
 
     private MountPointSwaggerGeneratorDraft02 mountPointSwaggerGeneratorDraft02;
     private MountPointSwaggerGeneratorRFC8040 mountPointSwaggerGeneratorRFC8040;
+    private ApiDocService apiDocService;
 
     public SwaggerLighty(RestConfConfiguration restConfConfiguration,
                          LightyServerBuilder jettyServerBuilder, LightyServices lightyServices) {
@@ -65,7 +67,7 @@ public class SwaggerLighty extends AbstractLightyModule {
                 mountPointSwaggerGeneratorDraft02 =
                         new MountPointSwaggerGeneratorDraft02(lightyServices.getDOMSchemaService(), lightyServices.getDOMMountPointService(), basePathString);
                 ApiDocGeneratorDraftO2 apiDocGeneratorDraft02 = new ApiDocGeneratorDraftO2(lightyServices.getDOMSchemaService(), basePathString);
-                ApiDocService apiDocService = new ApiDocServiceDraft02(mountPointSwaggerGeneratorDraft02, apiDocGeneratorDraft02);
+                apiDocService = new ApiDocServiceDraft02(mountPointSwaggerGeneratorDraft02, apiDocGeneratorDraft02);
                 ApiDocApplication apiDocApplication = new ApiDocApplication(apiDocService);
 
                 ServletContainer restServletContainer = new ServletContainer(ResourceConfig.forApplication(apiDocApplication));
@@ -81,7 +83,7 @@ public class SwaggerLighty extends AbstractLightyModule {
                 mountPointSwaggerGeneratorRFC8040 =
                         new MountPointSwaggerGeneratorRFC8040(lightyServices.getDOMSchemaService(), lightyServices.getDOMMountPointService(),basePathString);
                 ApiDocGeneratorRFC8040 apiDocGeneratorRFC8040 = new ApiDocGeneratorRFC8040(lightyServices.getDOMSchemaService(), basePathString);
-                ApiDocService apiDocService = new ApiDocServiceRFC8040(mountPointSwaggerGeneratorRFC8040, apiDocGeneratorRFC8040);
+                apiDocService = new ApiDocServiceRFC8040(mountPointSwaggerGeneratorRFC8040, apiDocGeneratorRFC8040);
                 ApiDocApplication apiDocApplication = new ApiDocApplication(apiDocService);
 
                 ServletContainer restServletContainer = new ServletContainer(ResourceConfig.forApplication(apiDocApplication));
@@ -127,4 +129,8 @@ public class SwaggerLighty extends AbstractLightyModule {
         mainHandler.addServlet(holderPwd, path + "/*");
     }
 
+    @VisibleForTesting
+    ApiDocService getApiDocService() {
+        return apiDocService;
+    }
 }
