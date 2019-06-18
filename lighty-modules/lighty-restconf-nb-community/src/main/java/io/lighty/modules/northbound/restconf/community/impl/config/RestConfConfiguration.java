@@ -9,6 +9,8 @@ package io.lighty.modules.northbound.restconf.community.impl.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.net.InetAddress;
+import java.util.Objects;
+
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
@@ -153,58 +155,28 @@ public class RestConfConfiguration {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        final RestConfConfiguration that = (RestConfConfiguration) o;
-
-        if (this.webSocketPort != that.webSocketPort) {
-            return false;
-        }
-        if (this.httpPort != that.httpPort) {
-            return false;
-        }
-        if (!this.domDataBroker.equals(that.domDataBroker)) {
-            return false;
-        }
-        if (!this.schemaService.equals(that.schemaService)) {
-            return false;
-        }
-        if (!this.domRpcService.equals(that.domRpcService)) {
-            return false;
-        }
-        if (!this.domNotificationService.equals(that.domNotificationService)) {
-            return false;
-        }
-        if (!this.domMountPointService.equals(that.domMountPointService)) {
-            return false;
-        }
-        if (this.jsonRestconfServiceType != that.jsonRestconfServiceType) {
-            return false;
-        }
-        if (this.domSchemaService != that.domSchemaService) {
-            return false;
-        }
-        return this.restconfServletContextPath.equals(that.restconfServletContextPath);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RestConfConfiguration that = (RestConfConfiguration) o;
+        return webSocketPort == that.webSocketPort &&
+                httpPort == that.httpPort &&
+                Objects.equals(domDataBroker, that.domDataBroker) &&
+                Objects.equals(schemaService, that.schemaService) &&
+                Objects.equals(domRpcService, that.domRpcService) &&
+                Objects.equals(domNotificationService, that.domNotificationService) &&
+                Objects.equals(domMountPointService, that.domMountPointService) &&
+                Objects.equals(domSchemaService, that.domSchemaService) &&
+                Objects.equals(inetAddress, that.inetAddress) &&
+                jsonRestconfServiceType == that.jsonRestconfServiceType &&
+                Objects.equals(restconfServletContextPath, that.restconfServletContextPath);
     }
 
     @Override
     public int hashCode() {
-        int result = this.domDataBroker.hashCode();
-        result = 31 * result + this.schemaService.hashCode();
-        result = 31 * result + this.domRpcService.hashCode();
-        result = 31 * result + this.domNotificationService.hashCode();
-        result = 31 * result + this.domMountPointService.hashCode();
-        result = 31 * result + this.webSocketPort;
-        result = 31 * result + this.jsonRestconfServiceType.hashCode();
-        result = 31 * result + this.httpPort;
-        result = 31 * result + this.restconfServletContextPath.hashCode();
-        result = 31 * result + this.domSchemaService.hashCode();
-        return result;
+        return Objects.hash(domDataBroker, schemaService, domRpcService, domNotificationService,
+                domMountPointService, domSchemaService, inetAddress, webSocketPort, jsonRestconfServiceType,
+                httpPort, restconfServletContextPath);
     }
+
 }
