@@ -10,7 +10,7 @@
 
   <properties>
     <surefire-plugin.version>2.22.0</surefire-plugin.version>
-    <quarkus.version>0.14.0</quarkus.version>
+    <quarkus.version>0.16.1</quarkus.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -45,6 +45,12 @@
       <groupId>io.lighty.core</groupId>
       <artifactId>lighty-controller</artifactId>
       <version>${lighty.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.bea.xml</groupId>
+          <artifactId>jsr173-ri</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>io.lighty.modules</groupId>
@@ -60,6 +66,12 @@
       <groupId>io.lighty.models.test</groupId>
       <artifactId>lighty-toaster</artifactId>
       <version>${lighty.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.fusesource.leveldbjni</groupId>
+      <artifactId>leveldbjni-all</artifactId>
+      <version>1.8</version>
     </dependency>
 
     <!-- test dependencies -->
