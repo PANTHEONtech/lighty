@@ -7,6 +7,8 @@
  */
 package io.lighty.core.common.models.tests;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.google.common.collect.ImmutableSet;
 import io.lighty.core.common.models.ModuleId;
 import io.lighty.core.common.models.YangModuleUtils;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
@@ -26,6 +28,12 @@ public class YangModelUtilsTests {
     private static final String TEST_NAMESPACE = "urn:ietf:params:xml:ns:yang:ietf-inet-types";
     private static final String TEST_NAME = "ietf-inet-types";
     private static final String TEST_REVISION = "2013-07-15";
+    private static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana.afn.safi.rev130704.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.$YangModuleInfoImpl.getInstance()
+    );
 
     @DataProvider(name = "equalsTestData")
     public static Object[][] gatEqualsTestData() {
@@ -144,4 +152,17 @@ public class YangModelUtilsTests {
             Assert.assertTrue(foundModelCount > 0, expectedModuleName + " not found !");
         }
     }
+
+    /**
+     * This test requires test dependencies:
+     * org.opendaylight.mdsal.model/iana-afn-safi
+     * org.opendaylight.mdsal.binding.model.iana/iana-if-type
+     */
+    @Test
+    public void testGenerateJSONModelSetConfiguration() {
+        ArrayNode arrayNode = YangModuleUtils.generateJSONModelSetConfiguration(YANG_MODELS);
+        Assert.assertNotNull(arrayNode);
+        Assert.assertTrue(arrayNode.size() == 4);
+    }
+
 }
