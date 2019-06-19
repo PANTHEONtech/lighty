@@ -12,9 +12,13 @@ Application initializes OpenDaylight core components (MD-SAL, yangtools and cont
 Once you have [downloaded GraalVM](https://github.com/oracle/graal/releases), 
 extract the archive and set the environment variables:
 ```
-export PATH={YOUR_PATH}/graalvm-ce-19.0.0/bin:$PATH
-export GRAALVM_HOME={YOUR_PATH}/graalvm-ce-19.0.0/
-export JAVA_HOME={YOUR_PATH}/graalvm-ce-19.0.0/
+export PATH={YOUR_PATH}/graalvm-ce-19.0.2/bin:$PATH
+export GRAALVM_HOME={YOUR_PATH}/graalvm-ce-19.0.2/
+export JAVA_HOME={YOUR_PATH}/graalvm-ce-19.0.2/
+```
+Install native image support for graalVM
+```
+gu install native-image
 ```
 
 ## Build & Run
