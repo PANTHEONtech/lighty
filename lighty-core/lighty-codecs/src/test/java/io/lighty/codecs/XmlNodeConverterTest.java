@@ -98,6 +98,15 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
     }
 
     @Test
+    public void testLoadNotification() throws Exception {
+        Optional<NotificationDefinition> loadNotification =
+                ConverterUtils.loadNotification(schemaContext, QName.create(TOASTER_NAMESPACE, TOASTER_REVISION,
+                        "toasterRestocked"));
+        Assert.assertNotNull(loadNotification);
+        Assert.assertTrue(loadNotification.isPresent());
+    }
+
+    @Test
     @Ignore
     public void testSerializeNotification() throws Exception {
         String notification = loadResourceAsString("notification.xml");
