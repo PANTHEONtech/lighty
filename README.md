@@ -1,14 +1,10 @@
-# lighty.io 10
-__lighty.io__ is a Software Development Kit powered by [OpenDaylight](https://www.opendaylight.org/) to support, ease & accelerate the development of
-Software-Defined Networking (SDN) solutions in Java. Developed by [PANTHEON.tech](https://pantheon.tech).
+# lighty.io 10.1
+__lighty.io__ is a Software Development Kit powered by [OpenDaylight](https://www.opendaylight.org/) to support, ease and accelerate development of
+Software-Defined Networking (SDN) solutions in Java.
+lighty.io is a toolkit for SDN application programmers and solution architects that can be used to build and integrate SDN controllers.
+It utilizes core [OpenDaylight](https://www.opendaylight.org/) components, which are available as a set of libraries.
 
-It utilizes core [OpenDaylight](https://www.opendaylight.org/) components, which are available as a set of libraries and are adapted to run in a __plain Java SE environment__.
-
-[![Build Status](https://travis-ci.org/PantheonTechnologies/lighty-core.svg?branch=10.0.x)](https://travis-ci.org/PantheonTechnologies/lighty-core)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.lighty.core/lighty-bom/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.lighty.core/lighty-bom)
-[![License](https://img.shields.io/badge/License-EPL%201.0-blue.svg)](https://opensource.org/licenses/EPL-1.0)
-
-_This branch maintains compatibility with __OpenDaylight Neon__ release._
+_This branch maintains compatibility with __OpenDaylight Neon SR1__ release._
 
 ## Features
 - [x] __Removed Karaf__: Having Java SE as a runtime, you can use a framework of your choice, not only Karaf
