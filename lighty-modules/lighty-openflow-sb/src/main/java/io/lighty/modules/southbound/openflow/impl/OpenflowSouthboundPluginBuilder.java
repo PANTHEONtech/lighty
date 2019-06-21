@@ -11,9 +11,9 @@ import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.modules.southbound.openflow.impl.config.OpenflowpluginConfiguration;
 import io.lighty.modules.southbound.openflow.impl.config.SwitchConfig;
+import java.util.concurrent.ExecutorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflowplugin.app.forwardingrules.manager.config.rev160511.ForwardingRulesManagerConfigBuilder;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Builder for {@link OpenflowSouthboundPlugin}.
@@ -35,8 +35,8 @@ public class OpenflowSouthboundPluginBuilder {
      * @return instance of {@link OpenflowSouthboundPluginBuilder}.
      */
     public OpenflowSouthboundPluginBuilder from(
-            OpenflowpluginConfiguration openflowpluginConfiguration,
-            LightyServices lightyServices) {
+            final OpenflowpluginConfiguration openflowpluginConfiguration,
+            final LightyServices lightyServices) {
         this.ofpConfiguration = openflowpluginConfiguration;
         this.switchConnectionProviders = openflowpluginConfiguration.getSwitchConfig();
         this.lightyServices = lightyServices;
@@ -48,7 +48,7 @@ public class OpenflowSouthboundPluginBuilder {
      * @param executorService instance of {@link ExecutorService}.
      * @return instance of {@link OpenflowSouthboundPluginBuilder}.
      */
-    public OpenflowSouthboundPluginBuilder withExecutorService(ExecutorService executorService) {
+    public OpenflowSouthboundPluginBuilder withExecutorService(final ExecutorService executorService) {
         this.executorService = executorService;
         return this;
     }
@@ -58,7 +58,7 @@ public class OpenflowSouthboundPluginBuilder {
      * @param ofpPacketListener instance of {@link PacketProcessingListener}.
      * @return instance of {@link OpenflowSouthboundPluginBuilder}.
      */
-    public OpenflowSouthboundPluginBuilder withPacketListener(PacketProcessingListener ofpPacketListener) {
+    public OpenflowSouthboundPluginBuilder withPacketListener(final PacketProcessingListener ofpPacketListener) {
         this.ofpPacketListener = ofpPacketListener;
         return this;
     }
@@ -77,7 +77,7 @@ public class OpenflowSouthboundPluginBuilder {
 
         return new OpenflowSouthboundPlugin(lightyServices,
                 ofpConfiguration.getOpenflowProviderConfig(),
-                switchConnectionProviders.getProviders(),
+                switchConnectionProviders.getProviders(lightyServices.getDiagStatusService()),
                 executorService,
                 this.forwardingRulesManagerConfigBuilder,
                 this.ofpPacketListener);
