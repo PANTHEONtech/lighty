@@ -37,4 +37,4 @@ addons:
       description: lighty.io
     notification_email: juraj.veverka@pantheon.tech
     build_command: mvn clean install
-    branch_pattern: 9.2.x
+    branch_pattern: 9.3.x
