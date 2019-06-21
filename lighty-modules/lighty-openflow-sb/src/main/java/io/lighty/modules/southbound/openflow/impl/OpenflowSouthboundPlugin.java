@@ -12,6 +12,10 @@ import io.lighty.core.controller.api.LightyServices;
 import io.lighty.modules.southbound.openflow.impl.config.ConfigurationServiceFactory;
 import io.lighty.modules.southbound.openflow.impl.config.OpenflowpluginConfiguration;
 import io.lighty.modules.southbound.openflow.impl.config.SwitchConfig;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
 import org.opendaylight.openflowplugin.api.diagstatus.OpenflowPluginDiagStatusProvider;
 import org.opendaylight.openflowplugin.api.openflow.OpenFlowPluginProvider;
@@ -39,10 +43,6 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 public class OpenflowSouthboundPlugin extends AbstractLightyModule implements OpenflowServices {
 
@@ -66,7 +66,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
         super(executorService);
 
         this.lightyServices = lightyServices;
-        this.providers = new SwitchConfig().getDefaultProviders();
+        this.providers = new SwitchConfig().getDefaultProviders(lightyServices.getDiagStatusService());
         this.configurationService = new ConfigurationServiceFactory().newInstance(new OpenflowpluginConfiguration()
                 .getDefaultProviderConfig());
     }
@@ -203,7 +203,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
      * Start close() method in AutoCloseable instance
      * @param instance instance of {@link AutoCloseable}
      */
-    private void destroy(AutoCloseable instance){
+    private void destroy(final AutoCloseable instance){
         if (instance != null) {
             try {
                 instance.close();
