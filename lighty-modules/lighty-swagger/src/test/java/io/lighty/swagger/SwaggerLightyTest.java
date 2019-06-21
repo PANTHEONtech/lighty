@@ -15,9 +15,10 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.mockito.Mockito;
 import org.testng.Assert;
-import org.testng.annotations.Ignore;
-import org.testng.annotations.Test;
 
+/**
+ * Base class for lighty-swagger tests for different versions of {@link JsonRestConfServiceType}
+ */
 public abstract class SwaggerLightyTest extends SwaggerLightyTestBase {
 
     private String modelName;
@@ -40,13 +41,11 @@ public abstract class SwaggerLightyTest extends SwaggerLightyTestBase {
         Mockito.when(uriInfo.getRequestUriBuilder()).thenReturn(UriBuilder.fromUri(absolutePath));
     }
 
-    @Test
     public void simpleSwaggerModuleTest() {
         Assert.assertNotNull(getLightyController());
         Assert.assertNotNull(getSwaggerModule());
     }
 
-    @Test
     public void testGetListOfMounts() {
 
         final Response response = getSwaggerModule().getApiDocService().getListOfMounts(uriInfo);
@@ -54,17 +53,12 @@ public abstract class SwaggerLightyTest extends SwaggerLightyTestBase {
         Assert.assertEquals(200, response.getStatus());
     }
 
-    @Test
-    @Ignore
     public void testGetMountRootDoc() {
     }
 
-    @Test
-    @Ignore
     public void testGetMountDocByModule() {
     }
 
-    @Test
     public void testGetRootDoc() {
 
         final Response response = getSwaggerModule().getApiDocService().getRootDoc(uriInfo);
@@ -73,7 +67,6 @@ public abstract class SwaggerLightyTest extends SwaggerLightyTestBase {
         Assert.assertNotNull(response.getEntity());
     }
 
-    @Test
     public void testGetDocByModule() {
 
         final Response response = getSwaggerModule().getApiDocService().getDocByModule(modelName, revisionDate, uriInfo);
@@ -82,7 +75,6 @@ public abstract class SwaggerLightyTest extends SwaggerLightyTestBase {
         Assert.assertNotNull(response.getEntity());
     }
 
-    @Test
     public void testGetApiExplorer() {
 
         final Response response = getSwaggerModule().getApiDocService().getApiExplorer(uriInfo);

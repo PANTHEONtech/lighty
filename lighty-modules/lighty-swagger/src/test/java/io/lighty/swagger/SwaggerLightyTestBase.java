@@ -26,6 +26,9 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 
+/**
+ * Base class for lighty-swagger tests handlin starting and shutting-down of lighty with restConf and swagger module
+ */
 public abstract class SwaggerLightyTestBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(SwaggerLightyTestBase.class);

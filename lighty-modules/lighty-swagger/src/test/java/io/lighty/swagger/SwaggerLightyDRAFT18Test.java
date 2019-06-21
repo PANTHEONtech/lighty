@@ -9,10 +9,36 @@
 package io.lighty.swagger;
 
 import io.lighty.modules.northbound.restconf.community.impl.config.JsonRestConfServiceType;
+import org.testng.annotations.Test;
 
 public class SwaggerLightyDRAFT18Test extends SwaggerLightyTest {
 
     protected SwaggerLightyDRAFT18Test() {
         super(JsonRestConfServiceType.DRAFT_18);
+    }
+
+    @Test
+    public void simpleSwaggerModuleTest() {
+        super.simpleSwaggerModuleTest();
+    }
+
+    @Test
+    public void testGetListOfMounts() {
+        super.testGetListOfMounts();
+    }
+
+    @Test
+    public void testGetRootDoc() {
+        super.testGetRootDoc();
+    }
+
+    @Test
+    public void testGetDocByModule() {
+        super.testGetDocByModule();
+    }
+
+    @Test
+    public void testGetApiExplorer() {
+        super.testGetApiExplorer();
     }
 }
