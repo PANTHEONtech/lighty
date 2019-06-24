@@ -8,6 +8,9 @@
 package io.lighty.modules.southbound.openflow.impl.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
+import java.util.List;
+import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.openflowjava.protocol.impl.core.SwitchConnectionProviderFactoryImpl;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.KeystoreType;
@@ -16,8 +19,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.config.rev140630.T
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow._switch.connection.config.rev160506.SwitchConnectionConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow._switch.connection.config.rev160506.SwitchConnectionConfigBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow._switch.connection.config.rev160506._switch.connection.config.TlsBuilder;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SwitchConfig {
 
@@ -92,14 +93,16 @@ public class SwitchConfig {
                         ).build();
     }
 
-    public List<SwitchConnectionProvider> getDefaultProviders() {
+    public List<SwitchConnectionProvider> getDefaultProviders(final DiagStatusService diagStatusService) {
+        final SwitchConnectionProviderFactoryImpl factory = new SwitchConnectionProviderFactoryImpl(diagStatusService);
+
         final List<SwitchConnectionProvider> switchConnectionProviderList = new ArrayList<>();
-        switchConnectionProviderList.add(new SwitchConnectionProviderFactoryImpl().newInstance(this.defaultSwitch));
-        switchConnectionProviderList.add(new SwitchConnectionProviderFactoryImpl().newInstance(this.legacySwitch));
+        switchConnectionProviderList.add(factory.newInstance(this.defaultSwitch));
+        switchConnectionProviderList.add(factory.newInstance(this.legacySwitch));
         return switchConnectionProviderList;
     }
 
-    public List<SwitchConnectionProvider> getProviders() {
+    public List<SwitchConnectionProvider> getProviders(final DiagStatusService diagStatusService) {
 
         final SwitchConnectionConfig tmpDefaultSwitch =
                 new SwitchConnectionConfigBuilder()
@@ -145,9 +148,11 @@ public class SwitchConfig {
                         .build()
                         ).setGroupAddModEnabled(true).build();
 
+        final SwitchConnectionProviderFactoryImpl factory = new SwitchConnectionProviderFactoryImpl(diagStatusService);
+
         final List<SwitchConnectionProvider> switchConnectionProviderList = new ArrayList<>();
-        switchConnectionProviderList.add(new SwitchConnectionProviderFactoryImpl().newInstance(tmpDefaultSwitch));
-        switchConnectionProviderList.add(new SwitchConnectionProviderFactoryImpl().newInstance(tmpLegacySwitch));
+        switchConnectionProviderList.add(factory.newInstance(tmpDefaultSwitch));
+        switchConnectionProviderList.add(factory.newInstance(tmpLegacySwitch));
         return switchConnectionProviderList;
     }
 
