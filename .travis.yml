@@ -1,8 +1,9 @@
+dist: xenial
 language: java
 
 jdk:
- - oraclejdk8
- - oraclejdk11
+ - openjdk8
+ - openjdk11
 
 before_install:
   - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
@@ -37,4 +38,4 @@ addons:
       description: lighty.io
     notification_email: juraj.veverka@pantheon.tech
     build_command: mvn clean install
-    branch_pattern: 10.0.x
+    branch_pattern: 10.1.x
