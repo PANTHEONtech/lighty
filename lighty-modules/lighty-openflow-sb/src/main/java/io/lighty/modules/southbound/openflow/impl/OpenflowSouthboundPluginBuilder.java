@@ -77,7 +77,7 @@ public class OpenflowSouthboundPluginBuilder {
 
         return new OpenflowSouthboundPlugin(lightyServices,
                 ofpConfiguration.getOpenflowProviderConfig(),
-                switchConnectionProviders.getProviders(),
+                switchConnectionProviders.getProviders(lightyServices.getDiagStatusService()),
                 executorService,
                 this.forwardingRulesManagerConfigBuilder,
                 this.ofpPacketListener);

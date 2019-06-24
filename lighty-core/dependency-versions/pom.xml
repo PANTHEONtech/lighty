@@ -105,26 +105,26 @@
             <dependency>
                 <groupId>org.opendaylight.ovsdb</groupId>
                 <artifactId>southbound-artifacts</artifactId>
-                <version>1.7.1</version>
+                <version>1.7.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.openflowplugin</groupId>
                 <artifactId>openflowplugin-artifacts</artifactId>
-                <version>0.7.1</version>
+                <version>0.7.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.openflowplugin.applications</groupId>
                 <artifactId>arbitratorreconciliation-impl</artifactId>
-                <version>0.7.1</version>
+                <version>0.7.2</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.serviceutils</groupId>
                 <artifactId>srm-impl</artifactId>
-                <version>0.2.1</version>
+                <version>0.2.2</version>
             </dependency>
 
             <!-- Other third-party stuff -->
