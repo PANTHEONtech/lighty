@@ -7,6 +7,8 @@
  */
 package io.lighty.examples.controllers.restconfapp;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import io.lighty.core.common.models.YangModuleUtils;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
@@ -74,6 +76,13 @@ public class Main {
                 LOG.info("using default configuration ...");
                 Set<YangModuleInfo> modelPaths = Stream.concat(RestConfConfigUtils.YANG_MODELS.stream(),
                         NetconfConfigUtils.NETCONF_TOPOLOGY_MODELS.stream()).collect(Collectors.toSet());
+                ArrayNode arrayNode = YangModuleUtils
+                        .generateJSONModelSetConfiguration(
+                                Stream.concat(ControllerConfigUtils.YANG_MODELS.stream(), modelPaths.stream())
+                                        .collect(Collectors.toSet())
+                        );
+                //0. print the list of schema context models
+                LOG.info("JSON model config snippet: {}", arrayNode.toString());
                 //1. get controller configuration
                 ControllerConfiguration defaultSingleNodeConfiguration =
                         ControllerConfigUtils.getDefaultSingleNodeConfiguration(modelPaths);

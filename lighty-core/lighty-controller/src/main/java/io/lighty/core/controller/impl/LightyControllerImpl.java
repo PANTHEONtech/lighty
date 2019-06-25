@@ -7,10 +7,13 @@
  */
 package io.lighty.core.controller.impl;
 
+import akka.actor.Terminated;
 import com.typesafe.config.Config;
+import io.lighty.core.common.SocketAnalyzer;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyServices;
+import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.services.LightyDiagStatusServiceImpl;
 import io.lighty.core.controller.impl.services.LightySystemReadyMonitorImpl;
 import io.lighty.core.controller.impl.services.LightySystemReadyService;
@@ -25,7 +28,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.akka.impl.ActorSystemProviderImpl;
 import org.opendaylight.controller.cluster.common.actor.QuarantinedMonitorActor;
@@ -110,6 +117,7 @@ import org.slf4j.LoggerFactory;
 public class LightyControllerImpl extends AbstractLightyModule implements LightyController, LightyServices {
 
     private static final Logger LOG = LoggerFactory.getLogger(LightyControllerImpl.class);
+    private static final int ACTOR_SYSTEM_TERMINATE_TIMEOUT = 30;
 
     private final Config actorSystemConfig;
     private final ClassLoader actorSystemClassLoader;
@@ -173,13 +181,14 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private final LightySystemReadyMonitorImpl systemReadyMonitor;
 
     public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
-            final ClassLoader actorSystemClassLoader,
-            final DOMNotificationRouter domNotificationRouter, final String restoreDirectoryPath,
-            final int maxDataBrokerFutureCallbackQueueSize, final int maxDataBrokerFutureCallbackPoolSize,
-            final boolean metricCaptureEnabled, final int mailboxCapacity, final Properties distributedEosProperties,
-            final String moduleShardsConfig, final String modulesConfig, final DatastoreContext configDatastoreContext,
-            final DatastoreContext operDatastoreContext, final Map<String, Object> datastoreProperties,
-            final Set<YangModuleInfo> modelSet) {
+                                final ClassLoader actorSystemClassLoader,
+                                final ControllerConfiguration.DOMNotificationRouterConfig domNotificationRouterConfig ,
+                                final String restoreDirectoryPath,
+                                final int maxDataBrokerFutureCallbackQueueSize, final int maxDataBrokerFutureCallbackPoolSize,
+                                final boolean metricCaptureEnabled, final int mailboxCapacity, final Properties distributedEosProperties,
+                                final String moduleShardsConfig, final String modulesConfig, final DatastoreContext configDatastoreContext,
+                                final DatastoreContext operDatastoreContext, final Map<String, Object> datastoreProperties,
+                                final Set<YangModuleInfo> modelSet) {
         super(executorService);
         initSunXMLWriterProperty();
         this.actorSystemConfig = actorSystemConfig;
@@ -188,7 +197,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.domMountPointServiceOld =
                 new org.opendaylight.controller.md.sal.dom.broker.impl.mount.DOMMountPointServiceImpl(
                         this.domMountPointService);
-        this.domNotificationRouter = domNotificationRouter;
+        this.domNotificationRouter = DOMNotificationRouter.create(
+                domNotificationRouterConfig.getQueueDepth(),
+                domNotificationRouterConfig.getSpinTime(),
+                domNotificationRouterConfig.getParkTime(),
+                domNotificationRouterConfig.getUnit());
         this.domNotificationRouterOld = org.opendaylight.controller.md.sal.dom.broker.impl.DOMNotificationRouter.create(
                 this.domNotificationRouter, this.domNotificationRouter, this.domNotificationRouter);
         this.restoreDirectoryPath = restoreDirectoryPath;
@@ -349,7 +362,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    protected boolean stopProcedure() {
+    protected boolean stopProcedure() throws InterruptedException {
+        LOG.debug("Lighty Controller stopProcedure");
         if (this.bindingDOMEntityOwnershipServiceAdapter != null) {
             this.bindingDOMEntityOwnershipServiceAdapter.close();
         }
@@ -365,8 +379,24 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         if (this.remoteRpcProvider != null) {
             this.remoteRpcProvider.close();
         }
+        if (this.domNotificationRouter != null) {
+            this.domNotificationRouter.close();
+        }
         if (this.actorSystemProvider != null) {
+
+            final CompletableFuture<Terminated> actorSystemTerminatedFuture = this.actorSystemProvider
+                    .getActorSystem()
+                    .getWhenTerminated().toCompletableFuture();
+            final int actorSystemPort = this.actorSystemConfig.getInt("akka.remote.netty.tcp.port");
+
             this.actorSystemProvider.close();
+
+            try {
+                actorSystemTerminatedFuture.get(ACTOR_SYSTEM_TERMINATE_TIMEOUT, TimeUnit.SECONDS);
+                SocketAnalyzer.awaitPortAvailable(actorSystemPort, ACTOR_SYSTEM_TERMINATE_TIMEOUT, TimeUnit.SECONDS);
+            } catch (ExecutionException | TimeoutException e) {
+                LOG.error("Actor system port {} not released in last 30seconds", actorSystemPort, e);
+            }
         }
         return true;
     }

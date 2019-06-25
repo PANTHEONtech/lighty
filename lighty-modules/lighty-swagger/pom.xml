@@ -38,6 +38,17 @@
             <groupId>org.opendaylight.netconf</groupId>
             <artifactId>sal-rest-docgen</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>io.lighty.resources</groupId>
+            <artifactId>singlenode-configuration</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

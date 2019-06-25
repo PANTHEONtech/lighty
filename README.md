@@ -38,7 +38,6 @@ _This branch maintains compatibility with __OpenDaylight Sodium__ release._
   - [NETCONF South-Bound plugin](lighty-modules/lighty-netconf-sb) 
 * __lighty-resources__ - Resource artifacts
 
-## Controller Architecture
 
 ![architecture](docs/lighty.io-controller-architecture.svg)
 

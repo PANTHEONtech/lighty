@@ -58,6 +58,13 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+/**
+ * Initializes Spring Boot application and check whether all the lighty.io beans has been correctly autowired.
+ * <p/>
+ * <p/>
+ * Test does not succeed in IDE (Intellij IDEA) if it is started from root directory together with all other tests - it
+ * can not create ApplicationContext properly.
+ */
 @SpringBootTest
 public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringContextTests {
 

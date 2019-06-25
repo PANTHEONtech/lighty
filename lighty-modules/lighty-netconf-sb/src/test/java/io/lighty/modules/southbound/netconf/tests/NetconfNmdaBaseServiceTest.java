@@ -17,17 +17,13 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import com.google.common.collect.ImmutableSet;
 import io.lighty.modules.southbound.netconf.impl.NetconfNmdaBaseServiceImpl;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.netconf.api.ModifyAction;
 import org.opendaylight.netconf.api.NetconfMessage;
@@ -40,7 +36,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.mon
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.origin.rev180214.Dynamic;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.origin.rev180214.Learned;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -48,30 +43,11 @@ import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import org.w3c.dom.Element;
 
-public class NetconfNmdaBaseServiceTest {
-
-    private SchemaContext schemaContext;
-
-    @BeforeTest
-    public void beforeTest() {
-        final ImmutableSet<YangModuleInfo> yangModuleInfos = ImmutableSet.of(
-                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.$YangModuleInfoImpl.getInstance(),
-                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.metadata.rev160805.$YangModuleInfoImpl.getInstance(),
-                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.origin.rev180214.$YangModuleInfoImpl.getInstance(),
-                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.$YangModuleInfoImpl.getInstance(),
-                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.with.defaults.rev110601.$YangModuleInfoImpl.getInstance(),
-                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.monitoring.rev101004.$YangModuleInfoImpl.getInstance(),
-                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.nmda.rev190107.$YangModuleInfoImpl.getInstance(),
-                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.$YangModuleInfoImpl.getInstance()
-        );
-        schemaContext = getSchemaContext(new ArrayList<>(yangModuleInfos));
-    }
+public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
 
     @Test
     public void testBaseServiceGetDataMock() {
@@ -206,29 +182,4 @@ public class NetconfNmdaBaseServiceTest {
         assertNotNull(getSpecificElementSubtree(config, NetconfState.QNAME.getNamespace().toString(), "netconf-state"));
     }
 
-    private static SchemaContext getSchemaContext(List<YangModuleInfo> moduleInfos) {
-        ModuleInfoBackedContext moduleInfoBackedCntxt = ModuleInfoBackedContext.create();
-        moduleInfoBackedCntxt.addModuleInfos(moduleInfos);
-        Optional<SchemaContext> tryToCreateSchemaContext =
-                moduleInfoBackedCntxt.tryToCreateSchemaContext();
-        if (!tryToCreateSchemaContext.isPresent()) {
-            throw new IllegalStateException();
-        }
-        return tryToCreateSchemaContext.get();
-    }
-
-    private boolean hasSpecificChild(Collection<DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>> children,
-                                     String localName) {
-        return children.stream()
-                .anyMatch(child -> child.getIdentifier().getNodeType().getLocalName().equals(localName));
-    }
-
-    private Element getSpecificElementSubtree(final Element doc, final String namespace, final String localName) {
-        return getSpecificElementSubtree(doc, namespace, localName, 0);
-    }
-
-    private Element getSpecificElementSubtree(final Element doc, final String namespace,
-                                              final String localName, final Integer itemNumber) {
-        return (Element) doc.getElementsByTagNameNS(namespace, localName).item(itemNumber);
-    }
 }

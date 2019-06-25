@@ -10,7 +10,7 @@ package io.lighty.modules.southbound.openflow.tests;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class OpenflowSouthoundPluginTest extends OpenflowSouthboundPluginTestBase {
+public class OpenflowSouthboundPluginTest extends OpenflowSouthboundPluginTestBase {
 
     @Test(timeOut = 60_000)
     public void testStartOfpPlugin() {

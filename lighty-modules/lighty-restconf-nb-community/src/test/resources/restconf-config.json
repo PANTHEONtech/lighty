@@ -1,0 +1,9 @@
+{
+  "restconf": {
+    "inetAddress": "127.0.0.3",
+    "webSocketPort": 4444,
+    "jsonRestconfServiceType": "DRAFT_18",
+    "httpPort": 5555,
+    "restconfServletContextPath": "/restconf-path"
+  }
+}

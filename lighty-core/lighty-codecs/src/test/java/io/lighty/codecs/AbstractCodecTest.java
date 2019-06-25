@@ -182,7 +182,7 @@ public abstract class AbstractCodecTest {
      *        {@link SchemaContext}
      * @return prepared {@link SchemaContext}
      */
-    private SchemaContext getSchemaContext(List<YangModuleInfo> moduleInfos) {
+    protected SchemaContext getSchemaContext(List<YangModuleInfo> moduleInfos) {
         moduleInfoBackedCntxt.addModuleInfos(moduleInfos);
         Optional<SchemaContext> tryToCreateSchemaContext = moduleInfoBackedCntxt.tryToCreateSchemaContext();
         if (!tryToCreateSchemaContext.isPresent()) {

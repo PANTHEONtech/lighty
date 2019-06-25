@@ -7,15 +7,7 @@
  */
 package io.lighty.codecs;
 
-import static org.junit.Assert.fail;
-
 import io.lighty.codecs.api.ConverterUtils;
-import java.awt.Container;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Map.Entry;
-import java.util.Optional;
-import javax.xml.stream.XMLStreamException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.MakeToastInput;
@@ -27,12 +19,24 @@ import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SampleListKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
+import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+
+import javax.xml.stream.XMLStreamException;
+import java.awt.Container;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map.Entry;
+import java.util.Optional;
+
+import static org.junit.Assert.fail;
 
 /**
  * Basic tests for {@link DataCodec} class
@@ -114,6 +118,29 @@ public class DataCodecTest extends AbstractCodecTest {
         DataCodec<Toaster> dataCodec = new DataCodec<>(this.schemaContext);
         YangInstanceIdentifier yangInstanceIdentifier = dataCodec.deserializeIdentifier(TOASTER_INSTANCE_IDENTIFIER);
         Assert.assertEquals(TOASTER_YANG_INSTANCE_IDENTIFIER, yangInstanceIdentifier);
+    }
+
+    @Test
+    public void testDeserializeIdentifier() {
+        YangModuleInfo restconfInfo = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126.$YangModuleInfoImpl.getInstance();
+        SchemaContext schemaContext = getSchemaContext(Collections.singletonList(restconfInfo));
+        DataCodec<Toaster> dataCodec = new DataCodec<>(schemaContext);
+        String yangInstanceIdentifierString = dataCodec.deserializeIdentifier(TOASTER_YANG_INSTANCE_IDENTIFIER);
+        Assert.assertNotNull(yangInstanceIdentifierString);
+        Assert.assertTrue(yangInstanceIdentifierString.length() > 0);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testConvertNonexistingIdentifier() {
+        DataCodec<Toaster> dataCodec = new DataCodec<>(this.schemaContext);
+        dataCodec.convertIdentifier("/badToaster:badToaster");
+    }
+
+    @Test(expected = Exception.class)
+    public void testSerializeXMLError_invalidErrorXML() {
+        SchemaContext schemaContext = getSchemaContext(Collections.singletonList(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126.$YangModuleInfoImpl.getInstance()));
+        DataCodec<Toaster> dataCodec = new DataCodec<>(schemaContext);
+        dataCodec.serializeXMLError(loadResourceAsString("error.xml"));
     }
 
     @Test

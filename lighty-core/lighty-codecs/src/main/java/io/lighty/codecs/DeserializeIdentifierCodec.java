@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextNode;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
@@ -53,10 +54,10 @@ public class DeserializeIdentifierCodec {
         }
         String revision;
         final Optional<Module> module;
-        if (nodeType.getRevision().isPresent()) {
-            revision = nodeType.getRevision().get().toString();
-            module = this.schemaContext.findModule(nodeType.getNamespace(),
-                nodeType.getRevision().get());
+        final Optional<Revision> moduleRevision = nodeType.getRevision();
+        if (moduleRevision.isPresent()) {
+            revision = moduleRevision.get().toString();
+            module = this.schemaContext.findModule(nodeType.getNamespace(), moduleRevision.get());
         } else {
             revision = "[not present]";
             module = this.schemaContext.findModule(nodeType.getNamespace());
