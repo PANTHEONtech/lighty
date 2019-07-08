@@ -57,9 +57,9 @@ import org.opendaylight.controller.config.threadpool.util.ScheduledThreadPoolWra
 import org.opendaylight.controller.md.sal.binding.compat.HeliumNotificationProviderServiceWithInterestListeners;
 import org.opendaylight.controller.md.sal.binding.compat.HeliumRpcProviderRegistry;
 import org.opendaylight.controller.md.sal.binding.impl.BindingDOMRpcServiceAdapter;
-import org.opendaylight.controller.remote.rpc.RemoteRpcProvider;
-import org.opendaylight.controller.remote.rpc.RemoteRpcProviderConfig;
-import org.opendaylight.controller.remote.rpc.RemoteRpcProviderFactory;
+import org.opendaylight.controller.remote.rpc.RemoteOpsProvider;
+import org.opendaylight.controller.remote.rpc.RemoteOpsProviderConfig;
+import org.opendaylight.controller.remote.rpc.RemoteOpsProviderFactory;
 import org.opendaylight.controller.sal.binding.api.NotificationProviderService;
 import org.opendaylight.controller.sal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
@@ -84,6 +84,8 @@ import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecR
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
+import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingService;
@@ -149,7 +151,9 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private DistributedShardedDOMDataTree distributedShardedDOMDataTree;
     private DOMRpcRouter domRpcRouter;
     private org.opendaylight.controller.md.sal.dom.broker.impl.DOMRpcRouter domRpcRouterOld;
-    private RemoteRpcProvider remoteRpcProvider;
+    private RemoteOpsProvider remoteOpsProvider;
+    private DOMActionService domActionService;
+    private DOMActionProviderService domActionProviderService;
     private DistributedEntityOwnershipService distributedEntityOwnershipService;
     private BindingDOMEntityOwnershipServiceAdapter bindingDOMEntityOwnershipServiceAdapter;
     private ClusterAdminRpcService clusterAdminRpcService;
@@ -242,7 +246,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             this.moduleInfoBackedContext.registerModuleInfo(m);
         });
         this.schemaService = FixedDOMSchemaService.of(this.moduleInfoBackedContext,
-            this.moduleInfoBackedContext);
+                this.moduleInfoBackedContext);
 
         // INIT CODEC FACTORY
         this.codec = BindingToNormalizedNodeCodec.newInstance(this.moduleInfoBackedContext, this.schemaService);
@@ -282,7 +286,9 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.domRpcRouter = DOMRpcRouter.newInstance(this.schemaService);
         this.domRpcRouterOld = new org.opendaylight.controller.md.sal.dom.broker.impl.DOMRpcRouter(this.domRpcRouter
                 .getRpcService(), this.domRpcRouter.getRpcProviderService());
-        createRemoteRPCProvider();
+        this.domActionProviderService = domRpcRouter.getActionProviderService();
+        this.domActionService = domRpcRouter.getActionService();
+        createRemoteOpsProvider();
 
         // ENTITY OWNERSHIP
         this.distributedEntityOwnershipService = DistributedEntityOwnershipService.start(this.operDatastore
@@ -348,10 +354,10 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     private AbstractDataStore prepareDataStore(final DatastoreContext datastoreContext, final String moduleShardsConfig,
-            final String modulesConfig,
-            final DOMSchemaService domSchemaService,
-            final DatastoreSnapshotRestore datastoreSnapshotRestore,
-            final ActorSystemProvider actorSystemProvider) {
+                                               final String modulesConfig,
+                                               final DOMSchemaService domSchemaService,
+                                               final DatastoreSnapshotRestore datastoreSnapshotRestore,
+                                               final ActorSystemProvider actorSystemProvider) {
         final ConfigurationImpl configuration = new ConfigurationImpl(moduleShardsConfig, modulesConfig);
         final DatastoreContextIntrospector introspector = new DatastoreContextIntrospector(datastoreContext,
                 this.codecOld);
@@ -376,8 +382,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         if (this.configDatastore != null) {
             this.configDatastore.close();
         }
-        if (this.remoteRpcProvider != null) {
-            this.remoteRpcProvider.close();
+        if (this.remoteOpsProvider != null) {
+            this.remoteOpsProvider.close();
         }
         if (this.domNotificationRouter != null) {
             this.domNotificationRouter.close();
@@ -401,12 +407,13 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         return true;
     }
 
-    private void createRemoteRPCProvider() {
-        final RemoteRpcProviderConfig remoteRpcProviderConfig = RemoteRpcProviderConfig.newInstance(
+    private void createRemoteOpsProvider() {
+        final RemoteOpsProviderConfig remoteOpsProviderConfig = RemoteOpsProviderConfig.newInstance(
                 this.actorSystemProvider.getActorSystem().name(), this.metricCaptureEnabled, this.mailboxCapacity);
-        this.remoteRpcProvider = RemoteRpcProviderFactory.createInstance(this.domRpcRouter.getRpcProviderService(),
-                this.domRpcRouter.getRpcService(), this.actorSystemProvider.getActorSystem(), remoteRpcProviderConfig);
-        this.remoteRpcProvider.start();
+        this.remoteOpsProvider = RemoteOpsProviderFactory.createInstance(this.domRpcRouter.getRpcProviderService(),
+                this.domRpcRouter.getRpcService(), this.actorSystemProvider.getActorSystem(), remoteOpsProviderConfig,
+                this.domActionProviderService, this.domActionService);
+        this.remoteOpsProvider.start();
     }
 
     private void createConcurrentDOMDataBroker() {
