@@ -15,6 +15,10 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
@@ -140,6 +144,25 @@ public final class YangModuleUtils {
             hasDependency(moduleInfo, dependency);
         }
         return false;
+    }
+
+    /**
+     * Generate JSON configuration snippet containing list of models from set of {@link YangModuleInfo}.
+     * @param models input set of models.
+     * @return JSON configuration snippet as {@link ArrayNode}.
+     */
+    public static ArrayNode generateJSONModelSetConfiguration(final Set<YangModuleInfo> models) {
+        ObjectMapper mapper = new ObjectMapper();
+        ArrayNode arrayNode = mapper.createArrayNode();
+        for (YangModuleInfo yangModuleInfo: models) {
+            ObjectNode modelObject = mapper.createObjectNode();
+            ModuleId modileId = ModuleId.from(yangModuleInfo);
+            modelObject.put("nameSpace", modileId.getNameSpace().toString());
+            modelObject.put("name", modileId.getName());
+            modelObject.put("revision", modileId.getRevision().toString());
+            arrayNode.add(modelObject);
+        }
+        return arrayNode;
     }
 
 }
