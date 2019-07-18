@@ -11,7 +11,7 @@
 
     <groupId>io.lighty.models.test</groupId>
     <artifactId>lighty-models-test-aggregator</artifactId>
-    <version>9.3.2</version>
+    <version>9.3.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
