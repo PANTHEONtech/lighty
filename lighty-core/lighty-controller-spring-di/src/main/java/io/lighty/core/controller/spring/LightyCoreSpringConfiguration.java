@@ -98,7 +98,7 @@ public class LightyCoreSpringConfiguration {
         return this.lightyController.getServices().getSchemaContextProvider();
     }
 
-    @Bean(destroyMethod = "")
+    @Bean(name = "domSchemaService", destroyMethod = "")
     public DOMSchemaService getDOMSchemaService() {
         return this.lightyController.getServices().getDOMSchemaService();
     }
