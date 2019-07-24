@@ -48,176 +48,154 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RestconfConfiguration {
-	
-	@Autowired
-	@Qualifier("getDOMYangTextSourceProvider")
-	private DOMYangTextSourceProvider domYangTextSourceProvider;
 
-	@Autowired
-	private SchemaContextProvider schemaContextProvider;
-	
-	@Bean
-	public RpcServiceHandler rpcServiceHandler(DOMRpcService rpcService)
-	{
-		return new RpcServiceHandler(rpcService);
-	}
+    @Autowired
+    @Qualifier("getDOMYangTextSourceProvider")
+    private DOMYangTextSourceProvider domYangTextSourceProvider;
 
-	@Bean
-	public TransactionChainHandler transactionChainHandler(@Qualifier("ClusteredDOMDataBroker") DOMDataBroker domDataBroker)
-	{
-		return new TransactionChainHandler(domDataBroker);
-	}
-	
-	@Bean
-	public SchemaContextHandler schemaContextHandler(TransactionChainHandler transactionChainHandler, DOMSchemaService domSchemaService)
-	{
-		SchemaContextHandler schemaContextHandler = SchemaContextHandler.newInstance(transactionChainHandler, domSchemaService);
-		schemaContextHandler.onGlobalContextUpdated(schemaContextProvider.getSchemaContext());
-		return schemaContextHandler;
-	}
+    @Autowired
+    private SchemaContextProvider schemaContextProvider;
 
-	@Bean
-	public DOMMountPointServiceHandler domMountPointServiceHandler(DOMMountPointService domMountPointService)
-	{
-		return DOMMountPointServiceHandler.newInstance(domMountPointService);
-	}
+    @Bean
+    public RpcServiceHandler rpcServiceHandler(DOMRpcService rpcService) {
+        return new RpcServiceHandler(rpcService);
+    }
 
-	@Bean
-	public DOMDataBrokerHandler domDataBrokerHandler(@Qualifier("ClusteredDOMDataBroker") DOMDataBroker domDataBroker)
-	{
-		return new DOMDataBrokerHandler(domDataBroker);
-	}
-	
-	@Bean
-	public NotificationServiceHandler notificationServiceHandler(@Qualifier("getDOMNotificationService") DOMNotificationService domNotificationService)
-	{
-		return new NotificationServiceHandler(domNotificationService);
-	}
-	
-	@Bean
-	public RestconfStreamsSubscriptionService restconfStreamsSubscriptionService(DOMDataBrokerHandler domDataBrokerHandler, NotificationServiceHandler notificationServiceHandler, 
-											SchemaContextHandler schemaContextHandler, TransactionChainHandler transactionChainHandler)
-	{
-		return new RestconfStreamsSubscriptionServiceImpl(domDataBrokerHandler, notificationServiceHandler, schemaContextHandler, transactionChainHandler);
-	}
+    @Bean
+    public TransactionChainHandler transactionChainHandler(@Qualifier("ClusteredDOMDataBroker") DOMDataBroker domDataBroker) {
+        return new TransactionChainHandler(domDataBroker);
+    }
 
-	@Bean
-	public RestconfDataService restconfDataService(SchemaContextHandler schemaContextHandler, TransactionChainHandler transactionChainHandler, 
-							DOMMountPointServiceHandler domMountPointServiceHandler,
-							RestconfStreamsSubscriptionService restconfStreamsSubscriptionService)
-	{
-		return new RestconfDataServiceImpl(schemaContextHandler, transactionChainHandler, domMountPointServiceHandler, restconfStreamsSubscriptionService);
-	}
+    @Bean
+    public SchemaContextHandler schemaContextHandler(TransactionChainHandler transactionChainHandler, DOMSchemaService domSchemaService) {
+        SchemaContextHandler schemaContextHandler = SchemaContextHandler.newInstance(transactionChainHandler, domSchemaService);
+        schemaContextHandler.onGlobalContextUpdated(schemaContextProvider.getSchemaContext());
+        return schemaContextHandler;
+    }
 
-	@Bean
-	public RestconfInvokeOperationsService restconfInvokeOperationsService(RpcServiceHandler rpcServiceHandler, SchemaContextHandler schemaContextHandler) {
-		return new RestconfInvokeOperationsServiceImpl(rpcServiceHandler, schemaContextHandler);
-	}
+    @Bean
+    public DOMMountPointServiceHandler domMountPointServiceHandler(DOMMountPointService domMountPointService) {
+        return DOMMountPointServiceHandler.newInstance(domMountPointService);
+    }
 
-	@Bean
-	public RestconfOperationsService restconfOperationsService(SchemaContextHandler schemaContextHandler, DOMMountPointServiceHandler domMountPointServiceHandler) {
-		return new RestconfOperationsServiceImpl(schemaContextHandler, domMountPointServiceHandler);
-	}
-	
-	@Bean
-	public RestconfSchemaService restconfSchemaService(SchemaContextHandler schemaContextHandler, DOMMountPointServiceHandler domMountPointServiceHandler) {
-		return new RestconfSchemaServiceImpl(schemaContextHandler, domMountPointServiceHandler, domYangTextSourceProvider);
-	}
+    @Bean
+    public DOMDataBrokerHandler domDataBrokerHandler(@Qualifier("ClusteredDOMDataBroker") DOMDataBroker domDataBroker) {
+        return new DOMDataBrokerHandler(domDataBroker);
+    }
 
-	@Bean
-	public RestconfService restconfService(SchemaContextHandler schemaContextHandler) {
-        	return new RestconfImpl(schemaContextHandler);
-	}
+    @Bean
+    public NotificationServiceHandler notificationServiceHandler(@Qualifier("getDOMNotificationService") DOMNotificationService domNotificationService) {
+        return new NotificationServiceHandler(domNotificationService);
+    }
+
+    @Bean
+    public RestconfStreamsSubscriptionService restconfStreamsSubscriptionService(DOMDataBrokerHandler domDataBrokerHandler, NotificationServiceHandler notificationServiceHandler,
+                                                                                 SchemaContextHandler schemaContextHandler, TransactionChainHandler transactionChainHandler) {
+        return new RestconfStreamsSubscriptionServiceImpl(domDataBrokerHandler, notificationServiceHandler, schemaContextHandler, transactionChainHandler);
+    }
+
+    @Bean
+    public RestconfDataService restconfDataService(SchemaContextHandler schemaContextHandler, TransactionChainHandler transactionChainHandler,
+                                                   DOMMountPointServiceHandler domMountPointServiceHandler,
+                                                   RestconfStreamsSubscriptionService restconfStreamsSubscriptionService) {
+        return new RestconfDataServiceImpl(schemaContextHandler, transactionChainHandler, domMountPointServiceHandler, restconfStreamsSubscriptionService);
+    }
+
+    @Bean
+    public RestconfInvokeOperationsService restconfInvokeOperationsService(RpcServiceHandler rpcServiceHandler, SchemaContextHandler schemaContextHandler) {
+        return new RestconfInvokeOperationsServiceImpl(rpcServiceHandler, schemaContextHandler);
+    }
+
+    @Bean
+    public RestconfOperationsService restconfOperationsService(SchemaContextHandler schemaContextHandler, DOMMountPointServiceHandler domMountPointServiceHandler) {
+        return new RestconfOperationsServiceImpl(schemaContextHandler, domMountPointServiceHandler);
+    }
+
+    @Bean
+    public RestconfSchemaService restconfSchemaService(SchemaContextHandler schemaContextHandler, DOMMountPointServiceHandler domMountPointServiceHandler) {
+        return new RestconfSchemaServiceImpl(schemaContextHandler, domMountPointServiceHandler, domYangTextSourceProvider);
+    }
+
+    @Bean
+    public RestconfService restconfService(SchemaContextHandler schemaContextHandler) {
+        return new RestconfImpl(schemaContextHandler);
+    }
 
 
-	@Bean
-	public ServicesWrapper servicesWrapper(SchemaContextHandler schemaContextHandler, DOMMountPointServiceHandler domMountPointServiceHandler, TransactionChainHandler transactionChainHandler,
-											DOMDataBrokerHandler domDataBrokerHandler, RpcServiceHandler rpcServiceHandler, NotificationServiceHandler notificationServiceHandler, 
-											DOMSchemaService domSchemaService)
-	{
-		return ServicesWrapper.newInstance(schemaContextHandler, domMountPointServiceHandler, transactionChainHandler, domDataBrokerHandler, rpcServiceHandler, notificationServiceHandler, domSchemaService);
-	}
-	
-	@Bean
-	public RestconfApplication restconfApplication(SchemaContextHandler schemaContextHandler, DOMMountPointServiceHandler mountPointServiceHandler, ServicesWrapper servicesWrapper)
-	{
-		return new RestconfApplication(schemaContextHandler, mountPointServiceHandler, servicesWrapper);
-	}
-	
-	@Bean
-	public JSONRestconfService jsonRestconfService(ServicesWrapper servicesWrapper, DOMMountPointServiceHandler domMountPointServiceHandler, SchemaContextHandler schemaContextHandler)
-	{
-		return new JSONRestconfServiceRfc8040Impl(servicesWrapper, domMountPointServiceHandler, schemaContextHandler);
-	}
-	
+    @Bean
+    public ServicesWrapper servicesWrapper(SchemaContextHandler schemaContextHandler, DOMMountPointServiceHandler domMountPointServiceHandler, TransactionChainHandler transactionChainHandler,
+                                           DOMDataBrokerHandler domDataBrokerHandler, RpcServiceHandler rpcServiceHandler, NotificationServiceHandler notificationServiceHandler,
+                                           DOMSchemaService domSchemaService) {
+        return ServicesWrapper.newInstance(schemaContextHandler, domMountPointServiceHandler, transactionChainHandler, domDataBrokerHandler, rpcServiceHandler, notificationServiceHandler, domSchemaService);
+    }
 
-	@Bean
-	public JsonNormalizedNodeBodyReader jsonNormalizedNodeBodyReader(SchemaContextHandler schemaContextHandler, DOMMountPointServiceHandler domMountPointServiceHandler)
-	{
-		return new JsonNormalizedNodeBodyReader(schemaContextHandler, domMountPointServiceHandler);
-	}
+    @Bean
+    public RestconfApplication restconfApplication(SchemaContextHandler schemaContextHandler, DOMMountPointServiceHandler mountPointServiceHandler, ServicesWrapper servicesWrapper) {
+        return new RestconfApplication(schemaContextHandler, mountPointServiceHandler, servicesWrapper);
+    }
 
-	@Bean
-	public JsonToPatchBodyReader jsonToPatchBodyReader(SchemaContextHandler schemaContextHandler, DOMMountPointServiceHandler domMountPointServiceHandler)
-	{
-        	return new JsonToPatchBodyReader(schemaContextHandler, domMountPointServiceHandler);
-	}
-
-	@Bean
-	public XmlNormalizedNodeBodyReader xmlNormalizedNodeBodyReader(SchemaContextHandler schemaContextHandler, DOMMountPointServiceHandler domMountPointServiceHandler)
-	{
-        	return new XmlNormalizedNodeBodyReader(schemaContextHandler, domMountPointServiceHandler);
-	}
-
-	@Bean
-	public XmlToPatchBodyReader xmlToPatchBodyReader(SchemaContextHandler schemaContextHandler, DOMMountPointServiceHandler domMountPointServiceHandler)
-	{
-		return new XmlToPatchBodyReader(schemaContextHandler, domMountPointServiceHandler);
-	}
+    @Bean
+    public JSONRestconfService jsonRestconfService(ServicesWrapper servicesWrapper, DOMMountPointServiceHandler domMountPointServiceHandler, SchemaContextHandler schemaContextHandler) {
+        return new JSONRestconfServiceRfc8040Impl(servicesWrapper, domMountPointServiceHandler, schemaContextHandler);
+    }
 
 
-	@Bean
-	public NormalizedNodeJsonBodyWriter normalizedNodeJsonBodyWriter()
-	{
-		return new NormalizedNodeJsonBodyWriter();
-	}
+    @Bean
+    public JsonNormalizedNodeBodyReader jsonNormalizedNodeBodyReader(SchemaContextHandler schemaContextHandler, DOMMountPointServiceHandler domMountPointServiceHandler) {
+        return new JsonNormalizedNodeBodyReader(schemaContextHandler, domMountPointServiceHandler);
+    }
 
-	@Bean
-	public NormalizedNodeXmlBodyWriter normalizedNodeXmlBodyWriter()
-	{
-		return new NormalizedNodeXmlBodyWriter();
-	}
+    @Bean
+    public JsonToPatchBodyReader jsonToPatchBodyReader(SchemaContextHandler schemaContextHandler, DOMMountPointServiceHandler domMountPointServiceHandler) {
+        return new JsonToPatchBodyReader(schemaContextHandler, domMountPointServiceHandler);
+    }
 
-	@Bean
-        public SchemaExportContentYinBodyWriter schemaExportContentYinBodyWriter()
-	{
-		return new SchemaExportContentYinBodyWriter();
-	}
+    @Bean
+    public XmlNormalizedNodeBodyReader xmlNormalizedNodeBodyReader(SchemaContextHandler schemaContextHandler, DOMMountPointServiceHandler domMountPointServiceHandler) {
+        return new XmlNormalizedNodeBodyReader(schemaContextHandler, domMountPointServiceHandler);
+    }
 
-	@Bean
-	public SchemaExportContentYangBodyWriter schemaExportContentYangBodyWriter()
-	{
-		return new SchemaExportContentYangBodyWriter();
-	}
+    @Bean
+    public XmlToPatchBodyReader xmlToPatchBodyReader(SchemaContextHandler schemaContextHandler, DOMMountPointServiceHandler domMountPointServiceHandler) {
+        return new XmlToPatchBodyReader(schemaContextHandler, domMountPointServiceHandler);
+    }
 
-	@Bean
-	public PatchJsonBodyWriter patchJsonBodyWriter()
-	{
-		return new PatchJsonBodyWriter();
-	}
 
-	@Bean
-	public PatchXmlBodyWriter patchXmlBodyWriter()
-	{
-		return new PatchXmlBodyWriter();
-	}
+    @Bean
+    public NormalizedNodeJsonBodyWriter normalizedNodeJsonBodyWriter() {
+        return new NormalizedNodeJsonBodyWriter();
+    }
 
-	@Bean
-	public ConfigurableServletWebServerFactory restConfJettyConfig(RestConfJettyServerCustomizer customizer)
-	{
-		JettyServletWebServerFactory factory = new JettyServletWebServerFactory();
-		factory.addServerCustomizers(customizer);
-		return factory;
-	}
+    @Bean
+    public NormalizedNodeXmlBodyWriter normalizedNodeXmlBodyWriter() {
+        return new NormalizedNodeXmlBodyWriter();
+    }
+
+    @Bean
+    public SchemaExportContentYinBodyWriter schemaExportContentYinBodyWriter() {
+        return new SchemaExportContentYinBodyWriter();
+    }
+
+    @Bean
+    public SchemaExportContentYangBodyWriter schemaExportContentYangBodyWriter() {
+        return new SchemaExportContentYangBodyWriter();
+    }
+
+    @Bean
+    public PatchJsonBodyWriter patchJsonBodyWriter() {
+        return new PatchJsonBodyWriter();
+    }
+
+    @Bean
+    public PatchXmlBodyWriter patchXmlBodyWriter() {
+        return new PatchXmlBodyWriter();
+    }
+
+    @Bean
+    public ConfigurableServletWebServerFactory restConfJettyConfig(RestConfJettyServerCustomizer customizer) {
+        JettyServletWebServerFactory factory = new JettyServletWebServerFactory();
+        factory.addServerCustomizers(customizer);
+        return factory;
+    }
 
 }

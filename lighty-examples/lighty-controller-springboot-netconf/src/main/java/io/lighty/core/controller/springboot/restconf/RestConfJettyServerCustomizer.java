@@ -16,27 +16,26 @@ import org.springframework.boot.web.embedded.jetty.JettyServerCustomizer;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RestConfJettyServerCustomizer implements JettyServerCustomizer 
-{
-	private static final Logger LOG = LoggerFactory.getLogger(RestConfJettyServerCustomizer.class);
+public class RestConfJettyServerCustomizer implements JettyServerCustomizer {
+    private static final Logger LOG = LoggerFactory.getLogger(RestConfJettyServerCustomizer.class);
 
-	@Value("${restconf.contextPath}")
-	private String contextPath;
-	
-	@Autowired
-	private RestconfApplication restconfApplication;
-	
-	@Override
-	public void customize(Server server) {
-		LOG.info("Creating restconf application handler");
+    @Value("${restconf.contextPath}")
+    private String contextPath;
+
+    @Autowired
+    private RestconfApplication restconfApplication;
+
+    @Override
+    public void customize(Server server) {
+        LOG.info("Creating restconf application handler");
         ServletContainer container = new ServletContainer(ResourceConfig.forApplication(restconfApplication));
         ServletHolder holder = new ServletHolder(container);
         ServletContextHandler restConfHandler = new ServletContextHandler(null, contextPath, true, false);
         restConfHandler.addServlet(holder, "/*");
-        
+
         LOG.info("Append restconf application handler to jetty handler collection.");
         HandlerCollection handlerCollection = new HandlerCollection();
-        handlerCollection.setHandlers(new Handler[]{ restConfHandler, server.getHandler() });
+        handlerCollection.setHandlers(new Handler[]{restConfHandler, server.getHandler()});
         server.setHandler(handlerCollection);
     }
 
