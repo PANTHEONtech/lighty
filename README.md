@@ -25,6 +25,7 @@ _This branch maintains compatibility with __OpenDaylight Neon SR1__ release._
 - [NETCONF Device on ARM](https://lighty.io/lighty-io-netconf-device-on-arm/)
 - [Migration of OpenDaylight TransportPCE to lighty.io](https://lighty.io/migration-of-odl-transportpce-to-lighty-io/)
 - [Rapid NETCONF Controller Integration Testing](https://lighty.io/netconf-performance-test/)
+- [lighty.io Cluster](lighty-examples/lighty-cluster-app/README.md)
 
 ## Components
 * __lighty-codecs__ - Easy to use IO YANG data operations

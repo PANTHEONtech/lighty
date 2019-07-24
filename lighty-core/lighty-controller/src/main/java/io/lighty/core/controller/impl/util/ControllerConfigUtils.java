@@ -211,7 +211,7 @@ public final class ControllerConfigUtils {
         controllerConfiguration.getActorSystemConfig().setConfig(finalConfig);
     }
 
-    private static Config getAkkaConfigFromPath(final String pathToConfig) throws ConfigurationException {
+    public static Config getAkkaConfigFromPath(final String pathToConfig) throws ConfigurationException {
         Config akkaConfig = null;
         try {
             akkaConfig = ConfigFactory.parseFile(new File(pathToConfig));
