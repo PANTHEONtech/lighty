@@ -92,6 +92,18 @@ public class SpringBootAppTest {
         Assert.assertEquals(contentResponse.getStatus(), 200);
     }
 
+    @Test
+    public void restconfTest() throws Exception {
+    	ContentResponse contentResponse = null;
+        Assert.assertNotNull(appContext);
+        
+        /**
+         * Try to access network-topology configuration and check the response code
+         */
+        contentResponse = restClient.GET("restconf/data/network-topology:network-topology?content=config");
+        Assert.assertEquals(200, contentResponse.getStatus());
+    }    
+    
     @AfterClass
     public static void shutdown() {
         if (appContext != null) {
