@@ -1,8 +1,9 @@
 # lighty.io SpringBoot integration example
 
-This is simple demo application which uses Lighty with NETCONF Southbound plugin inside Spring Boot.
+This is simple demo application which uses Lighty with RESTCONF / NETCONF Southbound plugin inside Spring Boot.
 
-Application initializes [OpenDaylight](https://www.opendaylight.org/) core components (MD-SAL, yangtools and controller) and NetConf Southbound plugin
+Application initializes [OpenDaylight](https://www.opendaylight.org/) core components (MD-SAL, yangtools and controller), 
+RESTCONF north-bound plugin and NETCONF Southbound plugin
 inside spring framework environment.
 
 There is initialized fully functional md-sal inside the spring. The DataBroker is provided for SpringBoot dependency
@@ -13,7 +14,9 @@ Alongside the basic data broker, there is also integrated NETCONF Southbound plu
 functionality exposed through REST endpoints. The "lighty-toaster-device" was used as a NetConf device which uses
 toaster model from [ODL repository](https://github.com/YangModels/yang/blob/19fea483099dbf2864b3c3186a789d12d919f4db/experimental/odp/toaster.yang). 
 
-![architecture](docs/architecture.svg)
+Alongside custom REST endpoints, RESTCONF is deployed into springboot jetty servlet container.
+
+![architecture](docs/lighty.io-springboot-architecture.svg)
 
 ## Security
 This demo utilizes Spring's [method security](https://docs.spring.io/spring-security/site/docs/5.2.0.BUILD-SNAPSHOT/reference/htmlsingle/#jc-method) 
@@ -128,6 +131,13 @@ logout current https session
 ```
 curl -i -b /tmp/lighty.cookies.txt \
 -X GET "http://localhost:8888/services/security/logout"
+```
+
+#### RESTCONF endpoints
+Some example RESTCONF endpoints are listed below.
+```
+curl -X GET "http://localhost:8888/restconf/data/network-topology:network-topology?content=config"
+curl -X GET "http://localhost:8888/restconf/data/network-topology:network-topology?content=nonconfig"
 ```
 
 ### Notable Classes

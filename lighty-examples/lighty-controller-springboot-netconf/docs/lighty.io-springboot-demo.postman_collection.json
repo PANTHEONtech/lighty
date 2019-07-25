@@ -1,97 +1,215 @@
 {
-	"variables": [],
 	"info": {
+		"_postman_id": "836df65c-5a1c-457a-a763-17bec845b9bc",
 		"name": "lighty.io-springboot-demo",
-		"_postman_id": "de8fe76d-7fa6-ca71-a78b-e0b28cf7ae49",
-		"description": "",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "App Login - alice",
 			"request": {
-				"url": "http://localhost:8888/security/login",
 				"method": "POST",
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					}
 				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n\t\"username\": \"alice\",\n\t\"password\": \"secret\"\n}"
 				},
-				"description": ""
+				"url": {
+					"raw": "http://localhost:8888/services/security/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"services",
+						"security",
+						"login"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "App Login - bob",
 			"request": {
-				"url": "http://localhost:8888/security/login",
 				"method": "POST",
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					}
 				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n\t\"username\": \"bob\",\n\t\"password\": \"secret\"\n}"
-					"raw": "{\n\t\"username\": \"bob\",\n\t\"password\": \"secret\"\n}"
 				},
-				"description": ""
+				"url": {
+					"raw": "http://localhost:8888/services/security/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"services",
+						"security",
+						"login"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "App logout",
 			"request": {
-				"url": "http://localhost:8888/security/logout",
 				"method": "GET",
 				"header": [],
-				"body": {},
-				"description": ""
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8888/services/security/logout",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"services",
+						"security",
+						"logout"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Get NETCONF devices",
 			"request": {
-				"url": "http://localhost:8888/netconf/list",
 				"method": "GET",
 				"header": [
 					{
 						"key": "Accept",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					},
 					{
 						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					}
 				],
 				"body": {
 					"mode": "raw",
 					"raw": ""
 				},
-				"description": ""
+				"url": {
+					"raw": "http://localhost:8888/services/data/netconf/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"services",
+						"data",
+						"netconf",
+						"list"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Get Topology content",
 			"request": {
-				"url": "http://localhost:8888/topology/list",
 				"method": "GET",
 				"header": [],
-				"body": {},
-				"description": ""
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8888/services/data/topology/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"services",
+						"data",
+						"topology",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RESTCONF - Get topology config",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8888/restconf/data/network-topology:network-topology?content=config",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology"
+					],
+					"query": [
+						{
+							"key": "content",
+							"value": "config"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RESTCONF - Get topology operational",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8888/restconf/data/network-topology:network-topology?content=nonconfig",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology"
+					],
+					"query": [
+						{
+							"key": "content",
+							"value": "nonconfig"
+						}
+					]
+				}
 			},
 			"response": []
 		}
