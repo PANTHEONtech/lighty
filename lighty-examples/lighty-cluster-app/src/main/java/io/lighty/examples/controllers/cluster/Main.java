@@ -7,6 +7,7 @@
  */
 package io.lighty.examples.controllers.cluster;
 
+import akka.management.cluster.bootstrap.ClusterBootstrap;
 import akka.management.javadsl.AkkaManagement;
 import com.beust.jcommander.JCommander;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -69,6 +70,7 @@ public class Main {
                 .parse(args);
 
         LOG.info("Cluster member ordinal: {}", arguments.getMemberOrdinal());
+        LOG.info("k8s deployment: {}", arguments.getKubernetesDeployment());
 
         try {
             if (arguments.getConfigPath() != null && !arguments.getConfigPath().isEmpty()) {
@@ -83,7 +85,8 @@ public class Main {
                 //3. NETCONF SBP configuration
                 NetconfConfiguration netconfSBPConfiguration
                         = NetconfConfigUtils.createNetconfConfiguration(Files.newInputStream(configPath));
-                startLighty(clusterNodeConfiguration, restConfConfiguration, netconfSBPConfiguration, registerShutdownHook);
+                startLighty(clusterNodeConfiguration, restConfConfiguration, netconfSBPConfiguration, registerShutdownHook,
+                        arguments.getKubernetesDeployment());
             } else {
                 LOG.info("using default configuration ...");
                 Set<YangModuleInfo> modelPaths = Stream.concat(RestConfConfigUtils.YANG_MODELS.stream(),
@@ -98,7 +101,14 @@ public class Main {
                 //1. get controller configuration
                 ControllerConfiguration defaultClusterNodeConfiguration =
                         ControllerConfigUtils.getDefaultSingleNodeConfiguration(modelPaths);
-                Config akkaConfig = createAkkaConfiguration("cluster/akka-node-0" + arguments.getMemberOrdinal() + ".conf", "cluster/factory-akka-default.conf");
+                Config akkaConfig = null;
+                if (arguments.getKubernetesDeployment()) {
+                    LOG.info("Loading k8s akka config.");
+                    akkaConfig = createAkkaConfiguration("cluster/akka-node-k8s.conf", "cluster/factory-akka-default.conf");
+                } else {
+                    LOG.info("Loading akka config for node {}.", arguments.getMemberOrdinal());
+                    akkaConfig = createAkkaConfiguration("cluster/akka-node-0" + arguments.getMemberOrdinal() + ".conf", "cluster/factory-akka-default.conf");
+                }
                 defaultClusterNodeConfiguration.getActorSystemConfig().setConfig(akkaConfig);
                 //2. get RESTCONF NBP configuration
                 RestConfConfiguration restConfConfig =
@@ -107,7 +117,8 @@ public class Main {
                 restConfConfig.setHttpPort(restConfConfig.getHttpPort() + arguments.getMemberOrdinal());
                 //3. NETCONF SBP configuration
                 NetconfConfiguration netconfSBPConfig = NetconfConfigUtils.createDefaultNetconfConfiguration();
-                startLighty(defaultClusterNodeConfiguration, restConfConfig, netconfSBPConfig, registerShutdownHook);
+                startLighty(defaultClusterNodeConfiguration, restConfConfig, netconfSBPConfig, registerShutdownHook,
+                        arguments.getKubernetesDeployment());
             }
             float duration = (System.nanoTime() - startTime)/1_000_000f;
             LOG.info("lighty.io and RESTCONF-NETCONF started in {}ms", duration);
@@ -118,7 +129,8 @@ public class Main {
 
     private void startLighty(ControllerConfiguration controllerConfiguration,
                              RestConfConfiguration restConfConfiguration,
-                             NetconfConfiguration netconfSBPConfiguration, boolean registerShutdownHook)
+                             NetconfConfiguration netconfSBPConfiguration, boolean registerShutdownHook,
+                             boolean k8sDeployment)
             throws ConfigurationException, ExecutionException, InterruptedException {
 
         //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
@@ -154,6 +166,12 @@ public class Main {
         //5. start Akka management
         AkkaManagement management = AkkaManagement.get(lightyController.getServices().getActorSystemProvider().getActorSystem());
         management.start();
+
+        if (k8sDeployment) {
+            LOG.info("Starting akka ClusterBootstrap ...");
+            ClusterBootstrap clusterBootstrap = ClusterBootstrap.get(lightyController.getServices().getActorSystemProvider().getActorSystem());
+            clusterBootstrap.start();
+        }
 
         //6. Register shutdown hook for graceful shutdown.
         shutdownHook = new ShutdownHook(lightyController, communityRestConf, netconfSouthboundPlugin, swagger, management);

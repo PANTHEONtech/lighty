@@ -1,0 +1,56 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: lighty-k8s-cluster
+spec:
+  type: NodePort
+  selector:
+    app: lighty-k8s-cluster
+  ports:
+    - protocol: TCP
+      name: management
+      port: 8558
+      targetPort: management
+    - protocol: TCP
+      name: api
+      port: 2552
+      targetPort: api
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: lighty-k8s-cluster
+  name: lighty-k8s-cluster
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: lighty-k8s-cluster
+  template:
+    metadata:
+      labels:
+        app: lighty-k8s-cluster
+    spec:
+      containers:
+        - name: lighty-k8s-cluster
+          image: lighty-k8s-cluster:1.0.0-SNAPSHOT
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+          ports:
+            # akka remoting
+            - name: remoting
+              containerPort: 2552
+              protocol: TCP
+            # When
+            # akka.management.cluster.bootstrap.contact-point-discovery.port-name
+            # is defined, it must correspond to this name:
+            - name: management
+              containerPort: 8558
+              protocol: TCP

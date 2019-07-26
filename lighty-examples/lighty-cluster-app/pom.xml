@@ -61,6 +61,16 @@
             <artifactId>akka-management-cluster-http_2.12</artifactId>
             <version>1.0.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.lightbend.akka.management</groupId>
+            <artifactId>akka-management-cluster-bootstrap_2.12</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lightbend.akka.discovery</groupId>
+            <artifactId>akka-discovery-kubernetes-api_2.12</artifactId>
+            <version>1.0.1</version>
+        </dependency>
 
         <dependency>
             <groupId>io.lighty.resources</groupId>
