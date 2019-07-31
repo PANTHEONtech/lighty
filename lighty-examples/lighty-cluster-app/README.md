@@ -67,10 +67,16 @@ In order to deploy this lighty.io cluster demo into kubernetes cluster, make sur
 This demo was tested using kubernetes cluster v1.15.1.
 
 #### Create docker image
-````
+```
 docker build . -f Dockerfile.k8s -t lighty-k8s-cluster:1.0.0-SNAPSHOT
 docker save --output="target/lighty-k8s-cluster:1.0.0-SNAPSHOT.tar" lighty-k8s-cluster:1.0.0-SNAPSHOT
-````
+
+# run docker
+docker run -p 8891:8891 -p 2552:2552 -p 8558:8558 lighty-k8s-cluster:1.0.0-SNAPSHOT
+
+# investigate docker image contents
+docker run --entrypoint="" -it lighty-k8s-cluster:1.0.0-SNAPSHOT sh
+```
 
 ### Deploy into k8s cluster
 ```

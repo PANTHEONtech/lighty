@@ -37,6 +37,13 @@ spec:
         - name: lighty-k8s-cluster
           image: lighty-k8s-cluster:1.0.0-SNAPSHOT
           imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: 512Mi
+              cpu: 1000m
+            requests:
+              memory: 256Mi
+              cpu: 500m
           env:
             - name: HOSTNAME
               valueFrom:

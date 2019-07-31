@@ -105,10 +105,13 @@ public class Main {
                 if (arguments.getKubernetesDeployment()) {
                     LOG.info("Loading k8s akka config.");
                     akkaConfig = createAkkaConfiguration("cluster/akka-node-k8s.conf", "cluster/factory-akka-default.conf");
+                    defaultClusterNodeConfiguration.getActorSystemConfig().setAkkaConfigPath("cluster/akka-node-k8s.conf");
                 } else {
                     LOG.info("Loading akka config for node {}.", arguments.getMemberOrdinal());
                     akkaConfig = createAkkaConfiguration("cluster/akka-node-0" + arguments.getMemberOrdinal() + ".conf", "cluster/factory-akka-default.conf");
+                    defaultClusterNodeConfiguration.getActorSystemConfig().setAkkaConfigPath("cluster/akka-node-0" + arguments.getMemberOrdinal() + ".conf");
                 }
+                akkaConfig = akkaConfig.resolve();
                 defaultClusterNodeConfiguration.getActorSystemConfig().setConfig(akkaConfig);
                 //2. get RESTCONF NBP configuration
                 RestConfConfiguration restConfConfig =
