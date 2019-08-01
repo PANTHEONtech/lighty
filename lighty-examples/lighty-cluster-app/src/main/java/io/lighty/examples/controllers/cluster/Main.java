@@ -32,6 +32,7 @@ import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -118,6 +119,7 @@ public class Main {
                         RestConfConfigUtils.getDefaultRestConfConfiguration();
                 restConfConfig.setWebSocketPort(restConfConfig.getWebSocketPort() + arguments.getMemberOrdinal());
                 restConfConfig.setHttpPort(restConfConfig.getHttpPort() + arguments.getMemberOrdinal());
+                restConfConfig.setInetAddress(InetAddress.getByName("0.0.0.0"));
                 //3. NETCONF SBP configuration
                 NetconfConfiguration netconfSBPConfig = NetconfConfigUtils.createDefaultNetconfConfiguration();
                 startLighty(defaultClusterNodeConfiguration, restConfConfig, netconfSBPConfig, registerShutdownHook,
