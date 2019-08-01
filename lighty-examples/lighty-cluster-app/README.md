@@ -61,3 +61,46 @@ and [Akka cluster http management](https://doc.akka.io/docs/akka-management/curr
 To get info about cluster state, use following REST call.
 
 __GET__ ``http://127.0.0.1:{akka_http_management_port}/management/cluster/members/``
+
+## Kubernetes deployment
+In order to deploy this lighty.io cluster demo into kubernetes cluster, make sure you follow guide below.
+This demo was tested using kubernetes cluster v1.15.1.
+
+#### Create docker image
+```
+docker build . -f Dockerfile.k8s -t lighty-k8s-cluster:1.0.0-SNAPSHOT
+docker save --output="target/lighty-k8s-cluster:1.0.0-SNAPSHOT.tar" lighty-k8s-cluster:1.0.0-SNAPSHOT
+
+# run docker
+docker run -p 8891:8891 -p 2552:2552 -p 8558:8558 lighty-k8s-cluster:1.0.0-SNAPSHOT
+
+# investigate docker image contents
+docker run --entrypoint="" -it lighty-k8s-cluster:1.0.0-SNAPSHOT sh
+```
+
+### Deploy into k8s cluster
+![k8s deployment](docs/app-k8s-deployment.svg)
+```
+kubectl apply -f lighty-k8s-cluster-roles.yaml
+kubectl apply -f lighty-k8s-cluster-deployment.yaml
+```
+### Scale up and down
+```
+kubectl scale deployment lighty-k8s-cluster --replicas=5
+kubectl scale deployment lighty-k8s-cluster --replicas=3
+```
+
+### Undepoloy from k8s cluster
+```
+kubectl delete service/lighty-k8s-cluster service/lighty-k8s-cluster-lb deployment.apps/lighty-k8s-cluster
+```
+
+#### Akka management endpoints:
+* __GET__ http://{NodeIp}:8558/cluster/members
+* __GET__ http://{NodeIp}:8558/bootstrap/seed-nodes
+
+Where __NodeIp__ is IP address assigned by kubernetes.
+
+#### Load-Balancer REST endpoints  
+* __GET__ ``http://{LoadBalancerIp}:30558/cluster/members`` - akka http
+* __GET__ ``http://{LoadBalancerIp}:30888/restconf/operations`` - loghty.io RESTCONF 
