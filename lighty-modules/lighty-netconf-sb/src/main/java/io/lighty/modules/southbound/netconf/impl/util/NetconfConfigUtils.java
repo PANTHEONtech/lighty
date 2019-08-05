@@ -53,6 +53,7 @@ public class NetconfConfigUtils {
     public static final Set<YangModuleInfo> NETCONF_TOPOLOGY_MODELS = ImmutableSet.of(
             org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.keystore.rev171017.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.optional.rev190614.$YangModuleInfoImpl.getInstance(),
 
             org.opendaylight.yang.gen.v1.urn.opendaylight.yang.extension.yang.ext.rev130709.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.$YangModuleInfoImpl.getInstance(),

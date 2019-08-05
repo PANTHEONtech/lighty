@@ -70,6 +70,10 @@
             <artifactId>aaa-encrypt-service</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.opendaylight.netconf</groupId>
+            <artifactId>sal-netconf-connector</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
         </dependency>
