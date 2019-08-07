@@ -1,0 +1,64 @@
+{
+  "realm" : "LightyRealm",
+  "users" : [ {
+    "id" : "949da85c-630d-4330-9c1a-36356dd7b180",
+    "createdTimestamp" : 1564042382316,
+    "username" : "alice",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "Alice",
+    "lastName" : "Readonly",
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "SZBfFNVIUQ9dZg+QHohrSxe7IOmOU1NDxhd13X8hhUcp0bwSnaPnz/7qbl3vCpGGtxwh/Gol+ERH7NvW1EkSew==",
+      "salt" : "TW9uogiJjD4XXFj9eL4rwA==",
+      "hashIterations" : 27500,
+      "counter" : 0,
+      "algorithm" : "pbkdf2-sha256",
+      "digits" : 0,
+      "period" : 0,
+      "createdDate" : 1564042863319,
+      "config" : { }
+    } ],
+    "disableableCredentialTypes" : [ "password" ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "uma_authorization", "offline_access" ],
+    "clientRoles" : {
+      "lighty-app" : [ "user" ],
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "b500e543-c41f-4574-9fd8-8cc27c1cd005",
+    "createdTimestamp" : 1564042415923,
+    "username" : "bob",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "Bob",
+    "lastName" : "Manager",
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "n1hKjjmDnI5lOF1VWs5Tcy6pxEQlLsEdDdUF4sfCAEPrGtA1eHQfFpugAq6qYIwJrM1vx3YwLO/urW7oAEaJhQ==",
+      "salt" : "6oQm4+ypaMIC0q4rn3I46g==",
+      "hashIterations" : 27500,
+      "counter" : 0,
+      "algorithm" : "pbkdf2-sha256",
+      "digits" : 0,
+      "period" : 0,
+      "createdDate" : 1564042945553,
+      "config" : { }
+    } ],
+    "disableableCredentialTypes" : [ "password" ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "uma_authorization", "offline_access" ],
+    "clientRoles" : {
+      "lighty-app" : [ "admin", "user" ],
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  } ]
+}
