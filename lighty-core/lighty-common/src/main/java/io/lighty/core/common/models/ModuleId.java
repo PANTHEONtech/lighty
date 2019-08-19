@@ -9,9 +9,12 @@ package io.lighty.core.common.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.net.URI;
 import java.util.Objects;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.Revision;
 
 /**
  * This class represents unique identifier of yang module.
@@ -20,13 +23,21 @@ import org.opendaylight.yangtools.yang.common.QName;
  */
 public final class ModuleId {
 
-    private final String nameSpace;
+    private final URI nameSpace;
     private final String name;
-    private final String revision;
+    private final Revision revision;
 
     @JsonCreator
     public ModuleId(@JsonProperty("nameSpace") final String nameSpace, @JsonProperty("name") final String name,
             @JsonProperty("revision") final String revision) {
+        this(nameSpace, name, Revision.ofNullable(revision).orElse(null));
+    }
+
+    public ModuleId(final String nameSpace, final String name, final Revision revision) {
+        this(URI.create(nameSpace), name, revision);
+    }
+
+    public ModuleId(final URI nameSpace, final String name, final Revision revision) {
         this.nameSpace = nameSpace;
         this.name = name;
         this.revision = revision;
@@ -36,11 +47,11 @@ public final class ModuleId {
         return this.name;
     }
 
-    public String getRevision() {
+    public Revision getRevision() {
         return this.revision;
     }
 
-    public String getNameSpace() {
+    public URI getNameSpace() {
         return this.nameSpace;
     }
 
@@ -72,11 +83,11 @@ public final class ModuleId {
 
     public static ModuleId from(final YangModuleInfo yangModuleInfo) {
         final QName name = yangModuleInfo.getName();
-        return new ModuleId(name.getNamespace().toString(), name.getLocalName(), name.getRevision().get().toString());
+        return new ModuleId(name.getNamespace().toString(), name.getLocalName(), name.getRevision().orElse(null));
     }
 
     @Override
     public String toString() {
-        return this.nameSpace + ":" + this.name + "@" + this.revision;
+        return this.nameSpace + ":" + this.name + "@" + (this.revision != null ? this.revision.toString() : "");
     }
 }
