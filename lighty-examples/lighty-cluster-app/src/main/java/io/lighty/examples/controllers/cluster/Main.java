@@ -127,6 +127,8 @@ public class Main {
             }
             float duration = (System.nanoTime() - startTime)/1_000_000f;
             LOG.info("lighty.io and RESTCONF-NETCONF started in {}ms", duration);
+        } catch (RuntimeException e) {
+            LOG.error("Main RESTCONF-NETCONF RuntimeException: ", e);
         } catch (Exception e) {
             LOG.error("Main RESTCONF-NETCONF application exception: ", e);
         }
@@ -246,6 +248,7 @@ public class Main {
                 LOG.error("Exception while shutting down lighty.io controller:", e);
             }
             float duration = (System.nanoTime() - stopTime) / 1_000_000f;
+            LOG.info("lighty.io and RESTCONF-NETCONF stopped in {}ms", duration);
         }
     }
 
