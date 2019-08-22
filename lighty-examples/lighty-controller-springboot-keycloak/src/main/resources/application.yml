@@ -1,0 +1,27 @@
+server:
+  port: 8888
+
+logging:
+  pattern:
+    level: '%X{auth} %5p'
+  level:
+    root: INFO
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+
+restconf:
+  contextPath: '/restconf'
+
+# Keycloak configuration
+keycloak:
+  enabled: true
+  auth-server-url: 'http://localhost:8080/auth'
+  resource: lighty-app
+  realm: LightyRealm
+  bearer-only: true
+  use-resource-role-mappings: true
+  principal-attribute: preferred_username
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+

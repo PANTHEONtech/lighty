@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+
+  keycloak:
+     image: jboss/keycloak:6.0.1
+     restart: on-failure
+     command:
+      - "-b"
+      - "0.0.0.0"
+      - "-Dkeycloak.migration.action=import"
+      - "-Dkeycloak.migration.provider=dir"
+      - "-Dkeycloak.migration.dir=/config/"
+      - "-Dkeycloak.migration.strategy=IGNORE_EXISTING"
+     volumes:
+       - ./config:/config/
+     environment:
+       - KEYCLOAK_USER=admin
+       - KEYCLOAK_PASSWORD=password
+       - DB_VENDOR=h2
+       - DB_USER=admin
+       - DB_PASSWORD=password
+       - DB_ADDR=keycloak-db
+       - DB_DATABASE=keycloakdb
+     ports:
+       - "8080:8080"
+       - "9990:9990"
