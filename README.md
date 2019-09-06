@@ -1,4 +1,4 @@
-# lighty.io 10.1
+# lighty.io 10.2
 __lighty.io__ is a Software Development Kit powered by [OpenDaylight](https://www.opendaylight.org/) to support, ease & accelerate the development of
 Software-Defined Networking (SDN) solutions in Java. Developed by [PANTHEON.tech](https://pantheon.tech).
 
