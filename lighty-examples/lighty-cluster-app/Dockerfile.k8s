@@ -1,5 +1,5 @@
 FROM openjdk:8-jdk-alpine
-COPY target/lighty-cluster-app-10.1.1-SNAPSHOT-bin.zip /
-RUN unzip /lighty-cluster-app-10.1.1-SNAPSHOT-bin.zip
-RUN rm /lighty-cluster-app-10.1.1-SNAPSHOT-bin.zip
-ENTRYPOINT ["/lighty-cluster-app-10.1.1-SNAPSHOT/start-controller-node-k8s.sh"]
+COPY target/lighty-cluster-app-10.2.0-SNAPSHOT-bin.zip /
+RUN unzip /lighty-cluster-app-10.2.0-SNAPSHOT-bin.zip
+RUN rm /lighty-cluster-app-10.2.0-SNAPSHOT-bin.zip
+ENTRYPOINT ["/lighty-cluster-app-10.2.0-SNAPSHOT/start-controller-node-k8s.sh"]

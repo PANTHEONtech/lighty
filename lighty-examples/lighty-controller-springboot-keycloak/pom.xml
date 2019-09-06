@@ -16,7 +16,7 @@
 
     <groupId>io.lighty.core</groupId>
     <artifactId>lighty-controller-springboot-auth</artifactId>
-    <version>10.1.1-SNAPSHOT</version>
+    <version>10.2.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <description>Demo lighty.io project for SpringBoot</description>
 
@@ -34,7 +34,7 @@
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-bom</artifactId>
-                <version>10.1.1-SNAPSHOT</version>
+                <version>10.2.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
