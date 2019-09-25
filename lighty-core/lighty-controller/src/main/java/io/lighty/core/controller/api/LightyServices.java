@@ -28,6 +28,8 @@ import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
+import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingService;
@@ -114,6 +116,10 @@ public interface LightyServices extends LightyModuleRegistryService {
     DOMRpcService getDOMRpcService();
 
     DOMRpcProviderService getDOMRpcProviderService();
+
+    DOMActionService getDOMActionService();
+
+    DOMActionProviderService getDOMActionProviderSerice();
 
     RpcProviderService getRpcProviderService();
 
