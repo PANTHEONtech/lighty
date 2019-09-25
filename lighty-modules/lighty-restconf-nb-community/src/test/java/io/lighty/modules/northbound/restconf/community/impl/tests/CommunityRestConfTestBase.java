@@ -83,7 +83,7 @@ public abstract class CommunityRestConfTestBase {
         }
     }
 
-    private String parseTestNGStatus(int testResultStatus) {
+    private static String parseTestNGStatus(int testResultStatus) {
         switch (testResultStatus) {
             case -1:
                 return "CREATED";
