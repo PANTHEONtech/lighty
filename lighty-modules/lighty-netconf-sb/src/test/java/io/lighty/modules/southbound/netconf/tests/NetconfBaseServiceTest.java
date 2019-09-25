@@ -56,7 +56,7 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
                 .nodeWithKey(Schema.QNAME, QName.create(Schema.QNAME, "identifier"), "listkeyvalue1")
                 .build();
 
-        NetconfMessageTransformer transformer = new NetconfMessageTransformer(schemaContext, true);
+        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true);
         DOMRpcService domRpcService = mock(DOMRpcService.class);
 
         NetconfBaseService baseService = new NetconfBaseServiceImpl(new NodeId("node1"), domRpcService, schemaContext);
@@ -91,7 +91,7 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
                 .nodeWithKey(Schema.QNAME, QName.create(Schema.QNAME, "identifier"), "listkeyvalue1")
                 .build();
 
-        NetconfMessageTransformer transformer = new NetconfMessageTransformer(schemaContext, true);
+        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true);
         DOMRpcService domRpcService = mock(DOMRpcService.class);
 
         NetconfBaseService baseService = new NetconfBaseServiceImpl(new NodeId("node1"), domRpcService, schemaContext);
@@ -143,7 +143,7 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
                         .build())
                 .build();
 
-        NetconfMessageTransformer transformer = new NetconfMessageTransformer(schemaContext, true);
+        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true);
         DOMRpcService domRpcService = mock(DOMRpcService.class);
 
         NetconfBaseService baseService = new NetconfBaseServiceImpl(new NodeId("node1"), domRpcService, schemaContext);

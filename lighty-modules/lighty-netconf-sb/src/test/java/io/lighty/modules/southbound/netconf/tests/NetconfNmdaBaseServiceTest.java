@@ -58,7 +58,7 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
                 .nodeWithKey(Schema.QNAME, QName.create(Schema.QNAME, "identifier"), "listkeyvalue1")
                 .build();
 
-        NetconfMessageTransformer transformer = new NetconfMessageTransformer(schemaContext, true);
+        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true);
         DOMRpcService domRpcService = mock(DOMRpcService.class);
 
         NetconfNmdaBaseServiceImpl baseService = new NetconfNmdaBaseServiceImpl(new NodeId("node1"), domRpcService, schemaContext);
@@ -100,7 +100,7 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
                 .nodeWithKey(Schema.QNAME, QName.create(Schema.QNAME, "identifier"), "listkeyvalue1")
                 .build();
 
-        NetconfMessageTransformer transformer = new NetconfMessageTransformer(schemaContext, true);
+        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true);
         DOMRpcService domRpcService = mock(DOMRpcService.class);
 
         Set<QName> originFilter = new HashSet<>();
@@ -154,7 +154,7 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
                         .of(Schema.QNAME, QName.create(Schema.QNAME, "identifier"), "listkeyvalue1"))
                 .build();
 
-        NetconfMessageTransformer transformer = new NetconfMessageTransformer(schemaContext, true);
+        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true);
         DOMRpcService domRpcService = mock(DOMRpcService.class);
 
         NetconfNmdaBaseServiceImpl baseService = new NetconfNmdaBaseServiceImpl(new NodeId("node1"), domRpcService, schemaContext);
