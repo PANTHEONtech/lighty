@@ -36,11 +36,11 @@ public class NetconfClusteredTopologyPlugin extends AbstractLightyModule impleme
         final Config config = new ConfigBuilder()
                 .setWriteTransactionIdleTimeout(writeTxIdleTimeout)
                 .build();
-        this.topology = new NetconfTopologyManager(lightyServices.getBindingDataBroker(), lightyServices
-                .getDOMRpcProviderService(), lightyServices.getClusterSingletonServiceProvider(),
-                lightyServices.getScheduledThreaPool(), lightyServices.getThreadPool(),
-                lightyServices.getActorSystemProvider(), lightyServices.getEventExecutor(), clientDispatcher,
-                topologyId, config, lightyServices.getDOMMountPointService(), encryptionService);
+        this.topology = new NetconfTopologyManager(lightyServices.getBindingDataBroker(),
+            lightyServices.getDOMRpcProviderService(), null, lightyServices.getClusterSingletonServiceProvider(),
+            lightyServices.getScheduledThreaPool(), lightyServices.getThreadPool(),
+            lightyServices.getActorSystemProvider(), lightyServices.getEventExecutor(), clientDispatcher,
+            topologyId, config, lightyServices.getDOMMountPointService(), encryptionService, null);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class NetconfClusteredTopologyPlugin extends AbstractLightyModule impleme
     }
 
     @Override
-    public Optional<NetconfNmdaBaseService> getNetconfNmdaBaseService(NodeId nodeId) {
+    public Optional<NetconfNmdaBaseService> getNetconfNmdaBaseService(final NodeId nodeId) {
         final Optional<DOMMountPoint> domMountPointOptional = getNetconfDOMMountPoint(nodeId);
         if (domMountPointOptional.isPresent()) {
             final DOMMountPoint domMountPoint = domMountPointOptional.get();
@@ -86,7 +86,7 @@ public class NetconfClusteredTopologyPlugin extends AbstractLightyModule impleme
         return Optional.empty();
     }
 
-    private Optional<DOMMountPoint> getNetconfDOMMountPoint(NodeId nodeId) {
+    private Optional<DOMMountPoint> getNetconfDOMMountPoint(final NodeId nodeId) {
         final YangInstanceIdentifier yangInstanceIdentifier = NetconfUtils.createNetConfNodeMountPointYII(nodeId);
         return this.domMountPointService.getMountPoint(yangInstanceIdentifier);
     }

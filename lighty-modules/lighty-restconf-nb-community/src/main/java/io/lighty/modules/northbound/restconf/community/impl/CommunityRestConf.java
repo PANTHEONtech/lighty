@@ -20,6 +20,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
+import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
@@ -31,6 +32,7 @@ import org.opendaylight.netconf.sal.restconf.impl.ControllerContext;
 import org.opendaylight.netconf.sal.restconf.impl.RestconfImpl;
 import org.opendaylight.netconf.sal.restconf.impl.RestconfProviderImpl;
 import org.opendaylight.netconf.sal.restconf.impl.StatisticsRestconfServiceWrapper;
+import org.opendaylight.restconf.nb.rfc8040.handlers.ActionServiceHandler;
 import org.opendaylight.restconf.nb.rfc8040.handlers.DOMDataBrokerHandler;
 import org.opendaylight.restconf.nb.rfc8040.handlers.DOMMountPointServiceHandler;
 import org.opendaylight.restconf.nb.rfc8040.handlers.NotificationServiceHandler;
@@ -51,6 +53,7 @@ public class CommunityRestConf extends AbstractLightyModule {
     private final DOMRpcService domRpcService;
     private final DOMNotificationService domNotificationService;
     private final DOMMountPointService domMountPointService;
+    private final DOMActionService domActionService;
     private final PortNumber webSocketPort;
     private final JsonRestConfServiceType jsonRestconfServiceType;
     private final DOMSchemaService domSchemaService;
@@ -63,13 +66,15 @@ public class CommunityRestConf extends AbstractLightyModule {
     private LightyServerBuilder lightyServerBuilder;
 
     public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMSchemaService schemaService,
-            final DOMRpcService domRpcService, final DOMNotificationService domNotificationService,
-            final DOMMountPointService domMountPointService, final int webSocketPort,
-            final JsonRestConfServiceType jsonRestconfServiceType, final DOMSchemaService domSchemaService,
-            final InetAddress inetAddress, final int httpPort, final String restconfServletContextPath,
-            final ExecutorService executorService, final LightyServerBuilder serverBuilder) {
+            final DOMRpcService domRpcService, final DOMActionService domActionService,
+            final DOMNotificationService domNotificationService, final DOMMountPointService domMountPointService,
+            final int webSocketPort, final JsonRestConfServiceType jsonRestconfServiceType,
+            final DOMSchemaService domSchemaService, final InetAddress inetAddress, final int httpPort,
+            final String restconfServletContextPath, final ExecutorService executorService,
+            final LightyServerBuilder serverBuilder) {
         this.domDataBroker = domDataBroker;
         this.domRpcService = domRpcService;
+        this.domActionService = domActionService;
         this.domNotificationService = domNotificationService;
         this.domMountPointService = domMountPointService;
         this.lightyServerBuilder = serverBuilder;
@@ -88,14 +93,14 @@ public class CommunityRestConf extends AbstractLightyModule {
     }
 
     public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMSchemaService schemaService,
-            final DOMRpcService domRpcService, final DOMNotificationService domNotificationService,
-            final DOMMountPointService domMountPointService, final int webSocketPort,
-            final JsonRestConfServiceType jsonRestconfServiceType, final DOMSchemaService domSchemaService,
-            final InetAddress inetAddress, final int httpPort, final String restconfServletContextPath,
-            final ExecutorService executorService) {
-        this(domDataBroker, schemaService, domRpcService, domNotificationService, domMountPointService, webSocketPort,
-                jsonRestconfServiceType, domSchemaService, inetAddress, httpPort, restconfServletContextPath,
-                executorService, null);
+            final DOMRpcService domRpcService, final DOMActionService domActionService,
+            final DOMNotificationService domNotificationService, final DOMMountPointService domMountPointService,
+            final int webSocketPort, final JsonRestConfServiceType jsonRestconfServiceType,
+            final DOMSchemaService domSchemaService, final InetAddress inetAddress, final int httpPort,
+            final String restconfServletContextPath, final ExecutorService executorService) {
+        this(domDataBroker, schemaService, domRpcService, domActionService, domNotificationService,
+            domMountPointService, webSocketPort, jsonRestconfServiceType, domSchemaService, inetAddress, httpPort,
+            restconfServletContextPath, executorService, null);
     }
 
     @Override
@@ -121,11 +126,12 @@ public class CommunityRestConf extends AbstractLightyModule {
                 this.domMountPointService);
         final DOMDataBrokerHandler domDataBrokerHandler = new DOMDataBrokerHandler(this.domDataBroker);
         final RpcServiceHandler rpcServiceHandler = new RpcServiceHandler(this.domRpcService);
+        final ActionServiceHandler actionServiceHandler = new ActionServiceHandler(this.domActionService);
         final NotificationServiceHandler notificationServiceHandler = new NotificationServiceHandler(
                 this.domNotificationService);
         final ServicesWrapper servicesWrapper = ServicesWrapper.newInstance(schemaCtxHandler,
                 domMountPointServiceHandler, transactionChainHandler, domDataBrokerHandler, rpcServiceHandler,
-                notificationServiceHandler, this.domSchemaService);
+                actionServiceHandler, notificationServiceHandler, this.domSchemaService);
 
         ServletHolder jaxrs = null;
 
