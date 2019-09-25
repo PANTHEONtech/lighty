@@ -10,7 +10,7 @@ package io.lighty.modules.northbound.restconf.community.impl.config;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.net.InetAddress;
 import java.util.Objects;
-
+import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
@@ -25,6 +25,8 @@ public class RestConfConfiguration {
     private DOMSchemaService schemaService;
     @JsonIgnore
     private DOMRpcService domRpcService;
+    @JsonIgnore
+    private DOMActionService domActionService;
     @JsonIgnore
     private DOMNotificationService domNotificationService;
     @JsonIgnore
@@ -49,6 +51,7 @@ public class RestConfConfiguration {
         this.domDataBroker = restConfConfiguration.getDomDataBroker();
         this.schemaService = restConfConfiguration.getSchemaService();
         this.domRpcService = restConfConfiguration.getDomRpcService();
+        this.domActionService = restConfConfiguration.getDomActionService();
         this.domNotificationService = restConfConfiguration.getDomNotificationService();
         this.domMountPointService = restConfConfiguration.getDomMountPointService();
         this.domSchemaService = restConfConfiguration.getDomSchemaService();
@@ -61,6 +64,7 @@ public class RestConfConfiguration {
         this.domDataBroker = domDataBroker;
         this.schemaService = schemaService;
         this.domRpcService = domRpcService;
+        this.domActionService = domActionService;
         this.domNotificationService = domNotificationService;
         this.domMountPointService = domMountPointService;
         this.domSchemaService = domSchemaService;
@@ -97,6 +101,15 @@ public class RestConfConfiguration {
     public void setDomRpcService(final DOMRpcService domRpcService) {
         this.domRpcService = domRpcService;
     }
+
+    public DOMActionService getDomActionService() {
+        return this.domActionService;
+    }
+
+    public void setDomRpcService(final DOMActionService domActionService) {
+        this.domActionService = domActionService;
+    }
+
 
     public DOMNotificationService getDomNotificationService() {
         return this.domNotificationService;
@@ -155,9 +168,13 @@ public class RestConfConfiguration {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         RestConfConfiguration that = (RestConfConfiguration) o;
         return webSocketPort == that.webSocketPort &&
                 httpPort == that.httpPort &&
