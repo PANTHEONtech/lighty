@@ -702,4 +702,13 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         return this.domPingPongDataBrokerOld;
     }
 
+    @Override
+    public DOMActionService getDOMActionService() {
+        return domActionService;
+    }
+
+    @Override
+    public DOMActionProviderService getDOMActionProviderSerice() {
+        return domActionProviderService;
+    }
 }
