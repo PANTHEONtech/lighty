@@ -107,22 +107,22 @@ public class CommunityRestConf extends AbstractLightyModule {
     protected boolean initProcedure() {
         final long startTime = System.nanoTime();
         LOG.info("Starting RestConfProvider websocket port: {}", this.webSocketPort);
-        final ControllerContext controllerContext = ControllerContext.newInstance(this.domSchemaService,
+        final ControllerContext controllerContext = new ControllerContext(this.domSchemaService,
                 this.domMountPointService, this.domSchemaService);
-        final BrokerFacade broker = BrokerFacade.newInstance(this.domRpcService, this.domDataBroker,
+        final BrokerFacade broker = new BrokerFacade(this.domRpcService, this.domDataBroker,
                 this.domNotificationService, controllerContext);
-        final RestconfImpl restconf = RestconfImpl.newInstance(broker, controllerContext);
-        final StatisticsRestconfServiceWrapper stats = StatisticsRestconfServiceWrapper.newInstance(restconf);
+        final RestconfImpl restconf = new RestconfImpl(broker, controllerContext);
+        final StatisticsRestconfServiceWrapper stats = new StatisticsRestconfServiceWrapper(restconf);
         this.restconfProvider = new RestconfProviderImpl(stats, IpAddressBuilder.getDefaultInstance(this.inetAddress
                 .getHostAddress()), this.webSocketPort);
         this.restconfProvider.start();
 
         LOG.info("Starting RestConnectorProvider");
         final TransactionChainHandler transactionChainHandler = new TransactionChainHandler(this.domDataBroker);
-        final SchemaContextHandler schemaCtxHandler = SchemaContextHandler.newInstance(transactionChainHandler,
+        final SchemaContextHandler schemaCtxHandler = new SchemaContextHandler(transactionChainHandler,
                 this.domSchemaService);
         schemaCtxHandler.init();
-        final DOMMountPointServiceHandler domMountPointServiceHandler = DOMMountPointServiceHandler.newInstance(
+        final DOMMountPointServiceHandler domMountPointServiceHandler = new DOMMountPointServiceHandler(
                 this.domMountPointService);
         final DOMDataBrokerHandler domDataBrokerHandler = new DOMDataBrokerHandler(this.domDataBroker);
         final RpcServiceHandler rpcServiceHandler = new RpcServiceHandler(this.domRpcService);

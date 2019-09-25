@@ -59,8 +59,9 @@ public class RestConfConfiguration {
     }
 
     public RestConfConfiguration(final DOMDataBroker domDataBroker, final DOMSchemaService schemaService,
-            final DOMRpcService domRpcService, final DOMNotificationService domNotificationService,
-            final DOMMountPointService domMountPointService, final DOMSchemaService domSchemaService) {
+            final DOMRpcService domRpcService, final DOMActionService domActionService,
+            final DOMNotificationService domNotificationService, final DOMMountPointService domMountPointService,
+            final DOMSchemaService domSchemaService) {
         this.domDataBroker = domDataBroker;
         this.schemaService = schemaService;
         this.domRpcService = domRpcService;
@@ -106,10 +107,9 @@ public class RestConfConfiguration {
         return this.domActionService;
     }
 
-    public void setDomRpcService(final DOMActionService domActionService) {
+    public void setDomActionService(final DOMActionService domActionService) {
         this.domActionService = domActionService;
     }
-
 
     public DOMNotificationService getDomNotificationService() {
         return this.domNotificationService;
