@@ -97,7 +97,7 @@ public class SerializeIdentifierCodec {
             Preconditions.checkArgument(keyValues.length > i, "all key values must be present");
             mapKeys.put(listSchemaNode.getKeyDefinition().get(i), keyValues[i]);
         }
-        return new YangInstanceIdentifier.NodeIdentifierWithPredicates(qName, mapKeys);
+        return YangInstanceIdentifier.NodeIdentifierWithPredicates.of(qName, mapKeys);
     }
 
     private static QName getQname(final QNameModule qNameModule, final String args) {
