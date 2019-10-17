@@ -12,7 +12,6 @@ import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
 import org.opendaylight.yangtools.rcf8528.data.util.EmptyMountPointContext;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointContext;
@@ -49,12 +48,7 @@ public abstract class NetconfBaseServiceBaseTest {
     static SchemaContext getSchemaContext(final List<YangModuleInfo> moduleInfos) {
         ModuleInfoBackedContext moduleInfoBackedCntxt = ModuleInfoBackedContext.create();
         moduleInfoBackedCntxt.addModuleInfos(moduleInfos);
-        Optional<SchemaContext> tryToCreateSchemaContext =
-                moduleInfoBackedCntxt.tryToCreateSchemaContext();
-        if (!tryToCreateSchemaContext.isPresent()) {
-            throw new IllegalStateException();
-        }
-        return tryToCreateSchemaContext.get();
+        return moduleInfoBackedCntxt.tryToCreateSchemaContext().orElseThrow(IllegalStateException::new);
     }
 
     boolean hasSpecificChild(final Collection<DataContainerChild<? extends PathArgument, ?>> children,

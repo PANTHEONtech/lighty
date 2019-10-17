@@ -9,10 +9,9 @@
 package io.lighty.aaa.config;
 
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.DatastoreConfig;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.math.BigInteger;
 
 public class DatastoreConfigurationConfigTest {
 
@@ -23,7 +22,7 @@ public class DatastoreConfigurationConfigTest {
         Assert.assertNotNull(config);
 
         Assert.assertEquals(config.getStore(), DatastoreConfig.Store.H2DataStore);
-        Assert.assertEquals(config.getTimeToLive(), new BigInteger("36000"));
-        Assert.assertEquals(config.getTimeToWait(), new BigInteger("3600"));
+        Assert.assertEquals(config.getTimeToLive(), Uint64.valueOf(36000));
+        Assert.assertEquals(config.getTimeToWait(), Uint64.valueOf(3600));
     }
 }

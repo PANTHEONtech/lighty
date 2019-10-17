@@ -45,7 +45,7 @@ import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.AnyXmlNode;
+import org.opendaylight.yangtools.yang.data.api.schema.AnyxmlNode;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -104,7 +104,7 @@ public final class NetconfUtils {
                                                              final Optional<NormalizedNode<?, ?>> lastChild,
                                                              final Optional<ModifyAction> operation,
                                                              final YangInstanceIdentifier dataPath) {
-        final AnyXmlNode configContent = NetconfMessageTransformUtil
+        final AnyxmlNode<?> configContent = NetconfMessageTransformUtil
                 .createEditConfigAnyxml(schemaContext, dataPath, operation, lastChild);
         return Builders.choiceBuilder().withNodeIdentifier(EDIT_CONTENT_NODEID).withChild(configContent).build();
     }

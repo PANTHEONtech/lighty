@@ -196,15 +196,16 @@ public class ConfigLoadingTest {
     public void loadControllerConfigurationTest() throws Exception {
         Set<String> expectedModuleNames = new HashSet<>();
         expectedModuleNames.add("network-topology");
-        expectedModuleNames.add("ietf-restconf");
 
         InputStream inputStream = this.getClass().getResourceAsStream("/testLightyControllerConfig-example.json");
         final ControllerConfiguration configuration = ControllerConfigUtils.getConfiguration(inputStream);
         Set<YangModuleInfo> models = configuration.getSchemaServiceConfig().getModels();
-        Assert.assertTrue(models.size() > 2);
+        Assert.assertEquals(models.size(), 2);
 
-        for (String expectedModuleName: expectedModuleNames) {
-            long expectedModuleCount = models.stream().filter( m -> m.getName().getLocalName().equals(expectedModuleName) ).count();
+        for (String expectedModuleName : expectedModuleNames) {
+            long expectedModuleCount = models.stream()
+                    .filter( m -> m.getName().getLocalName().equals(expectedModuleName))
+                    .count();
             Assert.assertTrue(expectedModuleCount > 0);
         }
 
