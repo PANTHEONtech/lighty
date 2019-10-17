@@ -250,7 +250,7 @@ public final class AAALightyShiroProvider {
                     "public static java.util.concurrent.CompletableFuture getInstanceFuture() {"
                             + "java.util.concurrent.CompletableFuture completableFuture = "
                             + "new java.util.concurrent.CompletableFuture();"
-                            + "completableFuture.complete(io.lighty.aaa.AAALightyShiroProvider.getInstance());"
+                            + "completableFuture.complete(org.opendaylight.aaa.AAAShiroProvider.getInstance());"
                             + "return completableFuture;}",
                             ctClass);
             ctClass.addMethod(getInstanceFuture);
