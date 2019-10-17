@@ -92,7 +92,6 @@ public final class AAALightyShiroProvider {
 
         injectLightyShiroProviderMethodsToOriginalProvider();
 
-        initAAAonServer(server);
         final DefaultPasswordHashService defaultPasswordHashService;
         if (datastoreConfig != null && datastoreConfig.getStore().equals(DatastoreConfig.Store.H2DataStore)) {
             final IdmLightConfig config = new IdmLightConfigBuilder().dbUser(dbUsername).dbPwd(dbPassword).build();
@@ -121,6 +120,8 @@ public final class AAALightyShiroProvider {
         }
         final LocalHttpServer httpService = new LocalHttpServer(server);
         registerServletContexts(httpService, moonEndpointPath);
+
+        initAAAonServer(server);
     }
 
     private void initAAAonServer(final LightyServerBuilder server) {
@@ -135,7 +136,7 @@ public final class AAALightyShiroProvider {
         this.handlers.add(contexts);
 
         server.addCommonInitParameter("shiroEnvironmentClass",
-                "org.opendaylight.aaa.shiro.web.env.KarafIniWebEnvironment");
+                "io.lighty.aaa.iniWebEnvironment");
         server.addCommonEventListener(new EnvironmentLoaderListener());
 
         final Map<String, String> properties = new HashMap<>();
@@ -239,31 +240,27 @@ public final class AAALightyShiroProvider {
             final CtConstructor c = CtNewConstructor.make("public AAAShiroProvider(){}", ctClass);
             ctClass.addConstructor(c);
 
-            ctClass.removeMethod(ctClass.getDeclaredMethod("getInstance"));
             final CtMethod getInstance = CtNewMethod.make(
                     "public static org.opendaylight.aaa.AAAShiroProvider getInstance() {"
                             + "return new org.opendaylight.aaa.AAAShiroProvider();}",
                             ctClass);
             ctClass.addMethod(getInstance);
 
-            ctClass.removeMethod(ctClass.getDeclaredMethod("getInstanceFuture"));
             final CtMethod getInstanceFuture = CtNewMethod.make(
                     "public static java.util.concurrent.CompletableFuture getInstanceFuture() {"
                             + "java.util.concurrent.CompletableFuture completableFuture = "
                             + "new java.util.concurrent.CompletableFuture();"
-                            + "completableFuture.complete(org.opendaylight.aaa.AAAShiroProvider.getInstance());"
+                            + "completableFuture.complete(io.lighty.aaa.AAALightyShiroProvider.getInstance());"
                             + "return completableFuture;}",
                             ctClass);
             ctClass.addMethod(getInstanceFuture);
 
-            ctClass.removeMethod(ctClass.getDeclaredMethod("getIdmStore"));
             final CtMethod getIdmStore = CtNewMethod.make(
                     "public static org.opendaylight.aaa.api.IIDMStore getIdmStore() {"
                             + "return io.lighty.aaa.AAALightyShiroProvider.getIdmStore();}",
                             ctClass);
             ctClass.addMethod(getIdmStore);
 
-            ctClass.removeMethod(ctClass.getDeclaredMethod("setIdmStore"));
             final CtMethod setIdmStore = CtNewMethod.make(
                     "public static void setIdmStore(org.opendaylight.aaa.api.IIDMStore store) {"
                             + "return io.lighty.aaa.AAALightyShiroProvider.setIdmStore(store);}", ctClass);
