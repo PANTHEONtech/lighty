@@ -7,17 +7,17 @@
  */
 package io.lighty.modules.southbound.netconf.impl.util;
 
-import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_COPY_CONFIG_QNAME;
-import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_DEFAULT_OPERATION_QNAME;
-import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_EDIT_CONFIG_QNAME;
-import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_ERROR_OPTION_QNAME;
-import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_LOCK_QNAME;
-import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_SOURCE_QNAME;
-import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_TARGET_QNAME;
-import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_UNLOCK_QNAME;
-import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_VALIDATE_QNAME;
+import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_COPY_CONFIG_NODEID;
+import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_DATA_NODEID;
+import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_DEFAULT_OPERATION_NODEID;
+import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_EDIT_CONFIG_NODEID;
+import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_ERROR_OPTION_NODEID;
+import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_LOCK_NODEID;
+import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_SOURCE_NODEID;
+import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_TARGET_NODEID;
+import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_UNLOCK_NODEID;
+import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_VALIDATE_NODEID;
 import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.ROLLBACK_ON_ERROR_OPTION;
-import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.toId;
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Futures;
@@ -27,6 +27,7 @@ import java.util.Optional;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.netconf.api.ModifyAction;
 import org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil;
+import org.opendaylight.netconf.util.NetconfUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.copy.config.input.target.ConfigTarget;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.edit.config.input.EditContent;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.get.config.input.source.ConfigSource;
@@ -43,7 +44,8 @@ import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.AnyXmlNode;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
+import org.opendaylight.yangtools.yang.data.api.schema.AnyxmlNode;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -53,15 +55,16 @@ import org.opendaylight.yangtools.yang.data.impl.schema.builder.api.DataContaine
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 public final class NetconfUtils {
-
-    private static final String NETCONF_TOPOLOGY_NAMESPACE = "urn:TBD:params:xml:ns:yang:network-topology";
-    private static final String NETCONF_TOPOLOGY_VERSION = "2013-10-21";
-    private static final String TOPOLOGY_ID = "topology-id";
-    private static final String TOPOLOGY_NETCONF = "topology-netconf";
-    private static final String NODE_ID = "node-id";
-
     public static final QName NETCONF_DELETE_CONFIG_QNAME =
-            QName.create(NetconfMessageTransformUtil.NETCONF_QNAME, "delete-config").intern();
+            QName.create(NetconfUtil.NETCONF_QNAME, "delete-config").intern();
+    public static final NodeIdentifier NETCONF_DELETE_CONFIG_NODEID =
+            NodeIdentifier.create(NETCONF_DELETE_CONFIG_QNAME);
+    private static final NodeIdentifier CONFIG_SOURCE_NODEID = NodeIdentifier.create(ConfigSource.QNAME);
+    private static final NodeIdentifier CONFIG_TARGET_NODEID = NodeIdentifier.create(ConfigTarget.QNAME);
+    private static final NodeIdentifier EDIT_CONTENT_NODEID = NodeIdentifier.create(EditContent.QNAME);
+    private static final QName TOPOLOGY_ID_QNAME = QName.create(Topology.QNAME, "topology-id").intern();
+    private static final QName NODE_ID_QNAME = QName.create(Node.QNAME, "node-id").intern();
+    private static final String TOPOLOGY_NETCONF = "topology-netconf";
 
     private NetconfUtils() {
     }
@@ -79,12 +82,9 @@ public final class NetconfUtils {
         YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.builder()
                 .node(NetworkTopology.QNAME)
                 .node(Topology.QNAME)
-                .nodeWithKey(Topology.QNAME,
-                        QName.create(NETCONF_TOPOLOGY_NAMESPACE, NETCONF_TOPOLOGY_VERSION, TOPOLOGY_ID),
-                        TOPOLOGY_NETCONF)
+                .nodeWithKey(Topology.QNAME, TOPOLOGY_ID_QNAME, TOPOLOGY_NETCONF)
                 .node(Node.QNAME)
-                .nodeWithKey(Node.QNAME,
-                        QName.create(NETCONF_TOPOLOGY_NAMESPACE, NETCONF_TOPOLOGY_VERSION, NODE_ID), nodeId.getValue())
+                .nodeWithKey(Node.QNAME, NODE_ID_QNAME, nodeId.getValue())
                 .build();
         return yangInstanceIdentifier;
     }
@@ -95,8 +95,7 @@ public final class NetconfUtils {
             Preconditions.checkArgument(
                     result.getErrors().isEmpty(), "Unable to read data: %s, errors: %s", path, result.getErrors());
             final DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?> dataNode =
-                    ((ContainerNode) result.getResult()).getChild(
-                            NetconfMessageTransformUtil.toId(NetconfMessageTransformUtil.NETCONF_DATA_QNAME)).get();
+                    ((ContainerNode) result.getResult()).getChild(NETCONF_DATA_NODEID).get();
             return NormalizedNodes.findNode(dataNode, path.get().getPathArguments());
         }, MoreExecutors.directExecutor());
     }
@@ -105,30 +104,29 @@ public final class NetconfUtils {
                                                              final Optional<NormalizedNode<?, ?>> lastChild,
                                                              final Optional<ModifyAction> operation,
                                                              final YangInstanceIdentifier dataPath) {
-        final AnyXmlNode configContent = NetconfMessageTransformUtil
+        final AnyxmlNode<?> configContent = NetconfMessageTransformUtil
                 .createEditConfigAnyxml(schemaContext, dataPath, operation, lastChild);
-        return Builders.choiceBuilder().withNodeIdentifier(toId(EditContent.QNAME)).withChild(configContent).build();
+        return Builders.choiceBuilder().withNodeIdentifier(EDIT_CONTENT_NODEID).withChild(configContent).build();
     }
 
     public static ContainerNode getEditConfigContent(
             final QName targetDatastore, final DataContainerChild<?, ?> editStructure,
             final Optional<ModifyAction> defaultOperation, final boolean rollback) {
         final DataContainerNodeBuilder<YangInstanceIdentifier.NodeIdentifier, ContainerNode> editBuilder =
-                Builders.containerBuilder().withNodeIdentifier(toId(NETCONF_EDIT_CONFIG_QNAME));
+                Builders.containerBuilder().withNodeIdentifier(NETCONF_EDIT_CONFIG_NODEID);
 
         // Target
         editBuilder.withChild(getTargetNode(targetDatastore));
 
         // Default operation
         if (defaultOperation.isPresent()) {
-            final String opString = defaultOperation.get().name().toLowerCase();
-            editBuilder.withChild(Builders.leafBuilder().withNodeIdentifier(toId(NETCONF_DEFAULT_OPERATION_QNAME))
-                    .withValue(opString).build());
+            editBuilder.withChild(Builders.leafBuilder().withNodeIdentifier(NETCONF_DEFAULT_OPERATION_NODEID)
+                    .withValue(defaultOperation.get().name().toLowerCase()).build());
         }
 
         // Error option
         if (rollback) {
-            editBuilder.withChild(Builders.leafBuilder().withNodeIdentifier(toId(NETCONF_ERROR_OPTION_QNAME))
+            editBuilder.withChild(Builders.leafBuilder().withNodeIdentifier(NETCONF_ERROR_OPTION_NODEID)
                     .withValue(ROLLBACK_ON_ERROR_OPTION).build());
         }
 
@@ -138,43 +136,43 @@ public final class NetconfUtils {
     }
 
     public static DataContainerChild<?, ?> getSourceNode(final QName sourceDatastore) {
-        return Builders.containerBuilder().withNodeIdentifier(toId(NETCONF_SOURCE_QNAME))
-                .withChild(Builders.choiceBuilder().withNodeIdentifier(toId(ConfigSource.QNAME)).withChild(
-                        Builders.leafBuilder().withNodeIdentifier(toId(sourceDatastore))
+        return Builders.containerBuilder().withNodeIdentifier(NETCONF_SOURCE_NODEID)
+                .withChild(Builders.choiceBuilder().withNodeIdentifier(CONFIG_SOURCE_NODEID).withChild(
+                        Builders.leafBuilder().withNodeIdentifier(new NodeIdentifier(sourceDatastore))
                                 .withValue(Empty.getInstance()).build())
                         .build()).build();
     }
 
     public static ContainerNode getLockContent(final QName targetDatastore) {
-        return Builders.containerBuilder().withNodeIdentifier(toId(NETCONF_LOCK_QNAME))
+        return Builders.containerBuilder().withNodeIdentifier(NETCONF_LOCK_NODEID)
                 .withChild(getTargetNode(targetDatastore)).build();
     }
 
     public static DataContainerChild<?, ?> getTargetNode(final QName targetDatastore) {
-        return Builders.containerBuilder().withNodeIdentifier(toId(NETCONF_TARGET_QNAME))
-                .withChild(Builders.choiceBuilder().withNodeIdentifier(toId(ConfigTarget.QNAME)).withChild(
-                        Builders.leafBuilder().withNodeIdentifier(toId(targetDatastore))
+        return Builders.containerBuilder().withNodeIdentifier(NETCONF_TARGET_NODEID)
+                .withChild(Builders.choiceBuilder().withNodeIdentifier(CONFIG_TARGET_NODEID).withChild(
+                        Builders.leafBuilder().withNodeIdentifier(new NodeIdentifier(targetDatastore))
                                 .withValue(Empty.getInstance()).build())
                         .build()).build();
     }
 
     public static NormalizedNode<?, ?> getCopyConfigContent(final QName sourceDatastore, final QName targetDatastore) {
-        return Builders.containerBuilder().withNodeIdentifier(toId(NETCONF_COPY_CONFIG_QNAME))
+        return Builders.containerBuilder().withNodeIdentifier(NETCONF_COPY_CONFIG_NODEID)
                 .withChild(getTargetNode(targetDatastore)).withChild(getSourceNode(sourceDatastore)).build();
     }
 
     public static NormalizedNode<?, ?> getDeleteConfigContent(final QName targetDatastore) {
-        return Builders.containerBuilder().withNodeIdentifier(toId(NETCONF_DELETE_CONFIG_QNAME))
+        return Builders.containerBuilder().withNodeIdentifier(NETCONF_DELETE_CONFIG_NODEID)
                 .withChild(getTargetNode(targetDatastore)).build();
     }
 
     public static NormalizedNode<?, ?> getValidateContent(final QName sourceDatastore) {
-        return Builders.containerBuilder().withNodeIdentifier(toId(NETCONF_VALIDATE_QNAME))
+        return Builders.containerBuilder().withNodeIdentifier(NETCONF_VALIDATE_NODEID)
                 .withChild(getSourceNode(sourceDatastore)).build();
     }
 
     public static NormalizedNode<?, ?> getUnLockContent(final QName targetDatastore) {
-        return Builders.containerBuilder().withNodeIdentifier(toId(NETCONF_UNLOCK_QNAME))
+        return Builders.containerBuilder().withNodeIdentifier(NETCONF_UNLOCK_NODEID)
                 .withChild(getTargetNode(targetDatastore)).build();
     }
 

@@ -11,6 +11,12 @@ package io.lighty.core.controller.springboot.rest;
 import io.lighty.core.controller.springboot.rest.dto.NetconfDeviceRequest;
 import io.lighty.core.controller.springboot.rest.dto.NetconfDeviceResponse;
 import io.lighty.core.controller.springboot.utils.Utils;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -48,13 +54,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 @RestController
 @RequestMapping(path = "/services/data/netconf")
@@ -104,7 +103,7 @@ public class NetconfDeviceRestService {
 
                                 if (toasterData.isPresent() && toasterData.get().getDarknessFactor() != null) {
                                     nodeResponse = NetconfDeviceResponse.from(node, toasterData.get()
-                                            .getDarknessFactor());
+                                            .getDarknessFactor().toJava());
                                 }
                             }
                         }

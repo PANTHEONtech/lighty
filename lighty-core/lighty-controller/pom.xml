@@ -195,10 +195,6 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>ietf-restconf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>opendaylight-l2-types</artifactId>
         </dependency>
         <dependency>

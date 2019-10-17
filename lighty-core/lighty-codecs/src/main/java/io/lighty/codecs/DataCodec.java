@@ -7,6 +7,8 @@
  */
 package io.lighty.codecs;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import io.lighty.codecs.api.Codec;
@@ -20,15 +22,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
-import javassist.ClassPool;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.dom.DOMSource;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
-import org.opendaylight.mdsal.binding.dom.codec.gen.impl.StreamWriterGenerator;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
-import org.opendaylight.mdsal.binding.generator.util.JavassistUtils;
 import org.opendaylight.restconf.common.errors.RestconfDocumentedException;
 import org.opendaylight.yangtools.rfc8040.model.api.YangDataSchemaNode;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
@@ -73,12 +72,12 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
     private final SchemaContext schemaContext;
 
     public DataCodec(final SchemaContext schemaContext) {
-        final BindingNormalizedNodeCodecRegistry registry = new BindingNormalizedNodeCodecRegistry(
-            StreamWriterGenerator.create(JavassistUtils.forClassPool(ClassPool.getDefault())));
+        this.schemaContext = requireNonNull(schemaContext);
+        final BindingNormalizedNodeCodecRegistry registry = new BindingNormalizedNodeCodecRegistry();
         this.codec = new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
             registry);
-        this.schemaContext = schemaContext;
         this.codec.onGlobalContextUpdated(schemaContext);
+
         this.deserializeIdentifierCodec = new DeserializeIdentifierCodec(schemaContext);
         this.serializeIdentifierCodec = new SerializeIdentifierCodec(schemaContext);
         this.xmlNodeConverter = new XmlNodeConverter(this.schemaContext);
