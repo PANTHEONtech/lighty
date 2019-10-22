@@ -13,6 +13,8 @@ import io.lighty.server.LightyServerBuilder;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+
+import org.opendaylight.aaa.api.AuthenticationService;
 import org.opendaylight.aaa.api.CredentialAuth;
 import org.opendaylight.aaa.api.PasswordCredentials;
 import org.opendaylight.aaa.cert.api.ICertificateManager;
