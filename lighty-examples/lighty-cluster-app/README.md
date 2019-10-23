@@ -64,7 +64,7 @@ __GET__ ``http://127.0.0.1:{akka_http_management_port}/management/cluster/member
 
 ## Kubernetes deployment
 In order to deploy this lighty.io cluster demo into kubernetes cluster, make sure you follow guide below.
-This demo was tested using kubernetes cluster v1.15.1.
+This demo was tested using kubernetes cluster v1.16.2.
 
 #### Create docker image
 ```
