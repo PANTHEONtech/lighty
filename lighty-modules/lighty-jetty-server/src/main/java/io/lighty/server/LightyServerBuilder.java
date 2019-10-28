@@ -7,19 +7,15 @@
  */
 package io.lighty.server;
 
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.EventListener;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.DispatcherType;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+
+import javax.servlet.DispatcherType;
+import java.net.InetSocketAddress;
+import java.util.*;
 
 /**
  * Allows user to build jetty server.
@@ -27,12 +23,12 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
  */
 public class LightyServerBuilder {
 
-    private final InetSocketAddress inetSocketAddress;
+    final InetSocketAddress inetSocketAddress;
     private final Map<FilterHolder, String> filters;
     private final Map<String, String> parameters;
-    private final List<Handler> contexts;
+    final List<Handler> contexts;
     private final List<EventListener> listeners;
-    private Server server;
+    protected Server server;
 
     /**
      * Init new jetty server on specifc port and address wrapped into {@link InetSocketAddress}
@@ -122,7 +118,7 @@ public class LightyServerBuilder {
         return this.server;
     }
 
-    private void addFilters(final Handler contextHandler) {
+    void addFilters(final Handler contextHandler) {
         if (contextHandler instanceof ContextHandlerCollection) {
             final ContextHandlerCollection sch = (ContextHandlerCollection) contextHandler;
             for (final Handler handler : sch.getChildHandlers()) {
