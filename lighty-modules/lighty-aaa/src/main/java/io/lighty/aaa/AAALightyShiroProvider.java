@@ -7,6 +7,7 @@
  */
 package io.lighty.aaa;
 
+import com.google.common.base.Preconditions;
 import io.lighty.server.LightyServerBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,14 +21,12 @@ import javassist.CtConstructor;
 import javassist.CtMethod;
 import javassist.CtNewConstructor;
 import javassist.CtNewMethod;
-import javassist.NotFoundException;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
-import org.glassfish.jersey.internal.guava.Preconditions;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.opendaylight.aaa.AAAShiroProvider;
@@ -36,7 +35,6 @@ import org.opendaylight.aaa.api.CredentialAuth;
 import org.opendaylight.aaa.api.IIDMStore;
 import org.opendaylight.aaa.api.PasswordCredentials;
 import org.opendaylight.aaa.api.AuthenticationService;
-import org.opendaylight.aaa.api.TokenStore;
 import org.opendaylight.aaa.api.IdMServiceImpl;
 import org.opendaylight.aaa.api.StoreBuilder;
 import org.opendaylight.aaa.api.IDMStoreException;
@@ -68,11 +66,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.NotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 public final class AAALightyShiroProvider {
 
@@ -348,7 +341,7 @@ public final class AAALightyShiroProvider {
 
             ctClass.toClass();
 
-        } catch (NotFoundException | CannotCompileException e) {
+        } catch (NotFoundException | CannotCompileException | javassist.NotFoundException e) {
             throw new RuntimeException(e);
         }
     }

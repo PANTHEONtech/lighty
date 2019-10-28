@@ -27,7 +27,7 @@ import javax.servlet.ServletException;
 import java.net.InetSocketAddress;
 import java.util.EnumSet;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static org.glassfish.jersey.internal.guava.Preconditions.checkArgument;
 
 public class LightyWebServerAdapter extends LightyServerBuilder implements WebServer {
 
