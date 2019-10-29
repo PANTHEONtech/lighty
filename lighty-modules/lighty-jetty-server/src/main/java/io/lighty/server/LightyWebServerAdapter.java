@@ -19,16 +19,18 @@ import org.opendaylight.aaa.web.WebContextRegistration;
 import org.opendaylight.aaa.web.WebServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.servlet.DispatcherType;
 import javax.servlet.ServletException;
 import java.net.InetSocketAddress;
 import java.util.EnumSet;
-
 import static org.glassfish.jersey.internal.guava.Preconditions.checkArgument;
 
+/**
+ * Allows user to build jetty server with WebServer interface support.
+ *
+ */
 public class LightyWebServerAdapter extends LightyServerBuilder implements WebServer {
 
     private static final Logger LOG = LoggerFactory.getLogger(LightyWebServerAdapter.class);
@@ -44,8 +46,6 @@ public class LightyWebServerAdapter extends LightyServerBuilder implements WebSe
         this.httpPort = httpPort;
         serverInit(httpPort);
     }
-
-
 
     public LightyWebServerAdapter(Server server, int httpPort) {
         super(server);

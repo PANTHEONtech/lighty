@@ -63,7 +63,6 @@ public class CommunityRestConf extends AbstractLightyModule {
     private final String restconfServletContextPath;
     private RestconfImpl restconfImpl;
     private BrokerFacade brokerFacade;
-
     private ControllerContext controllerContext;
     private RestconfProviderImpl restconfProvider;
     private Server jettyServer;

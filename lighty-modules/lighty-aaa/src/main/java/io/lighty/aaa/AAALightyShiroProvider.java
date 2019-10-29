@@ -7,13 +7,7 @@
  */
 package io.lighty.aaa;
 
-import com.google.common.base.Preconditions;
 import io.lighty.server.LightyServerBuilder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -27,17 +21,18 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.glassfish.jersey.internal.guava.Preconditions;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.opendaylight.aaa.AAAShiroProvider;
+import org.opendaylight.aaa.api.AuthenticationService;
 import org.opendaylight.aaa.api.ClaimCache;
 import org.opendaylight.aaa.api.CredentialAuth;
-import org.opendaylight.aaa.api.IIDMStore;
-import org.opendaylight.aaa.api.PasswordCredentials;
-import org.opendaylight.aaa.api.AuthenticationService;
-import org.opendaylight.aaa.api.IdMServiceImpl;
-import org.opendaylight.aaa.api.StoreBuilder;
 import org.opendaylight.aaa.api.IDMStoreException;
+import org.opendaylight.aaa.api.IIDMStore;
+import org.opendaylight.aaa.api.IdMServiceImpl;
+import org.opendaylight.aaa.api.PasswordCredentials;
+import org.opendaylight.aaa.api.StoreBuilder;
 import org.opendaylight.aaa.api.password.service.PasswordHashService;
 import org.opendaylight.aaa.cert.api.ICertificateManager;
 import org.opendaylight.aaa.datastore.h2.H2Store;
@@ -64,8 +59,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.password.service.config
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.password.service.config.rev170619.PasswordServiceConfigBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import javax.ws.rs.NotFoundException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public final class AAALightyShiroProvider {
 
@@ -73,19 +72,18 @@ public final class AAALightyShiroProvider {
 
     private static AAALightyShiroProvider INSTANCE;
     private static IIDMStore iidmStore;
-
     private final List<Handler> handlers;
     private final DataBroker dataBroker;
     private final ICertificateManager certificateManager;
     private final ShiroConfiguration shiroConfiguration;
-    private  TokenAuthenticators tokenAuthenticators;
+    private final AuthenticationService authenticationService;
+    private final DefaultPasswordHashService defaultPasswordHashService;
+    private TokenAuthenticators tokenAuthenticators;
     private CredentialAuth<PasswordCredentials> credentialAuth;
     private ClaimCache claimCache;
-    private final AuthenticationService authenticationService;
     private PasswordHashService passwordHashService;
     private H2TokenStore tokenStore;
     private IdMServiceImpl idmService;
-    private final DefaultPasswordHashService defaultPasswordHashService;
 
     private ShiroWebEnvironmentLoaderListener shiroWebEnvironmentLoaderListener;
 

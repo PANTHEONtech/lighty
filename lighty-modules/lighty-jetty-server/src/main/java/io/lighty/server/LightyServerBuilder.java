@@ -15,7 +15,12 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 
 import javax.servlet.DispatcherType;
 import java.net.InetSocketAddress;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.EventListener;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Allows user to build jetty server.
@@ -23,13 +28,14 @@ import java.util.*;
  */
 public class LightyServerBuilder {
 
-    final InetSocketAddress inetSocketAddress;
+
     private final Map<FilterHolder, String> filters;
     private final Map<String, String> parameters;
-    final List<Handler> contexts;
     private final List<EventListener> listeners;
-    protected Server server;
 
+    protected final InetSocketAddress inetSocketAddress;
+    protected final List<Handler> contexts;
+    protected Server server;
     /**
      * Init new jetty server on specifc port and address wrapped into {@link InetSocketAddress}
      * @param inetSocketAddress - port and address of server
