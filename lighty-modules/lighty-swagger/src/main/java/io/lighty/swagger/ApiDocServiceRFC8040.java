@@ -10,6 +10,7 @@ package io.lighty.swagger;
 
 import org.opendaylight.netconf.sal.rest.doc.api.ApiDocService;
 import org.opendaylight.netconf.sal.rest.doc.impl.ApiDocGeneratorRFC8040;
+import org.opendaylight.netconf.sal.rest.doc.impl.ApiDocServiceImpl;
 import org.opendaylight.netconf.sal.rest.doc.impl.MountPointSwaggerGeneratorRFC8040;
 import org.opendaylight.netconf.sal.rest.doc.swagger.ApiDeclaration;
 import org.opendaylight.netconf.sal.rest.doc.swagger.ResourceList;
@@ -35,7 +36,7 @@ public class ApiDocServiceRFC8040 extends ApiDocServiceLightyImpl implements Api
     @Override
     public synchronized Response getRootDoc(final UriInfo uriInfo) {
         final ResourceList rootDoc;
-        rootDoc = apiDocGeneratorRFC8040.getResourceListing(uriInfo);
+        rootDoc = apiDocGeneratorRFC8040.getResourceListing(uriInfo, ApiDocServiceImpl.URIType.RFC8040);
         return Response.ok(rootDoc).build();
     }
 
@@ -45,7 +46,7 @@ public class ApiDocServiceRFC8040 extends ApiDocServiceLightyImpl implements Api
     @Override
     public synchronized Response getDocByModule(final String module, final String revision, final UriInfo uriInfo) {
         final ApiDeclaration doc;
-        doc = apiDocGeneratorRFC8040.getApiDeclaration(module, revision, uriInfo);
+        doc = apiDocGeneratorRFC8040.getApiDeclaration(module, revision, uriInfo, ApiDocServiceImpl.URIType.RFC8040);
         return Response.ok(doc).build();
     }
 
