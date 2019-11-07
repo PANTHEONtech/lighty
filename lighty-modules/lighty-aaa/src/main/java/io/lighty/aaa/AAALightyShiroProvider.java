@@ -31,7 +31,15 @@ import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.opendaylight.aaa.AAAShiroProvider;
-import org.opendaylight.aaa.api.*;
+import org.opendaylight.aaa.api.ClaimCache;
+import org.opendaylight.aaa.api.CredentialAuth;
+import org.opendaylight.aaa.api.IIDMStore;
+import org.opendaylight.aaa.api.PasswordCredentials;
+import org.opendaylight.aaa.api.AuthenticationService;
+import org.opendaylight.aaa.api.TokenStore;
+import org.opendaylight.aaa.api.IdMServiceImpl;
+import org.opendaylight.aaa.api.StoreBuilder;
+import org.opendaylight.aaa.api.IDMStoreException;
 import org.opendaylight.aaa.cert.api.ICertificateManager;
 import org.opendaylight.aaa.datastore.h2.H2Store;
 import org.opendaylight.aaa.datastore.h2.H2TokenStore;
@@ -241,8 +249,7 @@ public final class AAALightyShiroProvider {
         });
     }
 
-    private static TokenAuthenticators buildTokenAuthenticators(final CredentialAuth<PasswordCredentials> credentialAuth)
-    {
+    private static TokenAuthenticators buildTokenAuthenticators(final CredentialAuth<PasswordCredentials> credentialAuth) {
         return new TokenAuthenticators(new HttpBasicAuth(credentialAuth));
     }
 
@@ -258,10 +265,8 @@ public final class AAALightyShiroProvider {
      * on OSGi. According to {@link AAAShiroProvider} is singleton, we need to hook public and public static methods
      * from the {@link AAAShiroProvider} with methods from {@link AAALightyShiroProvider}.
      */
-    private void injectLightyShiroProviderMethodsToOriginalProvider()
-    {
-        try
-        {
+    private void injectLightyShiroProviderMethodsToOriginalProvider() {
+        try {
             final CtClass ctClass = ClassPool.getDefault().get("org.opendaylight.aaa.AAAShiroProvider");
             final CtConstructor c = CtNewConstructor.make("public AAAShiroProvider(){}", ctClass);
             ctClass.addConstructor(c);
@@ -323,8 +328,7 @@ public final class AAALightyShiroProvider {
 
             ctClass.toClass();
 
-        } catch (NotFoundException | CannotCompileException e)
-        {
+        } catch (NotFoundException | CannotCompileException e) {
             throw new RuntimeException(e);
         }
     }
