@@ -31,7 +31,7 @@ public final class ShiroConfigurationConfig {
         urls.add(initUrl("/operations/cluster-admin**", "authcBasic, roles[admin]"));
         urls.add(initUrl("/v1/**", "authcBasic, roles[admin]"));
         urls.add(initUrl("/config/aaa*/**", "authcBasic, roles[admin]"));
-        urls.add(initUrl("/**", "authcBasic, dynamicAuthorization"));
+        urls.add(initUrl("/**", "authcBasic"));
 
         return new ShiroConfigurationBuilder().setMain(mains).setUrls(urls).build();
     }
