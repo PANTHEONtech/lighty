@@ -76,7 +76,10 @@
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
         <!--Tests-->
         <dependency>
             <groupId>org.testng</groupId>

@@ -61,7 +61,9 @@ public class CommunityRestConf extends AbstractLightyModule {
     private final int httpPort;
     private final InetAddress inetAddress;
     private final String restconfServletContextPath;
-
+    private RestconfImpl restconfImpl;
+    private BrokerFacade brokerFacade;
+    private ControllerContext controllerContext;
     private RestconfProviderImpl restconfProvider;
     private Server jettyServer;
     private LightyServerBuilder lightyServerBuilder;
@@ -108,12 +110,12 @@ public class CommunityRestConf extends AbstractLightyModule {
     protected boolean initProcedure() {
         final long startTime = System.nanoTime();
         LOG.info("Starting RestConfProvider websocket port: {}", this.webSocketPort);
-        final ControllerContext controllerContext = new ControllerContext(this.domSchemaService,
+        this.controllerContext = new ControllerContext(this.domSchemaService,
                 this.domMountPointService, this.domSchemaService);
-        final BrokerFacade broker = new BrokerFacade(this.domRpcService, this.domDataBroker,
+        this.brokerFacade = new BrokerFacade(this.domRpcService, this.domDataBroker,
                 this.domNotificationService, controllerContext);
-        final RestconfImpl restconf = new RestconfImpl(broker, controllerContext);
-        final StatisticsRestconfServiceWrapper stats = new StatisticsRestconfServiceWrapper(restconf);
+        this.restconfImpl = new RestconfImpl(this.brokerFacade, controllerContext);
+        final StatisticsRestconfServiceWrapper stats = new StatisticsRestconfServiceWrapper(this.restconfImpl);
         this.restconfProvider = new RestconfProviderImpl(stats, IpAddressBuilder.getDefaultInstance(this.inetAddress
                 .getHostAddress()), this.webSocketPort);
         this.restconfProvider.start();
@@ -216,4 +218,17 @@ public class CommunityRestConf extends AbstractLightyModule {
             throw new RuntimeException(e);
         }
     }
+
+    public RestconfImpl getRestconfImpl() {
+        return restconfImpl;
+    }
+
+    public BrokerFacade getBrokerFacade() {
+        return brokerFacade;
+    }
+
+    public ControllerContext getControllerContext() {
+        return controllerContext;
+    }
+
 }
