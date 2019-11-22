@@ -81,6 +81,8 @@ public class ConfigurationServiceFactory {
                     // FIXME add some normal value
                     .put(ConfigurationProperty.DEVICE_CONNECTION_RATE_LIMIT_PER_MIN.toString(),
                             providerConfig.getDeviceConnectionRateLimitPerMin().toString())
+                    .put(ConfigurationProperty.DEVICE_CONNECTION_HOLD_TIME_IN_SECONDS.toString(),
+                            providerConfig.getDeviceConnectionHoldTimeInSeconds().toString())
                     .build());
         }
 
