@@ -7,12 +7,13 @@
  */
 package io.lighty.codecs;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.io.Resources;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.ServiceLoader;
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.DisplayString;
@@ -26,6 +27,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
@@ -39,14 +41,11 @@ import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLe
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapEntryNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.io.Resources;
 
 public abstract class AbstractCodecTest {
 
-    protected static final long EXPECTED_ONE = 1L;
-    protected static final long COFFEE_VALUE = 0xC00FFEEL;
+    protected static final Uint32 EXPECTED_ONE = Uint32.ONE;
+    protected static final Uint32 COFFEE_VALUE = Uint32.valueOf(0xC00FFEEL);
     protected static final String TOASTER_NAMESPACE = "http://netconfcentral.org/ns/toaster";
     protected static final String TOASTER_REVISION = "2009-11-20";
 
@@ -107,7 +106,7 @@ public abstract class AbstractCodecTest {
     /**
      * Utility method to create the {@link NodeIdentifier} for a node within the toaster module. The
      * namespace and version are given by this module.
-     * 
+     *
      * @param nodeName of the node
      * @return created {@link NodeIdentifier}
      */
@@ -117,7 +116,7 @@ public abstract class AbstractCodecTest {
 
     /**
      * Utility method to create the {@link QName} for a node within the toaster module
-     * 
+     *
      * @param nodeName
      * @return created {@link QName}
      */
@@ -132,7 +131,7 @@ public abstract class AbstractCodecTest {
 
     /**
      * Loads the XML file containing a sample {@link Toaster} object
-     * 
+     *
      * <pre>
      * {@code
      * <toaster xmlns="http://netconfcentral.org/ns/toaster">
@@ -142,7 +141,7 @@ public abstract class AbstractCodecTest {
      * </toaster>
      * }
      * </pre>
-     * 
+     *
      * @return
      */
     protected static String loadToasterXml() {
@@ -163,7 +162,7 @@ public abstract class AbstractCodecTest {
 
     /**
      * Helper method for loading {@link YangModuleInfo}s from the classpath
-     * 
+     *
      * @return {@link List} of loaded {@link YangModuleInfo}
      */
     private static List<YangModuleInfo> loadModuleInfos() {
@@ -177,18 +176,14 @@ public abstract class AbstractCodecTest {
 
     /**
      * Build the {@link SchemaContext} based on the loaded {@link YangModuleInfo}s
-     * 
+     *
      * @param moduleInfos {@link List} of {@link YangModuleInfo}s to be used while creating
      *        {@link SchemaContext}
      * @return prepared {@link SchemaContext}
      */
     protected SchemaContext getSchemaContext(List<YangModuleInfo> moduleInfos) {
         moduleInfoBackedCntxt.addModuleInfos(moduleInfos);
-        Optional<SchemaContext> tryToCreateSchemaContext = moduleInfoBackedCntxt.tryToCreateSchemaContext();
-        if (!tryToCreateSchemaContext.isPresent()) {
-            throw new IllegalStateException();
-        }
-        return tryToCreateSchemaContext.get();
+        return moduleInfoBackedCntxt.tryToCreateModelContext().orElseThrow(IllegalStateException::new);
     }
 
     private static NormalizedNode<?, ?> createToasterNormalizedNodes() {
@@ -197,7 +192,7 @@ public abstract class AbstractCodecTest {
                 .withNodeIdentifier(getToasterNodeIdentifier("toasterManufacturer")).build();
         LeafNode<String> toasterStatus = new ImmutableLeafNodeBuilder<String>().withValue(ToasterStatus.Up.getName())
                 .withNodeIdentifier(getToasterNodeIdentifier("toasterStatus")).build();
-        LeafNode<Long> darknessFactor = new ImmutableLeafNodeBuilder<Long>().withValue(COFFEE_VALUE)
+        LeafNode<Uint32> darknessFactor = new ImmutableLeafNodeBuilder<Uint32>().withValue(COFFEE_VALUE)
                 .withNodeIdentifier(getToasterNodeIdentifier("darknessFactor")).build();
         ContainerNode containerNode = ImmutableContainerNodeBuilder.create().withNodeIdentifier(toasterNodeIdentifier)
                 .withValue(ImmutableList.of(manufacturer, darknessFactor, toasterStatus)).build();
@@ -225,7 +220,7 @@ public abstract class AbstractCodecTest {
                 .withValue(ImmutableList.of(input)).build();
         return containerNode;
     }
-    
+
     private static NormalizedNode<?, ?> toasterNotificationNormalizedNodes() {
         NodeIdentifier toasterNodeIdentifier =
                 new NodeIdentifier(QName.create(TOASTER_NAMESPACE, TOASTER_REVISION, "toasterRestocked"));
@@ -240,16 +235,15 @@ public abstract class AbstractCodecTest {
 
     /**
      * Builds the {@link NormalizedNode} representation of {@link DataCodecTest#testedMakeToasterInput}
-     * 
+     *
      * @return {@link NormalizedNode} representation
      */
     private static NormalizedNode<?, ?> createMakeToasterInput() {
-        NodeIdentifier toasterNodeIdentifier = new NodeIdentifier(MakeToastInput.QNAME);
-        LeafNode<Long> doneness = new ImmutableLeafNodeBuilder<Long>().withValue(EXPECTED_ONE)
-                .withNodeIdentifier(getToasterNodeIdentifier("toasterDoneness")).build();
-        ContainerNode containerNode = ImmutableContainerNodeBuilder.create().withNodeIdentifier(toasterNodeIdentifier)
-                .addChild(doneness).build();
-        return containerNode;
+        return ImmutableContainerNodeBuilder.create()
+                .withNodeIdentifier(new NodeIdentifier(MakeToastInput.QNAME))
+                .addChild(new ImmutableLeafNodeBuilder<>().withValue(EXPECTED_ONE)
+                    .withNodeIdentifier(getToasterNodeIdentifier("toasterDoneness")).build())
+                .build();
     }
 
     private static NormalizedNode<?, ?> sampleListNormalizedNodes() {
@@ -257,8 +251,8 @@ public abstract class AbstractCodecTest {
                 ImmutableMapEntryNodeBuilder.create();
         QName keyQname = QName.create(SAMPLES_NAMESPACE, SAMPLES_REVISION, "name");
         QName valueQname = QName.create(SAMPLES_NAMESPACE, SAMPLES_REVISION, "value");
-        NodeIdentifierWithPredicates nodeIdentifier = new NodeIdentifierWithPredicates(
-                QName.create(SAMPLES_NAMESPACE, SAMPLES_REVISION, "sample-list"), ImmutableMap.of(keyQname, "name"));
+        NodeIdentifierWithPredicates nodeIdentifier = NodeIdentifierWithPredicates.of(
+                QName.create(SAMPLES_NAMESPACE, SAMPLES_REVISION, "sample-list"), keyQname, "name");
         create.withNodeIdentifier(nodeIdentifier);
         LeafNode<String> name = new ImmutableLeafNodeBuilder<String>().withNodeIdentifier(new NodeIdentifier(keyQname))
                 .withValue("name").build();

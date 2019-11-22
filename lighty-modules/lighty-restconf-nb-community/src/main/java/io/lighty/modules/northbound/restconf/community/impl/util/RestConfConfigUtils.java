@@ -27,6 +27,7 @@ public final class RestConfConfigUtils {
     public static final String RESTCONF_CONFIG_ROOT_ELEMENT_NAME = "restconf";
     public static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.monitoring.rev170126.$YangModuleInfoImpl.getInstance()
             );
 
@@ -122,8 +123,9 @@ public final class RestConfConfigUtils {
     public static RestConfConfiguration getDefaultRestConfConfiguration(final LightyServices lightyServices) {
         return new RestConfConfiguration(
                 lightyServices.getClusteredDOMDataBroker(), lightyServices.getDOMSchemaService(),
-                lightyServices.getDOMRpcService(), lightyServices.getDOMNotificationService(),
-                lightyServices.getDOMMountPointService(), lightyServices.getDOMSchemaService());
+                lightyServices.getDOMRpcService(), lightyServices.getDOMActionService(),
+                lightyServices.getDOMNotificationService(), lightyServices.getDOMMountPointService(),
+                lightyServices.getDOMSchemaService());
     }
 
     /**
@@ -151,6 +153,7 @@ public final class RestConfConfigUtils {
         config.setDomDataBroker(lightyServices.getClusteredDOMDataBroker());
         config.setSchemaService(lightyServices.getDOMSchemaService());
         config.setDomRpcService(lightyServices.getDOMRpcService());
+        config.setDomActionService(lightyServices.getDOMActionService());
         config.setDomNotificationService(lightyServices.getDOMNotificationService());
         config.setDomMountPointService(lightyServices.getDOMMountPointService());
         config.setDomSchemaService(lightyServices.getDOMSchemaService());

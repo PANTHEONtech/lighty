@@ -7,13 +7,7 @@
  */
 package io.lighty.aaa;
 
-import com.google.common.base.Preconditions;
 import io.lighty.server.LightyServerBuilder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -21,25 +15,25 @@ import javassist.CtConstructor;
 import javassist.CtMethod;
 import javassist.CtNewConstructor;
 import javassist.CtNewMethod;
-import javassist.NotFoundException;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.glassfish.jersey.internal.guava.Preconditions;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.opendaylight.aaa.AAAShiroProvider;
+import org.opendaylight.aaa.api.AuthenticationService;
 import org.opendaylight.aaa.api.ClaimCache;
 import org.opendaylight.aaa.api.CredentialAuth;
-import org.opendaylight.aaa.api.IIDMStore;
-import org.opendaylight.aaa.api.PasswordCredentials;
-import org.opendaylight.aaa.api.AuthenticationService;
-import org.opendaylight.aaa.api.TokenStore;
-import org.opendaylight.aaa.api.IdMServiceImpl;
-import org.opendaylight.aaa.api.StoreBuilder;
 import org.opendaylight.aaa.api.IDMStoreException;
+import org.opendaylight.aaa.api.IIDMStore;
+import org.opendaylight.aaa.api.IdMServiceImpl;
+import org.opendaylight.aaa.api.PasswordCredentials;
+import org.opendaylight.aaa.api.StoreBuilder;
+import org.opendaylight.aaa.api.password.service.PasswordHashService;
 import org.opendaylight.aaa.cert.api.ICertificateManager;
 import org.opendaylight.aaa.datastore.h2.H2Store;
 import org.opendaylight.aaa.datastore.h2.H2TokenStore;
@@ -65,7 +59,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.password.service.config
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.password.service.config.rev170619.PasswordServiceConfigBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.opendaylight.aaa.api.password.service.PasswordHashService;
+import javax.ws.rs.NotFoundException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public final class AAALightyShiroProvider {
 
@@ -73,19 +72,20 @@ public final class AAALightyShiroProvider {
 
     private static AAALightyShiroProvider INSTANCE;
     private static IIDMStore iidmStore;
-
     private final List<Handler> handlers;
     private final DataBroker dataBroker;
     private final ICertificateManager certificateManager;
     private final ShiroConfiguration shiroConfiguration;
-    private  TokenAuthenticators tokenAuthenticators;
+    private final AuthenticationService authenticationService;
+    private final DefaultPasswordHashService defaultPasswordHashService;
+    private TokenAuthenticators tokenAuthenticators;
     private CredentialAuth<PasswordCredentials> credentialAuth;
     private ClaimCache claimCache;
-    private final AuthenticationService authenticationService;
     private PasswordHashService passwordHashService;
-
-    private TokenStore tokenStore;
+    private H2TokenStore tokenStore;
     private IdMServiceImpl idmService;
+
+    private ShiroWebEnvironmentLoaderListener shiroWebEnvironmentLoaderListener;
 
     private AAALightyShiroProvider(final DataBroker dataBroker,
                                    final ICertificateManager certificateManager,
@@ -104,17 +104,17 @@ public final class AAALightyShiroProvider {
         this.authenticationService = new AuthenticationManager();
         injectLightyShiroProviderMethodsToOriginalProvider();
 
-        final DefaultPasswordHashService defaultPasswordHashService;
         if (datastoreConfig != null && datastoreConfig.getStore().equals(DatastoreConfig.Store.H2DataStore)) {
             final IdmLightConfig config = new IdmLightConfigBuilder().dbUser(dbUsername).dbPwd(dbPassword).build();
             final PasswordServiceConfig passwordServiceConfig = new PasswordServiceConfigBuilder().setAlgorithm(
                     "SHA-512").setIterations(20000).build();
-            defaultPasswordHashService = new DefaultPasswordHashService(passwordServiceConfig);
+            this.defaultPasswordHashService = new DefaultPasswordHashService(passwordServiceConfig);
             iidmStore = new H2Store(new IdmLightSimpleConnectionProvider(config), defaultPasswordHashService);
             this.tokenStore = new H2TokenStore(datastoreConfig.getTimeToLive().longValue(), datastoreConfig.getTimeToWait()
                     .longValue());
         }
         else {
+            this.defaultPasswordHashService = null;
             iidmStore = null;
             this.tokenStore = null;
             LOG.info("AAA Datastore has not been initialized");
@@ -149,14 +149,14 @@ public final class AAALightyShiroProvider {
         mainHandler.addServlet(idmLightServlet, "/*");
         server.addContextHandler(contexts);
         this.handlers.add(contexts);
-
-        server.addCommonEventListener(new ShiroWebEnvironmentLoaderListener(shiroConfiguration,
+        this.shiroWebEnvironmentLoaderListener = new ShiroWebEnvironmentLoaderListener(shiroConfiguration,
                 dataBroker,
                 certificateManager,
                 authenticationService,
                 tokenAuthenticators,
                 tokenStore,
-                passwordHashService));
+                passwordHashService);
+        server.addCommonEventListener(shiroWebEnvironmentLoaderListener);
 
         final Map<String, String> properties = new HashMap<>();
         final CustomFilterAdapterConfiguration customFilterAdapterConfig = new CustomFilterAdapterConfigurationImpl(properties);
@@ -220,11 +220,22 @@ public final class AAALightyShiroProvider {
         return this.shiroConfiguration;
     }
 
+    public ShiroWebEnvironmentLoaderListener getShiroWebEnvironmentLoaderListener() {
+        return shiroWebEnvironmentLoaderListener;
+    }
+
     public TokenAuthenticators getTokenAuthenticators()
     {
         return this.tokenAuthenticators;
     }
 
+    public H2TokenStore getTokenStore() {
+        return tokenStore;
+    }
+
+    public DefaultPasswordHashService getDefaultPasswordHashService() {
+        return defaultPasswordHashService;
+    }
     /**
      * Get IDM data store.
      *
@@ -328,7 +339,7 @@ public final class AAALightyShiroProvider {
 
             ctClass.toClass();
 
-        } catch (NotFoundException | CannotCompileException e) {
+        } catch (NotFoundException | CannotCompileException | javassist.NotFoundException e) {
             throw new RuntimeException(e);
         }
     }

@@ -85,7 +85,7 @@ public class DeserializeIdentifierCodec {
         builder.append("=");
         final List<String> keyValue = new ArrayList<>();
         for (final QName qName : keyDefinition) {
-            final Object value = listId.getKeyValues().get(qName);
+            final Object value = listId.getValue(qName);
             if (value == null) {
                 throw new IllegalStateException("all key values must be present");
             }
