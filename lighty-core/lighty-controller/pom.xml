@@ -42,6 +42,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
+        <!--odl-sfc-->
+        <dependency>
+            <groupId>org.opendaylight.sfc</groupId>
+            <artifactId>sfc-provider</artifactId>
+        </dependency>
         <!--odl-infrautils-->
         <dependency>
             <groupId>org.opendaylight.infrautils</groupId>

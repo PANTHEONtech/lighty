@@ -44,6 +44,7 @@ import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListenerRegistr
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
+import org.opendaylight.yang.gen.v1.urn.cisco.params.xml.ns.yang.sfc.rsp.rev140701.RenderedServicePathService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
 
@@ -130,6 +131,8 @@ public interface LightyServices extends LightyModuleRegistryService {
     NotificationPublishService getBindingNotificationPublishService();
 
     DataBroker getBindingDataBroker();
+
+    RenderedServicePathService getRenderedServicePathService();
 
     @Deprecated
     BindingToNormalizedNodeCodec getNormalizedNodeCodec();

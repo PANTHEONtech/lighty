@@ -107,6 +107,8 @@ import org.opendaylight.mdsal.eos.binding.dom.adapter.BindingDOMEntityOwnershipS
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.mdsal.singleton.dom.impl.DOMClusterSingletonServiceProviderImpl;
+import org.opendaylight.sfc.provider.SfcProviderRpc;
+import org.opendaylight.yang.gen.v1.urn.cisco.params.xml.ns.yang.sfc.rsp.rev140701.RenderedServicePathService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.util.DurationStatisticsTracker;
@@ -183,6 +185,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private org.opendaylight.controller.md.sal.binding.api.DataBroker domPingPongDataBrokerOld;
     private org.opendaylight.controller.md.sal.binding.impl.BindingDOMNotificationServiceAdapter notificatoinServiceOld;
     private final LightySystemReadyMonitorImpl systemReadyMonitor;
+    private SfcProviderRpc sfcProviderRpc;
 
     public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
                                 final ClassLoader actorSystemClassLoader,
@@ -339,6 +342,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
         this.domPingPongDataBrokerOld = new org.opendaylight.controller.md.sal.binding.impl.BindingDOMDataBrokerAdapter(
                 this.pingPongDataBrokerOld, this.codecOld);
+
+        this.sfcProviderRpc = new SfcProviderRpc(domDataBrokerOld);
 
         this.bossGroup = new NioEventLoopGroup();
         this.workerGroup = new NioEventLoopGroup();
@@ -710,5 +715,10 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     public DOMActionProviderService getDOMActionProviderSerice() {
         return domActionProviderService;
+    }
+
+    @Override
+    public RenderedServicePathService getRenderedServicePathService() {
+        return sfcProviderRpc;
     }
 }
