@@ -13,6 +13,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow.provider.config.rev160510.OpenflowProviderConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow.provider.config.rev160510.OpenflowProviderConfigBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflowplugin.app.forwardingrules.manager.config.rev160511.ForwardingRulesManagerConfigBuilder;
+import org.opendaylight.yangtools.yang.common.Uint16;
 
 public class OpenflowpluginConfiguration {
 
@@ -44,6 +45,7 @@ public class OpenflowpluginConfiguration {
     private boolean isFrmBundleBasedReconciliationEnabled = false;
     private long nonZeroUint32Type;
     private boolean enableForwardingRulesManager;
+    private Uint16 deviceConnectionHoldTimeInSeconds;
 
     protected OpenflowpluginConfiguration() {
         this.switchConfig = new SwitchConfig();
@@ -72,10 +74,11 @@ public class OpenflowpluginConfiguration {
                     .setIsQueueStatisticsPollingOn(true)
                     .setIsFlowStatisticsPollingOn(true)
                     .setIsTableStatisticsPollingOn(true)
-                    .setDeviceConnectionRateLimitPerMin(0)
+                    .setDeviceConnectionRateLimitPerMin(Uint16.valueOf(0))
                     .setIsGroupStatisticsPollingOn(true)
                     .setIsPortStatisticsPollingOn(true)
                     .setIsMeterStatisticsPollingOn(true)
+                    .setDeviceConnectionHoldTimeInSeconds(this.deviceConnectionHoldTimeInSeconds)
                     .build();
         }
         return this.defaultOpenflowProviderConfig;
@@ -103,10 +106,11 @@ public class OpenflowpluginConfiguration {
                 .setIsQueueStatisticsPollingOn(true)
                 .setIsFlowStatisticsPollingOn(true)
                 .setIsTableStatisticsPollingOn(true)
-                .setDeviceConnectionRateLimitPerMin(0)
+                .setDeviceConnectionRateLimitPerMin(Uint16.valueOf(0))
                 .setIsGroupStatisticsPollingOn(true)
                 .setIsPortStatisticsPollingOn(true)
                 .setIsMeterStatisticsPollingOn(true)
+                .setDeviceConnectionHoldTimeInSeconds(this.deviceConnectionHoldTimeInSeconds)
                 .build();
     }
 
@@ -313,5 +317,13 @@ public class OpenflowpluginConfiguration {
 
     public long getNonZeroUint32Type() {
         return this.nonZeroUint32Type;
+    }
+
+    public Uint16 getDeviceConnectionHoldTimeInSeconds() {
+        return deviceConnectionHoldTimeInSeconds;
+    }
+
+    public void setDeviceConnectionHoldTimeInSeconds(Uint16 deviceConnectionHoldTimeInSeconds) {
+        this.deviceConnectionHoldTimeInSeconds = deviceConnectionHoldTimeInSeconds;
     }
 }

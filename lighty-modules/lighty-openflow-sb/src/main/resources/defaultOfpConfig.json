@@ -19,6 +19,7 @@
     "frmReconciliationRetryCount": 5,
     "nonZeroUint32Type": 900000,
     "enableForwardingRulesManager": true,
+    "deviceConnectionHoldTimeInSeconds": 60,
     "switchConfig": {
       "instanceName": "openflow-switch-connection-provider-default-impl",
       "port": 6653,
