@@ -493,6 +493,44 @@
             <artifactId>singlenode-configuration</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.infrautils</groupId>
+            <artifactId>odl-infrautils-caches</artifactId>
+            <version>1.7.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.infrautils</groupId>
+            <artifactId>metrics-api</artifactId>
+            <version>1.7.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.dropwizard.metrics</groupId>
+            <artifactId>metrics-jvm</artifactId>
+            <version>4.0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>findbugs-annotations</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.infrautils</groupId>
+            <artifactId>jobcoordinator-api</artifactId>
+            <version>1.5.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.openflowplugin.applications</groupId>
+            <artifactId>forwardingrules-manager</artifactId>
+            <version>0.10.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>

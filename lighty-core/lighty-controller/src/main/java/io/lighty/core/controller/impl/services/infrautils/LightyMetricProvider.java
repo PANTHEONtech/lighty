@@ -1,4 +1,4 @@
-package io.lighty.infrautils;
+package io.lighty.core.controller.impl.services.infrautils;
 
 import static com.codahale.metrics.Slf4jReporter.LoggingLevel.INFO;
 import static java.lang.management.ManagementFactory.getThreadMXBean;
@@ -48,10 +48,11 @@ public class LightyMetricProvider implements MetricProvider {
     private final JmxReporter jmxReporter;
     private final Slf4jReporter slf4jReporter;
 
-    private volatile MetricsFileReporter fileReporter; //nullable
-    private volatile ThreadsWatcher threadsWatcher; //nullable
+    //org.opendaylight.infrautils.metrics.internal
+    private volatile LightyMetricsFileReporter fileReporter; //nullable
+    private volatile LightyThreadsWatcher threadsWatcher; //nullable
 
-    public MetricProviderImpl() {
+    public LightyMetricProvider() {
         this.registry = new MetricRegistry();
 
         setUpJvmMetrics(registry);
@@ -59,12 +60,9 @@ public class LightyMetricProvider implements MetricProvider {
         jmxReporter = setUpJmxReporter(registry);
 
         slf4jReporter = setUpSlf4jReporter(registry);
-
-        // TODO really get this to work in Karaf, through PAX Logging.. (it's currently NOK)
-        // instrumentLog4jV2(registry);
     }
 
-    public LightyMetricProvider(Configuration configuration) {//todo metric internal
+    public LightyMetricProvider(LightyConfiguration configuration) {
         this();
         updateConfiguration(configuration);
     }
@@ -75,7 +73,8 @@ public class LightyMetricProvider implements MetricProvider {
         this.slf4jReporter = slf4jReporter;
     }
 
-    public final void updateConfiguration(Configuration configuration) {//todo metric internal
+    public final void updateConfiguration(LightyConfiguration configuration) {
+        //todo metric internal
         if (threadsWatcher != null) {
             threadsWatcher.close();
         }
@@ -86,7 +85,7 @@ public class LightyMetricProvider implements MetricProvider {
                 != threadsWatcher.getMaxThreadsMaxLogInterval().getSeconds()
                 || configuration.getDeadlockedThreadsMaxLogIntervalSecs()
                 != threadsWatcher.getDeadlockedThreadsMaxLogInterval().getSeconds()) {
-            threadsWatcher = new ThreadsWatcher(configuration.getMaxThreads(),
+            threadsWatcher = new LightyThreadsWatcher(configuration.getMaxThreads(),
                     Duration.ofMillis(configuration.getThreadsWatcherIntervalMS()),
                     Duration.ofSeconds(configuration.getMaxThreadsMaxLogIntervalSecs()),
                     Duration.ofSeconds(configuration.getDeadlockedThreadsMaxLogIntervalSecs()));
@@ -99,7 +98,7 @@ public class LightyMetricProvider implements MetricProvider {
         int fileReporterInterval = fileReporter != null ? (int)fileReporter.getInterval().getSeconds() : 0;
         if (fileReporterInterval != configuration.getFileReporterIntervalSecs()) {
             if (configuration.getFileReporterIntervalSecs() > 0) {
-                fileReporter = new MetricsFileReporter(registry,
+                fileReporter = new LightyMetricsFileReporter(registry,
                         Duration.ofSeconds(configuration.getFileReporterIntervalSecs()));
                 fileReporter.startReporter();
             }
@@ -138,7 +137,7 @@ public class LightyMetricProvider implements MetricProvider {
 
     private static JmxReporter setUpJmxReporter(MetricRegistry registry) {
         JmxReporter reporter = JmxReporter.forRegistry(registry)
-                .createsObjectNamesWith(new CustomObjectNameFactory()).build(); //TODO infrautils internal
+                .createsObjectNamesWith(new LightyObjectNameFactory()).build();
         reporter.start();
         LOG.info("JmxReporter started, ODL application's metrics are now available via JMX");
         return reporter;
@@ -161,23 +160,6 @@ public class LightyMetricProvider implements MetricProvider {
         slf4jReporter.report();
         return slf4jReporter;
     }
-
-    // http://metrics.dropwizard.io/3.1.0/manual/log4j/
-//    private static void instrumentLog4jV2(MetricRegistry registry) {
-//        // TODO Confirm that Level ALL is a good idea?
-//        Level level = ALL;
-//
-//        InstrumentedAppender appender = new InstrumentedAppender(registry,
-//                null /* null Filter fine, because we don't use filters */,
-//                null /* null PatternLayout, because the layout isn't used in InstrumentedAppender */, false);
-//        appender.start();
-//
-//        LoggerContext context = (LoggerContext) LogManager.getContext(false);
-//        Configuration config = context.getConfiguration();
-//        config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME).addAppender(appender, level,
-//                null /* null Filter fine, because we don't use filters */);
-//        context.updateLoggers(config);
-//    }
 
     private org.opendaylight.infrautils.metrics.Meter newOrExistingMeter(Object anchor, String id) {
         return meters.computeIfAbsent(id, newId -> {
