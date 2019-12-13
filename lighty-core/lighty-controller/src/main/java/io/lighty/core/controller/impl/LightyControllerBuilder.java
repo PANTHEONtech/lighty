@@ -13,8 +13,6 @@ import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
-import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
-import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.infrautils.metrics.internal.MetricProviderImpl;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 
@@ -74,7 +72,7 @@ public class LightyControllerBuilder {
                     this.controllerConfiguration.getConfigDatastoreContext(),
                     this.controllerConfiguration.getOperDatastoreContext(),
                     this.controllerConfiguration.getDatastoreProperties(),
-                    modelSet, provider, new JobCoordinator(provider)
+                    modelSet
                     );
         } catch (final Exception e) {
             throw new ConfigurationException(e);
