@@ -65,7 +65,15 @@ import org.opendaylight.controller.sal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.controller.sal.core.compat.LegacyDOMDataBrokerAdapter;
 import org.opendaylight.controller.sal.core.compat.LegacyPingPongDOMDataBrokerAdapter;
+import org.opendaylight.infrautils.caches.CacheProvider;
+import org.opendaylight.infrautils.caches.baseimpl.CacheManagersRegistry;
+import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistryImpl;
+import org.opendaylight.infrautils.caches.guava.internal.GuavaCacheProvider;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.infrautils.jobcoordinator.internal.JobCoordinatorImpl;
+import org.opendaylight.infrautils.metrics.MetricProvider;
+import org.opendaylight.infrautils.metrics.internal.MetricProviderImpl;
 import org.opendaylight.infrautils.ready.SystemReadyMonitor;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -184,6 +192,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private org.opendaylight.controller.md.sal.binding.impl.BindingDOMNotificationServiceAdapter notificatoinServiceOld;
     private final LightySystemReadyMonitorImpl systemReadyMonitor;
 
+    private CacheProvider cacheProvider;
+    private JobCoordinator jobCoordinator;
+    private MetricProvider metricProvider;
+
+
     public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
                                 final ClassLoader actorSystemClassLoader,
                                 final ControllerConfiguration.DOMNotificationRouterConfig domNotificationRouterConfig ,
@@ -221,6 +234,9 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.datastoreProperties = datastoreProperties;
         this.modelSet = modelSet;
         this.systemReadyMonitor = new LightySystemReadyMonitorImpl();
+        this.metricProvider = new MetricProviderImpl();
+        this.jobCoordinator = new JobCoordinatorImpl(metricProvider);
+        this.cacheProvider = new GuavaCacheProvider(new CacheManagersRegistryImpl());
         this.lightyDiagStatusService = new LightyDiagStatusServiceImpl(systemReadyMonitor);
     }
 
@@ -447,6 +463,21 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     public LightySystemReadyService getLightySystemReadyService() {
         return this.systemReadyMonitor;
+    }
+
+    @Override
+    public CacheProvider getCacheProvider() {
+        return this.cacheProvider;
+    }
+
+    @Override
+    public JobCoordinator getJobCoordinator() {
+        return this.jobCoordinator;
+    }
+
+    @Override
+    public MetricProvider getLightyMetricProvider() {
+        return this.metricProvider;
     }
 
     @Override

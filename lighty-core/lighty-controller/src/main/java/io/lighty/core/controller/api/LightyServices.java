@@ -18,7 +18,10 @@ import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
 import org.opendaylight.controller.config.threadpool.ThreadPool;
 import org.opendaylight.controller.sal.binding.api.NotificationProviderService;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
+import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.infrautils.ready.SystemReadyMonitor;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -60,6 +63,12 @@ public interface LightyServices extends LightyModuleRegistryService {
     SystemReadyMonitor getSystemReadyMonitor();
 
     LightySystemReadyService getLightySystemReadyService();
+
+    JobCoordinator getJobCoordinator();
+
+    MetricProvider getMetricProvider();
+
+    CacheProvider getCacheProvider();
 
     ActorSystemProvider getActorSystemProvider();
 
@@ -130,6 +139,8 @@ public interface LightyServices extends LightyModuleRegistryService {
     NotificationPublishService getBindingNotificationPublishService();
 
     DataBroker getBindingDataBroker();
+
+
 
     @Deprecated
     BindingToNormalizedNodeCodec getNormalizedNodeCodec();

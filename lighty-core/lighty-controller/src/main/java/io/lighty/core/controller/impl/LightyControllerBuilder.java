@@ -12,7 +12,10 @@ import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
+
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.infrautils.metrics.MetricProvider;
+import org.opendaylight.infrautils.metrics.internal.MetricProviderImpl;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 
 /**
@@ -52,6 +55,8 @@ public class LightyControllerBuilder {
      * @throws ConfigurationException if cannot find yang model artifacts.
      */
     public LightyController build() throws ConfigurationException {
+//        LightyMetricProvider provider = new LightyMetricProvider();
+        MetricProviderImpl provider = new MetricProviderImpl();
         try {
             final Set<YangModuleInfo> modelSet = this.controllerConfiguration.getSchemaServiceConfig().getModels();
             return new LightyControllerImpl(this.executorService,
@@ -69,7 +74,7 @@ public class LightyControllerBuilder {
                     this.controllerConfiguration.getConfigDatastoreContext(),
                     this.controllerConfiguration.getOperDatastoreContext(),
                     this.controllerConfiguration.getDatastoreProperties(),
-                    modelSet
+                    modelSet, provider, new JobCoordinator(provider)
                     );
         } catch (final Exception e) {
             throw new ConfigurationException(e);
