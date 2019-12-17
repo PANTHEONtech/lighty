@@ -426,9 +426,8 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.fusesource.leveldbjni</groupId>
+            <groupId>org.opendaylight.odlparent</groupId>
             <artifactId>leveldbjni-all</artifactId>
-            <version>1.8-odl</version>
         </dependency>
 
         <!--odl-mdsal-remoterpc-connector-->
