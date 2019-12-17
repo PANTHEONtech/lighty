@@ -11,38 +11,6 @@
 
   <profiles>
     <profile>
-      <id>opendaylight-release</id>
-      <repositories>
-        <repository>
-          <id>opendaylight-mirror</id>
-          <name>opendaylight-mirror</name>
-          <url>https://nexus.opendaylight.org/content/repositories/public/</url>
-          <releases>
-            <enabled>true</enabled>
-            <updatePolicy>never</updatePolicy>
-          </releases>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-        </repository>
-      </repositories>
-      <pluginRepositories>
-        <pluginRepository>
-          <id>opendaylight-mirror</id>
-          <name>opendaylight-mirror</name>
-          <url>https://nexus.opendaylight.org/content/repositories/public/</url>
-          <releases>
-            <enabled>true</enabled>
-            <updatePolicy>never</updatePolicy>
-          </releases>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-        </pluginRepository>
-      </pluginRepositories>
-    </profile>
-
-    <profile>
       <id>opendaylight-snapshots</id>
       <repositories>
         <repository>
@@ -74,7 +42,6 @@
   </profiles>
 
   <activeProfiles>
-    <activeProfile>opendaylight-release</activeProfile>
     <activeProfile>opendaylight-snapshots</activeProfile>
   </activeProfiles>
 </settings>
