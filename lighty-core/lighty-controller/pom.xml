@@ -444,9 +444,10 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.fusesource.leveldbjni</groupId>
+            <groupId>org.opendaylight.odlparent</groupId>
             <artifactId>leveldbjni-all</artifactId>
-            <version>1.8-odl</version>
+            <!-- All versions should be equivalent, pick the latest one -->
+            <version>6.0.3</version>
         </dependency>
 
         <!--odl-mdsal-remoterpc-connector-->
@@ -470,6 +471,13 @@
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>sal-distributed-datastore</artifactId>
+            <exclusions>
+                <exclusion>
+                    <!-- JSR173 ships with JRE by default -->
+                    <groupId>com.bea.xml</groupId>
+                    <artifactId>jsr173-ri</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
