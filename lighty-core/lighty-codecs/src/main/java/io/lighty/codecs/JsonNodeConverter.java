@@ -109,8 +109,6 @@ public class JsonNodeConverter implements NodeConverter {
             if (!writer.toString().endsWith("}")) {
                 jsonWriter.endObject();
             }
-            jsonWriter.endObject();
-            jsonWriter.flush();
         } catch (IOException ioe) {
             throw new SerializationException(ioe);
         }
