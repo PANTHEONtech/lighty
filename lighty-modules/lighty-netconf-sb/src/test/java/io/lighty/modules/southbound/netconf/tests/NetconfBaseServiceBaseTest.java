@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
+import org.opendaylight.yangtools.rcf8528.data.util.EmptyMountPointContext;
+import org.opendaylight.yangtools.rfc8528.data.api.MountPointContext;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
@@ -26,6 +28,7 @@ import org.w3c.dom.Element;
 public abstract class NetconfBaseServiceBaseTest {
 
     protected SchemaContext schemaContext;
+    protected MountPointContext mountContext;
 
     @BeforeClass
     public void beforeTest() {
@@ -40,9 +43,10 @@ public abstract class NetconfBaseServiceBaseTest {
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.$YangModuleInfoImpl.getInstance()
         );
         schemaContext = getSchemaContext(new ArrayList<>(yangModuleInfos));
+        mountContext = new EmptyMountPointContext(schemaContext);
     }
 
-    static SchemaContext getSchemaContext(List<YangModuleInfo> moduleInfos) {
+    static SchemaContext getSchemaContext(final List<YangModuleInfo> moduleInfos) {
         ModuleInfoBackedContext moduleInfoBackedCntxt = ModuleInfoBackedContext.create();
         moduleInfoBackedCntxt.addModuleInfos(moduleInfos);
         Optional<SchemaContext> tryToCreateSchemaContext =
@@ -53,8 +57,8 @@ public abstract class NetconfBaseServiceBaseTest {
         return tryToCreateSchemaContext.get();
     }
 
-    boolean hasSpecificChild(Collection<DataContainerChild<? extends PathArgument, ?>> children,
-                                     String localName) {
+    boolean hasSpecificChild(final Collection<DataContainerChild<? extends PathArgument, ?>> children,
+                                     final String localName) {
         return children.stream()
                 .anyMatch(child -> child.getIdentifier().getNodeType().getLocalName().equals(localName));
     }
