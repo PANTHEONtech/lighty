@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.lighty.core</groupId>
     <artifactId>lighty-bom</artifactId>
-    <version>8.4.2-SNAPSHOT</version>
+    <version>8.4.2</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -26,83 +26,83 @@
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-codecs</artifactId>
-                <version>8.4.2-SNAPSHOT</version>
+                <version>8.4.2</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-common</artifactId>
-                <version>8.4.2-SNAPSHOT</version>
+                <version>8.4.2</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-controller</artifactId>
-                <version>8.4.2-SNAPSHOT</version>
+                <version>8.4.2</version>
             </dependency>
 
             <!-- DI framework integrations -->
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-controller-spring-di</artifactId>
-                <version>8.4.2-SNAPSHOT</version>
+                <version>8.4.2</version>
             </dependency>
 
             <!-- Modules -->
             <dependency>
                 <groupId>io.lighty.modules</groupId>
                 <artifactId>lighty-aaa</artifactId>
-                <version>8.4.2-SNAPSHOT</version>
+                <version>8.4.2</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules</groupId>
                 <artifactId>lighty-jetty-server</artifactId>
-                <version>8.4.2-SNAPSHOT</version>
+                <version>8.4.2</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules</groupId>
                 <artifactId>lighty-netconf-sb</artifactId>
-                <version>8.4.2-SNAPSHOT</version>
+                <version>8.4.2</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules</groupId>
                 <artifactId>lighty-restconf-nb-community</artifactId>
-                <version>8.4.2-SNAPSHOT</version>
+                <version>8.4.2</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules</groupId>
                 <artifactId>lighty-swagger</artifactId>
-                <version>8.4.2-SNAPSHOT</version>
+                <version>8.4.2</version>
             </dependency>
 
             <!-- Utility resources -->
             <dependency>
                 <groupId>io.lighty.resources</groupId>
                 <artifactId>controller-application-assembly</artifactId>
-                <version>8.4.2-SNAPSHOT</version>
+                <version>8.4.2</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>io.lighty.resources</groupId>
                 <artifactId>singlenode-configuration</artifactId>
-                <version>8.4.2-SNAPSHOT</version>
+                <version>8.4.2</version>
             </dependency>
 
             <!-- Dependencies and resources which should not normally leak into production -->
             <dependency>
                 <groupId>io.lighty.models.test</groupId>
                 <artifactId>lighty-test-models</artifactId>
-                <version>8.4.2-SNAPSHOT</version>
+                <version>8.4.2</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>io.lighty.models.test</groupId>
                 <artifactId>lighty-toaster</artifactId>
-                <version>8.4.2-SNAPSHOT</version>
+                <version>8.4.2</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>io.lighty.resources</groupId>
                 <artifactId>log4j-properties</artifactId>
-                <version>8.4.2-SNAPSHOT</version>
+                <version>8.4.2</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -143,7 +143,7 @@
         <connection>scm:git:https://github.com/PantheonTechnologies/lighty-core.git</connection>
         <developerConnection>scm:git:https://github.com/PantheonTechnologies/lighty-core.git</developerConnection>
         <url>https://github.com/PantheonTechnologies/lighty-core</url>
-      <tag>HEAD</tag>
+      <tag>8.4.2</tag>
   </scm>
     <developers>
         <developer>

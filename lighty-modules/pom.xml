@@ -11,7 +11,7 @@
 
     <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-modules-aggregator</artifactId>
-    <version>8.4.2-SNAPSHOT</version>
+    <version>8.4.2</version>
     <packaging>pom</packaging>
 
     <properties>
