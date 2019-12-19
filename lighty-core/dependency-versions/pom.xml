@@ -110,11 +110,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>org.opendaylight.serviceutils</groupId>
-                <artifactId>srm-impl</artifactId>
-                <version>0.4.2-SNAPSHOT</version>
-            </dependency>
 
             <!-- Other third-party stuff -->
             <dependency>
