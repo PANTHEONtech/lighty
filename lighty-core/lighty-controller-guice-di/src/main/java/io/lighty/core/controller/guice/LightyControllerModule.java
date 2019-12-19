@@ -21,7 +21,10 @@ import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
 import org.opendaylight.controller.config.threadpool.ThreadPool;
 import org.opendaylight.controller.sal.binding.api.NotificationProviderService;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
+import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
@@ -144,6 +147,12 @@ public class LightyControllerModule extends AbstractModule {
                 .toInstance(lightyServices);
         bind(LightyModuleRegistryService.class)
                 .toInstance(lightyServices);
+        bind(MetricProvider.class)
+                .toInstance(lightyServices.getMetricProvider());
+        bind(CacheProvider.class)
+                .toInstance(lightyServices.getCacheProvider());
+        bind(JobCoordinator.class)
+                .toInstance(lightyServices.getJobCoordinator());
         // Deprecated services
         bind(NotificationProviderService.class)
                 .toInstance(lightyServices.getControllerNotificationProviderService());
@@ -179,6 +188,7 @@ public class LightyControllerModule extends AbstractModule {
                 .toInstance(lightyServices.getControllerBindingPingPongDataBroker());
         bind(org.opendaylight.controller.md.sal.binding.api.NotificationPublishService.class)
                 .toInstance(lightyServices.getControllerBindingNotificationPublishService());
+
         LOG.info("Lighty bindings initialized.");
     }
 
