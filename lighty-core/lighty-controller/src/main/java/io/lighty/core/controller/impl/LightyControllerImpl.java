@@ -7,14 +7,25 @@
  */
 package io.lighty.core.controller.impl;
 
+import akka.cluster.Cluster;
+import akka.management.cluster.bootstrap.ClusterBootstrap;
+import akka.management.javadsl.AkkaManagement;
+import com.google.common.util.concurrent.ListenableScheduledFuture;
+import com.google.common.util.concurrent.ListeningScheduledExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.typesafe.config.Config;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyServices;
+import io.lighty.core.controller.impl.cluster.UnreachableListenerService;
 import io.lighty.core.controller.impl.schema.SchemaServiceProvider;
 import io.lighty.core.controller.impl.services.LightyDiagStatusServiceImpl;
 import io.lighty.core.controller.impl.services.LightySystemReadyMonitorImpl;
 import io.lighty.core.controller.impl.services.LightySystemReadyService;
+import io.lighty.core.controller.impl.util.ControllerConfigUtils;
+import static io.lighty.core.controller.impl.util.ControllerConfigUtils.MODULE_SHARDS_TMP_PATH;
+import static io.lighty.core.controller.impl.util.ControllerConfigUtils.generateModuleShardsForMembers;
+import static io.lighty.core.controller.impl.util.ControllerConfigUtils.isKubernetesDeployment;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.HashedWheelTimer;
@@ -22,11 +33,18 @@ import io.netty.util.Timer;
 import io.netty.util.concurrent.DefaultEventExecutor;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.EventExecutor;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.akka.impl.ActorSystemProviderImpl;
 import org.opendaylight.controller.cluster.common.actor.QuarantinedMonitorActor;
@@ -98,11 +116,14 @@ import org.opendaylight.mdsal.eos.binding.dom.adapter.BindingDOMEntityOwnershipS
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.mdsal.singleton.dom.impl.DOMClusterSingletonServiceProviderImpl;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.AddReplicasForAllShardsInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.AddReplicasForAllShardsOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,7 +143,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private final DatastoreContext configDatastoreContext;
     private final DatastoreContext operDatastoreContext;
     private final Map<String, Object> datastoreProperties;
-    private final String moduleShardsConfig;
     private final String modulesConfig;
     private final String restoreDirectoryPath;
     private final int maxDataBrokerFutureCallbackQueueSize;
@@ -130,6 +150,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private final int mailboxCapacity;
     private final boolean metricCaptureEnabled;
 
+    private String moduleShardsConfig;
     private ActorSystemProviderImpl actorSystemProvider;
     private DatastoreSnapshotRestore datastoreSnapshotRestore;
     private AbstractDataStore configDatastore;
@@ -173,15 +194,16 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private org.opendaylight.controller.md.sal.binding.api.DataBroker domPingPongDataBrokerOld;
     private org.opendaylight.controller.md.sal.binding.impl.BindingDOMNotificationServiceAdapter notificatoinServiceOld;
     private final LightySystemReadyMonitorImpl systemReadyMonitor;
+    private AkkaManagement akkaManagement;
 
     public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
-            final ClassLoader actorSystemClassLoader,
-            final DOMNotificationRouter domNotificationRouter, final String restoreDirectoryPath,
-            final int maxDataBrokerFutureCallbackQueueSize, final int maxDataBrokerFutureCallbackPoolSize,
-            final boolean metricCaptureEnabled, final int mailboxCapacity, final Properties distributedEosProperties,
-            final String moduleShardsConfig, final String modulesConfig, final DatastoreContext configDatastoreContext,
-            final DatastoreContext operDatastoreContext, final Map<String, Object> datastoreProperties,
-            final Set<YangModuleInfo> modelSet) {
+                                final ClassLoader actorSystemClassLoader,
+                                final DOMNotificationRouter domNotificationRouter, final String restoreDirectoryPath,
+                                final int maxDataBrokerFutureCallbackQueueSize, final int maxDataBrokerFutureCallbackPoolSize,
+                                final boolean metricCaptureEnabled, final int mailboxCapacity, final Properties distributedEosProperties,
+                                final String moduleShardsConfig, final String modulesConfig, final DatastoreContext configDatastoreContext,
+                                final DatastoreContext operDatastoreContext, final Map<String, Object> datastoreProperties,
+                                final Set<YangModuleInfo> modelSet) {
         super(executorService);
         initSunXMLWriterProperty();
         this.actorSystemConfig = actorSystemConfig;
@@ -219,15 +241,25 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     protected boolean initProcedure() {
         final long startTime = System.nanoTime();
+        final boolean k8sDeployment = isKubernetesDeployment(this.actorSystemConfig);
 
         //INIT actor system provider
         this.actorSystemProvider = new ActorSystemProviderImpl(this.actorSystemClassLoader,
-                QuarantinedMonitorActor.props(() -> {}), this.actorSystemConfig);
+                QuarantinedMonitorActor.props(() -> {
+                }), this.actorSystemConfig);
+
+        this.akkaManagement = AkkaManagement.get(actorSystemProvider.getActorSystem());
+        akkaManagement.start();
+        //INIT cluster bootstrap, if this is Kubernetes Deployment
+        if (k8sDeployment) {
+            initializeK8sClustering();
+        }
+
         this.datastoreSnapshotRestore = DatastoreSnapshotRestore.instance(this.restoreDirectoryPath);
 
         //INIT schema context
         this.moduleInfoBackedContext = ModuleInfoBackedContext.create();
-        this.modelSet.forEach( m -> {
+        this.modelSet.forEach(m -> {
             this.moduleInfoBackedContext.registerModuleInfo(m);
         });
         this.schemaServiceProvider = new SchemaServiceProvider(this.moduleInfoBackedContext);
@@ -323,6 +355,17 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.domPingPongDataBrokerOld = new org.opendaylight.controller.md.sal.binding.impl.BindingDOMDataBrokerAdapter(
                 this.pingPongDataBrokerOld, this.codecOld);
 
+        if (k8sDeployment) {
+            Long podRestartTimeout = null;
+            if (this.actorSystemConfig.hasPath(ControllerConfigUtils.K8S_POD_RESTART_TIMEOUT_PATH)) {
+                podRestartTimeout = this.actorSystemConfig.getLong(ControllerConfigUtils.K8S_POD_RESTART_TIMEOUT_PATH);
+            }
+            this.clusterSingletonServiceProvider.registerClusterSingletonService(new UnreachableListenerService(
+                    this.actorSystemProvider.getActorSystem(), this.domDataBroker, this.clusterAdminRpcService,
+                    podRestartTimeout));
+            this.askForShards();
+        }
+
         this.bossGroup = new NioEventLoopGroup();
         this.workerGroup = new NioEventLoopGroup();
         this.eventExecutor = new DefaultEventExecutor();
@@ -337,10 +380,10 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     private AbstractDataStore prepareDataStore(final DatastoreContext datastoreContext, final String moduleShardsConfig,
-            final String modulesConfig,
-            final DOMSchemaService domSchemaService,
-            final DatastoreSnapshotRestore datastoreSnapshotRestore,
-            final ActorSystemProvider actorSystemProvider) {
+                                               final String modulesConfig,
+                                               final DOMSchemaService domSchemaService,
+                                               final DatastoreSnapshotRestore datastoreSnapshotRestore,
+                                               final ActorSystemProvider actorSystemProvider) {
         final ConfigurationImpl configuration = new ConfigurationImpl(moduleShardsConfig, modulesConfig);
         final DatastoreContextIntrospector introspector = new DatastoreContextIntrospector(datastoreContext,
                 this.codecOld);
@@ -367,6 +410,9 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         if (this.remoteRpcProvider != null) {
             this.remoteRpcProvider.close();
         }
+        if (this.akkaManagement != null) {
+            this.akkaManagement.stop();
+        }
         if (this.actorSystemProvider != null) {
             this.actorSystemProvider.close();
         }
@@ -392,6 +438,79 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.concurrentDOMDataBroker = new ConcurrentDOMDataBroker(datastores,
                 this.listenableFutureExecutor, this.commitStatsTracker);
         this.concurrentDOMDataBrokerOld = new LegacyDOMDataBrokerAdapter(this.concurrentDOMDataBroker);
+    }
+
+    /**
+     * The first member of the cluster (leader) will create his shards. Other joining members will query
+     * the leader for snapshots of the shards.
+     */
+    private void askForShards() {
+        if (!Cluster.get(this.actorSystemProvider.getActorSystem()).selfAddress().
+                equals(Cluster.get(this.actorSystemProvider.getActorSystem()).state().getLeader())) {
+            LOG.debug("RPC call - Asking for Shard Snapshots");
+            try {
+                RpcResult<AddReplicasForAllShardsOutput> rpcResult =
+                        this.clusterAdminRpcService.addReplicasForAllShards(
+                                new AddReplicasForAllShardsInputBuilder().build()).get();
+                LOG.debug("RPC call - Asking for Shard Snapshots result: {}", rpcResult.getResult());
+            } catch (InterruptedException | ExecutionException e) {
+                LOG.error("RPC call - Asking for Shard Snapshots failed: {}", e.getMessage(), e);
+            }
+        }
+    }
+
+    /**
+     * Initialize Cluster Bootstrap. If this instance is the cluster leader, create custom module-shards.conf
+     * specifying that all shards should be created on this member. If this instance is not the leader the
+     * default module-shards.conf will be used. In this case shards will not be created but received from leader
+     * as snapshots and installed.
+     */
+    private void initializeK8sClustering() {
+        LOG.info("Starting ClusterBootstrap");
+        ClusterBootstrap clusterBootstrap = ClusterBootstrap.get(actorSystemProvider.getActorSystem());
+        clusterBootstrap.start();
+        CountDownLatch latch = new CountDownLatch(1);
+        try {
+            LOG.info("Waiting for cluster to form");
+            ListenableScheduledFuture clusterLeaderElectionFuture = getClusterLeaderElectionFuture(latch);
+            latch.await();
+            clusterLeaderElectionFuture.cancel(true);
+        } catch (InterruptedException e) {
+            LOG.error("Error occurred while waiting for the Cluster to form: {}", e.getMessage(), e);
+            return;
+        }
+
+        LOG.info("Cluster is formed, leader= {}", Cluster.get(this.actorSystemProvider.getActorSystem()).state().getLeader());
+        if (Cluster.get(this.actorSystemProvider.getActorSystem()).selfAddress().
+                equals(Cluster.get(this.actorSystemProvider.getActorSystem()).state().getLeader())) {
+            LOG.info("I am leader, generating custom module-shards.conf");
+            try {
+                List<String> memberRoles = this.actorSystemConfig.getStringList("akka.cluster.roles");
+                String data = generateModuleShardsForMembers(memberRoles);
+                Files.write(Paths.get(MODULE_SHARDS_TMP_PATH), data.getBytes());
+                this.moduleShardsConfig = MODULE_SHARDS_TMP_PATH;
+                return;
+            } catch (Exception e) {
+                LOG.info("Tmp module-shards.conf file was not created - error received {}", e.getMessage());
+            }
+        }
+        LOG.info("Using default module-shards.conf");
+    }
+
+    /**
+     * Wait for the cluster to form and then release the latch.
+     *
+     * @param latch
+     * @return
+     */
+    private ListenableScheduledFuture getClusterLeaderElectionFuture(CountDownLatch latch) {
+        ListeningScheduledExecutorService listeningScheduledExecutorService =
+                MoreExecutors.listeningDecorator(Executors.newSingleThreadScheduledExecutor());
+        return listeningScheduledExecutorService.scheduleAtFixedRate(() -> {
+            if (Cluster.get(this.actorSystemProvider.getActorSystem()).state().getLeader() != null) {
+                latch.countDown();
+            }
+        }, 1, 1, TimeUnit.SECONDS);
     }
 
     @Override
@@ -671,5 +790,4 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     public org.opendaylight.controller.md.sal.binding.api.DataBroker getControllerBindingPingPongDataBroker() {
         return this.domPingPongDataBrokerOld;
     }
-
 }

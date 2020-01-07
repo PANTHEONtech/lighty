@@ -64,8 +64,20 @@ __GET__ ``http://127.0.0.1:{akka_http_management_port}/management/cluster/member
 
 ## Kubernetes deployment
 In order to deploy this lighty.io cluster demo into kubernetes cluster, make sure you follow guide below.
-This demo was tested using kubernetes cluster v1.15.1.
+This demo was tested using kubernetes cluster v1.16.2.
 
+#### Configure pod-restart-timeout
+It is used in situation when Cluster member becomes unreachable but his Pod still remains in Kubernetes.
+This means there might be just some temporary connection issue.
+The cluster healing mechanism will use this timeout to wait for the member giving it a chance to become reachable again
+before issuing restart request to Kubernetes.
+
+If not configured, default timeout (30s) will be used.
+```
+akka.lighty-kubernetes {
+    pod-restart-timeout = 60
+}
+```
 #### Create docker image
 ```
 docker build . -f Dockerfile.k8s -t lighty-k8s-cluster:1.0.0-SNAPSHOT
