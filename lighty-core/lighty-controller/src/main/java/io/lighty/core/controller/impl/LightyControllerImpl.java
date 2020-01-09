@@ -46,8 +46,8 @@ import org.opendaylight.controller.cluster.datastore.DistributedDataStoreFactory
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
 import org.opendaylight.controller.cluster.datastore.config.ConfigurationImpl;
-import org.opendaylight.controller.cluster.datastore.entityownership.DistributedEntityOwnershipService;
-import org.opendaylight.controller.cluster.datastore.entityownership.selectionstrategy.EntityOwnerSelectionStrategyConfigReader;
+import org.opendaylight.controller.cluster.entityownership.DistributedEntityOwnershipService;
+import org.opendaylight.controller.cluster.entityownership.selectionstrategy.EntityOwnerSelectionStrategyConfigReader;
 import org.opendaylight.controller.cluster.sharding.DistributedShardFactory;
 import org.opendaylight.controller.cluster.sharding.DistributedShardedDOMDataTree;
 import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
