@@ -309,6 +309,10 @@
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>sal-inmemory-datastore</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.controller</groupId>
+            <artifactId>sal-distributed-eos</artifactId>
+        </dependency>
         <!--odl-akka-scala-2.12-->
         <dependency>
             <groupId>org.scala-lang</groupId>
