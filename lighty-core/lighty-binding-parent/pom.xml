@@ -54,7 +54,7 @@
             <plugin>
                 <groupId>org.opendaylight.yangtools</groupId>
                 <artifactId>yang-maven-plugin</artifactId>
-                <version>4.0.7-SNAPSHOT</version>
+                <version>4.0.7</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.opendaylight.mdsal</groupId>
