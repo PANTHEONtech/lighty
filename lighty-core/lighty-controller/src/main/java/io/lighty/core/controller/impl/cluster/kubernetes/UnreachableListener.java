@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2018 Pantheon Technologies s.r.o. All Rights Reserved.
+ * Copyright (c) 2020 PANTHEON.tech s.r.o. All Rights Reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-package io.lighty.core.controller.impl.cluster;
+package io.lighty.core.controller.impl.cluster.kubernetes;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorSystem;
@@ -85,7 +85,7 @@ public class UnreachableListener extends AbstractActor {
     private static final long DEFAULT_UNREACHABLE_RESTART_TIMEOUT = 30;
 
     public UnreachableListener(final ActorSystem actorSystem, final DataBroker dataBroker,
-                               final ClusterAdminService clusterAdminRPCService, final Long podRestartTimeout) {
+            final ClusterAdminService clusterAdminRPCService, final Long podRestartTimeout) {
         LOG.info("UnreachableListener created");
 
         this.dataBroker = dataBroker;
@@ -102,7 +102,7 @@ public class UnreachableListener extends AbstractActor {
     }
 
     public static Props props(ActorSystem actorSystem, DataBroker dataBroker,
-                              ClusterAdminService clusterAdminRPCService, Long podRestartTimeout) {
+            ClusterAdminService clusterAdminRPCService, Long podRestartTimeout) {
         return Props.create(UnreachableListener.class, () ->
                 new UnreachableListener(actorSystem, dataBroker, clusterAdminRPCService, podRestartTimeout));
     }

@@ -1,0 +1,750 @@
+{
+	"info": {
+		"_postman_id": "2ffb31dd-1a6c-40a7-bd73-239e4c59923e",
+		"name": "Lighty Cluster",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "MEMBER-X POST/DELETE netconf topology",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4=",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"netconf-topology:node\" :[ \n    \t{\n\t      \"node-id\": \"ru-device\",\n\t      \"host\": \"127.0.0.1\",\n\t      \"port\": 17830,\n\t      \"username\": \"admin\",\n\t      \"password\": \"admin\",\n\t      \"tcp-only\": false,\n\t      \"keepalive-delay\": 0,\n\t      \"netconf-node-configuration:schemaless\": false\n        }\n    ]\n  }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://10.1.74.106:8888/restconf/data/network-topology:network-topology/topology=topology-netconf",
+					"protocol": "http",
+					"host": [
+						"10",
+						"1",
+						"74",
+						"106"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=topology-netconf"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MEMBER-X GET netconf topology",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4=",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://10.1.74.104:8888/restconf/data/network-topology:network-topology/topology=topology-netconf",
+					"protocol": "http",
+					"host": [
+						"10",
+						"1",
+						"74",
+						"104"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=topology-netconf"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get Lighty MEMBER-1 netconf topology",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4=",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://10.1.74.70:8888/restconf/data/network-topology:network-topology/topology=topology-netconf",
+					"protocol": "http",
+					"host": [
+						"10",
+						"1",
+						"74",
+						"70"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=topology-netconf"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get Lighty MEMBER-2 netconf topology",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4=",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://10.1.74.79:8888/restconf/data/network-topology:network-topology/topology=topology-netconf",
+					"protocol": "http",
+					"host": [
+						"10",
+						"1",
+						"74",
+						"79"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=topology-netconf"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get Lighty MEMBER-3 netconf topology",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4="
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://10.1.74.80:8888/restconf/data/network-topology:network-topology/topology=topology-netconf",
+					"protocol": "http",
+					"host": [
+						"10",
+						"1",
+						"74",
+						"80"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=topology-netconf"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get Lighty MEMBER-4 Modules-state",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4=",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://10.1.1.207:8889/restconf/data/ietf-yang-library:modules-state",
+					"protocol": "http",
+					"host": [
+						"10",
+						"1",
+						"1",
+						"207"
+					],
+					"port": "8889",
+					"path": [
+						"restconf",
+						"data",
+						"ietf-yang-library:modules-state"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Akka Cluster Bootstrap get Seed Nodes",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4="
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://10.152.183.93:8558/bootstrap/seed-nodes",
+					"protocol": "http",
+					"host": [
+						"10",
+						"152",
+						"183",
+						"93"
+					],
+					"port": "8558",
+					"path": [
+						"bootstrap",
+						"seed-nodes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Akka get cluster members",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4="
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://10.152.183.136:8558/cluster/members",
+					"protocol": "http",
+					"host": [
+						"10",
+						"152",
+						"183",
+						"136"
+					],
+					"port": "8558",
+					"path": [
+						"cluster",
+						"members"
+					]
+				},
+				"description": "lighty-k8s-cluster-lb address works just fine - can be found in Dashboard - Services"
+			},
+			"response": []
+		},
+		{
+			"name": "LOCAL MEMBER-1 POST netconf topology Copy",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4=",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"netconf-topology:node\" :[ \n    \t{\n\t      \"node-id\": \"ru-device\",\n\t      \"host\": \"127.0.0.1\",\n\t      \"port\": 17830,\n\t      \"username\": \"admin\",\n\t      \"password\": \"admin\",\n\t      \"tcp-only\": false,\n\t      \"keepalive-delay\": 0,\n\t      \"netconf-node-configuration:schemaless\": false\n        }\n    ]\n  }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8889/restconf/data/network-topology:network-topology/topology=topology-netconf",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8889",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=topology-netconf"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "LOCAL MEMBER-1 GET netconf topology",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4=",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8889/restconf/data/network-topology:network-topology/topology=topology-netconf",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8889",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=topology-netconf"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "LOCAL MEMBER-2 GET netconf topology",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4=",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8890/restconf/data/network-topology:network-topology/topology=topology-netconf",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8890",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=topology-netconf"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "LOCAL MEMBER-3 GET netconf topology",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4=",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8891/restconf/data/network-topology:network-topology/topology=topology-netconf",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8891",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=topology-netconf"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "LOCAL get Lighty Modules-state Copy",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4=",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://10.1.1.40:8888/restconf/data/ietf-yang-library:modules-state",
+					"protocol": "http",
+					"host": [
+						"10",
+						"1",
+						"1",
+						"40"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"ietf-yang-library:modules-state"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "LOCAL Akka get cluster members Copy",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4=",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8558/management/cluster/members/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8558",
+					"path": [
+						"management",
+						"cluster",
+						"members",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "LOCAL Akka get cluster members Copy Copy",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4="
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "operation",
+							"value": "Down",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://10.152.183.246:8558/cluster/members/akka.tcp://opendaylight-cluster-data@10.1.1.108:2552",
+					"protocol": "http",
+					"host": [
+						"10",
+						"152",
+						"183",
+						"246"
+					],
+					"port": "8558",
+					"path": [
+						"cluster",
+						"members",
+						"akka.tcp:",
+						"",
+						"opendaylight-cluster-data@10.1.1.108:2552"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Akka Down cluster member",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4="
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "operation",
+							"value": "Down",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://10.152.183.46:8558/cluster/members/opendaylight-cluster-data@10.1.1.95:2552",
+					"protocol": "http",
+					"host": [
+						"10",
+						"152",
+						"183",
+						"46"
+					],
+					"port": "8558",
+					"path": [
+						"cluster",
+						"members",
+						"opendaylight-cluster-data@10.1.1.95:2552"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Akka Leave cluster member",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4="
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "operation",
+							"value": "Leave",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://10.152.183.46:8558/cluster/members/opendaylight-cluster-data@10.1.1.95:2552",
+					"protocol": "http",
+					"host": [
+						"10",
+						"152",
+						"183",
+						"46"
+					],
+					"port": "8558",
+					"path": [
+						"cluster",
+						"members",
+						"opendaylight-cluster-data@10.1.1.95:2552"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Akka get restconf operations",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4="
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://10.1.1.40:8888/restconf/operations",
+					"protocol": "http",
+					"host": [
+						"10",
+						"1",
+						"1",
+						"40"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"operations"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
