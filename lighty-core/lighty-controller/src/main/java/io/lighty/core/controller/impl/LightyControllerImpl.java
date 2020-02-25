@@ -370,6 +370,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     protected boolean stopProcedure() throws InterruptedException {
         LOG.debug("Lighty Controller stopProcedure");
+        boolean stopSuccessful = true;
         if (this.bindingDOMEntityOwnershipServiceAdapter != null) {
             this.bindingDOMEntityOwnershipServiceAdapter.close();
         }
@@ -397,14 +398,21 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
             try {
                 this.actorSystemProvider.close();
+            } catch (TimeoutException e) {
+                LOG.error("Closing akka ActorSystemProvider timed out!", e);
+                stopSuccessful = false;
+            }
 
+            try {
                 actorSystemTerminatedFuture.get(ACTOR_SYSTEM_TERMINATE_TIMEOUT, TimeUnit.SECONDS);
                 SocketAnalyzer.awaitPortAvailable(actorSystemPort, ACTOR_SYSTEM_TERMINATE_TIMEOUT, TimeUnit.SECONDS);
             } catch (ExecutionException | TimeoutException e) {
-                LOG.error("Actor system port {} not released in last 30seconds", actorSystemPort, e);
+                LOG.error("Actor system port {} not released in last {} {}", actorSystemPort,
+                        ACTOR_SYSTEM_TERMINATE_TIMEOUT, TimeUnit.SECONDS, e);
+                stopSuccessful = false;
             }
         }
-        return true;
+        return stopSuccessful;
     }
 
     private void createRemoteOpsProvider() {
