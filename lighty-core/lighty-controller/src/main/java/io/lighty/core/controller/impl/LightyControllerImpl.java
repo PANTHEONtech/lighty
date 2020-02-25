@@ -395,9 +395,9 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                     .getWhenTerminated().toCompletableFuture();
             final int actorSystemPort = this.actorSystemConfig.getInt("akka.remote.netty.tcp.port");
 
-            this.actorSystemProvider.close();
-
             try {
+                this.actorSystemProvider.close();
+
                 actorSystemTerminatedFuture.get(ACTOR_SYSTEM_TERMINATE_TIMEOUT, TimeUnit.SECONDS);
                 SocketAnalyzer.awaitPortAvailable(actorSystemPort, ACTOR_SYSTEM_TERMINATE_TIMEOUT, TimeUnit.SECONDS);
             } catch (ExecutionException | TimeoutException e) {
