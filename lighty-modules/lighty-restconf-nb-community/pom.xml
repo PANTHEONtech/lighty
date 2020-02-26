@@ -35,10 +35,25 @@
         <dependency>
             <groupId>org.opendaylight.netconf</groupId>
             <artifactId>restconf-nb-bierman02</artifactId>
+            <exclusions>
+                <exclusion>
+                    <!-- JSR173 ships with JRE by default -->
+                    <groupId>com.bea.xml</groupId>
+                    <artifactId>jsr173-ri</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+
         <dependency>
             <groupId>org.opendaylight.netconf</groupId>
             <artifactId>restconf-nb-rfc8040</artifactId>
+            <exclusions>
+                <exclusion>
+                    <!-- JSR173 ships with JRE by default -->
+                    <groupId>com.bea.xml</groupId>
+                    <artifactId>jsr173-ri</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Jersey + Jetty for RESTCONF -->
