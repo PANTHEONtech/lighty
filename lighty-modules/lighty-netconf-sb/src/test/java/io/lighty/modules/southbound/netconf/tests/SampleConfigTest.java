@@ -12,9 +12,9 @@ import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -34,7 +34,7 @@ public class SampleConfigTest {
                 SampleConfigTest.class.getClassLoader().getResource(filename);
 
         final ControllerConfiguration config =
-                ControllerConfigUtils.getConfiguration(Files.newInputStream(Path.of(sampleConfigUrl.toURI())));
+                ControllerConfigUtils.getConfiguration(new FileInputStream(new File(sampleConfigUrl.toURI())));
 
         final LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
         final LightyController lightyController = lightyControllerBuilder
