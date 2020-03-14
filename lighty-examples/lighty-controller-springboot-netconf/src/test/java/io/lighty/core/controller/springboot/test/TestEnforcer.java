@@ -1,20 +1,23 @@
 package io.lighty.core.controller.springboot.test;
 
 import io.lighty.core.controller.springboot.config.EnforcerProducer;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 import org.casbin.jcasbin.main.Enforcer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 @RunWith(Parameterized.class)
 public class TestEnforcer {
 
     @Parameterized.Parameters
-    public static Collection<Object[]> data() {
+    public static Collection<Object[]> data() throws IOException {
+        final EnforcerProducer producer2 =
+                new EnforcerProducer("/data/security/authz_model.conf", "/data/security/authz_policy.csv");
+
         return Arrays.asList(new Object[][] {
                 { "alice", "/services/data/netconf/list", "GET", true, producer2 },
                 { "bob", "/services/data/netconf/list", "GET", true, producer2 },
@@ -31,9 +34,6 @@ public class TestEnforcer {
                 { "alice", "/services/data/topology/id/xxx", "DELETE", false, producer2 },
         });
     }
-
-    private static EnforcerProducer producer2 =
-            new EnforcerProducer("/data/security/authz_model.conf", "/data/security/authz_policy.csv");
 
     private final String user;
     private final String path;
