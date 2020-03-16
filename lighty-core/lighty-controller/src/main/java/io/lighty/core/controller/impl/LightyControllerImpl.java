@@ -24,7 +24,9 @@ import io.netty.util.Timer;
 import io.netty.util.concurrent.DefaultEventExecutor;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.EventExecutor;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -116,6 +118,7 @@ import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvid
 import org.opendaylight.mdsal.singleton.dom.impl.DOMClusterSingletonServiceProviderImpl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
@@ -194,6 +197,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private final JobCoordinator jobCoordinator;
     private final MetricProvider metricProvider;
     private final CacheProvider cacheProvider;
+    private List<ObjectRegistration<YangModuleInfo>> modelsRegistration = new ArrayList<ObjectRegistration<YangModuleInfo>>();
 
     public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
             final ClassLoader actorSystemClassLoader,
@@ -256,7 +260,10 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
         //INIT schema context
         this.moduleInfoBackedContext = ModuleInfoBackedContext.create();
-        this.modelSet.forEach(this.moduleInfoBackedContext::registerModuleInfo);
+        this.modelSet.forEach( m -> {
+            final ObjectRegistration<YangModuleInfo> modelReg = this.moduleInfoBackedContext.registerModuleInfo(m);
+            modelsRegistration.add(modelReg);
+        });
         this.schemaService = FixedDOMSchemaService.of(this.moduleInfoBackedContext,
                 this.moduleInfoBackedContext);
 
@@ -400,6 +407,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         if (this.domNotificationRouter != null) {
             this.domNotificationRouter.close();
         }
+        modelsRegistration.forEach(Registration::close);
         if (this.actorSystemProvider != null) {
 
             final CompletableFuture<Terminated> actorSystemTerminatedFuture = this.actorSystemProvider
