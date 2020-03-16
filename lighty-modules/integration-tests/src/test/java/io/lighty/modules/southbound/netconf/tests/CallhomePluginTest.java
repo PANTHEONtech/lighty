@@ -15,17 +15,16 @@ import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.southbound.netconf.impl.NetconfCallhomePluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 @Test
 public class CallhomePluginTest {
@@ -70,9 +69,10 @@ public class CallhomePluginTest {
     public void testStart() throws Exception {
         netconfPlugin.start().get();
         // check, whether TCP server is running on port
-        final Socket socket = new Socket();
-        final SocketAddress endpoint = new InetSocketAddress(InetAddress.getLocalHost(), 6666);
-        socket.connect(endpoint);
+        try (final Socket socket = new Socket()) {
+            final SocketAddress endpoint = new InetSocketAddress(InetAddress.getLocalHost(), 6666);
+            socket.connect(endpoint);
+        }
     }
 
 }
