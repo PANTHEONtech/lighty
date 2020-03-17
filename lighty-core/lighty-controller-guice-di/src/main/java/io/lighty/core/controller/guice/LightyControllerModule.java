@@ -49,7 +49,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This module provides google guice bindings for Lighty Core
+ * This module provides google guice bindings for Lighty Core.
  *
  * @author juraj.veverka
  */

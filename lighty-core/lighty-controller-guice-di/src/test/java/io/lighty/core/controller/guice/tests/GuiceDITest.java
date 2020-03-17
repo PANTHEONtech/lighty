@@ -5,8 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-
 package io.lighty.core.controller.guice.tests;
+
+import static org.testng.Assert.fail;
+import static org.testng.AssertJUnit.assertNotNull;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -16,14 +18,10 @@ import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
+import java.util.concurrent.ExecutionException;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import java.util.concurrent.ExecutionException;
-
-import static org.testng.Assert.fail;
-import static org.testng.AssertJUnit.assertNotNull;
 
 public class GuiceDITest {
 
@@ -32,7 +30,8 @@ public class GuiceDITest {
 
     @BeforeClass
     public void init() throws ExecutionException, InterruptedException, ConfigurationException {
-        ControllerConfiguration defaultSingleNodeConfiguration = ControllerConfigUtils.getDefaultSingleNodeConfiguration();
+        ControllerConfiguration defaultSingleNodeConfiguration =
+            ControllerConfigUtils.getDefaultSingleNodeConfiguration();
         LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
         lightyController = lightyControllerBuilder
                 .from(defaultSingleNodeConfiguration)
@@ -45,12 +44,14 @@ public class GuiceDITest {
     }
 
     @AfterClass
+    @SuppressWarnings("checkstyle:illegalCatch")
     public void shutdown() {
         try {
             if (lightyController != null) {
                 lightyController.shutdown();
             }
         } catch (Exception e) {
+            // FIXME: this is ugly, find a nicer solution
             fail();
         }
     }
@@ -81,7 +82,7 @@ public class GuiceDITest {
     }
 
     @Test
-    public void testDIDOMNotificationSubscriptionListenerRegistry() {
+    public void testDIDomNotificationSubscriptionListenerRegistry() {
         assertNotNull(testService.getDomNotificationSubscriptionListenerRegistry());
     }
 
@@ -101,7 +102,7 @@ public class GuiceDITest {
     }
 
     @Test
-    public void testDIDOMDataTreeService() {
+    public void testDIDomDataTreeService() {
         assertNotNull(testService.getDomDataTreeService());
     }
 
@@ -121,7 +122,7 @@ public class GuiceDITest {
     }
 
     @Test
-    public void testDIDOMEntityOwnershipService() {
+    public void testDIDomEntityOwnershipService() {
         assertNotNull(testService.getDomEntityOwnershipService());
     }
 
@@ -171,32 +172,32 @@ public class GuiceDITest {
     }
 
     @Test
-    public void testDIDOMMountPointService() {
+    public void testDIDomMountPointService() {
         assertNotNull(testService.getDomMountPointService());
     }
 
     @Test
-    public void testDIDOMNotificationPublishService() {
+    public void testDIDomNotificationPublishService() {
         assertNotNull(testService.getDomNotificationPublishService());
     }
 
     @Test
-    public void testDIDOMNotificationService() {
+    public void testDIDomNotificationService() {
         assertNotNull(testService.getDomNotificationService());
     }
 
     @Test
-    public void testDIDOMDataBroker() {
+    public void testDIDomDataBroker() {
         assertNotNull(testService.getDomDataBroker());
     }
 
     @Test
-    public void testDIDOMRpcService() {
+    public void testDIDomRpcService() {
         assertNotNull(testService.getDomRpcService());
     }
 
     @Test
-    public void testDIDOMRpcProviderService() {
+    public void testDIDomRpcProviderService() {
         assertNotNull(testService.getDomRpcProviderService());
     }
 
