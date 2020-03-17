@@ -8,6 +8,11 @@
 package io.lighty.aaa;
 
 import io.lighty.server.LightyServerBuilder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -15,6 +20,7 @@ import javassist.CtConstructor;
 import javassist.CtMethod;
 import javassist.CtNewConstructor;
 import javassist.CtNewMethod;
+import javax.ws.rs.NotFoundException;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.FilterHolder;
@@ -59,12 +65,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.password.service.config
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.password.service.config.rev170619.PasswordServiceConfigBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.ws.rs.NotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 public final class AAALightyShiroProvider {
 
@@ -72,6 +72,7 @@ public final class AAALightyShiroProvider {
 
     private static AAALightyShiroProvider INSTANCE;
     private static IIDMStore iidmStore;
+
     private final List<Handler> handlers;
     private final DataBroker dataBroker;
     private final ICertificateManager certificateManager;
@@ -110,10 +111,9 @@ public final class AAALightyShiroProvider {
                     "SHA-512").setIterations(20000).build();
             this.defaultPasswordHashService = new DefaultPasswordHashService(passwordServiceConfig);
             iidmStore = new H2Store(new IdmLightSimpleConnectionProvider(config), defaultPasswordHashService);
-            this.tokenStore = new H2TokenStore(datastoreConfig.getTimeToLive().longValue(), datastoreConfig.getTimeToWait()
-                    .longValue());
-        }
-        else {
+            this.tokenStore = new H2TokenStore(datastoreConfig.getTimeToLive().longValue(),
+                    datastoreConfig.getTimeToWait().longValue());
+        } else {
             this.defaultPasswordHashService = null;
             iidmStore = null;
             this.tokenStore = null;
@@ -121,7 +121,7 @@ public final class AAALightyShiroProvider {
             return;
         }
         this.passwordHashService = defaultPasswordHashService;
-        if(credentialAuth == null) {
+        if (credentialAuth == null) {
             IdmLightProxy idmLightProxy = new IdmLightProxy(iidmStore, defaultPasswordHashService);
             this.credentialAuth = idmLightProxy;
             this.claimCache = idmLightProxy;
@@ -143,7 +143,8 @@ public final class AAALightyShiroProvider {
         final ContextHandlerCollection contexts = new ContextHandlerCollection();
         final ServletContextHandler mainHandler = new ServletContextHandler(contexts, "/auth", true, false);
         final IdmLightApplication idmLightApplication = new IdmLightApplication(iidmStore, claimCache);
-        final ServletHolder idmLightServlet = new ServletHolder(new ServletContainer(ResourceConfig.forApplication(idmLightApplication)));
+        final ServletHolder idmLightServlet = new ServletHolder(new ServletContainer(ResourceConfig.forApplication(
+                idmLightApplication)));
         idmLightServlet.setInitParameter("jersey.config.server.provider.packages",
                 "org.opendaylight.aaa.impl.provider");
         mainHandler.addServlet(idmLightServlet, "/*");
@@ -159,7 +160,8 @@ public final class AAALightyShiroProvider {
         server.addCommonEventListener(shiroWebEnvironmentLoaderListener);
 
         final Map<String, String> properties = new HashMap<>();
-        final CustomFilterAdapterConfiguration customFilterAdapterConfig = new CustomFilterAdapterConfigurationImpl(properties);
+        final CustomFilterAdapterConfiguration customFilterAdapterConfig =
+            new CustomFilterAdapterConfigurationImpl(properties);
         final FilterHolder customFilterAdapter = new FilterHolder(new CustomFilterAdapter(customFilterAdapterConfig));
         server.addCommonFilter(customFilterAdapter, "/*");
 
@@ -174,14 +176,10 @@ public final class AAALightyShiroProvider {
     }
 
     public static CompletableFuture<AAALightyShiroProvider> newInstance(final DataBroker dataBroker,
-                                                                        final ICertificateManager certificateManager,
-                                                                        final CredentialAuth<PasswordCredentials> credentialAuth,
-                                                                        final ShiroConfiguration shiroConfiguration,
-                                                                        final String moonEndpointPath,
-                                                                        final DatastoreConfig datastoreConfig,
-                                                                        final String dbUsername,
-                                                                        final String dbPassword,
-                                                                        final LightyServerBuilder server) {
+            final ICertificateManager certificateManager, final CredentialAuth<PasswordCredentials> credentialAuth,
+            final ShiroConfiguration shiroConfiguration, final String moonEndpointPath,
+            final DatastoreConfig datastoreConfig, final String dbUsername, final String dbPassword,
+            final LightyServerBuilder server) {
         final CompletableFuture<AAALightyShiroProvider> completableFuture = new CompletableFuture<>();
         INSTANCE = new AAALightyShiroProvider(dataBroker, certificateManager, credentialAuth,
                 shiroConfiguration, moonEndpointPath, datastoreConfig, dbUsername, dbPassword, server);
@@ -224,8 +222,7 @@ public final class AAALightyShiroProvider {
         return shiroWebEnvironmentLoaderListener;
     }
 
-    public TokenAuthenticators getTokenAuthenticators()
-    {
+    public TokenAuthenticators getTokenAuthenticators() {
         return this.tokenAuthenticators;
     }
 
@@ -236,6 +233,7 @@ public final class AAALightyShiroProvider {
     public DefaultPasswordHashService getDefaultPasswordHashService() {
         return defaultPasswordHashService;
     }
+
     /**
      * Get IDM data store.
      *
@@ -260,7 +258,8 @@ public final class AAALightyShiroProvider {
         });
     }
 
-    private static TokenAuthenticators buildTokenAuthenticators(final CredentialAuth<PasswordCredentials> credentialAuth) {
+    private static TokenAuthenticators buildTokenAuthenticators(
+            final CredentialAuth<PasswordCredentials> credentialAuth) {
         return new TokenAuthenticators(new HttpBasicAuth(credentialAuth));
     }
 
@@ -331,10 +330,9 @@ public final class AAALightyShiroProvider {
 
             ctClass.removeMethod(ctClass.getDeclaredMethod("getTokenAuthenticators"));
             final CtMethod getTokenAuthenticators = CtMethod.make(
-                    "public org.opendaylight.aaa.shiro.tokenauthrealm.auth.TokenAuthenticators " +
-                            "getTokenAuthenticators() {" +
-                            "return io.lighty.aaa.AAALightyShiroProvider.getInstance().getTokenAuthenticators();}",
-                            ctClass);
+                    "public org.opendaylight.aaa.shiro.tokenauthrealm.auth.TokenAuthenticators "
+                    + "getTokenAuthenticators() {"
+                    + "return io.lighty.aaa.AAALightyShiroProvider.getInstance().getTokenAuthenticators();}", ctClass);
             ctClass.addMethod(getTokenAuthenticators);
 
             ctClass.toClass();

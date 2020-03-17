@@ -5,21 +5,18 @@
  *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
  *  and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-
 package io.lighty.aaa;
 
 import io.lighty.server.LightyServerBuilder;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import javax.servlet.Servlet;
 import org.eclipse.jetty.server.Server;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import javax.servlet.Servlet;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
 
 public class LocalHttpServerTest {
 
