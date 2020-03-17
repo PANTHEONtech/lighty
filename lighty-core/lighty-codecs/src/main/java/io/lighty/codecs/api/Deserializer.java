@@ -19,8 +19,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 /**
  * This class deserializes Binding Independent (DOM) objects FROM Binding Aware (BA) objects.
  *
- * @param <BA>
- *            - Binding Aware object type data, RPC data or Notification data
+ * @param <BA> Binding Aware object type data, RPC data or Notification data
  */
 public interface Deserializer<BA extends DataObject> {
 
@@ -44,7 +43,8 @@ public interface Deserializer<BA extends DataObject> {
      *            - Binding Aware data to be deserialized
      * @return deserialized Binding Independent data with Binding Independent identifier wrapped in {@link Entry}
      */
-    Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> convertToNormalizedNode(InstanceIdentifier<BA> identifier, BA data);
+    Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> convertToNormalizedNode(InstanceIdentifier<BA> identifier,
+            BA data);
 
     /**
      * Deserialize Binding Independent RPC data(input/output) FROM Binding Aware RPC data(input/output).

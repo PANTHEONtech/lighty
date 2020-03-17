@@ -148,14 +148,14 @@ public interface LightyServices extends LightyModuleRegistryService {
 
     @Deprecated
     org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry
-    getControllerDOMNotificationSubscriptionListenerRegistry();
+        getControllerDOMNotificationSubscriptionListenerRegistry();
 
     @Deprecated
     org.opendaylight.controller.md.sal.dom.api.DOMMountPointService getControllerDOMMountPointService();
 
     @Deprecated
     org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService
-    getControllerDOMNotificationPublishService();
+        getControllerDOMNotificationPublishService();
 
     @Deprecated
     org.opendaylight.controller.md.sal.dom.api.DOMNotificationService getControllerDOMNotificationService();
@@ -189,6 +189,5 @@ public interface LightyServices extends LightyModuleRegistryService {
 
     @Deprecated
     org.opendaylight.controller.md.sal.binding.api.NotificationPublishService
-    getControllerBindingNotificationPublishService();
-
+        getControllerBindingNotificationPublishService();
 }

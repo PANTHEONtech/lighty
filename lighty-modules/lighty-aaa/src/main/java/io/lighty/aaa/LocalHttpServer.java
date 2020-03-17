@@ -18,11 +18,10 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
 final class LocalHttpServer {
-
     private final LightyServerBuilder server;
     private final Map<String, Handler> handlers;
 
-    public LocalHttpServer(final LightyServerBuilder server) {
+    LocalHttpServer(final LightyServerBuilder server) {
         this.server = server;
         this.handlers = new HashMap<>();
     }

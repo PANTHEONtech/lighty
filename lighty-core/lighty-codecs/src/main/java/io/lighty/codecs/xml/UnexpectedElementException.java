@@ -13,13 +13,14 @@ import java.util.Map;
 public class UnexpectedElementException extends DocumentedException {
     private static final long serialVersionUID = 1L;
 
-    public UnexpectedElementException(final String message, final DocumentedException.ErrorType errorType, final DocumentedException.ErrorTag errorTag,
-                                      final DocumentedException.ErrorSeverity errorSeverity) {
-        this(message, errorType, errorTag, errorSeverity, Collections.<String, String> emptyMap());
+    public UnexpectedElementException(final String message, final DocumentedException.ErrorType errorType,
+            final DocumentedException.ErrorTag errorTag, final DocumentedException.ErrorSeverity errorSeverity) {
+        this(message, errorType, errorTag, errorSeverity, Collections.emptyMap());
     }
 
-    public UnexpectedElementException(final String message, final DocumentedException.ErrorType errorType, final DocumentedException.ErrorTag errorTag,
-                                      final DocumentedException.ErrorSeverity errorSeverity, final Map<String, String> errorInfo) {
+    public UnexpectedElementException(final String message, final DocumentedException.ErrorType errorType,
+            final DocumentedException.ErrorTag errorTag, final DocumentedException.ErrorSeverity errorSeverity,
+            final Map<String, String> errorInfo) {
         super(message,errorType,errorTag,errorSeverity,errorInfo);
     }
 }

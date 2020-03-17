@@ -25,14 +25,14 @@ public class Application {
     }
 
     @Bean
-    HelloMessage getHello(){
+    HelloMessage getHello() {
         final HelloMessage helloMessage = new HelloMessage("Hello");
         LOG.info("initialized with bean dummy HelloMessage {}", helloMessage);
         return helloMessage;
     }
 
     @PostConstruct
-    private void init(){
+    private void init() {
         LOG.info("initialized");
     }
 
@@ -51,9 +51,7 @@ public class Application {
 
         @Override
         public String toString() {
-            return "HelloMessage{" +
-                    "message='" + message + '\'' +
-                    '}';
+            return "HelloMessage{" + "message='" + message + '\'' + '}';
         }
     }
 }

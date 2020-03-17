@@ -5,15 +5,16 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package io.lighty.codecs.xml;
 
 import com.google.common.base.Optional;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
-
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -22,8 +23,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -31,13 +32,10 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 public final class XmlUtil {
 
@@ -67,7 +65,7 @@ public final class XmlUtil {
         BUILDER_FACTORY = factory;
     }
 
-    private static final ThreadLocal<DocumentBuilder> DEFAULT_DOM_BUILDER = new ThreadLocal<DocumentBuilder>(){
+    private static final ThreadLocal<DocumentBuilder> DEFAULT_DOM_BUILDER = new ThreadLocal<>() {
         @Override
         protected DocumentBuilder initialValue() {
             try {
@@ -97,6 +95,10 @@ public final class XmlUtil {
         return doc.getDocumentElement();
     }
 
+    public static Element readXmlToElement(final File xmlFile) throws SAXException, IOException {
+        return readXmlToDocument(new FileInputStream(xmlFile)).getDocumentElement();
+    }
+
     public static Document readXmlToDocument(final String xmlContent) throws SAXException, IOException {
         return readXmlToDocument(new ByteArrayInputStream(xmlContent.getBytes(StandardCharsets.UTF_8)));
     }
@@ -111,44 +113,42 @@ public final class XmlUtil {
         return doc;
     }
 
-    public static Element readXmlToElement(final File xmlFile) throws SAXException, IOException {
-        return readXmlToDocument(new FileInputStream(xmlFile)).getDocumentElement();
-    }
-
     public static Document newDocument() {
         return DEFAULT_DOM_BUILDER.get().newDocument();
     }
 
-    public static Element createElement(final Document document, final String qName, final Optional<String> namespaceURI) {
-        if(namespaceURI.isPresent()) {
-            final Element element = document.createElementNS(namespaceURI.get(), qName);
+    public static Element createElement(final Document document, final String qname,
+            final Optional<String> namespaceURI) {
+        if (namespaceURI.isPresent()) {
+            final Element element = document.createElementNS(namespaceURI.get(), qname);
             String name = XMLNS_ATTRIBUTE_KEY;
-            if(element.getPrefix() != null) {
+            if (element.getPrefix() != null) {
                 name += ":" + element.getPrefix();
             }
             element.setAttributeNS(XMLNS_URI, name, namespaceURI.get());
             return element;
         }
-        return document.createElement(qName);
+        return document.createElement(qname);
     }
 
-    public static Element createTextElement(final Document document, final String qName, final String content, final Optional<String> namespaceURI) {
-        Element typeElement = createElement(document, qName, namespaceURI);
+    public static Element createTextElement(final Document document, final String qname, final String content,
+            final Optional<String> namespaceURI) {
+        Element typeElement = createElement(document, qname, namespaceURI);
         typeElement.appendChild(document.createTextNode(content));
         return typeElement;
     }
 
-    public static Element createTextElementWithNamespacedContent(final Document document, final String qName, final String prefix,
-                                                                 final String namespace, final String contentWithoutPrefix) {
-
-        return createTextElementWithNamespacedContent(document, qName, prefix, namespace, contentWithoutPrefix, Optional.<String>absent());
+    public static Element createTextElementWithNamespacedContent(final Document document, final String qname,
+            final String prefix, final String namespace, final String contentWithoutPrefix) {
+        return createTextElementWithNamespacedContent(document, qname, prefix, namespace, contentWithoutPrefix,
+            Optional.absent());
     }
 
-    public static Element createTextElementWithNamespacedContent(final Document document, final String qName, final String prefix,
-                                                                 final String namespace, final String contentWithoutPrefix, final Optional<String> namespaceURI) {
-
+    public static Element createTextElementWithNamespacedContent(final Document document, final String qname,
+            final String prefix, final String namespace, final String contentWithoutPrefix,
+            final Optional<String> namespaceURI) {
         String content = createPrefixedValue(XmlMappingConstants.PREFIX, contentWithoutPrefix);
-        Element element = createTextElement(document, qName, content, namespaceURI);
+        Element element = createTextElement(document, qname, content, namespaceURI);
         String prefixedNamespaceAttr = createPrefixedValue(XMLNS_ATTRIBUTE_KEY, prefix);
         element.setAttributeNS(XMLNS_URI, prefixedNamespaceAttr, namespace);
         return element;
@@ -181,7 +181,7 @@ public final class XmlUtil {
             transformer.transform(source, result);
 
             return result.getWriter().toString();
-        } catch (Exception | TransformerFactoryConfigurationError e) {
+        } catch (TransformerException e) {
             throw new IllegalStateException("Unable to serialize xml element " + xml, e);
         }
     }
@@ -192,9 +192,8 @@ public final class XmlUtil {
 
     public static Schema loadSchema(final InputStream... fromStreams) {
         Source[] sources = new Source[fromStreams.length];
-        int i = 0;
-        for (InputStream stream : fromStreams) {
-            sources[i++] = new StreamSource(stream);
+        for (int i = 0; i < fromStreams.length; ++i) {
+            sources[i++] = new StreamSource(fromStreams[i]);
         }
 
         try {

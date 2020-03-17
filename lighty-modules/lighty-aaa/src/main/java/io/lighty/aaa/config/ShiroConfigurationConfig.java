@@ -17,6 +17,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.sh
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.shiro.configuration.UrlsBuilder;
 
 public final class ShiroConfigurationConfig {
+    private ShiroConfigurationConfig() {
+
+    }
 
     public static ShiroConfiguration getDefault() {
         final List<Main> mains = new ArrayList<>();

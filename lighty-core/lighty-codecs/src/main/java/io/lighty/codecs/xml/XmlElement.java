@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package io.lighty.codecs.xml;
 
 import com.google.common.base.Optional;
@@ -13,6 +12,12 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
@@ -24,15 +29,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public final class XmlElement {
-
     public static final String DEFAULT_NAMESPACE_PREFIX = "";
 
     private final Element element;
@@ -42,29 +39,31 @@ public final class XmlElement {
         this.element = element;
     }
 
-    public static XmlElement fromDomElement(final Element e) {
-        return new XmlElement(e);
+    public static XmlElement fromDomElement(final Element element) {
+        return new XmlElement(element);
     }
 
     public static XmlElement fromDomDocument(final Document xml) {
         return new XmlElement(xml.getDocumentElement());
     }
 
-    public static XmlElement fromString(final String s) throws DocumentedException {
+    public static XmlElement fromString(final String str) throws DocumentedException {
         try {
-            return new XmlElement(XmlUtil.readXmlToElement(s));
+            return new XmlElement(XmlUtil.readXmlToElement(str));
         } catch (IOException | SAXException e) {
             throw DocumentedException.wrap(e);
         }
     }
 
-    public static XmlElement fromDomElementWithExpected(final Element element, final String expectedName) throws DocumentedException {
+    public static XmlElement fromDomElementWithExpected(final Element element, final String expectedName)
+            throws DocumentedException {
         XmlElement xmlElement = XmlElement.fromDomElement(element);
         xmlElement.checkName(expectedName);
         return xmlElement;
     }
 
-    public static XmlElement fromDomElementWithExpected(final Element element, final String expectedName, final String expectedNamespace) throws DocumentedException {
+    public static XmlElement fromDomElementWithExpected(final Element element, final String expectedName,
+            final String expectedNamespace) throws DocumentedException {
         XmlElement xmlElement = XmlElement.fromDomElementWithExpected(element, expectedName);
         xmlElement.checkNamespace(expectedNamespace);
         return xmlElement;
@@ -81,7 +80,7 @@ public final class XmlElement {
                 if (attribKey.equals(XmlUtil.XMLNS_ATTRIBUTE_KEY)) {
                     prefix = DEFAULT_NAMESPACE_PREFIX;
                 } else {
-                    if (!attribKey.startsWith(XmlUtil.XMLNS_ATTRIBUTE_KEY + ":")){
+                    if (!attribKey.startsWith(XmlUtil.XMLNS_ATTRIBUTE_KEY + ":")) {
                         throw new DocumentedException("Attribute doesn't start with :",
                                 DocumentedException.ErrorType.APPLICATION,
                                 DocumentedException.ErrorTag.INVALID_VALUE,
@@ -94,9 +93,9 @@ public final class XmlElement {
         }
 
         // namespace does not have to be defined on this element but inherited
-        if(!namespaces.containsKey(DEFAULT_NAMESPACE_PREFIX)) {
+        if (!namespaces.containsKey(DEFAULT_NAMESPACE_PREFIX)) {
             Optional<String> namespaceOptionally = getNamespaceOptionally();
-            if(namespaceOptionally.isPresent()) {
+            if (namespaceOptionally.isPresent()) {
                 namespaces.put(DEFAULT_NAMESPACE_PREFIX, namespaceOptionally.get());
             }
         }
@@ -105,7 +104,7 @@ public final class XmlElement {
     }
 
     public void checkName(final String expectedName) throws UnexpectedElementException {
-        if (!getName().equals(expectedName)){
+        if (!getName().equals(expectedName)) {
             throw new UnexpectedElementException(String.format("Expected %s xml element but was %s", expectedName,
                     getName()),
                     DocumentedException.ErrorType.APPLICATION,
@@ -114,24 +113,22 @@ public final class XmlElement {
         }
     }
 
-    public void checkNamespaceAttribute(final String expectedNamespace) throws UnexpectedNamespaceException, MissingNameSpaceException {
-        if (!getNamespaceAttribute().equals(expectedNamespace))
-        {
+    public void checkNamespaceAttribute(final String expectedNamespace) throws UnexpectedNamespaceException,
+            MissingNameSpaceException {
+        if (!getNamespaceAttribute().equals(expectedNamespace)) {
             throw new UnexpectedNamespaceException(String.format("Unexpected namespace %s should be %s",
-                    getNamespaceAttribute(),
-                    expectedNamespace),
+                    getNamespaceAttribute(), expectedNamespace),
                     DocumentedException.ErrorType.APPLICATION,
                     DocumentedException.ErrorTag.OPERATION_FAILED,
                     DocumentedException.ErrorSeverity.ERROR);
         }
     }
 
-    public void checkNamespace(final String expectedNamespace) throws UnexpectedNamespaceException, MissingNameSpaceException {
-        if (!getNamespace().equals(expectedNamespace))
-        {
+    public void checkNamespace(final String expectedNamespace) throws UnexpectedNamespaceException,
+            MissingNameSpaceException {
+        if (!getNamespace().equals(expectedNamespace)) {
             throw new UnexpectedNamespaceException(String.format("Unexpected namespace %s should be %s",
-                    getNamespace(),
-                    expectedNamespace),
+                    getNamespace(), expectedNamespace),
                     DocumentedException.ErrorType.APPLICATION,
                     DocumentedException.ErrorTag.OPERATION_FAILED,
                     DocumentedException.ErrorSeverity.ERROR);
@@ -140,7 +137,7 @@ public final class XmlElement {
 
     public String getName() {
         final String localName = element.getLocalName();
-        if (!Strings.isNullOrEmpty(localName)){
+        if (!Strings.isNullOrEmpty(localName)) {
             return localName;
         }
         return element.getTagName();
@@ -158,8 +155,8 @@ public final class XmlElement {
         return element.getElementsByTagName(name);
     }
 
-    public void appendChild(final Element element) {
-        this.element.appendChild(element);
+    public void appendChild(final Element child) {
+        this.element.appendChild(child);
     }
 
     public Element getDomElement() {
@@ -168,7 +165,7 @@ public final class XmlElement {
 
     public Map<String, Attr> getAttributes() {
 
-        Map<String, Attr> mappedAttributes = Maps.newHashMap();
+        Map<String, Attr> mappedAttributes = new HashMap<>();
 
         NamedNodeMap attributes = element.getAttributes();
         for (int i = 0; i < attributes.getLength(); i++) {
@@ -179,9 +176,7 @@ public final class XmlElement {
         return mappedAttributes;
     }
 
-    /**
-     * Non recursive
-     */
+    // Non-recursive
     private List<XmlElement> getChildElementsInternal(final ElementFilteringStrategy strat) {
         NodeList childNodes = element.getChildNodes();
         final List<XmlElement> result = new ArrayList<>();
@@ -202,42 +197,32 @@ public final class XmlElement {
         return getChildElementsInternal(e -> true);
     }
 
-    public List<XmlElement> getChildElementsWithinNamespace(final String childName, final String namespace) {
-        return Lists.newArrayList(Collections2.filter(getChildElementsWithinNamespace(namespace),
-                xmlElement -> xmlElement.getName().equals(childName)));
-    }
-
-    public List<XmlElement> getChildElementsWithinNamespace(final String namespace) {
-        return getChildElementsInternal(e -> {
-            try {
-                return XmlElement.fromDomElement(e).getNamespace().equals(namespace);
-            } catch (final MissingNameSpaceException e1) {
-                return false;
-            }
-        });
-    }
-
     /**
+     * Return all XML elements with specified tag name.
      *
      * @param tagName tag name without prefix
      * @return List of child elements
      */
     public List<XmlElement> getChildElements(final String tagName) {
-        return getChildElementsInternal(e -> {
+        return getChildElementsInternal(
             // localName returns pure localName without prefix
-            return e.getLocalName().equals(tagName);
-        });
+            e -> e.getLocalName().equals(tagName)
+        );
     }
 
-    public XmlElement getOnlyChildElement(final String childName) throws DocumentedException {
-        List<XmlElement> nameElements = getChildElements(childName);
-        if (nameElements.size() != 1){
-            throw new DocumentedException("One element " + childName + " expected in " + toString(),
-                    DocumentedException.ErrorType.APPLICATION,
-                    DocumentedException.ErrorTag.INVALID_VALUE,
-                    DocumentedException.ErrorSeverity.ERROR);
-        }
-        return nameElements.get(0);
+    public List<XmlElement> getChildElementsWithinNamespace(final String childName, final String namespace) {
+        return Lists.newArrayList(Collections2.filter(getChildElementsWithinNamespace(namespace),
+            xmlElement -> xmlElement.getName().equals(childName)));
+    }
+
+    public List<XmlElement> getChildElementsWithinNamespace(final String namespace) {
+        return getChildElementsInternal(el -> {
+            try {
+                return XmlElement.fromDomElement(el).getNamespace().equals(namespace);
+            } catch (final MissingNameSpaceException e) {
+                return false;
+            }
+        });
     }
 
     public Optional<XmlElement> getOnlyChildElementOptionally(final String childName) {
@@ -251,15 +236,29 @@ public final class XmlElement {
     public Optional<XmlElement> getOnlyChildElementOptionally(final String childName, final String namespace) {
         List<XmlElement> children = getChildElementsWithinNamespace(namespace);
         children = Lists.newArrayList(Collections2.filter(children,
-                xmlElement -> xmlElement.getName().equals(childName)));
-        if (children.size() != 1){
+            xmlElement -> xmlElement.getName().equals(childName)));
+        if (children.size() != 1) {
             return Optional.absent();
         }
         return Optional.of(children.get(0));
     }
 
-    public XmlElement getOnlyChildElementWithSameNamespace(final String childName) throws  DocumentedException {
+    public Optional<XmlElement> getOnlyChildElementOptionally() {
+        List<XmlElement> children = getChildElements();
+        if (children.size() != 1) {
+            return Optional.absent();
+        }
+        return Optional.of(children.get(0));
+    }
+
+    public XmlElement getOnlyChildElementWithSameNamespace(final String childName) throws DocumentedException {
         return getOnlyChildElement(childName, getNamespace());
+    }
+
+    public XmlElement getOnlyChildElementWithSameNamespace() throws DocumentedException {
+        XmlElement childElement = getOnlyChildElement();
+        childElement.checkNamespace(getNamespace());
+        return childElement;
     }
 
     public Optional<XmlElement> getOnlyChildElementWithSameNamespaceOptionally(final String childName) {
@@ -267,19 +266,13 @@ public final class XmlElement {
         if (namespace.isPresent()) {
             List<XmlElement> children = getChildElementsWithinNamespace(namespace.get());
             children = Lists.newArrayList(Collections2.filter(children,
-                    xmlElement -> xmlElement.getName().equals(childName)));
-            if (children.size() != 1){
+                xmlElement -> xmlElement.getName().equals(childName)));
+            if (children.size() != 1) {
                 return Optional.absent();
             }
             return Optional.of(children.get(0));
         }
         return Optional.absent();
-    }
-
-    public XmlElement getOnlyChildElementWithSameNamespace() throws DocumentedException {
-        XmlElement childElement = getOnlyChildElement();
-        childElement.checkNamespace(getNamespace());
-        return childElement;
     }
 
     public Optional<XmlElement> getOnlyChildElementWithSameNamespaceOptionally() {
@@ -296,8 +289,8 @@ public final class XmlElement {
     public XmlElement getOnlyChildElement(final String childName, final String namespace) throws DocumentedException {
         List<XmlElement> children = getChildElementsWithinNamespace(namespace);
         children = Lists.newArrayList(Collections2.filter(children,
-                xmlElement -> xmlElement.getName().equals(childName)));
-        if (children.size() != 1){
+            xmlElement -> xmlElement.getName().equals(childName)));
+        if (children.size() != 1) {
             throw new DocumentedException(String.format("One element %s:%s expected in %s but was %s", namespace,
                     childName, toString(), children.size()),
                     DocumentedException.ErrorType.APPLICATION,
@@ -308,10 +301,20 @@ public final class XmlElement {
         return children.get(0);
     }
 
+    public XmlElement getOnlyChildElement(final String childName) throws DocumentedException {
+        List<XmlElement> nameElements = getChildElements(childName);
+        if (nameElements.size() != 1) {
+            throw new DocumentedException("One element " + childName + " expected in " + toString(),
+                DocumentedException.ErrorType.APPLICATION, DocumentedException.ErrorTag.INVALID_VALUE,
+                DocumentedException.ErrorSeverity.ERROR);
+        }
+        return nameElements.get(0);
+    }
+
     public XmlElement getOnlyChildElement() throws DocumentedException {
         List<XmlElement> children = getChildElements();
-        if (children.size() != 1){
-            throw new DocumentedException(String.format( "One element expected in %s but was %s", toString(),
+        if (children.size() != 1) {
+            throw new DocumentedException(String.format("One element expected in %s but was %s", toString(),
                     children.size()),
                     DocumentedException.ErrorType.APPLICATION,
                     DocumentedException.ErrorTag.INVALID_VALUE,
@@ -320,20 +323,12 @@ public final class XmlElement {
         return children.get(0);
     }
 
-    public Optional<XmlElement> getOnlyChildElementOptionally() {
-        List<XmlElement> children = getChildElements();
-        if (children.size() != 1) {
-            return Optional.absent();
-        }
-        return Optional.of(children.get(0));
-    }
-
     public String getTextContent() throws DocumentedException {
         NodeList childNodes = element.getChildNodes();
         if (childNodes.getLength() == 0) {
             return DEFAULT_NAMESPACE_PREFIX;
         }
-        for(int i = 0; i < childNodes.getLength(); i++) {
+        for (int i = 0; i < childNodes.getLength(); i++) {
             Node textChild = childNodes.item(i);
             if (textChild instanceof Text) {
                 String content = textChild.getTextContent();
@@ -360,7 +355,7 @@ public final class XmlElement {
 
     public String getNamespaceAttribute() throws MissingNameSpaceException {
         String attribute = element.getAttribute(XmlUtil.XMLNS_ATTRIBUTE_KEY);
-        if (attribute == null || attribute.equals(DEFAULT_NAMESPACE_PREFIX)){
+        if (attribute == null || attribute.equals(DEFAULT_NAMESPACE_PREFIX)) {
             throw new MissingNameSpaceException(String.format("Element %s must specify namespace",
                     toString()),
                     DocumentedException.ErrorType.APPLICATION,
@@ -370,9 +365,9 @@ public final class XmlElement {
         return attribute;
     }
 
-    public Optional<String> getNamespaceAttributeOptionally(){
+    public Optional<String> getNamespaceAttributeOptionally() {
         String attribute = element.getAttribute(XmlUtil.XMLNS_ATTRIBUTE_KEY);
-        if (attribute == null || attribute.equals(DEFAULT_NAMESPACE_PREFIX)){
+        if (attribute == null || attribute.equals(DEFAULT_NAMESPACE_PREFIX)) {
             return Optional.absent();
         }
         return Optional.of(attribute);
@@ -389,7 +384,7 @@ public final class XmlElement {
 
     public String getNamespace() throws MissingNameSpaceException {
         Optional<String> namespaceURI = getNamespaceOptionally();
-        if (!namespaceURI.isPresent()){
+        if (!namespaceURI.isPresent()) {
             throw new MissingNameSpaceException(String.format("No namespace defined for %s", this),
                     DocumentedException.ErrorType.APPLICATION,
                     DocumentedException.ErrorTag.OPERATION_FAILED,
@@ -416,19 +411,20 @@ public final class XmlElement {
     /**
      * Search for element's attributes defining namespaces. Look for the one
      * namespace that matches prefix of element's text content. E.g.
-     *
      * <pre>
      * &lt;type
-     * xmlns:th-java="urn:opendaylight:params:xml:ns:yang:controller:threadpool:impl"&gt;th-java:threadfactory-naming&lt;/type&gt;
+     * xmlns:th-java="urn:opendaylight:params:xml:ns:yang:controller:threadpool:impl"&gt;th-java:threadfactory-naming
+     * &lt;/type&gt;
      * </pre>
-     *
      * returns {"th-java","urn:.."}. If no prefix is matched, then default
      * namespace is returned with empty string as key. If no default namespace
      * is found value will be null.
+     *
      * @return prefix - namespace map.
      * @throws DocumentedException namespaces cannot be extracted.
      */
-    public Map.Entry<String/* prefix */, String/* namespace */> findNamespaceOfTextContent() throws DocumentedException {
+    public Map.Entry<String/* prefix */, String/* namespace */> findNamespaceOfTextContent()
+            throws DocumentedException {
         Map<String, String> namespaces = extractNamespaces();
         String textContent = getTextContent();
         int indexOfColon = textContent.indexOf(':');
@@ -439,8 +435,8 @@ public final class XmlElement {
             prefix = DEFAULT_NAMESPACE_PREFIX;
         }
         if (!namespaces.containsKey(prefix)) {
-            throw new IllegalArgumentException("Cannot find namespace for " + XmlUtil.toString(element) + ". Prefix from content is "
-                    + prefix + ". Found namespaces " + namespaces);
+            throw new IllegalArgumentException("Cannot find namespace for " + XmlUtil.toString(element)
+                + ". Prefix from content is " + prefix + ". Found namespaces " + namespaces);
         }
         return Maps.immutableEntry(prefix, namespaces.get(prefix));
     }
@@ -457,7 +453,7 @@ public final class XmlElement {
         for (XmlElement additionalRecognisedElement : additionalRecognisedElements) {
             childElements.remove(additionalRecognisedElement);
         }
-        if (!childElements.isEmpty()){
+        if (!childElements.isEmpty()) {
             throw new DocumentedException(String.format("Unrecognised elements %s in %s", childElements, this),
                     DocumentedException.ErrorType.APPLICATION,
                     DocumentedException.ErrorTag.INVALID_VALUE,
@@ -470,18 +466,16 @@ public final class XmlElement {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
+    public boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 
-        XmlElement that = (XmlElement) o;
-
+        XmlElement that = (XmlElement) obj;
         return element.isEqualNode(that.element);
-
     }
 
     @Override
@@ -493,7 +487,8 @@ public final class XmlElement {
         return getNamespaceAttributeOptionally().isPresent() || getNamespaceOptionally().isPresent();
     }
 
+    @FunctionalInterface
     private interface ElementFilteringStrategy {
-        boolean accept(Element e);
+        boolean accept(Element element);
     }
 }

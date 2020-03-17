@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-
 package io.lighty.core.controller.guice.tests;
 
 import io.lighty.core.controller.api.LightyModuleRegistryService;
@@ -13,6 +12,8 @@ import io.lighty.core.controller.api.LightyServices;
 import io.netty.channel.EventLoopGroup;
 import io.netty.util.Timer;
 import io.netty.util.concurrent.EventExecutor;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.sharding.DistributedShardFactory;
@@ -42,9 +43,6 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 public class TestService {
 

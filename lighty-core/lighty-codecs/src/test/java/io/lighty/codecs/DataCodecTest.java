@@ -7,7 +7,15 @@
  */
 package io.lighty.codecs;
 
+import static org.junit.Assert.fail;
+
 import io.lighty.codecs.api.ConverterUtils;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map.Entry;
+import java.util.Optional;
+import javax.xml.stream.XMLStreamException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.MakeToastInput;
@@ -18,7 +26,6 @@ import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SampleListBuilder;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SampleListKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -28,23 +35,12 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
-import javax.xml.stream.XMLStreamException;
-import java.awt.Container;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map.Entry;
-import java.util.Optional;
-
-import static org.junit.Assert.fail;
-
 /**
- * Basic tests for {@link DataCodec} class
- *
+ * Basic tests for {@link DataCodec} class.
  */
 public class DataCodecTest extends AbstractCodecTest {
 
-    /**
+    /*
      * Deserialization of {@link Container} as top root element
      */
     @Test
@@ -64,11 +60,8 @@ public class DataCodecTest extends AbstractCodecTest {
         }
     }
 
-    /**
+    /*
      * "Serialization" of {@link Container} as top root element
-     * 
-     * @throws IOException
-     * @throws XMLStreamException
      */
     @Test
     public void testConvertBindingIndependentIntoBindingAware_container() throws IOException, XMLStreamException {
@@ -78,7 +71,7 @@ public class DataCodecTest extends AbstractCodecTest {
         Assert.assertEquals(this.testedToaster, serializedToaster);
     }
 
-    /**
+    /*
      * "Serialization" of {@link RpcInput} object
      */
     @Test
@@ -110,7 +103,6 @@ public class DataCodecTest extends AbstractCodecTest {
 
         Assert.assertNotNull(deserializeNotification);
         Assert.assertEquals(EXPECTED_ONE, deserializeNotification.getValue().iterator().next().getValue());
-        System.out.println(deserializeNotification);
     }
 
     @Test
@@ -122,7 +114,8 @@ public class DataCodecTest extends AbstractCodecTest {
 
     @Test
     public void testDeserializeIdentifier() {
-        YangModuleInfo restconfInfo = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126.$YangModuleInfoImpl.getInstance();
+        YangModuleInfo restconfInfo = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126
+                .$YangModuleInfoImpl.getInstance();
         SchemaContext schemaContext = getSchemaContext(Collections.singletonList(restconfInfo));
         DataCodec<Toaster> dataCodec = new DataCodec<>(schemaContext);
         String yangInstanceIdentifierString = dataCodec.deserializeIdentifier(TOASTER_YANG_INSTANCE_IDENTIFIER);
@@ -138,7 +131,8 @@ public class DataCodecTest extends AbstractCodecTest {
 
     @Test(expected = Exception.class)
     public void testSerializeXMLError_invalidErrorXML() {
-        SchemaContext schemaContext = getSchemaContext(Collections.singletonList(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126.$YangModuleInfoImpl.getInstance()));
+        SchemaContext schemaContext = getSchemaContext(Collections.singletonList(org.opendaylight.yang.gen.v1.urn.ietf
+            .params.xml.ns.yang.ietf.restconf.rev170126.$YangModuleInfoImpl.getInstance()));
         DataCodec<Toaster> dataCodec = new DataCodec<>(schemaContext);
         dataCodec.serializeXMLError(loadResourceAsString("error.xml"));
     }

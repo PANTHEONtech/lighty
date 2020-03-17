@@ -94,7 +94,7 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
     public Collection<T> convertBindingAwareList(final YangInstanceIdentifier identifier, final MapNode mapNode) {
         Collection<MapEntryNode> children = mapNode.getValue();
         List<T> resultList = Lists.newArrayListWithCapacity(children.size());
-        for(MapEntryNode entry : children) {
+        for (MapEntryNode entry : children) {
             resultList.add(convertToBindingAwareData(identifier, entry));
         }
         return ImmutableList.copyOf(resultList);
@@ -103,6 +103,11 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
     @Override
     public YangInstanceIdentifier deserializeIdentifier(final InstanceIdentifier<T> identifier) {
         return this.codec.toNormalized(identifier);
+    }
+
+    @Override
+    public String deserializeIdentifier(final YangInstanceIdentifier identifier) {
+        return this.deserializeIdentifierCodec.deserialize(identifier);
     }
 
     @Override
@@ -138,7 +143,6 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
         return this.codec.toNormalizedNodeNotification(notificationData);
     }
 
-
     @Override
     public NormalizedNode<?, ?> serializeXMLError(final String body) {
         final Optional<Revision> restconfRevision = Revision.ofNullable("2017-01-26");
@@ -161,7 +165,7 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
         final NormalizedNodeResult resultHolder = new NormalizedNodeResult();
         final NormalizedNodeStreamWriter writer = ImmutableNormalizedNodeStreamWriter.from(resultHolder);
 
-        try (final XmlParserStream xmlParser = XmlParserStream.create(writer, this.schemaContext, schemaNode)) {
+        try (XmlParserStream xmlParser = XmlParserStream.create(writer, this.schemaContext, schemaNode)) {
             final Document doc = XmlUtil.readXmlToDocument(body);
             final XmlElement element = XmlElement.fromDomDocument(doc);
             final Element domElement = element.getDomElement();
@@ -170,11 +174,6 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
         } catch (SAXException | IOException | XMLStreamException | URISyntaxException e) {
             throw new RestconfDocumentedException(e.getMessage(), e);
         }
-    }
-
-    @Override
-    public String deserializeIdentifier(final YangInstanceIdentifier identifier) {
-        return this.deserializeIdentifierCodec.deserialize(identifier);
     }
 
     @Override

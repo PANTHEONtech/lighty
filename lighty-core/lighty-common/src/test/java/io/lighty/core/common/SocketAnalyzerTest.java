@@ -1,11 +1,10 @@
 package io.lighty.core.common;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.concurrent.TimeUnit;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public class SocketAnalyzerTest {
 
@@ -27,8 +26,8 @@ public class SocketAnalyzerTest {
         }
     }
 
-    private int findAvailablePort() throws InterruptedException {
-        for(int port = 50000; port < 80000; port++) {
+    private static int findAvailablePort() throws InterruptedException {
+        for (int port = 50000; port < 80000; port++) {
             if (SocketAnalyzer.awaitPortAvailable(port, 1, TimeUnit.SECONDS)) {
                 return port;
             }
