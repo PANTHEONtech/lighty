@@ -14,12 +14,16 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SocketAnalyzer {
-
+public final class SocketAnalyzer {
     private static final Logger LOG = LoggerFactory.getLogger(SocketAnalyzer.class);
     private static final int SOCKET_PORT_WAIT_TIME = 500;
 
-    public static Boolean awaitPortAvailable(int port, long timeout, TimeUnit timeUnit) throws InterruptedException {
+    private SocketAnalyzer() {
+
+    }
+
+    public static Boolean awaitPortAvailable(final int port, final long timeout, final TimeUnit timeUnit)
+            throws InterruptedException {
 
         final long expectedEndTime = System.nanoTime() + timeUnit.toNanos(timeout);
 
