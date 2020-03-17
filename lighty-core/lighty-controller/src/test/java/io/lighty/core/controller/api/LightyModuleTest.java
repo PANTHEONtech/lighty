@@ -8,6 +8,8 @@
 package io.lighty.core.controller.api;
 
 import com.google.common.util.concurrent.SettableFuture;
+import io.lighty.core.controller.impl.LightyControllerBuilder;
+import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,9 +17,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import io.lighty.core.controller.impl.LightyControllerBuilder;
-import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import org.mockito.Mockito;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
@@ -31,7 +30,7 @@ public class LightyModuleTest {
     private ExecutorService executorService;
     private LightyModule moduleUnderTest;
 
-    private LightyModule getModuleUnderTest(ExecutorService service) throws Exception{
+    private LightyModule getModuleUnderTest(final ExecutorService service) throws Exception {
         LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
         return lightyControllerBuilder
                 .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration())
@@ -68,7 +67,7 @@ public class LightyModuleTest {
         try {
             this.moduleUnderTest.start().get(MAX_INIT_TIMEOUT, TimeUnit.MILLISECONDS);
             this.moduleUnderTest.start().get(MAX_INIT_TIMEOUT, TimeUnit.MILLISECONDS);
-        } catch (TimeoutException e ) {
+        } catch (TimeoutException e) {
             Assert.fail("Init timed out.", e);
         }
         Mockito.verify(executorService, Mockito.times(1)).execute(Mockito.any());
@@ -99,11 +98,11 @@ public class LightyModuleTest {
         startStopBlocking(false);
     }
 
-    private void startStopBlocking(boolean isAbstract) throws Exception {
+    private void startStopBlocking(final boolean isAbstract) throws Exception {
         Future<Boolean> startBlockingFuture;
         if (isAbstract) {
             startBlockingFuture = startBlockingOnLightyModuleAbstractClass();
-        } else{
+        } else {
             startBlockingFuture = startBlockingOnLightyModuleInterface();
         }
         //test if thread which invokes startBlocking method is still running (it should be)
@@ -115,8 +114,8 @@ public class LightyModuleTest {
             //(after small timeout due to synchronization);
             startBlockingFuture.get(SLEEP_AFTER_SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
         } catch (TimeoutException e) {
-            Assert.fail("Waiting for finish of startBlocking method thread timed out. you may consider to adjust" +
-                    "timeout by overriding SLEEP_AFTER_SHUTDOWN_TIMEOUT", e);
+            Assert.fail("Waiting for finish of startBlocking method thread timed out. you may consider to adjust"
+                    + "timeout by overriding SLEEP_AFTER_SHUTDOWN_TIMEOUT", e);
         }
 
         Mockito.verify(executorService, Mockito.times(2)).execute(Mockito.any());
@@ -148,7 +147,7 @@ public class LightyModuleTest {
     private void startLightyModuleAndFailIfTimedOut() throws ExecutionException, InterruptedException {
         try {
             this.moduleUnderTest.start().get(MAX_INIT_TIMEOUT, TimeUnit.MILLISECONDS);
-        } catch (TimeoutException e ) {
+        } catch (TimeoutException e) {
             Assert.fail("Init timed out.", e);
         }
     }

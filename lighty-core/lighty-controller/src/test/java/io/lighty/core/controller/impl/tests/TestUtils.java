@@ -29,10 +29,7 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.testng.Assert;
 
-/**
- * author: vincent on 18.8.2017.
- */
-class TestUtils {
+final class TestUtils {
 
     private static final String NODE_ID = "test-node-id";
 
@@ -43,6 +40,10 @@ class TestUtils {
             InstanceIdentifier.builder(NetworkTopology.class)
             .child(Topology.class, TOPOLOGY.key()).build();
 
+    private TestUtils() {
+
+    }
+
     static YangInstanceIdentifier createNetworkTopologyYIID() {
         final YangInstanceIdentifier.InstanceIdentifierBuilder builder =
                 YangInstanceIdentifier.builder();
@@ -50,13 +51,12 @@ class TestUtils {
     }
 
     static YangInstanceIdentifier createTopologyNodeYIID() {
-        final YangInstanceIdentifier.InstanceIdentifierBuilder builder =
-                YangInstanceIdentifier.builder(createNetworkTopologyYIID());
-        builder.node(Topology.QNAME)
-        .nodeWithKey(Topology.QNAME, QName.create(Topology.QNAME, "TOPOLOGY-id"),
-                TOPOLOGY_ID).node(Node.QNAME)
-        .nodeWithKey(Node.QNAME, QName.create(Node.QNAME, "node-id"), NODE_ID);
-        return builder.build();
+        return YangInstanceIdentifier.builder(createNetworkTopologyYIID())
+                .node(Topology.QNAME)
+                .nodeWithKey(Topology.QNAME, QName.create(Topology.QNAME, "TOPOLOGY-id"), TOPOLOGY_ID)
+                .node(Node.QNAME)
+                .nodeWithKey(Node.QNAME, QName.create(Node.QNAME, "node-id"), NODE_ID)
+                .build();
     }
 
     static void writeToTopology(final DataBroker bindingDataBroker,
@@ -98,8 +98,8 @@ class TestUtils {
     }
 
     static void readFromTopology(final org.opendaylight.controller.md.sal.binding.api.DataBroker bindingDataBroker,
-            final String testTopoId, final int expectedCount) throws InterruptedException, ExecutionException,
-    TimeoutException {
+            final String testTopoId, final int expectedCount)
+                    throws InterruptedException, ExecutionException, TimeoutException {
         final ReadOnlyTransaction readOnlyTransaction = bindingDataBroker.newReadOnlyTransaction();
 
         final InstanceIdentifier<NetworkTopology> networkTopologyInstanceIdentifier = InstanceIdentifier.builder(

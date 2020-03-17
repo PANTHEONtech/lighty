@@ -32,35 +32,50 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class ControllerConfigUtils {
-
     private static final Logger LOG = LoggerFactory.getLogger(ControllerConfigUtils.class);
 
     /**
      * This list of models comes from odl-mdsal-models feature
-     * mvn:org.opendaylight.mdsal.model/features-mdsal-model
-     * and various controller artifacts containing core yang files.
-     * This is also recommended default model set for majority of Lighty controller applications.
+     * {@code mvn:org.opendaylight.mdsal.model/features-mdsal-model} and various controller artifacts containing core
+     * YANG files. This is also recommended default model set for majority of Lighty controller applications.
      */
     public static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana.afn.safi.rev130704.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.ted.rev131021.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.isis.topology.rev131021.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.ospf.topology.rev131021.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.nt.l3.unicast.igp.topology.rev131021.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.packet.fields.rev160218.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.access.control.list.rev160218.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.lisp.address.types.rev151105.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.opendaylight.yang.extension.yang.ext.rev130709.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.config.distributed.datastore.provider.rev140612.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.clustering.entity.owners.rev150804.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.clustering.prefix.shard.configuration.rev170110.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.$YangModuleInfoImpl.getInstance()
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana.afn.safi.rev130704.$YangModuleInfoImpl
+            .getInstance(),
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.$YangModuleInfoImpl
+            .getInstance(),
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.$YangModuleInfoImpl
+            .getInstance(),
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.$YangModuleInfoImpl
+            .getInstance(),
+        org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.$YangModuleInfoImpl.getInstance(),
+        org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.ted.rev131021.$YangModuleInfoImpl.getInstance(),
+        org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.$YangModuleInfoImpl
+            .getInstance(),
+        org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.isis.topology.rev131021.$YangModuleInfoImpl
+            .getInstance(),
+        org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.ospf.topology.rev131021.$YangModuleInfoImpl
+            .getInstance(),
+        org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.nt.l3.unicast.igp.topology.rev131021.$YangModuleInfoImpl
+            .getInstance(),
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.$YangModuleInfoImpl
+            .getInstance(),
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.packet.fields.rev160218.$YangModuleInfoImpl
+            .getInstance(),
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.access.control.list.rev160218.$YangModuleInfoImpl
+            .getInstance(),
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.lisp.address.types.rev151105.$YangModuleInfoImpl
+            .getInstance(),
+        org.opendaylight.yang.gen.v1.urn.opendaylight.yang.extension.yang.ext.rev130709.$YangModuleInfoImpl
+            .getInstance(),
+        org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.config.distributed.datastore
+            .provider.rev140612.$YangModuleInfoImpl.getInstance(),
+        org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.clustering.entity.owners
+            .rev150804.$YangModuleInfoImpl.getInstance(),
+        org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.clustering.prefix.shard
+            .configuration.rev170110.$YangModuleInfoImpl.getInstance(),
+        org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013
+            .$YangModuleInfoImpl.getInstance()
     );
 
     public static final String CONTROLLER_CONFIG_ROOT_ELEMENT_NAME = "controller";
@@ -68,6 +83,10 @@ public final class ControllerConfigUtils {
     public static final String TOP_LEVEL_MODELS_ELEMENT_NAME = "topLevelModels";
 
     private static final String JSON_PATH_DELIMITER = "/";
+
+    private ControllerConfigUtils() {
+
+    }
 
     /**
      * Read configuration from InputStream representing JSON configuration data.
@@ -108,20 +127,24 @@ public final class ControllerConfigUtils {
             controllerConfiguration = mapper.treeToValue(controllerNode,
                     ControllerConfiguration.class);
             if (controllerNode.has(DatastoreConfigurationUtils.DATASTORECTX_CONFIG_ROOT_ELEMENT_NAME)) {
-                JsonNode configDatastoreCtxNode = controllerNode.path(DatastoreConfigurationUtils.DATASTORECTX_CONFIG_ROOT_ELEMENT_NAME);
-                controllerConfiguration.setConfigDatastoreContext(
-                        DatastoreConfigurationUtils.createDatastoreContext(configDatastoreCtxNode, LogicalDatastoreType.CONFIGURATION));
+                JsonNode configDatastoreCtxNode = controllerNode.path(
+                    DatastoreConfigurationUtils.DATASTORECTX_CONFIG_ROOT_ELEMENT_NAME);
+                controllerConfiguration.setConfigDatastoreContext(DatastoreConfigurationUtils.createDatastoreContext(
+                    configDatastoreCtxNode, LogicalDatastoreType.CONFIGURATION));
             } else {
                 LOG.warn("JSON configuration for Config DataStore context is missing, using default one.");
-                controllerConfiguration.setConfigDatastoreContext(DatastoreConfigurationUtils.createDefaultConfigDatastoreContext());
+                controllerConfiguration.setConfigDatastoreContext(
+                    DatastoreConfigurationUtils.createDefaultConfigDatastoreContext());
             }
             if (controllerNode.has(DatastoreConfigurationUtils.DATASTORECTX_OPERATIONAL_ROOT_ELEMENT_NAME)) {
-                JsonNode operDatastoreCtxNode = controllerNode.path(DatastoreConfigurationUtils.DATASTORECTX_OPERATIONAL_ROOT_ELEMENT_NAME);
-                controllerConfiguration.setOperDatastoreContext(
-                        DatastoreConfigurationUtils.createDatastoreContext(operDatastoreCtxNode, LogicalDatastoreType.OPERATIONAL));
+                JsonNode operDatastoreCtxNode = controllerNode.path(
+                    DatastoreConfigurationUtils.DATASTORECTX_OPERATIONAL_ROOT_ELEMENT_NAME);
+                controllerConfiguration.setOperDatastoreContext(DatastoreConfigurationUtils.createDatastoreContext(
+                    operDatastoreCtxNode, LogicalDatastoreType.OPERATIONAL));
             } else {
                 LOG.warn("JSON configuration for Operational DataStore context is missing, using default one.");
-                controllerConfiguration.setOperDatastoreContext(DatastoreConfigurationUtils.createDefaultOperationalDatastoreContext());
+                controllerConfiguration.setOperDatastoreContext(
+                    DatastoreConfigurationUtils.createDefaultOperationalDatastoreContext());
             }
             if (controllerNode.has(SCHEMA_SERVICE_CONFIG_ELEMENT_NAME)) {
                 jsonPath.append(JSON_PATH_DELIMITER).append(SCHEMA_SERVICE_CONFIG_ELEMENT_NAME);
@@ -138,15 +161,15 @@ public final class ControllerConfigUtils {
                         Set<YangModuleInfo> modelsFromClasspath = YangModuleUtils.getModelsFromClasspath(moduleIds);
                         controllerConfiguration.getSchemaServiceConfig().setModels(modelsFromClasspath);
                     } else {
-                        throw new ConfigurationException(String.format("Expected JSON array at %s", jsonPath.toString()));
+                        throw new ConfigurationException("Expected JSON array at " + jsonPath);
                     }
                 } else {
-                    throw new ConfigurationException(String.format("JSON controller config file is missing %s element !",
-                            jsonPath.toString()));
+                    throw new ConfigurationException(String.format("JSON controller config file is missing %s element!",
+                            jsonPath));
                 }
             } else {
-                throw new ConfigurationException(String.format("JSON controller config file is missing %s element !",
-                        jsonPath.toString()));
+                throw new ConfigurationException(String.format("JSON controller config file is missing %s element!",
+                        jsonPath));
             }
         } catch (JsonProcessingException e) {
             throw new ConfigurationException(String.format("Cannot bind Json tree to type: %s",
@@ -197,8 +220,10 @@ public final class ControllerConfigUtils {
                 .collect(Collectors.toSet());
         controllerConfiguration.getSchemaServiceConfig().setModels(allModels);
 
-        controllerConfiguration.setConfigDatastoreContext(DatastoreConfigurationUtils.createDefaultConfigDatastoreContext());
-        controllerConfiguration.setOperDatastoreContext(DatastoreConfigurationUtils.createDefaultOperationalDatastoreContext());
+        controllerConfiguration.setConfigDatastoreContext(
+            DatastoreConfigurationUtils.createDefaultConfigDatastoreContext());
+        controllerConfiguration.setOperDatastoreContext(
+            DatastoreConfigurationUtils.createDefaultOperationalDatastoreContext());
 
         return controllerConfiguration;
     }
@@ -221,7 +246,7 @@ public final class ControllerConfigUtils {
         try {
             akkaConfig = ConfigFactory.parseFile(new File(pathToConfig));
         } catch (ConfigException e) {
-            LOG.debug("Cannot read Akka config from filesystem: " + pathToConfig, e);
+            LOG.debug("Cannot read Akka config from filesystem: {}", pathToConfig, e);
         }
         if (akkaConfig == null || akkaConfig.isEmpty()) {
             // read from JAR resources on classpath
@@ -229,12 +254,11 @@ public final class ControllerConfigUtils {
                     ControllerConfigUtils.class.getClass().getClassLoader(),
                     pathToConfig);
             if (akkaConfig.isEmpty()) {
-                throw new ConfigurationException("Cannot find Akka config on classpath: "
-                        + pathToConfig);
-            } else {
-                LOG.info("Used Akka config file from classpath: {}", pathToConfig);
-                return akkaConfig;
+                throw new ConfigurationException("Cannot find Akka config on classpath: " + pathToConfig);
             }
+
+            LOG.info("Used Akka config file from classpath: {}", pathToConfig);
+            return akkaConfig;
         }
         LOG.info("Used Akka config file from filesystem: {}", pathToConfig);
         return akkaConfig;

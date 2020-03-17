@@ -22,8 +22,7 @@ import org.opendaylight.infrautils.ready.SystemReadyMonitor;
 import org.opendaylight.infrautils.ready.SystemState;
 
 public class LightyDiagStatusServiceImpl implements DiagStatusService {
-
-    private final static String STATE_DESCRIPTION = "Service registration";
+    private static final String STATE_DESCRIPTION = "Service registration";
 
     private final Map<String, ServiceDescriptor> descriptors = new ConcurrentHashMap<>();
     private final SystemReadyMonitor systemReadyMonitor;
@@ -53,11 +52,7 @@ public class LightyDiagStatusServiceImpl implements DiagStatusService {
 
     @Override
     public Collection<ServiceDescriptor> getAllServiceDescriptors() {
-        final Collection<ServiceDescriptor> serviceDescriptors = new ArrayList<>();
-        for (String key : descriptors.keySet()) {
-            serviceDescriptors.add(descriptors.get(key));
-        }
-        return serviceDescriptors;
+        return new ArrayList<>(descriptors.values());
     }
 
     @Override
@@ -74,7 +69,7 @@ public class LightyDiagStatusServiceImpl implements DiagStatusService {
             return false;
         }
         for (ServiceDescriptor sd : serviceDescriptors) {
-            if(sd.getServiceState() != ServiceState.OPERATIONAL) {
+            if (sd.getServiceState() != ServiceState.OPERATIONAL) {
                 return false;
             }
         }

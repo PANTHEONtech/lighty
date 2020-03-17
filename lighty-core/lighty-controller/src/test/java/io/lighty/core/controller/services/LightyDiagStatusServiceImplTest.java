@@ -5,10 +5,12 @@
  *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
  *  and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-
 package io.lighty.core.controller.services;
 
+import static org.mockito.Mockito.when;
+
 import io.lighty.core.controller.impl.services.LightyDiagStatusServiceImpl;
+import java.util.Collection;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
@@ -21,10 +23,6 @@ import org.opendaylight.infrautils.ready.SystemState;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import java.util.Collection;
-
-import static org.mockito.Mockito.when;
 
 public class LightyDiagStatusServiceImplTest {
 
@@ -45,7 +43,7 @@ public class LightyDiagStatusServiceImplTest {
     @Test
     public void registerTest() {
         diagStatusService = new LightyDiagStatusServiceImpl(systemReadyMonitor);
-        ServiceRegistration serviceRegistration = diagStatusService.register(TEST_SERVICE);
+        final ServiceRegistration serviceRegistration = diagStatusService.register(TEST_SERVICE);
         diagStatusService.report(new ServiceDescriptor(TEST_SERVICE_2, ServiceState.STARTING, TEST_SERVICE_2_INFO));
 
         Assert.assertEquals(diagStatusService.getAllServiceDescriptors().size(), 2);
@@ -61,7 +59,7 @@ public class LightyDiagStatusServiceImplTest {
     @Test
     public void reportTest() {
         diagStatusService = new LightyDiagStatusServiceImpl(systemReadyMonitor);
-        ServiceRegistration serviceRegistration = diagStatusService.register(TEST_SERVICE_2);
+        final ServiceRegistration serviceRegistration = diagStatusService.register(TEST_SERVICE_2);
 
         Assert.assertEquals(diagStatusService.getAllServiceDescriptors().size(), 1);
         Assert.assertNotNull(diagStatusService.getServiceDescriptor(TEST_SERVICE_2));
@@ -74,15 +72,15 @@ public class LightyDiagStatusServiceImplTest {
         Assert.assertEquals(diagStatusService.getAllServiceDescriptors().size(), 0);
     }
 
-    private void validateServiceStatus(ServiceStatusSummary serviceStatusSummary, boolean operState,
-                                       ServiceState srv_state) {
+    private static void validateServiceStatus(final ServiceStatusSummary serviceStatusSummary, final boolean operState,
+            final ServiceState srvState) {
         Collection<ServiceDescriptor> statusSummary;
         Assert.assertEquals(serviceStatusSummary.isOperational(), operState);
         Assert.assertEquals(serviceStatusSummary.getSystemReadyState(), SystemState.ACTIVE);
         statusSummary = serviceStatusSummary.getStatusSummary();
 
-        for (ServiceDescriptor srv_desc : statusSummary) {
-            Assert.assertEquals(srv_desc.getServiceState(), srv_state);
+        for (ServiceDescriptor srvDesc : statusSummary) {
+            Assert.assertEquals(srvDesc.getServiceState(), srvState);
         }
     }
 }

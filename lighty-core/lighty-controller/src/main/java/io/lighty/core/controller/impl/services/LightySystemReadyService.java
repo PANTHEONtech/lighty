@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-
 package io.lighty.core.controller.impl.services;
 
 import io.lighty.core.controller.api.LightyController;
@@ -14,11 +13,11 @@ import org.opendaylight.infrautils.ready.SystemReadyMonitor;
 import org.opendaylight.infrautils.ready.SystemState;
 
 /**
- * This service provides API to control state of {@link SystemReadyMonitor} service provided by {@link LightyController}.
- * Methods of this service should be called by lighty application after {@link LightyController} has been started and
- * after plugins are in ready state.
- * TODO: upstream implementation of {@link SystemReadyMonitor} needs serious refactoring.
+ * This service provides API to control state of {@link SystemReadyMonitor} service provided by
+ * {@link LightyController}. Methods of this service should be called by lighty application after
+ * {@link LightyController} has been started and after plugins are in ready state.
  */
+// TODO: upstream implementation of {@link SystemReadyMonitor} needs serious refactoring.
 public interface LightySystemReadyService {
 
     /**
@@ -35,5 +34,4 @@ public interface LightySystemReadyService {
      * @return number of registered listeners in {@link SystemReadyMonitor}.
      */
     int onSystemBootFailed();
-
 }

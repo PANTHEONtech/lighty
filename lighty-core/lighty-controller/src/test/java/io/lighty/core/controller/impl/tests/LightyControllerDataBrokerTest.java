@@ -8,10 +8,8 @@
 package io.lighty.core.controller.impl.tests;
 
 import io.lighty.core.controller.api.LightyController;
-import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
@@ -21,18 +19,14 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class LightyControllerDataBrokerTest extends LightyControllerTestBase {
-
     @Test
     public void controllerDataBrokerTest() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(2);
         final LightyController lightyController = getLightyController();
         final org.opendaylight.mdsal.binding.api.DataBroker bindingDataBroker = lightyController.getServices()
                 .getBindingDataBroker();
-        bindingDataBroker.registerDataTreeChangeListener(DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
-                TestUtils.TOPOLOGY_IID), new DataTreeChangeListener<Topology>() {
-
-            @Override
-            public void onDataTreeChanged(final Collection<DataTreeModification<Topology>> changes) {
+        bindingDataBroker.registerDataTreeChangeListener(
+            DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL, TestUtils.TOPOLOGY_IID), changes -> {
                 for (final DataTreeModification<Topology> change : changes) {
                     if (countDownLatch.getCount() == 2) {
                         // on first time - write
@@ -47,8 +41,7 @@ public class LightyControllerDataBrokerTest extends LightyControllerTestBase {
                     }
                     countDownLatch.countDown();
                 }
-            }
-        });
+            });
 
         // 1. write to TOPOLOGY model
         TestUtils.writeToTopology(bindingDataBroker, TestUtils.TOPOLOGY_IID, TestUtils.TOPOLOGY);

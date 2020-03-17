@@ -21,7 +21,7 @@ import org.opendaylight.controller.cluster.datastore.DatastoreContext;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 
 /**
- * Complete configuration for Lighty controller
+ * Complete configuration for Lighty controller.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ControllerConfiguration {
@@ -69,7 +69,7 @@ public class ControllerConfiguration {
             return queueDepth;
         }
 
-        public void setQueueDepth(int queueDepth) {
+        public void setQueueDepth(final int queueDepth) {
             this.queueDepth = queueDepth;
         }
 
@@ -77,7 +77,7 @@ public class ControllerConfiguration {
             return spinTime;
         }
 
-        public void setSpinTime(long spinTime) {
+        public void setSpinTime(final long spinTime) {
             this.spinTime = spinTime;
         }
 
@@ -85,7 +85,7 @@ public class ControllerConfiguration {
             return parkTime;
         }
 
-        public void setParkTime(long parkTime) {
+        public void setParkTime(final long parkTime) {
             this.parkTime = parkTime;
         }
 
@@ -93,28 +93,38 @@ public class ControllerConfiguration {
             return unit;
         }
 
-        public void setUnit(TimeUnit unit) {
+        public void setUnit(final TimeUnit unit) {
             this.unit = unit;
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+        public boolean equals(final Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null || getClass() != obj.getClass()) {
+                return false;
+            }
 
-            DOMNotificationRouterConfig that = (DOMNotificationRouterConfig) o;
+            DOMNotificationRouterConfig that = (DOMNotificationRouterConfig) obj;
 
-            if (queueDepth != that.queueDepth) return false;
-            if (spinTime != that.spinTime) return false;
-            if (parkTime != that.parkTime) return false;
+            if (queueDepth != that.queueDepth) {
+                return false;
+            }
+            if (spinTime != that.spinTime) {
+                return false;
+            }
+            if (parkTime != that.parkTime) {
+                return false;
+            }
             return unit == that.unit;
         }
 
         @Override
         public int hashCode() {
             int result = queueDepth;
-            result = 31 * result + (int) (spinTime ^ (spinTime >>> 32));
-            result = 31 * result + (int) (parkTime ^ (parkTime >>> 32));
+            result = 31 * result + (int) (spinTime ^ spinTime >>> 32);
+            result = 31 * result + (int) (parkTime ^ parkTime >>> 32);
             result = 31 * result + (unit != null ? unit.hashCode() : 0);
             return result;
         }
@@ -135,7 +145,7 @@ public class ControllerConfiguration {
             return akkaConfigPath;
         }
 
-        public void setAkkaConfigPath(String akkaConfigPath) {
+        public void setAkkaConfigPath(final String akkaConfigPath) {
             this.akkaConfigPath = akkaConfigPath;
         }
 
@@ -143,7 +153,7 @@ public class ControllerConfiguration {
             return factoryAkkaConfigPath;
         }
 
-        public void setFactoryAkkaConfigPath(String factoryAkkaConfigPath) {
+        public void setFactoryAkkaConfigPath(final String factoryAkkaConfigPath) {
             this.factoryAkkaConfigPath = factoryAkkaConfigPath;
         }
 
@@ -151,7 +161,7 @@ public class ControllerConfiguration {
             return config;
         }
 
-        public void setConfig(Config config) {
+        public void setConfig(final Config config) {
             this.config = config;
         }
 
@@ -159,27 +169,31 @@ public class ControllerConfiguration {
             return classLoader;
         }
 
-        public void setClassLoader(ClassLoader classLoader) {
+        public void setClassLoader(final ClassLoader classLoader) {
             this.classLoader = classLoader;
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o)
+        public boolean equals(final Object obj) {
+            if (this == obj) {
                 return true;
-            if (o == null || getClass() != o.getClass())
+            }
+            if (obj == null || getClass() != obj.getClass()) {
                 return false;
+            }
 
-            ActorSystemConfig that = (ActorSystemConfig) o;
+            ActorSystemConfig that = (ActorSystemConfig) obj;
 
-            if (akkaConfigPath != null ? !akkaConfigPath.equals(that.akkaConfigPath) : that.akkaConfigPath != null)
+            if (akkaConfigPath != null ? !akkaConfigPath.equals(that.akkaConfigPath) : that.akkaConfigPath != null) {
                 return false;
-            if (factoryAkkaConfigPath != null ?
-                    !factoryAkkaConfigPath.equals(that.factoryAkkaConfigPath) :
-                    that.factoryAkkaConfigPath != null)
+            }
+            if (factoryAkkaConfigPath != null ? !factoryAkkaConfigPath.equals(that.factoryAkkaConfigPath)
+                    : that.factoryAkkaConfigPath != null) {
                 return false;
-            if (config != null ? !config.equals(that.config) : that.config != null)
+            }
+            if (config != null ? !config.equals(that.config) : that.config != null) {
                 return false;
+            }
             return classLoader != null ? classLoader.equals(that.classLoader) : that.classLoader == null;
         }
 
@@ -193,12 +207,10 @@ public class ControllerConfiguration {
         }
     }
 
-
     /**
      * Contains list of paths to artifacts containing yang models for Lighty SchemaContext.
      */
-    public class SchemaServiceConfig {
-
+    public static class SchemaServiceConfig {
         private Set<YangModuleInfo> models;
 
         public SchemaServiceConfig() {
@@ -209,17 +221,19 @@ public class ControllerConfiguration {
             return models;
         }
 
-        public void setModels(Set<YangModuleInfo> models) {
+        public void setModels(final Set<YangModuleInfo> models) {
             this.models = models;
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o)
+        public boolean equals(final Object obj) {
+            if (this == obj) {
                 return true;
-            if (o == null || getClass() != o.getClass())
+            }
+            if (obj == null || getClass() != obj.getClass()) {
                 return false;
-            SchemaServiceConfig that = (SchemaServiceConfig) o;
+            }
+            SchemaServiceConfig that = (SchemaServiceConfig) obj;
             return Objects.equal(models, that.models);
         }
 
@@ -233,7 +247,7 @@ public class ControllerConfiguration {
         return restoreDirectoryPath;
     }
 
-    public void setRestoreDirectoryPath(String restoreDirectoryPath) {
+    public void setRestoreDirectoryPath(final String restoreDirectoryPath) {
         this.restoreDirectoryPath = restoreDirectoryPath;
     }
 
@@ -241,7 +255,7 @@ public class ControllerConfiguration {
         return domNotificationRouterConfig;
     }
 
-    public void setDomNotificationRouterConfig(DOMNotificationRouterConfig domNotificationRouterConfig) {
+    public void setDomNotificationRouterConfig(final DOMNotificationRouterConfig domNotificationRouterConfig) {
         this.domNotificationRouterConfig = domNotificationRouterConfig;
     }
 
@@ -249,7 +263,7 @@ public class ControllerConfiguration {
         return actorSystemConfig;
     }
 
-    public void setActorSystemConfig(ActorSystemConfig actorSystemConfig) {
+    public void setActorSystemConfig(final ActorSystemConfig actorSystemConfig) {
         this.actorSystemConfig = actorSystemConfig;
     }
 
@@ -257,7 +271,7 @@ public class ControllerConfiguration {
         return schemaServiceConfig;
     }
 
-    public void setSchemaServiceConfig(SchemaServiceConfig schemaServiceConfig) {
+    public void setSchemaServiceConfig(final SchemaServiceConfig schemaServiceConfig) {
         this.schemaServiceConfig = schemaServiceConfig;
     }
 
@@ -265,7 +279,7 @@ public class ControllerConfiguration {
         return maxDataBrokerFutureCallbackQueueSize;
     }
 
-    public void setMaxDataBrokerFutureCallbackQueueSize(int maxDataBrokerFutureCallbackQueueSize) {
+    public void setMaxDataBrokerFutureCallbackQueueSize(final int maxDataBrokerFutureCallbackQueueSize) {
         this.maxDataBrokerFutureCallbackQueueSize = maxDataBrokerFutureCallbackQueueSize;
     }
 
@@ -273,7 +287,7 @@ public class ControllerConfiguration {
         return maxDataBrokerFutureCallbackPoolSize;
     }
 
-    public void setMaxDataBrokerFutureCallbackPoolSize(int maxDataBrokerFutureCallbackPoolSize) {
+    public void setMaxDataBrokerFutureCallbackPoolSize(final int maxDataBrokerFutureCallbackPoolSize) {
         this.maxDataBrokerFutureCallbackPoolSize = maxDataBrokerFutureCallbackPoolSize;
     }
 
@@ -281,7 +295,7 @@ public class ControllerConfiguration {
         return metricCaptureEnabled;
     }
 
-    public void setMetricCaptureEnabled(boolean metricCaptureEnabled) {
+    public void setMetricCaptureEnabled(final boolean metricCaptureEnabled) {
         this.metricCaptureEnabled = metricCaptureEnabled;
     }
 
@@ -289,7 +303,7 @@ public class ControllerConfiguration {
         return mailboxCapacity;
     }
 
-    public void setMailboxCapacity(int mailboxCapacity) {
+    public void setMailboxCapacity(final int mailboxCapacity) {
         this.mailboxCapacity = mailboxCapacity;
     }
 
@@ -297,11 +311,11 @@ public class ControllerConfiguration {
         return distributedEosProperties;
     }
 
-    public void setDistributedEosProperties(Properties distributedEosProperties) {
+    public void setDistributedEosProperties(final Properties distributedEosProperties) {
         this.distributedEosProperties = distributedEosProperties;
     }
 
-    public void addDistributedEosProperty(String key, String value) {
+    public void addDistributedEosProperty(final String key, final String value) {
         this.distributedEosProperties.put(key, value);
     }
 
@@ -309,7 +323,7 @@ public class ControllerConfiguration {
         return moduleShardsConfig;
     }
 
-    public void setModuleShardsConfig(String moduleShardsConfig) {
+    public void setModuleShardsConfig(final String moduleShardsConfig) {
         this.moduleShardsConfig = moduleShardsConfig;
     }
 
@@ -317,7 +331,7 @@ public class ControllerConfiguration {
         return modulesConfig;
     }
 
-    public void setModulesConfig(String modulesConfig) {
+    public void setModulesConfig(final String modulesConfig) {
         this.modulesConfig = modulesConfig;
     }
 
@@ -325,7 +339,7 @@ public class ControllerConfiguration {
         return configDatastoreContext;
     }
 
-    public void setConfigDatastoreContext(DatastoreContext configDatastoreContext) {
+    public void setConfigDatastoreContext(final DatastoreContext configDatastoreContext) {
         this.configDatastoreContext = configDatastoreContext;
     }
 
@@ -333,7 +347,7 @@ public class ControllerConfiguration {
         return operDatastoreContext;
     }
 
-    public void setOperDatastoreContext(DatastoreContext operDatastoreContext) {
+    public void setOperDatastoreContext(final DatastoreContext operDatastoreContext) {
         this.operDatastoreContext = operDatastoreContext;
     }
 
@@ -341,29 +355,57 @@ public class ControllerConfiguration {
         return datastoreProperties;
     }
 
-    public void setDatastoreProperties(Map<String, Object> datastoreProperties) {
+    public void setDatastoreProperties(final Map<String, Object> datastoreProperties) {
         this.datastoreProperties = datastoreProperties;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
 
-        ControllerConfiguration that = (ControllerConfiguration) o;
+        ControllerConfiguration that = (ControllerConfiguration) obj;
 
-        if (maxDataBrokerFutureCallbackQueueSize != that.maxDataBrokerFutureCallbackQueueSize) return false;
-        if (maxDataBrokerFutureCallbackPoolSize != that.maxDataBrokerFutureCallbackPoolSize) return false;
-        if (metricCaptureEnabled != that.metricCaptureEnabled) return false;
-        if (mailboxCapacity != that.mailboxCapacity) return false;
-        if (!restoreDirectoryPath.equals(that.restoreDirectoryPath)) return false;
-        if (!moduleShardsConfig.equals(that.moduleShardsConfig)) return false;
-        if (!modulesConfig.equals(that.modulesConfig)) return false;
-        if (!domNotificationRouterConfig.equals(that.domNotificationRouterConfig)) return false;
-        if (!actorSystemConfig.equals(that.actorSystemConfig)) return false;
-        if (!schemaServiceConfig.equals(that.schemaServiceConfig)) return false;
-        if (!configDatastoreContext.equals(that.configDatastoreContext)) return false;
-        if (!operDatastoreContext.equals(that.operDatastoreContext)) return false;
+        if (maxDataBrokerFutureCallbackQueueSize != that.maxDataBrokerFutureCallbackQueueSize) {
+            return false;
+        }
+        if (maxDataBrokerFutureCallbackPoolSize != that.maxDataBrokerFutureCallbackPoolSize) {
+            return false;
+        }
+        if (metricCaptureEnabled != that.metricCaptureEnabled) {
+            return false;
+        }
+        if (mailboxCapacity != that.mailboxCapacity) {
+            return false;
+        }
+        if (!restoreDirectoryPath.equals(that.restoreDirectoryPath)) {
+            return false;
+        }
+        if (!moduleShardsConfig.equals(that.moduleShardsConfig)) {
+            return false;
+        }
+        if (!modulesConfig.equals(that.modulesConfig)) {
+            return false;
+        }
+        if (!domNotificationRouterConfig.equals(that.domNotificationRouterConfig)) {
+            return false;
+        }
+        if (!actorSystemConfig.equals(that.actorSystemConfig)) {
+            return false;
+        }
+        if (!schemaServiceConfig.equals(that.schemaServiceConfig)) {
+            return false;
+        }
+        if (!configDatastoreContext.equals(that.configDatastoreContext)) {
+            return false;
+        }
+        if (!operDatastoreContext.equals(that.operDatastoreContext)) {
+            return false;
+        }
         return distributedEosProperties.equals(that.distributedEosProperties);
     }
 

@@ -26,23 +26,23 @@ public class LightyControllerOldTest extends LightyControllerTestBase {
         final CountDownLatch countDownLatch = new CountDownLatch(2);
         final LightyController lightyController = getLightyController();
         final DataBroker bindingDataBroker = lightyController.getServices().getControllerBindingDataBroker();
-        bindingDataBroker.registerDataTreeChangeListener(new DataTreeIdentifier<>(LogicalDatastoreType.OPERATIONAL,
-                TestUtils.TOPOLOGY_IID), changes -> {
-                    for (final DataTreeModification<Topology> change : changes) {
-                        if (countDownLatch.getCount() == 2) {
-                            // on first time - write
-                            Assert.assertNull(change.getRootNode().getDataBefore());
-                            Assert.assertNotNull(change.getRootNode().getDataAfter());
-                        } else if (countDownLatch.getCount() == 1) {
-                            // on second time - delete
-                            Assert.assertNotNull(change.getRootNode().getDataBefore());
-                            Assert.assertNull(change.getRootNode().getDataAfter());
-                        } else {
-                            Assert.fail("Too many DataTreeChange events, expected two");
-                        }
-                        countDownLatch.countDown();
+        bindingDataBroker.registerDataTreeChangeListener(
+            new DataTreeIdentifier<>(LogicalDatastoreType.OPERATIONAL, TestUtils.TOPOLOGY_IID), changes -> {
+                for (final DataTreeModification<Topology> change : changes) {
+                    if (countDownLatch.getCount() == 2) {
+                        // on first time - write
+                        Assert.assertNull(change.getRootNode().getDataBefore());
+                        Assert.assertNotNull(change.getRootNode().getDataAfter());
+                    } else if (countDownLatch.getCount() == 1) {
+                        // on second time - delete
+                        Assert.assertNotNull(change.getRootNode().getDataBefore());
+                        Assert.assertNull(change.getRootNode().getDataAfter());
+                    } else {
+                        Assert.fail("Too many DataTreeChange events, expected two");
                     }
-                });
+                    countDownLatch.countDown();
+                }
+            });
 
         // 1. write to TOPOLOGY model
         TestUtils.writeToTopology(bindingDataBroker, TestUtils.TOPOLOGY_IID, TestUtils.TOPOLOGY);

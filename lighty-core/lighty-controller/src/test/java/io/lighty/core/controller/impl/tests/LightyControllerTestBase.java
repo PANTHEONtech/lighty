@@ -20,9 +20,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 
-/**
- * author: vincent on 15.8.2017.
- */
 public abstract class LightyControllerTestBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(LightyControllerTestBase.class);
@@ -33,20 +30,21 @@ public abstract class LightyControllerTestBase {
     public void startLighty() throws Exception {
         LOG.info("startLighty from TestBase called");
         LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
-        lightyController = lightyControllerBuilder.from(ControllerConfigUtils.getDefaultSingleNodeConfiguration()).build();
+        lightyController = lightyControllerBuilder.from(ControllerConfigUtils.getDefaultSingleNodeConfiguration())
+                .build();
         ListenableFuture<Boolean> started = lightyController.start();
         started.get();
         LOG.info("startLighty from TestBase finished after sleep");
     }
 
     @BeforeMethod
-    public void handleTestMethodName(Method method) {
+    public void handleTestMethodName(final Method method) {
         String testName = method.getName();
         LOG.info("Running test {}", testName);
     }
 
     @AfterMethod
-    public void afterTest(ITestResult result) {
+    public void afterTest(final ITestResult result) {
         LOG.info("Test {} completed and resulted in {}, with throwables {}",
                 result.getName(), parseTestNGStatus(result.getStatus()), result.getThrowable());
     }
@@ -61,7 +59,7 @@ public abstract class LightyControllerTestBase {
         }
     }
 
-    private String parseTestNGStatus(int testResultStatus) {
+    private static String parseTestNGStatus(final int testResultStatus) {
         switch (testResultStatus) {
             case -1:
                 return "CREATED";
@@ -83,5 +81,4 @@ public abstract class LightyControllerTestBase {
     LightyController getLightyController() {
         return lightyController;
     }
-
 }
