@@ -18,40 +18,34 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 /**
  * This class serializes Binding Independent (DOM) objects TO Binding Aware (BA) objects.
  *
- * @param <BA>
- *            - Binding Aware object type of data, RPC data or Notification data
+ * @param <BA>  Binding Aware object type of data, RPC data or Notification data
  */
 public interface Serializer<BA extends DataObject> {
 
-    YangInstanceIdentifier convertIdentifier(final String identifier);
+    YangInstanceIdentifier convertIdentifier(String identifier);
 
     /**
-     * Serialize Binding Independent data TO Binding Aware data
+     * Serialize Binding Independent data TO Binding Aware data.
      *
-     * @param identifier
-     *            - identifier of Binding Independent data
-     * @param data
-     *            - Binding Independent data to be serialized
+     * @param identifier identifier of Binding Independent data
+     * @param data Binding Independent data to be serialized
      * @return serialized Binding Aware data
      */
     BA convertToBindingAwareData(YangInstanceIdentifier identifier, NormalizedNode<?, ?> data);
 
     /**
-     * Serialize the Binding Independent {@link MapNode} into Binding Aware data list
+     * Serialize the Binding Independent {@link MapNode} into Binding Aware data list.
      *
-     * @param identifier
-     *            - identifier of Binding Independent data
-     * @param mapNode
-     *            - Binding Independent data to be serialized
+     * @param identifier identifier of Binding Independent data
+     * @param mapNode Binding Independent data to be serialized
      * @return {@link DataObject} collection.
      */
     Collection<BA> convertBindingAwareList(YangInstanceIdentifier identifier, MapNode mapNode);
 
     /**
-     * Serialize restconf error to Normalized Node
+     * Serialize restconf error to Normalized Node.
      *
-     * @param body
-     *            - restconf error input data
+     * @param body restconf error input data
      * @return normalized node of the restconf error
      */
     NormalizedNode<?, ?> serializeXMLError(String body);
@@ -70,10 +64,8 @@ public interface Serializer<BA extends DataObject> {
     /**
      * Serialize Binding Independent Notification data TO Binding Aware Notification data.
      *
-     * @param schemaPath
-     *            - schema path of Notification
-     * @param norificationData
-     *            - Binding Independent Notification data to be serialized
+     * @param schemaPath schema path of Notification
+     * @param norificationData Binding Independent Notification data to be serialized
      * @return serialized Binding Aware Notification data
      */
     BA convertToBindingAwareNotification(SchemaPath schemaPath, ContainerNode norificationData);

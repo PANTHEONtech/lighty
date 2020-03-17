@@ -110,35 +110,25 @@ public abstract class AbstractCodecTest {
      * @param nodeName of the node
      * @return created {@link NodeIdentifier}
      */
-    protected static NodeIdentifier getNodeIdentifier(String namespace, String revision, String nodeName) {
-        return new NodeIdentifier(getQName(namespace, revision, nodeName));
+    protected static NodeIdentifier getNodeIdentifier(final String namespace, final String revision,
+            final String nodeName) {
+        return new NodeIdentifier(QName.create(namespace, revision, nodeName));
     }
 
-    /**
-     * Utility method to create the {@link QName} for a node within the toaster module
-     *
-     * @param nodeName
-     * @return created {@link QName}
-     */
-    protected static QName getQName(String namespace, String revision, String nodeName) {
-        return QName.create(namespace, revision, nodeName);
-    }
-
-    protected static NodeIdentifier getToasterNodeIdentifier(String nodeName) {
+    protected static NodeIdentifier getToasterNodeIdentifier(final String nodeName) {
         return getNodeIdentifier(TOASTER_NAMESPACE, TOASTER_REVISION, nodeName);
     }
 
-
     /**
-     * Loads the XML file containing a sample {@link Toaster} object
+     * Loads the XML file containing a sample {@link Toaster} object.
      *
      * <pre>
      * {@code
-     * <toaster xmlns="http://netconfcentral.org/ns/toaster">
-     *   <toasterManufacturer>manufacturer</toasterManufacturer>
-     *   <toasterStatus>up</toasterStatus>
-     *   <darknessFactor>201392110</darknessFactor>
-     * </toaster>
+     * &lt;toaster xmlns="http://netconfcentral.org/ns/toaster"&gt;
+     *   &lt;toasterManufacturer&gtmanufacturer&lt;/toasterManufacturer&gt;
+     *   &lt;toasterStatus&gtup&lt;/toasterStatus&gt;
+     *   &lt;darknessFactor&gt201392110&lt;/darknessFactor&gt;
+     * &lt;/toaster&gt;
      * }
      * </pre>
      *
@@ -148,20 +138,18 @@ public abstract class AbstractCodecTest {
         return loadResourceAsString("toaster.xml");
     }
 
-    protected static String loadResourceAsString(String fileName) {
+    protected static String loadResourceAsString(final String fileName) {
         URL resource = Resources.getResource(fileName);
-        String loadedFileContent;
         try {
-            loadedFileContent = Resources.asCharSource(resource, StandardCharsets.UTF_8).read();
+            return Resources.toString(resource, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new IllegalStateException("Could not load toaster xml file");
+            throw new IllegalStateException("Could not load toaster xml file", e);
         }
-        return loadedFileContent;
     }
 
 
     /**
-     * Helper method for loading {@link YangModuleInfo}s from the classpath
+     * Helper method for loading {@link YangModuleInfo}s from the classpath.
      *
      * @return {@link List} of loaded {@link YangModuleInfo}
      */
@@ -175,14 +163,14 @@ public abstract class AbstractCodecTest {
     }
 
     /**
-     * Build the {@link SchemaContext} based on the loaded {@link YangModuleInfo}s
+     * Build the {@link SchemaContext} based on the loaded {@link YangModuleInfo}s.
      *
-     * @param moduleInfos {@link List} of {@link YangModuleInfo}s to be used while creating
+     * @param infos {@link List} of {@link YangModuleInfo}s to be used while creating
      *        {@link SchemaContext}
      * @return prepared {@link SchemaContext}
      */
-    protected SchemaContext getSchemaContext(List<YangModuleInfo> moduleInfos) {
-        moduleInfoBackedCntxt.addModuleInfos(moduleInfos);
+    protected SchemaContext getSchemaContext(final List<YangModuleInfo> infos) {
+        moduleInfoBackedCntxt.addModuleInfos(infos);
         return moduleInfoBackedCntxt.tryToCreateModelContext().orElseThrow(IllegalStateException::new);
     }
 
@@ -234,7 +222,7 @@ public abstract class AbstractCodecTest {
     }
 
     /**
-     * Builds the {@link NormalizedNode} representation of {@link DataCodecTest#testedMakeToasterInput}
+     * Builds the {@link NormalizedNode} representation of {@link DataCodecTest#testedMakeToasterInput}.
      *
      * @return {@link NormalizedNode} representation
      */

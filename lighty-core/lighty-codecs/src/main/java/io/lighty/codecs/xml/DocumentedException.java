@@ -8,26 +8,24 @@
 
 package io.lighty.codecs.xml;
 
+import static io.lighty.codecs.xml.XmlMappingConstants.RPC_REPLY_KEY;
+import static io.lighty.codecs.xml.XmlMappingConstants.URN_IETF_PARAMS_XML_NS_NETCONF_BASE_1_0;
+
 import com.google.common.base.Preconditions;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import static io.lighty.codecs.xml.XmlMappingConstants.RPC_REPLY_KEY;
-import static io.lighty.codecs.xml.XmlMappingConstants.URN_IETF_PARAMS_XML_NS_NETCONF_BASE_1_0;
-
 /**
- * Checked exception to communicate an error that needs to be sent to the
- * netconf client.
+ * Checked exception to communicate an error that needs to be sent to the netconf client.
  */
 public class DocumentedException extends Exception {
 
@@ -79,10 +77,6 @@ public class DocumentedException extends Exception {
             return this.typeValue;
         }
 
-        /**
-         * @deprecated Use {@link #getTypeValue()} instead.
-         * @return type value.
-         */
         @Deprecated
         public String getTagValue() {
             return this.typeValue;
@@ -90,9 +84,9 @@ public class DocumentedException extends Exception {
 
         public static ErrorType from(final String text) {
             for (ErrorType e : values()) {
-               if (e.getTypeValue().equalsIgnoreCase(text)) {
-                   return e;
-               }
+                if (e.getTypeValue().equalsIgnoreCase(text)) {
+                    return e;
+                }
             }
 
             return APPLICATION;
@@ -130,10 +124,9 @@ public class DocumentedException extends Exception {
             return this.tagValue;
         }
 
-        public static ErrorTag from( final String text ) {
-            for( ErrorTag e: values() )
-            {
-                if( e.getTagValue().equals( text ) ) {
+        public static ErrorTag from(final String text) {
+            for (ErrorTag e : values()) {
+                if (e.getTagValue().equals(text)) {
                     return e;
                 }
             }
@@ -156,10 +149,6 @@ public class DocumentedException extends Exception {
             return this.severityValue;
         }
 
-        /**
-         * @deprecated Use {@link #getSeverityValue()} instead.
-         * @return severity value.
-         */
         @Deprecated
         public String getTagValue() {
             return this.severityValue;
@@ -182,28 +171,24 @@ public class DocumentedException extends Exception {
     private final Map<String, String> errorInfo;
 
     public DocumentedException(final String message) {
-        this(message,
-                DocumentedException.ErrorType.APPLICATION,
-                DocumentedException.ErrorTag.INVALID_VALUE,
-                DocumentedException.ErrorSeverity.ERROR
+        this(message, DocumentedException.ErrorType.APPLICATION, DocumentedException.ErrorTag.INVALID_VALUE,
+            DocumentedException.ErrorSeverity.ERROR
         );
     }
 
     public DocumentedException(final String message, final Exception cause) {
-        this(message, cause,
-                DocumentedException.ErrorType.APPLICATION,
-                DocumentedException.ErrorTag.INVALID_VALUE,
-                DocumentedException.ErrorSeverity.ERROR
+        this(message, cause, DocumentedException.ErrorType.APPLICATION, DocumentedException.ErrorTag.INVALID_VALUE,
+            DocumentedException.ErrorSeverity.ERROR
         );
     }
 
     public DocumentedException(final String message, final ErrorType errorType, final ErrorTag errorTag,
-                               final ErrorSeverity errorSeverity) {
-        this(message, errorType, errorTag, errorSeverity, Collections.<String, String> emptyMap());
+            final ErrorSeverity errorSeverity) {
+        this(message, errorType, errorTag, errorSeverity, Collections.emptyMap());
     }
 
     public DocumentedException(final String message, final ErrorType errorType, final ErrorTag errorTag,
-                               final ErrorSeverity errorSeverity, final Map<String, String> errorInfo) {
+            final ErrorSeverity errorSeverity, final Map<String, String> errorInfo) {
         super(message);
         this.errorType = errorType;
         this.errorTag = errorTag;
@@ -212,12 +197,12 @@ public class DocumentedException extends Exception {
     }
 
     public DocumentedException(final String message, final Exception cause, final ErrorType errorType,
-                               final ErrorTag errorTag, final ErrorSeverity errorSeverity) {
-        this(message, cause, errorType, errorTag, errorSeverity, Collections.<String, String> emptyMap());
+            final ErrorTag errorTag, final ErrorSeverity errorSeverity) {
+        this(message, cause, errorType, errorTag, errorSeverity, Collections.emptyMap());
     }
 
     public DocumentedException(final String message, final Exception cause, final ErrorType errorType,
-                               final ErrorTag errorTag, final ErrorSeverity errorSeverity, final Map<String, String> errorInfo) {
+            final ErrorTag errorTag, final ErrorSeverity errorSeverity, final Map<String, String> errorInfo) {
         super(message, cause);
         this.errorType = errorType;
         this.errorTag = errorTag;
@@ -228,25 +213,25 @@ public class DocumentedException extends Exception {
     public static <E extends Exception> DocumentedException wrap(final E exception) throws DocumentedException {
         final Map<String, String> errorInfo = new HashMap<>();
         errorInfo.put(ErrorTag.OPERATION_FAILED.name(), "Exception thrown");
-        throw new DocumentedException(exception.getMessage(), exception, ErrorType.APPLICATION, ErrorTag.OPERATION_FAILED,
-                ErrorSeverity.ERROR, errorInfo);
+        throw new DocumentedException(exception.getMessage(), exception, ErrorType.APPLICATION,
+            ErrorTag.OPERATION_FAILED, ErrorSeverity.ERROR, errorInfo);
     }
-    public static DocumentedException wrap(final ValidationException e) throws DocumentedException {
+
+    public static DocumentedException wrap(final ValidationException ex) throws DocumentedException {
         final Map<String, String> errorInfo = new HashMap<>();
         errorInfo.put(ErrorTag.OPERATION_FAILED.name(), "Validation failed");
-        throw new DocumentedException(e.getMessage(), e, ErrorType.APPLICATION, ErrorTag.OPERATION_FAILED,
+        throw new DocumentedException(ex.getMessage(), ex, ErrorType.APPLICATION, ErrorTag.OPERATION_FAILED,
                 ErrorSeverity.ERROR, errorInfo);
     }
 
-    public static DocumentedException wrap(final ConflictingVersionException e) throws DocumentedException {
+    public static DocumentedException wrap(final ConflictingVersionException ex) throws DocumentedException {
         final Map<String, String> errorInfo = new HashMap<>();
         errorInfo.put(ErrorTag.OPERATION_FAILED.name(), "Optimistic lock failed");
-        throw new DocumentedException(e.getMessage(), e, ErrorType.APPLICATION, ErrorTag.OPERATION_FAILED,
+        throw new DocumentedException(ex.getMessage(), ex, ErrorType.APPLICATION, ErrorTag.OPERATION_FAILED,
                 ErrorSeverity.ERROR, errorInfo);
     }
 
-    public static DocumentedException fromXMLDocument( final Document fromDoc ) {
-
+    public static DocumentedException fromXMLDocument(final Document fromDoc) {
         ErrorType errorType = ErrorType.APPLICATION;
         ErrorTag errorTag = ErrorTag.OPERATION_FAILED;
         ErrorSeverity errorSeverity = ErrorSeverity.ERROR;
@@ -258,28 +243,22 @@ public class DocumentedException extends Exception {
         // FIXME: BUG? - we only handle one rpc-error.
 
         NodeList replyChildren = rpcReply.getChildNodes();
-        for( int i = 0; i < replyChildren.getLength(); i++ ) {
-            Node replyChild = replyChildren.item( i );
-            if( RPC_ERROR.equals( replyChild.getNodeName() ) )
-            {
+        for (int i = 0; i < replyChildren.getLength(); i++) {
+            Node replyChild = replyChildren.item(i);
+            if (RPC_ERROR.equals(replyChild.getNodeName())) {
                 NodeList rpcErrorChildren = replyChild.getChildNodes();
-                for( int j = 0; j < rpcErrorChildren.getLength(); j++ )
-                {
-                    Node rpcErrorChild = rpcErrorChildren.item( j );
-                    if( ERROR_TYPE.equals( rpcErrorChild.getNodeName() ) ) {
+                for (int j = 0; j < rpcErrorChildren.getLength(); j++) {
+                    Node rpcErrorChild = rpcErrorChildren.item(j);
+                    if (ERROR_TYPE.equals(rpcErrorChild.getNodeName())) {
                         errorType = ErrorType.from(rpcErrorChild.getTextContent());
-                    }
-                    else if( ERROR_TAG.equals( rpcErrorChild.getNodeName() ) ) {
+                    } else if (ERROR_TAG.equals(rpcErrorChild.getNodeName())) {
                         errorTag = ErrorTag.from(rpcErrorChild.getTextContent());
-                    }
-                    else if( ERROR_SEVERITY.equals( rpcErrorChild.getNodeName() ) ) {
+                    } else if (ERROR_SEVERITY.equals(rpcErrorChild.getNodeName())) {
                         errorSeverity = ErrorSeverity.from(rpcErrorChild.getTextContent());
-                    }
-                    else if( ERROR_MESSAGE.equals( rpcErrorChild.getNodeName() ) ) {
+                    } else if (ERROR_MESSAGE.equals(rpcErrorChild.getNodeName())) {
                         errorMessage = rpcErrorChild.getTextContent();
-                    }
-                    else if( ERROR_INFO.equals( rpcErrorChild.getNodeName() ) ) {
-                        errorInfo = parseErrorInfo( rpcErrorChild );
+                    } else if (ERROR_INFO.equals(rpcErrorChild.getNodeName())) {
+                        errorInfo = parseErrorInfo(rpcErrorChild);
                     }
                 }
 
@@ -287,16 +266,16 @@ public class DocumentedException extends Exception {
             }
         }
 
-        return new DocumentedException( errorMessage, errorType, errorTag, errorSeverity, errorInfo );
+        return new DocumentedException(errorMessage, errorType, errorTag, errorSeverity, errorInfo);
     }
 
-    private static Map<String, String> parseErrorInfo(final Node node ) {
+    private static Map<String, String> parseErrorInfo(final Node node) {
         Map<String, String> infoMap = new HashMap<>();
         NodeList children = node.getChildNodes();
-        for( int i = 0; i < children.getLength(); i++ ) {
-            Node child = children.item( i );
-            if( child.getNodeType() == Node.ELEMENT_NODE ) {
-                infoMap.put( child.getNodeName(), child.getTextContent() );
+        for (int i = 0; i < children.getLength(); i++) {
+            Node child = children.item(i);
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                infoMap.put(child.getNodeName(), child.getTextContent());
             }
         }
 
@@ -324,19 +303,19 @@ public class DocumentedException extends Exception {
         try {
             doc = BUILDER_FACTORY.newDocumentBuilder().newDocument();
 
-            Node rpcReply = doc.createElementNS( URN_IETF_PARAMS_XML_NS_NETCONF_BASE_1_0, RPC_REPLY_KEY);
-            doc.appendChild( rpcReply );
+            Node rpcReply = doc.createElementNS(URN_IETF_PARAMS_XML_NS_NETCONF_BASE_1_0, RPC_REPLY_KEY);
+            doc.appendChild(rpcReply);
 
-            Node rpcError = doc.createElementNS( URN_IETF_PARAMS_XML_NS_NETCONF_BASE_1_0, RPC_ERROR );
-            rpcReply.appendChild( rpcError );
+            Node rpcError = doc.createElementNS(URN_IETF_PARAMS_XML_NS_NETCONF_BASE_1_0, RPC_ERROR);
+            rpcReply.appendChild(rpcError);
 
-            rpcError.appendChild( createTextNode( doc, ERROR_TYPE, getErrorType().getTypeValue() ) );
-            rpcError.appendChild( createTextNode( doc, ERROR_TAG, getErrorTag().getTagValue() ) );
-            rpcError.appendChild( createTextNode( doc, ERROR_SEVERITY, getErrorSeverity().getSeverityValue() ) );
-            rpcError.appendChild( createTextNode( doc, ERROR_MESSAGE, getLocalizedMessage() ) );
+            rpcError.appendChild(createTextNode(doc, ERROR_TYPE, getErrorType().getTypeValue()));
+            rpcError.appendChild(createTextNode(doc, ERROR_TAG, getErrorTag().getTagValue()));
+            rpcError.appendChild(createTextNode(doc, ERROR_SEVERITY, getErrorSeverity().getSeverityValue()));
+            rpcError.appendChild(createTextNode(doc, ERROR_MESSAGE, getLocalizedMessage()));
 
             Map<String, String> errorInfoMap = getErrorInfo();
-            if( errorInfoMap != null && !errorInfoMap.isEmpty() ) {
+            if (errorInfoMap != null && !errorInfoMap.isEmpty()) {
                 /*
                  * <error-info>
                  *   <bad-attribute>message-id</bad-attribute>
@@ -344,16 +323,15 @@ public class DocumentedException extends Exception {
                  * </error-info>
                  */
 
-                Node errorInfoNode = doc.createElementNS( URN_IETF_PARAMS_XML_NS_NETCONF_BASE_1_0, ERROR_INFO );
-                errorInfoNode.setPrefix( rpcReply.getPrefix() );
-                rpcError.appendChild( errorInfoNode );
+                Node errorInfoNode = doc.createElementNS(URN_IETF_PARAMS_XML_NS_NETCONF_BASE_1_0, ERROR_INFO);
+                errorInfoNode.setPrefix(rpcReply.getPrefix());
+                rpcError.appendChild(errorInfoNode);
 
-                for ( Entry<String, String> entry : errorInfoMap.entrySet() ) {
-                    errorInfoNode.appendChild( createTextNode( doc, entry.getKey(), entry.getValue() ) );
+                for (Entry<String, String> entry : errorInfoMap.entrySet()) {
+                    errorInfoNode.appendChild(createTextNode(doc, entry.getKey(), entry.getValue()));
                 }
             }
-        }
-        catch( final ParserConfigurationException e ) {
+        } catch (ParserConfigurationException e) {
             // this shouldn't happen
             LOG.error("Error outputting to XML document", e);
         }
@@ -361,9 +339,9 @@ public class DocumentedException extends Exception {
         return doc;
     }
 
-    private Node createTextNode(final Document doc, final String tag, final String textContent ) {
-        Node node = doc.createElementNS( URN_IETF_PARAMS_XML_NS_NETCONF_BASE_1_0, tag );
-        node.setTextContent( textContent );
+    private static Node createTextNode(final Document doc, final String tag, final String textContent) {
+        Node node = doc.createElementNS(URN_IETF_PARAMS_XML_NS_NETCONF_BASE_1_0, tag);
+        node.setTextContent(textContent);
         return node;
     }
 

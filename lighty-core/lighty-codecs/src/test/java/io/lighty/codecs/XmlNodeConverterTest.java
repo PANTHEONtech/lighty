@@ -7,8 +7,10 @@
  */
 package io.lighty.codecs;
 
+import com.google.common.base.Strings;
 import io.lighty.codecs.api.ConverterUtils;
 import io.lighty.codecs.api.NodeConverter;
+import io.lighty.codecs.api.SerializationException;
 import java.io.StringReader;
 import java.io.Writer;
 import java.net.URISyntaxException;
@@ -28,11 +30,8 @@ import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.google.common.base.Strings;
-import io.lighty.codecs.api.SerializationException;
 
 public class XmlNodeConverterTest extends AbstractCodecTest {
-
     private static final Logger LOG = LoggerFactory.getLogger(XmlNodeConverterTest.class);
 
     private final NodeConverter bindingSerializer;
@@ -131,7 +130,7 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
 
     @Test
     public void testSerializeData_container_rpc() throws SerializationException {
-       Optional<RpcDefinition> loadRpc = ConverterUtils.loadRpc(schemaContext, CONTAINER_IO_RPC_QNAME);
+        Optional<RpcDefinition> loadRpc = ConverterUtils.loadRpc(schemaContext, CONTAINER_IO_RPC_QNAME);
         NormalizedNode<?, ?> deserializeData = bindingSerializer.deserialize(loadRpc.get().getInput(),
                 new StringReader(loadResourceAsString("container-io-rpc.xml")));
         Assert.assertNotNull(deserializeData);

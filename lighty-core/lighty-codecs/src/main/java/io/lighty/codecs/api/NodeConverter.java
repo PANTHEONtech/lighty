@@ -7,26 +7,24 @@
  */
 package io.lighty.codecs.api;
 
+import io.lighty.codecs.JsonNodeConverter;
+import io.lighty.codecs.XmlNodeConverter;
+import io.lighty.codecs.xml.XmlElement;
 import java.io.Reader;
 import java.io.Writer;
-
-import io.lighty.codecs.xml.XmlElement;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
-import io.lighty.codecs.JsonNodeConverter;
-import io.lighty.codecs.XmlNodeConverter;
 
 /**
  * This interface may be useful when (de)serializing {@link NormalizedNode}s (from)into its XML or
  * JSON representation. Currently there are two implementations {@link XmlNodeConverter} and
- * {@link JsonNodeConverter}
- *
+ * {@link JsonNodeConverter}.
  */
 public interface NodeConverter {
     /**
-     * This method will serialize the given {@link NormalizedNode} into its string representation
+     * This method will serialize the given {@link NormalizedNode} into its string representation.
      *
      * @see ConverterUtils#getSchemaNode(SchemaContext, QName)
      * @param schemaNode parent schema node used during serialization
@@ -39,7 +37,7 @@ public interface NodeConverter {
     /**
      * This method will serialize the input {@link NormalizedNode} RPC into its string representation. It
      * is highly recommend to use {@link ConverterUtils#loadRpc(SchemaContext, QName)} and proper
-     * input/output definition as the schemaNode parameter
+     * input/output definition as the schemaNode parameter.
      *
      * @see ConverterUtils#rpcAsInput(XmlElement)
      * @see ConverterUtils#rpcAsOutput(XmlElement)

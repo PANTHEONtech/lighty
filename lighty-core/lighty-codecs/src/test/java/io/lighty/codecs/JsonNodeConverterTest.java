@@ -7,8 +7,10 @@
  */
 package io.lighty.codecs;
 
+import com.google.common.base.Strings;
 import io.lighty.codecs.api.ConverterUtils;
 import io.lighty.codecs.api.NodeConverter;
+import io.lighty.codecs.api.SerializationException;
 import java.io.StringReader;
 import java.io.Writer;
 import java.util.Optional;
@@ -18,13 +20,11 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.google.common.base.Strings;
-import io.lighty.codecs.api.SerializationException;
 
 public class JsonNodeConverterTest extends AbstractCodecTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(JsonNodeConverterTest.class);
-    
+
     private final NodeConverter bindingSerializer;
 
     public JsonNodeConverterTest() {

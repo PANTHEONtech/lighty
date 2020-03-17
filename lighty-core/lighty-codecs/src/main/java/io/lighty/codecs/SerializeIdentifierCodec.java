@@ -79,15 +79,15 @@ public class SerializeIdentifierCodec {
         return builder.build();
     }
 
-    private static YangInstanceIdentifier.NodeWithValue<?> buildNodeWithValue(final LeafListSchemaNode leafListSchemaNode,
-            final String arg) {
+    private static YangInstanceIdentifier.NodeWithValue<?> buildNodeWithValue(
+            final LeafListSchemaNode leafListSchemaNode, final String arg) {
         final String[] split = arg.split("=");
         Preconditions.checkArgument(split.length == 2);
         return new YangInstanceIdentifier.NodeWithValue<>(leafListSchemaNode.getQName(), split[1]);
     }
 
     private static YangInstanceIdentifier.NodeIdentifierWithPredicates buildNodeWithKey(
-            final ListSchemaNode listSchemaNode, final String pathArg, final QName qName) {
+            final ListSchemaNode listSchemaNode, final String pathArg, final QName qname) {
         Preconditions.checkArgument(pathArg.contains("="), "pathArg does not containg list with keys");
         final String[] listWithKeys = pathArg.split("=");
         final String keys = listWithKeys[1];
@@ -97,15 +97,15 @@ public class SerializeIdentifierCodec {
             Preconditions.checkArgument(keyValues.length > i, "all key values must be present");
             mapKeys.put(listSchemaNode.getKeyDefinition().get(i), keyValues[i]);
         }
-        return YangInstanceIdentifier.NodeIdentifierWithPredicates.of(qName, mapKeys);
+        return YangInstanceIdentifier.NodeIdentifierWithPredicates.of(qname, mapKeys);
     }
 
-    private static QName getQname(final QNameModule qNameModule, final String args) {
+    private static QName getQname(final QNameModule qnameModule, final String args) {
         if (args.contains("=")) {
             final String[] listWithKeys = args.split("=");
-            return QName.create(qNameModule, listWithKeys[0]);
+            return QName.create(qnameModule, listWithKeys[0]);
         }
-        return QName.create(qNameModule, args);
+        return QName.create(qnameModule, args);
     }
 
 }
