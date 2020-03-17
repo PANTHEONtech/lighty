@@ -7,32 +7,29 @@
  */
 package io.lighty.server;
 
+import static org.glassfish.jersey.internal.guava.Preconditions.checkArgument;
+
+import java.net.InetSocketAddress;
+import java.util.EnumSet;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.servlet.DispatcherType;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.component.AbstractLifeCycle;
 import org.opendaylight.aaa.web.WebContext;
 import org.opendaylight.aaa.web.WebContextRegistration;
 import org.opendaylight.aaa.web.WebServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.servlet.DispatcherType;
-import javax.servlet.ServletException;
-import java.net.InetSocketAddress;
-import java.util.EnumSet;
-import static org.glassfish.jersey.internal.guava.Preconditions.checkArgument;
 
 /**
  * Allows user to build jetty server with WebServer interface support.
- *
  */
 public class LightyWebServerAdapter extends LightyServerBuilder implements WebServer {
-
     private static final Logger LOG = LoggerFactory.getLogger(LightyWebServerAdapter.class);
     private static final int HTTP_SERVER_IDLE_TIMEOUT = 30000;
 
@@ -40,21 +37,20 @@ public class LightyWebServerAdapter extends LightyServerBuilder implements WebSe
     private ServerConnector http;
     private ContextHandlerCollection contextHandlerCollection;
 
-
-    public LightyWebServerAdapter(final InetSocketAddress inetSocketAddress, int httpPort) {
+    public LightyWebServerAdapter(final InetSocketAddress inetSocketAddress, final int httpPort) {
         super(inetSocketAddress);
         this.httpPort = httpPort;
         serverInit(httpPort);
     }
 
-    public LightyWebServerAdapter(Server server, int httpPort) {
+    public LightyWebServerAdapter(final Server server, final int httpPort) {
         super(server);
         serverInit(httpPort);
     }
 
-    private void serverInit(int httpPort) {
-        checkArgument(httpPort >= 0, "httpPort must be positive");
-        checkArgument(httpPort < 65536, "httpPort must < 65536");
+    private void serverInit(final int port) {
+        checkArgument(port >= 0, "httpPort must be positive");
+        checkArgument(port < 65536, "httpPort must < 65536");
         this.contextHandlerCollection = new ContextHandlerCollection();
         if (this.server == null) {
             this.server = new Server(this.inetSocketAddress);
@@ -67,7 +63,7 @@ public class LightyWebServerAdapter extends LightyServerBuilder implements WebSe
         });
         this.http = new ServerConnector(server);
         this.http.setHost("localhost");
-        this.http.setPort(httpPort);
+        this.http.setPort(port);
         this.http.setIdleTimeout(HTTP_SERVER_IDLE_TIMEOUT);
         this.server.addConnector(http);
     }
@@ -78,7 +74,7 @@ public class LightyWebServerAdapter extends LightyServerBuilder implements WebSe
     }
 
     @Override
-    public WebContextRegistration registerWebContext(WebContext webContext) {
+    public WebContextRegistration registerWebContext(final WebContext webContext) {
         String contextPathWithSlashPrefix = webContext.contextPath().startsWith("/")
                 ? webContext.contextPath() : "/" + webContext.contextPath();
         ServletContextHandler handler = new ServletContextHandler(contextHandlerCollection, contextPathWithSlashPrefix,
@@ -99,16 +95,14 @@ public class LightyWebServerAdapter extends LightyServerBuilder implements WebSe
             FilterHolder filterHolder = new FilterHolder(filter.filter());
             filterHolder.setInitParameters(filter.initParams());
             filter.urlPatterns().forEach(
-                    urlPattern -> handler.addFilter(filterHolder, urlPattern, EnumSet.allOf(DispatcherType.class))
+                urlPattern -> handler.addFilter(filterHolder, urlPattern, EnumSet.allOf(DispatcherType.class))
             );
         });
         webContext.servlets().forEach(servlet -> {
             ServletHolder servletHolder = new ServletHolder(servlet.name(), servlet.servlet());
             servletHolder.setInitParameters(servlet.initParams());
             servletHolder.setInitOrder(1); // AKA <load-on-startup> 1
-            servlet.urlPatterns().forEach(
-                    urlPattern -> handler.addServlet(servletHolder, urlPattern)
-            );
+            servlet.urlPatterns().forEach(urlPattern -> handler.addServlet(servletHolder, urlPattern));
         });
         addFilters(handler);
         this.contextHandlerCollection.addHandler(handler);
@@ -123,19 +117,8 @@ public class LightyWebServerAdapter extends LightyServerBuilder implements WebSe
         return "http://localhost:" + httpPort;
     }
 
-    private void restart(AbstractLifeCycle lifecycle) throws ServletException {
-        try {
-            lifecycle.start();
-        } catch (Exception e) {
-            if (e instanceof ServletException) {
-                throw (ServletException) e;
-            } else {
-                throw new ServletException("registerServlet() start failed", e);
-            }
-        }
-    }
-
-    private void close(ServletContextHandler handler) {
+    @SuppressWarnings("checkstyle:illegalCatch")
+    private void close(final ServletContextHandler handler) {
         try {
             handler.stop();
             handler.destroy();

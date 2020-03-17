@@ -5,18 +5,16 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-
 package io.lighty.server.test;
 
 import io.lighty.server.LightyServerBuilder;
+import java.net.InetSocketAddress;
+import java.util.EventListener;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.net.InetSocketAddress;
-import java.util.EventListener;
 
 public class LightyServerBuilderTest {
 
@@ -34,5 +32,4 @@ public class LightyServerBuilderTest {
         Server server = serverBuilder.build();
         Assert.assertNotNull(server);
     }
-
 }
