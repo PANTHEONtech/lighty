@@ -197,7 +197,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private final JobCoordinator jobCoordinator;
     private final MetricProvider metricProvider;
     private final CacheProvider cacheProvider;
-    private List<ObjectRegistration<YangModuleInfo>> modelsRegistration = new ArrayList<ObjectRegistration<YangModuleInfo>>();
+    private List<ObjectRegistration<YangModuleInfo>> modelsRegistration = new ArrayList<>();
 
     public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
             final ClassLoader actorSystemClassLoader,
@@ -260,10 +260,9 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
         //INIT schema context
         this.moduleInfoBackedContext = ModuleInfoBackedContext.create();
-        this.modelSet.forEach( m -> {
-            final ObjectRegistration<YangModuleInfo> modelReg = this.moduleInfoBackedContext.registerModuleInfo(m);
-            modelsRegistration.add(modelReg);
-        });
+        this.modelSet.stream()
+                .map(moduleInfoBackedContext::registerModuleInfo)
+                .forEach(modelsRegistration::add);
         this.schemaService = FixedDOMSchemaService.of(this.moduleInfoBackedContext,
                 this.moduleInfoBackedContext);
 
