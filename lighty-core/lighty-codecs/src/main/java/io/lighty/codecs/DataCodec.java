@@ -10,7 +10,6 @@ package io.lighty.codecs;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import io.lighty.codecs.api.Codec;
 import io.lighty.codecs.api.NodeConverter;
 import io.lighty.codecs.xml.XmlElement;
@@ -22,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.dom.DOMSource;
@@ -86,17 +86,23 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public T convertToBindingAwareData(final YangInstanceIdentifier identifier, final NormalizedNode<?, ?> data) {
-        return (T) this.codec.fromNormalizedNode(identifier, data).getValue();
+    public Optional<T> convertToBindingAwareData(final YangInstanceIdentifier identifier, final NormalizedNode<?, ?> data) {
+        final Entry<InstanceIdentifier<?>, DataObject> dataObjectEntry =
+                this.codec.fromNormalizedNode(identifier, data);
+        if (dataObjectEntry != null) {
+            return Optional.ofNullable((T) dataObjectEntry.getValue());
+        }
+        return Optional.empty();
     }
 
     @Override
     public Collection<T> convertBindingAwareList(final YangInstanceIdentifier identifier, final MapNode mapNode) {
         Collection<MapEntryNode> children = mapNode.getValue();
-        List<T> resultList = Lists.newArrayListWithCapacity(children.size());
-        for (MapEntryNode entry : children) {
-            resultList.add(convertToBindingAwareData(identifier, entry));
-        }
+        List<T> resultList = children.stream()
+                .map(entry -> convertToBindingAwareData(identifier, entry))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
         return ImmutableList.copyOf(resultList);
     }
 
