@@ -8,6 +8,9 @@
 package io.lighty.modules.southbound.openflow.impl.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.openflowjava.protocol.impl.core.OpenflowDiagStatusProviderImpl;
 import org.opendaylight.openflowjava.protocol.impl.core.SwitchConnectionProviderFactoryImpl;
@@ -19,9 +22,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow._switch.connection.config.rev160506.SwitchConnectionConfigBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow._switch.connection.config.rev160506._switch.connection.config.TlsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow.provider.config.rev160510.OpenflowProviderConfig;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 public class SwitchConfig {
     private final SwitchConnectionProviderFactoryImpl factory = new SwitchConnectionProviderFactoryImpl();
@@ -55,44 +55,44 @@ public class SwitchConfig {
     protected SwitchConfig() {
         this.defaultSwitch =
                 new SwitchConnectionConfigBuilder()
-                .setInstanceName(this.instanceName)
-                .setPort(this.port)
-                .setTransportProtocol(TransportProtocol.forValue(this.transportProtocol))
-                .setSwitchIdleTimeout(this.switchIdleTimeout)
-                .setUseBarrier(this.useBarrier)
-                .setChannelOutboundQueueSize(this.channelOutboundQueueSize)
+                .setInstanceName(null)
+                .setPort(0)
+                .setTransportProtocol(TransportProtocol.forValue(0))
+                .setSwitchIdleTimeout(0L)
+                .setUseBarrier(false)
+                .setChannelOutboundQueueSize(0)
                 .setTls(
                         new TlsBuilder()
-                        .setKeystore(this.keystore)
-                        .setKeystoreType(KeystoreType.forValue(this.keystoreType))
-                        .setKeystorePathType(PathType.forValue(this.keystorePathType))
-                        .setKeystorePassword(this.keystorePassword)
-                        .setTruststore(this.truststore)
-                        .setTruststoreType(KeystoreType.forValue(this.truststoreType))
-                        .setTruststorePathType(PathType.forValue(this.truststorePathType))
-                        .setTruststorePassword(this.truststorePassword)
-                        .setCertificatePassword(this.certificatePassword)
+                        .setKeystore(null)
+                        .setKeystoreType(KeystoreType.forValue(0))
+                        .setKeystorePathType(PathType.forValue(0))
+                        .setKeystorePassword(null)
+                        .setTruststore(null)
+                        .setTruststoreType(KeystoreType.forValue(0))
+                        .setTruststorePathType(PathType.forValue(0))
+                        .setTruststorePassword(null)
+                        .setCertificatePassword(null)
                         .build()
                         ).build();
         this.legacySwitch =
                 new SwitchConnectionConfigBuilder()
                 .setInstanceName(this.legacyInstanceName)
                 .setPort(this.legacyPort)
-                .setTransportProtocol(TransportProtocol.forValue(this.transportProtocol))
-                .setSwitchIdleTimeout(this.switchIdleTimeout)
-                .setUseBarrier(this.useBarrier)
-                .setChannelOutboundQueueSize(this.channelOutboundQueueSize)
+                .setTransportProtocol(TransportProtocol.forValue(0))
+                .setSwitchIdleTimeout(0L)
+                .setUseBarrier(false)
+                .setChannelOutboundQueueSize(0)
                 .setTls(
                         new TlsBuilder()
-                        .setKeystore(this.keystore)
-                        .setKeystoreType(KeystoreType.forValue(this.keystoreType))
-                        .setKeystorePathType(PathType.forValue(this.keystorePathType))
-                        .setKeystorePassword(this.keystorePassword)
-                        .setTruststore(this.truststore)
-                        .setTruststoreType(KeystoreType.forValue(this.truststoreType))
-                        .setTruststorePathType(PathType.forValue(this.truststorePathType))
-                        .setTruststorePassword(this.truststorePassword)
-                        .setCertificatePassword(this.certificatePassword)
+                        .setKeystore(null)
+                        .setKeystoreType(KeystoreType.forValue(0))
+                        .setKeystorePathType(PathType.forValue(0))
+                        .setKeystorePassword(null)
+                        .setTruststore(null)
+                        .setTruststoreType(KeystoreType.forValue(0))
+                        .setTruststorePathType(PathType.forValue(0))
+                        .setTruststorePassword(null)
+                        .setCertificatePassword(null)
                         .build()
                         ).build();
     }
