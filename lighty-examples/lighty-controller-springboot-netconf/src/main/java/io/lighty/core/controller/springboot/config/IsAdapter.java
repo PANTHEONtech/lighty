@@ -1,16 +1,16 @@
 package io.lighty.core.controller.springboot.config;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import org.casbin.jcasbin.model.Model;
 import org.casbin.jcasbin.persist.Adapter;
 import org.casbin.jcasbin.persist.Helper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.List;
 
 public class IsAdapter implements Adapter {
 
@@ -54,7 +54,7 @@ public class IsAdapter implements Adapter {
 
     private void loadPolicyClassPath(Model model, Helper.loadPolicyLineHandler<String, Model> handler) {
         InputStream is = IsAdapter.class.getResourceAsStream(classPath);
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
 
         String line;
         try {
