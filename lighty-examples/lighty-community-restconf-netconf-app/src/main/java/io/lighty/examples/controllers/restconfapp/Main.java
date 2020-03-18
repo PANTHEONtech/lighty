@@ -24,10 +24,6 @@ import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
 import io.lighty.server.LightyServerBuilder;
 import io.lighty.swagger.SwaggerLighty;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,6 +32,9 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Main {
 
@@ -196,6 +195,7 @@ public class Main {
                 LOG.error("Exception while shutting down lighty.io controller:", e);
             }
             float duration = (System.nanoTime() - startTime) / 1_000_000f;
+            LOG.info("Lighty and OFP stopped in {}ms", duration);
         }
     }
 }
