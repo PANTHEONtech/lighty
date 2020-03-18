@@ -66,9 +66,10 @@ public class DataCodecTest extends AbstractCodecTest {
     @Test
     public void testConvertBindingIndependentIntoBindingAware_container() throws IOException, XMLStreamException {
         DataCodec<Toaster> dataCodec = new DataCodec<>(this.schemaContext);
-        Toaster serializedToaster =
+        Optional<Toaster> serializedToaster =
                 dataCodec.convertToBindingAwareData(TOASTER_YANG_INSTANCE_IDENTIFIER, testedToasterNormalizedNodes);
-        Assert.assertEquals(this.testedToaster, serializedToaster);
+        Assert.assertTrue(serializedToaster.isPresent());
+        Assert.assertEquals(this.testedToaster, serializedToaster.get());
     }
 
     /*
@@ -151,9 +152,10 @@ public class DataCodecTest extends AbstractCodecTest {
     @Test
     public void convertFromNormalizedNode_list() {
         DataCodec<SampleList> codec = new DataCodec<>(this.schemaContext);
-        SampleList convertToBindingAwareData = codec.convertToBindingAwareData(
+        Optional<SampleList> convertToBindingAwareData = codec.convertToBindingAwareData(
                 YangInstanceIdentifier.of(SampleList.QNAME), testedSampleListNormalizedNodes);
-        Assert.assertNotNull(convertToBindingAwareData.key());
+        Assert.assertTrue(convertToBindingAwareData.isPresent());
+        Assert.assertNotNull(convertToBindingAwareData.get().key());
     }
 
     @Test

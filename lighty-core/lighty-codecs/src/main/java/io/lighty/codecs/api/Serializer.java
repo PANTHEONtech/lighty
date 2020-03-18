@@ -8,6 +8,7 @@
 package io.lighty.codecs.api;
 
 import java.util.Collection;
+import java.util.Optional;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -31,7 +32,7 @@ public interface Serializer<BA extends DataObject> {
      * @param data Binding Independent data to be serialized
      * @return serialized Binding Aware data
      */
-    BA convertToBindingAwareData(YangInstanceIdentifier identifier, NormalizedNode<?, ?> data);
+    Optional<BA> convertToBindingAwareData(YangInstanceIdentifier identifier, NormalizedNode<?, ?> data);
 
     /**
      * Serialize the Binding Independent {@link MapNode} into Binding Aware data list.
