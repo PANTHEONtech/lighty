@@ -24,16 +24,15 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow.provider.config.rev160510.OpenflowProviderConfig;
 
 public class SwitchConfig {
+    private static final String LEGACY_INSTANCE_NAME = "openflow-switch-connection-provider-legacy-impl";
+    private static final int LEGACY_PORT = 6633;
+
     private final SwitchConnectionProviderFactoryImpl factory = new SwitchConnectionProviderFactoryImpl();
 
     @JsonIgnore
     private final SwitchConnectionConfig defaultSwitch;
     @JsonIgnore
     private final SwitchConnectionConfig legacySwitch;
-    @JsonIgnore
-    private final String legacyInstanceName = "openflow-switch-connection-provider-legacy-impl";
-    @JsonIgnore
-    private final int legacyPort = 6633;
 
     private String instanceName;
     private int port;
@@ -76,8 +75,8 @@ public class SwitchConfig {
                         ).build();
         this.legacySwitch =
                 new SwitchConnectionConfigBuilder()
-                .setInstanceName(this.legacyInstanceName)
-                .setPort(this.legacyPort)
+                .setInstanceName(LEGACY_INSTANCE_NAME)
+                .setPort(LEGACY_PORT)
                 .setTransportProtocol(TransportProtocol.forValue(0))
                 .setSwitchIdleTimeout(0L)
                 .setUseBarrier(false)
@@ -133,8 +132,8 @@ public class SwitchConfig {
 
         final SwitchConnectionConfig tmpLegacySwitch =
                 new SwitchConnectionConfigBuilder()
-                .setInstanceName(this.legacyInstanceName)
-                .setPort(this.legacyPort)
+                .setInstanceName(LEGACY_INSTANCE_NAME)
+                .setPort(LEGACY_PORT)
                 .setTransportProtocol(TransportProtocol.forValue(this.transportProtocol))
                 .setSwitchIdleTimeout(this.switchIdleTimeout)
                 .setUseBarrier(this.useBarrier)
