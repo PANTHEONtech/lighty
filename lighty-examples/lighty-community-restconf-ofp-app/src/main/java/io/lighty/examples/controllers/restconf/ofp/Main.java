@@ -116,19 +116,20 @@ public class Main {
         ListenableFuture<Boolean> start = plugin.start();
 
         //Set SystemReadyMonitor listeners to active state
-        Futures.addCallback(start,new FutureCallback<Boolean>() {
+        Futures.addCallback(start, new FutureCallback<>() {
             @Override
             public void onSuccess(Boolean result) {
-                if (result) {
+                if (result != null && result) {
                     lightyController.getServices().getLightySystemReadyService().onSystemBootReady();
                 } else {
                     LOG.error("OFP wasn unable to start correctly");
                     throw new RuntimeException("Unexcepted result of OFP initialization");
                 }
             }
+
             @Override
             public void onFailure(Throwable t) {
-                LOG.error("Exception while initializing OFP",t);
+                LOG.error("Exception while initializing OFP", t);
             }
         }, Executors.newSingleThreadExecutor());
 
