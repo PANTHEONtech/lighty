@@ -14,7 +14,6 @@ import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTr
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -23,7 +22,6 @@ import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
-
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.netconf.api.ModifyAction;
@@ -244,7 +242,8 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
         }
 
         // Step two: set the top builder's metadata
-        builders.peek().withAnnotation(NETCONF_OPERATION_QNAME_LEGACY, oper.toString().toLowerCase(Locale.US));
+        Optional.ofNullable(builders.peek())
+                .ifPresent(builder -> builder.withAnnotation(NETCONF_OPERATION_QNAME_LEGACY, oper.toString().toLowerCase(Locale.US)));
 
         // Step three: build the tree
         while (true) {
