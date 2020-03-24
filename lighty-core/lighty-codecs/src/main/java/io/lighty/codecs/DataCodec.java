@@ -9,7 +9,9 @@ package io.lighty.codecs;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.VerifyException;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
 import io.lighty.codecs.api.Codec;
 import io.lighty.codecs.api.NodeConverter;
 import io.lighty.codecs.xml.XmlElement;
@@ -21,10 +23,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.dom.DOMSource;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
@@ -86,24 +88,31 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Optional<T> convertToBindingAwareData(final YangInstanceIdentifier identifier, final NormalizedNode<?, ?> data) {
+    @Nullable
+    public T convertToBindingAwareData(final YangInstanceIdentifier identifier, final NormalizedNode<?, ?> data) {
         final Entry<InstanceIdentifier<?>, DataObject> dataObjectEntry =
                 this.codec.fromNormalizedNode(identifier, data);
         if (dataObjectEntry != null) {
-            return Optional.ofNullable((T) dataObjectEntry.getValue());
+            return (T) dataObjectEntry.getValue();
         }
-        return Optional.empty();
+        return null;
     }
 
     @Override
     public Collection<T> convertBindingAwareList(final YangInstanceIdentifier identifier, final MapNode mapNode) {
         Collection<MapEntryNode> children = mapNode.getValue();
-        List<T> resultList = children.stream()
-                .map(entry -> convertToBindingAwareData(identifier, entry))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
-        return ImmutableList.copyOf(resultList);
+        final Builder<T> listBuilder = ImmutableList.builderWithExpectedSize(children.size());
+        for (MapEntryNode entry : children) {
+            listBuilder.add(verifyNotNull(convertToBindingAwareData(identifier, entry), identifier));
+        }
+        return listBuilder.build();
+    }
+
+    private T verifyNotNull(T dataObject, YangInstanceIdentifier identifier) {
+        if (dataObject == null) {
+            throw new VerifyException("Unexpected null value for list IID " + identifier);
+        }
+        return dataObject;
     }
 
     @Override
