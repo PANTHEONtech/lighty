@@ -4,7 +4,7 @@ Software-Defined Networking (SDN) solutions in Java. Developed by [PANTHEON.tech
 
 It utilizes core [OpenDaylight](https://www.opendaylight.org/) components, which are available as a set of libraries and are adapted to run in a __plain Java SE environment__.
 
-[![Build Status](https://travis-ci.org/PantheonTechnologies/lighty-core.svg?branch=10.0.x)](https://travis-ci.org/PantheonTechnologies/lighty-core)
+[![Build Status](https://travis-ci.org/PantheonTechnologies/lighty-core.svg?branch=12.0.x)](https://travis-ci.org/PantheonTechnologies/lighty-core)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.lighty.core/lighty-bom/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.lighty.core/lighty-bom)
 [![License](https://img.shields.io/badge/License-EPL%201.0-blue.svg)](https://opensource.org/licenses/EPL-1.0)
 
@@ -43,7 +43,7 @@ _This branch maintains compatibility with __OpenDaylight Magnesium__ release._
 
 ## Build & Install
 In order to build and install lighty.io artifacts locally, follow the steps below:
-1. __Install JDK__ - make sure [JDK 8](http://openjdk.java.net/install/) or [JDK 11](https://jdk.java.net/11/) is installed
+1. __Install JDK__ - make sure [JDK 11](https://jdk.java.net/11/) is installed
 2. __Install maven__ - make sure you have maven 3.5.4 or later installed
 3. __Setup maven__ - make sure you have the proper [settings.xml](https://github.com/opendaylight/odlparent/blob/master/settings.xml) in your ```~/.m2``` directory
 4. __Build & Install locally__ - by running command: ``mvn clean install -DskipTests``
