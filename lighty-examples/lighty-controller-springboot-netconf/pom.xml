@@ -3,20 +3,18 @@
 	This program and the accompanying materials are made available under the 
 	terms of the Eclipse Public License v1.0 which accompanies this distribution, 
 	and is available at https://www.eclipse.org/legal/epl-v10.html -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.0.8.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>io.lighty.core</groupId>
     <artifactId>lighty-controller-springboot</artifactId>
-    <version>10.1.1-SNAPSHOT</version>
+    <version>10.1.1</version>
     <packaging>jar</packaging>
     <description>Demo lighty.io project for SpringBoot</description>
 
@@ -33,7 +31,7 @@
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-bom</artifactId>
-                <version>10.1.1-SNAPSHOT</version>
+                <version>10.1.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -136,4 +134,8 @@
             </plugins>
         </pluginManagement>
     </build>
+
+  <scm>
+    <tag>10.1.1</tag>
+  </scm>
 </project>
