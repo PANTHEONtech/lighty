@@ -34,7 +34,7 @@
             <dependency>
                 <groupId>org.opendaylight.aaa</groupId>
                 <artifactId>aaa-artifacts</artifactId>
-                <version>0.11.0</version>
+                <version>0.12.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -55,7 +55,7 @@
             <dependency>
                 <groupId>org.opendaylight.infrautils</groupId>
                 <artifactId>infrautils-artifacts</artifactId>
-                <version>1.7.0</version>
+                <version>1.8.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -69,7 +69,7 @@
             <dependency>
                 <groupId>org.opendaylight.netconf</groupId>
                 <artifactId>netconf-artifacts</artifactId>
-                <version>1.8.0</version>
+                <version>1.9.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -84,14 +84,14 @@
             <dependency>
                 <groupId>org.opendaylight.openflowplugin</groupId>
                 <artifactId>openflowplugin-artifacts</artifactId>
-                <version>0.10.0</version>
+                <version>0.11.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.serviceutils</groupId>
                 <artifactId>serviceutils-artifacts</artifactId>
-                <version>0.5.0</version>
+                <version>0.6.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
