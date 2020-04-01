@@ -5,7 +5,7 @@
     <parent>
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-app-parent</artifactId>
-        <version>9.3.3-SNAPSHOT</version>
+        <version>9.3.3</version>
         <relativePath>../../lighty-core/lighty-app-parent</relativePath>
     </parent>
 
