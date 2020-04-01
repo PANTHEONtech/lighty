@@ -49,7 +49,6 @@
         <dependency>
             <groupId>org.opendaylight.aaa.web</groupId>
             <artifactId>web-jetty-impl</artifactId>
-            <version>0.11.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
