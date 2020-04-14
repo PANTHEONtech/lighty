@@ -4,6 +4,10 @@ language: java
 jdk:
   - openjdk11
 
+# disable shallow clone so SonarCloud can use SCM history to compute blame data
+git:
+  depth: false
+
 # the first part of the cache phase happens
 # between git checkout and before_install
 cache:
