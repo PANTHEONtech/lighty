@@ -25,7 +25,7 @@ public final class ShiroConfigurationConfig {
         mains.add(initMain("authcBasic", "org.opendaylight.aaa.shiro.filters.ODLHttpAuthenticationFilter"));
         mains.add(initMain("accountingListener", "org.opendaylight.aaa.shiro.filters.AuthenticationListener"));
         mains.add(initMain("securityManager.authenticator.authenticationListeners", "$accountingListener"));
-        mains.add(initMain("dynamicAuthorization", "org.opendaylight.aaa.shiro.realm.MDSALDynamicAuthorizationFilter"));
+        mains.add(initMain("dynamicAuthorization", "io.lighty.aaa.LightyMDSALDynamicAuthorizationFilter"));
 
         final List<Urls> urls = new ArrayList<>();
         urls.add(initUrl("/operations/cluster-admin**", "authcBasic, roles[admin]"));

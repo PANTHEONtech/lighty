@@ -277,7 +277,7 @@
     <!-- Model based authorization scheme supporting RBAC for REST endpoints -->
     <main>
         <pair-key>dynamicAuthorization</pair-key>
-        <pair-value>org.opendaylight.aaa.shiro.realm.MDSALDynamicAuthorizationFilter</pair-value>
+        <pair-value>io.lighty.aaa.LightyMDSALDynamicAuthorizationFilter</pair-value>
     </main>
 
 
