@@ -101,11 +101,10 @@ public class Main {
         // this is example only real application should not use hardcoded credentials.
         final AAALighty aaaLighty = new AAALighty(bindingDataBroker, CertificateManagerConfig.getDefault(
                 bindingDataBroker), null, ShiroConfigurationConfig.getDefault(), moonEndpointPath,
-                DatastoreConfigurationConfig.getDefault(), USER, PASS, jettyServerBuilder);
-        final ListenableFuture<Boolean> start = aaaLighty.start();
+                DatastoreConfigurationConfig.getDefault(), USER, PASS, jettyServerBuilder, null, null);
+        aaaLighty.start().get();
 
-        addCallback(start);
-
+        communityRestConf.start().get();
         communityRestConf.startServer();
 
         Runtime.getRuntime().addShutdownHook(new ShutdownHook(lightyController, communityRestConf, aaaLighty));
