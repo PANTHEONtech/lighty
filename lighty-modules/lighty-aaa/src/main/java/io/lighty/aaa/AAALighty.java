@@ -14,7 +14,9 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import org.opendaylight.aaa.api.CredentialAuth;
+import org.opendaylight.aaa.api.IIDMStore;
 import org.opendaylight.aaa.api.PasswordCredentials;
+import org.opendaylight.aaa.api.password.service.PasswordHashService;
 import org.opendaylight.aaa.cert.api.ICertificateManager;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.DatastoreConfig;
@@ -25,14 +27,16 @@ public final class AAALighty extends AbstractLightyModule {
 
     public static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
             org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.$YangModuleInfoImpl
-            .getInstance(),
+                    .getInstance(),
             org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321.$YangModuleInfoImpl
-            .getInstance(),
+                    .getInstance(),
             org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.aaa.rev161214.$YangModuleInfoImpl
-            .getInstance());
+                    .getInstance());
 
     private final AAAShiroProviderHandler aaaShiroProviderHandler;
     private final LightyServerBuilder server;
+    private final IIDMStore iidmStore;
+    private final PasswordHashService passwordHashService;
     private final String dbPassword;
     private final String dbUsername;
     private final DatastoreConfig datastoreConfig;
@@ -42,10 +46,12 @@ public final class AAALighty extends AbstractLightyModule {
     private final ICertificateManager certificateManager;
     private final DataBroker dataBroker;
 
-    public AAALighty(final DataBroker dataBroker, final ICertificateManager certificateManager, final CredentialAuth<
-            PasswordCredentials> credentialAuth, final ShiroConfiguration shiroConfiguration,
-            final String moonEndpointPath, final DatastoreConfig datastoreConfig,
-            final String dbUsername, final String dbPassword, final LightyServerBuilder server) {
+    public AAALighty(final DataBroker dataBroker, final ICertificateManager certificateManager,
+                     final CredentialAuth<PasswordCredentials> credentialAuth,
+                     final ShiroConfiguration shiroConfiguration, final String moonEndpointPath,
+                     final DatastoreConfig datastoreConfig, final String dbUsername, final String dbPassword,
+                     final LightyServerBuilder server, final IIDMStore iidmStore,
+                     final PasswordHashService passwordHashService) {
         this.dataBroker = dataBroker;
         this.certificateManager = certificateManager;
         this.credentialAuth = credentialAuth;
@@ -55,6 +61,8 @@ public final class AAALighty extends AbstractLightyModule {
         this.dbUsername = dbUsername;
         this.dbPassword = dbPassword;
         this.server = server;
+        this.iidmStore = iidmStore;
+        this.passwordHashService = passwordHashService;
         this.aaaShiroProviderHandler = new AAAShiroProviderHandler();
     }
 
@@ -62,7 +70,8 @@ public final class AAALighty extends AbstractLightyModule {
     protected boolean initProcedure() throws InterruptedException {
         final CompletableFuture<AAALightyShiroProvider> newInstance = AAALightyShiroProvider.newInstance(
                 this.dataBroker, this.certificateManager, this.credentialAuth, this.shiroConfiguration,
-                this.moonEndpointPath, this.datastoreConfig, this.dbUsername, this.dbPassword, this.server);
+                this.moonEndpointPath, this.datastoreConfig, this.dbUsername, this.dbPassword, this.server,
+                this.iidmStore, this.passwordHashService);
         final CountDownLatch cdl = new CountDownLatch(1);
         newInstance.whenComplete((t, u) -> {
             AAALighty.this.aaaShiroProviderHandler.setAaaLightyShiroProvider(t);
