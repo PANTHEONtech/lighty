@@ -17,6 +17,8 @@ import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.netconf.client.NetconfClientDispatcher;
+import org.opendaylight.netconf.sal.connect.api.SchemaResourceManager;
+import org.opendaylight.netconf.sal.connect.impl.DefaultSchemaResourceManager;
 import org.opendaylight.netconf.topology.singleton.impl.NetconfTopologyManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.topology.singleton.config.rev170419.Config;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.topology.singleton.config.rev170419.ConfigBuilder;
@@ -36,11 +38,13 @@ public class NetconfClusteredTopologyPlugin extends AbstractLightyModule impleme
         final Config config = new ConfigBuilder()
                 .setWriteTransactionIdleTimeout(writeTxIdleTimeout)
                 .build();
+        final SchemaResourceManager schemaResourceManager = new DefaultSchemaResourceManager();
         this.topology = new NetconfTopologyManager(lightyServices.getBindingDataBroker(),
             lightyServices.getDOMRpcProviderService(), null, lightyServices.getClusterSingletonServiceProvider(),
             lightyServices.getScheduledThreaPool(), lightyServices.getThreadPool(),
             lightyServices.getActorSystemProvider(), lightyServices.getEventExecutor(), clientDispatcher,
-            topologyId, config, lightyServices.getDOMMountPointService(), encryptionService, null);
+            topologyId, config, lightyServices.getDOMMountPointService(), encryptionService, null,
+                schemaResourceManager);
     }
 
     @Override
