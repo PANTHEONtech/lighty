@@ -37,6 +37,7 @@ import org.opendaylight.openflowplugin.applications.topology.manager.Termination
 import org.opendaylight.openflowplugin.impl.ForwardingPingPongDataBroker;
 import org.opendaylight.openflowplugin.impl.OpenFlowPluginProviderImpl;
 import org.opendaylight.openflowplugin.impl.mastership.MastershipChangeServiceManagerImpl;
+import org.opendaylight.openflowplugin.impl.services.cache.FlowGroupCacheManagerImpl;
 import org.opendaylight.serviceutils.srm.impl.ServiceRecoveryRegistryImpl;
 import org.opendaylight.serviceutils.upgrade.impl.UpgradeStateListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingListener;
@@ -140,9 +141,13 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
                 } catch (MastershipChangeException e) {
                     LOG.error("Failed registration ReconciliationManagerImpl", e);
                 }
+
+                final RpcConsumerRegistry rpcConsumerRegistry
+                        = new BindingDOMRpcServiceAdapter(this.lightyServices.getDOMRpcService(),
+                        this.lightyServices.getNormalizedNodeCodec());
                 this.arbitratorReconciliationManager
-                        = new ArbitratorReconciliationManagerImpl(this.lightyServices.getControllerRpcProviderRegistry(),
-                        reconciliationManagerImpl,
+                        = new ArbitratorReconciliationManagerImpl(reconciliationManagerImpl,
+                        this.lightyServices.getRpcProviderService(), rpcConsumerRegistry,
                         upgradeStateListener);
                 this.arbitratorReconciliationManager.start();
                 this.lightyServices.getControllerRpcProviderRegistry()
@@ -152,9 +157,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
                 //FRM implementation
                 final ServiceRecoveryRegistryImpl serviceRecoveryRegistryImpl = new ServiceRecoveryRegistryImpl();
                 this.openflowServiceRecoveryHandlerImpl = new OpenflowServiceRecoveryHandlerImpl(serviceRecoveryRegistryImpl);
-                final RpcConsumerRegistry rpcConsumerRegistry
-                        = new BindingDOMRpcServiceAdapter(this.lightyServices.getDOMRpcService()
-                                                         ,this.lightyServices.getNormalizedNodeCodec());
+
                 this.forwardingRulesManagerImpl
                         = new ForwardingRulesManagerImpl(this.lightyServices.getBindingDataBroker(),
                         rpcConsumerRegistry,
@@ -165,7 +168,8 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
                         this.configurationService,
                         reconciliationManagerImpl,
                         this.openflowServiceRecoveryHandlerImpl,
-                        serviceRecoveryRegistryImpl);
+                        serviceRecoveryRegistryImpl,
+                        new FlowGroupCacheManagerImpl());
                 this.forwardingRulesManagerImpl.start();
 
                 LOG.info("OFP started with FRM & ARM");
