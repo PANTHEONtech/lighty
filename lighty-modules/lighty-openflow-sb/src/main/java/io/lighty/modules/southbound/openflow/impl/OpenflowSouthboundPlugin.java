@@ -134,7 +134,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
                 final ReconciliationManagerImpl reconciliationManagerImpl
                         = new ReconciliationManagerImpl(this.mastershipChangeServiceManager);
                 UpgradeStateListener upgradeStateListener
-                        = new UpgradeStateListener(this.lightyServices.getControllerBindingDataBroker(),
+                        = new UpgradeStateListener(this.lightyServices.getBindingDataBroker(),
                         new UpgradeConfigBuilder().build());
                 try {
                     reconciliationManagerImpl.start();
