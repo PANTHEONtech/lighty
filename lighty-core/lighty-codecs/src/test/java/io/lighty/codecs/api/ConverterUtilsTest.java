@@ -73,10 +73,10 @@ public class ConverterUtilsTest extends AbstractCodecTest {
 
     @Test
     public void testGetSchemaNode() {
-        SchemaNode node = ConverterUtils.getSchemaNode(this.schemaContext, Toaster.QNAME);
+        SchemaNode node = ConverterUtils.getSchemaNode(this.effectiveModelContext, Toaster.QNAME);
         Assert.assertNotNull(node);
         Assert.assertTrue(node.getQName().equals(Toaster.QNAME));
-        node = ConverterUtils.getSchemaNode(this.schemaContext, TOASTER_YANG_INSTANCE_IDENTIFIER);
+        node = ConverterUtils.getSchemaNode(this.effectiveModelContext, TOASTER_YANG_INSTANCE_IDENTIFIER);
         Assert.assertNotNull(node);
         Assert.assertTrue(node.getQName().equals(Toaster.QNAME));
     }

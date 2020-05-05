@@ -7,9 +7,9 @@
  */
 package io.lighty.codecs.api;
 
-import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
+import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 /**
  * Codec to serailize/deserialize Binding Independent data, RPC data, Notification data to/from
@@ -24,11 +24,11 @@ public interface Codec<BA extends DataObject> extends Serializer<BA>, Deserializ
      *
      * @return codec
      */
-    BindingToNormalizedNodeCodec getCodec();
+    AdapterContext getCodec();
 
     NodeConverter withJson();
 
     NodeConverter withXml();
 
-    SchemaContext getSchemaContext();
+    EffectiveModelContext getEffectiveModelContext();
 }

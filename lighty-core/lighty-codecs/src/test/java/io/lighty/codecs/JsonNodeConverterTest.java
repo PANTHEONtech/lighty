@@ -28,12 +28,13 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
     private final NodeConverter bindingSerializer;
 
     public JsonNodeConverterTest() {
-        bindingSerializer = new JsonNodeConverter(schemaContext);
+        bindingSerializer = new JsonNodeConverter(this.effectiveModelContext);
     }
 
     @Test
     public void testSerializeRpc_in() throws Exception {
-        Optional<RpcDefinition> loadedRpc = ConverterUtils.loadRpc(schemaContext, SIMPLE_IO_RPC_QNAME);
+        Optional<? extends RpcDefinition>
+                loadedRpc = ConverterUtils.loadRpc(this.effectiveModelContext, SIMPLE_IO_RPC_QNAME);
         Writer serializedRpc =
                 bindingSerializer.serializeRpc(loadedRpc.get().getInput(), testedSimpleRpcInputNormalizedNodes);
         Assert.assertFalse(Strings.isNullOrEmpty(serializedRpc.toString()));
@@ -42,7 +43,8 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
 
     @Test
     public void testSerializeRpc_out() throws Exception {
-        Optional<RpcDefinition> loadedRpc = ConverterUtils.loadRpc(schemaContext, SIMPLE_IO_RPC_QNAME);
+        Optional<? extends RpcDefinition>
+                loadedRpc = ConverterUtils.loadRpc(this.effectiveModelContext, SIMPLE_IO_RPC_QNAME);
         Writer serializedRpc =
                 bindingSerializer.serializeRpc(loadedRpc.get().getOutput(), testedSimpleRpcOutputNormalizedNodes);
         Assert.assertFalse(Strings.isNullOrEmpty(serializedRpc.toString()));
@@ -51,22 +53,24 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
 
     @Test
     public void testSerializeData() throws Exception {
-        Writer serializeData = bindingSerializer.serializeData(schemaContext, testedToasterNormalizedNodes);
+        Writer serializeData =
+                bindingSerializer.serializeData(this.effectiveModelContext, testedToasterNormalizedNodes);
         Assert.assertFalse(Strings.isNullOrEmpty(serializeData.toString()));
         LOG.info(serializeData.toString());
     }
 
     @Test
     public void testDeserializeData() throws Exception {
-        NormalizedNode<?, ?> deserializeData =
-                bindingSerializer.deserialize(schemaContext, new StringReader(loadResourceAsString("toaster.json")));
+        NormalizedNode<?, ?> deserializeData = bindingSerializer.deserialize(this.effectiveModelContext,
+                new StringReader(loadResourceAsString("toaster.json")));
         Assert.assertNotNull(deserializeData);
         LOG.info(deserializeData.toString());
     }
 
     @Test
     public void testDeserialize_in() throws Exception {
-        Optional<RpcDefinition> loadRpc = ConverterUtils.loadRpc(schemaContext, SIMPLE_IO_RPC_QNAME);
+        Optional<? extends RpcDefinition>
+                loadRpc = ConverterUtils.loadRpc(this.effectiveModelContext, SIMPLE_IO_RPC_QNAME);
         String loadIoRpcIn = loadResourceAsString("input-output-rpc-in.json");
         NormalizedNode<?, ?> deserializeRpc =
                 bindingSerializer.deserialize(loadRpc.get(), new StringReader(loadIoRpcIn));
@@ -76,7 +80,8 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
 
     @Test
     public void testDeserialize_out() throws Exception {
-        Optional<RpcDefinition> loadRpc = ConverterUtils.loadRpc(schemaContext, SIMPLE_IO_RPC_QNAME);
+        Optional<? extends RpcDefinition>
+                loadRpc = ConverterUtils.loadRpc(this.effectiveModelContext, SIMPLE_IO_RPC_QNAME);
         String loadIoRpcOut = loadResourceAsString("input-output-rpc-out.json");
         NormalizedNode<?, ?> deserializeRpc =
                 bindingSerializer.deserialize(loadRpc.get(), new StringReader(loadIoRpcOut));
@@ -86,7 +91,7 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
 
     @Test
     public void testDeserialize_container() throws SerializationException {
-        NormalizedNode<?, ?> deserializeContainer = bindingSerializer.deserialize(this.schemaContext,
+        NormalizedNode<?, ?> deserializeContainer = bindingSerializer.deserialize(this.effectiveModelContext,
                 new StringReader(loadResourceAsString("top-level-container.json")));
         Assert.assertNotNull(deserializeContainer);
         LOG.info(deserializeContainer.toString());
@@ -94,7 +99,8 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
 
     @Test
     public void testDeserialize_container_rpc() throws SerializationException {
-        Optional<RpcDefinition> loadRpcContainer = ConverterUtils.loadRpc(schemaContext, CONTAINER_IO_RPC_QNAME);
+        Optional<? extends RpcDefinition>
+                loadRpcContainer = ConverterUtils.loadRpc(this.effectiveModelContext, CONTAINER_IO_RPC_QNAME);
         NormalizedNode<?, ?> deserializeData = bindingSerializer.deserialize(loadRpcContainer.get(),
                 new StringReader(loadResourceAsString("container-io-rpc.json")));
         Assert.assertNotNull(deserializeData);
