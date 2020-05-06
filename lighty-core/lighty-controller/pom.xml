@@ -150,6 +150,14 @@
             <artifactId>mdsal-binding-generator-impl</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding-runtime-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding-runtime-spi</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
         </dependency>
@@ -194,10 +202,6 @@
         </dependency>
         <!--odl-mdsal-models-->
         <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>iana-afn-safi</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
             <artifactId>iana-if-type</artifactId>
         </dependency>
@@ -236,18 +240,6 @@
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>ietf-type-util</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>ietf-packet-fields</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>ietf-access-control-list</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>ietf-lisp-address-types-2015-11-05</artifactId>
         </dependency>
         <!--odl-lmax-3-->
         <dependency>
@@ -296,39 +288,6 @@
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-singleton-dom-impl</artifactId>
         </dependency>
-        <!--odl-mdsal-broker-local-->
-        <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>sal-core-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>sal-core-spi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>sal-broker-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>sal-binding-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>sal-binding-broker-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>sal-binding-util</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>sal-inmemory-datastore</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>sal-distributed-eos</artifactId>
-        </dependency>
         <!--odl-akka-scala-2.12-->
         <dependency>
             <groupId>org.scala-lang</groupId>
@@ -340,12 +299,12 @@
         </dependency>
         <dependency>
             <groupId>org.scala-lang.modules</groupId>
-            <artifactId>scala-java8-compat_2.12</artifactId>
+            <artifactId>scala-java8-compat_2.13</artifactId>
         </dependency>
         <!--odl-akka-system-2.4-->
         <dependency>
             <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-actor_2.12</artifactId>
+            <artifactId>akka-actor_2.13</artifactId>
         </dependency>
         <dependency>
             <groupId>com.typesafe</groupId>
@@ -353,20 +312,20 @@
         </dependency>
         <dependency>
             <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-slf4j_2.12</artifactId>
+            <artifactId>akka-slf4j_2.13</artifactId>
         </dependency>
         <!--odl-akka-clustering-2.4-->
         <dependency>
             <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-cluster_2.12</artifactId>
+            <artifactId>akka-cluster_2.13</artifactId>
         </dependency>
         <dependency>
             <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-remote_2.12</artifactId>
+            <artifactId>akka-remote_2.13</artifactId>
         </dependency>
         <dependency>
             <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-stream_2.12</artifactId>
+            <artifactId>akka-stream_2.13</artifactId>
         </dependency>
         <dependency>
             <groupId>org.reactivestreams</groupId>
@@ -374,15 +333,15 @@
         </dependency>
         <dependency>
             <groupId>com.typesafe</groupId>
-            <artifactId>ssl-config-core_2.12</artifactId>
+            <artifactId>ssl-config-core_2.13</artifactId>
         </dependency>
         <dependency>
             <groupId>org.scala-lang.modules</groupId>
-            <artifactId>scala-parser-combinators_2.12</artifactId>
+            <artifactId>scala-parser-combinators_2.13</artifactId>
         </dependency>
         <dependency>
             <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-protobuf_2.12</artifactId>
+            <artifactId>akka-protobuf_2.13</artifactId>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
@@ -445,10 +404,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>org.opendaylight.odlparent</groupId>
-            <artifactId>leveldbjni-all</artifactId>
-        </dependency>
 
         <!--odl-mdsal-remoterpc-connector-->
         <dependency>
@@ -474,6 +429,10 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
+            <artifactId>sal-distributed-eos</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.controller</groupId>
             <artifactId>sal-cluster-admin-api</artifactId>
         </dependency>
         <dependency>
@@ -484,11 +443,6 @@
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>sal-clustering-commons</artifactId>
-        </dependency>
-        <!--NOT in mdsal-broker feature, but required for its general-entity.yang-->
-        <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>sal-common-api</artifactId>
         </dependency>
 
         <dependency>
