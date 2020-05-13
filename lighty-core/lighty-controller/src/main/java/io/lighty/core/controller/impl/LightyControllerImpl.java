@@ -252,14 +252,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                 DefaultBindingRuntimeContext.create(bindingRuntimeTypes, moduleInfoBackedContext);
         this.bindingCodecTreeFactory = new DefaultBindingCodecTreeFactory();
 
-
-        //create binding notification service
-        /* TODO figure this out - if it is needed
-        final BindingNormalizedNodeCodecRegistry codecRegistry = this.codec.getCodecRegistry();
-        codecRegistry.onBindingRuntimeContextUpdated(bindingRuntimeContext);
-        this.schemaService.registerSchemaContextListener(this.codec);
-         */
-
         final BindingCodecContext bindingCodecContext = new BindingCodecContext(bindingRuntimeContext);
         this.codec = new ConstantAdapterContext(bindingCodecContext);
 

@@ -102,7 +102,7 @@ public final class ControllerConfigUtils {
             throw new ConfigurationException("Cannot deserialize Json content to Json tree nodes", e);
         }
 
-        if (configNode == null) {
+        if (configNode == null || configNode.isMissingNode()) {
             throw new ConfigurationException("Configuration was not loaded, empty or missing configuration.");
         }
 
