@@ -35,6 +35,7 @@ public class LightyControllerTest extends LightyControllerTestBase {
         Assert.assertNotNull(lightyController.getServices().getDOMDataTreeService());
         Assert.assertNotNull(lightyController.getServices().getDistributedShardFactory());
         Assert.assertNotNull(lightyController.getServices().getDistributedShardFactory());
+        Assert.assertNotNull(lightyController.getServices().getYangParserFactory());
         Assert.assertNotNull(lightyController.getServices().getBindingNormalizedNodeSerializer());
         Assert.assertNotNull(lightyController.getServices().getBindingCodecTreeFactory());
         Assert.assertNotNull(lightyController.getServices().getDOMEntityOwnershipService());

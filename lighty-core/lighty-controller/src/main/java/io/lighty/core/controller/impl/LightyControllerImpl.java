@@ -120,6 +120,10 @@ import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
+import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
+import org.opendaylight.yangtools.yang.parser.impl.YangParserFactoryImpl;
+import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
+import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -175,6 +179,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private DOMSchemaService schemaService;
     private AdapterContext codec;
     private BindingCodecTreeFactory bindingCodecTreeFactory;
+    private YangParserFactory yangParserFactory;
     private RpcProviderService rpcProviderService;
     private MountPointService mountPointService;
     private final LightySystemReadyMonitorImpl systemReadyMonitor;
@@ -242,6 +247,10 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.modelsRegistration = this.moduleInfoBackedContext.registerModuleInfos(modelSet);
         this.schemaService = FixedDOMSchemaService.of(this.moduleInfoBackedContext,
                 this.moduleInfoBackedContext);
+
+        // INIT yang parser factory
+        final YangXPathParserFactory xpathFactory = new AntlrXPathParserFactory();
+        this.yangParserFactory = new YangParserFactoryImpl(xpathFactory);
 
         // INIT CODEC FACTORY
 
@@ -465,6 +474,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     public DistributedShardFactory getDistributedShardFactory() {
         return this.distributedShardedDOMDataTree;
+    }
+
+    @Override
+    public YangParserFactory getYangParserFactory() {
+        return yangParserFactory;
     }
 
     @Override
