@@ -56,10 +56,11 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
                 .nodeWithKey(Schema.QNAME, QName.create(Schema.QNAME, "identifier"), "listkeyvalue1")
                 .build();
 
-        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true);
+        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true, baseSchema);
         DOMRpcService domRpcService = mock(DOMRpcService.class);
 
-        NetconfBaseService baseService = new NetconfBaseServiceImpl(new NodeId("node1"), domRpcService, schemaContext);
+        NetconfBaseService baseService = new NetconfBaseServiceImpl(new NodeId("node1"), domRpcService,
+                effectiveModelContext);
 
         baseService.get(Optional.of(YII));
 
@@ -91,10 +92,11 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
                 .nodeWithKey(Schema.QNAME, QName.create(Schema.QNAME, "identifier"), "listkeyvalue1")
                 .build();
 
-        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true);
+        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true, baseSchema);
         DOMRpcService domRpcService = mock(DOMRpcService.class);
 
-        NetconfBaseService baseService = new NetconfBaseServiceImpl(new NodeId("node1"), domRpcService, schemaContext);
+        NetconfBaseService baseService = new NetconfBaseServiceImpl(new NodeId("node1"), domRpcService,
+                effectiveModelContext);
 
 
         baseService.getConfig(RUNNING_DATASTORE, Optional.of(YII));
@@ -143,10 +145,11 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
                         .build())
                 .build();
 
-        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true);
+        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true, baseSchema);
         DOMRpcService domRpcService = mock(DOMRpcService.class);
 
-        NetconfBaseService baseService = new NetconfBaseServiceImpl(new NodeId("node1"), domRpcService, schemaContext);
+        NetconfBaseService baseService = new NetconfBaseServiceImpl(new NodeId("node1"), domRpcService,
+                effectiveModelContext);
         baseService.editConfig(RUNNING_DATASTORE, Optional.of(schema), YII, Optional.of(ModifyAction.MERGE),
                 Optional.of(ModifyAction.CREATE), true);
 

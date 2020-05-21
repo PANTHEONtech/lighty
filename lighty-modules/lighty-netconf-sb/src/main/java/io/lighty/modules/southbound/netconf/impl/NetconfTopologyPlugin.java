@@ -19,6 +19,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.netconf.client.NetconfClientDispatcher;
 import org.opendaylight.netconf.sal.connect.api.SchemaResourceManager;
 import org.opendaylight.netconf.sal.connect.impl.DefaultSchemaResourceManager;
+import org.opendaylight.netconf.sal.connect.netconf.schema.mapping.DefaultBaseNetconfSchemas;
 import org.opendaylight.netconf.topology.impl.NetconfTopologyImpl;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -33,12 +34,15 @@ public class NetconfTopologyPlugin extends AbstractLightyModule implements Netco
             final AAAEncryptionService encryptionService) {
         super(executorService);
         this.domMountPointService = lightyServices.getDOMMountPointService();
-        final SchemaResourceManager schemaResourceManager = new DefaultSchemaResourceManager();
+        final DefaultBaseNetconfSchemas defaultBaseNetconfSchemas =
+                new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
+        final SchemaResourceManager schemaResourceManager =
+                new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
         this.topology = new NetconfTopologyImpl(topologyId, clientDispatcher,
-                lightyServices.getEventExecutor(), lightyServices.getScheduledThreaPool(),
+                lightyServices.getEventExecutor(), lightyServices.getScheduledThreadPool(),
                 lightyServices.getThreadPool(), schemaResourceManager,
                 lightyServices.getBindingDataBroker(), lightyServices.getDOMMountPointService(),
-                encryptionService, new LightyDeviceActionFactory());
+                encryptionService, defaultBaseNetconfSchemas, new LightyDeviceActionFactory());
     }
 
     @Override

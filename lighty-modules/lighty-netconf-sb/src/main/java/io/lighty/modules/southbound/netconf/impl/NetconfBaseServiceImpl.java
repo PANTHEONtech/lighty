@@ -44,7 +44,7 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
     }
 
     @Override
-    public ListenableFuture<DOMRpcResult> get(final Optional<YangInstanceIdentifier> filterYII) {
+    public ListenableFuture<? extends DOMRpcResult> get(final Optional<YangInstanceIdentifier> filterYII) {
         if (filterYII.isPresent() && !filterYII.get().isEmpty()) {
             final DataContainerChild<?, ?> filter =
                     NetconfMessageTransformUtil.toFilterStructure(filterYII.get(), schemaContext);
@@ -56,7 +56,7 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
     }
 
     @Override
-    public ListenableFuture<DOMRpcResult> getConfig(final QName sourceDatastore,
+    public ListenableFuture<? extends DOMRpcResult> getConfig(final QName sourceDatastore,
             final Optional<YangInstanceIdentifier> filterYII) {
         Preconditions.checkNotNull(sourceDatastore);
 
@@ -74,7 +74,7 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
     }
 
     @Override
-    public ListenableFuture<DOMRpcResult> editConfig(final QName targetDatastore,
+    public ListenableFuture<? extends DOMRpcResult> editConfig(final QName targetDatastore,
             final Optional<NormalizedNode<?, ?>> data, final YangInstanceIdentifier dataPath,
             final Optional<ModifyAction> dataModifyActionAttribute,
             final Optional<ModifyAction> defaultModifyAction, final boolean rollback) {
@@ -90,7 +90,7 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
     }
 
     @Override
-    public ListenableFuture<DOMRpcResult> copyConfig(final QName sourceDatastore, final QName targetDatastore) {
+    public ListenableFuture<? extends DOMRpcResult> copyConfig(final QName sourceDatastore, final QName targetDatastore) {
         Preconditions.checkNotNull(sourceDatastore);
         Preconditions.checkNotNull(targetDatastore);
 
@@ -100,7 +100,7 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
     }
 
     @Override
-    public ListenableFuture<DOMRpcResult> deleteConfig(final QName targetDatastore) {
+    public ListenableFuture<? extends DOMRpcResult> deleteConfig(final QName targetDatastore) {
         Preconditions.checkNotNull(targetDatastore);
         Preconditions.checkArgument(!NETCONF_RUNNING_QNAME.equals(targetDatastore),
                 "Running datastore cannot be deleted.");
@@ -111,14 +111,14 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
     }
 
     @Override
-    public ListenableFuture<DOMRpcResult> lock(final QName targetDatastore) {
+    public ListenableFuture<? extends DOMRpcResult> lock(final QName targetDatastore) {
         Preconditions.checkNotNull(targetDatastore);
 
         return domRpcService.invokeRpc(toPath(NETCONF_LOCK_QNAME), NetconfUtils.getLockContent(targetDatastore));
     }
 
     @Override
-    public ListenableFuture<DOMRpcResult> unlock(final QName targetDatastore) {
+    public ListenableFuture<? extends DOMRpcResult> unlock(final QName targetDatastore) {
         Preconditions.checkNotNull(targetDatastore);
 
         return domRpcService.invokeRpc(toPath(NETCONF_UNLOCK_QNAME), NetconfUtils.getUnLockContent(targetDatastore));
