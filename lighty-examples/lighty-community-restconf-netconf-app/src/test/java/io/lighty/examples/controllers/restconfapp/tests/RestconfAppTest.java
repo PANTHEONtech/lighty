@@ -64,9 +64,7 @@ public class RestconfAppTest {
     public void swaggerURLsTest() {
         ContentResponse operations = null;
         try {
-            operations = restClient.GET("apidoc/18/apis");
-            Assert.assertEquals(operations.getStatus(), 200);
-            operations = restClient.GET("apidoc/18/explorer/index.html");
+            operations = restClient.GET("apidoc/explorer/index.html");
             Assert.assertEquals(operations.getStatus(), 200);
         } catch (TimeoutException | ExecutionException | InterruptedException e) {
             Assert.fail();
