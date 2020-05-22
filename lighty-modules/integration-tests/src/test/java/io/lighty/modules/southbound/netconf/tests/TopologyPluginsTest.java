@@ -24,9 +24,9 @@ import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
 import io.netty.util.concurrent.Future;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.netconf.client.NetconfClientDispatcher;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Host;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -131,10 +131,10 @@ public class TopologyPluginsTest {
         final InstanceIdentifier<Node> path = InstanceIdentifier.create(NetworkTopology.class)
                 .child(Topology.class, new TopologyKey(new TopologyId("topology-netconf")))
                 .child(Node.class, nodeKey);
-        final DataBroker bindingDataBroker = this.lightyController.getServices().getControllerBindingDataBroker();
+        final DataBroker bindingDataBroker = this.lightyController.getServices().getBindingDataBroker();
         final WriteTransaction writeTransaction = bindingDataBroker.newWriteOnlyTransaction();
         writeTransaction.put(LogicalDatastoreType.CONFIGURATION, path, node);
-        writeTransaction.submit().get();
+        writeTransaction.commit().get();
         verify(this.dispatcher, timeout(20000)).createReconnectingClient(any());
     }
 
