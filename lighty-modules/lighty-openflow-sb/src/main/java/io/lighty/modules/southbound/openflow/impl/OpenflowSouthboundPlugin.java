@@ -11,12 +11,12 @@ import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.modules.southbound.openflow.impl.config.ConfigurationServiceFactory;
 import io.lighty.modules.southbound.openflow.impl.config.OpenflowpluginConfiguration;
+import io.lighty.modules.southbound.openflow.impl.util.OpenflowConfigUtils;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import io.lighty.modules.southbound.openflow.impl.util.OpenflowConfigUtils;
 import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcServiceAdapter;
 import org.opendaylight.openflowjava.protocol.api.connection.OpenflowDiagStatusProvider;
@@ -44,14 +44,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.Pa
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow.provider.config.rev160510.OpenflowProviderConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflowplugin.app.arbitrator.reconcile.service.rev180227.ArbitratorReconcileService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflowplugin.app.forwardingrules.manager.config.rev160511.ForwardingRulesManagerConfigBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflowplugin.app.frm.reconciliation.service.rev180227.FrmReconciliationService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.serviceutils.upgrade.rev180702.UpgradeConfigBuilder;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OpenflowSouthboundPlugin extends AbstractLightyModule implements OpenflowServices {
+public class OpenflowSouthboundPlugin extends AbstractLightyModule {
 
     private static final Logger LOG = LoggerFactory.getLogger(OpenflowSouthboundPlugin.class);
 
@@ -143,15 +142,15 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
                 }
 
                 final RpcConsumerRegistry rpcConsumerRegistry
-                        = new BindingDOMRpcServiceAdapter(this.lightyServices.getDOMRpcService(),
-                        this.lightyServices.getNormalizedNodeCodec());
+                        = new BindingDOMRpcServiceAdapter(this.lightyServices.getAdapterContext(),
+                        this.lightyServices.getDOMRpcService());
                 this.arbitratorReconciliationManager
                         = new ArbitratorReconciliationManagerImpl(reconciliationManagerImpl,
                         this.lightyServices.getRpcProviderService(), rpcConsumerRegistry,
                         upgradeStateListener);
                 this.arbitratorReconciliationManager.start();
-                this.lightyServices.getControllerRpcProviderRegistry()
-                        .addRpcImplementation(ArbitratorReconcileService.class,
+                this.lightyServices.getRpcProviderService()
+                        .registerRpcImplementation(ArbitratorReconcileService.class,
                                 this.arbitratorReconciliationManager);
 
                 //FRM implementation
@@ -196,7 +195,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
             //OFP packet listener initialize
             if (this.packetProcessingListener != null) {
                 this.packetListenerNotificationRegistration
-                        = this.lightyServices.getControllerNotificationProviderService()
+                        = this.lightyServices.getNotificationService()
                               .registerNotificationListener(this.packetProcessingListener);
                 LOG.info("OfpPacketListener Started.");
             } else {
@@ -238,15 +237,4 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
         }
     }
 
-    /**
-     * Expose FrmReconciliationService,
-     * @return return null if ForwardingRulesManager wasn't initialized
-     */
-    @Override
-    public FrmReconciliationService getFrmReconciliationService() {
-        if (this.forwardingRulesManagerImpl == null) {
-            return null;
-        }
-        return this.lightyServices.getControllerRpcProviderRegistry().getRpcService(FrmReconciliationService.class);
-    }
 }
