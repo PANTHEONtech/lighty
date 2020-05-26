@@ -11,6 +11,36 @@
 
   <profiles>
     <profile>
+      <id>opendaylight-releases</id>
+      <repositories>
+        <repository>
+          <id>opendaylight-release</id>
+          <name>opendaylight-release</name>
+          <url>https://nexus.opendaylight.org/content/repositories/opendaylight.release/</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>opendaylight-release</id>
+          <name>opendaylight-release</name>
+          <url>https://nexus.opendaylight.org/content/repositories/opendaylight.release/</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+
+    <profile>
       <id>opendaylight-snapshots</id>
       <repositories>
         <repository>
@@ -42,6 +72,7 @@
   </profiles>
 
   <activeProfiles>
+    <activeProfile>opendaylight-releases</activeProfile>
     <activeProfile>opendaylight-snapshots</activeProfile>
   </activeProfiles>
 </settings>
