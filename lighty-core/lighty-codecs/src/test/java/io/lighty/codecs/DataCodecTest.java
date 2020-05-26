@@ -18,6 +18,7 @@ import java.util.Optional;
 import javax.xml.stream.XMLStreamException;
 import org.junit.Assert;
 import org.junit.Test;
+import org.opendaylight.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.MakeToastInput;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.ToasterRestocked;
@@ -26,7 +27,6 @@ import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SampleListBuilder;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SampleListKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -34,7 +34,6 @@ import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 /**
  * Basic tests for {@link DataCodec} class.
@@ -115,9 +114,6 @@ public class DataCodecTest extends AbstractCodecTest {
 
     @Test
     public void testDeserializeIdentifier() {
-        YangModuleInfo restconfInfo = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126
-                .$YangModuleInfoImpl.getInstance();
-        EffectiveModelContext effectiveModelContext = getEffectiveModelContext(Collections.singletonList(restconfInfo));
         DataCodec<Toaster> dataCodec = new DataCodec(effectiveModelContext);
         String yangInstanceIdentifierString = dataCodec.deserializeIdentifier(TOASTER_YANG_INSTANCE_IDENTIFIER);
         Assert.assertNotNull(yangInstanceIdentifierString);
@@ -132,8 +128,9 @@ public class DataCodecTest extends AbstractCodecTest {
 
     @Test(expected = Exception.class)
     public void testSerializeXMLError_invalidErrorXML() {
-        EffectiveModelContext effectiveModelContext = getEffectiveModelContext(Collections.singletonList(org.opendaylight.yang
-                .gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126.$YangModuleInfoImpl.getInstance()));
+        EffectiveModelContext effectiveModelContext = BindingRuntimeHelpers.createEffectiveModel(
+                Collections.singletonList(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
+                        .restconf.rev170126.$YangModuleInfoImpl.getInstance()));
         DataCodec<Toaster> dataCodec = new DataCodec(effectiveModelContext);
         dataCodec.serializeXMLError(loadResourceAsString("error.xml"));
     }

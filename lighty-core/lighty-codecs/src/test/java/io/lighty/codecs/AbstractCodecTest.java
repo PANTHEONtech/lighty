@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ServiceLoader;
-import org.opendaylight.binding.runtime.spi.ModuleInfoBackedContext;
+import org.opendaylight.binding.runtime.spi.BindingRuntimeHelpers;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.DisplayString;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.MakeToastInput;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.MakeToastInputBuilder;
@@ -41,7 +41,6 @@ import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLe
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapEntryNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 public abstract class AbstractCodecTest {
 
@@ -82,13 +81,9 @@ public abstract class AbstractCodecTest {
     // schema context loaded from classpath entries
     protected final EffectiveModelContext effectiveModelContext;
 
-    private final List<YangModuleInfo> moduleInfos;
-    private final ModuleInfoBackedContext moduleInfoBackedCntxt;
-
     public AbstractCodecTest() {
-        this.moduleInfos = loadModuleInfos();
-        this.moduleInfoBackedCntxt = ModuleInfoBackedContext.create();
-        this.effectiveModelContext = getEffectiveModelContext(moduleInfos);
+        List<YangModuleInfo> moduleInfos = loadModuleInfos();
+        this.effectiveModelContext = BindingRuntimeHelpers.createEffectiveModel(moduleInfos);
 
         this.testedToaster = new ToasterBuilder().setDarknessFactor(COFFEE_VALUE)
                 .setToasterManufacturer(new DisplayString("manufacturer")).setToasterStatus(ToasterStatus.Up).build();
@@ -148,7 +143,6 @@ public abstract class AbstractCodecTest {
         }
     }
 
-
     /**
      * Helper method for loading {@link YangModuleInfo}s from the classpath.
      *
@@ -161,18 +155,6 @@ public abstract class AbstractCodecTest {
             moduleInfos.add(yangModelBindingProvider.getModuleInfo());
         }
         return moduleInfos;
-    }
-
-    /**
-     * Build the {@link EffectiveModelContext} based on the loaded {@link YangModuleInfo}s.
-     *
-     * @param infos {@link List} of {@link YangModuleInfo}s to be used while creating
-     *        {@link EffectiveModelContext}
-     * @return prepared {@link EffectiveModelContext}
-     */
-    protected EffectiveModelContext getEffectiveModelContext(final List<YangModuleInfo> infos) {
-        moduleInfoBackedCntxt.registerModuleInfos(infos);
-        return moduleInfoBackedCntxt.getEffectiveModelContext();
     }
 
     private static NormalizedNode<?, ?> createToasterNormalizedNodes() {
