@@ -15,7 +15,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ServiceLoader;
-import org.opendaylight.binding.runtime.spi.BindingRuntimeHelpers;
+import org.opendaylight.binding.runtime.api.BindingRuntimeGenerator;
+import org.opendaylight.binding.runtime.api.DefaultBindingRuntimeContext;
+import org.opendaylight.binding.runtime.spi.ModuleInfoBackedContext;
+import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
+import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.DisplayString;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.MakeToastInput;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.MakeToastInputBuilder;
@@ -41,6 +45,9 @@ import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLe
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapEntryNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.parser.impl.YangParserFactoryImpl;
+import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
+import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
 
 public abstract class AbstractCodecTest {
 
@@ -78,12 +85,13 @@ public abstract class AbstractCodecTest {
     protected final NormalizedNode<?, ?> testedSampleListNormalizedNodes;
     protected final NormalizedNode<?, ?> testedSampleMapNodeNormalizedNodes;
 
-    // schema context loaded from classpath entries
+    protected final BindingCodecContext bindingCodecContext;
     protected final EffectiveModelContext effectiveModelContext;
 
     public AbstractCodecTest() {
         List<YangModuleInfo> moduleInfos = loadModuleInfos();
-        this.effectiveModelContext = BindingRuntimeHelpers.createEffectiveModel(moduleInfos);
+        this.bindingCodecContext = createCodecContext(moduleInfos);
+        this.effectiveModelContext = bindingCodecContext.getRuntimeContext().getEffectiveModelContext();
 
         this.testedToaster = new ToasterBuilder().setDarknessFactor(COFFEE_VALUE)
                 .setToasterManufacturer(new DisplayString("manufacturer")).setToasterStatus(ToasterStatus.Up).build();
@@ -97,6 +105,18 @@ public abstract class AbstractCodecTest {
         this.testedNotificationNormalizedNodes = toasterNotificationNormalizedNodes();
         this.testedSampleListNormalizedNodes = sampleListNormalizedNodes();
         this.testedSampleMapNodeNormalizedNodes = sampleMapNode();
+    }
+
+    protected BindingCodecContext createCodecContext(List<YangModuleInfo> moduleInfos) {
+        final YangXPathParserFactory xpathFactory = new AntlrXPathParserFactory();
+        final YangParserFactoryImpl yangParserFactory = new YangParserFactoryImpl(xpathFactory);
+        final BindingRuntimeGenerator bindingRuntimeGenerator = new DefaultBindingRuntimeGenerator();
+        final ModuleInfoBackedContext ctx = ModuleInfoBackedContext.create("tests", yangParserFactory);
+        ctx.registerModuleInfos(moduleInfos);
+
+        final DefaultBindingRuntimeContext runtimeContext = DefaultBindingRuntimeContext
+                .create(bindingRuntimeGenerator.generateTypeMapping(ctx.tryToCreateModelContext().orElseThrow()), ctx);
+        return new BindingCodecContext(runtimeContext);
     }
 
     /**

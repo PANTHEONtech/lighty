@@ -7,8 +7,6 @@
  */
 package io.lighty.codecs;
 
-import static java.util.Objects.requireNonNull;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import io.lighty.codecs.api.Codec;
@@ -25,14 +23,9 @@ import java.util.Optional;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.dom.DOMSource;
-import org.opendaylight.binding.runtime.api.BindingRuntimeContext;
-import org.opendaylight.binding.runtime.api.BindingRuntimeTypes;
-import org.opendaylight.binding.runtime.api.DefaultBindingRuntimeContext;
-import org.opendaylight.binding.runtime.spi.GeneratedClassLoadingStrategy;
-import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.binding.dom.adapter.ConstantAdapterContext;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
-import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.restconf.common.errors.RestconfDocumentedException;
 import org.opendaylight.yangtools.rfc8040.model.api.YangDataSchemaNode;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
@@ -69,25 +62,21 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
         XML_FACTORY.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
     }
 
-    private final AdapterContext codec;
+    private final BindingNormalizedNodeSerializer codec;
     private final DeserializeIdentifierCodec deserializeIdentifierCodec;
     private final SerializeIdentifierCodec serializeIdentifierCodec;
     private final JsonNodeConverter jsonNodeConverter;
     private final XmlNodeConverter xmlNodeConverter;
     private final EffectiveModelContext effectiveModelContext;
 
-    public DataCodec(final EffectiveModelContext effectiveModelContext) {
-        this.effectiveModelContext = requireNonNull(effectiveModelContext);
-        DefaultBindingRuntimeGenerator bindingRuntimeGenerator = new DefaultBindingRuntimeGenerator();
-        BindingRuntimeTypes runtimeTypes = bindingRuntimeGenerator.generateTypeMapping(effectiveModelContext);
-        BindingRuntimeContext bindingRuntimeContext = DefaultBindingRuntimeContext.create(runtimeTypes,
-                GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy());
-        BindingCodecContext bindingCodecContext = new BindingCodecContext(bindingRuntimeContext);
+    public DataCodec(final BindingDOMCodecServices codecServices) {
+        final ConstantAdapterContext constantAdapterContext = new ConstantAdapterContext(codecServices);
+        this.codec = constantAdapterContext.currentSerializer();
 
-        this.codec = new ConstantAdapterContext(bindingCodecContext);
+        effectiveModelContext = codecServices.getRuntimeContext().getEffectiveModelContext();
 
-        this.deserializeIdentifierCodec = new DeserializeIdentifierCodec(effectiveModelContext);
-        this.serializeIdentifierCodec = new SerializeIdentifierCodec(effectiveModelContext);
+        this.deserializeIdentifierCodec = new DeserializeIdentifierCodec(this.effectiveModelContext);
+        this.serializeIdentifierCodec = new SerializeIdentifierCodec(this.effectiveModelContext);
         this.xmlNodeConverter = new XmlNodeConverter(this.effectiveModelContext);
         this.jsonNodeConverter = new JsonNodeConverter(this.effectiveModelContext);
     }
@@ -95,7 +84,7 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
     @SuppressWarnings("unchecked")
     @Override
     public T convertToBindingAwareData(final YangInstanceIdentifier identifier, final NormalizedNode<?, ?> data) {
-        return (T) this.codec.currentSerializer().fromNormalizedNode(identifier, data).getValue();
+        return (T) this.codec.fromNormalizedNode(identifier, data).getValue();
     }
 
     @Override
@@ -110,7 +99,7 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
 
     @Override
     public YangInstanceIdentifier deserializeIdentifier(final InstanceIdentifier<T> identifier) {
-        return this.codec.currentSerializer().toYangInstanceIdentifier(identifier);
+        return this.codec.toYangInstanceIdentifier(identifier);
     }
 
     @Override
@@ -126,29 +115,29 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
     @Override
     public Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> convertToNormalizedNode(
             final InstanceIdentifier<T> identifier, final T data) {
-        return this.codec.currentSerializer().toNormalizedNode(identifier, data);
+        return this.codec.toNormalizedNode(identifier, data);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public T convertToBindingAwareRpc(final SchemaPath schemaPath, final ContainerNode rpcData) {
-        return (T) this.codec.currentSerializer().fromNormalizedNodeRpcData(schemaPath, rpcData);
+        return (T) this.codec.fromNormalizedNodeRpcData(schemaPath, rpcData);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public T convertToBindingAwareNotification(final SchemaPath schemaPath, final ContainerNode norificationData) {
-        return (T) this.codec.currentSerializer().fromNormalizedNodeNotification(schemaPath, norificationData);
+        return (T) this.codec.fromNormalizedNodeNotification(schemaPath, norificationData);
     }
 
     @Override
     public ContainerNode convertToBindingIndependentRpc(final DataContainer rpcData) {
-        return this.codec.currentSerializer().toNormalizedNodeRpcData(rpcData);
+        return this.codec.toNormalizedNodeRpcData(rpcData);
     }
 
     @Override
     public ContainerNode convertToBindingIndependentNotification(final Notification notificationData) {
-        return this.codec.currentSerializer().toNormalizedNodeNotification(notificationData);
+        return this.codec.toNormalizedNodeNotification(notificationData);
     }
 
     @Override
@@ -186,7 +175,7 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
     }
 
     @Override
-    public AdapterContext getCodec() {
+    public BindingNormalizedNodeSerializer getCodec() {
         return this.codec;
     }
 
