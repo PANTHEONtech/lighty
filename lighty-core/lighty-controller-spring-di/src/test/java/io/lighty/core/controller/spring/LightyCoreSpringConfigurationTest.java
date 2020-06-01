@@ -92,27 +92,13 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
     DOMYangTextSourceProvider domYangTextSourceProviderTestProperty;
 
     @Autowired
-    org.opendaylight.controller.md.sal.dom.api.DOMMountPointService controllerDOMMountPointServiceTestProperty;
-
-    @Autowired
     DOMMountPointService domMountPointServiceTestProperty;
-
-    @Autowired
-    org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService
-        controllerDOMNotificationPublishServiceTestProperty;
 
     @Autowired
     DOMNotificationPublishService domNotificationPublishServiceTestProperty;
 
     @Autowired
-    org.opendaylight.controller.md.sal.dom.api.DOMNotificationService controllerDOMNotificationServiceTestProperty;
-
-    @Autowired
     DOMNotificationService domNotificationServiceTestProperty;
-
-    @Autowired
-    org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry
-        controllerDOMNotificationSubscriptionListenerRegistryTestProperty;
 
     @Autowired
     DOMNotificationSubscriptionListenerRegistry domNotificationSubscriptionListenerRegistryTestProperty;
@@ -126,15 +112,7 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
     DistributedDataStoreInterface operationalDatastoreTestProperty;
 
     @Autowired
-    @Qualifier("ControllerClusteredDOMDataBroker")
-    org.opendaylight.controller.md.sal.dom.api.DOMDataBroker controllerClusteredDOMDataBrokerTestProperty;
-
-    @Autowired
     DOMDataBroker clusteredDOMDataBrokerTestProperty;
-
-    @Autowired
-    @Qualifier("ControllerPingPongDataBroker")
-    org.opendaylight.controller.md.sal.dom.api.DOMDataBroker controllerPingPongDataBrokerTestProperty;
 
     @Autowired
     DOMDataTreeShardingService domDataTreeShardingServiceTestProperty;
@@ -146,13 +124,7 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
     DistributedShardFactory distributedShardFactoryTestProperty;
 
     @Autowired
-    org.opendaylight.controller.md.sal.dom.api.DOMRpcService controllerDOMRpcServiceTestProperty;
-
-    @Autowired
     DOMRpcService domRpcServiceTestProperty;
-
-    @Autowired
-    org.opendaylight.controller.md.sal.dom.api.DOMRpcProviderService controllerDOMRpcProviderServiceTestProperty;
 
     @Autowired
     DOMRpcProviderService domRpcProviderServiceTestProperty;
@@ -176,46 +148,19 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
     ClusterSingletonServiceProvider clusterSingletonServiceProviderTestProperty;
 
     @Autowired
-    org.opendaylight.controller.sal.binding.api.RpcProviderRegistry controllerRpcProviderRegistryTestProperty;
-
-    @Autowired
     RpcProviderService rpcProviderRegistryTestProperty;
-
-    @Autowired
-    org.opendaylight.controller.md.sal.binding.api.MountPointService controllerBindingMountPointServiceTestProperty;
 
     @Autowired
     MountPointService bindingMountPointServiceTestProperty;
 
     @Autowired
-    org.opendaylight.controller.md.sal.binding.api.NotificationService controllerBindingNotificationServiceTestProperty;
-
-    @Autowired
     NotificationService notificationServiceTestProperty;
-
-    @Autowired
-    org.opendaylight.controller.md.sal.binding.api.NotificationPublishService
-        controllerBindingNotificationPublishServiceTestProperty;
 
     @Autowired
     NotificationPublishService bindingNotificationPublishServiceTestProperty;
 
     @Autowired
-    org.opendaylight.controller.sal.binding.api.NotificationProviderService notificationProviderServiceTestProperty;
-
-    @Autowired
-    org.opendaylight.controller.sal.binding.api.NotificationService controllerNotificationProviderServiceTestProperty;
-
-    @Autowired
-    @Qualifier("ControllerBindingDataBroker")
-    org.opendaylight.controller.md.sal.binding.api.DataBroker controllerBindingDataBrokerTestProperty;
-
-    @Autowired
     DataBroker bindingDataBrokerTestProperty;
-
-    @Autowired
-    @Qualifier("ControllerBindingPingPongDataBroker")
-    org.opendaylight.controller.md.sal.binding.api.DataBroker controllerBindingPingPongDataBrokerTestProperty;
 
     @Autowired
     EventExecutor eventExecutorTestProperty;
@@ -246,25 +191,17 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
         Assert.assertNotNull(schemaContextProviderTestProperty);
         Assert.assertNotNull(domSchemaServiceTestProperty);
         Assert.assertNotNull(domYangTextSourceProviderTestProperty);
-        Assert.assertNotNull(controllerDOMMountPointServiceTestProperty);
         Assert.assertNotNull(domMountPointServiceTestProperty);
-        Assert.assertNotNull(controllerDOMNotificationPublishServiceTestProperty);
         Assert.assertNotNull(domNotificationPublishServiceTestProperty);
-        Assert.assertNotNull(controllerDOMNotificationServiceTestProperty);
         Assert.assertNotNull(domNotificationServiceTestProperty);
-        Assert.assertNotNull(controllerDOMNotificationSubscriptionListenerRegistryTestProperty);
         Assert.assertNotNull(domNotificationSubscriptionListenerRegistryTestProperty);
         Assert.assertNotNull(configDatastoreTestProperty);
         Assert.assertNotNull(operationalDatastoreTestProperty);
-        Assert.assertNotNull(controllerClusteredDOMDataBrokerTestProperty);
         Assert.assertNotNull(clusteredDOMDataBrokerTestProperty);
-        Assert.assertNotNull(controllerPingPongDataBrokerTestProperty);
         Assert.assertNotNull(domDataTreeShardingServiceTestProperty);
         Assert.assertNotNull(domDataTreeServiceTestProperty);
         Assert.assertNotNull(distributedShardFactoryTestProperty);
-        Assert.assertNotNull(controllerDOMRpcServiceTestProperty);
         Assert.assertNotNull(domRpcServiceTestProperty);
-        Assert.assertNotNull(controllerDOMRpcProviderServiceTestProperty);
         Assert.assertNotNull(domRpcProviderServiceTestProperty);
         Assert.assertNotNull(bindingNormalizedNodeSerializerTestProperty);
         Assert.assertNotNull(bindingCodecTreeFactoryTestProperty);
@@ -272,19 +209,11 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
         Assert.assertNotNull(entityOwnershipServiceTestProperty);
         Assert.assertNotNull(clusterAdminRPCServiceTestProperty);
         Assert.assertNotNull(clusterSingletonServiceProviderTestProperty);
-        Assert.assertNotNull(controllerRpcProviderRegistryTestProperty);
         Assert.assertNotNull(rpcProviderRegistryTestProperty);
-        Assert.assertNotNull(controllerBindingMountPointServiceTestProperty);
         Assert.assertNotNull(bindingMountPointServiceTestProperty);
-        Assert.assertNotNull(controllerBindingNotificationServiceTestProperty);
         Assert.assertNotNull(notificationServiceTestProperty);
-        Assert.assertNotNull(controllerBindingNotificationPublishServiceTestProperty);
         Assert.assertNotNull(bindingNotificationPublishServiceTestProperty);
-        Assert.assertNotNull(notificationProviderServiceTestProperty);
-        Assert.assertNotNull(controllerNotificationProviderServiceTestProperty);
-        Assert.assertNotNull(controllerBindingDataBrokerTestProperty);
         Assert.assertNotNull(bindingDataBrokerTestProperty);
-        Assert.assertNotNull(controllerBindingPingPongDataBrokerTestProperty);
         Assert.assertNotNull(eventExecutorTestProperty);
         Assert.assertNotNull(bossGroupTestProperty);
         Assert.assertNotNull(workerGroupTestProperty);

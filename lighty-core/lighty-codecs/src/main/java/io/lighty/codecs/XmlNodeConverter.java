@@ -34,6 +34,7 @@ import org.opendaylight.yangtools.yang.data.codec.xml.XMLStreamNormalizedNodeStr
 import org.opendaylight.yangtools.yang.data.codec.xml.XmlParserStream;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -60,16 +61,16 @@ public class XmlNodeConverter implements NodeConverter {
         XML_OUT_FACTORY.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
     }
 
-    private final SchemaContext schemaContext;
+    private final EffectiveModelContext effectiveModelContext;
 
     /**
      * The only constructor will create an instance of {@link XmlNodeConverter} with the given
      * {@link SchemaContext}. This schema context will be used for proper RPC and Node resolution
      *
-     * @param schemaContext initial schema context
+     * @param effectiveModelContext initial schema context
      */
-    public XmlNodeConverter(final SchemaContext schemaContext) {
-        this.schemaContext = schemaContext;
+    public XmlNodeConverter(final EffectiveModelContext effectiveModelContext) {
+        this.effectiveModelContext = effectiveModelContext;
     }
 
     /**
@@ -87,7 +88,7 @@ public class XmlNodeConverter implements NodeConverter {
             throws SerializationException {
         Writer writer = new StringWriter();
         try (NormalizedNodeWriter normalizedNodeWriter =
-                createNormalizedNodeWriter(schemaContext, writer, schemaNode.getPath())) {
+                createNormalizedNodeWriter(effectiveModelContext, writer, schemaNode.getPath())) {
             normalizedNodeWriter.write(normalizedNode);
             normalizedNodeWriter.flush();
         } catch (IOException ioe) {
@@ -116,7 +117,7 @@ public class XmlNodeConverter implements NodeConverter {
         URI namespace = schemaNode.getQName().getNamespace();
         String localName = schemaNode.getQName().getLocalName();
         try (NormalizedNodeWriter normalizedNodeWriter =
-                createNormalizedNodeWriter(schemaContext, xmlStreamWriter, schemaNode.getPath())) {
+                createNormalizedNodeWriter(effectiveModelContext, xmlStreamWriter, schemaNode.getPath())) {
             // the localName may be "input" or "output" - this may be changed
             xmlStreamWriter.writeStartElement(XMLConstants.DEFAULT_NS_PREFIX, localName, namespace.toString());
             xmlStreamWriter.writeDefaultNamespace(namespace.toString());
@@ -156,7 +157,8 @@ public class XmlNodeConverter implements NodeConverter {
         }
         final NormalizedNodeResult result = new NormalizedNodeResult();
         try (NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
-                XmlParserStream xmlParser = XmlParserStream.create(streamWriter, this.schemaContext, schemaNode)) {
+                XmlParserStream xmlParser = XmlParserStream.create(streamWriter, this.effectiveModelContext,
+                        schemaNode)) {
             xmlParser.parse(reader);
         } catch (XMLStreamException | URISyntaxException | IOException | SAXException e) {
             throw new SerializationException(e);

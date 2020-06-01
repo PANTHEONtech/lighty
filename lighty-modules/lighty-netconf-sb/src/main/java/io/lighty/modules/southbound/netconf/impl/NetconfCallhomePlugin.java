@@ -13,8 +13,9 @@ import java.util.concurrent.ExecutorService;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.opendaylight.netconf.callhome.mount.CallHomeMountDispatcher;
 import org.opendaylight.netconf.callhome.mount.IetfZeroTouchCallHomeServerProvider;
-import org.opendaylight.netconf.callhome.mount.SchemaRepositoryProviderImpl;
-import org.opendaylight.netconf.topology.api.SchemaRepositoryProvider;
+import org.opendaylight.netconf.sal.connect.api.SchemaResourceManager;
+import org.opendaylight.netconf.sal.connect.impl.DefaultSchemaResourceManager;
+import org.opendaylight.netconf.sal.connect.netconf.schema.mapping.DefaultBaseNetconfSchemas;
 import org.slf4j.LoggerFactory;
 
 public class NetconfCallhomePlugin extends AbstractLightyModule {
@@ -26,11 +27,13 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
     public NetconfCallhomePlugin(final LightyServices lightyServices, final String topologyId,
             final ExecutorService executorService, final AAAEncryptionService encryptionService) {
         super(executorService);
-        final SchemaRepositoryProvider schemaRepositoryProvider =
-                new SchemaRepositoryProviderImpl("shared-schema-repository-impl");
+        final DefaultBaseNetconfSchemas defaultBaseNetconfSchemas =
+                new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
+        final SchemaResourceManager schemaResourceManager =
+                new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
         final CallHomeMountDispatcher dispatcher = new CallHomeMountDispatcher(topologyId,
-            lightyServices.getEventExecutor(), lightyServices.getScheduledThreaPool(), lightyServices.getThreadPool(),
-            schemaRepositoryProvider, lightyServices.getBindingDataBroker(), lightyServices.getDOMMountPointService(),
+            lightyServices.getEventExecutor(), lightyServices.getScheduledThreadPool(), lightyServices.getThreadPool(),
+            schemaResourceManager, defaultBaseNetconfSchemas, lightyServices.getBindingDataBroker(), lightyServices.getDOMMountPointService(),
             encryptionService);
         this.provider = new IetfZeroTouchCallHomeServerProvider(lightyServices.getBindingDataBroker(), dispatcher);
     }

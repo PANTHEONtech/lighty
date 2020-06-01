@@ -35,6 +35,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.opendaylight.binding.runtime.api.BindingRuntimeGenerator;
+import org.opendaylight.binding.runtime.api.BindingRuntimeTypes;
+import org.opendaylight.binding.runtime.api.DefaultBindingRuntimeContext;
+import org.opendaylight.binding.runtime.spi.ModuleInfoBackedContext;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.akka.impl.ActorSystemProviderImpl;
 import org.opendaylight.controller.cluster.common.actor.QuarantinedMonitorActor;
@@ -56,17 +60,9 @@ import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
 import org.opendaylight.controller.config.threadpool.ThreadPool;
 import org.opendaylight.controller.config.threadpool.util.FixedThreadPoolWrapper;
 import org.opendaylight.controller.config.threadpool.util.ScheduledThreadPoolWrapper;
-import org.opendaylight.controller.md.sal.binding.compat.HeliumNotificationProviderServiceWithInterestListeners;
-import org.opendaylight.controller.md.sal.binding.compat.HeliumRpcProviderRegistry;
-import org.opendaylight.controller.md.sal.binding.impl.BindingDOMRpcServiceAdapter;
 import org.opendaylight.controller.remote.rpc.RemoteOpsProvider;
 import org.opendaylight.controller.remote.rpc.RemoteOpsProviderConfig;
 import org.opendaylight.controller.remote.rpc.RemoteOpsProviderFactory;
-import org.opendaylight.controller.sal.binding.api.NotificationProviderService;
-import org.opendaylight.controller.sal.binding.api.RpcConsumerRegistry;
-import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
-import org.opendaylight.controller.sal.core.compat.LegacyDOMDataBrokerAdapter;
-import org.opendaylight.controller.sal.core.compat.LegacyPingPongDOMDataBrokerAdapter;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistryImpl;
 import org.opendaylight.infrautils.caches.guava.internal.GuavaCacheProvider;
@@ -81,17 +77,18 @@ import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMDataBrokerAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMMountPointServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationPublishServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcProviderServiceAdapter;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
+import org.opendaylight.mdsal.binding.dom.adapter.ConstantAdapterContext;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
-import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
-import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
+import org.opendaylight.mdsal.binding.dom.codec.impl.DefaultBindingCodecTreeFactory;
+import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
@@ -123,6 +120,10 @@ import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
+import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
+import org.opendaylight.yangtools.yang.parser.impl.YangParserFactoryImpl;
+import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
+import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -134,9 +135,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private final Config actorSystemConfig;
     private final ClassLoader actorSystemClassLoader;
     private final DOMNotificationRouter domNotificationRouter;
-    private final org.opendaylight.controller.md.sal.dom.broker.impl.DOMNotificationRouter domNotificationRouterOld;
     private final DOMMountPointService domMountPointService;
-    private final org.opendaylight.controller.md.sal.dom.api.DOMMountPointService domMountPointServiceOld;
     private final Set<YangModuleInfo> modelSet;
     private final Properties distributedEosProperties;
     private final DatastoreContext configDatastoreContext;
@@ -157,10 +156,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private ExecutorService listenableFutureExecutor;
     private DurationStatisticsTracker commitStatsTracker;
     private DOMDataBroker concurrentDOMDataBroker;
-    private org.opendaylight.controller.md.sal.dom.api.DOMDataBroker concurrentDOMDataBrokerOld;
     private DistributedShardedDOMDataTree distributedShardedDOMDataTree;
     private DOMRpcRouter domRpcRouter;
-    private org.opendaylight.controller.md.sal.dom.broker.impl.DOMRpcRouter domRpcRouterOld;
     private RemoteOpsProvider remoteOpsProvider;
     private DOMActionService domActionService;
     private DOMActionProviderService domActionProviderService;
@@ -170,10 +167,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private DOMClusterSingletonServiceProviderImpl clusterSingletonServiceProvider;
     private NotificationService notificationService;
     private NotificationPublishService notificationPublishService;
-    private org.opendaylight.controller.md.sal.binding.impl.BindingDOMNotificationPublishServiceAdapter
-        notificationPublishServiceOld;
     private BindingDOMDataBrokerAdapter domDataBroker;
-    private org.opendaylight.controller.md.sal.binding.api.DataBroker domDataBrokerOld;
     private final LightyDiagStatusServiceImpl lightyDiagStatusService;
     private EventExecutor eventExecutor;
     private EventLoopGroup bossGroup;
@@ -183,16 +177,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private Timer timer;
     private ModuleInfoBackedContext moduleInfoBackedContext;
     private DOMSchemaService schemaService;
-    private BindingToNormalizedNodeCodec codec;
-    private org.opendaylight.controller.md.sal.binding.impl.BindingToNormalizedNodeCodec codecOld;
-    private org.opendaylight.controller.md.sal.dom.api.DOMDataBroker pingPongDataBrokerOld;
+    private AdapterContext codec;
+    private BindingCodecTreeFactory bindingCodecTreeFactory;
+    private YangParserFactory yangParserFactory;
     private RpcProviderService rpcProviderService;
-    private RpcProviderRegistry rpcProviderRegistry;
     private MountPointService mountPointService;
-    private org.opendaylight.controller.md.sal.binding.api.MountPointService mountPointServiceOld;
-    private HeliumNotificationProviderServiceWithInterestListeners notificationProviderServiceOld;
-    private org.opendaylight.controller.md.sal.binding.api.DataBroker domPingPongDataBrokerOld;
-    private org.opendaylight.controller.md.sal.binding.impl.BindingDOMNotificationServiceAdapter notificatoinServiceOld;
     private final LightySystemReadyMonitorImpl systemReadyMonitor;
     private final JobCoordinator jobCoordinator;
     private final MetricProvider metricProvider;
@@ -213,16 +202,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.actorSystemConfig = actorSystemConfig;
         this.actorSystemClassLoader = actorSystemClassLoader;
         this.domMountPointService = new DOMMountPointServiceImpl();
-        this.domMountPointServiceOld =
-                new org.opendaylight.controller.md.sal.dom.broker.impl.mount.DOMMountPointServiceImpl(
-                        this.domMountPointService);
         this.domNotificationRouter = DOMNotificationRouter.create(
                 domNotificationRouterConfig.getQueueDepth(),
                 domNotificationRouterConfig.getSpinTime(),
                 domNotificationRouterConfig.getParkTime(),
                 domNotificationRouterConfig.getUnit());
-        this.domNotificationRouterOld = org.opendaylight.controller.md.sal.dom.broker.impl.DOMNotificationRouter.create(
-                this.domNotificationRouter, this.domNotificationRouter, this.domNotificationRouter);
         this.restoreDirectoryPath = restoreDirectoryPath;
         this.maxDataBrokerFutureCallbackQueueSize = maxDataBrokerFutureCallbackQueueSize;
         this.maxDataBrokerFutureCallbackPoolSize = maxDataBrokerFutureCallbackPoolSize;
@@ -260,27 +244,25 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
         //INIT schema context
         this.moduleInfoBackedContext = ModuleInfoBackedContext.create();
-        this.modelSet.stream()
-                .map(moduleInfoBackedContext::registerModuleInfo)
-                .forEach(modelsRegistration::add);
+        this.modelsRegistration = this.moduleInfoBackedContext.registerModuleInfos(modelSet);
         this.schemaService = FixedDOMSchemaService.of(this.moduleInfoBackedContext,
                 this.moduleInfoBackedContext);
 
+        // INIT yang parser factory
+        final YangXPathParserFactory xpathFactory = new AntlrXPathParserFactory();
+        this.yangParserFactory = new YangParserFactoryImpl(xpathFactory);
+
         // INIT CODEC FACTORY
-        this.codec = BindingToNormalizedNodeCodec.newInstance(this.moduleInfoBackedContext, this.schemaService);
-        this.schemaService.registerSchemaContextListener(this.codec);
 
-        final BindingRuntimeContext bindingRuntimeContext =
-                BindingRuntimeContext.create(this.moduleInfoBackedContext, this.moduleInfoBackedContext
-                        .getSchemaContext());
-        //create binding notification service
-        final BindingNormalizedNodeCodecRegistry codecRegistry = this.codec.getCodecRegistry();
-        codecRegistry.onBindingRuntimeContextUpdated(bindingRuntimeContext);
+        final BindingRuntimeGenerator bindingRuntimeGenerator = new DefaultBindingRuntimeGenerator();
+        final BindingRuntimeTypes bindingRuntimeTypes = bindingRuntimeGenerator
+                .generateTypeMapping(moduleInfoBackedContext.tryToCreateModelContext().orElseThrow());
+        final DefaultBindingRuntimeContext bindingRuntimeContext =
+                DefaultBindingRuntimeContext.create(bindingRuntimeTypes, moduleInfoBackedContext);
+        this.bindingCodecTreeFactory = new DefaultBindingCodecTreeFactory();
 
-        this.codecOld = new org.opendaylight.controller.md.sal.binding.impl.BindingToNormalizedNodeCodec(
-                this.moduleInfoBackedContext, codecRegistry);
-
-        this.schemaService.registerSchemaContextListener(this.codecOld);
+        final BindingCodecContext bindingCodecContext = new BindingCodecContext(bindingRuntimeContext);
+        this.codec = new ConstantAdapterContext(bindingCodecContext);
 
         // CONFIG DATASTORE
         this.configDatastore = prepareDataStore(this.configDatastoreContext, this.moduleShardsConfig,
@@ -296,14 +278,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                 this.configDatastore);
         this.distributedShardedDOMDataTree.init();
 
-        final LegacyPingPongDOMDataBrokerAdapter pingPongLegacyDOMDataBrokerAdapter =
-                new LegacyPingPongDOMDataBrokerAdapter(this.concurrentDOMDataBroker);
-        this.pingPongDataBrokerOld = new org.opendaylight.controller.md.sal.dom.broker.impl.PingPongDataBroker(
-                pingPongLegacyDOMDataBrokerAdapter);
-
         this.domRpcRouter = DOMRpcRouter.newInstance(this.schemaService);
-        this.domRpcRouterOld = new org.opendaylight.controller.md.sal.dom.broker.impl.DOMRpcRouter(this.domRpcRouter
-                .getRpcService(), this.domRpcRouter.getRpcProviderService());
         this.domActionProviderService = domRpcRouter.getActionProviderService();
         this.domActionService = domRpcRouter.getActionService();
         createRemoteOpsProvider();
@@ -316,47 +291,24 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.bindingDOMEntityOwnershipServiceAdapter = new BindingDOMEntityOwnershipServiceAdapter(
                 this.distributedEntityOwnershipService, this.codec);
         this.clusterAdminRpcService =
-                new ClusterAdminRpcService(this.configDatastore, this.operDatastore, this.codec);
+                new ClusterAdminRpcService(this.configDatastore, this.operDatastore, this.codec.currentSerializer());
 
         this.clusterSingletonServiceProvider =
                 new DOMClusterSingletonServiceProviderImpl(this.distributedEntityOwnershipService);
         this.clusterSingletonServiceProvider.initializeProvider();
 
-        this.rpcProviderService = new BindingDOMRpcProviderServiceAdapter(this.domRpcRouter
-                .getRpcProviderService(), this.codec);
-        final org.opendaylight.controller.md.sal.binding.impl.BindingDOMRpcProviderServiceAdapter domRpcProvAdapterOld =
-                new org.opendaylight.controller.md.sal.binding.impl.BindingDOMRpcProviderServiceAdapter(
-                        this.domRpcRouterOld, this.codecOld);
-        final RpcConsumerRegistry rpcServiceAdapterOld = new BindingDOMRpcServiceAdapter(this.domRpcRouterOld,
-                this.codecOld);
-        this.rpcProviderRegistry = new HeliumRpcProviderRegistry(rpcServiceAdapterOld, domRpcProvAdapterOld);
+        this.rpcProviderService = new BindingDOMRpcProviderServiceAdapter(this.codec,
+                this.domRpcRouter.getRpcProviderService());
 
         //create binding mount point service
-        this.mountPointService = new BindingDOMMountPointServiceAdapter(this.domMountPointService, this.codec);
-        this.mountPointServiceOld =
-                new org.opendaylight.controller.md.sal.binding.impl.BindingDOMMountPointServiceAdapter(
-                        this.domMountPointServiceOld, this.codecOld);
+        this.mountPointService = new BindingDOMMountPointServiceAdapter(this.codec, this.domMountPointService);
 
-        this.notificationService = new BindingDOMNotificationServiceAdapter(this.domNotificationRouter,
-                this.codec);
+        this.notificationService = new BindingDOMNotificationServiceAdapter(this.codec, this.domNotificationRouter);
         this.notificationPublishService =
-                new BindingDOMNotificationPublishServiceAdapter(this.domNotificationRouter, this.codec);
-        this.notificationPublishServiceOld =
-                new org.opendaylight.controller.md.sal.binding.impl.BindingDOMNotificationPublishServiceAdapter(
-                        this.codecOld, this.domNotificationRouterOld);
-        this.notificatoinServiceOld =
-                new org.opendaylight.controller.md.sal.binding.impl.BindingDOMNotificationServiceAdapter(this.codecOld,
-                        this.domNotificationRouterOld);
-        this.notificationProviderServiceOld = new HeliumNotificationProviderServiceWithInterestListeners(
-                this.notificationPublishServiceOld, this.notificatoinServiceOld, this.domNotificationRouterOld);
+                new BindingDOMNotificationPublishServiceAdapter(this.codec, this.domNotificationRouter);
 
         //create binding data broker
-        this.domDataBroker = new BindingDOMDataBrokerAdapter(this.concurrentDOMDataBroker, this.codec);
-        this.domDataBrokerOld = new org.opendaylight.controller.md.sal.binding.impl.BindingDOMDataBrokerAdapter(
-                this.concurrentDOMDataBrokerOld, this.codecOld);
-
-        this.domPingPongDataBrokerOld = new org.opendaylight.controller.md.sal.binding.impl.BindingDOMDataBrokerAdapter(
-                this.pingPongDataBrokerOld, this.codecOld);
+        this.domDataBroker = new BindingDOMDataBrokerAdapter(this.codec, this.concurrentDOMDataBroker);
 
         this.bossGroup = new NioEventLoopGroup();
         this.workerGroup = new NioEventLoopGroup();
@@ -377,7 +329,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             final ActorSystemProvider newActorSystemProvider) {
         final ConfigurationImpl configuration = new ConfigurationImpl(newModuleShardsConfig, newModulesConfig);
         final DatastoreContextIntrospector introspector = new DatastoreContextIntrospector(datastoreContext,
-                this.codecOld);
+                this.codec.currentSerializer());
         final DatastoreContextPropertiesUpdater updater = new DatastoreContextPropertiesUpdater(introspector,
                 datastoreProperties);
         return DistributedDataStoreFactory.createInstance(domSchemaService, datastoreContext,
@@ -452,7 +404,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         datastores.put(LogicalDatastoreType.OPERATIONAL, this.operDatastore);
         this.concurrentDOMDataBroker = new ConcurrentDOMDataBroker(datastores,
                 this.listenableFutureExecutor, this.commitStatsTracker);
-        this.concurrentDOMDataBrokerOld = new LegacyDOMDataBrokerAdapter(this.concurrentDOMDataBroker);
     }
 
     @Override
@@ -501,12 +452,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry
-            getControllerDOMNotificationSubscriptionListenerRegistry() {
-        return this.domNotificationRouterOld;
-    }
-
-    @Override
     public DistributedDataStoreInterface getConfigDatastore() {
         return this.configDatastore;
     }
@@ -532,13 +477,18 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
+    public YangParserFactory getYangParserFactory() {
+        return yangParserFactory;
+    }
+
+    @Override
     public BindingNormalizedNodeSerializer getBindingNormalizedNodeSerializer() {
-        return this.codec;
+        return this.codec.currentSerializer();
     }
 
     @Override
     public BindingCodecTreeFactory getBindingCodecTreeFactory() {
-        return this.codec;
+        return this.bindingCodecTreeFactory;
     }
 
     @Override
@@ -582,7 +532,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public ScheduledThreadPool getScheduledThreaPool() {
+    public ScheduledThreadPool getScheduledThreadPool() {
         return this.scheduledThreadPool;
     }
 
@@ -597,19 +547,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public org.opendaylight.controller.md.sal.dom.api.DOMMountPointService getControllerDOMMountPointService() {
-        return this.domMountPointServiceOld;
-    }
-
-    @Override
     public DOMNotificationPublishService getDOMNotificationPublishService() {
         return this.domNotificationRouter;
-    }
-
-    @Override
-    public org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService
-            getControllerDOMNotificationPublishService() {
-        return this.domNotificationRouterOld;
     }
 
     @Override
@@ -618,23 +557,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public org.opendaylight.controller.md.sal.dom.api.DOMNotificationService getControllerDOMNotificationService() {
-        return this.domNotificationRouterOld;
-    }
-
-    @Override
     public DOMDataBroker getClusteredDOMDataBroker() {
         return this.concurrentDOMDataBroker;
-    }
-
-    @Override
-    public org.opendaylight.controller.md.sal.dom.api.DOMDataBroker getControllerClusteredDOMDataBroker() {
-        return this.concurrentDOMDataBrokerOld;
-    }
-
-    @Override
-    public org.opendaylight.controller.md.sal.dom.api.DOMDataBroker getControllerPingPongDataBroker() {
-        return this.pingPongDataBrokerOld;
     }
 
     @Override
@@ -643,18 +567,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public org.opendaylight.controller.md.sal.dom.api.DOMRpcService getControllerDOMRpcService() {
-        return this.domRpcRouterOld;
-    }
-
-    @Override
     public DOMRpcProviderService getDOMRpcProviderService() {
         return this.domRpcRouter.getRpcProviderService();
-    }
-
-    @Override
-    public org.opendaylight.controller.md.sal.dom.api.DOMRpcProviderService getControllerDOMRpcProviderService() {
-        return this.domRpcRouterOld;
     }
 
     @Override
@@ -663,18 +577,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public RpcProviderRegistry getControllerRpcProviderRegistry() {
-        return this.rpcProviderRegistry;
-    }
-
-    @Override
     public MountPointService getBindingMountPointService() {
         return this.mountPointService;
-    }
-
-    @Override
-    public org.opendaylight.controller.md.sal.binding.api.MountPointService getControllerBindingMountPointService() {
-        return this.mountPointServiceOld;
     }
 
     @Override
@@ -683,25 +587,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public org.opendaylight.controller.md.sal.binding.api.NotificationService
-            getControllerBindingNotificationService() {
-        return this.notificatoinServiceOld;
-    }
-
-    @Override
     public NotificationPublishService getBindingNotificationPublishService() {
         return this.notificationPublishService;
-    }
-
-    @Override
-    public org.opendaylight.controller.md.sal.binding.api.NotificationPublishService
-            getControllerBindingNotificationPublishService() {
-        return this.notificationPublishServiceOld;
-    }
-
-    @Override
-    public NotificationProviderService getControllerNotificationProviderService() {
-        return this.notificationProviderServiceOld;
     }
 
     @Override
@@ -710,23 +597,13 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public BindingToNormalizedNodeCodec getNormalizedNodeCodec() {
-        return this.codecOld;
+    public AdapterContext getAdapterContext() {
+        return codec;
     }
 
     @Override
-    public org.opendaylight.controller.md.sal.binding.api.DataBroker getControllerBindingDataBroker() {
-        return this.domDataBrokerOld;
-    }
-
-    @Override
-    public ObjectRegistration<YangModuleInfo> registerModuleInfo(final YangModuleInfo yangModuleInfo) {
-        return moduleInfoBackedContext.registerModuleInfo(yangModuleInfo);
-    }
-
-    @Override
-    public org.opendaylight.controller.md.sal.binding.api.DataBroker getControllerBindingPingPongDataBroker() {
-        return this.domPingPongDataBrokerOld;
+    public List<ObjectRegistration<YangModuleInfo>> registerModuleInfos(Iterable<? extends YangModuleInfo> yangModuleInfos) {
+        return moduleInfoBackedContext.registerModuleInfos(yangModuleInfos);
     }
 
     @Override
@@ -735,7 +612,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public DOMActionProviderService getDOMActionProviderSerice() {
+    public DOMActionProviderService getDOMActionProviderService() {
         return domActionProviderService;
     }
 

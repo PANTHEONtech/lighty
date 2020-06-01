@@ -7,7 +7,7 @@
  */
 package io.lighty.modules.southbound.netconf.impl;
 
-import org.opendaylight.controller.md.sal.dom.api.DOMActionService;
+import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.netconf.api.NetconfMessage;
 import org.opendaylight.netconf.sal.connect.api.DeviceActionFactory;
 import org.opendaylight.netconf.sal.connect.api.MessageTransformer;

@@ -28,8 +28,6 @@ public class YangModelUtilsTests {
     private static final String TEST_NAME = "ietf-inet-types";
     private static final String TEST_REVISION = "2013-07-15";
     private static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana.afn.safi.rev130704.$YangModuleInfoImpl
-            .getInstance(),
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.$YangModuleInfoImpl
             .getInstance(),
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.$YangModuleInfoImpl
@@ -166,13 +164,12 @@ public class YangModelUtilsTests {
 
     /*
      * This test requires test dependencies:
-     * org.opendaylight.mdsal.model/iana-afn-safi
      * org.opendaylight.mdsal.binding.model.iana/iana-if-type
      */
     @Test
     public void testGenerateJSONModelSetConfiguration() {
         ArrayNode arrayNode = YangModuleUtils.generateJSONModelSetConfiguration(YANG_MODELS);
         Assert.assertNotNull(arrayNode);
-        Assert.assertTrue(arrayNode.size() == 4);
+        Assert.assertTrue(arrayNode.size() == 3);
     }
 }

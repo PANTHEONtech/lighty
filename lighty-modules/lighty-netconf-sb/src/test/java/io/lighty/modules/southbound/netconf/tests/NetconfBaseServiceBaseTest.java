@@ -12,13 +12,16 @@ import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
+import org.opendaylight.binding.runtime.spi.ModuleInfoBackedContext;
+import org.opendaylight.netconf.sal.connect.netconf.schema.mapping.BaseSchema;
+import org.opendaylight.netconf.sal.connect.netconf.schema.mapping.DefaultBaseNetconfSchemas;
 import org.opendaylight.yangtools.rcf8528.data.util.EmptyMountPointContext;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointContext;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.parser.impl.YangParserFactoryImpl;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.w3c.dom.Element;
@@ -26,8 +29,9 @@ import org.w3c.dom.Element;
 @Test
 public abstract class NetconfBaseServiceBaseTest {
 
-    protected SchemaContext schemaContext;
+    protected EffectiveModelContext effectiveModelContext;
     protected MountPointContext mountContext;
+    protected BaseSchema baseSchema;
 
     @BeforeClass
     public void beforeTest() {
@@ -41,14 +45,15 @@ public abstract class NetconfBaseServiceBaseTest {
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.nmda.rev190107.$YangModuleInfoImpl.getInstance(),
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.$YangModuleInfoImpl.getInstance()
         );
-        schemaContext = getSchemaContext(new ArrayList<>(yangModuleInfos));
-        mountContext = new EmptyMountPointContext(schemaContext);
+        effectiveModelContext = getEffectiveModelContext(new ArrayList<>(yangModuleInfos));
+        mountContext = new EmptyMountPointContext(effectiveModelContext);
+        baseSchema = new DefaultBaseNetconfSchemas(new YangParserFactoryImpl()).getBaseSchema();
     }
 
-    static SchemaContext getSchemaContext(final List<YangModuleInfo> moduleInfos) {
+    static EffectiveModelContext getEffectiveModelContext(final List<YangModuleInfo> moduleInfos) {
         ModuleInfoBackedContext moduleInfoBackedCntxt = ModuleInfoBackedContext.create();
-        moduleInfoBackedCntxt.addModuleInfos(moduleInfos);
-        return moduleInfoBackedCntxt.tryToCreateSchemaContext().orElseThrow(IllegalStateException::new);
+        moduleInfoBackedCntxt.registerModuleInfos(moduleInfos);
+        return moduleInfoBackedCntxt.getEffectiveModelContext();
     }
 
     boolean hasSpecificChild(final Collection<DataContainerChild<? extends PathArgument, ?>> children,
