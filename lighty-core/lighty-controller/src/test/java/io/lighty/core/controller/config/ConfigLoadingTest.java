@@ -54,10 +54,6 @@ public class ConfigLoadingTest {
         Assert.assertEquals(configDatastoreContext.getShardBatchedModificationCount(), 1000);
         Assert.assertEquals(configDatastoreContext.getShardCommitQueueExpiryTimeoutInMillis(), 120000);
         Assert.assertEquals(configDatastoreContext.isTransactionDebugContextEnabled(), false);
-        Assert.assertEquals(configDatastoreContext.getDataStoreProperties().getMaxDataChangeExecutorPoolSize(), 20);
-        Assert.assertEquals(configDatastoreContext.getDataStoreProperties().getMaxDataChangeExecutorQueueSize(), 1000);
-        Assert.assertEquals(configDatastoreContext.getDataStoreProperties().getMaxDataChangeListenerQueueSize(), 1000);
-        Assert.assertEquals(configDatastoreContext.getDataStoreProperties().getMaxDataStoreExecutorQueueSize(), 5000);
         Assert.assertEquals(configDatastoreContext.isUseTellBasedProtocol(), false);
         Assert.assertEquals(configDatastoreContext.getMaximumMessageSliceSize(), 2048000);
         Assert.assertEquals(configDatastoreContext.getFileBackedStreamingThreshold(), 134217728);
@@ -85,10 +81,6 @@ public class ConfigLoadingTest {
         Assert.assertEquals(operDatastoreContext.getShardBatchedModificationCount(), 1000);
         Assert.assertEquals(operDatastoreContext.getShardCommitQueueExpiryTimeoutInMillis(), 120000);
         Assert.assertEquals(operDatastoreContext.isTransactionDebugContextEnabled(), false);
-        Assert.assertEquals(operDatastoreContext.getDataStoreProperties().getMaxDataChangeExecutorPoolSize(), 20);
-        Assert.assertEquals(operDatastoreContext.getDataStoreProperties().getMaxDataChangeExecutorQueueSize(), 1000);
-        Assert.assertEquals(operDatastoreContext.getDataStoreProperties().getMaxDataChangeListenerQueueSize(), 1000);
-        Assert.assertEquals(operDatastoreContext.getDataStoreProperties().getMaxDataStoreExecutorQueueSize(), 5000);
         Assert.assertEquals(operDatastoreContext.isUseTellBasedProtocol(), false);
         Assert.assertEquals(operDatastoreContext.getMaximumMessageSliceSize(), 2048000);
         Assert.assertEquals(operDatastoreContext.getFileBackedStreamingThreshold(), 134217728);
@@ -159,10 +151,6 @@ public class ConfigLoadingTest {
         Assert.assertEquals(dataStoreContext.getShardBatchedModificationCount(), 10000);
         Assert.assertEquals(dataStoreContext.getShardCommitQueueExpiryTimeoutInMillis(), 1200000);
         Assert.assertEquals(dataStoreContext.isTransactionDebugContextEnabled(), true);
-        Assert.assertEquals(dataStoreContext.getDataStoreProperties().getMaxDataChangeExecutorPoolSize(), 22);
-        Assert.assertEquals(dataStoreContext.getDataStoreProperties().getMaxDataChangeExecutorQueueSize(), 1001);
-        Assert.assertEquals(dataStoreContext.getDataStoreProperties().getMaxDataChangeListenerQueueSize(), 1005);
-        Assert.assertEquals(dataStoreContext.getDataStoreProperties().getMaxDataStoreExecutorQueueSize(), 5005);
         Assert.assertEquals(dataStoreContext.isUseTellBasedProtocol(), false);
         Assert.assertEquals(dataStoreContext.getMaximumMessageSliceSize(), 2048001);
         Assert.assertEquals(dataStoreContext.getFileBackedStreamingThreshold(), 135266304);
@@ -195,10 +183,6 @@ public class ConfigLoadingTest {
         Assert.assertEquals(dataStoreContext.getShardBatchedModificationCount(), -10000);
         Assert.assertEquals(dataStoreContext.getShardCommitQueueExpiryTimeoutInMillis(), -1200000);
         Assert.assertEquals(dataStoreContext.isTransactionDebugContextEnabled(), false);
-        Assert.assertEquals(dataStoreContext.getDataStoreProperties().getMaxDataChangeExecutorPoolSize(), 24);
-        Assert.assertEquals(dataStoreContext.getDataStoreProperties().getMaxDataChangeExecutorQueueSize(), 1002);
-        Assert.assertEquals(dataStoreContext.getDataStoreProperties().getMaxDataChangeListenerQueueSize(), 1006);
-        Assert.assertEquals(dataStoreContext.getDataStoreProperties().getMaxDataStoreExecutorQueueSize(), 5006);
         Assert.assertEquals(dataStoreContext.isUseTellBasedProtocol(), true);
         Assert.assertEquals(dataStoreContext.getMaximumMessageSliceSize(), 2048002);
         Assert.assertEquals(dataStoreContext.getFileBackedStreamingThreshold(), 136314880);
