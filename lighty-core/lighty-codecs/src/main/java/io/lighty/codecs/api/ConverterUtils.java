@@ -54,7 +54,7 @@ public final class ConverterUtils {
      * @param rpcQName {@link QName} of the RPC
      * @return {@link Optional} representation of the {@link RpcDefinition}
      */
-    public static Optional<RpcDefinition> loadRpc(final SchemaContext schemaContext, final QName rpcQName) {
+    public static Optional<? extends RpcDefinition> loadRpc(final SchemaContext schemaContext, final QName rpcQName) {
         Optional<Module> findModule = findModule(schemaContext, rpcQName);
         if (!findModule.isPresent()) {
             return Optional.empty();
@@ -69,7 +69,7 @@ public final class ConverterUtils {
      * @param notificationQname yang RPC name
      * @return {@link Optional} of {@link SchemaNode}
      */
-    public static Optional<NotificationDefinition> loadNotification(final SchemaContext schemaContext,
+    public static Optional<? extends NotificationDefinition> loadNotification(final SchemaContext schemaContext,
             final QName notificationQname) {
         Optional<Module> findModule = findModule(schemaContext, notificationQname);
         if (!findModule.isPresent()) {
@@ -234,7 +234,7 @@ public final class ConverterUtils {
             return schemaContext.findModule(qname.getNamespace(), qname.getRevision());
         }
 
-        Set<Module> moduleByNamespace = schemaContext.findModules(qname.getNamespace());
+        Collection<? extends Module> moduleByNamespace = schemaContext.findModules(qname.getNamespace());
         return Optional.ofNullable(moduleByNamespace.isEmpty() || moduleByNamespace.size() > 1 ? null
                 : moduleByNamespace.iterator().next());
     }

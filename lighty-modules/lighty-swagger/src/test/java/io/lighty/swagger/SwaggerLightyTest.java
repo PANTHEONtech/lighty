@@ -21,24 +21,11 @@ import org.testng.Assert;
  */
 public abstract class SwaggerLightyTest extends SwaggerLightyTestBase {
 
-    private String modelName;
-    private String revisionDate;
-    private UriInfo uriInfo;
+    protected final String DEFAULT_MODEL_NAME = "ietf-yang-library";
+    protected final String DEFAULT_REVISION_DATE = "2016-06-21";
 
     protected SwaggerLightyTest(JsonRestConfServiceType restConfServiceType) {
         super(restConfServiceType);
-
-        final String basePath = "http://localhost:8888/apidoc/18/apis/";
-        modelName = "ietf-yang-library";
-        revisionDate = "2016-06-21";
-        final URI absolutePath = URI.create(
-                "http://localhost:8888/apidoc/18/explorer/index.html#/" + modelName + "(" + revisionDate + ")");
-
-        uriInfo = Mockito.mock(UriInfo.class);
-        Mockito.when(uriInfo.getAbsolutePath()).thenReturn(absolutePath);
-        Mockito.when(uriInfo.getBaseUri()).thenReturn(URI.create(basePath));
-        Mockito.when(uriInfo.getBaseUriBuilder()).thenReturn(UriBuilder.fromPath(basePath));
-        Mockito.when(uriInfo.getRequestUriBuilder()).thenReturn(UriBuilder.fromUri(absolutePath));
     }
 
     public void simpleSwaggerModuleTest() {
@@ -46,40 +33,38 @@ public abstract class SwaggerLightyTest extends SwaggerLightyTestBase {
         Assert.assertNotNull(getSwaggerModule());
     }
 
-    public void testGetListOfMounts() {
-
-        final Response response = getSwaggerModule().getApiDocService().getListOfMounts(uriInfo);
-
-        Assert.assertEquals(200, response.getStatus());
+    public void testGetListOfMounts(UriInfo uriInfo) {
+        assertSuccessResponse(getSwaggerModule().getApiDocService().getListOfMounts(uriInfo));
     }
 
-    public void testGetMountRootDoc() {
+    public void testGetAllModulesDoc(UriInfo uriInfo) {
+        assertSuccessResponse(getSwaggerModule().getApiDocService().getAllModulesDoc(uriInfo));
     }
 
-    public void testGetMountDocByModule() {
+    public void testGetDocByModule(UriInfo uriInfo, String modelName, String revisionDate) {
+        assertSuccessResponse(getSwaggerModule().getApiDocService().getDocByModule(modelName, revisionDate, uriInfo));
     }
 
-    public void testGetRootDoc() {
-
-        final Response response = getSwaggerModule().getApiDocService().getRootDoc(uriInfo);
-
-        Assert.assertEquals(response.getStatus(), 200);
-        Assert.assertNotNull(response.getEntity());
-    }
-
-    public void testGetDocByModule() {
-
-        final Response response = getSwaggerModule().getApiDocService().getDocByModule(modelName, revisionDate, uriInfo);
-
-        Assert.assertEquals(response.getStatus(), 200);
-        Assert.assertNotNull(response.getEntity());
-    }
-
-    public void testGetApiExplorer() {
-
+    public void testGetApiExplorer(UriInfo uriInfo) {
         final Response response = getSwaggerModule().getApiDocService().getApiExplorer(uriInfo);
 
         final int redirectCode = 303;
         Assert.assertEquals(response.getStatus(), redirectCode);
+    }
+
+    private void assertSuccessResponse(Response response) {
+        Assert.assertEquals(response.getStatus(), 200);
+        Assert.assertNotNull(response.getEntity());
+    }
+
+    protected UriInfo mockUriInfo(String path) {
+        URI absolutePathUri = URI.create(path);
+        UriInfo uriInfo = Mockito.mock(UriInfo.class);
+        Mockito.when(uriInfo.getAbsolutePath()).thenReturn(absolutePathUri);
+        Mockito.when(uriInfo.getBaseUri()).thenReturn(URI.create(path));
+        Mockito.when(uriInfo.getBaseUriBuilder()).thenReturn(UriBuilder.fromPath(path));
+        Mockito.when(uriInfo.getRequestUriBuilder()).thenReturn(UriBuilder.fromUri(absolutePathUri));
+
+        return uriInfo;
     }
 }

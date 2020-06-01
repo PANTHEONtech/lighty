@@ -46,7 +46,7 @@ public class SerializeIdentifierCodec {
         final List<String> pathArgs = Arrays.asList(data.split("/"));
         final String[] first = pathArgs.get(0).split(":");
         final String moduleName = first[0];
-        final Optional<Module> module = this.schemaContext.findModule(moduleName);
+        final Optional<? extends Module> module = this.schemaContext.findModule(moduleName);
         if (! module.isPresent()) {
             throw new IllegalStateException("Module with name" + moduleName + " not found");
         }

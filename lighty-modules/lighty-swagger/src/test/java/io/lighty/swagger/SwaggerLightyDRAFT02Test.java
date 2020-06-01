@@ -9,9 +9,13 @@
 package io.lighty.swagger;
 
 import io.lighty.modules.northbound.restconf.community.impl.config.JsonRestConfServiceType;
+import org.opendaylight.restconf.common.util.SimpleUriInfo;
 import org.testng.annotations.Test;
 
 public class SwaggerLightyDRAFT02Test extends SwaggerLightyTest {
+
+    private final String SWAGGER2_BASE_URI = "http://localhost:8888/apidoc/swagger2/apis";
+    private final String OPENAPI3_BASE_URI = "http://localhost:8888/apidoc/openapi3/apis";
 
     protected SwaggerLightyDRAFT02Test() {
         super(JsonRestConfServiceType.DRAFT_02);
@@ -23,22 +27,44 @@ public class SwaggerLightyDRAFT02Test extends SwaggerLightyTest {
     }
 
     @Test
-    public void testGetListOfMounts() {
-        super.testGetListOfMounts();
+    public void testGetListOfMountsSwagger2() {
+        super.testGetListOfMounts(new SimpleUriInfo(SWAGGER2_BASE_URI + "/mounts"));
     }
 
     @Test
-    public void testGetRootDoc() {
-        super.testGetRootDoc();
+    public void testGetListOfMountsOpenApi3() {
+        super.testGetListOfMounts(new SimpleUriInfo(OPENAPI3_BASE_URI + "/mounts"));
     }
 
     @Test
-    public void testGetDocByModule() {
-        super.testGetDocByModule();
+    public void testGetAllModulesDocSwagger2() {
+        super.testGetAllModulesDoc(mockUriInfo(SWAGGER2_BASE_URI + "/single"));
     }
 
     @Test
-    public void testGetApiExplorer() {
-        super.testGetApiExplorer();
+    public void testGetAllModulesDocOpenApi3() {
+        super.testGetAllModulesDoc(mockUriInfo(OPENAPI3_BASE_URI + "/single"));
+    }
+
+    @Test
+    public void testGetDocByModuleSwagger2() {
+        String path = SWAGGER2_BASE_URI + "/" + DEFAULT_MODEL_NAME + "(" + DEFAULT_REVISION_DATE + ")";
+        super.testGetDocByModule(mockUriInfo(path), DEFAULT_MODEL_NAME, DEFAULT_REVISION_DATE);
+    }
+
+    @Test
+    public void testGetDocByModuleOpenApi3() {
+        String path = OPENAPI3_BASE_URI + "/" + DEFAULT_MODEL_NAME + "(" + DEFAULT_REVISION_DATE + ")";
+        super.testGetDocByModule(mockUriInfo(path), DEFAULT_MODEL_NAME, DEFAULT_REVISION_DATE);
+    }
+
+    @Test
+    public void testGetApiExplorerSwagger2() {
+        super.testGetApiExplorer(new SimpleUriInfo(SWAGGER2_BASE_URI + "/ui"));
+    }
+
+    @Test
+    public void testGetApiExplorerOpenApi3() {
+        super.testGetApiExplorer(new SimpleUriInfo(OPENAPI3_BASE_URI + "/ui"));
     }
 }

@@ -16,8 +16,6 @@ import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterfa
 import org.opendaylight.controller.cluster.sharding.DistributedShardFactory;
 import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
 import org.opendaylight.controller.config.threadpool.ThreadPool;
-import org.opendaylight.controller.sal.binding.api.NotificationProviderService;
-import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
@@ -28,7 +26,7 @@ import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
+import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
@@ -49,6 +47,7 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
+import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
 
 /**
  * This interface provides methods to access ODL core services
@@ -84,6 +83,8 @@ public interface LightyServices extends LightyModuleRegistryService {
 
     DistributedShardFactory getDistributedShardFactory();
 
+    YangParserFactory getYangParserFactory();
+
     BindingNormalizedNodeSerializer getBindingNormalizedNodeSerializer();
 
     BindingCodecTreeFactory getBindingCodecTreeFactory();
@@ -104,7 +105,7 @@ public interface LightyServices extends LightyModuleRegistryService {
 
     ThreadPool getThreadPool();
 
-    ScheduledThreadPool getScheduledThreaPool();
+    ScheduledThreadPool getScheduledThreadPool();
 
     Timer getTimer();
 
@@ -122,7 +123,7 @@ public interface LightyServices extends LightyModuleRegistryService {
 
     DOMActionService getDOMActionService();
 
-    DOMActionProviderService getDOMActionProviderSerice();
+    DOMActionProviderService getDOMActionProviderService();
 
     RpcProviderService getRpcProviderService();
 
@@ -140,54 +141,6 @@ public interface LightyServices extends LightyModuleRegistryService {
 
     CacheProvider getCacheProvider();
 
-    @Deprecated
-    BindingToNormalizedNodeCodec getNormalizedNodeCodec();
+    AdapterContext getAdapterContext();
 
-    @Deprecated
-    NotificationProviderService getControllerNotificationProviderService();
-
-    @Deprecated
-    org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry
-        getControllerDOMNotificationSubscriptionListenerRegistry();
-
-    @Deprecated
-    org.opendaylight.controller.md.sal.dom.api.DOMMountPointService getControllerDOMMountPointService();
-
-    @Deprecated
-    org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService
-        getControllerDOMNotificationPublishService();
-
-    @Deprecated
-    org.opendaylight.controller.md.sal.dom.api.DOMNotificationService getControllerDOMNotificationService();
-
-    @Deprecated
-    org.opendaylight.controller.md.sal.dom.api.DOMDataBroker getControllerClusteredDOMDataBroker();
-
-    @Deprecated
-    org.opendaylight.controller.md.sal.dom.api.DOMDataBroker getControllerPingPongDataBroker();
-
-    @Deprecated
-    org.opendaylight.controller.md.sal.dom.api.DOMRpcService getControllerDOMRpcService();
-
-    @Deprecated
-    org.opendaylight.controller.md.sal.dom.api.DOMRpcProviderService getControllerDOMRpcProviderService();
-
-    @Deprecated
-    RpcProviderRegistry getControllerRpcProviderRegistry();
-
-    @Deprecated
-    org.opendaylight.controller.md.sal.binding.api.MountPointService getControllerBindingMountPointService();
-
-    @Deprecated
-    org.opendaylight.controller.md.sal.binding.api.NotificationService getControllerBindingNotificationService();
-
-    @Deprecated
-    org.opendaylight.controller.md.sal.binding.api.DataBroker getControllerBindingDataBroker();
-
-    @Deprecated
-    org.opendaylight.controller.md.sal.binding.api.DataBroker getControllerBindingPingPongDataBroker();
-
-    @Deprecated
-    org.opendaylight.controller.md.sal.binding.api.NotificationPublishService
-        getControllerBindingNotificationPublishService();
 }

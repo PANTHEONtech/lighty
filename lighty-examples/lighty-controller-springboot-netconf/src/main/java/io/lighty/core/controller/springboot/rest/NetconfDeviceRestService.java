@@ -84,7 +84,7 @@ public class NetconfDeviceRestService {
             final List<NetconfDeviceResponse> response = new ArrayList<>();
 
             if (netconfTopoOptional.isPresent() && netconfTopoOptional.get().getNode() != null) {
-                for (Node node : netconfTopoOptional.get().getNode()) {
+                for (Node node : netconfTopoOptional.get().getNode().values()) {
                     NetconfDeviceResponse nodeResponse = NetconfDeviceResponse.from(node);
 
                     final Optional<MountPoint> netconfMountPoint =

@@ -7,14 +7,11 @@
  */
 package io.lighty.core.controller.impl.tests;
 
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
@@ -67,16 +64,6 @@ final class TestUtils {
         writeTransaction.commit().get();
     }
 
-    static void writeToTopology(final org.opendaylight.controller.md.sal.binding.api.DataBroker bindingDataBroker,
-            final InstanceIdentifier<Topology> topologyInstanceIdentifier, final Topology topology)
-                    throws ExecutionException, InterruptedException {
-        final org.opendaylight.controller.md.sal.binding.api.WriteTransaction writeTransaction = bindingDataBroker
-                .newWriteOnlyTransaction();
-        writeTransaction.put(org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL,
-                topologyInstanceIdentifier, topology);
-        writeTransaction.submit().get();
-    }
-
     static void readFromTopology(final DataBroker bindingDataBroker, final String testTopoId,
             final int expectedCount) throws InterruptedException, ExecutionException, TimeoutException {
         final ReadTransaction readOnlyTransaction = bindingDataBroker.newReadOnlyTransaction();
@@ -89,7 +76,7 @@ final class TestUtils {
         final Optional<NetworkTopology> networkTopologyOptional = upcommingRead.get(40, TimeUnit.MILLISECONDS);
         final long count;
         if (networkTopologyOptional.isPresent()) {
-            count = networkTopologyOptional.get().nonnullTopology().stream()
+            count = networkTopologyOptional.get().nonnullTopology().values().stream()
                     .filter(t -> testTopoId.equals(t.getTopologyId().getValue())).count();
         } else {
             count = 0;
@@ -97,28 +84,4 @@ final class TestUtils {
         Assert.assertEquals(count, expectedCount);
     }
 
-    static void readFromTopology(final org.opendaylight.controller.md.sal.binding.api.DataBroker bindingDataBroker,
-            final String testTopoId, final int expectedCount)
-                    throws InterruptedException, ExecutionException, TimeoutException {
-        final ReadOnlyTransaction readOnlyTransaction = bindingDataBroker.newReadOnlyTransaction();
-
-        final InstanceIdentifier<NetworkTopology> networkTopologyInstanceIdentifier = InstanceIdentifier.builder(
-                NetworkTopology.class).build();
-
-        final CheckedFuture<com.google.common.base.Optional<NetworkTopology>, ReadFailedException> upcommingRead =
-                readOnlyTransaction.read(
-                        org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL,
-                        networkTopologyInstanceIdentifier);
-        final com.google.common.base.Optional<NetworkTopology> networkTopologyOptional = upcommingRead.get(40,
-                TimeUnit.MILLISECONDS);
-        final long count;
-        if (networkTopologyOptional.isPresent()) {
-            count = networkTopologyOptional.get().nonnullTopology().stream()
-                    .filter(t -> testTopoId.equals(t.getTopologyId().getValue())).count();
-        } else {
-            count = 0;
-        }
-
-        Assert.assertEquals(count, expectedCount);
-    }
 }

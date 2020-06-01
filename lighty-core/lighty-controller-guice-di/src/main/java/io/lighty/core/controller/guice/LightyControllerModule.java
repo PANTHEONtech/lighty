@@ -19,8 +19,6 @@ import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterfa
 import org.opendaylight.controller.cluster.sharding.DistributedShardFactory;
 import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
 import org.opendaylight.controller.config.threadpool.ThreadPool;
-import org.opendaylight.controller.sal.binding.api.NotificationProviderService;
-import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -113,7 +111,7 @@ public class LightyControllerModule extends AbstractModule {
         bind(ThreadPool.class)
                 .toInstance(lightyServices.getThreadPool());
         bind(ScheduledThreadPool.class)
-                .toInstance(lightyServices.getScheduledThreaPool());
+                .toInstance(lightyServices.getScheduledThreadPool());
         bind(Timer.class)
                 .toInstance(lightyServices.getTimer());
         bind(DOMMountPointService.class)
@@ -144,41 +142,6 @@ public class LightyControllerModule extends AbstractModule {
                 .toInstance(lightyServices);
         bind(LightyModuleRegistryService.class)
                 .toInstance(lightyServices);
-        // Deprecated services
-        bind(NotificationProviderService.class)
-                .toInstance(lightyServices.getControllerNotificationProviderService());
-        bind(org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry.class)
-                .toInstance(lightyServices.getControllerDOMNotificationSubscriptionListenerRegistry());
-        bind(org.opendaylight.controller.md.sal.dom.api.DOMMountPointService.class)
-                .toInstance(lightyServices.getControllerDOMMountPointService());
-        bind(org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService.class)
-                .toInstance(lightyServices.getControllerDOMNotificationPublishService());
-        bind(org.opendaylight.controller.md.sal.dom.api.DOMNotificationService.class)
-                .toInstance(lightyServices.getControllerDOMNotificationService());
-        bind(org.opendaylight.controller.md.sal.dom.api.DOMDataBroker.class)
-                .annotatedWith(Names.named("ControllerClusteredDOMDataBroker"))
-                .toInstance(lightyServices.getControllerClusteredDOMDataBroker());
-        bind(org.opendaylight.controller.md.sal.dom.api.DOMDataBroker.class)
-                .annotatedWith(Names.named("ControllerPingPongDOMDataBroker"))
-                .toInstance(lightyServices.getControllerPingPongDataBroker());
-        bind(org.opendaylight.controller.md.sal.dom.api.DOMRpcService.class)
-                .toInstance(lightyServices.getControllerDOMRpcService());
-        bind(org.opendaylight.controller.md.sal.dom.api.DOMRpcProviderService.class)
-                .toInstance(lightyServices.getControllerDOMRpcProviderService());
-        bind(RpcProviderRegistry.class)
-                .toInstance(lightyServices.getControllerRpcProviderRegistry());
-        bind(org.opendaylight.controller.md.sal.binding.api.MountPointService.class)
-                .toInstance(lightyServices.getControllerBindingMountPointService());
-        bind(org.opendaylight.controller.sal.binding.api.NotificationService.class)
-                .toInstance(lightyServices.getControllerNotificationProviderService());
-        bind(org.opendaylight.controller.md.sal.binding.api.DataBroker.class)
-                .annotatedWith(Names.named("ControllerBindingDataBroker"))
-                .toInstance(lightyServices.getControllerBindingDataBroker());
-        bind(org.opendaylight.controller.md.sal.binding.api.DataBroker.class)
-                .annotatedWith(Names.named("ControllerBindingPingPongDataBroker"))
-                .toInstance(lightyServices.getControllerBindingPingPongDataBroker());
-        bind(org.opendaylight.controller.md.sal.binding.api.NotificationPublishService.class)
-                .toInstance(lightyServices.getControllerBindingNotificationPublishService());
         LOG.info("Lighty bindings initialized.");
     }
 

@@ -19,8 +19,10 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.opendaylight.netconf.sal.rest.doc.api.ApiDocService;
+import org.opendaylight.netconf.sal.rest.doc.impl.AllModulesDocGenerator;
 import org.opendaylight.netconf.sal.rest.doc.impl.ApiDocGeneratorDraftO2;
 import org.opendaylight.netconf.sal.rest.doc.impl.ApiDocGeneratorRFC8040;
+import org.opendaylight.netconf.sal.rest.doc.impl.ApiDocServiceImpl;
 import org.opendaylight.netconf.sal.rest.doc.impl.MountPointSwaggerGeneratorDraft02;
 import org.opendaylight.netconf.sal.rest.doc.impl.MountPointSwaggerGeneratorRFC8040;
 import org.opendaylight.netconf.sal.rest.doc.jaxrs.ApiDocApplication;
@@ -62,44 +64,33 @@ public class SwaggerLighty extends AbstractLightyModule {
         String basePathString = restConfConfiguration.getRestconfServletContextPath().replaceAll("^/+", "");
         LOG.info("basePath: {}", basePathString);
 
-        switch (restConfConfiguration.getJsonRestconfServiceType()) {
-            case DRAFT_02: {
-                mountPointSwaggerGeneratorDraft02 =
-                        new MountPointSwaggerGeneratorDraft02(lightyServices.getDOMSchemaService(), lightyServices.getDOMMountPointService(), basePathString);
-                ApiDocGeneratorDraftO2 apiDocGeneratorDraft02 = new ApiDocGeneratorDraftO2(lightyServices.getDOMSchemaService(), basePathString);
-                apiDocService = new ApiDocServiceDraft02(mountPointSwaggerGeneratorDraft02, apiDocGeneratorDraft02);
-                ApiDocApplication apiDocApplication = new ApiDocApplication(apiDocService);
+        this.mountPointSwaggerGeneratorDraft02 = new MountPointSwaggerGeneratorDraft02(
+                lightyServices.getDOMSchemaService(), lightyServices.getDOMMountPointService(), basePathString);
+        this.mountPointSwaggerGeneratorRFC8040 = new MountPointSwaggerGeneratorRFC8040(
+                lightyServices.getDOMSchemaService(), lightyServices.getDOMMountPointService(),basePathString);
 
-                ServletContainer restServletContainer = new ServletContainer(ResourceConfig.forApplication(apiDocApplication));
-                ServletHolder restServletHolder = new ServletHolder(restServletContainer);
+        ApiDocGeneratorDraftO2 apiDocGeneratorDraftO2 = new ApiDocGeneratorDraftO2(
+                lightyServices.getDOMSchemaService(), basePathString);
+        ApiDocGeneratorRFC8040 apiDocGeneratorRFC8040 = new ApiDocGeneratorRFC8040(
+                lightyServices.getDOMSchemaService(), basePathString);
+        AllModulesDocGenerator allModulesDocGenerator =
+                new AllModulesDocGenerator(apiDocGeneratorDraftO2, apiDocGeneratorRFC8040);
 
-                LOG.info("initializing swagger doc generator at http(s)://{hostname:port}{}/apis", APIDOC_PATH);
-                mainHandler.addServlet(restServletHolder, "/apis/*");
+        this.apiDocService = new ApiDocServiceImpl(mountPointSwaggerGeneratorDraft02, mountPointSwaggerGeneratorRFC8040,
+                apiDocGeneratorDraftO2, apiDocGeneratorRFC8040, allModulesDocGenerator);
 
-                addStaticResources(mainHandler, "/explorer", "static-content-02");
-                break;
-            }
-            case DRAFT_18: {
-                mountPointSwaggerGeneratorRFC8040 =
-                        new MountPointSwaggerGeneratorRFC8040(lightyServices.getDOMSchemaService(), lightyServices.getDOMMountPointService(),basePathString);
-                ApiDocGeneratorRFC8040 apiDocGeneratorRFC8040 = new ApiDocGeneratorRFC8040(lightyServices.getDOMSchemaService(), basePathString);
-                apiDocService = new ApiDocServiceRFC8040(mountPointSwaggerGeneratorRFC8040, apiDocGeneratorRFC8040);
-                ApiDocApplication apiDocApplication = new ApiDocApplication(apiDocService);
+        ApiDocApplication apiDocApplication = new ApiDocApplication(apiDocService);
 
-                ServletContainer restServletContainer = new ServletContainer(ResourceConfig.forApplication(apiDocApplication));
-                ServletHolder restServletHolder = new ServletHolder(restServletContainer);
+        ServletContainer restServletContainer = new ServletContainer(ResourceConfig.forApplication(apiDocApplication));
+        ServletHolder restServletHolder = new ServletHolder(restServletContainer);
 
-                LOG.info("initializing swagger doc generator at http(s)://{hostname:port}{}/18/apis", APIDOC_PATH);
-                mainHandler.addServlet(restServletHolder, "/18/apis/*");
+        mainHandler.addServlet(restServletHolder, "/swagger2/apis/*");
+        mainHandler.addServlet(restServletHolder, "/openapi3/apis/*");
+        mainHandler.addServlet(restServletHolder, "/swagger2/18/apis/*");
+        mainHandler.addServlet(restServletHolder, "/openapi3/18/apis/*");
 
-                addStaticResources(mainHandler, "/18/explorer", "static-content-18");
-                addStaticResources(mainHandler, "/explorer", "static-content-02");
-                break;
-            }
-            default:
-                throw new UnsupportedOperationException("Unsupported restconf service type: "
-                        + restConfConfiguration.getJsonRestconfServiceType());
-        }
+        addStaticResources(mainHandler, "/explorer", "static-content");
+
         LOG.info("adding context handler ...");
         jettyServerBuilder.addContextHandler(contexts);
         return true;
@@ -118,7 +109,7 @@ public class SwaggerLighty extends AbstractLightyModule {
     }
 
     private void addStaticResources(ServletContextHandler mainHandler, String path, String servletName) {
-        LOG.info("initializing swagger UI at: http(s)://{hostname:port}{}/{}index.html", APIDOC_PATH, path);
+        LOG.info("initializing swagger UI at: http(s)://{hostname:port}{}{}/index.html", APIDOC_PATH, path);
         String externalResource = SwaggerLighty.class.getResource(path).toExternalForm();
         LOG.info("externalResource: {}", externalResource);
         DefaultServlet defaultServlet = new DefaultServlet();

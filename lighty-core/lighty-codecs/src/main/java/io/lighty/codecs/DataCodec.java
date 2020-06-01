@@ -7,8 +7,6 @@
  */
 package io.lighty.codecs;
 
-import static java.util.Objects.requireNonNull;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import io.lighty.codecs.api.Codec;
@@ -25,9 +23,9 @@ import java.util.Optional;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.dom.DOMSource;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
-import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
-import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
+import org.opendaylight.mdsal.binding.dom.adapter.ConstantAdapterContext;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.restconf.common.errors.RestconfDocumentedException;
 import org.opendaylight.yangtools.rfc8040.model.api.YangDataSchemaNode;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
@@ -47,8 +45,8 @@ import org.opendaylight.yangtools.yang.data.codec.xml.XmlParserStream;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.w3c.dom.Document;
@@ -64,24 +62,23 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
         XML_FACTORY.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
     }
 
-    private final BindingToNormalizedNodeCodec codec;
+    private final BindingNormalizedNodeSerializer codec;
     private final DeserializeIdentifierCodec deserializeIdentifierCodec;
     private final SerializeIdentifierCodec serializeIdentifierCodec;
     private final JsonNodeConverter jsonNodeConverter;
     private final XmlNodeConverter xmlNodeConverter;
-    private final SchemaContext schemaContext;
+    private final EffectiveModelContext effectiveModelContext;
 
-    public DataCodec(final SchemaContext schemaContext) {
-        this.schemaContext = requireNonNull(schemaContext);
-        final BindingNormalizedNodeCodecRegistry registry = new BindingNormalizedNodeCodecRegistry();
-        this.codec = new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
-            registry);
-        this.codec.onGlobalContextUpdated(schemaContext);
+    public DataCodec(final BindingDOMCodecServices codecServices) {
+        final ConstantAdapterContext constantAdapterContext = new ConstantAdapterContext(codecServices);
+        this.codec = constantAdapterContext.currentSerializer();
 
-        this.deserializeIdentifierCodec = new DeserializeIdentifierCodec(schemaContext);
-        this.serializeIdentifierCodec = new SerializeIdentifierCodec(schemaContext);
-        this.xmlNodeConverter = new XmlNodeConverter(this.schemaContext);
-        this.jsonNodeConverter = new JsonNodeConverter(this.schemaContext);
+        effectiveModelContext = codecServices.getRuntimeContext().getEffectiveModelContext();
+
+        this.deserializeIdentifierCodec = new DeserializeIdentifierCodec(this.effectiveModelContext);
+        this.serializeIdentifierCodec = new SerializeIdentifierCodec(this.effectiveModelContext);
+        this.xmlNodeConverter = new XmlNodeConverter(this.effectiveModelContext);
+        this.jsonNodeConverter = new JsonNodeConverter(this.effectiveModelContext);
     }
 
     @SuppressWarnings("unchecked")
@@ -102,7 +99,7 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
 
     @Override
     public YangInstanceIdentifier deserializeIdentifier(final InstanceIdentifier<T> identifier) {
-        return this.codec.toNormalized(identifier);
+        return this.codec.toYangInstanceIdentifier(identifier);
     }
 
     @Override
@@ -146,12 +143,13 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
     @Override
     public NormalizedNode<?, ?> serializeXMLError(final String body) {
         final Optional<Revision> restconfRevision = Revision.ofNullable("2017-01-26");
-        final Optional<Module> optModule = this.schemaContext.findModule("ietf-restconf", restconfRevision);
+        final Optional<? extends Module> optModule =
+                this.effectiveModelContext.findModule("ietf-restconf", restconfRevision);
         if (!optModule.isPresent()) {
             throw new IllegalStateException("ietf-restconf module was not found in schema context.");
         }
         final Module restconfModule = optModule.get();
-        final List<UnknownSchemaNode> unknownSchemaNodes = restconfModule.getUnknownSchemaNodes();
+        final Collection<? extends UnknownSchemaNode> unknownSchemaNodes = restconfModule.getUnknownSchemaNodes();
         final QNameModule qNameRestconfModule = QNameModule
                 .create(URI.create("urn:ietf:params:xml:ns:yang:ietf-restconf"), restconfRevision);
         final QName yangDataYangErrors = QName.create(qNameRestconfModule, "yang-errors");
@@ -165,7 +163,7 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
         final NormalizedNodeResult resultHolder = new NormalizedNodeResult();
         final NormalizedNodeStreamWriter writer = ImmutableNormalizedNodeStreamWriter.from(resultHolder);
 
-        try (XmlParserStream xmlParser = XmlParserStream.create(writer, this.schemaContext, schemaNode)) {
+        try (XmlParserStream xmlParser = XmlParserStream.create(writer, this.effectiveModelContext, schemaNode)) {
             final Document doc = XmlUtil.readXmlToDocument(body);
             final XmlElement element = XmlElement.fromDomDocument(doc);
             final Element domElement = element.getDomElement();
@@ -177,13 +175,13 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
     }
 
     @Override
-    public BindingToNormalizedNodeCodec getCodec() {
+    public BindingNormalizedNodeSerializer getCodec() {
         return this.codec;
     }
 
     @Override
-    public SchemaContext getSchemaContext() {
-        return this.schemaContext;
+    public EffectiveModelContext getEffectiveModelContext() {
+        return this.effectiveModelContext;
     }
 
     @Override

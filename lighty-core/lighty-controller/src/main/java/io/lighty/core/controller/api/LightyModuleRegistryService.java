@@ -7,6 +7,7 @@
  */
 package io.lighty.core.controller.api;
 
+import java.util.List;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 
@@ -17,7 +18,7 @@ import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
  */
 public interface LightyModuleRegistryService {
     /**
-     * Register an instance of Yang module into global schema context.
+     * Register instances of Yang modules into global schema context.
      */
-    ObjectRegistration<YangModuleInfo> registerModuleInfo(YangModuleInfo yangModuleInfo);
+    List<ObjectRegistration<YangModuleInfo>> registerModuleInfos(Iterable<? extends YangModuleInfo> yangModuleInfos);
 }

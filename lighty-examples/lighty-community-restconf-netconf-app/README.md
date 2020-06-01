@@ -37,13 +37,9 @@ RESTCONF web interface is available at URL ```http://localhost:8888/restconf/*``
 ##### Swagger UI
 This application example has active [Swagger](https://swagger.io/) UI for RESTCONF.
 
-URLs for Swagger RESTCONF [draft18](https://tools.ietf.org/html/draft-ietf-netconf-restconf-18) implementation (enabled by default):
-* __Swagger APIs__ ``http://localhost:8888/apidoc/18/apis`` 
-* __Swagger UI__ ``http://localhost:8888/apidoc/18/explorer/index.html`` 
-
-URLs for Swagger RESTCONF [draft02](https://tools.ietf.org/html/draft-bierman-netconf-restconf-02) implementation:
-* __Swagger APIs__ ``http://localhost:8888/apidoc/apis`` 
-* __Swagger UI__ ``http://localhost:8888/apidoc/explorer/index.html`` 
+URLs for Swagger (choose RESTCONF [draft18](https://tools.ietf.org/html/draft-ietf-netconf-restconf-18) or
+[draft02](https://tools.ietf.org/html/draft-bierman-netconf-restconf-02) in upper right corner):
+* __Swagger UI__ ``http://localhost:8888/apidoc/18/explorer/index.html``
 
 ### Use custom config files
 There are two separated config files: for NETCONF SBP single node and for cluster.

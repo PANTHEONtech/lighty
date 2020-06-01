@@ -17,10 +17,14 @@ import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.netconf.client.NetconfClientDispatcher;
+import org.opendaylight.netconf.sal.connect.api.SchemaResourceManager;
+import org.opendaylight.netconf.sal.connect.impl.DefaultSchemaResourceManager;
+import org.opendaylight.netconf.sal.connect.netconf.schema.mapping.DefaultBaseNetconfSchemas;
 import org.opendaylight.netconf.topology.singleton.impl.NetconfTopologyManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.topology.singleton.config.rev170419.Config;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.topology.singleton.config.rev170419.ConfigBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 public class NetconfClusteredTopologyPlugin extends AbstractLightyModule implements NetconfSBPlugin {
@@ -34,13 +38,18 @@ public class NetconfClusteredTopologyPlugin extends AbstractLightyModule impleme
         super(executorService);
         this.domMountPointService = lightyServices.getDOMMountPointService();
         final Config config = new ConfigBuilder()
-                .setWriteTransactionIdleTimeout(writeTxIdleTimeout)
+                .setWriteTransactionIdleTimeout(Uint16.valueOf(writeTxIdleTimeout))
                 .build();
-        this.topology = new NetconfTopologyManager(lightyServices.getBindingDataBroker(),
+        final DefaultBaseNetconfSchemas defaultBaseNetconfSchemas =
+                new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
+        final SchemaResourceManager schemaResourceManager =
+                new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
+        this.topology = new NetconfTopologyManager(defaultBaseNetconfSchemas, lightyServices.getBindingDataBroker(),
             lightyServices.getDOMRpcProviderService(), null, lightyServices.getClusterSingletonServiceProvider(),
-            lightyServices.getScheduledThreaPool(), lightyServices.getThreadPool(),
+            lightyServices.getScheduledThreadPool(), lightyServices.getThreadPool(),
             lightyServices.getActorSystemProvider(), lightyServices.getEventExecutor(), clientDispatcher,
-            topologyId, config, lightyServices.getDOMMountPointService(), encryptionService, null);
+            topologyId, config, lightyServices.getDOMMountPointService(), encryptionService, null,
+                schemaResourceManager);
     }
 
     @Override

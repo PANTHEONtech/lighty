@@ -35,6 +35,7 @@ public class LightyControllerTest extends LightyControllerTestBase {
         Assert.assertNotNull(lightyController.getServices().getDOMDataTreeService());
         Assert.assertNotNull(lightyController.getServices().getDistributedShardFactory());
         Assert.assertNotNull(lightyController.getServices().getDistributedShardFactory());
+        Assert.assertNotNull(lightyController.getServices().getYangParserFactory());
         Assert.assertNotNull(lightyController.getServices().getBindingNormalizedNodeSerializer());
         Assert.assertNotNull(lightyController.getServices().getBindingCodecTreeFactory());
         Assert.assertNotNull(lightyController.getServices().getDOMEntityOwnershipService());
@@ -45,7 +46,7 @@ public class LightyControllerTest extends LightyControllerTestBase {
         Assert.assertNotNull(lightyController.getServices().getBossGroup());
         Assert.assertNotNull(lightyController.getServices().getWorkerGroup());
         Assert.assertNotNull(lightyController.getServices().getThreadPool());
-        Assert.assertNotNull(lightyController.getServices().getScheduledThreaPool());
+        Assert.assertNotNull(lightyController.getServices().getScheduledThreadPool());
         Assert.assertNotNull(lightyController.getServices().getTimer());
         Assert.assertNotNull(lightyController.getServices().getDOMMountPointService());
         Assert.assertNotNull(lightyController.getServices().getDOMNotificationPublishService());
@@ -58,21 +59,6 @@ public class LightyControllerTest extends LightyControllerTestBase {
         Assert.assertNotNull(lightyController.getServices().getNotificationService());
         Assert.assertNotNull(lightyController.getServices().getBindingNotificationPublishService());
         Assert.assertNotNull(lightyController.getServices().getBindingDataBroker());
-        // Test deprecated services
-        Assert.assertNotNull(lightyController.getServices().getControllerNotificationProviderService());
-        Assert.assertNotNull(lightyController.getServices().getControllerDOMNotificationSubscriptionListenerRegistry());
-        Assert.assertNotNull(lightyController.getServices().getControllerDOMMountPointService());
-        Assert.assertNotNull(lightyController.getServices().getControllerDOMNotificationPublishService());
-        Assert.assertNotNull(lightyController.getServices().getControllerDOMNotificationService());
-        Assert.assertNotNull(lightyController.getServices().getControllerClusteredDOMDataBroker());
-        Assert.assertNotNull(lightyController.getServices().getControllerPingPongDataBroker());
-        Assert.assertNotNull(lightyController.getServices().getControllerDOMRpcService());
-        Assert.assertNotNull(lightyController.getServices().getControllerDOMRpcProviderService());
-        Assert.assertNotNull(lightyController.getServices().getControllerRpcProviderRegistry());
-        Assert.assertNotNull(lightyController.getServices().getControllerBindingMountPointService());
-        Assert.assertNotNull(lightyController.getServices().getControllerBindingNotificationService());
-        Assert.assertNotNull(lightyController.getServices().getControllerBindingDataBroker());
-        Assert.assertNotNull(lightyController.getServices().getControllerBindingPingPongDataBroker());
-        Assert.assertNotNull(lightyController.getServices().getControllerBindingNotificationPublishService());
+        Assert.assertNotNull(lightyController.getServices().getAdapterContext());
     }
 }
