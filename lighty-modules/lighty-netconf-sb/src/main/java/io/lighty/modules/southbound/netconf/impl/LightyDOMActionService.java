@@ -76,7 +76,7 @@ public final class LightyDOMActionService implements DOMActionService {
         return MutableClassToInstanceMap.create();
     }
 
-    private final class ActionRpcError implements RpcError {
+    private static final class ActionRpcError implements RpcError {
 
         private final Throwable t;
 
