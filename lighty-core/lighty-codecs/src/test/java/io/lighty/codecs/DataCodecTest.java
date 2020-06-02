@@ -7,7 +7,16 @@
  */
 package io.lighty.codecs;
 
+import static org.junit.Assert.fail;
+
 import io.lighty.codecs.api.ConverterUtils;
+import java.awt.Container;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map.Entry;
+import java.util.Optional;
+import javax.xml.stream.XMLStreamException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.MakeToastInput;
@@ -27,16 +36,6 @@ import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-
-import javax.xml.stream.XMLStreamException;
-import java.awt.Container;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map.Entry;
-import java.util.Optional;
-
-import static org.junit.Assert.fail;
 
 /**
  * Basic tests for {@link DataCodec} class
@@ -159,6 +158,8 @@ public class DataCodecTest extends AbstractCodecTest {
         DataCodec<SampleList> codec = new DataCodec<>(this.schemaContext);
         SampleList convertToBindingAwareData = codec.convertToBindingAwareData(
                 YangInstanceIdentifier.of(SampleList.QNAME), testedSampleListNormalizedNodes);
+
+        Assert.assertNotNull(convertToBindingAwareData);
         Assert.assertNotNull(convertToBindingAwareData.key());
     }
 
