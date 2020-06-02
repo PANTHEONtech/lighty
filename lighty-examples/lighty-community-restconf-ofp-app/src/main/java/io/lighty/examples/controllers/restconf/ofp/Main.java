@@ -10,13 +10,13 @@ import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
+import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
+import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
+import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import io.lighty.modules.southbound.openflow.impl.OpenflowSouthboundPlugin;
 import io.lighty.modules.southbound.openflow.impl.OpenflowSouthboundPluginBuilder;
 import io.lighty.modules.southbound.openflow.impl.config.OpenflowpluginConfiguration;
 import io.lighty.modules.southbound.openflow.impl.util.OpenflowConfigUtils;
-import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
-import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
-import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -116,19 +116,20 @@ public class Main {
         ListenableFuture<Boolean> start = plugin.start();
 
         //Set SystemReadyMonitor listeners to active state
-        Futures.addCallback(start,new FutureCallback<Boolean>() {
+        Futures.addCallback(start, new FutureCallback<>() {
             @Override
             public void onSuccess(Boolean result) {
-                if (result) {
+                if (result != null && result) {
                     lightyController.getServices().getLightySystemReadyService().onSystemBootReady();
                 } else {
                     LOG.error("OFP wasn unable to start correctly");
                     throw new RuntimeException("Unexcepted result of OFP initialization");
                 }
             }
+
             @Override
             public void onFailure(Throwable t) {
-                LOG.error("Exception while initializing OFP",t);
+                LOG.error("Exception while initializing OFP", t);
             }
         }, Executors.newSingleThreadExecutor());
 
