@@ -116,7 +116,7 @@ public class Main {
         ListenableFuture<Boolean> start = plugin.start();
 
         //Set SystemReadyMonitor listeners to active state
-        Futures.addCallback(start, new FutureCallback<>() {
+        Futures.addCallback(start, new FutureCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean result) {
                 if (result != null && result) {
