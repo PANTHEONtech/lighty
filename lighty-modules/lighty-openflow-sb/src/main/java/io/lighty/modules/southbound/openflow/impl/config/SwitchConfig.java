@@ -22,8 +22,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow._switch.connection.config.rev160506.SwitchConnectionConfigBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow._switch.connection.config.rev160506._switch.connection.config.TlsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow.provider.config.rev160510.OpenflowProviderConfig;
+import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint32;
 
 public class SwitchConfig {
+
     private static final String LEGACY_INSTANCE_NAME = "openflow-switch-connection-provider-legacy-impl";
     private static final int LEGACY_PORT = 6633;
 
@@ -35,73 +38,65 @@ public class SwitchConfig {
     private final SwitchConnectionConfig legacySwitch;
 
     private String instanceName;
-    private int port;
-    private int transportProtocol;
+    private int port = 0;
+    private int transportProtocol = 0;
     private String address;
-    private boolean useBarrier;
-    private Long switchIdleTimeout;
+    private boolean useBarrier = false;
+    private Long switchIdleTimeout = 0L;
     private String keystore;
-    private int keystoreType;
-    private int keystorePathType;
+    private int keystoreType = 0;
+    private int keystorePathType = 0;
     private String keystorePassword;
     private String truststore;
-    private int truststoreType;
-    private int truststorePathType;
+    private int truststoreType = 0;
+    private int truststorePathType = 0;
     private String truststorePassword;
     private String certificatePassword;
-    private int channelOutboundQueueSize;
+    private int channelOutboundQueueSize = 0;
 
     protected SwitchConfig() {
         this.defaultSwitch =
                 new SwitchConnectionConfigBuilder()
-                .setInstanceName(null)
-                .setPort(0)
-                .setTransportProtocol(TransportProtocol.forValue(0))
-                .setSwitchIdleTimeout(0L)
-                .setUseBarrier(false)
-                .setChannelOutboundQueueSize(0)
-                .setTls(
-                        new TlsBuilder()
-                        .setKeystore(null)
-                        .setKeystoreType(KeystoreType.forValue(0))
-                        .setKeystorePathType(PathType.forValue(0))
-                        .setKeystorePassword(null)
-                        .setTruststore(null)
-                        .setTruststoreType(KeystoreType.forValue(0))
-                        .setTruststorePathType(PathType.forValue(0))
-                        .setTruststorePassword(null)
-                        .setCertificatePassword(null)
-                        .build()
+                        .setPort(Uint16.valueOf(this.port))
+                        .setTransportProtocol(TransportProtocol.forValue(this.transportProtocol))
+                        .setSwitchIdleTimeout(Uint32.valueOf(this.switchIdleTimeout))
+                        .setUseBarrier(this.useBarrier)
+                        .setChannelOutboundQueueSize(Uint16.valueOf(this.channelOutboundQueueSize))
+                        .setTls(
+                                new TlsBuilder()
+                                        .setKeystoreType(KeystoreType.forValue(this.keystoreType))
+                                        .setKeystorePathType(PathType.forValue(this.keystorePathType))
+                                        .setTruststoreType(KeystoreType.forValue(this.truststoreType))
+                                        .setTruststorePathType(PathType.forValue(this.truststorePathType))
+                                        .build()
                         ).build();
         this.legacySwitch =
                 new SwitchConnectionConfigBuilder()
-                .setInstanceName(LEGACY_INSTANCE_NAME)
-                .setPort(LEGACY_PORT)
-                .setTransportProtocol(TransportProtocol.forValue(0))
-                .setSwitchIdleTimeout(0L)
-                .setUseBarrier(false)
-                .setChannelOutboundQueueSize(0)
-                .setTls(
-                        new TlsBuilder()
-                        .setKeystore(null)
-                        .setKeystoreType(KeystoreType.forValue(0))
-                        .setKeystorePathType(PathType.forValue(0))
-                        .setKeystorePassword(null)
-                        .setTruststore(null)
-                        .setTruststoreType(KeystoreType.forValue(0))
-                        .setTruststorePathType(PathType.forValue(0))
-                        .setTruststorePassword(null)
-                        .setCertificatePassword(null)
-                        .build()
+                        .setInstanceName(LEGACY_INSTANCE_NAME)
+                        .setPort(Uint16.valueOf(LEGACY_PORT))
+                        .setTransportProtocol(TransportProtocol.forValue(this.transportProtocol))
+                        .setSwitchIdleTimeout(Uint32.valueOf(this.switchIdleTimeout))
+                        .setUseBarrier(this.useBarrier)
+                        .setChannelOutboundQueueSize(Uint16.valueOf(this.channelOutboundQueueSize))
+                        .setTls(
+                                new TlsBuilder()
+                                        .setKeystoreType(KeystoreType.forValue(this.keystoreType))
+                                        .setKeystorePathType(PathType.forValue(this.keystorePathType))
+                                        .setTruststoreType(KeystoreType.forValue(this.truststoreType))
+                                        .setTruststorePathType(PathType.forValue(this.truststorePathType))
+                                        .build()
                         ).build();
     }
 
     public List<SwitchConnectionProvider> getDefaultProviders(DiagStatusService diagStatusService) {
         final List<SwitchConnectionProvider> switchConnectionProviderList = new ArrayList<>();
-        final OpenflowDiagStatusProviderImpl openflowDiagStatusProvider = new OpenflowDiagStatusProviderImpl(diagStatusService);
+        final OpenflowDiagStatusProviderImpl openflowDiagStatusProvider = new OpenflowDiagStatusProviderImpl(
+                diagStatusService);
 
-        switchConnectionProviderList.add(new SwitchConnectionProviderFactoryImpl().newInstance(this.defaultSwitch, openflowDiagStatusProvider));
-        switchConnectionProviderList.add(new SwitchConnectionProviderFactoryImpl().newInstance(this.legacySwitch, openflowDiagStatusProvider));
+        switchConnectionProviderList.add(new SwitchConnectionProviderFactoryImpl()
+                .newInstance(this.defaultSwitch, openflowDiagStatusProvider));
+        switchConnectionProviderList.add(new SwitchConnectionProviderFactoryImpl()
+                .newInstance(this.legacySwitch, openflowDiagStatusProvider));
         return switchConnectionProviderList;
     }
 
@@ -110,64 +105,71 @@ public class SwitchConfig {
 
         final SwitchConnectionConfig tmpDefaultSwitch =
                 new SwitchConnectionConfigBuilder()
-                .setInstanceName(this.instanceName)
-                .setPort(this.port)
-                .setTransportProtocol(TransportProtocol.forValue(this.transportProtocol))
-                .setSwitchIdleTimeout(this.switchIdleTimeout)
-                .setUseBarrier(this.useBarrier)
-                .setChannelOutboundQueueSize(this.channelOutboundQueueSize)
-                .setTls(
-                        new TlsBuilder()
-                        .setKeystore(this.keystore)
-                        .setKeystoreType(KeystoreType.forValue(this.keystoreType))
-                        .setKeystorePathType(PathType.forValue(this.keystorePathType))
-                        .setKeystorePassword(this.keystorePassword)
-                        .setTruststore(this.truststore)
-                        .setTruststoreType(KeystoreType.forValue(this.truststoreType))
-                        .setTruststorePathType(PathType.forValue(this.truststorePathType))
-                        .setTruststorePassword(this.truststorePassword)
-                        .setCertificatePassword(this.certificatePassword)
-                        .build()
+                        .setInstanceName(this.instanceName)
+                        .setPort(Uint16.valueOf(this.port))
+                        .setTransportProtocol(TransportProtocol.forValue(this.transportProtocol))
+                        .setSwitchIdleTimeout(Uint32.valueOf(this.switchIdleTimeout))
+                        .setUseBarrier(this.useBarrier)
+                        .setChannelOutboundQueueSize(Uint16.valueOf(this.channelOutboundQueueSize))
+                        .setTls(
+                                new TlsBuilder()
+                                        .setKeystore(this.keystore)
+                                        .setKeystoreType(KeystoreType.forValue(this.keystoreType))
+                                        .setKeystorePathType(PathType.forValue(this.keystorePathType))
+                                        .setKeystorePassword(this.keystorePassword)
+                                        .setTruststore(this.truststore)
+                                        .setTruststoreType(KeystoreType.forValue(this.truststoreType))
+                                        .setTruststorePathType(PathType.forValue(this.truststorePathType))
+                                        .setTruststorePassword(this.truststorePassword)
+                                        .setCertificatePassword(this.certificatePassword)
+                                        .build()
                         ).setGroupAddModEnabled(true).build();
 
         final SwitchConnectionConfig tmpLegacySwitch =
                 new SwitchConnectionConfigBuilder()
-                .setInstanceName(LEGACY_INSTANCE_NAME)
-                .setPort(LEGACY_PORT)
-                .setTransportProtocol(TransportProtocol.forValue(this.transportProtocol))
-                .setSwitchIdleTimeout(this.switchIdleTimeout)
-                .setUseBarrier(this.useBarrier)
-                .setChannelOutboundQueueSize(this.channelOutboundQueueSize)
-                .setTls(
-                        new TlsBuilder()
-                        .setKeystore(this.keystore)
-                        .setKeystoreType(KeystoreType.forValue(this.keystoreType))
-                        .setKeystorePathType(PathType.forValue(this.keystorePathType))
-                        .setKeystorePassword(this.keystorePassword)
-                        .setTruststore(this.truststore)
-                        .setTruststoreType(KeystoreType.forValue(this.truststoreType))
-                        .setTruststorePathType(PathType.forValue(this.truststorePathType))
-                        .setTruststorePassword(this.truststorePassword)
-                        .setCertificatePassword(this.certificatePassword)
-                        .build()
+                        .setInstanceName(LEGACY_INSTANCE_NAME)
+                        .setPort(Uint16.valueOf(LEGACY_PORT))
+                        .setTransportProtocol(TransportProtocol.forValue(this.transportProtocol))
+                        .setSwitchIdleTimeout(Uint32.valueOf(this.switchIdleTimeout))
+                        .setUseBarrier(this.useBarrier)
+                        .setChannelOutboundQueueSize(Uint16.valueOf(this.channelOutboundQueueSize))
+                        .setTls(
+                                new TlsBuilder()
+                                        .setKeystore(this.keystore)
+                                        .setKeystoreType(KeystoreType.forValue(this.keystoreType))
+                                        .setKeystorePathType(PathType.forValue(this.keystorePathType))
+                                        .setKeystorePassword(this.keystorePassword)
+                                        .setTruststore(this.truststore)
+                                        .setTruststoreType(KeystoreType.forValue(this.truststoreType))
+                                        .setTruststorePathType(PathType.forValue(this.truststorePathType))
+                                        .setTruststorePassword(this.truststorePassword)
+                                        .setCertificatePassword(this.certificatePassword)
+                                        .build()
                         ).setGroupAddModEnabled(true).build();
 
         final List<SwitchConnectionProvider> switchConnectionProviderList = new ArrayList<>();
-        final OpenflowDiagStatusProviderImpl openflowDiagStatusProvider = new OpenflowDiagStatusProviderImpl(diagStatusService);
+        final OpenflowDiagStatusProviderImpl openflowDiagStatusProvider = new OpenflowDiagStatusProviderImpl(
+                diagStatusService);
 
         //add default switch connection provider
-        SwitchConnectionProvider defaultSwitchConnectionProvider = factory.newInstance(tmpDefaultSwitch, openflowDiagStatusProvider);
+        SwitchConnectionProvider defaultSwitchConnectionProvider = factory
+                .newInstance(tmpDefaultSwitch, openflowDiagStatusProvider);
         switchConnectionProviderList.add(defaultSwitchConnectionProvider);
 
         //add legacy switch connection provider
-        SwitchConnectionProvider legacySwitchConnectionProvider = factory.newInstance(tmpLegacySwitch, openflowDiagStatusProvider);
+        SwitchConnectionProvider legacySwitchConnectionProvider = factory
+                .newInstance(tmpLegacySwitch, openflowDiagStatusProvider);
         switchConnectionProviderList.add(legacySwitchConnectionProvider);
         return switchConnectionProviderList;
     }
 
-    public int getChannelOutboundQueueSize() { return this.channelOutboundQueueSize; }
+    public int getChannelOutboundQueueSize() {
+        return this.channelOutboundQueueSize;
+    }
 
-    public void setChannelOutboundQueueSize(final int channelOutboundQueueSize) { this.channelOutboundQueueSize = channelOutboundQueueSize; }
+    public void setChannelOutboundQueueSize(final int channelOutboundQueueSize) {
+        this.channelOutboundQueueSize = channelOutboundQueueSize;
+    }
 
     public String getInstanceName() {
         return this.instanceName;
