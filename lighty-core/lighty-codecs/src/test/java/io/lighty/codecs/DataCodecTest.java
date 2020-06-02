@@ -153,6 +153,8 @@ public class DataCodecTest extends AbstractCodecTest {
         DataCodec<SampleList> codec = new DataCodec<>(this.bindingCodecContext);
         SampleList convertToBindingAwareData = codec.convertToBindingAwareData(
                 YangInstanceIdentifier.of(SampleList.QNAME), testedSampleListNormalizedNodes);
+
+        Assert.assertNotNull(convertToBindingAwareData);
         Assert.assertNotNull(convertToBindingAwareData.key());
     }
 
