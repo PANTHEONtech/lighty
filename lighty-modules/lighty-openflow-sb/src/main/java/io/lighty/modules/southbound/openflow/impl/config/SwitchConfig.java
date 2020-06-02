@@ -22,8 +22,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow._switch.connection.config.rev160506.SwitchConnectionConfigBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow._switch.connection.config.rev160506._switch.connection.config.TlsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow.provider.config.rev160510.OpenflowProviderConfig;
-import org.opendaylight.yangtools.yang.common.Uint16;
-import org.opendaylight.yangtools.yang.common.Uint32;
 
 public class SwitchConfig {
 
@@ -57,11 +55,11 @@ public class SwitchConfig {
     protected SwitchConfig() {
         this.defaultSwitch =
                 new SwitchConnectionConfigBuilder()
-                        .setPort(Uint16.valueOf(this.port))
+                        .setPort(this.port)
                         .setTransportProtocol(TransportProtocol.forValue(this.transportProtocol))
-                        .setSwitchIdleTimeout(Uint32.valueOf(this.switchIdleTimeout))
+                        .setSwitchIdleTimeout(this.switchIdleTimeout)
                         .setUseBarrier(this.useBarrier)
-                        .setChannelOutboundQueueSize(Uint16.valueOf(this.channelOutboundQueueSize))
+                        .setChannelOutboundQueueSize(this.channelOutboundQueueSize)
                         .setTls(
                                 new TlsBuilder()
                                         .setKeystoreType(KeystoreType.forValue(this.keystoreType))
@@ -73,11 +71,11 @@ public class SwitchConfig {
         this.legacySwitch =
                 new SwitchConnectionConfigBuilder()
                         .setInstanceName(LEGACY_INSTANCE_NAME)
-                        .setPort(Uint16.valueOf(LEGACY_PORT))
+                        .setPort(LEGACY_PORT)
                         .setTransportProtocol(TransportProtocol.forValue(this.transportProtocol))
-                        .setSwitchIdleTimeout(Uint32.valueOf(this.switchIdleTimeout))
+                        .setSwitchIdleTimeout(this.switchIdleTimeout)
                         .setUseBarrier(this.useBarrier)
-                        .setChannelOutboundQueueSize(Uint16.valueOf(this.channelOutboundQueueSize))
+                        .setChannelOutboundQueueSize(this.channelOutboundQueueSize)
                         .setTls(
                                 new TlsBuilder()
                                         .setKeystoreType(KeystoreType.forValue(this.keystoreType))
@@ -106,11 +104,11 @@ public class SwitchConfig {
         final SwitchConnectionConfig tmpDefaultSwitch =
                 new SwitchConnectionConfigBuilder()
                         .setInstanceName(this.instanceName)
-                        .setPort(Uint16.valueOf(this.port))
+                        .setPort(this.port)
                         .setTransportProtocol(TransportProtocol.forValue(this.transportProtocol))
-                        .setSwitchIdleTimeout(Uint32.valueOf(this.switchIdleTimeout))
+                        .setSwitchIdleTimeout(this.switchIdleTimeout)
                         .setUseBarrier(this.useBarrier)
-                        .setChannelOutboundQueueSize(Uint16.valueOf(this.channelOutboundQueueSize))
+                        .setChannelOutboundQueueSize(this.channelOutboundQueueSize)
                         .setTls(
                                 new TlsBuilder()
                                         .setKeystore(this.keystore)
@@ -128,11 +126,11 @@ public class SwitchConfig {
         final SwitchConnectionConfig tmpLegacySwitch =
                 new SwitchConnectionConfigBuilder()
                         .setInstanceName(LEGACY_INSTANCE_NAME)
-                        .setPort(Uint16.valueOf(LEGACY_PORT))
+                        .setPort(LEGACY_PORT)
                         .setTransportProtocol(TransportProtocol.forValue(this.transportProtocol))
-                        .setSwitchIdleTimeout(Uint32.valueOf(this.switchIdleTimeout))
+                        .setSwitchIdleTimeout(this.switchIdleTimeout)
                         .setUseBarrier(this.useBarrier)
-                        .setChannelOutboundQueueSize(Uint16.valueOf(this.channelOutboundQueueSize))
+                        .setChannelOutboundQueueSize(this.channelOutboundQueueSize)
                         .setTls(
                                 new TlsBuilder()
                                         .setKeystore(this.keystore)
