@@ -17,7 +17,7 @@
 
     <groupId>io.lighty.core</groupId>
     <artifactId>lighty-controller-springboot</artifactId>
-    <version>12.1.0-SNAPSHOT</version>
+    <version>12.1.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <description>Demo lighty.io project for SpringBoot</description>
 
@@ -31,10 +31,18 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- This is needed to override version dependencies -->
+            <dependency>
+                <groupId>io.lighty.core</groupId>
+                <artifactId>dependency-versions</artifactId>
+                <version>12.1.1-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-bom</artifactId>
-                <version>12.1.0-SNAPSHOT</version>
+                <version>12.1.1-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
