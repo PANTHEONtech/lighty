@@ -32,7 +32,7 @@ addons:
 # splitting the build into install and test parts gives us a quicker way
 # to identify what went wrong
 script:
-  - mvn test -B
+  - mvn verify -B
   - if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then mvn sonar:sonar -Dsonar.projectKey=PantheonTechnologies_lighty-core -Dsonar.host.url=https://sonarcloud.io; fi
 
 # before_cache happens before the second part of the cache phase,
