@@ -22,7 +22,6 @@ import javassist.CtMethod;
 import javassist.CtNewConstructor;
 import javassist.CtNewMethod;
 import javassist.NotFoundException;
-import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.FilterHolder;
@@ -40,6 +39,7 @@ import org.opendaylight.aaa.api.IdMServiceImpl;
 import org.opendaylight.aaa.api.PasswordCredentials;
 import org.opendaylight.aaa.api.StoreBuilder;
 import org.opendaylight.aaa.api.TokenStore;
+import org.opendaylight.aaa.api.password.service.PasswordHashService;
 import org.opendaylight.aaa.cert.api.ICertificateManager;
 import org.opendaylight.aaa.datastore.h2.H2Store;
 import org.opendaylight.aaa.datastore.h2.H2TokenStore;
@@ -55,6 +55,9 @@ import org.opendaylight.aaa.shiro.idm.IdmLightApplication;
 import org.opendaylight.aaa.shiro.idm.IdmLightProxy;
 import org.opendaylight.aaa.shiro.moon.MoonTokenEndpoint;
 import org.opendaylight.aaa.shiro.tokenauthrealm.auth.AuthenticationManager;
+import org.opendaylight.aaa.shiro.tokenauthrealm.auth.HttpBasicAuth;
+import org.opendaylight.aaa.shiro.tokenauthrealm.auth.TokenAuthenticators;
+import org.opendaylight.aaa.shiro.web.env.ShiroWebEnvironmentLoaderListener;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.DatastoreConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.ShiroConfiguration;
@@ -69,50 +72,69 @@ public final class AAALightyShiroProvider {
 
     private static AAALightyShiroProvider INSTANCE;
     private static IIDMStore iidmStore;
-
     private final List<Handler> handlers;
     private final DataBroker dataBroker;
     private final ICertificateManager certificateManager;
     private final ShiroConfiguration shiroConfiguration;
+    private static AuthenticationManager authenticationManager;
+    private static TokenAuthenticators tokenAuthenticators;
+    private static PasswordHashService passwordHashService;
     private CredentialAuth<PasswordCredentials> credentialAuth;
     private ClaimCache claimCache;
 
-    private TokenStore tokenStore;
+    private static TokenStore tokenStore;
     private IdMServiceImpl idmService;
 
     private AAALightyShiroProvider(final DataBroker dataBroker, final ICertificateManager certificateManager,
-            final CredentialAuth<PasswordCredentials> credentialAuth, final ShiroConfiguration shiroConfiguration,
-            final String moonEndpointPath, final DatastoreConfig datastoreConfig,
-            final String dbUsername, final String dbPassword, final LightyServerBuilder server) {
+                                   final CredentialAuth<PasswordCredentials> credentialAuth,
+                                   final ShiroConfiguration shiroConfiguration,
+                                   final String moonEndpointPath, final DatastoreConfig datastoreConfig,
+                                   final String dbUsername, final String dbPassword, final LightyServerBuilder server,
+                                   final IIDMStore store, final PasswordHashService passHashService) {
         this.dataBroker = dataBroker;
         this.certificateManager = certificateManager;
         this.credentialAuth = credentialAuth;
         this.shiroConfiguration = shiroConfiguration;
         this.handlers = new ArrayList<>();
+        authenticationManager = new AuthenticationManager();
 
         injectLightyShiroProviderMethodsToOriginalProvider();
 
-        initAAAonServer(server);
-        final DefaultPasswordHashService defaultPasswordHashService;
         if (datastoreConfig != null && datastoreConfig.getStore().equals(DatastoreConfig.Store.H2DataStore)) {
-            final IdmLightConfig config = new IdmLightConfigBuilder().dbUser(dbUsername).dbPwd(dbPassword).build();
-            final PasswordServiceConfig passwordServiceConfig = new PasswordServiceConfigBuilder().setAlgorithm(
-                    "SHA-512").setIterations(20000).build();
-            defaultPasswordHashService = new DefaultPasswordHashService(passwordServiceConfig);
-            iidmStore = new H2Store(new IdmLightSimpleConnectionProvider(config), defaultPasswordHashService);
-            this.tokenStore = new H2TokenStore(datastoreConfig.getTimeToLive().longValue(), datastoreConfig.getTimeToWait()
-                    .longValue());
+            if (store != null) {
+                passwordHashService = Preconditions.checkNotNull(passHashService);
+                iidmStore = store;
+            } else {
+                final IdmLightConfig config = new IdmLightConfigBuilder().dbUser(dbUsername).dbPwd(dbPassword).build();
+                final PasswordServiceConfig passwordServiceConfig = new PasswordServiceConfigBuilder().setAlgorithm(
+                        "SHA-512").setIterations(20000).build();
+                passwordHashService = new DefaultPasswordHashService(passwordServiceConfig);
+                iidmStore = new H2Store(new IdmLightSimpleConnectionProvider(config), passwordHashService);
+            }
+            tokenStore = new H2TokenStore(datastoreConfig.getTimeToLive().longValue(),
+                    datastoreConfig.getTimeToWait()
+                            .longValue());
         } else {
             iidmStore = null;
-            this.tokenStore = null;
-            LOG.info("AAA Datastore has not been initialized");
+            tokenStore = null;
+            LOG.info("AAA DataStore has not been initialized");
             return;
         }
-        if(credentialAuth == null) {
-            IdmLightProxy idmLightProxy = new IdmLightProxy(iidmStore, defaultPasswordHashService);
+        if (credentialAuth == null) {
+            IdmLightProxy idmLightProxy = new IdmLightProxy(iidmStore, passwordHashService);
             this.credentialAuth = idmLightProxy;
             this.claimCache = idmLightProxy;
+            final HttpBasicAuth basicAuth = new HttpBasicAuth(idmLightProxy);
+            tokenAuthenticators = new TokenAuthenticators(basicAuth);
+        } else {
+            if (credentialAuth instanceof ClaimCache) {
+                this.claimCache = (ClaimCache) credentialAuth;
+            }
+            final HttpBasicAuth basicAuth = new HttpBasicAuth(credentialAuth);
+            tokenAuthenticators = new TokenAuthenticators(basicAuth);
         }
+
+        initAAAonServer(server, passwordHashService);
         this.idmService = new IdMServiceImpl(iidmStore);
         try {
             new StoreBuilder(iidmStore).initWithDefaultUsers(IIDMStore.DEFAULT_DOMAIN);
@@ -123,23 +145,83 @@ public final class AAALightyShiroProvider {
         registerServletContexts(httpService, moonEndpointPath);
     }
 
-    private void initAAAonServer(final LightyServerBuilder server) {
+    public static CompletableFuture<AAALightyShiroProvider> newInstance(final DataBroker dataBroker,
+                                                                        final ICertificateManager certificateManager,
+                                                                        final CredentialAuth<PasswordCredentials> credentialAuth,
+                                                                        final ShiroConfiguration shiroConfiguration,
+                                                                        final String moonEndpointPath,
+                                                                        final DatastoreConfig datastoreConfig,
+                                                                        final String dbUsername,
+                                                                        final String dbPassword,
+                                                                        final LightyServerBuilder server,
+                                                                        final IIDMStore store,
+                                                                        final PasswordHashService passHashService) {
+        final CompletableFuture<AAALightyShiroProvider> completableFuture = new CompletableFuture<>();
+        INSTANCE = new AAALightyShiroProvider(dataBroker, certificateManager, credentialAuth,
+                shiroConfiguration, moonEndpointPath, datastoreConfig, dbUsername, dbPassword, server, store,
+                passHashService);
+        completableFuture.complete(INSTANCE);
+        return completableFuture;
+    }
+
+    public static AAALightyShiroProvider getInstance() {
+        return INSTANCE;
+    }
+
+    /**
+     * Get IDM data store.
+     *
+     * @return IIDMStore data store
+     */
+    public static IIDMStore getIdmStore() {
+        return iidmStore;
+    }
+
+    /**
+     * Set IDM data store, only used for test.
+     *
+     * @param store data store
+     */
+    public static void setIdmStore(final IIDMStore store) {
+        iidmStore = store;
+    }
+
+    public static TokenStore getTokenStore() {
+        return tokenStore;
+    }
+
+    public static TokenAuthenticators getTokenAuthenticators() {
+        return tokenAuthenticators;
+    }
+
+    public static AuthenticationManager getAuthenticationManager() {
+        return authenticationManager;
+    }
+
+    public static PasswordHashService getPasswordHashService() {
+        return passwordHashService;
+    }
+
+    private void initAAAonServer(final LightyServerBuilder server,
+                                 final PasswordHashService defaultPasswordHashService) {
         final ContextHandlerCollection contexts = new ContextHandlerCollection();
         final ServletContextHandler mainHandler = new ServletContextHandler(contexts, "/auth", true, false);
         final IdmLightApplication idmLightApplication = new IdmLightApplication(iidmStore, claimCache);
-        final ServletHolder idmLightServlet = new ServletHolder(new ServletContainer(ResourceConfig.forApplication(idmLightApplication)));
+        final ServletHolder idmLightServlet = new ServletHolder(
+                new ServletContainer(ResourceConfig.forApplication(idmLightApplication)));
         idmLightServlet.setInitParameter("jersey.config.server.provider.packages",
                 "org.opendaylight.aaa.impl.provider");
+
         mainHandler.addServlet(idmLightServlet, "/*");
         server.addContextHandler(contexts);
         this.handlers.add(contexts);
-
-        server.addCommonInitParameter("shiroEnvironmentClass",
-                "org.opendaylight.aaa.shiro.web.env.KarafIniWebEnvironment");
-        server.addCommonEventListener(new EnvironmentLoaderListener());
+        server.addCommonEventListener(
+                new ShiroWebEnvironmentLoaderListener(shiroConfiguration, dataBroker, certificateManager,
+                        authenticationManager, tokenAuthenticators, tokenStore, defaultPasswordHashService));
 
         final Map<String, String> properties = new HashMap<>();
-        final CustomFilterAdapterConfiguration customFilterAdapterConfig = new CustomFilterAdapterConfigurationImpl(properties);
+        final CustomFilterAdapterConfiguration customFilterAdapterConfig = new CustomFilterAdapterConfigurationImpl(
+                properties);
         final FilterHolder customFilterAdapter = new FilterHolder(new CustomFilterAdapter(customFilterAdapterConfig));
         server.addCommonFilter(customFilterAdapter, "/*");
 
@@ -151,22 +233,6 @@ public final class AAALightyShiroProvider {
         crossOriginFilter.setInitParameter("allowedHeaders",
                 "origin, content-type, accept, authorization, Authorization");
         server.addCommonFilter(crossOriginFilter, "/*");
-    }
-
-    public static CompletableFuture<AAALightyShiroProvider> newInstance(final DataBroker dataBroker,
-            final ICertificateManager certificateManager, final CredentialAuth<PasswordCredentials> credentialAuth,
-            final ShiroConfiguration shiroConfiguration, final String moonEndpointPath,
-            final DatastoreConfig datastoreConfig, final String dbUsername, final String dbPassword,
-            final LightyServerBuilder server) {
-        final CompletableFuture<AAALightyShiroProvider> completableFuture = new CompletableFuture<>();
-        INSTANCE = new AAALightyShiroProvider(dataBroker, certificateManager, credentialAuth,
-                shiroConfiguration, moonEndpointPath, datastoreConfig, dbUsername, dbPassword, server);
-        completableFuture.complete(INSTANCE);
-        return completableFuture;
-    }
-
-    public static AAALightyShiroProvider getInstance() {
-        return INSTANCE;
     }
 
     /**
@@ -196,24 +262,6 @@ public final class AAALightyShiroProvider {
         return this.shiroConfiguration;
     }
 
-    /**
-     * Get IDM data store.
-     *
-     * @return IIDMStore data store
-     */
-    public static IIDMStore getIdmStore() {
-        return iidmStore;
-    }
-
-    /**
-     * Set IDM data store, only used for test.
-     *
-     * @param store data store
-     */
-    public static void setIdmStore(final IIDMStore store) {
-        iidmStore = store;
-    }
-
     public void close() {
         this.handlers.forEach((handler) -> {
             handler.destroy();
@@ -228,9 +276,9 @@ public final class AAALightyShiroProvider {
     }
 
     /**
-     * In this way, we do not need to call new instance of {@link AAAShiroProvider}. We want to avoid dependence
-     * on OSGi. According to {@link AAAShiroProvider} is singleton, we need to hook public and public static methods
-     * from the {@link AAAShiroProvider} with methods from {@link AAALightyShiroProvider}.
+     * In this way, we do not need to call new instance of {@link AAAShiroProvider}. We want to avoid dependence on
+     * OSGi. According to {@link AAAShiroProvider} is singleton, we need to hook public and public static methods from
+     * the {@link AAAShiroProvider} with methods from {@link AAALightyShiroProvider}.
      */
     private void injectLightyShiroProviderMethodsToOriginalProvider() {
         try {
@@ -239,39 +287,37 @@ public final class AAALightyShiroProvider {
             final CtConstructor c = CtNewConstructor.make("public AAAShiroProvider(){}", ctClass);
             ctClass.addConstructor(c);
 
-            ctClass.removeMethod(ctClass.getDeclaredMethod("getInstance"));
-            final CtMethod getInstance = CtNewMethod.make(
-                    "public static org.opendaylight.aaa.AAAShiroProvider getInstance() {"
-                            + "return new org.opendaylight.aaa.AAAShiroProvider();}",
-                            ctClass);
-            ctClass.addMethod(getInstance);
+            ctClass.removeMethod(ctClass.getDeclaredMethod("getTokenAuthenticators"));
+            final CtMethod getTokenAuthenticators = CtNewMethod.make(
+                    "public static org.opendaylight.aaa.shiro.tokenauthrealm.auth.TokenAuthenticators getTokenAuthenticators() {"
+                            + "return io.lighty.aaa.AAALightyShiroProvider.getTokenAuthenticators();}",
+                    ctClass);
+            ctClass.addMethod(getTokenAuthenticators);
 
-            ctClass.removeMethod(ctClass.getDeclaredMethod("getInstanceFuture"));
-            final CtMethod getInstanceFuture = CtNewMethod.make(
-                    "public static java.util.concurrent.CompletableFuture getInstanceFuture() {"
-                            + "java.util.concurrent.CompletableFuture completableFuture = "
-                            + "new java.util.concurrent.CompletableFuture();"
-                            + "completableFuture.complete(org.opendaylight.aaa.AAAShiroProvider.getInstance());"
-                            + "return completableFuture;}",
-                            ctClass);
-            ctClass.addMethod(getInstanceFuture);
+            ctClass.removeMethod(ctClass.getDeclaredMethod("getTokenStore"));
+            final CtMethod getTokenStore = CtNewMethod.make(
+                    "public static org.opendaylight.aaa.api.TokenStore getTokenStore() {"
+                            + "return io.lighty.aaa.AAALightyShiroProvider.getTokenStore();}",
+                    ctClass);
+            ctClass.addMethod(getTokenStore);
 
-            ctClass.removeMethod(ctClass.getDeclaredMethod("getIdmStore"));
-            final CtMethod getIdmStore = CtNewMethod.make(
-                    "public static org.opendaylight.aaa.api.IIDMStore getIdmStore() {"
-                            + "return io.lighty.aaa.AAALightyShiroProvider.getIdmStore();}",
-                            ctClass);
-            ctClass.addMethod(getIdmStore);
+            ctClass.removeMethod(ctClass.getDeclaredMethod("getAuthenticationService"));
+            final CtMethod getAuthenticationService = CtNewMethod.make(
+                    "public static org.opendaylight.aaa.api.AuthenticationService getAuthenticationService() {"
+                            + "return io.lighty.aaa.AAALightyShiroProvider.getAuthenticationManager();}",
+                    ctClass);
+            ctClass.addMethod(getAuthenticationService);
 
-            ctClass.removeMethod(ctClass.getDeclaredMethod("setIdmStore"));
-            final CtMethod setIdmStore = CtNewMethod.make(
-                    "public static void setIdmStore(org.opendaylight.aaa.api.IIDMStore store) {"
-                            + "return io.lighty.aaa.AAALightyShiroProvider.setIdmStore(store);}", ctClass);
-            ctClass.addMethod(setIdmStore);
+            ctClass.removeMethod(ctClass.getDeclaredMethod("getPasswordHashService"));
+            final CtMethod getPasswordHashService = CtNewMethod.make(
+                    "public static org.opendaylight.aaa.api.password.service.PasswordHashService getPasswordHashService() {"
+                            + "return io.lighty.aaa.AAALightyShiroProvider.getPasswordHashService();}",
+                    ctClass);
+            ctClass.addMethod(getPasswordHashService);
 
             ctClass.removeMethod(ctClass.getDeclaredMethod("getDataBroker"));
             final CtMethod getDataBroker = CtNewMethod.make(
-                    "public org.opendaylight.controller.md.sal.binding.api.DataBroker getDataBroker() {"
+                    "public org.opendaylight.mdsal.binding.api.DataBroker getDataBroker() {"
                             + "return io.lighty.aaa.AAALightyShiroProvider.getInstance().getDataBroker();}", ctClass);
             ctClass.addMethod(getDataBroker);
 
@@ -279,7 +325,7 @@ public final class AAALightyShiroProvider {
             final CtMethod getCertificateManager = CtNewMethod.make(
                     "public org.opendaylight.aaa.cert.api.ICertificateManager getCertificateManager() {"
                             + "return io.lighty.aaa.AAALightyShiroProvider.getInstance().getCertificateManager();}",
-                            ctClass);
+                    ctClass);
             ctClass.addMethod(getCertificateManager);
 
             ctClass.removeMethod(ctClass.getDeclaredMethod("getShiroConfiguration"));
@@ -287,7 +333,7 @@ public final class AAALightyShiroProvider {
                     "public org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.ShiroConfiguration "
                             + "getShiroConfiguration() {"
                             + "return io.lighty.aaa.AAALightyShiroProvider.getInstance().getShiroConfiguration();}",
-                            ctClass);
+                    ctClass);
             ctClass.addMethod(getShiroConfiguration);
 
             ctClass.toClass();
