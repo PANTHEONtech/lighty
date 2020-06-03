@@ -69,7 +69,7 @@ Example configuration file is located [here](src/main/resources/restConfConfig.j
 CommunityRestConf requires following models to be loaded by LightyController.
 ```
   "org.opendaylight.mdsal.model:rfc7895:1.0.1-SNAPSHOT",
-  "org.opendaylight.netconf:ietf-restconf-monitoring:1.8.1-SNAPSHOT"
+  "org.opendaylight.netconf:ietf-restconf-monitoring:1.8.2-SNAPSHOT"
 ```
 
 ### Clustering
