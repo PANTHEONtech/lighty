@@ -8,22 +8,21 @@
 
 package io.lighty.swagger;
 
-import org.opendaylight.netconf.sal.rest.doc.api.ApiDocService;
+import java.util.Objects;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import org.opendaylight.netconf.sal.rest.doc.impl.ApiDocGeneratorRFC8040;
 import org.opendaylight.netconf.sal.rest.doc.impl.ApiDocServiceImpl;
 import org.opendaylight.netconf.sal.rest.doc.impl.MountPointSwaggerGeneratorRFC8040;
 import org.opendaylight.netconf.sal.rest.doc.swagger.ApiDeclaration;
 import org.opendaylight.netconf.sal.rest.doc.swagger.ResourceList;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import java.util.Objects;
-
-public class ApiDocServiceRFC8040 extends ApiDocServiceLightyImpl implements ApiDocService {
+public class ApiDocServiceRFC8040 extends ApiDocServiceLightyImpl {
 
     private final ApiDocGeneratorRFC8040 apiDocGeneratorRFC8040;
 
-    public ApiDocServiceRFC8040(MountPointSwaggerGeneratorRFC8040 mountPointSwaggerGeneratorRFC8040, ApiDocGeneratorRFC8040 apiDocGeneratorRFC8040) {
+    public ApiDocServiceRFC8040(MountPointSwaggerGeneratorRFC8040 mountPointSwaggerGeneratorRFC8040,
+                                ApiDocGeneratorRFC8040 apiDocGeneratorRFC8040) {
         super(Objects.requireNonNull(mountPointSwaggerGeneratorRFC8040).getMountPointSwagger());
         this.apiDocGeneratorRFC8040 = apiDocGeneratorRFC8040;
     }

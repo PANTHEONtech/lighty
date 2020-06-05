@@ -27,7 +27,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 
 /**
- * Base class for lighty-swagger tests handlin starting and shutting-down of lighty with restConf and swagger module
+ * Base class for lighty-swagger tests handlin starting and shutting-down of lighty with restConf and swagger module.
  */
 public abstract class SwaggerLightyTestBase {
 
