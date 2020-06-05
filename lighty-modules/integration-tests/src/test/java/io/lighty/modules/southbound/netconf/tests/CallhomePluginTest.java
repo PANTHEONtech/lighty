@@ -41,7 +41,7 @@ public class CallhomePluginTest {
         final NetconfConfiguration configuration =
                 NetconfConfigUtils.createDefaultNetconfConfiguration();
         NetconfConfigUtils.injectServicesToTopologyConfig(configuration, lightyController.getServices());
-        netconfPlugin = new NetconfCallhomePluginBuilder().from(configuration, lightyController.getServices()).build();
+        netconfPlugin = NetconfCallhomePluginBuilder.from(configuration, lightyController.getServices()).build();
     }
 
     @AfterClass
@@ -69,7 +69,7 @@ public class CallhomePluginTest {
     public void testStart() throws Exception {
         netconfPlugin.start().get();
         // check, whether TCP server is running on port
-        try (final Socket socket = new Socket()) {
+        try (Socket socket = new Socket()) {
             final SocketAddress endpoint = new InetSocketAddress(InetAddress.getLocalHost(), 6666);
             socket.connect(endpoint);
         }
