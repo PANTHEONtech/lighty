@@ -12,11 +12,11 @@ import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.northbound.restconf.community.impl.config.JsonRestConfServiceType;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 import java.io.InputStream;
 import java.net.InetAddress;
+
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public class RestConfConfigurationTest {
 
