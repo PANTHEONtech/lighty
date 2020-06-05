@@ -17,12 +17,12 @@ import org.mockito.Mockito;
 import org.testng.Assert;
 
 /**
- * Base class for lighty-swagger tests for different versions of {@link JsonRestConfServiceType}
+ * Base class for lighty-swagger tests for different versions of {@link JsonRestConfServiceType}.
  */
 public abstract class SwaggerLightyTest extends SwaggerLightyTestBase {
 
-    protected final String DEFAULT_MODEL_NAME = "ietf-yang-library";
-    protected final String DEFAULT_REVISION_DATE = "2016-06-21";
+    protected static final String DEFAULT_MODEL_NAME = "ietf-yang-library";
+    protected static final String DEFAULT_REVISION_DATE = "2016-06-21";
 
     protected SwaggerLightyTest(JsonRestConfServiceType restConfServiceType) {
         super(restConfServiceType);

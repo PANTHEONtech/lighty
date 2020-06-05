@@ -155,7 +155,8 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
 
                 //FRM implementation
                 final ServiceRecoveryRegistryImpl serviceRecoveryRegistryImpl = new ServiceRecoveryRegistryImpl();
-                this.openflowServiceRecoveryHandlerImpl = new OpenflowServiceRecoveryHandlerImpl(serviceRecoveryRegistryImpl);
+                this.openflowServiceRecoveryHandlerImpl =
+                        new OpenflowServiceRecoveryHandlerImpl(serviceRecoveryRegistryImpl);
 
                 this.forwardingRulesManagerImpl
                         = new ForwardingRulesManagerImpl(this.lightyServices.getBindingDataBroker(),
@@ -224,15 +225,16 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
     }
 
     /**
-     * Start close() method in AutoCloseable instance
-     * @param instance instance of {@link AutoCloseable}
+     * Start close() method in AutoCloseable instance.
+     * @param instance instance of {@link AutoCloseable}.
      */
-    private void destroy(final AutoCloseable instance){
+    @SuppressWarnings("checkstyle:illegalCatch")
+    private void destroy(final AutoCloseable instance) {
         if (instance != null) {
             try {
                 instance.close();
             } catch (final Exception e) {
-                LOG.warn("Exception was thrown during closing " + instance.getClass().getSimpleName(), e);
+                LOG.warn("Exception was thrown during closing {}", instance.getClass().getSimpleName(), e);
             }
         }
     }

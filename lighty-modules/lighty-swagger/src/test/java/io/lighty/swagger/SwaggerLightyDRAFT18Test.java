@@ -14,8 +14,8 @@ import org.testng.annotations.Test;
 
 public class SwaggerLightyDRAFT18Test extends SwaggerLightyTest {
 
-    private final String SWAGGER2_BASE_URI = "http://localhost:8888/apidoc/swagger2/18/apis";
-    private final String OPENAPI3_BASE_URI = "http://localhost:8888/apidoc/openapi3/18/apis";
+    private static final String SWAGGER2_BASE_URI = "http://localhost:8888/apidoc/swagger2/18/apis";
+    private static final String OPENAPI3_BASE_URI = "http://localhost:8888/apidoc/openapi3/18/apis";
 
     protected SwaggerLightyDRAFT18Test() {
         super(JsonRestConfServiceType.DRAFT_18);

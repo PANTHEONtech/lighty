@@ -73,8 +73,7 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
             throws ExecutionException, InterruptedException, ConfigurationException {
         final NetconfConfiguration netconfSBPConfiguration = NetconfConfigUtils.injectServicesToTopologyConfig(
             NetconfConfigUtils.createDefaultNetconfConfiguration(), lightyController.getServices());
-        NetconfTopologyPluginBuilder netconfSBPBuilder = new NetconfTopologyPluginBuilder();
-        final NetconfSBPlugin netconfSouthboundPlugin = netconfSBPBuilder
+        final NetconfSBPlugin netconfSouthboundPlugin = NetconfTopologyPluginBuilder
             .from(netconfSBPConfiguration, lightyController.getServices())
             .build();
         netconfSouthboundPlugin.start().get();

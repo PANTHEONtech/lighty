@@ -67,13 +67,10 @@ public class TopologyPluginsTest {
     private static LightyModule startSingleNodeNetconf(final LightyServices services,
                                                        final NetconfClientDispatcher dispatcher)
             throws ConfigurationException {
-
-            final NetconfConfiguration config = NetconfConfigUtils.createDefaultNetconfConfiguration();
-            NetconfConfigUtils.injectServicesToConfig(config);
-            config.setClientDispatcher(dispatcher);
-            return new NetconfTopologyPluginBuilder()
-                    .from(config, services)
-                    .build();
+        final NetconfConfiguration config = NetconfConfigUtils.createDefaultNetconfConfiguration();
+        NetconfConfigUtils.injectServicesToConfig(config);
+        config.setClientDispatcher(dispatcher);
+        return NetconfTopologyPluginBuilder.from(config, services).build();
     }
 
     @BeforeClass

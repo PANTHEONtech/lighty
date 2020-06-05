@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Swagger initializer for lighty.io
+ * Swagger initializer for lighty.io.
  * @author juraj.veverka
  */
 public class SwaggerLighty extends AbstractLightyModule {
@@ -58,8 +58,6 @@ public class SwaggerLighty extends AbstractLightyModule {
     protected boolean initProcedure() {
         LOG.info("initializing swagger {}", restConfConfiguration.getJsonRestconfServiceType());
 
-        ContextHandlerCollection contexts = new ContextHandlerCollection();
-        ServletContextHandler mainHandler =   new ServletContextHandler(contexts, APIDOC_PATH, true, false);
         //replace all slash characters from the beginning of the string
         String basePathString = restConfConfiguration.getRestconfServletContextPath().replaceAll("^/+", "");
         LOG.info("basePath: {}", basePathString);
@@ -84,6 +82,8 @@ public class SwaggerLighty extends AbstractLightyModule {
         ServletContainer restServletContainer = new ServletContainer(ResourceConfig.forApplication(apiDocApplication));
         ServletHolder restServletHolder = new ServletHolder(restServletContainer);
 
+        ContextHandlerCollection contexts = new ContextHandlerCollection();
+        ServletContextHandler mainHandler =   new ServletContextHandler(contexts, APIDOC_PATH, true, false);
         mainHandler.addServlet(restServletHolder, "/swagger2/apis/*");
         mainHandler.addServlet(restServletHolder, "/openapi3/apis/*");
         mainHandler.addServlet(restServletHolder, "/swagger2/18/apis/*");

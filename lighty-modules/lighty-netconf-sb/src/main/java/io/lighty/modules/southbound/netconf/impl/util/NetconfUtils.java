@@ -23,6 +23,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import java.util.Locale;
 import java.util.Optional;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.netconf.api.ModifyAction;
@@ -121,7 +122,7 @@ public final class NetconfUtils {
         // Default operation
         if (defaultOperation.isPresent()) {
             editBuilder.withChild(Builders.leafBuilder().withNodeIdentifier(NETCONF_DEFAULT_OPERATION_NODEID)
-                    .withValue(defaultOperation.get().name().toLowerCase()).build());
+                    .withValue(defaultOperation.get().name().toLowerCase(Locale.US)).build());
         }
 
         // Error option

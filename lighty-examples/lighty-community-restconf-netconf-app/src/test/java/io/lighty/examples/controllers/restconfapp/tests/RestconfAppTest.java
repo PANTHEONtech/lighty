@@ -9,6 +9,8 @@
 package io.lighty.examples.controllers.restconfapp.tests;
 
 import io.lighty.examples.controllers.restconfapp.Main;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,15 +19,11 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-
 /**
  * This test starts lighty.io RESTCONF / NETCONF application.
  * RESTCONF API is available at http://localhost:8888/restconf
  * is used by REST client to test access to global data store.
  * This is integration test and requires free port 8888 on localhost.
- *
  * This test is roughly same as single-feature test in OpenDaylight which starts:
  * feature:install odl-netconf-all
  */
@@ -44,7 +42,7 @@ public class RestconfAppTest {
     }
 
     /**
-     * Perform basic GET operations via RESTCONF
+     * Perform basic GET operations via RESTCONF.
      */
     @Test
     public void simpleApplicationTest() throws TimeoutException, ExecutionException, InterruptedException {
@@ -73,6 +71,7 @@ public class RestconfAppTest {
         }
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     @AfterClass
     public static void shutdown() {
         restconfApp.shutdown();

@@ -62,7 +62,8 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
 
     @Test
     public void testSerializeData() throws Exception {
-        Writer serializeData = bindingSerializer.serializeData(this.effectiveModelContext, testedToasterNormalizedNodes);
+        Writer serializeData =
+                bindingSerializer.serializeData(this.effectiveModelContext, testedToasterNormalizedNodes);
         Assert.assertFalse(Strings.isNullOrEmpty(serializeData.toString()));
         LOG.info(serializeData.toString());
     }

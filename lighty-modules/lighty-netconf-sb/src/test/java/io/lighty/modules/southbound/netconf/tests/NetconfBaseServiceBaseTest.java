@@ -18,6 +18,7 @@ import org.opendaylight.netconf.sal.connect.netconf.schema.mapping.DefaultBaseNe
 import org.opendaylight.yangtools.rcf8528.data.util.EmptyMountPointContext;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointContext;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
@@ -35,6 +36,7 @@ public abstract class NetconfBaseServiceBaseTest {
 
     @BeforeClass
     public void beforeTest() {
+        @SuppressWarnings("checkstyle:LineLength")  /* Lines kept long for brevity. */
         final ImmutableSet<YangModuleInfo> yangModuleInfos = ImmutableSet.of(
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.$YangModuleInfoImpl.getInstance(),
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.metadata.rev160805.$YangModuleInfoImpl.getInstance(),
@@ -66,8 +68,18 @@ public abstract class NetconfBaseServiceBaseTest {
         return getSpecificElementSubtree(doc, namespace, localName, 0);
     }
 
-    Element getSpecificElementSubtree(final Element doc, final String namespace,
-                                              final String localName, final Integer itemNumber) {
+    Element getSpecificElementSubtree(final Element doc, final String namespace, final String localName,
+                                      final Integer itemNumber) {
         return (Element) doc.getElementsByTagNameNS(namespace, localName).item(itemNumber);
     }
+
+    Element getSpecificElementSubtree(final Element doc, final QName qname, final String localName,
+                                      final Integer itemNumber) {
+        return getSpecificElementSubtree(doc, qname.getNamespace().toString(), localName, itemNumber);
+    }
+
+    Element getSpecificElementSubtree(final Element doc, final QName qname, final String localName) {
+        return getSpecificElementSubtree(doc, qname.getNamespace().toString(), localName);
+    }
+
 }

@@ -12,7 +12,7 @@ import java.util.Optional;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 
 /**
- * Marker interface for NETCONF SBP
+ * Marker interface for NETCONF SBP.
  */
 public interface NetconfSBPlugin extends LightyModule {
 
@@ -24,20 +24,16 @@ public interface NetconfSBPlugin extends LightyModule {
     boolean isClustered();
 
     /**
-     * Create an instance of {@link NetconfBaseService} for specific device (mount point)
-     * @param nodeId
-     *   Unique identifier of Netconf node in topology-netconf.
-     * @return
-     *   Instance of {@link NetconfBaseService} or empty if node is not found by nodeId.
+     * Create an instance of {@link NetconfBaseService} for specific device (mount point).
+     * @param nodeId Unique identifier of Netconf node in topology-netconf.
+     * @return Instance of {@link NetconfBaseService} or empty if node is not found by nodeId.
      */
     Optional<NetconfBaseService> getNetconfBaseService(NodeId nodeId);
 
     /**
-     * Create an instance of {@link NetconfNmdaBaseService} for specific device (mount point)
-     * @param nodeId
-     *   Unique identifier of Netconf node in topology-netconf.
-     * @return
-     *   Instance of {@link NetconfNmdaBaseService} or empty if node is not found by nodeId.
+     * Create an instance of {@link NetconfNmdaBaseService} for specific device (mount point).
+     * @param nodeId Unique identifier of Netconf node in topology-netconf.
+     * @return Instance of {@link NetconfNmdaBaseService} or empty if node is not found by nodeId.
      */
     Optional<NetconfNmdaBaseService> getNetconfNmdaBaseService(NodeId nodeId);
 

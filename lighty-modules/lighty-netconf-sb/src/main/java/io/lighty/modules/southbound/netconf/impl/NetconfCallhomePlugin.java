@@ -31,10 +31,11 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
                 new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
         final SchemaResourceManager schemaResourceManager =
                 new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
-        final CallHomeMountDispatcher dispatcher = new CallHomeMountDispatcher(topologyId,
-            lightyServices.getEventExecutor(), lightyServices.getScheduledThreadPool(), lightyServices.getThreadPool(),
-            schemaResourceManager, defaultBaseNetconfSchemas, lightyServices.getBindingDataBroker(), lightyServices.getDOMMountPointService(),
-            encryptionService);
+        final CallHomeMountDispatcher dispatcher =
+                new CallHomeMountDispatcher(topologyId, lightyServices.getEventExecutor(),
+                        lightyServices.getScheduledThreadPool(), lightyServices.getThreadPool(),
+                        schemaResourceManager, defaultBaseNetconfSchemas, lightyServices.getBindingDataBroker(),
+                        lightyServices.getDOMMountPointService(), encryptionService);
         this.provider = new IetfZeroTouchCallHomeServerProvider(lightyServices.getBindingDataBroker(), dispatcher);
     }
 
@@ -44,6 +45,7 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
         return true;
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     @Override
     protected boolean stopProcedure() {
         try {
