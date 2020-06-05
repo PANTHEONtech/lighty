@@ -7,6 +7,9 @@
  */
 package io.lighty.codecs;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.io.Resources;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -39,9 +42,6 @@ import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLe
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapEntryNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.io.Resources;
 
 public abstract class AbstractCodecTest {
 
@@ -60,7 +60,8 @@ public abstract class AbstractCodecTest {
 
     protected static final QName SIMPLE_IO_RPC_QNAME =
             QName.create(SAMPLES_NAMESPACE, SAMPLES_REVISION, "simple-input-output-rpc");
-    protected static final QName MAKE_TOAST_RPC_QNAME = QName.create(TOASTER_NAMESPACE, TOASTER_REVISION, "make-toast");
+    protected static final QName MAKE_TOAST_RPC_QNAME =
+            QName.create(TOASTER_NAMESPACE, TOASTER_REVISION, "make-toast");
     protected static final QName CONTAINER_IO_RPC_QNAME =
             QName.create(SAMPLES_NAMESPACE, SAMPLES_REVISION, "container-io-rpc");
 
@@ -90,8 +91,10 @@ public abstract class AbstractCodecTest {
         this.moduleInfoBackedCntxt = ModuleInfoBackedContext.create();
         this.schemaContext = getSchemaContext(moduleInfos);
 
-        this.testedToaster = new ToasterBuilder().setDarknessFactor(COFFEE_VALUE)
-                .setToasterManufacturer(new DisplayString("manufacturer")).setToasterStatus(ToasterStatus.Up).build();
+        this.testedToaster = new ToasterBuilder()
+                .setDarknessFactor(COFFEE_VALUE)
+                .setToasterManufacturer(new DisplayString("manufacturer"))
+                .setToasterStatus(ToasterStatus.Up).build();
         this.testedMakeToasterInput = new MakeToastInputBuilder().setToasterDoneness(EXPECTED_ONE).build();
 
         this.testedMakeToasterNormalizedNodes = createMakeToasterInput();
@@ -107,7 +110,7 @@ public abstract class AbstractCodecTest {
     /**
      * Utility method to create the {@link NodeIdentifier} for a node within the toaster module. The
      * namespace and version are given by this module.
-     * 
+     *
      * @param nodeName of the node
      * @return created {@link NodeIdentifier}
      */
@@ -116,9 +119,8 @@ public abstract class AbstractCodecTest {
     }
 
     /**
-     * Utility method to create the {@link QName} for a node within the toaster module
-     * 
-     * @param nodeName
+     * Utility method to create the {@link QName} for a node within the toaster module.
+     *
      * @return created {@link QName}
      */
     protected static QName getQName(String namespace, String revision, String nodeName) {
@@ -131,19 +133,17 @@ public abstract class AbstractCodecTest {
 
 
     /**
-     * Loads the XML file containing a sample {@link Toaster} object
-     * 
+     * Loads the XML file containing a sample {@link Toaster} object.
+     *
      * <pre>
      * {@code
-     * <toaster xmlns="http://netconfcentral.org/ns/toaster">
-     *   <toasterManufacturer>manufacturer</toasterManufacturer>
-     *   <toasterStatus>up</toasterStatus>
-     *   <darknessFactor>201392110</darknessFactor>
-     * </toaster>
+     * &lt;toaster xmlns="http://netconfcentral.org/ns/toaster"&gt;
+     *   &lt;toasterManufacturer&gtmanufacturer&lt;/toasterManufacturer&gt;
+     *   &lt;toasterStatus&gtup&lt;/toasterStatus&gt;
+     *   &lt;darknessFactor&gt201392110&lt;/darknessFactor&gt;
+     * &lt;/toaster&gt;
      * }
      * </pre>
-     * 
-     * @return
      */
     protected static String loadToasterXml() {
         return loadResourceAsString("toaster.xml");
@@ -155,15 +155,15 @@ public abstract class AbstractCodecTest {
         try {
             loadedFileContent = Resources.asCharSource(resource, StandardCharsets.UTF_8).read();
         } catch (IOException e) {
-            throw new IllegalStateException("Could not load toaster xml file");
+            throw new IllegalStateException("Could not load toaster xml file", e);
         }
         return loadedFileContent;
     }
 
 
     /**
-     * Helper method for loading {@link YangModuleInfo}s from the classpath
-     * 
+     * Helper method for loading {@link YangModuleInfo}s from the classpath.
+     *
      * @return {@link List} of loaded {@link YangModuleInfo}
      */
     private static List<YangModuleInfo> loadModuleInfos() {
@@ -176,14 +176,13 @@ public abstract class AbstractCodecTest {
     }
 
     /**
-     * Build the {@link SchemaContext} based on the loaded {@link YangModuleInfo}s
-     * 
-     * @param moduleInfos {@link List} of {@link YangModuleInfo}s to be used while creating
-     *        {@link SchemaContext}
+     * Build the {@link SchemaContext} based on the loaded {@link YangModuleInfo}s.
+     *
+     * @param infos {@link List} of {@link YangModuleInfo}s to be used while creating {@link SchemaContext}
      * @return prepared {@link SchemaContext}
      */
-    protected SchemaContext getSchemaContext(List<YangModuleInfo> moduleInfos) {
-        moduleInfoBackedCntxt.addModuleInfos(moduleInfos);
+    protected SchemaContext getSchemaContext(List<YangModuleInfo> infos) {
+        moduleInfoBackedCntxt.addModuleInfos(infos);
         Optional<SchemaContext> tryToCreateSchemaContext = moduleInfoBackedCntxt.tryToCreateSchemaContext();
         if (!tryToCreateSchemaContext.isPresent()) {
             throw new IllegalStateException();
@@ -225,7 +224,7 @@ public abstract class AbstractCodecTest {
                 .withValue(ImmutableList.of(input)).build();
         return containerNode;
     }
-    
+
     private static NormalizedNode<?, ?> toasterNotificationNormalizedNodes() {
         NodeIdentifier toasterNodeIdentifier =
                 new NodeIdentifier(QName.create(TOASTER_NAMESPACE, TOASTER_REVISION, "toasterRestocked"));
@@ -239,8 +238,8 @@ public abstract class AbstractCodecTest {
     }
 
     /**
-     * Builds the {@link NormalizedNode} representation of {@link DataCodecTest#testedMakeToasterInput}
-     * 
+     * Builds the {@link NormalizedNode} representation of {@link DataCodecTest#testedMakeToasterInput}.
+     *
      * @return {@link NormalizedNode} representation
      */
     private static NormalizedNode<?, ?> createMakeToasterInput() {

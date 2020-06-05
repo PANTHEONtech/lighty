@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Swagger initializer for lighty.io
+ * Swagger initializer for lighty.io.
  * @author juraj.veverka
  */
 public class SwaggerLighty extends AbstractLightyModule {
@@ -57,7 +57,7 @@ public class SwaggerLighty extends AbstractLightyModule {
         LOG.info("initializing swagger {}", restConfConfiguration.getJsonRestconfServiceType());
 
         ContextHandlerCollection contexts = new ContextHandlerCollection();
-        ServletContextHandler mainHandler =   new ServletContextHandler(contexts, APIDOC_PATH, true, false);
+        ServletContextHandler mainHandler = new ServletContextHandler(contexts, APIDOC_PATH, true, false);
         //replace all slash characters from the beginning of the string
         String basePathString = restConfConfiguration.getRestconfServletContextPath().replaceAll("^/+", "");
         LOG.info("basePath: {}", basePathString);
@@ -65,12 +65,15 @@ public class SwaggerLighty extends AbstractLightyModule {
         switch (restConfConfiguration.getJsonRestconfServiceType()) {
             case DRAFT_02: {
                 mountPointSwaggerGeneratorDraft02 =
-                        new MountPointSwaggerGeneratorDraft02(lightyServices.getDOMSchemaService(), lightyServices.getDOMMountPointService(), basePathString);
-                ApiDocGeneratorDraftO2 apiDocGeneratorDraft02 = new ApiDocGeneratorDraftO2(lightyServices.getDOMSchemaService(), basePathString);
+                        new MountPointSwaggerGeneratorDraft02(lightyServices.getDOMSchemaService(),
+                                lightyServices.getDOMMountPointService(), basePathString);
+                ApiDocGeneratorDraftO2 apiDocGeneratorDraft02 =
+                        new ApiDocGeneratorDraftO2(lightyServices.getDOMSchemaService(), basePathString);
                 apiDocService = new ApiDocServiceDraft02(mountPointSwaggerGeneratorDraft02, apiDocGeneratorDraft02);
                 ApiDocApplication apiDocApplication = new ApiDocApplication(apiDocService);
 
-                ServletContainer restServletContainer = new ServletContainer(ResourceConfig.forApplication(apiDocApplication));
+                ServletContainer restServletContainer =
+                        new ServletContainer(ResourceConfig.forApplication(apiDocApplication));
                 ServletHolder restServletHolder = new ServletHolder(restServletContainer);
 
                 LOG.info("initializing swagger doc generator at http(s)://{hostname:port}{}/apis", APIDOC_PATH);
@@ -81,12 +84,15 @@ public class SwaggerLighty extends AbstractLightyModule {
             }
             case DRAFT_18: {
                 mountPointSwaggerGeneratorRFC8040 =
-                        new MountPointSwaggerGeneratorRFC8040(lightyServices.getDOMSchemaService(), lightyServices.getDOMMountPointService(),basePathString);
-                ApiDocGeneratorRFC8040 apiDocGeneratorRFC8040 = new ApiDocGeneratorRFC8040(lightyServices.getDOMSchemaService(), basePathString);
+                        new MountPointSwaggerGeneratorRFC8040(lightyServices.getDOMSchemaService(),
+                                lightyServices.getDOMMountPointService(),basePathString);
+                ApiDocGeneratorRFC8040 apiDocGeneratorRFC8040 =
+                        new ApiDocGeneratorRFC8040(lightyServices.getDOMSchemaService(), basePathString);
                 apiDocService = new ApiDocServiceRFC8040(mountPointSwaggerGeneratorRFC8040, apiDocGeneratorRFC8040);
                 ApiDocApplication apiDocApplication = new ApiDocApplication(apiDocService);
 
-                ServletContainer restServletContainer = new ServletContainer(ResourceConfig.forApplication(apiDocApplication));
+                ServletContainer restServletContainer =
+                        new ServletContainer(ResourceConfig.forApplication(apiDocApplication));
                 ServletHolder restServletHolder = new ServletHolder(restServletContainer);
 
                 LOG.info("initializing swagger doc generator at http(s)://{hostname:port}{}/18/apis", APIDOC_PATH);

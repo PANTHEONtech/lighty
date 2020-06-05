@@ -36,8 +36,7 @@ public class SampleConfigTest {
         final ControllerConfiguration config =
                 ControllerConfigUtils.getConfiguration(new FileInputStream(new File(sampleConfigUrl.toURI())));
 
-        final LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
-        final LightyController lightyController = lightyControllerBuilder
+        final LightyController lightyController = LightyControllerBuilder
                 .from(config)
                 .build();
         lightyController.start().get();

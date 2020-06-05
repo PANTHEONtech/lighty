@@ -38,13 +38,13 @@ import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 /**
- * Basic tests for {@link DataCodec} class
+ * Basic tests for {@link DataCodec} class.
  *
  */
 public class DataCodecTest extends AbstractCodecTest {
 
     /**
-     * Deserialization of {@link Container} as top root element
+     * Deserialization of {@link Container} as top root element.
      */
     @Test
     public void testDeserializeData_container() {
@@ -64,10 +64,7 @@ public class DataCodecTest extends AbstractCodecTest {
     }
 
     /**
-     * "Serialization" of {@link Container} as top root element
-     * 
-     * @throws IOException
-     * @throws XMLStreamException
+     * "Serialization" of {@link Container} as top root element.
      */
     @Test
     public void testConvertBindingIndependentIntoBindingAware_container() throws IOException, XMLStreamException {
@@ -78,7 +75,7 @@ public class DataCodecTest extends AbstractCodecTest {
     }
 
     /**
-     * "Serialization" of {@link RpcInput} object
+     * "Serialization" of {@link RpcInput} object.
      */
     @Test
     public void testConvertBiIntoBaRpc_rpcInput() {
@@ -109,7 +106,6 @@ public class DataCodecTest extends AbstractCodecTest {
 
         Assert.assertNotNull(deserializeNotification);
         Assert.assertEquals(EXPECTED_ONE, deserializeNotification.getValue().iterator().next().getValue());
-        System.out.println(deserializeNotification);
     }
 
     @Test
@@ -121,7 +117,8 @@ public class DataCodecTest extends AbstractCodecTest {
 
     @Test
     public void testDeserializeIdentifier() {
-        YangModuleInfo restconfInfo = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126.$YangModuleInfoImpl.getInstance();
+        YangModuleInfo restconfInfo = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126
+                .$YangModuleInfoImpl.getInstance();
         SchemaContext schemaContext = getSchemaContext(Collections.singletonList(restconfInfo));
         DataCodec<Toaster> dataCodec = new DataCodec<>(schemaContext);
         String yangInstanceIdentifierString = dataCodec.deserializeIdentifier(TOASTER_YANG_INSTANCE_IDENTIFIER);
@@ -137,7 +134,9 @@ public class DataCodecTest extends AbstractCodecTest {
 
     @Test(expected = Exception.class)
     public void testSerializeXMLError_invalidErrorXML() {
-        SchemaContext schemaContext = getSchemaContext(Collections.singletonList(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126.$YangModuleInfoImpl.getInstance()));
+        SchemaContext schemaContext = getSchemaContext(Collections.singletonList(
+                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126
+                        .$YangModuleInfoImpl.getInstance()));
         DataCodec<Toaster> dataCodec = new DataCodec<>(schemaContext);
         dataCodec.serializeXMLError(loadResourceAsString("error.xml"));
     }
@@ -145,7 +144,9 @@ public class DataCodecTest extends AbstractCodecTest {
     @Test
     public void convertToNormalizedNode_list() {
         SampleList sampleList =
-                new SampleListBuilder().withKey(new SampleListKey("name")).setName("name").setValue((short) 1).build();
+                new SampleListBuilder()
+                        .withKey(new SampleListKey("name"))
+                        .setName("name").setValue((short) 1).build();
         DataCodec<SampleList> codec = new DataCodec<>(this.schemaContext);
 
         Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> convertToNormalizedNode =

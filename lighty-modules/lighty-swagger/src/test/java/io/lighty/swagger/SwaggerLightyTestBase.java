@@ -27,7 +27,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 
 /**
- * Base class for lighty-swagger tests handlin starting and shutting-down of lighty with restConf and swagger module
+ * Base class for lighty-swagger tests handlin starting and shutting-down of lighty with restConf and swagger module.
  */
 public abstract class SwaggerLightyTestBase {
 
@@ -44,9 +44,9 @@ public abstract class SwaggerLightyTestBase {
     @BeforeClass(timeOut = 60_000)
     public void startControllerAndRestConf() throws Exception {
         LOG.info("Building LightyController");
-        LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
-        lightyController = lightyControllerBuilder.from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(
-                RestConfConfigUtils.YANG_MODELS)).build();
+        lightyController = LightyControllerBuilder
+                .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(RestConfConfigUtils.YANG_MODELS))
+                .build();
 
         LOG.info("Starting LightyController (waiting 10s after start)");
         ListenableFuture<Boolean> started = lightyController.start();

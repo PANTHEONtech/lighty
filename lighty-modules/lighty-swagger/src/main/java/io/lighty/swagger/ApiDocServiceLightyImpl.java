@@ -10,19 +10,18 @@ package io.lighty.swagger;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-import org.opendaylight.netconf.sal.rest.doc.api.ApiDocService;
-import org.opendaylight.netconf.sal.rest.doc.mountpoints.MountPointSwagger;
-import org.opendaylight.netconf.sal.rest.doc.swagger.ApiDeclaration;
-import org.opendaylight.netconf.sal.rest.doc.swagger.ResourceList;
-
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import org.opendaylight.netconf.sal.rest.doc.api.ApiDocService;
+import org.opendaylight.netconf.sal.rest.doc.mountpoints.MountPointSwagger;
+import org.opendaylight.netconf.sal.rest.doc.swagger.ApiDeclaration;
+import org.opendaylight.netconf.sal.rest.doc.swagger.ResourceList;
 
 public abstract class ApiDocServiceLightyImpl implements ApiDocService {
 

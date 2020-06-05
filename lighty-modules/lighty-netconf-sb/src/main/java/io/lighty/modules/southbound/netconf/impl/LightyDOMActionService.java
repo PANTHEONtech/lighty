@@ -64,8 +64,8 @@ public final class LightyDOMActionService implements DOMActionService {
             }
 
             @Override
-            public void onFailure(final Throwable t) {
-                settableFuture.set(new SimpleDOMActionResult(ImmutableSet.of(new ActionRpcError(t))));
+            public void onFailure(final Throwable cause) {
+                settableFuture.set(new SimpleDOMActionResult(ImmutableSet.of(new ActionRpcError(cause))));
             }
         }, MoreExecutors.directExecutor());
         return settableFuture;
@@ -78,10 +78,10 @@ public final class LightyDOMActionService implements DOMActionService {
 
     private static final class ActionRpcError implements RpcError {
 
-        private final Throwable t;
+        private final Throwable cause;
 
-        private ActionRpcError(final Throwable t) {
-            this.t = t;
+        private ActionRpcError(final Throwable cause) {
+            this.cause = cause;
         }
 
         @Override
@@ -101,7 +101,7 @@ public final class LightyDOMActionService implements DOMActionService {
 
         @Override
         public String getMessage() {
-            return this.t.getMessage();
+            return this.cause.getMessage();
         }
 
         @Override
@@ -111,7 +111,7 @@ public final class LightyDOMActionService implements DOMActionService {
 
         @Override
         public Throwable getCause() {
-            return this.t;
+            return this.cause;
         }
 
         @Override

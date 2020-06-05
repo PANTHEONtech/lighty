@@ -51,24 +51,25 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
 
     @Test
     public void testBaseServiceGetDataMock() {
-        YangInstanceIdentifier YII = YangInstanceIdentifier.builder()
+        YangInstanceIdentifier yangInstanceId = YangInstanceIdentifier.builder()
                 .node(NetconfState.QNAME)
                 .node(Schemas.QNAME)
                 .node(Schema.QNAME)
                 .nodeWithKey(Schema.QNAME, QName.create(Schema.QNAME, "identifier"), "listkeyvalue1")
                 .build();
 
-        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true);
         DOMRpcService domRpcService = mock(DOMRpcService.class);
 
-        NetconfNmdaBaseServiceImpl baseService = new NetconfNmdaBaseServiceImpl(new NodeId("node1"), domRpcService, schemaContext);
+        NetconfNmdaBaseServiceImpl baseService = new NetconfNmdaBaseServiceImpl(new NodeId("node1"),
+                domRpcService, schemaContext);
 
-        baseService.getData(Operational.QNAME, Optional.of(YII), Optional.empty(), Optional.empty(),
+        baseService.getData(Operational.QNAME, Optional.of(yangInstanceId), Optional.empty(), Optional.empty(),
                 Optional.empty(), Optional.empty(), Optional.empty());
 
         ArgumentCaptor<SchemaPath> capturedSchemaPath = ArgumentCaptor.forClass(SchemaPath.class);
         ArgumentCaptor<NormalizedNode> capturedNN = ArgumentCaptor.forClass(NormalizedNode.class);
-        Mockito.verify(domRpcService, times(1)).invokeRpc(capturedSchemaPath.capture(), capturedNN.capture());
+        Mockito.verify(domRpcService, times(1))
+                .invokeRpc(capturedSchemaPath.capture(), capturedNN.capture());
         assertTrue(capturedNN.getValue() instanceof ContainerNode);
         Collection<DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>> children =
                 ((ContainerNode) capturedNN.getValue()).getValue();
@@ -81,39 +82,45 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
                 .filter(child -> child.getIdentifier().getNodeType().getLocalName().equals("filter-spec")).findAny();
         assertTrue(filter.isPresent());
 
+        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true);
         NetconfMessage netconfMessage = transformer.toRpcRequest(capturedSchemaPath.getValue(), capturedNN.getValue());
         Element getData = getSpecificElementSubtree(netconfMessage.getDocument().getDocumentElement(),
                 NETCONF_GET_DATA_QNAME.getNamespace().toString(), NETCONF_GET_DATA_QNAME.getLocalName());
         assertNotNull(getData);
-        assertNotNull(getSpecificElementSubtree(getData, NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "datastore"));
-        Element subtreeFilter = getSpecificElementSubtree(getData, NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "subtree-filter");
+        assertNotNull(getSpecificElementSubtree(getData,
+                NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "datastore"));
+        Element subtreeFilter = getSpecificElementSubtree(getData,
+                NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "subtree-filter");
         assertNotNull(subtreeFilter);
-        assertNotNull(getSpecificElementSubtree(subtreeFilter, NetconfState.QNAME.getNamespace().toString(), "netconf-state"));
+        assertNotNull(getSpecificElementSubtree(subtreeFilter,
+                NetconfState.QNAME.getNamespace().toString(),
+                "netconf-state"));
     }
 
     @Test
     public void testBaseServiceGetDataFullMock() {
-        YangInstanceIdentifier YII = YangInstanceIdentifier.builder()
+        YangInstanceIdentifier yangInstanceId = YangInstanceIdentifier.builder()
                 .node(NetconfState.QNAME)
                 .node(Schemas.QNAME)
                 .node(Schema.QNAME)
                 .nodeWithKey(Schema.QNAME, QName.create(Schema.QNAME, "identifier"), "listkeyvalue1")
                 .build();
 
-        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true);
         DOMRpcService domRpcService = mock(DOMRpcService.class);
 
         Set<QName> originFilter = new HashSet<>();
         originFilter.add(Learned.QNAME);
         originFilter.add(Dynamic.QNAME);
 
-        NetconfNmdaBaseServiceImpl baseService = new NetconfNmdaBaseServiceImpl(new NodeId("node1"), domRpcService, schemaContext);
-        baseService.getData(Operational.QNAME, Optional.of(YII), Optional.of(true), Optional.of(42),
+        NetconfNmdaBaseServiceImpl baseService = new NetconfNmdaBaseServiceImpl(new NodeId("node1"),
+                domRpcService, schemaContext);
+        baseService.getData(Operational.QNAME, Optional.of(yangInstanceId), Optional.of(true), Optional.of(42),
                 Optional.of(originFilter), Optional.empty(), Optional.of(true));
 
         ArgumentCaptor<SchemaPath> capturedSchemaPath = ArgumentCaptor.forClass(SchemaPath.class);
         ArgumentCaptor<NormalizedNode> capturedNN = ArgumentCaptor.forClass(NormalizedNode.class);
-        Mockito.verify(domRpcService, times(1)).invokeRpc(capturedSchemaPath.capture(), capturedNN.capture());
+        Mockito.verify(domRpcService, times(1))
+                .invokeRpc(capturedSchemaPath.capture(), capturedNN.capture());
         assertTrue(capturedNN.getValue() instanceof ContainerNode);
         Collection<DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>> children =
                 ((ContainerNode) capturedNN.getValue()).getValue();
@@ -125,24 +132,34 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
         assertTrue(hasSpecificChild(children, "max-depth"));
         assertTrue(hasSpecificChild(children, "origin-filters"));
         assertTrue(hasSpecificChild(children, "config-filter"));
+
+        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true);
         NetconfMessage netconfMessage = transformer.toRpcRequest(capturedSchemaPath.getValue(), capturedNN.getValue());
         Element getData = getSpecificElementSubtree(netconfMessage.getDocument().getDocumentElement(),
                 NETCONF_GET_DATA_QNAME.getNamespace().toString(), NETCONF_GET_DATA_QNAME.getLocalName());
         assertNotNull(getData);
-        assertNotNull(getSpecificElementSubtree(getData, NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "datastore"));
-        Element subtreeFilter = getSpecificElementSubtree(getData, NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "subtree-filter");
+        assertNotNull(getSpecificElementSubtree(getData,
+                NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "datastore"));
+        Element subtreeFilter = getSpecificElementSubtree(getData,
+                NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "subtree-filter");
         assertNotNull(subtreeFilter);
-        assertNotNull(getSpecificElementSubtree(subtreeFilter, NetconfState.QNAME.getNamespace().toString(), "netconf-state"));
-        assertNotNull(getSpecificElementSubtree(getData, NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "config-filter"));
-        assertNotNull(getSpecificElementSubtree(getData, NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "origin-filter"));
-        assertNotNull(getSpecificElementSubtree(getData, NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "origin-filter", 1));
-        assertNotNull(getSpecificElementSubtree(getData, NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "max-depth"));
-        assertNotNull(getSpecificElementSubtree(getData, NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "with-origin"));
+        assertNotNull(getSpecificElementSubtree(subtreeFilter,
+                NetconfState.QNAME.getNamespace().toString(), "netconf-state"));
+        assertNotNull(getSpecificElementSubtree(getData,
+                NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "config-filter"));
+        assertNotNull(getSpecificElementSubtree(getData,
+                NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "origin-filter"));
+        assertNotNull(getSpecificElementSubtree(getData,
+                NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "origin-filter", 1));
+        assertNotNull(getSpecificElementSubtree(getData,
+                NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "max-depth"));
+        assertNotNull(getSpecificElementSubtree(getData,
+                NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "with-origin"));
     }
 
     @Test
     public void testBaseServiceEditDataMock() {
-        YangInstanceIdentifier YII = YangInstanceIdentifier.builder()
+        YangInstanceIdentifier yangInstanceId = YangInstanceIdentifier.builder()
                 .node(NetconfState.QNAME)
                 .node(Schemas.QNAME)
                 .node(Schema.QNAME)
@@ -154,15 +171,17 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
                         .of(Schema.QNAME, QName.create(Schema.QNAME, "identifier"), "listkeyvalue1"))
                 .build();
 
-        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true);
         DOMRpcService domRpcService = mock(DOMRpcService.class);
 
-        NetconfNmdaBaseServiceImpl baseService = new NetconfNmdaBaseServiceImpl(new NodeId("node1"), domRpcService, schemaContext);
-        baseService.editData(Running.QNAME, Optional.of(schema), YII, Optional.of(ModifyAction.MERGE), Optional.of(ModifyAction.CREATE));
+        NetconfNmdaBaseServiceImpl baseService = new NetconfNmdaBaseServiceImpl(new NodeId("node1"),
+                domRpcService, schemaContext);
+        baseService.editData(Running.QNAME, Optional.of(schema), yangInstanceId, Optional.of(ModifyAction.MERGE),
+                Optional.of(ModifyAction.CREATE));
 
         ArgumentCaptor<SchemaPath> capturedSchemaPath = ArgumentCaptor.forClass(SchemaPath.class);
         ArgumentCaptor<NormalizedNode> capturedNN = ArgumentCaptor.forClass(NormalizedNode.class);
-        Mockito.verify(domRpcService, times(1)).invokeRpc(capturedSchemaPath.capture(), capturedNN.capture());
+        Mockito.verify(domRpcService, times(1))
+                .invokeRpc(capturedSchemaPath.capture(), capturedNN.capture());
         assertTrue(capturedNN.getValue() instanceof ContainerNode);
         Collection<DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>> children =
                 ((ContainerNode) capturedNN.getValue()).getValue();
@@ -171,15 +190,21 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
         assertTrue(hasSpecificChild(children, "datastore"));
         assertTrue(hasSpecificChild(children, "default-operation"));
         assertTrue(hasSpecificChild(children, "edit-content"));
+
+        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true);
         NetconfMessage netconfMessage = transformer.toRpcRequest(capturedSchemaPath.getValue(), capturedNN.getValue());
         Element editData = getSpecificElementSubtree(netconfMessage.getDocument().getDocumentElement(),
                 NETCONF_EDIT_DATA_QNAME.getNamespace().toString(), NETCONF_EDIT_DATA_QNAME.getLocalName());
         assertNotNull(editData);
-        assertNotNull(getSpecificElementSubtree(editData, NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "datastore"));
-        assertNotNull(getSpecificElementSubtree(editData, NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "default-operation"));
-        Element config = getSpecificElementSubtree(editData, NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "config");
+        assertNotNull(getSpecificElementSubtree(editData,
+                NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "datastore"));
+        assertNotNull(getSpecificElementSubtree(editData,
+                NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "default-operation"));
+        Element config = getSpecificElementSubtree(editData,
+                NETCONF_NMDA_EXTENSION_QNAME.getNamespace().toString(), "config");
         assertNotNull(config);
-        assertNotNull(getSpecificElementSubtree(config, NetconfState.QNAME.getNamespace().toString(), "netconf-state"));
+        assertNotNull(getSpecificElementSubtree(config,
+                NetconfState.QNAME.getNamespace().toString(), "netconf-state"));
     }
 
 }

@@ -9,7 +9,6 @@ package io.lighty.core.common.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.net.URI;
 import java.util.Objects;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
@@ -60,14 +59,14 @@ public final class ModuleId {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
+    public boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (!(o instanceof ModuleId)) {
+        if (!(obj instanceof ModuleId)) {
             return false;
         }
-        final ModuleId moduleId = (ModuleId) o;
+        final ModuleId moduleId = (ModuleId) obj;
         return Objects.equals(this.name, moduleId.name) && Objects.equals(this.revision, moduleId.revision) && Objects
                 .equals(this.nameSpace, moduleId.nameSpace);
     }

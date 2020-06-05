@@ -35,12 +35,16 @@ public final class ControllerConfigUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(ControllerConfigUtils.class);
 
+    private ControllerConfigUtils() {
+    }
+
     /**
      * This list of models comes from odl-mdsal-models feature
      * mvn:org.opendaylight.mdsal.model/features-mdsal-model
      * and various controller artifacts containing core yang files.
      * This is also recommended default model set for majority of Lighty controller applications.
      */
+    @SuppressWarnings("checkstyle:LineLength") // kept long lines for brevity
     public static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana.afn.safi.rev130704.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.$YangModuleInfoImpl.getInstance(),
@@ -72,12 +76,10 @@ public final class ControllerConfigUtils {
 
     /**
      * Read configuration from InputStream representing JSON configuration data.
-     * @param jsonConfigInputStream
-     *   InputStream representing JSON configuration.
-     * @return
-     *   Instance of LightyController configuration data.
-     * @throws ConfigurationException
-     *   Thrown in case that JSON configuration is not readable or incorrect, or yang model resources cannot be loaded.
+     * @param jsonConfigInputStream InputStream representing JSON configuration.
+     * @return Instance of LightyController configuration data.
+     * @throws ConfigurationException Thrown in case that JSON configuration is not readable or incorrect,
+     *      or yang model resources cannot be loaded.
      */
     public static ControllerConfiguration getConfiguration(final InputStream jsonConfigInputStream)
             throws ConfigurationException {
@@ -109,20 +111,24 @@ public final class ControllerConfigUtils {
             controllerConfiguration = mapper.treeToValue(controllerNode,
                     ControllerConfiguration.class);
             if (controllerNode.has(DatastoreConfigurationUtils.DATASTORECTX_CONFIG_ROOT_ELEMENT_NAME)) {
-                JsonNode configDatastoreCtxNode = controllerNode.path(DatastoreConfigurationUtils.DATASTORECTX_CONFIG_ROOT_ELEMENT_NAME);
-                controllerConfiguration.setConfigDatastoreContext(
-                        DatastoreConfigurationUtils.createDatastoreContext(configDatastoreCtxNode, LogicalDatastoreType.CONFIGURATION));
+                JsonNode configDatastoreCtxNode =
+                        controllerNode.path(DatastoreConfigurationUtils.DATASTORECTX_CONFIG_ROOT_ELEMENT_NAME);
+                controllerConfiguration.setConfigDatastoreContext(DatastoreConfigurationUtils
+                        .createDatastoreContext(configDatastoreCtxNode, LogicalDatastoreType.CONFIGURATION));
             } else {
                 LOG.warn("JSON configuration for Config DataStore context is missing, using default one.");
-                controllerConfiguration.setConfigDatastoreContext(DatastoreConfigurationUtils.createDefaultConfigDatastoreContext());
+                controllerConfiguration.setConfigDatastoreContext(
+                        DatastoreConfigurationUtils.createDefaultConfigDatastoreContext());
             }
             if (controllerNode.has(DatastoreConfigurationUtils.DATASTORECTX_OPERATIONAL_ROOT_ELEMENT_NAME)) {
-                JsonNode operDatastoreCtxNode = controllerNode.path(DatastoreConfigurationUtils.DATASTORECTX_OPERATIONAL_ROOT_ELEMENT_NAME);
-                controllerConfiguration.setOperDatastoreContext(
-                        DatastoreConfigurationUtils.createDatastoreContext(operDatastoreCtxNode, LogicalDatastoreType.OPERATIONAL));
+                JsonNode operDatastoreCtxNode = controllerNode.path(
+                        DatastoreConfigurationUtils.DATASTORECTX_OPERATIONAL_ROOT_ELEMENT_NAME);
+                controllerConfiguration.setOperDatastoreContext(DatastoreConfigurationUtils
+                        .createDatastoreContext(operDatastoreCtxNode, LogicalDatastoreType.OPERATIONAL));
             } else {
                 LOG.warn("JSON configuration for Operational DataStore context is missing, using default one.");
-                controllerConfiguration.setOperDatastoreContext(DatastoreConfigurationUtils.createDefaultOperationalDatastoreContext());
+                controllerConfiguration.setOperDatastoreContext(
+                        DatastoreConfigurationUtils.createDefaultOperationalDatastoreContext());
             }
             if (controllerNode.has(SCHEMA_SERVICE_CONFIG_ELEMENT_NAME)) {
                 jsonPath.append(JSON_PATH_DELIMITER).append(SCHEMA_SERVICE_CONFIG_ELEMENT_NAME);
@@ -139,11 +145,12 @@ public final class ControllerConfigUtils {
                         Set<YangModuleInfo> modelsFromClasspath = YangModuleUtils.getModelsFromClasspath(moduleIds);
                         controllerConfiguration.getSchemaServiceConfig().setModels(modelsFromClasspath);
                     } else {
-                        throw new ConfigurationException(String.format("Expected JSON array at %s", jsonPath.toString()));
+                        throw new ConfigurationException(String.format("Expected JSON array at %s",
+                                jsonPath.toString()));
                     }
                 } else {
-                    throw new ConfigurationException(String.format("JSON controller config file is missing %s element !",
-                            jsonPath.toString()));
+                    throw new ConfigurationException(
+                            String.format("JSON controller config file is missing %s element !", jsonPath.toString()));
                 }
             } else {
                 throw new ConfigurationException(String.format("JSON controller config file is missing %s element !",
@@ -172,8 +179,7 @@ public final class ControllerConfigUtils {
 
     /**
      * Get typical single node configuration with default model set.
-     * @return
-     *   Instance of LightyController configuration data.
+     * @return Instance of LightyController configuration data.
      * @throws ConfigurationException if unable to find akka config files
      */
     public static ControllerConfiguration getDefaultSingleNodeConfiguration()
@@ -183,10 +189,8 @@ public final class ControllerConfigUtils {
 
     /**
      * Get typical single node configuration with custom model set.
-     * @param additionalModels
-     *    List of models which is used in addition to default model set.
-     * @return
-     *    Instance of LightyController configuration data.
+     * @param additionalModels List of models which is used in addition to default model set.
+     * @return Instance of LightyController configuration data.
      * @throws ConfigurationException if unable to find akka config files
      */
     public static ControllerConfiguration getDefaultSingleNodeConfiguration(final Set<YangModuleInfo> additionalModels)
@@ -198,8 +202,10 @@ public final class ControllerConfigUtils {
                 .collect(Collectors.toSet());
         controllerConfiguration.getSchemaServiceConfig().setModels(allModels);
 
-        controllerConfiguration.setConfigDatastoreContext(DatastoreConfigurationUtils.createDefaultConfigDatastoreContext());
-        controllerConfiguration.setOperDatastoreContext(DatastoreConfigurationUtils.createDefaultOperationalDatastoreContext());
+        controllerConfiguration.setConfigDatastoreContext(
+                DatastoreConfigurationUtils.createDefaultConfigDatastoreContext());
+        controllerConfiguration.setOperDatastoreContext(
+                DatastoreConfigurationUtils.createDefaultOperationalDatastoreContext());
 
         return controllerConfiguration;
     }
@@ -222,7 +228,7 @@ public final class ControllerConfigUtils {
         try {
             akkaConfig = ConfigFactory.parseFile(new File(pathToConfig));
         } catch (ConfigException e) {
-            LOG.debug("Cannot read Akka config from filesystem: " + pathToConfig, e);
+            LOG.debug("Cannot read Akka config from filesystem: {}", pathToConfig, e);
         }
         if (akkaConfig == null || akkaConfig.isEmpty()) {
             // read from JAR resources on classpath
