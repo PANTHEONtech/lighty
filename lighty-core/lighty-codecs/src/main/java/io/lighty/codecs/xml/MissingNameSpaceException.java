@@ -13,13 +13,16 @@ import java.util.Map;
 public class MissingNameSpaceException extends DocumentedException {
     private static final long serialVersionUID = 1L;
 
-    public MissingNameSpaceException(final String message, final DocumentedException.ErrorType errorType, final DocumentedException.ErrorTag errorTag,
+    public MissingNameSpaceException(final String message, final DocumentedException.ErrorType errorType,
+                                     final DocumentedException.ErrorTag errorTag,
                                      final DocumentedException.ErrorSeverity errorSeverity) {
-        this(message, errorType, errorTag, errorSeverity, Collections.<String, String> emptyMap());
+        this(message, errorType, errorTag, errorSeverity, Collections.emptyMap());
     }
 
-    public MissingNameSpaceException(final String message, final DocumentedException.ErrorType errorType, final DocumentedException.ErrorTag errorTag,
-                                     final DocumentedException.ErrorSeverity errorSeverity, final Map<String, String> errorInfo){
-        super(message,errorType,errorTag,errorSeverity,errorInfo);
+    public MissingNameSpaceException(final String message, final DocumentedException.ErrorType errorType,
+                                     final DocumentedException.ErrorTag errorTag,
+                                     final DocumentedException.ErrorSeverity errorSeverity,
+                                     final Map<String, String> errorInfo) {
+        super(message, errorType, errorTag, errorSeverity, errorInfo);
     }
 }

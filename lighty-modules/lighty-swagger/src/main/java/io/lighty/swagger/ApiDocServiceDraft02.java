@@ -8,21 +8,21 @@
 
 package io.lighty.swagger;
 
-import org.opendaylight.netconf.sal.rest.doc.api.ApiDocService;
+import java.util.Objects;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import org.opendaylight.netconf.sal.rest.doc.impl.ApiDocGeneratorDraftO2;
+import org.opendaylight.netconf.sal.rest.doc.impl.BaseYangSwaggerGenerator;
 import org.opendaylight.netconf.sal.rest.doc.impl.MountPointSwaggerGeneratorDraft02;
 import org.opendaylight.netconf.sal.rest.doc.swagger.ApiDeclaration;
 import org.opendaylight.netconf.sal.rest.doc.swagger.ResourceList;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import java.util.Objects;
+public class ApiDocServiceDraft02 extends ApiDocServiceLightyImpl {
 
-public class ApiDocServiceDraft02 extends ApiDocServiceLightyImpl implements ApiDocService {
+    private final BaseYangSwaggerGenerator apiDocGeneratorDraft02;
 
-    private final ApiDocGeneratorDraftO2 apiDocGeneratorDraft02;
-
-    public ApiDocServiceDraft02(MountPointSwaggerGeneratorDraft02 mountPointSwaggerGeneratorDraft02, ApiDocGeneratorDraftO2 apiDocGeneratorDraft02) {
+    public ApiDocServiceDraft02(MountPointSwaggerGeneratorDraft02 mountPointSwaggerGeneratorDraft02,
+                                ApiDocGeneratorDraftO2 apiDocGeneratorDraft02) {
         super(Objects.requireNonNull(mountPointSwaggerGeneratorDraft02).getMountPointSwagger());
         this.apiDocGeneratorDraft02 = apiDocGeneratorDraft02;
     }

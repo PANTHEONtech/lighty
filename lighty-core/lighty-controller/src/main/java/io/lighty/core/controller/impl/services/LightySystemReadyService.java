@@ -14,7 +14,8 @@ import org.opendaylight.infrautils.ready.SystemReadyMonitor;
 import org.opendaylight.infrautils.ready.SystemState;
 
 /**
- * This service provides API to control state of {@link SystemReadyMonitor} service provided by {@link LightyController}.
+ * This service provides API to control state of {@link SystemReadyMonitor} service provided by
+ * {@link LightyController}.
  * Methods of this service should be called by lighty application after {@link LightyController} has been started and
  * after plugins are in ready state.
  * TODO: upstream implementation of {@link SystemReadyMonitor} needs serious refactoring.

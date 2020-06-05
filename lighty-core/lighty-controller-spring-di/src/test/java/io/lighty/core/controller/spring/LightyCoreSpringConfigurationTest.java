@@ -98,7 +98,8 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
     DOMMountPointService domMountPointServiceTestProperty;
 
     @Autowired
-    org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService controllerDOMNotificationPublishServiceTestProperty;
+    org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService
+            controllerDOMNotificationPublishServiceTestProperty;
 
     @Autowired
     DOMNotificationPublishService domNotificationPublishServiceTestProperty;
@@ -110,7 +111,8 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
     DOMNotificationService domNotificationServiceTestProperty;
 
     @Autowired
-    org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry controllerDOMNotificationSubscriptionListenerRegistryTestProperty;
+    org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry
+            controllerDOMNotificationSubscriptionListenerRegistryTestProperty;
 
     @Autowired
     DOMNotificationSubscriptionListenerRegistry domNotificationSubscriptionListenerRegistryTestProperty;
@@ -192,7 +194,8 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
     NotificationService notificationServiceTestProperty;
 
     @Autowired
-    org.opendaylight.controller.md.sal.binding.api.NotificationPublishService controllerBindingNotificationPublishServiceTestProperty;
+    org.opendaylight.controller.md.sal.binding.api.NotificationPublishService
+            controllerBindingNotificationPublishServiceTestProperty;
 
     @Autowired
     NotificationPublishService bindingNotificationPublishServiceTestProperty;
@@ -297,8 +300,7 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
         public LightyController initLightyController() throws LightyLaunchException, InterruptedException {
             try {
                 LOG.info("Building LightyController Core");
-                final LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
-                final LightyController lightyController = lightyControllerBuilder
+                final LightyController lightyController = LightyControllerBuilder
                         .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(Collections.emptySet()))
                         .build();
                 LOG.info("Starting LightyController");
@@ -313,6 +315,7 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
         }
 
         @Override
+        @SuppressWarnings("checkstyle:illegalCatch")
         public void shutdownLightyController(LightyController lightyController) throws LightyLaunchException {
             try {
                 LOG.info("Shutting down LightyController ...");

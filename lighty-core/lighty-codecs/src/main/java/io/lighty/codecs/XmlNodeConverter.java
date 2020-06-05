@@ -7,8 +7,10 @@
  */
 package io.lighty.codecs;
 
+import com.google.common.io.Closeables;
 import io.lighty.codecs.api.ConverterUtils;
 import io.lighty.codecs.api.NodeConverter;
+import io.lighty.codecs.api.SerializationException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
@@ -38,12 +40,10 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
-import com.google.common.io.Closeables;
-import io.lighty.codecs.api.SerializationException;
 
 /**
  * The implementation of {@link NodeConverter} which serializes and deserializes binding independent
- * representation into/from XML representation
+ * representation into/from XML representation.
  *
  * @see JsonNodeConverter
  */
@@ -55,7 +55,7 @@ public class XmlNodeConverter implements NodeConverter {
     private static final XMLOutputFactory XML_OUT_FACTORY;
 
     /**
-     * Static initialization of the {@link XmlBindingSerializerImpl#XML_OUT_FACTORY}
+     * Static initialization of the {@link XmlBindingSerializerImpl#XML_OUT_FACTORY}.
      */
     static {
         XML_IN_FACTORY = XMLInputFactory.newInstance();
@@ -67,8 +67,8 @@ public class XmlNodeConverter implements NodeConverter {
 
     /**
      * The only constructor will create an instance of {@link XmlNodeConverter} with the given
-     * {@link SchemaContext}. This schema context will be used for proper RPC and Node resolution
-     * 
+     * {@link SchemaContext}. This schema context will be used for proper RPC and Node resolution.
+     *
      * @param schemaContext initial schema context
      */
     public XmlNodeConverter(SchemaContext schemaContext) {
@@ -77,9 +77,9 @@ public class XmlNodeConverter implements NodeConverter {
 
     /**
      * This method serializes the given {@link NormalizedNode} into its XML string representation.
-     * 
+     *
      * @see NodeConverter#serializeData(SchemaNode, NormalizedNode)
-     * 
+     *
      * @param schemaNode the parent schema node where the nodes exist
      * @param normalizedNode {@link NormalizedNode} to be serialized
      * @return {@link StringWriter} implementation of {@link Writer} is returned
@@ -102,10 +102,10 @@ public class XmlNodeConverter implements NodeConverter {
     /**
      * This method serializes the input or output of a RPC given as {@link NormalizedNode}
      * representation into XML string representation.
+     *
      * <p>
-     * To obtain correct {@link SchemaNode} use {@link ConverterUtils#loadRpc(SchemaContext, QName)}
-     * method
-     * 
+     * To obtain correct {@link SchemaNode} use {@link ConverterUtils#loadRpc(SchemaContext, QName)} method
+     *
      * @param schemaNode input or output {@link SchemaNode}
      * @param normalizedNode {@link NormalizedNode} representation of input or output
      * @return XML string representation of provided BI nodes. It utilizes the {@link StringWriter}
@@ -140,13 +140,13 @@ public class XmlNodeConverter implements NodeConverter {
      * into {@link NormalizedNode}s. During deserialization of RPC input and output a proper
      * {@link SchemaNode} (given for input or output) must be passed. This may be obtained via
      * {@link ConverterUtils#loadRpc(SchemaContext, QName)}
-     * 
+     *
      * @param schemaNode parent schema node which contains information about the input data
      * @param inputData XML input
      * @return an {@link Optional} representation of {@link NormalizedNode}. If the deserialization
      *         process finished incorrectly an empty value will be present
      * @throws SerializationException if it was not possible to deserialize the input data
-     * 
+     *
      * @throws IllegalArgumentException if a problem occurs during reading the input
      */
     @Override
@@ -170,12 +170,8 @@ public class XmlNodeConverter implements NodeConverter {
     }
 
     /**
-     * Utility method to obtain an instance of {@link NormalizedNodeWriter} by usign the {@link Writer}
-     * 
-     * @param schemaContext
-     * @param backingWriter
-     * @param pathToParent
-     * @return
+     * Utility method to obtain an instance of {@link NormalizedNodeWriter} by usign the {@link Writer}.
+     *
      */
     private static NormalizedNodeWriter createNormalizedNodeWriter(SchemaContext schemaContext, Writer backingWriter,
             SchemaPath pathToParent) {
@@ -184,11 +180,11 @@ public class XmlNodeConverter implements NodeConverter {
     }
 
     /**
-     * Creates a new {@link NormalizedNodeWriter}
-     * 
+     * Creates a new {@link NormalizedNodeWriter}.
+     *
      * @see XMLStreamNormalizedNodeStreamWriter#create(XMLStreamWriter, SchemaContext)
      * @see XMLStreamNormalizedNodeStreamWriter#create(XMLStreamWriter, SchemaContext, SchemaPath)
-     * 
+     *
      * @param schemaContext the root schema context
      * @param backingWriter used backing writer
      * @param pathToParent path to parent, may be the same as {@link SchemaContext} param
@@ -207,8 +203,8 @@ public class XmlNodeConverter implements NodeConverter {
 
     /**
      * Utility method which returns a new instance of {@link XMLStreamWriter} obtained via
-     * {@link XmlNodeConverter#XML_OUT_FACTORY}. This factory is namespace aware by default
-     * 
+     * {@link XmlNodeConverter#XML_OUT_FACTORY}. This factory is namespace aware by default.
+     *
      * @param backingWriter backing {@link Writer}
      * @return a fresh instance of {@link XMLStreamWriter}
      * @throws IllegalStateException if it's not possible to obtain the instance
@@ -227,7 +223,7 @@ public class XmlNodeConverter implements NodeConverter {
      * This method is similar to the {@link Closeables#closeQuietly(Reader)} or other 'closeQuietly
      * methods. It takes the {@link XMLStreamReader} as parameter checks for null and tries to close it
      * while consuming the {@link IOException}. If the {@link IOException} occurs it will be logged.
-     * 
+     *
      * @param xmlStreamReader the given {@link XMLStreamReader} may be null
      */
     public static void closeQuietly(XMLStreamReader xmlStreamReader) {
@@ -235,7 +231,7 @@ public class XmlNodeConverter implements NodeConverter {
             try {
                 xmlStreamReader.close();
             } catch (XMLStreamException e) {
-                LOG.warn(e.getMessage(), e);
+                LOG.warn("Unable to close!", e);
             }
         }
     }

@@ -76,9 +76,9 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
 
     public DataCodec(final SchemaContext schemaContext) {
         final BindingNormalizedNodeCodecRegistry registry = new BindingNormalizedNodeCodecRegistry(
-            StreamWriterGenerator.create(JavassistUtils.forClassPool(ClassPool.getDefault())));
+                StreamWriterGenerator.create(JavassistUtils.forClassPool(ClassPool.getDefault())));
         this.codec = new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
-            registry);
+                registry);
         this.schemaContext = schemaContext;
         this.codec.onGlobalContextUpdated(schemaContext);
         this.deserializeIdentifierCodec = new DeserializeIdentifierCodec(schemaContext);
@@ -119,6 +119,11 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
     @Override
     public YangInstanceIdentifier deserializeIdentifier(final InstanceIdentifier<T> identifier) {
         return this.codec.toNormalized(identifier);
+    }
+
+    @Override
+    public String deserializeIdentifier(final YangInstanceIdentifier identifier) {
+        return this.deserializeIdentifierCodec.deserialize(identifier);
     }
 
     @Override
@@ -177,7 +182,7 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
         final NormalizedNodeResult resultHolder = new NormalizedNodeResult();
         final NormalizedNodeStreamWriter writer = ImmutableNormalizedNodeStreamWriter.from(resultHolder);
 
-        try (final XmlParserStream xmlParser = XmlParserStream.create(writer, this.schemaContext, schemaNode)) {
+        try (XmlParserStream xmlParser = XmlParserStream.create(writer, this.schemaContext, schemaNode)) {
             final Document doc = XmlUtil.readXmlToDocument(body);
             final XmlElement element = XmlElement.fromDomDocument(doc);
             final Element domElement = element.getDomElement();
@@ -186,11 +191,6 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
         } catch (SAXException | IOException | XMLStreamException | URISyntaxException e) {
             throw new RestconfDocumentedException(e.getMessage(), e);
         }
-    }
-
-    @Override
-    public String deserializeIdentifier(final YangInstanceIdentifier identifier) {
-        return this.deserializeIdentifierCodec.deserialize(identifier);
     }
 
     @Override

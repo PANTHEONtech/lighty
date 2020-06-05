@@ -27,8 +27,8 @@ public class SystemReadyMonitorTest {
         Assert.assertTrue(SystemState.BOOTING.equals(systemReadyMonitor.getSystemState()));
         systemReadyMonitor.registerListener(listener1);
         systemReadyMonitor.registerListener(listener2);
-        int i = systemReadyMonitor.onSystemBootFailed();
-        Assert.assertEquals(2, i);
+        int listenerCount = systemReadyMonitor.onSystemBootFailed();
+        Assert.assertEquals(2, listenerCount);
         Assert.assertTrue(SystemState.FAILURE.equals(systemReadyMonitor.getSystemState()));
         verify(listener1, times(0)).onSystemBootReady();
         verify(listener2, times(0)).onSystemBootReady();
@@ -49,8 +49,8 @@ public class SystemReadyMonitorTest {
         Assert.assertTrue(SystemState.BOOTING.equals(systemReadyMonitor.getSystemState()));
         systemReadyMonitor.registerListener(listener1);
         systemReadyMonitor.registerListener(listener2);
-        int i = systemReadyMonitor.onSystemBootReady();
-        Assert.assertEquals(2, i);
+        int listenerCount = systemReadyMonitor.onSystemBootReady();
+        Assert.assertEquals(2, listenerCount);
         Assert.assertTrue(SystemState.ACTIVE.equals(systemReadyMonitor.getSystemState()));
         verify(listener1, times(1)).onSystemBootReady();
         verify(listener2, times(1)).onSystemBootReady();

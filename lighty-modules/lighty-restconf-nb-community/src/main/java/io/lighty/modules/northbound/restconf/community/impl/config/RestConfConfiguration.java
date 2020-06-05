@@ -168,25 +168,25 @@ public class RestConfConfiguration {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
+    public boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        RestConfConfiguration that = (RestConfConfiguration) o;
-        return webSocketPort == that.webSocketPort &&
-                httpPort == that.httpPort &&
-                Objects.equals(domDataBroker, that.domDataBroker) &&
-                Objects.equals(schemaService, that.schemaService) &&
-                Objects.equals(domRpcService, that.domRpcService) &&
-                Objects.equals(domNotificationService, that.domNotificationService) &&
-                Objects.equals(domMountPointService, that.domMountPointService) &&
-                Objects.equals(domSchemaService, that.domSchemaService) &&
-                Objects.equals(inetAddress, that.inetAddress) &&
-                jsonRestconfServiceType == that.jsonRestconfServiceType &&
-                Objects.equals(restconfServletContextPath, that.restconfServletContextPath);
+        RestConfConfiguration that = (RestConfConfiguration) obj;
+        return webSocketPort == that.webSocketPort
+                && httpPort == that.httpPort
+                && Objects.equals(domDataBroker, that.domDataBroker)
+                && Objects.equals(schemaService, that.schemaService)
+                && Objects.equals(domRpcService, that.domRpcService)
+                && Objects.equals(domNotificationService, that.domNotificationService)
+                && Objects.equals(domMountPointService, that.domMountPointService)
+                && Objects.equals(domSchemaService, that.domSchemaService)
+                && Objects.equals(inetAddress, that.inetAddress)
+                && jsonRestconfServiceType == that.jsonRestconfServiceType
+                && Objects.equals(restconfServletContextPath, that.restconfServletContextPath);
     }
 
     @Override

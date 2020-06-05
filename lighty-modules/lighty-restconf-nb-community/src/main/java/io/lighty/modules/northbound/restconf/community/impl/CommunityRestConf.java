@@ -7,6 +7,7 @@
  */
 package io.lighty.modules.northbound.restconf.community.impl;
 
+import com.google.common.base.Throwables;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.modules.northbound.restconf.community.impl.config.JsonRestConfServiceType;
 import io.lighty.server.LightyServerBuilder;
@@ -139,18 +140,21 @@ public class CommunityRestConf extends AbstractLightyModule {
         switch (this.jsonRestconfServiceType) {
             case DRAFT_02:
                 final Application restconfApplication = new RestconfApplication(controllerContext, stats);
-                final ServletContainer servletContainer = new ServletContainer(ResourceConfig.forApplication(restconfApplication));
+                final ServletContainer servletContainer = new ServletContainer(ResourceConfig
+                    .forApplication(restconfApplication));
                 jaxrs = new ServletHolder(servletContainer);
                 break;
             case DRAFT_18:
                 final Application restconfApplication8040 =
-                new org.opendaylight.restconf.nb.rfc8040.RestconfApplication(schemaCtxHandler,
-                        domMountPointServiceHandler, servicesWrapper);
-                final ServletContainer servletContainer8040 = new ServletContainer(ResourceConfig.forApplication(restconfApplication8040));
+                    new org.opendaylight.restconf.nb.rfc8040.RestconfApplication(schemaCtxHandler,
+                    domMountPointServiceHandler, servicesWrapper);
+                final ServletContainer servletContainer8040 = new ServletContainer(ResourceConfig
+                    .forApplication(restconfApplication8040));
                 jaxrs = new ServletHolder(servletContainer8040);
                 break;
             default:
-                throw new UnsupportedOperationException("unsupported restconf service type: " + this.jsonRestconfServiceType.name());
+                throw new UnsupportedOperationException("unsupported restconf service type: "
+                    + this.jsonRestconfServiceType.name());
         }
         LOG.info("RestConf init complete, starting Jetty");
         LOG.info("http address:port {}:{}, url prefix: {}", this.inetAddress.toString(), this.httpPort,
@@ -172,7 +176,7 @@ public class CommunityRestConf extends AbstractLightyModule {
             if (startDefault) {
                 startServer();
             }
-        } catch (final Exception e) {
+        } catch (final IllegalStateException e) {
             LOG.error("Failed to start jetty: ", e);
         }
         final float delay = (System.nanoTime() - startTime) / 1_000_000f;
@@ -180,6 +184,7 @@ public class CommunityRestConf extends AbstractLightyModule {
         return true;
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     @Override
     protected boolean stopProcedure() {
         boolean stopFailed = false;
@@ -202,6 +207,7 @@ public class CommunityRestConf extends AbstractLightyModule {
         return !stopFailed;
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     public void startServer() {
         if (this.jettyServer != null && !this.jettyServer.isStopped()) {
             return;
@@ -209,10 +215,10 @@ public class CommunityRestConf extends AbstractLightyModule {
         try {
             this.jettyServer = this.lightyServerBuilder.build();
             this.jettyServer.start();
-            LOG.info("Jetty started");
         } catch (final Exception e) {
-            LOG.error("Failed to start jetty: ", e);
-            throw new RuntimeException(e);
+            Throwables.throwIfUnchecked(e);
+            throw new IllegalStateException("Failed to start jetty!", e);
         }
+        LOG.info("Jetty started");
     }
 }

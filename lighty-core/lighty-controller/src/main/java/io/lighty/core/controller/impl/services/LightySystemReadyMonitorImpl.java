@@ -47,7 +47,7 @@ public class LightySystemReadyMonitorImpl implements LightySystemReadyService, S
 
 
     @Override
-    public SystemState getSystemState() {
+    public synchronized SystemState getSystemState() {
         LOG.info("getSystemState: {}", state);
         return state;
     }
@@ -82,10 +82,11 @@ public class LightySystemReadyMonitorImpl implements LightySystemReadyService, S
     }
 
     @Override
-    public String getFailureCause() {
+    public synchronized String getFailureCause() {
         return failureCause == null ? "" : failureCause.getMessage();
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     private void notifyListener(final SystemReadyListener listener) {
         try {
             listener.onSystemBootReady();
