@@ -7,15 +7,14 @@
  */
 package io.lighty.modules.southbound.netconf.impl;
 
-import org.opendaylight.aaa.encrypt.AAAEncryptionService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.nio.charset.Charset;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.xml.bind.DatatypeConverter;
-import java.nio.charset.Charset;
+import org.opendaylight.aaa.encrypt.AAAEncryptionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AAAEncryptionServiceImpl implements AAAEncryptionService {
 
@@ -31,7 +30,7 @@ public class AAAEncryptionServiceImpl implements AAAEncryptionService {
 
     @Override
     public String encrypt(String data) {
-        if (data != null && data.length() != 0 ) {
+        if (data != null && data.length() != 0) {
             try {
                 synchronized (encryptCipher) {
                     byte[] cryptobytes = encryptCipher.doFinal(data.getBytes(Charset.defaultCharset()));

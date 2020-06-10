@@ -46,8 +46,8 @@ public abstract class CommunityRestConfTestBase {
         LOG.info("LightyController started");
 
         LOG.info("Building CommunityRestConf");
-        CommunityRestConfBuilder builder = new CommunityRestConfBuilder();
-        builder.from(RestConfConfigUtils.getDefaultRestConfConfiguration(lightyController.getServices()));
+        CommunityRestConfBuilder builder = CommunityRestConfBuilder.from(
+                RestConfConfigUtils.getDefaultRestConfConfiguration(lightyController.getServices()));
         communityRestConf = builder.build();
 
         LOG.info("Starting CommunityRestConf (waiting 10s after start)");

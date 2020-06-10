@@ -21,27 +21,30 @@ public class NetconfTopologyPluginBuilder {
     private NetconfConfiguration configuration;
     private ExecutorService executorService = null;
 
-    /**
-     * Create new instance of {@link NetconfTopologyPluginBuilder} from {@link NetconfConfiguration}
-     * and {@link LightyServices}.
-     * @param configuration input single-node Netconf configuration.
-     * @param lightyServices services from {@link LightyController}.
-     * @return instance of {@link NetconfTopologyPluginBuilder}.
-     */
-    public NetconfTopologyPluginBuilder from(final NetconfConfiguration configuration,
-                                             final LightyServices lightyServices) {
-        this.configuration = configuration;
-        this.lightyServices = lightyServices;
-        return this;
+    public NetconfTopologyPluginBuilder(LightyServices services, NetconfConfiguration config) {
+        this.lightyServices = services;
+        this.configuration = config;
     }
 
     /**
-     * Inject executor service to execute futures
-     * @param executorService
+     * Create new instance of {@link NetconfTopologyPluginBuilder} from {@link NetconfConfiguration}
+     * and {@link LightyServices}.
+     * @param config input single-node Netconf configuration.
+     * @param services services from {@link LightyController}.
      * @return instance of {@link NetconfTopologyPluginBuilder}.
      */
-    public NetconfTopologyPluginBuilder withExecutorService(ExecutorService executorService) {
-        this.executorService = executorService;
+    public static NetconfTopologyPluginBuilder from(final NetconfConfiguration config,
+                                             final LightyServices services) {
+        return new NetconfTopologyPluginBuilder(services, config);
+    }
+
+    /**
+     * Inject executor service to execute futures.
+     * @param executor injeted executor service.
+     * @return instance of {@link NetconfTopologyPluginBuilder}.
+     */
+    public NetconfTopologyPluginBuilder withExecutorService(ExecutorService executor) {
+        this.executorService = executor;
         return this;
     }
 
