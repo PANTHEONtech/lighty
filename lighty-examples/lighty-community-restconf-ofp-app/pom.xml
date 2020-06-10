@@ -32,5 +32,9 @@
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-openflow-sb</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
+        </dependency>
     </dependencies>
 </project>

@@ -41,6 +41,7 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
         return true;
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     @Override
     protected boolean stopProcedure() {
         try {
