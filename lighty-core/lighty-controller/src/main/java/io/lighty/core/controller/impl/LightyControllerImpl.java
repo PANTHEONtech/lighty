@@ -602,7 +602,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public List<ObjectRegistration<YangModuleInfo>> registerModuleInfos(Iterable<? extends YangModuleInfo> yangModuleInfos) {
+    public List<ObjectRegistration<YangModuleInfo>> registerModuleInfos(
+            Iterable<? extends YangModuleInfo> yangModuleInfos) {
         return moduleInfoBackedContext.registerModuleInfos(yangModuleInfos);
     }
 

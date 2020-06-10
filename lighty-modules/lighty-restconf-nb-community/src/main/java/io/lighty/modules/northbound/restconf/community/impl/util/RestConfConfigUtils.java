@@ -26,9 +26,12 @@ public final class RestConfConfigUtils {
     private static final Logger LOG = LoggerFactory.getLogger(RestConfConfigUtils.class);
     public static final String RESTCONF_CONFIG_ROOT_ELEMENT_NAME = "restconf";
     public static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.monitoring.rev170126.$YangModuleInfoImpl.getInstance()
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621
+                    .$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126
+                    .$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.monitoring.rev170126
+                    .$YangModuleInfoImpl.getInstance()
             );
 
     private RestConfConfigUtils() {
@@ -114,6 +117,29 @@ public final class RestConfConfigUtils {
     }
 
     /**
+     * Copy existing RestConf configuration and use provided lightyServices
+     * to populate references to necessary Lighty services.
+     * @param restConfConfiguration
+     *   Object representation of configuration data.
+     * @param lightyServices
+     *   This object instace contains references to initialized Lighty services required for RestConf.
+     * @return
+     *   Object representation of configuration data.
+     */
+    public static RestConfConfiguration getRestConfConfiguration(final RestConfConfiguration restConfConfiguration,
+            final LightyServices lightyServices) {
+        final RestConfConfiguration config = new RestConfConfiguration(restConfConfiguration);
+        config.setDomDataBroker(lightyServices.getClusteredDOMDataBroker());
+        config.setSchemaService(lightyServices.getDOMSchemaService());
+        config.setDomRpcService(lightyServices.getDOMRpcService());
+        config.setDomActionService(lightyServices.getDOMActionService());
+        config.setDomNotificationService(lightyServices.getDOMNotificationService());
+        config.setDomMountPointService(lightyServices.getDOMMountPointService());
+        config.setDomSchemaService(lightyServices.getDOMSchemaService());
+        return config;
+    }
+
+    /**
      * Get default RestConf configuration using provided Lighty services.
      * @param lightyServices
      *   This object instace contains references to initialized Lighty services required for RestConf.
@@ -135,28 +161,5 @@ public final class RestConfConfigUtils {
      */
     public static RestConfConfiguration getDefaultRestConfConfiguration() {
         return new RestConfConfiguration();
-    }
-
-    /**
-     * Copy existing RestConf configuration and use provided lightyServices
-     * to populate references to necessary Lighty services.
-     * @param restConfConfiguration
-     *   Object representation of configuration data.
-     * @param lightyServices
-     *   This object instace contains references to initialized Lighty services required for RestConf.
-     * @return
-     *   Object representation of configuration data.
-     */
-    public static RestConfConfiguration getRestConfConfiguration(final RestConfConfiguration restConfConfiguration,
-            final LightyServices lightyServices) {
-        final RestConfConfiguration config = new RestConfConfiguration(restConfConfiguration);
-        config.setDomDataBroker(lightyServices.getClusteredDOMDataBroker());
-        config.setSchemaService(lightyServices.getDOMSchemaService());
-        config.setDomRpcService(lightyServices.getDOMRpcService());
-        config.setDomActionService(lightyServices.getDOMActionService());
-        config.setDomNotificationService(lightyServices.getDOMNotificationService());
-        config.setDomMountPointService(lightyServices.getDOMMountPointService());
-        config.setDomSchemaService(lightyServices.getDOMSchemaService());
-        return config;
     }
 }

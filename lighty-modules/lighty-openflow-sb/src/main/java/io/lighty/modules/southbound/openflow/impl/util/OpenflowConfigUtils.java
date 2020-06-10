@@ -13,13 +13,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableSet;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.southbound.openflow.impl.config.OpenflowpluginConfiguration;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
+import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class OpenflowConfigUtils {
 
@@ -27,6 +26,11 @@ public final class OpenflowConfigUtils {
 
     private static final String OFP_CONFIG_ROOT_ELEMENT_NAME = "openflow";
 
+    private OpenflowConfigUtils() {
+        // Utility class, constructor hidden.
+    }
+
+    @SuppressWarnings("checkstyle:LineLength")
     public static final Set<YangModuleInfo> OFP_MODELS = ImmutableSet.of(
             org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.opendaylight.async.config.service.rev170619.$YangModuleInfoImpl.getInstance(),
@@ -96,8 +100,8 @@ public final class OpenflowConfigUtils {
     );
 
     /**
-     * Create new default configuration for OFP
-     * @return Default OFP configuration
+     * Create new default configuration for OFP.
+     * @return Default OFP configuration.
      */
     public static OpenflowpluginConfiguration getDefaultOfpConfiguration() {
         try (InputStream inputStream = OpenflowConfigUtils.class.getClassLoader()
@@ -114,7 +118,7 @@ public final class OpenflowConfigUtils {
      * @param jsonConfigInputStream InputStream representing JSON configuration.
      * @return Instance of OFP configuration data.
      * @throws ConfigurationException Thrown if JSON configuration cannot be deserializable to JSON
-     * tree nodes or cannot bind JSON tree node to type.
+     *     tree nodes or cannot bind JSON tree node to type.
      */
     public static OpenflowpluginConfiguration getOfpConfiguration(final InputStream jsonConfigInputStream)
             throws ConfigurationException {

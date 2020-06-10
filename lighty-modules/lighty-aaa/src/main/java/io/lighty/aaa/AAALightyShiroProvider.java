@@ -71,7 +71,7 @@ public final class AAALightyShiroProvider {
     private static final Logger LOG = LoggerFactory.getLogger(AAALightyShiroProvider.class);
 
     private static AAALightyShiroProvider INSTANCE;
-    private static IIDMStore iidmStore;
+    private IIDMStore iidmStore;
 
     private final List<Handler> handlers;
     private final DataBroker dataBroker;
@@ -240,7 +240,7 @@ public final class AAALightyShiroProvider {
      * @return IIDMStore data store
      */
     public static IIDMStore getIdmStore() {
-        return iidmStore;
+        return INSTANCE.iidmStore;
     }
 
     /**
@@ -249,7 +249,7 @@ public final class AAALightyShiroProvider {
      * @param store data store
      */
     public static void setIdmStore(final IIDMStore store) {
-        iidmStore = store;
+        INSTANCE.iidmStore = store;
     }
 
     public void close() {

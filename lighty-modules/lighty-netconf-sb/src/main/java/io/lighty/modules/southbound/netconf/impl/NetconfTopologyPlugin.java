@@ -68,7 +68,8 @@ public class NetconfTopologyPlugin extends AbstractLightyModule implements Netco
             final DOMMountPoint domMountPoint = domMountPointOptional.get();
             final Optional<DOMRpcService> domRpcServiceOptional = domMountPoint.getService(DOMRpcService.class);
             if (domRpcServiceOptional.isPresent()) {
-                return Optional.of(new NetconfBaseServiceImpl(nodeId, domRpcServiceOptional.get(), domMountPoint.getSchemaContext()));
+                return Optional.of(new NetconfBaseServiceImpl(nodeId, domRpcServiceOptional.get(),
+                    domMountPoint.getSchemaContext()));
             }
         }
         return Optional.empty();
@@ -81,7 +82,8 @@ public class NetconfTopologyPlugin extends AbstractLightyModule implements Netco
             final DOMMountPoint domMountPoint = domMountPointOptional.get();
             final Optional<DOMRpcService> domRpcServiceOptional = domMountPoint.getService(DOMRpcService.class);
             if (domRpcServiceOptional.isPresent()) {
-                return Optional.of(new NetconfNmdaBaseServiceImpl(nodeId, domRpcServiceOptional.get(), domMountPoint.getSchemaContext()));
+                return Optional.of(new NetconfNmdaBaseServiceImpl(nodeId, domRpcServiceOptional.get(),
+                    domMountPoint.getSchemaContext()));
             }
         }
         return Optional.empty();

@@ -11,14 +11,14 @@ import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.modules.southbound.openflow.impl.config.OpenflowpluginConfiguration;
 import io.lighty.modules.southbound.openflow.impl.config.SwitchConfig;
+import java.util.concurrent.ExecutorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflowplugin.app.forwardingrules.manager.config.rev160511.ForwardingRulesManagerConfigBuilder;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Builder for {@link OpenflowSouthboundPlugin}.
  */
-public class OpenflowSouthboundPluginBuilder {
+public final class OpenflowSouthboundPluginBuilder {
 
     private LightyServices lightyServices;
     private OpenflowpluginConfiguration ofpConfiguration;
@@ -27,39 +27,43 @@ public class OpenflowSouthboundPluginBuilder {
     private PacketProcessingListener ofpPacketListener;
     private ForwardingRulesManagerConfigBuilder forwardingRulesManagerConfigBuilder;
 
+    private OpenflowSouthboundPluginBuilder(LightyServices lightyServices,
+                                            OpenflowpluginConfiguration ofpConfiguration) {
+        this.lightyServices = lightyServices;
+        this.ofpConfiguration = ofpConfiguration;
+        this.switchConnectionProviders = ofpConfiguration.getSwitchConfig();
+    }
+
     /**
      * Create new instance of {@link OpenflowSouthboundPluginBuilder} from {@link OpenflowpluginConfiguration},
      * {@link SwitchConfig} and {@link LightyServices}.
      * @param openflowpluginConfiguration input openflow configuration
-     * @param lightyServices services from {@link LightyController}.
+     * @param services services from {@link LightyController}.
      * @return instance of {@link OpenflowSouthboundPluginBuilder}.
      */
-    public OpenflowSouthboundPluginBuilder from(
+    public static OpenflowSouthboundPluginBuilder from(
             OpenflowpluginConfiguration openflowpluginConfiguration,
-            LightyServices lightyServices) {
-        this.ofpConfiguration = openflowpluginConfiguration;
-        this.switchConnectionProviders = openflowpluginConfiguration.getSwitchConfig();
-        this.lightyServices = lightyServices;
-        return this;
+            LightyServices services) {
+        return new OpenflowSouthboundPluginBuilder(services, openflowpluginConfiguration);
     }
 
     /**
-     * Inject executor service to execute futures
-     * @param executorService instance of {@link ExecutorService}.
+     * Inject executor service to execute futures.
+     * @param executor instance of {@link ExecutorService}.
      * @return instance of {@link OpenflowSouthboundPluginBuilder}.
      */
-    public OpenflowSouthboundPluginBuilder withExecutorService(ExecutorService executorService) {
-        this.executorService = executorService;
+    public OpenflowSouthboundPluginBuilder withExecutorService(ExecutorService executor) {
+        this.executorService = executor;
         return this;
     }
 
     /**
      * Inject Packet Listener, can be used for handling packet-in messages.
-     * @param ofpPacketListener instance of {@link PacketProcessingListener}.
+     * @param listener instance of {@link PacketProcessingListener}.
      * @return instance of {@link OpenflowSouthboundPluginBuilder}.
      */
-    public OpenflowSouthboundPluginBuilder withPacketListener(PacketProcessingListener ofpPacketListener) {
-        this.ofpPacketListener = ofpPacketListener;
+    public OpenflowSouthboundPluginBuilder withPacketListener(PacketProcessingListener listener) {
+        this.ofpPacketListener = listener;
         return this;
     }
 

@@ -90,7 +90,8 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
     }
 
     @Override
-    public ListenableFuture<? extends DOMRpcResult> copyConfig(final QName sourceDatastore, final QName targetDatastore) {
+    public ListenableFuture<? extends DOMRpcResult> copyConfig(final QName sourceDatastore,
+                                                               final QName targetDatastore) {
         Preconditions.checkNotNull(sourceDatastore);
         Preconditions.checkNotNull(targetDatastore);
 

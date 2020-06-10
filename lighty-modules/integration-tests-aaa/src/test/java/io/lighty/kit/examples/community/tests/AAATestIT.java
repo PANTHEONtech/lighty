@@ -68,6 +68,7 @@ public class AAATestIT {
                 .getBytes("UTF-8"));
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     @BeforeMethod
     public void init() {
         LOG.info("start all http clients");
@@ -88,7 +89,7 @@ public class AAATestIT {
         }
     }
 
-    @Test(enabled=false)
+    @Test(enabled = false)
     public void getUsersTest() throws Exception {
         LOG.info("Get all user tests");
         // 1. Get users
@@ -98,7 +99,7 @@ public class AAATestIT {
         getAllAndCheck(httpClientUser, this.newAuthorization, HttpStatus.UNAUTHORIZED_401);
     }
 
-    @Test(enabled=false)
+    @Test(enabled = false)
     public void addUserTest() throws Exception {
         LOG.info("Add new user test");
         // 1. Add new user
@@ -138,7 +139,7 @@ public class AAATestIT {
         getAllAndCheck(httpClientWrongCredentials, this.wrongAuthorization, HttpStatus.UNAUTHORIZED_401);
     }
 
-    @Test(enabled=false)
+    @Test(enabled = false)
     public void getSpecificUsersTest() throws Exception {
         LOG.info("get specific user test");
         // 1. Get new specific user and check if its info is as expected
@@ -146,7 +147,7 @@ public class AAATestIT {
         getAndCheckSpecificUser(ADMIN, this.httpClientUser, this.newAuthorization, false);
     }
 
-    @Test(enabled=false)
+    @Test(enabled = false)
     public void updateUserInfoTest() throws Exception {
         LOG.info("Update user data and try to use them");
         // 1. Update user info
@@ -164,66 +165,66 @@ public class AAATestIT {
         getAllAndCheck(httpClientUser, this.updatedAuthorization, HttpStatus.OK_200);
     }
 
-    @Test(enabled=false)
+    @Test(enabled = false)
     public void deleteUserTest() throws Exception {
         LOG.info("delete user");
         // 1. Try to delete user (self)
         deleteUser(true, this.updatedAuthorization);
     }
 
-    @Test(enabled=false)
+    @Test(enabled = false)
     public void readNotExistingUserExpectError() throws Exception {
         LOG.info("get specific not existing user");
         // 1. Read specific user that does not exist and expect error
         getAndCheckSpecificUser(NEW_USER, this.httpClient, this.authorization, true);
     }
 
-    @Test(enabled=false)
+    @Test(enabled = false)
     public void deleteNotExistingUserExpectError() throws Exception {
         LOG.info("delete specific not existing user");
         // 1. Try to delete user that does not exist and expect error
         deleteUser(false, this.authorization);
     }
 
-    @Test(enabled=false)
+    @Test(enabled = false)
     public void makeRequestCorrectCredentials() throws Exception {
         LOG.info("try to get modules state with correct credentials");
         // 1. Try to make request with wrong credentials expect HttpStatus.UNAUTHORIZED_401 unauthorized
         getModulesState(this.authorization, HttpStatus.OK_200);
     }
 
-    @Test(enabled=false)
+    @Test(enabled = false)
     public void makeRequestWrongCredentials() throws Exception {
         LOG.info("try to get modules state with incorrect credentials");
         // 1. Try to make request with correct credentials expect response
         getModulesState(this.wrongAuthorization, HttpStatus.UNAUTHORIZED_401);
     }
 
-    private ContentResponse getAllAndCheck(final HttpClient client, final String authorization, final int status)
+    private ContentResponse getAllAndCheck(final HttpClient client, final String authorizationHeader, final int status)
             throws Exception {
         final Request request = client.newRequest(PATH_PREFIX + USERS_PATH);
         final ContentResponse response = request
                 .method(HttpMethod.GET)
-                .header(AUTH, authorization)
+                .header(AUTH, authorizationHeader)
                 .send();
         Assert.assertEquals(response.getStatus(), status);
         return response;
     }
 
-    private void getModulesState(final String authorization, final int status) throws Exception {
+    private void getModulesState(final String authorizationHeader, final int status) throws Exception {
         final Request request = httpClient.newRequest(PATH_PREFIX + "restconf/data/ietf-yang-library:modules-state");
         final ContentResponse response = request
                 .method(HttpMethod.GET)
-                .header(AUTH, authorization)
+                .header(AUTH, authorizationHeader)
                 .send();
         Assert.assertEquals(response.getStatus(), status);
     }
 
-    private void deleteUser(final boolean existingUser, final String authorization) throws Exception {
+    private void deleteUser(final boolean existingUser, final String authorizationHeader) throws Exception {
         Request request = httpClient.newRequest(PATH_PREFIX + USERS_PATH + "/newUser@sdn");
         ContentResponse response = request
                 .method(HttpMethod.DELETE)
-                .header(AUTH, authorization)
+                .header(AUTH, authorizationHeader)
                 .send();
         if (existingUser) {
             Assert.assertEquals(response.getStatus(), HttpStatus.NO_CONTENT_204);
@@ -250,13 +251,14 @@ public class AAATestIT {
         Assert.assertEquals(user.getString("description"), "admin user");
     }
 
-    private void getAndCheckSpecificUser(final String user, final HttpClient httpClient, final String authorization,
+    private void getAndCheckSpecificUser(final String user, final HttpClient client,
+                                         final String authorizationHeader,
                                          final boolean statusNotFound) throws Exception {
         final String id = user + "@sdn";
-        Request request = httpClient.newRequest(PATH_PREFIX + USERS_PATH + "/" + id);
+        Request request = client.newRequest(PATH_PREFIX + USERS_PATH + "/" + id);
         ContentResponse response = request
                 .method(HttpMethod.GET)
-                .header(AUTH, authorization)
+                .header(AUTH, authorizationHeader)
                 .send();
         if (statusNotFound) {
             Assert.assertEquals(response.getStatus(), HttpStatus.NOT_FOUND_404);
