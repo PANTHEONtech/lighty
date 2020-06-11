@@ -8,6 +8,9 @@
 
 package io.lighty.aaa.config;
 
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.aaa.cert.api.ICertificateManager;
@@ -27,10 +30,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import java.util.Optional;
-
-import static org.mockito.Mockito.when;
 
 public class CertificateManagerConfigTest {
 

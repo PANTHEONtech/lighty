@@ -8,19 +8,19 @@
 
 package io.lighty.core.controller.spring;
 
-public class LightyLaunchException extends Exception{
+public class LightyLaunchException extends Exception {
     private static final long serialVersionUID = 1L;
 
     public LightyLaunchException() {
         super();
     }
 
-    public LightyLaunchException(final String s) {
-        super(s);
+    public LightyLaunchException(final String message) {
+        super(message);
     }
 
-    public LightyLaunchException(final String s, final Throwable throwable) {
-        super(s, throwable);
+    public LightyLaunchException(final String message, final Throwable throwable) {
+        super(message, throwable);
     }
 
     public LightyLaunchException(final Throwable throwable) {

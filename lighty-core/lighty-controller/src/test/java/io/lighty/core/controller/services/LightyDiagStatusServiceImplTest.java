@@ -8,7 +8,10 @@
 
 package io.lighty.core.controller.services;
 
+import static org.mockito.Mockito.when;
+
 import io.lighty.core.controller.impl.services.LightyDiagStatusServiceImpl;
+import java.util.Collection;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
@@ -21,10 +24,6 @@ import org.opendaylight.infrautils.ready.SystemState;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import java.util.Collection;
-
-import static org.mockito.Mockito.when;
 
 public class LightyDiagStatusServiceImplTest {
 
@@ -43,6 +42,7 @@ public class LightyDiagStatusServiceImplTest {
     }
 
     @Test
+    @SuppressWarnings("checkstyle:VariableDeclarationUsageDistance")
     public void registerTest() {
         diagStatusService = new LightyDiagStatusServiceImpl(systemReadyMonitor);
         ServiceRegistration serviceRegistration = diagStatusService.register(TEST_SERVICE);
@@ -59,6 +59,7 @@ public class LightyDiagStatusServiceImplTest {
     }
 
     @Test
+    @SuppressWarnings("checkstyle:VariableDeclarationUsageDistance")
     public void reportTest() {
         diagStatusService = new LightyDiagStatusServiceImpl(systemReadyMonitor);
         ServiceRegistration serviceRegistration = diagStatusService.register(TEST_SERVICE_2);
@@ -75,14 +76,14 @@ public class LightyDiagStatusServiceImplTest {
     }
 
     private void validateServiceStatus(ServiceStatusSummary serviceStatusSummary, boolean operState,
-                                       ServiceState srv_state) {
+                                       ServiceState srvState) {
         Collection<ServiceDescriptor> statusSummary;
         Assert.assertEquals(serviceStatusSummary.isOperational(), operState);
         Assert.assertEquals(serviceStatusSummary.getSystemReadyState(), SystemState.ACTIVE);
         statusSummary = serviceStatusSummary.getStatusSummary();
 
-        for (ServiceDescriptor srv_desc : statusSummary) {
-            Assert.assertEquals(srv_desc.getServiceState(), srv_state);
+        for (ServiceDescriptor srvDesc : statusSummary) {
+            Assert.assertEquals(srvDesc.getServiceState(), srvState);
         }
     }
 }

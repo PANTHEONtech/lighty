@@ -51,12 +51,13 @@ import org.springframework.context.annotation.Primary;
 
 /**
  * Base lighty.io Configuration class for spring DI.
+ *
  * <p>
  * This configuration needs to implement abstract method {@link #initLightyController()} which returns initialized
  * {@link LightyController} and {@link #shutdownLightyController(LightyController)} which should handle proper
  * {@link LightyController} shutdown process.</p>
- * <p>This configuration initializes all core lighty.io services as spring
- * beans.</p>
+ * <p>This configuration initializes all core lighty.io services as spring beans.</p>
+ *
  * <p>
  * Example:
  * <pre>
@@ -71,7 +72,8 @@ import org.springframework.context.annotation.Primary;
  *     }
  *
  *     &#64;Override
- *     public void shutdownLightyController(&#64;Nonnull LightyController lightyController) throws LightyLaunchException {
+ *     public void shutdownLightyController(&#64;Nonnull LightyController lightyController)
+ *          throws LightyLaunchException {
  *         ...
  *         lightyController.shutdown();
  *         ...
@@ -169,7 +171,8 @@ public abstract class LightyCoreSpringConfiguration {
 
     @Bean(destroyMethod = "")
     @Primary
-    public org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService controllerDOMNotificationPublishService() {
+    public org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService
+        controllerDOMNotificationPublishService() {
         return this.lightyController.getServices().getControllerDOMNotificationPublishService();
     }
 
@@ -190,7 +193,8 @@ public abstract class LightyCoreSpringConfiguration {
     }
 
     @Bean(destroyMethod = "")
-    public org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry controllerDOMNotificationSubscriptionListenerRegistry() {
+    public org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry
+        controllerDOMNotificationSubscriptionListenerRegistry() {
         return this.lightyController.getServices().getControllerDOMNotificationSubscriptionListenerRegistry();
     }
 
@@ -323,7 +327,8 @@ public abstract class LightyCoreSpringConfiguration {
     }
 
     @Bean(destroyMethod = "")
-    public org.opendaylight.controller.md.sal.binding.api.NotificationPublishService controllerBindingNotificationPublishService() {
+    public org.opendaylight.controller.md.sal.binding.api.NotificationPublishService
+        controllerBindingNotificationPublishService() {
         return this.lightyController.getServices().getControllerBindingNotificationPublishService();
     }
 

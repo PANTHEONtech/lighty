@@ -3,6 +3,7 @@ package io.lighty.examples.controllers.restconf.ofp;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
@@ -17,6 +18,7 @@ import io.lighty.modules.southbound.openflow.impl.OpenflowSouthboundPlugin;
 import io.lighty.modules.southbound.openflow.impl.OpenflowSouthboundPluginBuilder;
 import io.lighty.modules.southbound.openflow.impl.config.OpenflowpluginConfiguration;
 import io.lighty.modules.southbound.openflow.impl.util.OpenflowConfigUtils;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,11 +31,12 @@ import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Main {
+public final class Main {
 
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
     private static ShutdownHook shutdownHook;
 
+    @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
     public static void main(final String[] args) throws Exception {
         final long startTime = System.nanoTime();
         LOG.info(".__  .__       .__     __              .__         ________  ___________");
@@ -75,8 +78,10 @@ public class Main {
             );
             final float duration = (System.nanoTime() - startTime) / 1_000_000f;
             LOG.info("Lighty and OFP started in {}ms", duration);
-        } catch (final Exception e) {
-            LOG.error("Main OFP application exception: ", e);
+        } catch (IOException cause) {
+            LOG.error("Main OFP application - could not read configuration: ", cause);
+        } catch (ConfigurationException | ExecutionException | InterruptedException cause) {
+            LOG.error("Main OFP application exception: ", cause);
         }
     }
 
@@ -96,20 +101,19 @@ public class Main {
             throws ConfigurationException, ExecutionException, InterruptedException {
 
         //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
-        final LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
-        final LightyController lightyController = lightyControllerBuilder.from(controllerConfiguration).build();
+        final LightyController lightyController = LightyControllerBuilder.from(controllerConfiguration).build();
         lightyController.start().get();
 
         //2. start RESTCONF server
-        final CommunityRestConfBuilder communityRestConfBuilder = new CommunityRestConfBuilder();
-        final CommunityRestConf communityRestConf = communityRestConfBuilder.from(RestConfConfigUtils
-                .getRestConfConfiguration(restConfConfiguration, lightyController.getServices()))
+        final CommunityRestConf communityRestConf = CommunityRestConfBuilder
+                .from(RestConfConfigUtils.getRestConfConfiguration(restConfConfiguration,
+                        lightyController.getServices()))
                 .build();
         communityRestConf.start();
 
         //3. start OpenFlow SBP
         final OpenflowSouthboundPlugin plugin;
-        plugin = new OpenflowSouthboundPluginBuilder()
+        plugin = OpenflowSouthboundPluginBuilder
                 .from(configuration, lightyController.getServices())
                 .withPacketListener(new PacketInListener())
                 .build();
@@ -128,8 +132,8 @@ public class Main {
             }
 
             @Override
-            public void onFailure(Throwable t) {
-                LOG.error("Exception while initializing OFP", t);
+            public void onFailure(Throwable cause) {
+                LOG.error("Exception while initializing OFP", cause);
             }
         }, Executors.newSingleThreadExecutor());
 
@@ -156,6 +160,7 @@ public class Main {
             this.execute();
         }
 
+        @SuppressWarnings("checkstyle:illegalCatch")
         public void execute() {
             LOG.info("Lighty and OFP shutting down ...");
             final long startTime = System.nanoTime();
@@ -177,5 +182,9 @@ public class Main {
             final float duration = (System.nanoTime() - startTime) / 1_000_000f;
             LOG.info("Lighty and OFP stopped in {}ms", duration);
         }
+    }
+
+    private Main() {
+        // Hide constructor
     }
 }

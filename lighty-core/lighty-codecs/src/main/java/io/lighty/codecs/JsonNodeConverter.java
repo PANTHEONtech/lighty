@@ -7,8 +7,11 @@
  */
 package io.lighty.codecs;
 
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import io.lighty.codecs.api.ConverterUtils;
 import io.lighty.codecs.api.NodeConverter;
+import io.lighty.codecs.api.SerializationException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
@@ -27,13 +30,10 @@ import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeS
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import io.lighty.codecs.api.SerializationException;
 
 /**
  * The implementation of {@link NodeConverter} which serializes and deserializes binding independent
- * representation into/from JSON representation
+ * representation into/from JSON representation.
  *
  * @see XmlNodeConverter
  */
@@ -42,8 +42,8 @@ public class JsonNodeConverter implements NodeConverter {
     private final SchemaContext schemaContext;
 
     /**
-     * The only available constructor
-     * 
+     * The only available constructor.
+
      * @param schemaContext to be used
      */
     public JsonNodeConverter(SchemaContext schemaContext) {
@@ -51,8 +51,8 @@ public class JsonNodeConverter implements NodeConverter {
     }
 
     /**
-     * This method serializes the provided {@link NormalizedNode} into its JSON representation
-     * 
+     * This method serializes the provided {@link NormalizedNode} into its JSON representation.
+     *
      * @param schemaNode {@link SchemaNode} may be obtained via
      *        {@link ConverterUtils#getSchemaNode(SchemaContext, QName)} or
      *        {@link ConverterUtils#getSchemaNode(SchemaContext, String, String, String)}
@@ -80,8 +80,8 @@ public class JsonNodeConverter implements NodeConverter {
     }
 
     /**
-     * This method serializes the {@link NormalizedNode} which represents the input or output of an RPC
-     * 
+     * This method serializes the {@link NormalizedNode} which represents the input or output of an RPC.
+     *
      * @param schemaNode the input or output {@link SchemaNode} of the RPC
      * @param normalizedNode serialized binding independent data
      * @return JSON string representation of the given {@link NormalizedNode}
@@ -116,8 +116,8 @@ public class JsonNodeConverter implements NodeConverter {
     }
 
     /**
-     * Deserializes the given JSON representation into {@link NormalizedNode}s
-     * 
+     * Deserializes the given JSON representation into {@link NormalizedNode}s.
+     *
      * @param schemaNode a correct {@link SchemaNode} may be obtained via
      *        {@link ConverterUtils#getSchemaNode(SchemaContext, QName)} or
      *        {@link ConverterUtils#getSchemaNode(SchemaContext, String, String, String)} or

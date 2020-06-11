@@ -8,11 +8,10 @@
 
 package io.lighty.aaa.config;
 
+import java.math.BigInteger;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.DatastoreConfig;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.math.BigInteger;
 
 public class DatastoreConfigurationConfigTest {
 

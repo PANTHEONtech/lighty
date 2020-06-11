@@ -160,23 +160,23 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.1.1</version>
                     <dependencies>
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
                             <!-- This should match the dependency management on com.puppycrawl.tools:checkstyle above -->
-                            <version>8.18</version>
+                            <version>8.33</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>
-                            <artifactId>sevntu-checkstyle-maven-plugin</artifactId>
-                            <version>1.33.0</version>
+                            <artifactId>sevntu-checks</artifactId>
+                            <version>1.36.0</version>
                         </dependency>
                         <dependency>
                             <groupId>org.opendaylight.odlparent</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>5.0.1</version>
+                            <version>6.0.5</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -193,7 +193,7 @@
                         <dependency>
                             <groupId>org.opendaylight.odlparent</groupId>
                             <artifactId>spotbugs</artifactId>
-                            <version>5.0.1</version>
+                            <version>6.0.5</version>
                         </dependency>
                         <dependency>
                             <!-- The SpotBugs Maven plugin uses SLF4J 1.8 beta 2 -->

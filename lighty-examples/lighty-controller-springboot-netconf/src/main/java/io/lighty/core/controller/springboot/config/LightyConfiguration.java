@@ -39,11 +39,10 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
     protected LightyController initLightyController() throws LightyLaunchException, InterruptedException {
         try {
             LOG.info("Building LightyController Core");
-            final LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
             final Set<YangModuleInfo> mavenModelPaths = new HashSet<>();
             mavenModelPaths.addAll(NetconfConfigUtils.NETCONF_TOPOLOGY_MODELS);
             mavenModelPaths.add($YangModuleInfoImpl.getInstance());
-            final LightyController lightyController = lightyControllerBuilder
+            final LightyController lightyController = LightyControllerBuilder
                     .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(mavenModelPaths))
                     .build();
             LOG.info("Starting LightyController (waiting 10s after start)");
@@ -73,8 +72,7 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
             throws ExecutionException, InterruptedException, ConfigurationException {
         final NetconfConfiguration netconfSBPConfiguration = NetconfConfigUtils.injectServicesToTopologyConfig(
             NetconfConfigUtils.createDefaultNetconfConfiguration(), lightyController.getServices());
-        NetconfTopologyPluginBuilder netconfSBPBuilder = new NetconfTopologyPluginBuilder();
-        final NetconfSBPlugin netconfSouthboundPlugin = netconfSBPBuilder
+        final NetconfSBPlugin netconfSouthboundPlugin = NetconfTopologyPluginBuilder
             .from(netconfSBPConfiguration, lightyController.getServices())
             .build();
         netconfSouthboundPlugin.start().get();

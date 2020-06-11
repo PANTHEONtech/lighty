@@ -15,17 +15,16 @@ import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.southbound.netconf.impl.NetconfCallhomePluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 @Test
 public class CallhomePluginTest {
@@ -42,7 +41,7 @@ public class CallhomePluginTest {
         final NetconfConfiguration configuration =
                 NetconfConfigUtils.createDefaultNetconfConfiguration();
         NetconfConfigUtils.injectServicesToTopologyConfig(configuration, lightyController.getServices());
-        netconfPlugin = new NetconfCallhomePluginBuilder().from(configuration, lightyController.getServices()).build();
+        netconfPlugin = NetconfCallhomePluginBuilder.from(configuration, lightyController.getServices()).build();
     }
 
     @AfterClass
