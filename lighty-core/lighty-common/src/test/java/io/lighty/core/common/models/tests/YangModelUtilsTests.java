@@ -11,23 +11,23 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.collect.ImmutableSet;
 import io.lighty.core.common.models.ModuleId;
 import io.lighty.core.common.models.YangModuleUtils;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 public class YangModelUtilsTests {
 
     private static final String TEST_NAMESPACE = "urn:ietf:params:xml:ns:yang:ietf-inet-types";
     private static final String TEST_NAME = "ietf-inet-types";
     private static final String TEST_REVISION = "2013-07-15";
+    @SuppressWarnings("checkstyle:LineLength")
     private static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana.afn.safi.rev130704.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.$YangModuleInfoImpl.getInstance(),
@@ -37,11 +37,11 @@ public class YangModelUtilsTests {
 
     @DataProvider(name = "equalsTestData")
     public static Object[][] gatEqualsTestData() {
-        ModuleId moduleIdx = new ModuleId("namespace","modulex", "2018-04-23");
-        ModuleId moduleIdy = new ModuleId("namespace","modulex", "2018-04-23");
-        ModuleId moduleIdz = new ModuleId("namespace","modulex", "2018-04-23");
-        ModuleId moduleIdw = new ModuleId("namespace","modulew", "2018-04-23");
-        return new Object[][] {
+        ModuleId moduleIdx = new ModuleId("namespace", "modulex", "2018-04-23");
+        ModuleId moduleIdy = new ModuleId("namespace", "modulex", "2018-04-23");
+        ModuleId moduleIdz = new ModuleId("namespace", "modulex", "2018-04-23");
+        ModuleId moduleIdw = new ModuleId("namespace", "modulew", "2018-04-23");
+        return new Object[][]{
                 //reflexive
                 {moduleIdx, moduleIdx, true},
 
@@ -68,26 +68,29 @@ public class YangModelUtilsTests {
 
     @DataProvider(name = "moduleFilterTestData")
     public static Object[][] getModuleFilterTestData() {
-        return new Object[][] {
-                {
-                        new HashSet<>(Arrays.asList(new ModuleId[] { new ModuleId("urn:TBD:params:xml:ns:yang:network-topology", "network-topology", "2013-10-21") })),
-                        new HashSet<>(Arrays.asList(new String[] { "network-topology", "ietf-inet-types"}))
-                },
-                {
-                        new HashSet<>(Arrays.asList(new ModuleId[] { new ModuleId("urn:ietf:params:xml:ns:yang:ietf-yang-types", "ietf-yang-types", "2013-07-15") })),
-                        new HashSet<>(Arrays.asList(new String[] { "ietf-yang-types" }))
-                },
-                {
-                        new HashSet<>(Arrays.asList(new ModuleId[] { new ModuleId("urn:ietf:params:xml:ns:yang:ietf-inet-types", "ietf-inet-types", "2013-07-15") })),
-                        new HashSet<>(Arrays.asList(new String[] { "ietf-inet-types" }))
-                },
+        return new Object[][]{
+            {
+                new HashSet<>(Arrays.asList(new ModuleId("urn:TBD:params:xml:ns:yang:network-topology",
+                        "network-topology", "2013-10-21"))),
+                new HashSet<>(Arrays.asList("network-topology", "ietf-inet-types"))
+            },
+            {
+                new HashSet<>(Arrays.asList(new ModuleId("urn:ietf:params:xml:ns:yang:ietf-yang-types",
+                        "ietf-yang-types", "2013-07-15"))),
+                new HashSet<>(Arrays.asList("ietf-yang-types"))
+            },
+            {
+                new HashSet<>(Arrays.asList(new ModuleId("urn:ietf:params:xml:ns:yang:ietf-inet-types",
+                        "ietf-inet-types", "2013-07-15"))),
+                new HashSet<>(Arrays.asList("ietf-inet-types"))
+            },
 
         };
     }
 
     @DataProvider(name = "moduleIdStringInits")
     public static Object[][] gatModuleIdStringInits() {
-        return new Object[][] {
+        return new Object[][]{
                 //valid inits
                 {TEST_NAMESPACE, TEST_NAME, TEST_REVISION, true},
                 {"", TEST_NAME, TEST_REVISION, true},
@@ -111,8 +114,10 @@ public class YangModelUtilsTests {
         }
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     @Test(dataProvider = "moduleIdStringInits")
-    public void testCreateInvalidModuleIdsFromStrings(String namespace, String name, String revision, boolean expected) {
+    public void testCreateInvalidModuleIdsFromStrings(String namespace, String name, String revision,
+                                                      boolean expected) {
         try {
             ModuleId testModule = ModuleId.from(namespace, name, revision);
             Assert.assertTrue(testModule.getQName().equals(QName.create(namespace, revision, name)) == expected);
@@ -122,8 +127,7 @@ public class YangModelUtilsTests {
     }
 
     /**
-     * This test requires test dependency:
-     * org.opendaylight.mdsal.model/ietf-topology
+     * This test requires test dependency: org.opendaylight.mdsal.model/ietf-topology.
      */
     @Test
     public void testLoadAllModules() {
@@ -135,20 +139,23 @@ public class YangModelUtilsTests {
         Set<YangModuleInfo> allModelsFromClasspath = YangModuleUtils.getAllModelsFromClasspath();
         Assert.assertNotNull(allModelsFromClasspath);
         for (String expectedModuleName : expectedModuleNames) {
-            long foundModelCount = allModelsFromClasspath.stream().filter(m -> m.getName().getLocalName().equals(expectedModuleName)).count();
+            long foundModelCount = allModelsFromClasspath.stream()
+                    .filter(m -> m.getName().getLocalName().equals(expectedModuleName))
+                    .count();
             Assert.assertTrue(foundModelCount > 0, expectedModuleName + " not found !");
         }
     }
 
     /**
-     * This test requires test dependency:
-     * org.opendaylight.mdsal.model/ietf-topology
+     * This test requires test dependency: org.opendaylight.mdsal.model/ietf-topology.
      */
     @Test(dataProvider = "moduleFilterTestData")
     public void testLoadFilteredModules(Set<ModuleId> filter, Set<String> expectedModuleNames) {
         Set<YangModuleInfo> filteredModelsFromClasspath = YangModuleUtils.getModelsFromClasspath(filter);
         for (String expectedModuleName : expectedModuleNames) {
-            long foundModelCount = filteredModelsFromClasspath.stream().filter(m -> m.getName().getLocalName().equals(expectedModuleName)).count();
+            long foundModelCount = filteredModelsFromClasspath.stream()
+                    .filter(m -> m.getName().getLocalName().equals(expectedModuleName))
+                    .count();
             Assert.assertTrue(foundModelCount > 0, expectedModuleName + " not found !");
         }
     }
@@ -156,7 +163,7 @@ public class YangModelUtilsTests {
     /**
      * This test requires test dependencies:
      * org.opendaylight.mdsal.model/iana-afn-safi
-     * org.opendaylight.mdsal.binding.model.iana/iana-if-type
+     * org.opendaylight.mdsal.binding.model.iana/iana-if-type.
      */
     @Test
     public void testGenerateJSONModelSetConfiguration() {

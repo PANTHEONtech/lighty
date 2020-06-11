@@ -139,7 +139,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private final int maxDataBrokerFutureCallbackPoolSize;
     private final int mailboxCapacity;
     private final boolean metricCaptureEnabled;
-
+    private final LightyDiagStatusServiceImpl lightyDiagStatusService;
+    private final LightySystemReadyMonitorImpl systemReadyMonitor;
     private ActorSystemProviderImpl actorSystemProvider;
     private DatastoreSnapshotRestore datastoreSnapshotRestore;
     private AbstractDataStore configDatastore;
@@ -160,10 +161,10 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private DOMClusterSingletonServiceProviderImpl clusterSingletonServiceProvider;
     private NotificationService notificationService;
     private NotificationPublishService notificationPublishService;
-    private org.opendaylight.controller.md.sal.binding.impl.BindingDOMNotificationPublishServiceAdapter notificationPublishServiceOld;
+    private org.opendaylight.controller.md.sal.binding.impl.BindingDOMNotificationPublishServiceAdapter
+            notificationPublishServiceOld;
     private BindingDOMDataBrokerAdapter domDataBroker;
     private org.opendaylight.controller.md.sal.binding.api.DataBroker domDataBrokerOld;
-    private final LightyDiagStatusServiceImpl lightyDiagStatusService;
     private EventExecutor eventExecutor;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
@@ -182,16 +183,19 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private HeliumNotificationProviderServiceWithInterestListeners notificationProviderServiceOld;
     private org.opendaylight.controller.md.sal.binding.api.DataBroker domPingPongDataBrokerOld;
     private org.opendaylight.controller.md.sal.binding.impl.BindingDOMNotificationServiceAdapter notificatoinServiceOld;
-    private final LightySystemReadyMonitorImpl systemReadyMonitor;
 
     public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
                                 final ClassLoader actorSystemClassLoader,
-                                final ControllerConfiguration.DOMNotificationRouterConfig domNotificationRouterConfig ,
+                                final ControllerConfiguration.DOMNotificationRouterConfig domNotificationRouterConfig,
                                 final String restoreDirectoryPath,
-                                final int maxDataBrokerFutureCallbackQueueSize, final int maxDataBrokerFutureCallbackPoolSize,
-                                final boolean metricCaptureEnabled, final int mailboxCapacity, final Properties distributedEosProperties,
-                                final String moduleShardsConfig, final String modulesConfig, final DatastoreContext configDatastoreContext,
-                                final DatastoreContext operDatastoreContext, final Map<String, Object> datastoreProperties,
+                                final int maxDataBrokerFutureCallbackQueueSize,
+                                final int maxDataBrokerFutureCallbackPoolSize,
+                                final boolean metricCaptureEnabled, final int mailboxCapacity,
+                                final Properties distributedEosProperties,
+                                final String moduleShardsConfig, final String modulesConfig,
+                                final DatastoreContext configDatastoreContext,
+                                final DatastoreContext operDatastoreContext,
+                                final Map<String, Object> datastoreProperties,
                                 final Set<YangModuleInfo> modelSet) {
         super(executorService);
         initSunXMLWriterProperty();
@@ -227,7 +231,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     /**
      * This method replace property of writer from implementation of woodstox writer to internal sun writer.
      */
-    private static final void initSunXMLWriterProperty() {
+    private static void initSunXMLWriterProperty() {
         System.setProperty("javax.xml.stream.XMLOutputFactory", "com.sun.xml.internal.stream.XMLOutputFactoryImpl");
     }
 
@@ -237,12 +241,13 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
         //INIT actor system provider
         this.actorSystemProvider = new ActorSystemProviderImpl(this.actorSystemClassLoader,
-                QuarantinedMonitorActor.props(() -> {}), this.actorSystemConfig);
+                QuarantinedMonitorActor.props(() -> {
+                }), this.actorSystemConfig);
         this.datastoreSnapshotRestore = DatastoreSnapshotRestore.instance(this.restoreDirectoryPath);
 
         //INIT schema context
         this.moduleInfoBackedContext = ModuleInfoBackedContext.create();
-        this.modelSet.forEach( m -> {
+        this.modelSet.forEach(m -> {
             this.moduleInfoBackedContext.registerModuleInfo(m);
         });
         this.schemaService = FixedDOMSchemaService.of(this.moduleInfoBackedContext,
@@ -353,18 +358,18 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         return true;
     }
 
-    private AbstractDataStore prepareDataStore(final DatastoreContext datastoreContext, final String moduleShardsConfig,
-                                               final String modulesConfig,
+    private AbstractDataStore prepareDataStore(final DatastoreContext datastoreContext, final String shardsConfig,
+                                               final String config,
                                                final DOMSchemaService domSchemaService,
-                                               final DatastoreSnapshotRestore datastoreSnapshotRestore,
-                                               final ActorSystemProvider actorSystemProvider) {
-        final ConfigurationImpl configuration = new ConfigurationImpl(moduleShardsConfig, modulesConfig);
+                                               final DatastoreSnapshotRestore snapshotRestore,
+                                               final ActorSystemProvider actorProvider) {
+        final ConfigurationImpl configuration = new ConfigurationImpl(shardsConfig, config);
         final DatastoreContextIntrospector introspector = new DatastoreContextIntrospector(datastoreContext,
                 this.codecOld);
         final DatastoreContextPropertiesUpdater updater = new DatastoreContextPropertiesUpdater(introspector,
                 datastoreProperties);
         return DistributedDataStoreFactory.createInstance(domSchemaService, datastoreContext,
-                datastoreSnapshotRestore, actorSystemProvider, introspector, updater, configuration);
+                snapshotRestore, actorProvider, introspector, updater, configuration);
     }
 
     @Override
@@ -476,7 +481,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     public org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry
-    getControllerDOMNotificationSubscriptionListenerRegistry() {
+        getControllerDOMNotificationSubscriptionListenerRegistry() {
         return this.domNotificationRouterOld;
     }
 
@@ -582,7 +587,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     public org.opendaylight.controller.md.sal.dom.api.DOMNotificationPublishService
-    getControllerDOMNotificationPublishService() {
+        getControllerDOMNotificationPublishService() {
         return this.domNotificationRouterOld;
     }
 
@@ -657,7 +662,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public org.opendaylight.controller.md.sal.binding.api.NotificationService getControllerBindingNotificationService() {
+    public org.opendaylight.controller.md.sal.binding.api.NotificationService
+        getControllerBindingNotificationService() {
         return this.notificatoinServiceOld;
     }
 
@@ -668,7 +674,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     public org.opendaylight.controller.md.sal.binding.api.NotificationPublishService
-    getControllerBindingNotificationPublishService() {
+        getControllerBindingNotificationPublishService() {
         return this.notificationPublishServiceOld;
     }
 

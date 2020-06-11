@@ -41,12 +41,13 @@ import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Main {
+public final class Main {
 
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
     private static final String PASS = "bar";
     private static final String USER = "foo";
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     public static void main(final String[] args) throws Exception {
         final long startTime = System.nanoTime();
         try {
@@ -69,9 +70,9 @@ public class Main {
                         RestConfConfigUtils.getDefaultRestConfConfiguration();
                 startLighty(defaultSingleNodeConfiguration, restConfConfig);
             }
-            final float duration = (System.nanoTime() - startTime)/1_000_000f;
+            final float duration = (System.nanoTime() - startTime) / 1_000_000f;
             LOG.info("Lighty and Restconf started in {}ms", duration);
-        } catch (final Exception e) {
+        } catch (final Throwable e) {
             LOG.error("Main Restconf application exception: ", e);
         }
     }
@@ -80,15 +81,13 @@ public class Main {
             final RestConfConfiguration restconfConfiguration)
                     throws ConfigurationException, ExecutionException, InterruptedException {
         //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
-        final LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
-        final LightyController lightyController = lightyControllerBuilder.from(controllerConfiguration).build();
+        final LightyController lightyController = LightyControllerBuilder.from(controllerConfiguration).build();
         lightyController.start().get();
 
         // 2. start Restconf server
-        final CommunityRestConfBuilder communityRestConfBuilder = new CommunityRestConfBuilder();
         final LightyServerBuilder jettyServerBuilder = new LightyServerBuilder(new InetSocketAddress(
                 restconfConfiguration.getInetAddress(), restconfConfiguration.getHttpPort()));
-        final CommunityRestConf communityRestConf = communityRestConfBuilder.from(RestConfConfigUtils
+        final CommunityRestConf communityRestConf = CommunityRestConfBuilder.from(RestConfConfigUtils
                 .getRestConfConfiguration(restconfConfiguration, lightyController.getServices())).withLightyServer(
                         jettyServerBuilder)
                 .build();
@@ -114,6 +113,12 @@ public class Main {
         main(new String[]{});
     }
 
+    private Main() {
+        /** Hide constructor, this is a utility class **/
+    }
+
+
+    @SuppressWarnings("checkstyle:illegalCatch")
     private static void addCallback(final ListenableFuture<Boolean> start)
             throws InterruptedException {
         final CountDownLatch cdl = new CountDownLatch(1);
@@ -125,13 +130,14 @@ public class Main {
             }
 
             @Override
-            public void onFailure(final Throwable t) {
-                throw new RuntimeException(t);
+            public void onFailure(final Throwable cause) {
+                throw new RuntimeException(cause);
             }
         }, Executors.newSingleThreadExecutor());
         cdl.await();
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     private static class ShutdownHook extends Thread {
 
         private static final Logger LOG = LoggerFactory.getLogger(ShutdownHook.class);
@@ -165,7 +171,7 @@ public class Main {
             } catch (final Exception e) {
                 LOG.error("Exception while shutting down Lighty controller:", e);
             }
-            final float duration = (System.nanoTime() - startTime)/1_000_000f;
+            final float duration = (System.nanoTime() - startTime) / 1_000_000f;
             LOG.info("Lighty and Restconf stopped in {}ms", duration);
         }
     }

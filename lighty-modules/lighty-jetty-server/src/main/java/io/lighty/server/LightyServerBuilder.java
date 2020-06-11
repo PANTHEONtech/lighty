@@ -35,7 +35,7 @@ public class LightyServerBuilder {
     private Server server;
 
     /**
-     * Init new jetty server on specifc port and address wrapped into {@link InetSocketAddress}
+     * Init new jetty server on specifc port and address wrapped into {@link InetSocketAddress}.
      * @param inetSocketAddress - port and address of server
      */
     public LightyServerBuilder(final InetSocketAddress inetSocketAddress) {

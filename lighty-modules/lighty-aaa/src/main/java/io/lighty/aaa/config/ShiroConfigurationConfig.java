@@ -18,6 +18,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.sh
 
 public final class ShiroConfigurationConfig {
 
+    private ShiroConfigurationConfig() {
+    }
+
     public static ShiroConfiguration getDefault() {
         final List<Main> mains = new ArrayList<>();
         mains.add(initMain("tokenAuthRealm", "org.opendaylight.aaa.shiro.realm.TokenAuthRealm"));

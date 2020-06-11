@@ -8,9 +8,8 @@
 package io.lighty.codecs.api;
 
 import io.lighty.codecs.AbstractCodecTest;
-import java.util.Optional;
-
 import io.lighty.codecs.xml.XmlElement;
+import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster;

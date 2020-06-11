@@ -7,6 +7,7 @@
  */
 package io.lighty.codecs.xml;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -68,7 +69,9 @@ public class ValidationException extends Exception {
         return failedValidations;
     }
 
-    public static class ExceptionMessageWithStackTrace {
+    public static class ExceptionMessageWithStackTrace implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         private String message;
         private String stackTrace;
 

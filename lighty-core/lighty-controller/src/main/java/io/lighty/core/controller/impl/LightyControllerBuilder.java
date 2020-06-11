@@ -12,37 +12,36 @@ import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 
 /**
  * Builder for {@link LightyController}.
  */
-public class LightyControllerBuilder {
+public final class LightyControllerBuilder {
 
     private ControllerConfiguration controllerConfiguration;
     private ExecutorService executorService = null;
 
-    public LightyControllerBuilder() {
+    private LightyControllerBuilder(final ControllerConfiguration configuration) {
+        this.controllerConfiguration = configuration;
     }
 
     /**
      * Create new instance of {@link LightyControllerBuilder} from {@link ControllerConfiguration}.
-     * @param controllerConfiguration input Lighty Controller configuration.
+     * @param configuration input Lighty Controller configuration.
      * @return instance of {@link LightyControllerBuilder}.
      */
-    public LightyControllerBuilder from(final ControllerConfiguration controllerConfiguration) {
-        this.controllerConfiguration = controllerConfiguration;
-        return this;
+    public static LightyControllerBuilder from(final ControllerConfiguration configuration) {
+        return new LightyControllerBuilder(configuration);
     }
 
     /**
-     * Inject executor service to execute futures
-     * @param executorService - executor
+     * Inject executor service to execute futures.
+     * @param executor - executor
      * @return instance of {@link LightyControllerBuilder}.
      */
-    public LightyControllerBuilder withExecutorService(final ExecutorService executorService) {
-        this.executorService = executorService;
+    public LightyControllerBuilder withExecutorService(final ExecutorService executor) {
+        this.executorService = executor;
         return this;
     }
 
@@ -51,6 +50,7 @@ public class LightyControllerBuilder {
      * @return instance of LightyController.
      * @throws ConfigurationException if cannot find yang model artifacts.
      */
+    @SuppressWarnings("checkstyle:illegalCatch")
     public LightyController build() throws ConfigurationException {
         try {
             final Set<YangModuleInfo> modelSet = this.controllerConfiguration.getSchemaServiceConfig().getModels();

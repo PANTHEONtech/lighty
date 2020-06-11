@@ -17,7 +17,7 @@ import org.mockito.Mockito;
 import org.testng.Assert;
 
 /**
- * Base class for lighty-swagger tests for different versions of {@link JsonRestConfServiceType}
+ * Base class for lighty-swagger tests for different versions of {@link JsonRestConfServiceType}.
  */
 public abstract class SwaggerLightyTest extends SwaggerLightyTestBase {
 
@@ -69,7 +69,8 @@ public abstract class SwaggerLightyTest extends SwaggerLightyTestBase {
 
     public void testGetDocByModule() {
 
-        final Response response = getSwaggerModule().getApiDocService().getDocByModule(modelName, revisionDate, uriInfo);
+        final Response response = getSwaggerModule().getApiDocService()
+                .getDocByModule(modelName, revisionDate, uriInfo);
 
         Assert.assertEquals(response.getStatus(), 200);
         Assert.assertNotNull(response.getEntity());

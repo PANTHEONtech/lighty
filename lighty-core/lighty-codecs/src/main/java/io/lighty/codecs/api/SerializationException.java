@@ -8,20 +8,17 @@
 package io.lighty.codecs.api;
 
 /**
- * This exception should be thrown when serialization problem occurs
+ * This exception should be thrown when serialization problem occurs.
  */
 public class SerializationException extends Exception {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 2053802415449540367L;
 
-    public SerializationException(Throwable t) {
-        super(t);
+    public SerializationException(Throwable cause) {
+        super(cause);
     }
 
-    public SerializationException(String message, Throwable t) {
-        super(message, t);
+    public SerializationException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

@@ -36,9 +36,9 @@ public abstract class CommunityRestConfTestBase {
     @BeforeClass(timeOut = 60_000)
     public void startControllerAndRestConf() throws Exception {
         LOG.info("Building LightyController");
-        LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
-        lightyController = lightyControllerBuilder.from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(
-                RestConfConfigUtils.YANG_MODELS)).build();
+        lightyController = LightyControllerBuilder
+                .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(RestConfConfigUtils.YANG_MODELS))
+                .build();
 
         LOG.info("Starting LightyController (waiting 10s after start)");
         ListenableFuture<Boolean> started = lightyController.start();
@@ -46,8 +46,8 @@ public abstract class CommunityRestConfTestBase {
         LOG.info("LightyController started");
 
         LOG.info("Building CommunityRestConf");
-        CommunityRestConfBuilder builder = new CommunityRestConfBuilder();
-        builder.from(RestConfConfigUtils.getDefaultRestConfConfiguration(lightyController.getServices()));
+        CommunityRestConfBuilder builder = CommunityRestConfBuilder.from(
+                RestConfConfigUtils.getDefaultRestConfConfiguration(lightyController.getServices()));
         communityRestConf = builder.build();
 
         LOG.info("Starting CommunityRestConf (waiting 10s after start)");

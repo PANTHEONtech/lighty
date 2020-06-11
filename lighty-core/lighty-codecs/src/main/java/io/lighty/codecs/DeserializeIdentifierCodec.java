@@ -77,15 +77,16 @@ public class DeserializeIdentifierCodec {
 
     private static String buildListArg(final YangInstanceIdentifier.PathArgument pathArgument,
             final DataSchemaNode schemaNode) {
-        final YangInstanceIdentifier.NodeIdentifierWithPredicates listId = (YangInstanceIdentifier.NodeIdentifierWithPredicates) pathArgument;
+        final YangInstanceIdentifier.NodeIdentifierWithPredicates listId =
+                (YangInstanceIdentifier.NodeIdentifierWithPredicates) pathArgument;
         Preconditions.checkState(schemaNode instanceof ListSchemaNode);
         final ListSchemaNode listSchemaNode = (ListSchemaNode) schemaNode;
         final List<QName> keyDefinition = listSchemaNode.getKeyDefinition();
         final StringBuilder builder = new StringBuilder(listId.getNodeType().getLocalName());
         builder.append("=");
         final List<String> keyValue = new ArrayList<>();
-        for (final QName qName : keyDefinition) {
-            final Object value = listId.getKeyValues().get(qName);
+        for (final QName qname : keyDefinition) {
+            final Object value = listId.getKeyValues().get(qname);
             if (value == null) {
                 throw new IllegalStateException("all key values must be present");
             }

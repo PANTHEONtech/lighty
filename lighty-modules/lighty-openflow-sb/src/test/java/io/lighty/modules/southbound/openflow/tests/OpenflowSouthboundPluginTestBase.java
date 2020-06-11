@@ -18,6 +18,9 @@ import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigU
 import io.lighty.modules.southbound.openflow.impl.OpenflowSouthboundPlugin;
 import io.lighty.modules.southbound.openflow.impl.OpenflowSouthboundPluginBuilder;
 import io.lighty.modules.southbound.openflow.impl.util.OpenflowConfigUtils;
+import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,10 +29,6 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
-
-import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.Set;
 
 public abstract class OpenflowSouthboundPluginTestBase {
 
@@ -49,7 +48,7 @@ public abstract class OpenflowSouthboundPluginTestBase {
                 = ControllerConfigUtils.getDefaultSingleNodeConfiguration(models);
         defaultSingleNodeConfiguration.setModulesConfig("configuration/initial/modules.conf");
         defaultSingleNodeConfiguration.setModuleShardsConfig("configuration/initial/module-shards.conf");
-        this.lightyController = new LightyControllerBuilder()
+        this.lightyController = LightyControllerBuilder
                 .from(defaultSingleNodeConfiguration)
                 .build();
 
@@ -59,9 +58,10 @@ public abstract class OpenflowSouthboundPluginTestBase {
         LOG.info("LightyController started");
 
         LOG.info("Building CommunityRestConf");
-        final CommunityRestConfBuilder builder = new CommunityRestConfBuilder();
-        builder.from(RestConfConfigUtils.getDefaultRestConfConfiguration(this.lightyController.getServices()));
-        this.communityRestConf = builder.build();
+        this.communityRestConf = CommunityRestConfBuilder
+                .from(RestConfConfigUtils.getDefaultRestConfConfiguration(this.lightyController.getServices()))
+                .build();
+
 
         LOG.info("Starting CommunityRestConf (waiting 10s after start)");
         final ListenableFuture<Boolean> restconfStart = this.communityRestConf.start();
@@ -69,12 +69,11 @@ public abstract class OpenflowSouthboundPluginTestBase {
         LOG.info("CommunityRestConf started");
 
         LOG.info("Starting openflow...");
-        final OpenflowSouthboundPluginBuilder opfBuilder = new OpenflowSouthboundPluginBuilder();
-        opfBuilder.from(
-                OpenflowConfigUtils.getDefaultOfpConfiguration(),
-                this.lightyController.getServices()
-        );
-        this.ofplugin = opfBuilder.build();
+
+        this.ofplugin = OpenflowSouthboundPluginBuilder
+                .from(OpenflowConfigUtils.getDefaultOfpConfiguration(), this.lightyController.getServices())
+                .build();
+
         final ListenableFuture<Boolean> ofpStarted = this.ofplugin.start();
         ofpStarted.get();
         LOG.info("Openflow started");

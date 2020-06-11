@@ -24,18 +24,23 @@ public final class DatastoreConfigurationUtils {
     private DatastoreConfigurationUtils() {
     }
 
-    public static DatastoreContext createDatastoreContext(final JsonNode configNode, final LogicalDatastoreType logicalDatastoreType) {
+    public static DatastoreContext createDatastoreContext(final JsonNode configNode,
+                                                          final LogicalDatastoreType logicalDatastoreType) {
         return DatastoreContext.newBuilder()
-                .shardTransactionIdleTimeout(configNode.path("shardTransactionIdleTimeout").asLong(), TimeUnit.MILLISECONDS)
+                .shardTransactionIdleTimeout(
+                        configNode.path("shardTransactionIdleTimeout").asLong(), TimeUnit.MILLISECONDS)
                 .operationTimeoutInMillis(configNode.path("operationTimeoutInMillis").asLong())
-                .shardTransactionCommitTimeoutInSeconds(configNode.path("shardTransactionCommitTimeoutInSeconds").asInt())
+                .shardTransactionCommitTimeoutInSeconds(
+                        configNode.path("shardTransactionCommitTimeoutInSeconds").asInt())
                 .shardJournalRecoveryLogBatchSize(configNode.path("shardJournalRecoveryLogBatchSize").asInt())
                 .shardSnapshotBatchCount(configNode.path("shardSnapshotBatchCount").asInt())
                 .shardSnapshotDataThresholdPercentage(configNode.path("shardSnapshotDataThresholdPercentage").asInt())
                 .shardHeartbeatIntervalInMillis(configNode.path("shardHeartbeatIntervalInMillis").asInt())
                 .shardTransactionCommitQueueCapacity(configNode.path("shardTransactionCommitQueueCapacity").asInt())
-                .shardInitializationTimeout(configNode.path("shardInitializationTimeout").asLong(), TimeUnit.MILLISECONDS)
-                .shardLeaderElectionTimeout(configNode.path("shardLeaderElectionTimeout").asLong(), TimeUnit.MILLISECONDS)
+                .shardInitializationTimeout(
+                        configNode.path("shardInitializationTimeout").asLong(), TimeUnit.MILLISECONDS)
+                .shardLeaderElectionTimeout(
+                        configNode.path("shardLeaderElectionTimeout").asLong(), TimeUnit.MILLISECONDS)
                 .persistent(configNode.path("persistent").asBoolean())
                 .logicalStoreType(logicalDatastoreType)
                 .shardBatchedModificationCount(configNode.path("shardBatchedModificationCount").asInt())
@@ -49,9 +54,11 @@ public final class DatastoreConfigurationUtils {
                 .customRaftPolicyImplementation(NO_CUSTOM_POLICY)
                 .maximumMessageSliceSize(configNode.path("maximumMessageSliceSize").asInt())
                 .tempFileDirectory(TEMP_FILE_DIRECTORY)
-                .fileBackedStreamingThresholdInMegabytes(configNode.path("fileBackedStreamingThresholdInMegabytes").asInt())
+                .fileBackedStreamingThresholdInMegabytes(
+                        configNode.path("fileBackedStreamingThresholdInMegabytes").asInt())
                 .syncIndexThreshold(configNode.path("syncIndexThreshold").asInt())
-                .backendAlivenessTimerIntervalInSeconds(configNode.path("backendAlivenessTimerIntervalInSeconds").asInt())
+                .backendAlivenessTimerIntervalInSeconds(
+                        configNode.path("backendAlivenessTimerIntervalInSeconds").asInt())
                 .frontendRequestTimeoutInSeconds(configNode.path("frontendRequestTimeoutInSeconds").asLong())
                 .frontendNoProgressTimeoutInSeconds(configNode.path("frontendNoProgressTimeoutInSeconds").asLong())
                 .build();
