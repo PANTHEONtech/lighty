@@ -10,7 +10,6 @@ package io.lighty.codecs;
 import static org.junit.Assert.fail;
 
 import io.lighty.codecs.api.ConverterUtils;
-import java.awt.Container;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map.Entry;
@@ -35,13 +34,12 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 
 /**
- * Basic tests for {@link DataCodec} class
- *
+ * Basic tests for {@link DataCodec} class.
  */
 public class DataCodecTest extends AbstractCodecTest {
 
     /**
-     * Deserialization of {@link Container} as top root element
+     * Deserialization of Container as top root element.
      */
     @Test
     public void testDeserializeData_container() {
@@ -61,10 +59,7 @@ public class DataCodecTest extends AbstractCodecTest {
     }
 
     /**
-     * "Serialization" of {@link Container} as top root element
-     * 
-     * @throws IOException
-     * @throws XMLStreamException
+     * "Serialization" of Container as top root element.
      */
     @Test
     public void testConvertBindingIndependentIntoBindingAware_container() throws IOException, XMLStreamException {
@@ -75,7 +70,7 @@ public class DataCodecTest extends AbstractCodecTest {
     }
 
     /**
-     * "Serialization" of {@link RpcInput} object
+     * "Serialization" of {@link RpcInput} object.
      */
     @Test
     public void testConvertBiIntoBaRpc_rpcInput() {
@@ -106,7 +101,6 @@ public class DataCodecTest extends AbstractCodecTest {
 
         Assert.assertNotNull(deserializeNotification);
         Assert.assertEquals(EXPECTED_ONE, deserializeNotification.getValue().iterator().next().getValue());
-        System.out.println(deserializeNotification);
     }
 
     @Test
@@ -119,7 +113,11 @@ public class DataCodecTest extends AbstractCodecTest {
     @Test
     public void convertToNormalizedNode_list() {
         SampleList sampleList =
-                new SampleListBuilder().setKey(new SampleListKey("name")).setName("name").setValue((short) 1).build();
+                new SampleListBuilder()
+                        .setKey(new SampleListKey("name"))
+                        .setName("name")
+                        .setValue((short) 1)
+                        .build();
         DataCodec<SampleList> codec = new DataCodec<>(this.schemaContext);
 
         Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> convertToNormalizedNode =

@@ -9,9 +9,8 @@ package io.lighty.core.common.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-
 import java.util.Objects;
+import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 
 /**
  * This class represents unique identifier of yang module.
@@ -20,9 +19,9 @@ import java.util.Objects;
  */
 public final class ModuleId {
 
-    private String nameSpace;
-    private String name;
-    private String revision;
+    private final String nameSpace;
+    private final String name;
+    private final String revision;
 
     @JsonCreator
     public ModuleId(@JsonProperty("nameSpace") String nameSpace,
@@ -31,6 +30,14 @@ public final class ModuleId {
         this.nameSpace = nameSpace;
         this.name = name;
         this.revision = revision;
+    }
+
+    public static ModuleId from(String nameSpace, String name, String revision) {
+        return new ModuleId(nameSpace, name, revision);
+    }
+
+    public static ModuleId from(YangModuleInfo yangModuleInfo) {
+        return new ModuleId(yangModuleInfo.getNamespace(), yangModuleInfo.getName(), yangModuleInfo.getRevision());
     }
 
     public String getName() {
@@ -46,26 +53,22 @@ public final class ModuleId {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ModuleId)) return false;
-        ModuleId moduleId = (ModuleId) o;
-        return Objects.equals(name, moduleId.name) &&
-                Objects.equals(revision, moduleId.revision) &&
-                Objects.equals(nameSpace, moduleId.nameSpace);
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof ModuleId)) {
+            return false;
+        }
+        ModuleId moduleId = (ModuleId) obj;
+        return Objects.equals(name, moduleId.name)
+                && Objects.equals(revision, moduleId.revision)
+                && Objects.equals(nameSpace, moduleId.nameSpace);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(nameSpace, name, revision);
-    }
-
-    public static ModuleId from(String nameSpace, String name, String revision) {
-        return new ModuleId(nameSpace, name, revision);
-    }
-
-    public static ModuleId from(YangModuleInfo yangModuleInfo) {
-        return new ModuleId(yangModuleInfo.getNamespace(), yangModuleInfo.getName(), yangModuleInfo.getRevision());
     }
 
     @Override

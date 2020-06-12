@@ -8,21 +8,26 @@
 package io.lighty.swagger.impl;
 
 import com.google.common.base.Preconditions;
+import javax.ws.rs.core.UriInfo;
 import org.opendaylight.controller.sal.core.api.model.SchemaService;
 import org.opendaylight.netconf.sal.rest.doc.swagger.ApiDeclaration;
 import org.opendaylight.netconf.sal.rest.doc.swagger.ResourceList;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
-import javax.ws.rs.core.UriInfo;
-
 /**
- * This class gathers all YANG-defined Modules and
- * generates Swagger compliant documentation.
+ * This class gathers all YANG-defined Modules and generates Swagger compliant documentation.
  */
 public class ApiDocGenerator extends BaseYangSwaggerGenerator {
 
     private static final ApiDocGenerator INSTANCE = new ApiDocGenerator();
     private SchemaService schemaService;
+
+    /**
+     * Returns singleton instance.
+     */
+    public static ApiDocGenerator getInstance() {
+        return INSTANCE;
+    }
 
     public ResourceList getResourceListing(final UriInfo uriInfo) {
         Preconditions.checkState(schemaService != null);
@@ -32,16 +37,10 @@ public class ApiDocGenerator extends BaseYangSwaggerGenerator {
     }
 
     public ApiDeclaration getApiDeclaration(final String module, final String revision, final UriInfo uriInfo) {
+        Preconditions.checkState(schemaService != null);
         final SchemaContext schemaContext = schemaService.getGlobalContext();
         Preconditions.checkState(schemaContext != null);
         return super.getApiDeclaration(module, revision, uriInfo, schemaContext, "");
-    }
-
-    /**
-     * Returns singleton instance.
-     */
-    public static ApiDocGenerator getInstance() {
-        return INSTANCE;
     }
 
     public void setDraft(final boolean newDraft) {

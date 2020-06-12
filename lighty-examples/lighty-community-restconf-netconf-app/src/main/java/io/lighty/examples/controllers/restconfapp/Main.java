@@ -8,6 +8,7 @@
 
 package io.lighty.examples.controllers.restconfapp;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
@@ -23,10 +24,7 @@ import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
 import io.lighty.server.LightyServerBuilder;
 import io.lighty.swagger.SwaggerLighty;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,11 +33,19 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class Main {
+public final class Main {
 
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
+    private Main() {
+    }
+
+    @SuppressWarnings("checkstyle:illegalCatch")
+    @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
     public static void main(String[] args) {
         long startTime = System.nanoTime();
         LOG.info(".__  .__       .__     __              .__           _________________    _______");
@@ -79,29 +85,30 @@ public class Main {
                 NetconfConfiguration netconfSBPConfig = NetconfConfigUtils.createDefaultNetconfConfiguration();
                 startLighty(defaultSingleNodeConfiguration, restConfConfig, netconfSBPConfig);
             }
-            float duration = (System.nanoTime() - startTime)/1_000_000f;
+            float duration = (System.nanoTime() - startTime) / 1_000_000f;
             LOG.info("lighty.io and RESTCONF-NETCONF started in {}ms", duration);
-        } catch (Exception e) {
+        } catch (ConfigurationException | ExecutionException | InterruptedException | IOException
+                | RuntimeException e) {
             LOG.error("Main RESTCONF-NETCONF application exception: ", e);
         }
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     private static void startLighty(ControllerConfiguration controllerConfiguration,
-            RestConfConfiguration restConfConfiguration, NetconfConfiguration netconfSBPConfiguration)
+                                    RestConfConfiguration restConfConfiguration,
+                                    NetconfConfiguration netconfSBPConfiguration)
             throws ConfigurationException, ExecutionException, InterruptedException {
 
         //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
-        LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
-        LightyController lightyController = lightyControllerBuilder.from(controllerConfiguration).build();
+        LightyController lightyController = LightyControllerBuilder.from(controllerConfiguration).build();
         lightyController.start().get();
 
         //2. start RestConf server
-        CommunityRestConfBuilder communityRestConfBuilder = new CommunityRestConfBuilder();
         LightyServerBuilder jettyServerBuilder = new LightyServerBuilder(new InetSocketAddress(
                 restConfConfiguration.getInetAddress(), restConfConfiguration.getHttpPort()));
-        CommunityRestConf communityRestConf = communityRestConfBuilder.from(RestConfConfigUtils
-                .getRestConfConfiguration(restConfConfiguration, lightyController.getServices())).withLightyServer(
-                jettyServerBuilder)
+        CommunityRestConf communityRestConf = CommunityRestConfBuilder
+                .from(RestConfConfigUtils.getRestConfConfiguration(restConfConfiguration,
+                        lightyController.getServices())).withLightyServer(jettyServerBuilder)
                 .build();
 
         //3. start swagger
@@ -114,8 +121,7 @@ public class Main {
         LightyModule netconfSouthboundPlugin;
         netconfSBPConfiguration = NetconfConfigUtils.injectServicesToTopologyConfig(
                 netconfSBPConfiguration, lightyController.getServices());
-        NetconfTopologyPluginBuilder netconfSBPBuilder = new NetconfTopologyPluginBuilder();
-        netconfSouthboundPlugin = netconfSBPBuilder
+        netconfSouthboundPlugin = NetconfTopologyPluginBuilder
                 .from(netconfSBPConfiguration, lightyController.getServices())
                 .build();
         netconfSouthboundPlugin.start().get();
@@ -135,17 +141,18 @@ public class Main {
         private final SwaggerLighty swagger;
 
         ShutdownHook(LightyController lightyController, CommunityRestConf communityRestConf,
-                LightyModule netconfSouthboundPlugin, SwaggerLighty swagger) {
+                     LightyModule netconfSouthboundPlugin, SwaggerLighty swagger) {
             this.lightyController = lightyController;
             this.communityRestConf = communityRestConf;
             this.netconfSouthboundPlugin = netconfSouthboundPlugin;
             this.swagger = swagger;
         }
 
+        @SuppressWarnings("checkstyle:illegalCatch")
         @Override
         public void run() {
             LOG.info("lighty.io and RESTCONF-NETCONF shutting down ...");
-            long startTime = System.nanoTime();
+            final long startTime = System.nanoTime();
             try {
                 swagger.shutdown();
             } catch (Exception e) {
@@ -166,7 +173,7 @@ public class Main {
             } catch (Exception e) {
                 LOG.error("Exception while shutting down lighty.io controller:", e);
             }
-            float duration = (System.nanoTime() - startTime)/1_000_000f;
+            float duration = (System.nanoTime() - startTime) / 1_000_000f;
             LOG.info("lighty.io and RESTCONF-NETCONF stopped in {}ms", duration);
         }
 

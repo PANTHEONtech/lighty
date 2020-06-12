@@ -112,8 +112,6 @@ import org.slf4j.LoggerFactory;
 public class LightyControllerImpl extends AbstractLightyModule implements LightyController, LightyServices {
 
     private static final Logger LOG = LoggerFactory.getLogger(LightyControllerImpl.class);
-
-    private ActorSystemProviderImpl actorSystemProvider;
     private final Config actorSystemConfig;
     private final ClassLoader actorSystemClassLoader;
     private final ScanningSchemaServiceProvider scanningSchemaService;
@@ -121,9 +119,17 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private final DOMNotificationRouter domNotificationRouter;
     private final String restoreDirectoryPath;
     private final Properties distributedEosProperties;
+    private final int maxDataBrokerFutureCallbackQueueSize;
+    private final int maxDataBrokerFutureCallbackPoolSize;
+    private final boolean metricCaptureEnabled;
+    private final int mailboxCapacity;
+    private final String moduleShardsConfig;
+    private final String modulesConfig;
+    private final LightyDiagStatusServiceImpl lightyDiagStatusService;
+    private ActorSystemProviderImpl actorSystemProvider;
     private DatastoreSnapshotRestore datastoreSnapshotRestore;
-    private DatastoreContext configDatastoreContext;
-    private DatastoreContext operDatastoreContext;
+    private final DatastoreContext configDatastoreContext;
+    private final DatastoreContext operDatastoreContext;
     private AbstractDataStore configDatastore;
     private AbstractDataStore operDatastore;
     private ExecutorService listenableFutureExecutor;
@@ -145,15 +151,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private HeliumRpcProviderRegistry bindingRpcRegistry;
     private BindingDOMMountPointServiceAdapter bindingDOMMountPointService;
     private BindingDOMNotificationServiceAdapter bindingDOMNotificationServiceAdapter;
-
-    private final int maxDataBrokerFutureCallbackQueueSize;
-    private final int maxDataBrokerFutureCallbackPoolSize;
-    private final boolean metricCaptureEnabled;
-    private final int mailboxCapacity;
-    private final String moduleShardsConfig;
-    private final String modulesConfig;
-    private final LightyDiagStatusServiceImpl lightyDiagStatusService;
-
     private BindingDOMNotificationPublishServiceAdapter bindingDOMNotificationPublishServiceAdapter;
     private HeliumNotificationProviderServiceWithInterestListeners bindingNotificationProviderService;
     private BindingDOMDataBrokerAdapter bindingDOMDataBroker;
@@ -166,12 +163,16 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private Timer timer;
 
     public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
-            final ClassLoader actorSystemClassLoader, final ScanningSchemaServiceProvider scanningSchemaService,
-            final DOMNotificationRouter domNotificationRouter, final String restoreDirectoryPath,
-            final int maxDataBrokerFutureCallbackQueueSize, final int maxDataBrokerFutureCallbackPoolSize,
-            final boolean metricCaptureEnabled, final int mailboxCapacity, final Properties distributedEosProperties,
-            final String moduleShardsConfig, final String modulesConfig, final DatastoreContext configDatastoreContext,
-            final DatastoreContext operDatastoreContext) {
+                                final ClassLoader actorSystemClassLoader,
+                                final ScanningSchemaServiceProvider scanningSchemaService,
+                                final DOMNotificationRouter domNotificationRouter, final String restoreDirectoryPath,
+                                final int maxDataBrokerFutureCallbackQueueSize,
+                                final int maxDataBrokerFutureCallbackPoolSize,
+                                final boolean metricCaptureEnabled, final int mailboxCapacity,
+                                final Properties distributedEosProperties,
+                                final String moduleShardsConfig, final String modulesConfig,
+                                final DatastoreContext configDatastoreContext,
+                                final DatastoreContext operDatastoreContext) {
         super(executorService);
         initSunXMLWriterProperty();
         this.actorSystemConfig = actorSystemConfig;
@@ -196,7 +197,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     /**
      * This method replace property of writer from implementation of woodstox writer to internal sun writer.
      */
-    private static final void initSunXMLWriterProperty() {
+    private static void initSunXMLWriterProperty() {
         System.setProperty("javax.xml.stream.XMLOutputFactory", "com.sun.xml.internal.stream.XMLOutputFactoryImpl");
     }
 
@@ -207,7 +208,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         final ConfigurationImpl operConfiguration = new ConfigurationImpl(moduleShardsConfig, modulesConfig);
 
         actorSystemProvider = new ActorSystemProviderImpl(actorSystemClassLoader,
-                QuarantinedMonitorActor.props(() -> {}), actorSystemConfig);
+                QuarantinedMonitorActor.props(() -> {
+                }), actorSystemConfig);
         datastoreSnapshotRestore = DatastoreSnapshotRestore.instance(restoreDirectoryPath);
         // CONFIG DATASTORE
         configDatastore = prepareDataStore(configDatastoreContext, configConfiguration);
@@ -296,7 +298,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     private AbstractDataStore prepareDataStore(final DatastoreContext datastoreContext,
-            final Configuration configuration) {
+                                               final Configuration configuration) {
         final DatastoreContextIntrospector introspector = new DatastoreContextIntrospector(datastoreContext);
         final DatastoreContextPropertiesUpdater updater = new DatastoreContextPropertiesUpdater(introspector, null);
         return DistributedDataStoreFactory.createInstance(scanningSchemaService, datastoreContext,
@@ -525,7 +527,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public NotificationProviderService getNotificationProviderService(){
+    public NotificationProviderService getNotificationProviderService() {
         return bindingNotificationProviderService;
     }
 

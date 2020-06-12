@@ -7,20 +7,22 @@
  */
 package io.lighty.kit.examples.community.tests;
 
-import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 final class TestUtils {
+
+    private TestUtils() {
+    }
 
     static String readResource(final String classPath) throws IOException {
         String result;
         try (InputStream inputStream = TestUtils.class.getResourceAsStream(classPath)) {
             result = CharStreams.toString(new InputStreamReader(
-                    inputStream, Charsets.UTF_8));
+                    inputStream, StandardCharsets.UTF_8));
         }
         return result;
     }

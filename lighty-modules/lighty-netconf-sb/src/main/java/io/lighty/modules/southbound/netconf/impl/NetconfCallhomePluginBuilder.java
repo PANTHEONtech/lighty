@@ -15,38 +15,44 @@ import java.util.concurrent.ExecutorService;
 /**
  * Builder for {@link NetconfCallhomePlugin}.
  */
-public class NetconfCallhomePluginBuilder {
+public final class NetconfCallhomePluginBuilder {
 
     private LightyServices lightyServices;
     private NetconfConfiguration configuration;
     private ExecutorService executorService = null;
 
-    /**
-     * Create new instance of {@link NetconfCallhomePluginBuilder} from {@link NetconfConfiguration} and
-     * {@link LightyServices}.
-     * @param configuration input Netconf configuration.
-     * @param lightyServices services from {@link LightyController}
-     * @return instance of {@link NetconfCallhomePluginBuilder} class.
-     */
-    public NetconfCallhomePluginBuilder from(final NetconfConfiguration configuration,
-                                             final LightyServices lightyServices) {
+    private NetconfCallhomePluginBuilder(LightyServices services, NetconfConfiguration configuration) {
+        this.lightyServices = services;
         this.configuration = configuration;
-        this.lightyServices = lightyServices;
-        return this;
     }
 
     /**
-     * Inject executor service to execute futures
-     * @param executorService
+     * Create new instance of {@link NetconfCallhomePluginBuilder} from {@link NetconfConfiguration} and
+     * {@link LightyServices}.
+     *
+     * @param configuration  input Netconf configuration.
+     * @param lightyServices services from {@link LightyController}
+     * @return instance of {@link NetconfCallhomePluginBuilder} class.
+     */
+    public static NetconfCallhomePluginBuilder from(final NetconfConfiguration configuration,
+                                             final LightyServices lightyServices) {
+        return new NetconfCallhomePluginBuilder(lightyServices, configuration);
+    }
+
+    /**
+     * Inject executor service to execute futures.
+     *
+     * @param executor injected executor service
      * @return instance of {@link NetconfCallhomePluginBuilder}.
      */
-    public NetconfCallhomePluginBuilder withExecutorService(ExecutorService executorService) {
-        this.executorService = executorService;
+    public NetconfCallhomePluginBuilder withExecutorService(ExecutorService executor) {
+        this.executorService = executor;
         return this;
     }
 
     /**
      * Build new instance of {@link NetconfCallhomePlugin} from {@link NetconfCallhomePluginBuilder}.
+     *
      * @return instance of NetconfSouthboundPlugin.
      */
     public NetconfCallhomePlugin build() {

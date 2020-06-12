@@ -16,21 +16,20 @@ import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import java.io.IOException;
 import java.io.InputStream;
-
+import java.util.Set;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Set;
-
 public final class RestConfConfigUtils {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RestConfConfigUtils.class);
     public static final String RESTCONF_CONFIG_ROOT_ELEMENT_NAME = "restconf";
+    @SuppressWarnings("checkstyle:LineLength") // Kept long lines for brevity.
     public static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.monitoring.rev170126.$YangModuleInfoImpl.getInstance()
     );
+    private static final Logger LOG = LoggerFactory.getLogger(RestConfConfigUtils.class);
 
     private RestConfConfigUtils() {
         throw new UnsupportedOperationException();
@@ -38,12 +37,11 @@ public final class RestConfConfigUtils {
 
     /**
      * Load restconf configuration from InputStream containing JSON data.
-     * @param jsonConfigInputStream
-     *   InputStream containing RestConf configuration data in JSON format.
-     * @return
-     *   Object representation of configuration data.
-     * @throws ConfigurationException
-     *   In case InputStream does not contain valid JSON data or cannot bind Json tree to type.
+     *
+     * @param jsonConfigInputStream InputStream containing RestConf configuration data in JSON format.
+     * @return Object representation of configuration data.
+     * @throws ConfigurationException In case InputStream does not contain valid JSON data or cannot bind Json tree
+     *                                to type.
      */
     public static RestConfConfiguration getRestConfConfiguration(InputStream jsonConfigInputStream)
             throws ConfigurationException {
@@ -73,17 +71,17 @@ public final class RestConfConfigUtils {
     /**
      * Load restconf configuration from InputStream containing JSON data and use lightyServices to
      * get references to necessary Lighty services.
-     * @param jsonConfigInputStream
-     *   InputStream containing RestConf configuration data in JSON format.
-     * @param lightyServices
-     *   This object instace contains references to initialized Lighty services required for RestConf.
-     * @return
-     *   Object representation of configuration data.
-     * @throws ConfigurationException
-     *   In case InputStream does not contain valid JSON data or cannot bind Json tree to type.
+     *
+     * @param jsonConfigInputStream InputStream containing RestConf configuration data in JSON format.
+     * @param lightyServices        This object instace contains references to initialized Lighty services required
+     *                              for RestConf.
+     * @return Object representation of configuration data.
+     * @throws ConfigurationException In case InputStream does not contain valid JSON data or cannot bind Json tree
+     *                                to type.
      */
     public static RestConfConfiguration getRestConfConfiguration(final InputStream jsonConfigInputStream,
-            final LightyServices lightyServices) throws ConfigurationException {
+                                                                 final LightyServices lightyServices)
+            throws ConfigurationException {
         final ObjectMapper mapper = new ObjectMapper();
         JsonNode configNode;
         try {
@@ -115,40 +113,13 @@ public final class RestConfConfigUtils {
     }
 
     /**
-     * Get default RestConf configuration using provided Lighty services.
-     * @param lightyServices
-     *   This object instace contains references to initialized Lighty services required for RestConf.
-     * @return
-     *   Object representation of configuration data.
-     */
-    public static RestConfConfiguration getDefaultRestConfConfiguration(final LightyServices lightyServices) {
-        return new RestConfConfiguration(
-                lightyServices.getClusteredDOMDataBroker(),
-                lightyServices.getSchemaService(),
-                lightyServices.getDOMRpcService(),
-                lightyServices.getDOMNotificationService(),
-                lightyServices.getDOMMountPointService(),
-                lightyServices.getDOMSchemaService());
-    }
-
-    /**
-     * Get default RestConf configuration, Lighty services are not populated in this configuration.
-     * @return
-     *   Object representation of configuration data.
-     */
-    public static RestConfConfiguration getDefaultRestConfConfiguration() {
-        return new RestConfConfiguration();
-    }
-
-    /**
-     * Copy existing RestConf configuration and use provided lightyServices
-     * to populate references to necessary Lighty services.
-     * @param restConfConfiguration
-     *   Object representation of configuration data.
-     * @param lightyServices
-     *   This object instace contains references to initialized Lighty services required for RestConf.
-     * @return
-     *   Object representation of configuration data.
+     * Copy existing RestConf configuration and use provided lightyServices to populate references to necessary
+     * Lighty services.
+     *
+     * @param restConfConfiguration Object representation of configuration data.
+     * @param lightyServices        This object instace contains references to initialized Lighty services required
+     *                              for RestConf.
+     * @return Object representation of configuration data.
      */
     public static RestConfConfiguration getRestConfConfiguration(final RestConfConfiguration restConfConfiguration,
                                                                  final LightyServices lightyServices) {
@@ -162,5 +133,30 @@ public final class RestConfConfigUtils {
         return config;
     }
 
+    /**
+     * Get default RestConf configuration using provided Lighty services.
+     *
+     * @param lightyServices This object instace contains references to initialized Lighty services required
+     *                       for RestConf.
+     * @return Object representation of configuration data.
+     */
+    public static RestConfConfiguration getDefaultRestConfConfiguration(final LightyServices lightyServices) {
+        return new RestConfConfiguration(
+                lightyServices.getClusteredDOMDataBroker(),
+                lightyServices.getSchemaService(),
+                lightyServices.getDOMRpcService(),
+                lightyServices.getDOMNotificationService(),
+                lightyServices.getDOMMountPointService(),
+                lightyServices.getDOMSchemaService());
+    }
+
+    /**
+     * Get default RestConf configuration, Lighty services are not populated in this configuration.
+     *
+     * @return Object representation of configuration data.
+     */
+    public static RestConfConfiguration getDefaultRestConfConfiguration() {
+        return new RestConfConfiguration();
+    }
 
 }

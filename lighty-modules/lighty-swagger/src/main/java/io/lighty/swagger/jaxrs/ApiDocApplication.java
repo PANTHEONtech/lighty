@@ -8,12 +8,11 @@
 package io.lighty.swagger.jaxrs;
 
 import io.lighty.swagger.impl.ApiDocServiceImpl;
-import org.opendaylight.aaa.provider.GsonProvider;
-import org.opendaylight.netconf.sal.rest.doc.jaxrs.JaxbContextResolver;
-
-import javax.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
+import javax.ws.rs.core.Application;
+import org.opendaylight.aaa.provider.GsonProvider;
+import org.opendaylight.netconf.sal.rest.doc.jaxrs.JaxbContextResolver;
 
 public class ApiDocApplication extends Application {
     @Override

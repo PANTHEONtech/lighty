@@ -54,6 +54,7 @@ import org.springframework.context.annotation.Configuration;
  * <p>
  * This configuration needs LightyController bean initialized in spring environment. If LightyController bean exists in
  * spring environment, this configuration initializes all core lighty.io services as spring beans.</p>
+ *
  * <p>
  * Example:
  * <pre>

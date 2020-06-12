@@ -151,7 +151,7 @@ public class TopologyPluginsTest {
         final NetconfConfiguration config = NetconfConfigUtils.createDefaultNetconfConfiguration();
         NetconfConfigUtils.injectServicesToConfig(config, services);
         config.setClientDispatcher(dispatcher);
-        return new NetconfTopologyPluginBuilder()
+        return NetconfTopologyPluginBuilder
                 .from(config, services)
                 .build();
     }
@@ -162,7 +162,7 @@ public class TopologyPluginsTest {
                 NetconfConfigUtils.createDefaultNetconfConfiguration();
         NetconfConfigUtils.injectServicesToConfig(config, services);
         config.setClientDispatcher(dispatcher);
-        return new NetconfTopologyPluginBuilder()
+        return NetconfTopologyPluginBuilder
                 .from(config, services)
                 .build();
     }

@@ -32,8 +32,9 @@ public abstract class LightyControllerTestBase {
     @BeforeClass(timeOut = 300_000)
     public void startLighty() throws Exception {
         LOG.info("startLighty from TestBase called");
-        LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
-        lightyController = lightyControllerBuilder.from(ControllerConfigUtils.getDefaultSingleNodeConfiguration()).build();
+        lightyController = LightyControllerBuilder
+                .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration())
+                .build();
         ListenableFuture<Boolean> started = lightyController.start();
         started.get();
         LOG.info("startLighty from TestBase finished after sleep");

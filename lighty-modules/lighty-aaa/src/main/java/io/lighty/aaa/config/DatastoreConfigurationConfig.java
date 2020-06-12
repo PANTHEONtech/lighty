@@ -12,7 +12,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.Da
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.DatastoreConfig.Store;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.DatastoreConfigBuilder;
 
-public class DatastoreConfigurationConfig {
+public final class DatastoreConfigurationConfig {
+
+    private DatastoreConfigurationConfig() {
+    }
 
     public static DatastoreConfig getDefault() {
         return new DatastoreConfigBuilder().setStore(Store.H2DataStore).setTimeToLive(new BigInteger("36000"))

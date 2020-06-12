@@ -15,38 +15,44 @@ import java.util.concurrent.ExecutorService;
 /**
  * Builder for {@link NetconfTopologyPlugin}.
  */
-public class NetconfTopologyPluginBuilder {
+public final class NetconfTopologyPluginBuilder {
 
     private LightyServices lightyServices;
     private NetconfConfiguration configuration;
     private ExecutorService executorService = null;
 
-    /**
-     * Create new instance of {@link NetconfTopologyPluginBuilder} from {@link NetconfConfiguration}
-     * and {@link LightyServices}.
-     * @param configuration input single-node Netconf configuration.
-     * @param lightyServices services from {@link LightyController}.
-     * @return instance of {@link NetconfTopologyPluginBuilder}.
-     */
-    public NetconfTopologyPluginBuilder from(final NetconfConfiguration configuration,
-                                             final LightyServices lightyServices) {
-        this.configuration = configuration;
+    private NetconfTopologyPluginBuilder(LightyServices lightyServices, NetconfConfiguration configuration) {
         this.lightyServices = lightyServices;
-        return this;
+        this.configuration = configuration;
     }
 
     /**
-     * Inject executor service to execute futures
-     * @param executorService
+     * Create new instance of {@link NetconfTopologyPluginBuilder} from {@link NetconfConfiguration}
+     * and {@link LightyServices}.
+     *
+     * @param configuration  input single-node Netconf configuration.
+     * @param lightyServices services from {@link LightyController}.
      * @return instance of {@link NetconfTopologyPluginBuilder}.
      */
-    public NetconfTopologyPluginBuilder withExecutorService(ExecutorService executorService) {
-        this.executorService = executorService;
+    public static NetconfTopologyPluginBuilder from(final NetconfConfiguration configuration,
+                                                    final LightyServices lightyServices) {
+        return new NetconfTopologyPluginBuilder(lightyServices, configuration);
+    }
+
+    /**
+     * Inject executor service to execute futures.
+     *
+     * @param executor injected executor service
+     * @return instance of {@link NetconfTopologyPluginBuilder}.
+     */
+    public NetconfTopologyPluginBuilder withExecutorService(ExecutorService executor) {
+        this.executorService = executor;
         return this;
     }
 
     /**
      * Build new instance of {@link NetconfTopologyPlugin} from {@link NetconfTopologyPluginBuilder}.
+     *
      * @return instance of NetconfSouthboundPlugin.
      */
     public NetconfSBPlugin build() {

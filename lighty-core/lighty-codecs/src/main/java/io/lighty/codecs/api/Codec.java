@@ -25,9 +25,9 @@ public interface Codec<BA extends DataObject> extends Serializer<BA>, Deserializ
      * @return codec
      */
     BindingToNormalizedNodeCodec getCodec();
-    
+
     NodeConverter withJson();
-    
+
     NodeConverter withXml();
 
     SchemaContext getSchemaContext();

@@ -22,39 +22,43 @@ import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 /**
  * Builder for {@link LightyController}.
  */
-public class LightyControllerBuilder {
+public final class LightyControllerBuilder {
 
     private ControllerConfiguration controllerConfiguration;
     private ExecutorService executorService = null;
 
-    public LightyControllerBuilder() {
+    private LightyControllerBuilder(ControllerConfiguration controllerConfiguration) {
+        this.controllerConfiguration = controllerConfiguration;
     }
 
     /**
      * Create new instance of {@link LightyControllerBuilder} from {@link ControllerConfiguration}.
+     *
      * @param controllerConfiguration input Lighty Controller configuration.
      * @return instance of {@link LightyControllerBuilder}.
      */
-    public LightyControllerBuilder from(ControllerConfiguration controllerConfiguration) {
-        this.controllerConfiguration = controllerConfiguration;
-        return this;
+    public static LightyControllerBuilder from(ControllerConfiguration controllerConfiguration) {
+        return new LightyControllerBuilder(controllerConfiguration);
     }
 
     /**
-     * Inject executor service to execute futures
-     * @param executorService - executor
+     * Inject executor service to execute futures.
+     *
+     * @param executor - executor
      * @return instance of {@link LightyControllerBuilder}.
      */
-    public LightyControllerBuilder withExecutorService(ExecutorService executorService) {
-        this.executorService = executorService;
+    public LightyControllerBuilder withExecutorService(ExecutorService executor) {
+        this.executorService = executor;
         return this;
     }
 
     /**
      * Build new {@link LightyController} instance from {@link LightyControllerBuilder}.
+     *
      * @return instance of LightyController.
      * @throws ConfigurationException if cannot find yang model artifacts.
      */
+    @SuppressWarnings("checkstyle:illegalCatch")
     public LightyController build() throws ConfigurationException {
         try {
             Set<YangModuleInfo> modelSet = controllerConfiguration.getSchemaServiceConfig().getModels();

@@ -12,8 +12,8 @@ public class YangClasspathResolutionException extends Exception {
     public YangClasspathResolutionException() {
     }
 
-    public YangClasspathResolutionException(Exception e) {
-        super(e);
+    public YangClasspathResolutionException(Exception cause) {
+        super(cause);
     }
-    
+
 }

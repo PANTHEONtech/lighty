@@ -148,6 +148,52 @@
                         </execution>
                     </executions>
                 </plugin>
+                <plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>3.1.1</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <!-- This should match the dependency management on com.puppycrawl.tools:checkstyle above -->
+                            <version>8.33</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.github.sevntu-checkstyle</groupId>
+                            <artifactId>sevntu-checks</artifactId>
+                            <version>1.37.1</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.opendaylight.odlparent</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>7.0.3</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>4.0.0</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.github.spotbugs</groupId>
+                            <artifactId>spotbugs</artifactId>
+                            <version>4.0.4</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.opendaylight.odlparent</groupId>
+                            <artifactId>spotbugs</artifactId>
+                            <version>7.0.3</version>
+                        </dependency>
+                        <dependency>
+                            <!-- The SpotBugs Maven plugin uses 2.0.0-alpha1 -->
+                            <groupId>org.slf4j</groupId>
+                            <artifactId>slf4j-simple</artifactId>
+                            <version>2.0.0-alpha1</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>		
             </plugins>
         </pluginManagement>
 
@@ -167,6 +213,87 @@
         </plugins>
     </build>
     <profiles>
+        <profile>
+            <id>source-quality</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <configuration>
+                            <configLocation>odl_checks.xml</configLocation>
+                            <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
+                            <!-- <sourceDirectories> are needed so that checkstyle ignores the
+                                 generated sources directory -->
+                            <sourceDirectories>
+                                <directory>${project.build.sourceDirectory}</directory>
+                            </sourceDirectories>
+                            <includeResources>true</includeResources>
+                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                            <includeTestResources>true</includeTestResources>
+                            <includes>**\/*.java, **\/*.xtend</includes>
+                            <excludes>
+                                org/opendaylight/yang/gen/**,
+                                **/protobuff/messages/**,
+                                **/thrift/gen/*.java
+                            </excludes>
+                            <failsOnError>true</failsOnError>
+                            <consoleOutput>true</consoleOutput>
+                            <propertyExpansion>checkstyle.violationSeverity=error</propertyExpansion>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                                <phase>process-sources</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.github.spotbugs</groupId>
+                        <artifactId>spotbugs-maven-plugin</artifactId>
+                        <configuration>
+                            <plugins>
+                                <plugin>
+                                    <groupId>jp.skypencil.findbugs.slf4j</groupId>
+                                    <artifactId>bug-pattern</artifactId>
+                                    <version>1.4.2</version>
+                                </plugin>
+                            </plugins>
+                            <!--
+                              Enables analysis which takes more memory but finds more bugs.
+                              If you run out of memory, changes the value of the effort element
+                              to 'Low'.
+                            -->
+                            <effort>Max</effort>
+                            <!-- Reports all bugs (other values are medium and max) -->
+                            <threshold>Low</threshold>
+                            <!-- Build doesn't fail if problems are found -->
+                            <failOnError>true</failOnError>
+                            <!-- References the excluded rules -->
+                            <excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile>
+                            <!-- Produces XML report -->
+                            <xmlOutput>true</xmlOutput>
+                            <!-- Configures the directory in which the XML report is created -->
+                            <findbugsXmlOutputDirectory>${project.build.directory}/spotbugs</findbugsXmlOutputDirectory>
+                        </configuration>
+                        <executions>
+                            <!--
+                              Ensures that SpotBugs inspects source code when project is compiled.
+                            -->
+                            <execution>
+                                <id>analyze-compile</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
         <profile>
             <id>test-integration</id>
             <!-- run integration tests and skip unit tests -->

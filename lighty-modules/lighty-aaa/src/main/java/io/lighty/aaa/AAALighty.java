@@ -73,15 +73,15 @@ public final class AAALighty extends AbstractLightyModule {
         final CountDownLatch cdl = new CountDownLatch(1);
         newInstance.whenComplete(new BiConsumer<AAALightyShiroProvider, Throwable>() {
             @Override
-            public void accept(final AAALightyShiroProvider t, final Throwable u) {
-                AAALighty.this.aaaShiroProviderHandler.setAaaLightyShiroProvider(t);
+            public void accept(final AAALightyShiroProvider provider, final Throwable cause) {
+                AAALighty.this.aaaShiroProviderHandler.setAaaLightyShiroProvider(provider);
                 cdl.countDown();
             }
         });
         try {
             cdl.await();
         } catch (final InterruptedException e) {
-            LOG.error(e.getMessage());
+            LOG.error("Init procedure was interrupted!", e);
             return false;
         }
         return true;
