@@ -31,6 +31,33 @@ public class DeserializeIdentifierCodec {
         this.dataSchemaContextTree = DataSchemaContextTree.from(schemaContext);
     }
 
+    private static String buildLeafListArg(final YangInstanceIdentifier.PathArgument pathArgument) {
+        Preconditions.checkState(pathArgument instanceof YangInstanceIdentifier.NodeWithValue<?>);
+        final YangInstanceIdentifier.NodeWithValue<?> node = (YangInstanceIdentifier.NodeWithValue<?>) pathArgument;
+        return node.getNodeType().getLocalName() + "=" + node.getValue();
+    }
+
+    private static String buildListArg(final YangInstanceIdentifier.PathArgument pathArgument,
+                                       final DataSchemaNode schemaNode) {
+        final YangInstanceIdentifier.NodeIdentifierWithPredicates listId =
+                (YangInstanceIdentifier.NodeIdentifierWithPredicates) pathArgument;
+        Preconditions.checkState(schemaNode instanceof ListSchemaNode);
+        final ListSchemaNode listSchemaNode = (ListSchemaNode) schemaNode;
+        final List<QName> keyDefinition = listSchemaNode.getKeyDefinition();
+        final StringBuilder builder = new StringBuilder(listId.getNodeType().getLocalName());
+        builder.append("=");
+        final List<String> keyValue = new ArrayList<>();
+        for (final QName qname : keyDefinition) {
+            final Object value = listId.getKeyValues().get(qname);
+            if (value == null) {
+                throw new IllegalStateException("all key values must be present");
+            }
+            keyValue.add(value.toString());
+        }
+        builder.append(StringUtils.join(keyValue, ","));
+        return builder.toString();
+    }
+
     public final String deserialize(final YangInstanceIdentifier identifier) {
         final List<YangInstanceIdentifier.PathArgument> pathArguments = identifier.getPathArguments();
         final QName nodeType = pathArguments.get(0).getNodeType();
@@ -57,41 +84,15 @@ public class DeserializeIdentifierCodec {
         if (nodeType.getRevision().isPresent()) {
             revision = nodeType.getRevision().get().toString();
             module = this.schemaContext.findModule(nodeType.getNamespace(),
-                nodeType.getRevision().get());
+                    nodeType.getRevision().get());
         } else {
             revision = "[not present]";
             module = this.schemaContext.findModule(nodeType.getNamespace());
         }
-        if (! module.isPresent()) {
+        if (!module.isPresent()) {
             throw new IllegalStateException("Module with namespace " + nodeType.getNamespace() + " and revision "
                     + revision + " not found");
         }
         return "/" + module.get().getName() + ":" + StringUtils.join(elements, "/");
-    }
-
-    private static String buildLeafListArg(final YangInstanceIdentifier.PathArgument pathArgument) {
-        Preconditions.checkState(pathArgument instanceof YangInstanceIdentifier.NodeWithValue<?>);
-        final YangInstanceIdentifier.NodeWithValue<?> node = (YangInstanceIdentifier.NodeWithValue<?>) pathArgument;
-        return node.getNodeType().getLocalName() + "=" + node.getValue();
-    }
-
-    private static String buildListArg(final YangInstanceIdentifier.PathArgument pathArgument,
-            final DataSchemaNode schemaNode) {
-        final YangInstanceIdentifier.NodeIdentifierWithPredicates listId = (YangInstanceIdentifier.NodeIdentifierWithPredicates) pathArgument;
-        Preconditions.checkState(schemaNode instanceof ListSchemaNode);
-        final ListSchemaNode listSchemaNode = (ListSchemaNode) schemaNode;
-        final List<QName> keyDefinition = listSchemaNode.getKeyDefinition();
-        final StringBuilder builder = new StringBuilder(listId.getNodeType().getLocalName());
-        builder.append("=");
-        final List<String> keyValue = new ArrayList<>();
-        for (final QName qName : keyDefinition) {
-            final Object value = listId.getKeyValues().get(qName);
-            if (value == null) {
-                throw new IllegalStateException("all key values must be present");
-            }
-            keyValue.add(value.toString());
-        }
-        builder.append(StringUtils.join(keyValue, ","));
-        return builder.toString();
     }
 }

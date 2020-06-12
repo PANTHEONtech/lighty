@@ -35,6 +35,35 @@ public class SerializeIdentifierCodec {
         this.dataSchemaContextTree = DataSchemaContextTree.from(schemaContext);
     }
 
+    private static YangInstanceIdentifier.NodeWithValue<?> buildNodeWithValue(
+            final LeafListSchemaNode leafListSchemaNode, final String arg) {
+        final String[] split = arg.split("=");
+        Preconditions.checkArgument(split.length == 2);
+        return new YangInstanceIdentifier.NodeWithValue<>(leafListSchemaNode.getQName(), split[1]);
+    }
+
+    private static YangInstanceIdentifier.NodeIdentifierWithPredicates buildNodeWithKey(
+            final ListSchemaNode listSchemaNode, final String pathArg, final QName qname) {
+        Preconditions.checkArgument(pathArg.contains("="), "pathArg does not containg list with keys");
+        final String[] listWithKeys = pathArg.split("=");
+        final String keys = listWithKeys[1];
+        final Map<QName, Object> mapKeys = new HashMap<>();
+        final String[] keyValues = keys.split(",");
+        for (int i = 0; i < listSchemaNode.getKeyDefinition().size(); i++) {
+            Preconditions.checkArgument(keyValues.length > i, "all key values must be present");
+            mapKeys.put(listSchemaNode.getKeyDefinition().get(i), keyValues[i]);
+        }
+        return new YangInstanceIdentifier.NodeIdentifierWithPredicates(qname, mapKeys);
+    }
+
+    private static QName getQname(final QNameModule qnameModule, final String args) {
+        if (args.contains("=")) {
+            final String[] listWithKeys = args.split("=");
+            return QName.create(qnameModule, listWithKeys[0]);
+        }
+        return QName.create(qnameModule, args);
+    }
+
     public YangInstanceIdentifier serialize(final String identifier) {
         String data = identifier;
         if (data.startsWith("/")) {
@@ -47,15 +76,15 @@ public class SerializeIdentifierCodec {
         final String[] first = pathArgs.get(0).split(":");
         final String moduleName = first[0];
         final Optional<Module> module = this.schemaContext.findModule(moduleName);
-        if (! module.isPresent()) {
+        if (!module.isPresent()) {
             throw new IllegalStateException("Module with name" + moduleName + " not found");
         }
-        final QNameModule qNameModule = module.get().getQNameModule();
+        final QNameModule qnameModule = module.get().getQNameModule();
         pathArgs.set(0, first[1]);
         final YangInstanceIdentifier.InstanceIdentifierBuilder builder = YangInstanceIdentifier.builder();
         DataSchemaContextNode<?> schemaNode = this.dataSchemaContextTree.getRoot();
         for (final String args : pathArgs) {
-            final QName qName = getQname(qNameModule, args);
+            final QName qName = getQname(qnameModule, args);
             schemaNode = schemaNode.getChild(qName);
             if (schemaNode.isMixin()) {
                 final DataSchemaNode dataSchemaNode = schemaNode.getDataSchemaNode();
@@ -77,35 +106,6 @@ public class SerializeIdentifierCodec {
             }
         }
         return builder.build();
-    }
-
-    private static YangInstanceIdentifier.NodeWithValue<?> buildNodeWithValue(final LeafListSchemaNode leafListSchemaNode,
-            final String arg) {
-        final String[] split = arg.split("=");
-        Preconditions.checkArgument(split.length == 2);
-        return new YangInstanceIdentifier.NodeWithValue<>(leafListSchemaNode.getQName(), split[1]);
-    }
-
-    private static YangInstanceIdentifier.NodeIdentifierWithPredicates buildNodeWithKey(
-            final ListSchemaNode listSchemaNode, final String pathArg, final QName qName) {
-        Preconditions.checkArgument(pathArg.contains("="), "pathArg does not containg list with keys");
-        final String[] listWithKeys = pathArg.split("=");
-        final String keys = listWithKeys[1];
-        final Map<QName, Object> mapKeys = new HashMap<>();
-        final String[] keyValues = keys.split(",");
-        for (int i = 0; i < listSchemaNode.getKeyDefinition().size(); i++) {
-            Preconditions.checkArgument(keyValues.length > i, "all key values must be present");
-            mapKeys.put(listSchemaNode.getKeyDefinition().get(i), keyValues[i]);
-        }
-        return new YangInstanceIdentifier.NodeIdentifierWithPredicates(qName, mapKeys);
-    }
-
-    private static QName getQname(final QNameModule qNameModule, final String args) {
-        if (args.contains("=")) {
-            final String[] listWithKeys = args.split("=");
-            return QName.create(qNameModule, listWithKeys[0]);
-        }
-        return QName.create(qNameModule, args);
     }
 
 }

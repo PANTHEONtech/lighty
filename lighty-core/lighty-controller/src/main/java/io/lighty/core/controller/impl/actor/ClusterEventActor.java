@@ -40,16 +40,16 @@ public class ClusterEventActor extends UntypedActor {
 
         LOG.debug("Will send poison pill to self in {} milliseconds", poisonPillTimeoutMillis);
         getContext().system().scheduler().scheduleOnce(
-                Duration.create(poisonPillTimeoutMillis, TimeUnit.MILLISECONDS),
-                () -> getSelf().tell(PoisonPill.getInstance(), getSelf()),
-                getContext().system().dispatcher());
+            Duration.create(poisonPillTimeoutMillis, TimeUnit.MILLISECONDS),
+            () -> getSelf().tell(PoisonPill.getInstance(), getSelf()),
+            getContext().system().dispatcher());
     }
 
     @Override
     public void onReceive(Object message) throws Exception {
         if (message instanceof ClusterEvent.CurrentClusterState) {
             ClusterEvent.CurrentClusterState clusterState = (ClusterEvent.CurrentClusterState) message;
-            LOG.debug("ClusterEvent.CurrentClusterState: leader=" + clusterState.getLeader().toString());
+            LOG.debug("ClusterEvent.CurrentClusterState: leader={}", clusterState.getLeader().toString());
 
             boolean allUp = true;
             for (Member member : clusterState.getMembers()) {

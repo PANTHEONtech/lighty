@@ -24,13 +24,13 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
     private final IetfZeroTouchCallHomeServerProvider provider;
 
     public NetconfCallhomePlugin(final LightyServices lightyServices, final String topologyId,
-            ExecutorService executorService, final AAAEncryptionService encryptionService) {
+                                 ExecutorService executorService, final AAAEncryptionService encryptionService) {
         super(executorService);
         final SchemaRepositoryProvider schemaRepositoryProvider =
                 new SchemaRepositoryProviderImpl("shared-schema-repository-impl");
         final CallHomeMountDispatcher dispatcher = new CallHomeMountDispatcher(topologyId,
-                lightyServices.getEventExecutor(), lightyServices.getScheduledThreaPool(), lightyServices.getThreadPool(),
-                schemaRepositoryProvider, lightyServices.getBindingDataBroker(),
+                lightyServices.getEventExecutor(), lightyServices.getScheduledThreaPool(),
+                lightyServices.getThreadPool(), schemaRepositoryProvider, lightyServices.getBindingDataBroker(),
                 lightyServices.getDOMMountPointService(), encryptionService);
         provider = new IetfZeroTouchCallHomeServerProvider(lightyServices.getBindingDataBroker(), dispatcher);
     }
@@ -41,6 +41,7 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
         return true;
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     @Override
     protected boolean stopProcedure() {
         try {

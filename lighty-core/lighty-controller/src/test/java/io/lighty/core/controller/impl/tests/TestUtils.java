@@ -9,11 +9,9 @@ package io.lighty.core.controller.impl.tests;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
-
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -31,9 +29,7 @@ import org.testng.Assert;
 /**
  * author: vincent on 18.8.2017.
  */
-class TestUtils {
-
-    private static final String NODE_ID = "test-node-id";
+final class TestUtils {
 
     static final String TOPOLOGY_ID = "test-topo";
     static final Topology TOPOLOGY =
@@ -41,6 +37,10 @@ class TestUtils {
     static final InstanceIdentifier<Topology> TOPOLOGY_IID =
             InstanceIdentifier.builder(NetworkTopology.class)
                     .child(Topology.class, TOPOLOGY.getKey()).build();
+    private static final String NODE_ID = "test-node-id";
+
+    private TestUtils() {
+    }
 
     static YangInstanceIdentifier createNetworkTopologyYIID() {
         final YangInstanceIdentifier.InstanceIdentifierBuilder builder =
@@ -59,7 +59,7 @@ class TestUtils {
     }
 
     static void writeToTopology(final DataBroker bindingDataBroker,
-            final InstanceIdentifier<Topology> topologyInstanceIdentifier, final Topology topology)
+                                final InstanceIdentifier<Topology> topologyInstanceIdentifier, final Topology topology)
             throws ExecutionException, InterruptedException {
         WriteTransaction writeTransaction = bindingDataBroker.newWriteOnlyTransaction();
         writeTransaction.put(LogicalDatastoreType.OPERATIONAL, topologyInstanceIdentifier, topology);
@@ -67,7 +67,7 @@ class TestUtils {
     }
 
     static void readFromTopology(final DataBroker bindingDataBroker, final String testTopoId,
-            int expectedCount) throws InterruptedException, ExecutionException, TimeoutException {
+                                 int expectedCount) throws InterruptedException, ExecutionException, TimeoutException {
         ReadOnlyTransaction readOnlyTransaction = bindingDataBroker.newReadOnlyTransaction();
 
         InstanceIdentifier<NetworkTopology> networkTopologyInstanceIdentifier =

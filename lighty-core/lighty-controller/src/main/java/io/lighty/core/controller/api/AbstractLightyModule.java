@@ -16,7 +16,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
-import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +31,7 @@ import org.slf4j.LoggerFactory;
  * {@link AbstractLightyModule#start()},
  * {@link AbstractLightyModule#startBlocking()} and
  * {@link AbstractLightyModule#shutdown()} methods.
+ *
  * <p>
  * <b>Example usage:</b>
  * <pre>
@@ -62,14 +62,14 @@ public abstract class AbstractLightyModule implements LightyModule {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractLightyModule.class);
     private final CountDownLatch shutdownLatch;
     private ListeningExecutorService executorService;
-    private boolean executorIsProvided;
+    private final boolean executorIsProvided;
     private volatile boolean running;
 
     public AbstractLightyModule(ExecutorService executorService) {
         if (executorService == null) {
             this.executorIsProvided = false;
-            LOG.debug("ExecutorService for LightyModule {} was not provided. By default single thread ExecutorService" +
-                    " will be used.", this.getClass().getSimpleName());
+            LOG.debug("ExecutorService for LightyModule {} was not provided. By default single thread ExecutorService"
+                    + " will be used.", this.getClass().getSimpleName());
         } else {
             this.executorService = MoreExecutors.listeningDecorator(executorService);
             this.executorIsProvided = true;
@@ -85,6 +85,7 @@ public abstract class AbstractLightyModule implements LightyModule {
     /**
      * This method is called in {@link AbstractLightyModule#start()} method.
      * Implementation of this method should initialize everything necessary.
+     *
      * @return success of initialization
      */
     protected abstract boolean initProcedure();
@@ -93,6 +94,7 @@ public abstract class AbstractLightyModule implements LightyModule {
      * This method is called in {@link AbstractLightyModule#shutdown()} method.
      * Implementation of this method should do everything necessary to
      * shutdown correctly (e.g. stop initialized beans, release resources, ...).
+     *
      * @return success of stop.
      */
     protected abstract boolean stopProcedure();
@@ -133,19 +135,19 @@ public abstract class AbstractLightyModule implements LightyModule {
 
     /**
      * Start and block until shutdown is requested.
+     *
      * @param initFinishCallback callback that will be called after start is completed.
-     * @throws InterruptedException
-     *   thrown in case module initialization fails.
+     * @throws InterruptedException thrown in case module initialization fails.
      */
     public void startBlocking(Consumer<Boolean> initFinishCallback) throws InterruptedException {
         Futures.addCallback(start(), new FutureCallback<Boolean>() {
             @Override
-            public void onSuccess(@Nullable Boolean result) {
+            public void onSuccess(Boolean result) {
                 initFinishCallback.accept(true);
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Throwable cause) {
                 initFinishCallback.accept(false);
             }
         }, MoreExecutors.directExecutor());
@@ -154,7 +156,7 @@ public abstract class AbstractLightyModule implements LightyModule {
 
     @Override
     public synchronized ListenableFuture<Boolean> shutdown() {
-        if (! this.running) {
+        if (!this.running) {
             LOG.warn("LightyModule {} is already shut down.", this.getClass().getSimpleName());
             return Futures.immediateFuture(true);
         }
@@ -162,7 +164,7 @@ public abstract class AbstractLightyModule implements LightyModule {
         ListenableFuture<Boolean> shutdownFuture = this.executorService.submit(() -> {
             synchronized (this) {
                 LOG.debug("Starting shutdown procedure of LightyModule {}.", this.getClass().getSimpleName());
-                boolean stopResult = stopProcedure();
+                final boolean stopResult = stopProcedure();
                 this.shutdownLatch.countDown();
                 this.running = false;
                 LOG.info("LightyModule {} shutdown complete.", this.getClass().getSimpleName());
@@ -170,12 +172,14 @@ public abstract class AbstractLightyModule implements LightyModule {
             }
         });
 
-        if (! this.executorIsProvided) {
+        if (!this.executorIsProvided) {
             return Futures.transform(shutdownFuture, (result) -> {
-                LOG.debug("Shutdown default ExecutorService of LightyModule {}.", this.getClass().getSimpleName());
-                this.executorService.shutdown();
-                this.executorService = null;
-                return true;
+                synchronized (this) {
+                    LOG.debug("Shutdown default ExecutorService of LightyModule {}.", this.getClass().getSimpleName());
+                    this.executorService.shutdown();
+                    this.executorService = null;
+                    return true;
+                }
             }, MoreExecutors.directExecutor());
         }
 

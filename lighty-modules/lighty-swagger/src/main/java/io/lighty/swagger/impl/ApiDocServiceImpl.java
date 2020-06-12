@@ -10,16 +10,16 @@ package io.lighty.swagger.impl;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import io.lighty.swagger.mountpoints.MountPointSwagger;
-import org.opendaylight.netconf.sal.rest.doc.api.ApiDocService;
-import org.opendaylight.netconf.sal.rest.doc.swagger.ApiDeclaration;
-import org.opendaylight.netconf.sal.rest.doc.swagger.ResourceList;
-
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Map.Entry;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import org.opendaylight.netconf.sal.rest.doc.api.ApiDocService;
+import org.opendaylight.netconf.sal.rest.doc.swagger.ApiDeclaration;
+import org.opendaylight.netconf.sal.rest.doc.swagger.ResourceList;
 
 /**
  * This service generates swagger (See
@@ -42,6 +42,11 @@ public class ApiDocServiceImpl implements ApiDocService {
         return INSTANCE;
     }
 
+    // LIGHTY-CHANGE-START
+    private static boolean isNew(final UriInfo uriInfo) {
+        return true;
+    }
+
     /**
      * Generates index document for Swagger UI. This document lists out all
      * modules with link to get APIs for each module. The API for each module is
@@ -50,11 +55,7 @@ public class ApiDocServiceImpl implements ApiDocService {
     @Override
     public synchronized Response getRootDoc(final UriInfo uriInfo) {
         final ApiDocGenerator generator = ApiDocGenerator.getInstance();
-        if (isNew(uriInfo)) {
-            generator.setDraft(true);
-        } else {
-            generator.setDraft(false);
-        }
+        generator.setDraft(isNew(uriInfo));
         final ResourceList rootDoc = generator.getResourceListing(uriInfo);
 
         return Response.ok(rootDoc).build();
@@ -66,11 +67,7 @@ public class ApiDocServiceImpl implements ApiDocService {
     @Override
     public synchronized Response getDocByModule(final String module, final String revision, final UriInfo uriInfo) {
         final ApiDocGenerator generator = ApiDocGenerator.getInstance();
-        if (isNew(uriInfo)) {
-            generator.setDraft(true);
-        } else {
-            generator.setDraft(false);
-        }
+        generator.setDraft(isNew(uriInfo));
         final ApiDeclaration doc = generator.getApiDeclaration(module, revision, uriInfo);
         return Response.ok(doc).build();
     }
@@ -99,10 +96,10 @@ public class ApiDocServiceImpl implements ApiDocService {
             }
             writer.writeEndArray();
             writer.flush();
-        } catch (final Exception e) {
+            return Response.status(200).entity(baos.toString("UTF-8")).build();
+        } catch (final IOException e) {
             return Response.status(500).entity(e.getMessage()).build();
         }
-        return Response.status(200).entity(baos.toString()).build();
     }
 
     @Override
@@ -129,10 +126,5 @@ public class ApiDocServiceImpl implements ApiDocService {
         }
         return Response.ok(api).build();
     }
-
-    // LIGHTY-CHANGE-START
-    private static boolean isNew(final UriInfo uriInfo) {
-        return true;
-    }
-    // LIGHTY-CHANGE-END 
+    // LIGHTY-CHANGE-END
 }

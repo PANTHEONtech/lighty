@@ -9,15 +9,14 @@ package io.lighty.swagger;
 
 import io.lighty.swagger.impl.ApiDocGenerator;
 import io.lighty.swagger.mountpoints.MountPointSwagger;
+import java.util.LinkedList;
+import java.util.List;
 import org.opendaylight.controller.md.sal.dom.api.DOMMountPointService;
 import org.opendaylight.controller.sal.core.api.model.SchemaService;
 import org.opendaylight.controller.sal.core.api.mount.MountProvisionListener;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.LinkedList;
-import java.util.List;
 
 public class DocProvider {
 

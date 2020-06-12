@@ -16,12 +16,12 @@ public class ConfigurationException extends Exception {
         super();
     }
 
-    public ConfigurationException(String s) {
-        super(s);
+    public ConfigurationException(String message) {
+        super(message);
     }
 
-    public ConfigurationException(String s, Throwable throwable) {
-        super(s, throwable);
+    public ConfigurationException(String message, Throwable throwable) {
+        super(message, throwable);
     }
 
     public ConfigurationException(Throwable throwable) {

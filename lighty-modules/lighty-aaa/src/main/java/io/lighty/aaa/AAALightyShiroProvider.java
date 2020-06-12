@@ -14,6 +14,14 @@ import io.lighty.server.LightyServerBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtConstructor;
+import javassist.CtMethod;
+import javassist.CtNewConstructor;
+import javassist.CtNewMethod;
+import javassist.NotFoundException;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -51,21 +59,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.Da
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.ShiroConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtConstructor;
-import javassist.CtMethod;
-import javassist.CtNewConstructor;
-import javassist.CtNewMethod;
-import javassist.NotFoundException;
 
 public final class AAALightyShiroProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(AAALightyShiroProvider.class);
 
     private static AAALightyShiroProvider INSTANCE;
-    private static IIDMStore iidmStore;
+    private IIDMStore iidmStore;
 
     private final List<Handler> handlers;
     private final DataBroker dataBroker;
@@ -73,9 +73,11 @@ public final class AAALightyShiroProvider {
     private final ShiroConfiguration shiroConfiguration;
 
     private AAALightyShiroProvider(final DataBroker dataBroker, final ICertificateManager certificateManager,
-            final CredentialAuth<PasswordCredentials> credentialAuth, final ShiroConfiguration shiroConfiguration,
-            final String moonEndpointPath, final String oauth2EndpointPath, final DatastoreConfig datastoreConfig,
-            final String dbUsername, final String dbPassword, final LightyServerBuilder server) {
+                                   final CredentialAuth<PasswordCredentials> credentialAuth,
+                                   final ShiroConfiguration shiroConfiguration,
+                                   final String moonEndpointPath, final String oauth2EndpointPath,
+                                   final DatastoreConfig datastoreConfig,
+                                   final String dbUsername, final String dbPassword, final LightyServerBuilder server) {
         this.dataBroker = dataBroker;
         this.certificateManager = certificateManager;
         this.shiroConfiguration = shiroConfiguration;
@@ -93,13 +95,48 @@ public final class AAALightyShiroProvider {
                     .longValue());
         } else {
             iidmStore = null;
-            tokenStore = null;
             LOG.info("AAA Datastore has not been initialized");
             return;
         }
         initializeServices(credentialAuth, iidmStore, tokenStore);
         final LocalHttpServer httpService = new LocalHttpServer(server);
         registerServletContexts(httpService, moonEndpointPath, oauth2EndpointPath);
+    }
+
+    public static CompletableFuture<AAALightyShiroProvider> newInstance(
+            final DataBroker dataBroker,
+            final ICertificateManager certificateManager, final CredentialAuth<PasswordCredentials> credentialAuth,
+            final ShiroConfiguration shiroConfiguration, final String moonEndpointPath, final String oauth2EndpointPath,
+            final DatastoreConfig datastoreConfig, final String dbUsername, final String dbPassword,
+            final LightyServerBuilder server) {
+        final CompletableFuture<AAALightyShiroProvider> completableFuture = new CompletableFuture<>();
+        INSTANCE = new AAALightyShiroProvider(dataBroker, certificateManager, credentialAuth,
+                shiroConfiguration, moonEndpointPath, oauth2EndpointPath, datastoreConfig, dbUsername, dbPassword,
+                server);
+        completableFuture.complete(INSTANCE);
+        return completableFuture;
+    }
+
+    public static AAALightyShiroProvider getInstance() {
+        return INSTANCE;
+    }
+
+    /**
+     * Get IDM data store.
+     *
+     * @return IIDMStore data store
+     */
+    public static IIDMStore getIdmStore() {
+        return INSTANCE.iidmStore;
+    }
+
+    /**
+     * Set IDM data store, only used for test.
+     *
+     * @param store data store
+     */
+    public static void setIdmStore(final IIDMStore store) {
+        INSTANCE.iidmStore = store;
     }
 
     private void initAAAonServer(final LightyServerBuilder server) {
@@ -118,7 +155,6 @@ public final class AAALightyShiroProvider {
         server.addCommonEventListener(new EnvironmentLoaderListener());
 
 
-
         final FilterHolder customFilterAdapter = new FilterHolder(new CustomFilterAdapter());
         server.addCommonFilter(customFilterAdapter, "/*");
 
@@ -130,23 +166,6 @@ public final class AAALightyShiroProvider {
         crossOriginFilter.setInitParameter("allowedHeaders",
                 "origin, content-type, accept, authorization, Authorization");
         server.addCommonFilter(crossOriginFilter, "/*");
-    }
-
-    public static CompletableFuture<AAALightyShiroProvider> newInstance(final DataBroker dataBroker,
-            final ICertificateManager certificateManager, final CredentialAuth<PasswordCredentials> credentialAuth,
-            final ShiroConfiguration shiroConfiguration, final String moonEndpointPath, final String oauth2EndpointPath,
-            final DatastoreConfig datastoreConfig, final String dbUsername, final String dbPassword,
-            final LightyServerBuilder server) {
-        final CompletableFuture<AAALightyShiroProvider> completableFuture = new CompletableFuture<>();
-        INSTANCE = new AAALightyShiroProvider(dataBroker, certificateManager, credentialAuth,
-                shiroConfiguration, moonEndpointPath, oauth2EndpointPath, datastoreConfig, dbUsername, dbPassword,
-                server);
-        completableFuture.complete(INSTANCE);
-        return completableFuture;
-    }
-
-    public static AAALightyShiroProvider getInstance() {
-        return INSTANCE;
     }
 
     /**
@@ -176,34 +195,16 @@ public final class AAALightyShiroProvider {
         return this.shiroConfiguration;
     }
 
-    /**
-     * Get IDM data store.
-     *
-     * @return IIDMStore data store
-     */
-    public static IIDMStore getIdmStore() {
-        return iidmStore;
-    }
-
-    /**
-     * Set IDM data store, only used for test.
-     *
-     * @param store data store
-     */
-    public static void setIdmStore(final IIDMStore store) {
-        iidmStore = store;
-    }
-
     public void close() {
         this.handlers.forEach((handler) -> {
             handler.destroy();
         });
     }
 
-    private void initializeServices(final CredentialAuth<PasswordCredentials> credentialAuth, final IIDMStore iidmStore,
-            final TokenStore tokenStore) {
+    private void initializeServices(final CredentialAuth<PasswordCredentials> credentialAuth, final IIDMStore store,
+                                    final TokenStore tokenStore) {
         try {
-            new StoreBuilder(iidmStore).initWithDefaultUsers(IIDMStore.DEFAULT_DOMAIN);
+            new StoreBuilder(store).initWithDefaultUsers(IIDMStore.DEFAULT_DOMAIN);
         } catch (final IDMStoreException e) {
             LOG.error("Failed to initialize data in store", e);
         }
@@ -211,7 +212,7 @@ public final class AAALightyShiroProvider {
         final AuthenticationService authService = AuthenticationManager.instance();
         ServiceLocator.getInstance().setAuthenticationService(authService);
 
-        final IdMService idmService = new IdMServiceImpl(iidmStore);
+        final IdMService idmService = new IdMServiceImpl(store);
         ServiceLocator.getInstance().setIdmService(idmService);
 
         ServiceLocator.getInstance().setCredentialAuth(credentialAuth);
@@ -224,7 +225,7 @@ public final class AAALightyShiroProvider {
     }
 
     private void registerServletContexts(final LocalHttpServer httpService, final String moonEndpointPath,
-            final String oauth2EndpointPath) {
+                                         final String oauth2EndpointPath) {
         LOG.info("attempting registration of AAA moon, oauth2 and auth servlets");
 
         Preconditions.checkNotNull(httpService, "httpService cannot be null");
@@ -248,7 +249,7 @@ public final class AAALightyShiroProvider {
             final CtMethod getInstance = CtNewMethod.make(
                     "public static org.opendaylight.aaa.AAAShiroProvider getInstance() {"
                             + "return new org.opendaylight.aaa.AAAShiroProvider();}",
-                            ctClass);
+                    ctClass);
             ctClass.addMethod(getInstance);
 
             ctClass.removeMethod(ctClass.getDeclaredMethod("getInstanceFuture"));
@@ -258,14 +259,14 @@ public final class AAALightyShiroProvider {
                             + "new java.util.concurrent.CompletableFuture();"
                             + "completableFuture.complete(org.opendaylight.aaa.AAAShiroProvider.getInstance());"
                             + "return completableFuture;}",
-                            ctClass);
+                    ctClass);
             ctClass.addMethod(getInstanceFuture);
 
             ctClass.removeMethod(ctClass.getDeclaredMethod("getIdmStore"));
             final CtMethod getIdmStore = CtNewMethod.make(
                     "public static org.opendaylight.aaa.api.IIDMStore getIdmStore() {"
                             + "return io.lighty.aaa.AAALightyShiroProvider.getIdmStore();}",
-                            ctClass);
+                    ctClass);
             ctClass.addMethod(getIdmStore);
 
             ctClass.removeMethod(ctClass.getDeclaredMethod("setIdmStore"));
@@ -284,7 +285,7 @@ public final class AAALightyShiroProvider {
             final CtMethod getCertificateManager = CtNewMethod.make(
                     "public org.opendaylight.aaa.cert.api.ICertificateManager getCertificateManager() {"
                             + "return io.lighty.aaa.AAALightyShiroProvider.getInstance().getCertificateManager();}",
-                            ctClass);
+                    ctClass);
             ctClass.addMethod(getCertificateManager);
 
             ctClass.removeMethod(ctClass.getDeclaredMethod("getShiroConfiguration"));
@@ -292,7 +293,7 @@ public final class AAALightyShiroProvider {
                     "public org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.ShiroConfiguration "
                             + "getShiroConfiguration() {"
                             + "return io.lighty.aaa.AAALightyShiroProvider.getInstance().getShiroConfiguration();}",
-                            ctClass);
+                    ctClass);
             ctClass.addMethod(getShiroConfiguration);
 
             ctClass.toClass();

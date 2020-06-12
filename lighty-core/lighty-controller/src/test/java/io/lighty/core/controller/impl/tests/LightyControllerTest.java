@@ -10,7 +10,6 @@ package io.lighty.core.controller.impl.tests;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.core.controller.api.LightyController;
-
 import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -86,20 +85,20 @@ public class LightyControllerTest extends LightyControllerTestBase {
         LightyController lightyController = getLightyController();
         DataBroker bindingDataBroker = lightyController.getServices().getBindingDataBroker();
         bindingDataBroker.registerDataChangeListener(LogicalDatastoreType.OPERATIONAL, TestUtils.TOPOLOGY_IID,
-                change -> {
-                    if (countDownLatch.getCount() == 2) {
-                        // on first time - write
-                        Assert.assertEquals(change.getOriginalData().size(), 0);
-                        Assert.assertEquals(change.getCreatedData().size(), 1);
-                    } else if (countDownLatch.getCount() == 1) {
-                        // on second time - delete
-                        Assert.assertEquals(change.getOriginalData().size(), 1);
-                        Assert.assertEquals(change.getCreatedData().size(), 0);
-                    } else {
-                        Assert.fail("Too many DataTreeChange events, expected two");
-                    }
-                    countDownLatch.countDown();
-                }, AsyncDataBroker.DataChangeScope.SUBTREE);
+            change -> {
+                if (countDownLatch.getCount() == 2) {
+                    // on first time - write
+                    Assert.assertEquals(change.getOriginalData().size(), 0);
+                    Assert.assertEquals(change.getCreatedData().size(), 1);
+                } else if (countDownLatch.getCount() == 1) {
+                    // on second time - delete
+                    Assert.assertEquals(change.getOriginalData().size(), 1);
+                    Assert.assertEquals(change.getCreatedData().size(), 0);
+                } else {
+                    Assert.fail("Too many DataTreeChange events, expected two");
+                }
+                countDownLatch.countDown();
+            }, AsyncDataBroker.DataChangeScope.SUBTREE);
 
         //1. write to TOPOLOGY model
         TestUtils.writeToTopology(bindingDataBroker, TestUtils.TOPOLOGY_IID, TestUtils.TOPOLOGY);

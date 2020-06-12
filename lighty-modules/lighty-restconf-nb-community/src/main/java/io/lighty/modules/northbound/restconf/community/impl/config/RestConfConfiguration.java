@@ -55,8 +55,8 @@ public class RestConfConfiguration {
     }
 
     public RestConfConfiguration(DOMDataBroker domDataBroker, SchemaService schemaService, DOMRpcService domRpcService,
-                                 DOMNotificationService domNotificationService, DOMMountPointService domMountPointService,
-                                 DOMSchemaService domSchemaService) {
+                                 DOMNotificationService domNotificationService,
+                                 DOMMountPointService domMountPointService, DOMSchemaService domSchemaService) {
         this.domDataBroker = domDataBroker;
         this.schemaService = schemaService;
         this.domRpcService = domRpcService;
@@ -154,30 +154,40 @@ public class RestConfConfiguration {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o)
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
+        }
 
-        RestConfConfiguration that = (RestConfConfiguration) o;
+        RestConfConfiguration that = (RestConfConfiguration) obj;
 
-        if (webSocketPort != that.webSocketPort)
+        if (webSocketPort != that.webSocketPort) {
             return false;
-        if (httpPort != that.httpPort)
+        }
+        if (httpPort != that.httpPort) {
             return false;
-        if (!domDataBroker.equals(that.domDataBroker))
+        }
+        if (!domDataBroker.equals(that.domDataBroker)) {
             return false;
-        if (!schemaService.equals(that.schemaService))
+        }
+        if (!schemaService.equals(that.schemaService)) {
             return false;
-        if (!domRpcService.equals(that.domRpcService))
+        }
+        if (!domRpcService.equals(that.domRpcService)) {
             return false;
-        if (!domNotificationService.equals(that.domNotificationService))
+        }
+        if (!domNotificationService.equals(that.domNotificationService)) {
             return false;
-        if (!domMountPointService.equals(that.domMountPointService))
+        }
+        if (!domMountPointService.equals(that.domMountPointService)) {
             return false;
-        if (jsonRestconfServiceType != that.jsonRestconfServiceType)
+        }
+        if (jsonRestconfServiceType != that.jsonRestconfServiceType) {
             return false;
+        }
         if (domSchemaService != that.domSchemaService) {
             return false;
         }

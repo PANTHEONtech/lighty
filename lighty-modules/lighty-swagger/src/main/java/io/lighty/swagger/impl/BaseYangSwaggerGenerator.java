@@ -7,10 +7,26 @@
  */
 package io.lighty.swagger.impl;
 
+import static org.opendaylight.netconf.sal.rest.doc.util.RestDocgenUtil.resolvePathArgumentsName;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.io.IOException;
+import java.net.URI;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import javax.ws.rs.core.UriInfo;
 import org.opendaylight.netconf.sal.rest.doc.impl.ModelGenerator;
 import org.opendaylight.netconf.sal.rest.doc.model.builder.OperationBuilder;
 import org.opendaylight.netconf.sal.rest.doc.model.builder.OperationBuilder.Delete;
@@ -28,7 +44,6 @@ import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
@@ -36,47 +51,141 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.UriInfo;
-import java.io.IOException;
-import java.net.URI;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import static org.opendaylight.netconf.sal.rest.doc.util.RestDocgenUtil.resolvePathArgumentsName;
-
 public class BaseYangSwaggerGenerator {
-
-    private static final Logger LOG = LoggerFactory.getLogger(org.opendaylight.netconf.sal.rest.doc.impl.BaseYangSwaggerGenerator.class);
 
     protected static final String API_VERSION = "1.0.0";
     protected static final String SWAGGER_VERSION = "1.2";
     protected static final String RESTCONF_CONTEXT_ROOT = "restconf";
-    private static final String RESTCONF_DRAFT = "18";
-
     static final String MODULE_NAME_SUFFIX = "_module";
+    private static final Logger LOG = LoggerFactory.getLogger(BaseYangSwaggerGenerator.class);
+    private static final String RESTCONF_DRAFT = "18";
+    private static boolean newDraft;
     private final ModelGenerator jsonConverter = new ModelGenerator();
-
     // private Map<String, ApiDeclaration> MODULE_DOC_CACHE = new HashMap<>()
     private final ObjectMapper mapper = new ObjectMapper();
-    private static boolean newDraft;
 
     protected BaseYangSwaggerGenerator() {
         this.mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+    }
+
+    private static void addRootPostLink(final Module module, final DataNodeContainer node,
+                                        final List<Parameter> pathParams, final String resourcePath,
+                                        final String dataStore, final List<Api> apis) {
+        if (containsListOrContainer(module.getChildNodes())) {
+            final Api apiForRootPostUri = new Api();
+            apiForRootPostUri.setPath(resourcePath.concat(getContent(dataStore)));
+            apiForRootPostUri.setOperations(operationPost(module.getName() + MODULE_NAME_SUFFIX,
+                    module.getDescription().orElse(null), module, pathParams, true, ""));
+            apis.add(apiForRootPostUri);
+        }
+    }
+
+    private static String generateCacheKey(final String module, final String revision) {
+        return module + "(" + revision + ")";
+    }
+
+    protected static String getContent(final String dataStore) {
+        if (newDraft) {
+            if ("operational".contains(dataStore)) {
+                return "?content=nonconfig";
+            } else if ("config".contains(dataStore)) {
+                return "?content=config";
+            } else {
+                return "";
+            }
+        } else {
+            return "";
+        }
+    }
+
+    private static boolean containsListOrContainer(final Iterable<DataSchemaNode> nodes) {
+        for (final DataSchemaNode child : nodes) {
+            if (child instanceof ListSchemaNode || child instanceof ContainerSchemaNode) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static List<Operation> operation(final DataSchemaNode node, final List<Parameter> pathParams,
+                                             final boolean isConfig, final Iterable<DataSchemaNode> childSchemaNodes,
+                                             final String parentName) {
+        final List<Operation> operations = new ArrayList<>();
+
+        final Get getBuilder = new Get(node, isConfig);
+        operations.add(getBuilder.pathParams(pathParams).build());
+
+        if (isConfig) {
+            final Put putBuilder = new Put(node.getQName().getLocalName(), node.getDescription().orElse(null),
+                    parentName);
+            operations.add(putBuilder.pathParams(pathParams).build());
+
+            final Delete deleteBuilder = new Delete(node);
+            operations.add(deleteBuilder.pathParams(pathParams).build());
+
+            if (containsListOrContainer(childSchemaNodes)) {
+                operations.addAll(operationPost(node.getQName().getLocalName(), node.getDescription().orElse(null),
+                        (DataNodeContainer) node, pathParams, isConfig, parentName + "/"));
+            }
+        }
+        return operations;
+    }
+
+    private static List<Operation> operationPost(final String name, final String description,
+                                                 final DataNodeContainer dataNodeContainer,
+                                                 final List<Parameter> pathParams, final boolean isConfig,
+                                                 final String parentName) {
+        final List<Operation> operations = new ArrayList<>();
+        if (isConfig) {
+            final Post postBuilder = new Post(name, parentName + name, description, dataNodeContainer);
+            operations.add(postBuilder.pathParams(pathParams).build());
+        }
+        return operations;
+    }
+
+    private static String createPath(final DataSchemaNode schemaNode, final List<Parameter> pathParams,
+                                     final SchemaContext schemaContext) {
+        final StringBuilder path = new StringBuilder();
+        final String localName = resolvePathArgumentsName(schemaNode, schemaContext);
+        path.append(localName);
+
+        if (schemaNode instanceof ListSchemaNode) {
+            final List<QName> listKeys = ((ListSchemaNode) schemaNode).getKeyDefinition();
+            StringBuilder keyBuilder = null;
+            if (newDraft) {
+                keyBuilder = new StringBuilder("=");
+            }
+
+            for (final QName listKey : listKeys) {
+                final DataSchemaNode dataChildByName = ((DataNodeContainer) schemaNode).getDataChildByName(listKey);
+                final String pathParamIdentifier;
+                if (newDraft) {
+                    pathParamIdentifier = keyBuilder.append("{").append(listKey.getLocalName()).append("}").toString();
+                } else {
+                    pathParamIdentifier = "/{" + listKey.getLocalName() + "}";
+                }
+                path.append(pathParamIdentifier);
+
+                final Parameter pathParam = new Parameter();
+                pathParam.setName(listKey.getLocalName());
+                pathParam.setDescription(dataChildByName.getDescription().orElse(null));
+                pathParam.setType("string");
+                pathParam.setParamType("path");
+
+                pathParams.add(pathParam);
+                if (newDraft) {
+                    keyBuilder = new StringBuilder(",");
+                }
+            }
+        }
+        return path.toString();
     }
 
     /**
      * Return list of modules converted to swagger compliant resource list.
      */
     public ResourceList getResourceListing(final UriInfo uriInfo, final SchemaContext schemaContext,
-            final String context) {
+                                           final String context) {
 
         final ResourceList resourceList = createResourceList();
 
@@ -140,10 +249,7 @@ public class BaseYangSwaggerGenerator {
         final String basePath = createBasePathFromUriInfo(uriInfo);
 
         final ApiDeclaration doc = getSwaggerDocSpec(module, basePath, context, schemaContext);
-        if (doc != null) {
-            return doc;
-        }
-        return null;
+        return doc;
     }
 
     protected String createBasePathFromUriInfo(final UriInfo uriInfo) {
@@ -179,7 +285,7 @@ public class BaseYangSwaggerGenerator {
                  * GET/PUT/POST/DELETE config are added for this node.
                  */
                 if (node.isConfiguration()) { // This node's config statement is
-                                              // true.
+                    // true.
                     resourcePath = getDataStorePath("config", context);
 
                     /*
@@ -189,17 +295,20 @@ public class BaseYangSwaggerGenerator {
                      */
                     if (!hasAddRootPostLink) {
                         LOG.debug("Has added root post link for module {}", module.getName());
-                        addRootPostLink(module, (DataNodeContainer) node, pathParams, resourcePath, "config", apis);
+                        addRootPostLink(module, (DataNodeContainer) node, pathParams, resourcePath,
+                                "config", apis);
 
                         hasAddRootPostLink = true;
                     }
 
-                    addApis(node, apis, resourcePath, pathParams, schemaContext, true, module.getName(), "config");
+                    addApis(node, apis, resourcePath, pathParams, schemaContext, true, module.getName(),
+                            "config");
                 }
                 pathParams = new ArrayList<>();
                 resourcePath = getDataStorePath("operational", context);
 
-                addApis(node, apis, resourcePath, pathParams, schemaContext, false, module.getName(), "operational");
+                addApis(node, apis, resourcePath, pathParams, schemaContext, false, module.getName(),
+                        "operational");
             }
         }
 
@@ -221,7 +330,7 @@ public class BaseYangSwaggerGenerator {
                 models = this.jsonConverter.convertToJsonSchema(module, schemaContext);
                 doc.setModels(models);
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(this.mapper.writeValueAsString(doc));
+                    LOG.debug("Writing value: {}", this.mapper.writeValueAsString(doc));
                 }
             } catch (IOException e) {
                 LOG.error("Exception occured in ModelGenerator", e);
@@ -230,17 +339,6 @@ public class BaseYangSwaggerGenerator {
             return doc;
         }
         return null;
-    }
-
-    private static void addRootPostLink(final Module module, final DataNodeContainer node,
-                                        final List<Parameter> pathParams, final String resourcePath, final String dataStore, final List<Api> apis) {
-        if (containsListOrContainer(module.getChildNodes())) {
-            final Api apiForRootPostUri = new Api();
-            apiForRootPostUri.setPath(resourcePath.concat(getContent(dataStore)));
-            apiForRootPostUri.setOperations(operationPost(module.getName() + MODULE_NAME_SUFFIX,
-                    module.getDescription().orElse(null), module, pathParams, true, ""));
-            apis.add(apiForRootPostUri);
-        }
     }
 
     protected ApiDeclaration createApiDeclaration(final String basePath) {
@@ -270,13 +368,9 @@ public class BaseYangSwaggerGenerator {
         return "/" + dataStore + context;
     }
 
-    private static String generateCacheKey(final String module, final String revision) {
-        return module + "(" + revision + ")";
-    }
-
     private void addApis(final DataSchemaNode node, final List<Api> apis, final String parentPath,
-                         final List<Parameter> parentPathParams, final SchemaContext schemaContext, final boolean addConfigApi,
-                         final String parentName, final String dataStore) {
+                         final List<Parameter> parentPathParams, final SchemaContext schemaContext,
+                         final boolean addConfigApi, final String parentName, final String dataStore) {
         final Api api = new Api();
         final List<Parameter> pathParams = new ArrayList<>(parentPathParams);
 
@@ -284,7 +378,7 @@ public class BaseYangSwaggerGenerator {
         LOG.debug("Adding path: [{}]", resourcePath);
         api.setPath(resourcePath.concat(getContent(dataStore)));
 
-        Iterable<DataSchemaNode> childSchemaNodes = Collections.<DataSchemaNode>emptySet();
+        Iterable<DataSchemaNode> childSchemaNodes = Collections.emptySet();
         if (node instanceof ListSchemaNode || node instanceof ContainerSchemaNode) {
             final DataNodeContainer dataNodeContainer = (DataNodeContainer) node;
             childSchemaNodes = dataNodeContainer.getChildNodes();
@@ -302,103 +396,6 @@ public class BaseYangSwaggerGenerator {
                 }
             }
         }
-    }
-
-    protected static String getContent(final String dataStore) {
-        if (newDraft) {
-            if ("operational".contains(dataStore)) {
-                return "?content=nonconfig";
-            } else if ("config".contains(dataStore)) {
-                return "?content=config";
-            } else {
-                return "";
-            }
-        } else {
-            return "";
-        }
-    }
-
-    private static boolean containsListOrContainer(final Iterable<DataSchemaNode> nodes) {
-        for (final DataSchemaNode child : nodes) {
-            if (child instanceof ListSchemaNode || child instanceof ContainerSchemaNode) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static List<Operation> operation(final DataSchemaNode node, final List<Parameter> pathParams,
-                                             final boolean isConfig, final Iterable<DataSchemaNode> childSchemaNodes, final String parentName) {
-        final List<Operation> operations = new ArrayList<>();
-
-        final Get getBuilder = new Get(node, isConfig);
-        operations.add(getBuilder.pathParams(pathParams).build());
-
-        if (isConfig) {
-            final Put putBuilder = new Put(node.getQName().getLocalName(), node.getDescription().orElse(null),
-                parentName);
-            operations.add(putBuilder.pathParams(pathParams).build());
-
-            final Delete deleteBuilder = new Delete(node);
-            operations.add(deleteBuilder.pathParams(pathParams).build());
-
-            if (containsListOrContainer(childSchemaNodes)) {
-                operations.addAll(operationPost(node.getQName().getLocalName(), node.getDescription().orElse(null),
-                        (DataNodeContainer) node, pathParams, isConfig, parentName + "/"));
-            }
-        }
-        return operations;
-    }
-
-    private static List<Operation> operationPost(final String name, final String description,
-                                                 final DataNodeContainer dataNodeContainer, final List<Parameter> pathParams, final boolean isConfig,
-                                                 final String parentName) {
-        final List<Operation> operations = new ArrayList<>();
-        if (isConfig) {
-            final Post postBuilder = new Post(name, parentName + name, description, dataNodeContainer);
-            operations.add(postBuilder.pathParams(pathParams).build());
-        }
-        return operations;
-    }
-
-    private static String createPath(final DataSchemaNode schemaNode, final List<Parameter> pathParams,
-                                     final SchemaContext schemaContext) {
-        final ArrayList<LeafSchemaNode> pathListParams = new ArrayList<>();
-        final StringBuilder path = new StringBuilder();
-        final String localName = resolvePathArgumentsName(schemaNode, schemaContext);
-        path.append(localName);
-
-        if (schemaNode instanceof ListSchemaNode) {
-            final List<QName> listKeys = ((ListSchemaNode) schemaNode).getKeyDefinition();
-            StringBuilder keyBuilder = null;
-            if (newDraft) {
-                keyBuilder = new StringBuilder("=");
-            }
-
-            for (final QName listKey : listKeys) {
-                final DataSchemaNode dataChildByName = ((DataNodeContainer) schemaNode).getDataChildByName(listKey);
-                pathListParams.add((LeafSchemaNode) dataChildByName);
-                final String pathParamIdentifier;
-                if (newDraft) {
-                    pathParamIdentifier = keyBuilder.append("{").append(listKey.getLocalName()).append("}").toString();
-                } else {
-                    pathParamIdentifier = "/{" + listKey.getLocalName() + "}";
-                }
-                path.append(pathParamIdentifier);
-
-                final Parameter pathParam = new Parameter();
-                pathParam.setName(listKey.getLocalName());
-                pathParam.setDescription(dataChildByName.getDescription().orElse(null));
-                pathParam.setType("string");
-                pathParam.setParamType("path");
-
-                pathParams.add(pathParam);
-                if (newDraft) {
-                    keyBuilder = new StringBuilder(",");
-                }
-            }
-        }
-        return path.toString();
     }
 
     protected void addRpcs(final RpcDefinition rpcDefn, final List<Api> apis, final String parentPath,
@@ -452,6 +449,7 @@ public class BaseYangSwaggerGenerator {
         return sortedModules;
     }
 
+    @SuppressFBWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
     public void setDraft(final boolean draft) {
         BaseYangSwaggerGenerator.newDraft = draft;
     }

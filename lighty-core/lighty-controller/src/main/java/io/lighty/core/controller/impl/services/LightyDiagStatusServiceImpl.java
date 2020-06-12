@@ -10,7 +10,6 @@ package io.lighty.core.controller.impl.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,9 +20,9 @@ import org.opendaylight.infrautils.diagstatus.ServiceState;
 
 public class LightyDiagStatusServiceImpl implements DiagStatusService {
 
-    private final static String STATE_DESCRIPTION = "Service registration";
+    private static final String STATE_DESCRIPTION = "Service registration";
 
-    private Map<String, ServiceDescriptor> descriptors = new ConcurrentHashMap<>();
+    private final Map<String, ServiceDescriptor> descriptors = new ConcurrentHashMap<>();
 
     @Override
     public ServiceRegistration register(String serviceIdentifier) {
@@ -46,11 +45,7 @@ public class LightyDiagStatusServiceImpl implements DiagStatusService {
 
     @Override
     public Collection<ServiceDescriptor> getAllServiceDescriptors() {
-        final Collection<ServiceDescriptor> serviceDescriptors = new ArrayList<>();
-        for (String key : descriptors.keySet()) {
-            serviceDescriptors.add(descriptors.get(key));
-        }
-        return serviceDescriptors;
+        return descriptors.values();
     }
 
     @Override
@@ -76,7 +71,7 @@ public class LightyDiagStatusServiceImpl implements DiagStatusService {
     @Override
     public boolean isOperational() {
         for (ServiceDescriptor sd : getAllServiceDescriptors()) {
-            if(sd.getServiceState() != ServiceState.OPERATIONAL) {
+            if (sd.getServiceState() != ServiceState.OPERATIONAL) {
                 return false;
             }
         }

@@ -17,7 +17,6 @@ import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
-
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.opendaylight.aaa.encrypt.AAAEncryptionServiceImpl;
 import org.opendaylight.netconf.client.NetconfClientDispatcher;
@@ -28,11 +27,15 @@ import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NetconfConfigUtils {
+public final class NetconfConfigUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(NetconfConfigUtils.class);
     public static final String NETCONF_CONFIG_ROOT_ELEMENT_NAME = "netconf";
 
+    private NetconfConfigUtils() {
+    }
+
+    @SuppressWarnings("checkstyle:LineLength") // Kept long lines for brevity.
     public static final Set<YangModuleInfo> NETCONF_TOPOLOGY_MODELS = ImmutableSet.of(
             org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.keystore.rev171017.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.$YangModuleInfoImpl.getInstance(),
@@ -44,6 +47,7 @@ public class NetconfConfigUtils {
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160409.$YangModuleInfoImpl.getInstance()
     );
 
+    @SuppressWarnings("checkstyle:LineLength") // Kept long lines for brevity.
     public static final Set<YangModuleInfo> NETCONF_CALLHOME_MODELS = ImmutableSet.of(
             org.opendaylight.yang.gen.v1.urn.opendaylight.callhome.device.status.rev170112.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.netconf.callhome.server.rev161109.$YangModuleInfoImpl.getInstance()
@@ -54,8 +58,8 @@ public class NetconfConfigUtils {
      * Lighty services are not populated in this configuration.
      * @param jsonConfigInputStream InputStream containing Netconf config. data in JSON format.
      * @return Object representation of configuration data.
-     * @throws ConfigurationException In case JSON configuration cannot be deserializable to JSON
-     * tree nodes or cannot bind JSON tree node to type.
+     * @throws ConfigurationException In case JSON configuration cannot be deserializable to JSON tree nodes or cannot
+     *                                bind JSON tree node to type.
      */
     public static NetconfConfiguration createNetconfConfiguration(
             final InputStream jsonConfigInputStream) throws ConfigurationException {

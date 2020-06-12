@@ -9,65 +9,67 @@ package io.lighty.core.common.models.tests;
 
 import io.lighty.core.common.models.ModuleId;
 import io.lighty.core.common.models.YangModuleUtils;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.testng.Assert;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.testng.Assert;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
 public class YangModelUtilsTests {
 
     @DataProvider(name = "equalsTestData")
     public static Object[][] gatEqualsTestData() {
-        ModuleId moduleIdx = new ModuleId("namespace","modulex", "2018-04-23");
-        ModuleId moduleIdy = new ModuleId("namespace","modulex", "2018-04-23");
-        ModuleId moduleIdz = new ModuleId("namespace","modulex", "2018-04-23");
-        ModuleId moduleIdw = new ModuleId("namespace","modulew", "2018-04-23");
-        return new Object[][] {
-                //reflexive
-                {moduleIdx, moduleIdx, true},
+        ModuleId moduleIdx = new ModuleId("namespace", "modulex", "2018-04-23");
+        ModuleId moduleIdy = new ModuleId("namespace", "modulex", "2018-04-23");
+        ModuleId moduleIdz = new ModuleId("namespace", "modulex", "2018-04-23");
+        ModuleId moduleIdw = new ModuleId("namespace", "modulew", "2018-04-23");
+        return new Object[][]{
+            //reflexive
+            {moduleIdx, moduleIdx, true},
 
-                //symmetric
-                {moduleIdx, moduleIdy, true},
-                {moduleIdy, moduleIdx, true},
+            //symmetric
+            {moduleIdx, moduleIdy, true},
+            {moduleIdy, moduleIdx, true},
 
-                //transitive
-                {moduleIdx, moduleIdy, true},
-                {moduleIdy, moduleIdz, true},
-                {moduleIdx, moduleIdz, true},
+            //transitive
+            {moduleIdx, moduleIdy, true},
+            {moduleIdy, moduleIdz, true},
+            {moduleIdx, moduleIdz, true},
 
-                //consistent
-                {moduleIdx, moduleIdx, true},
-                {moduleIdx, moduleIdx, true},
-                {moduleIdx, moduleIdw, false},
-                {moduleIdx, moduleIdw, false},
-                {moduleIdx, "data", false},
-                {moduleIdx, "data", false},
-                {moduleIdx, null, false},
-                {moduleIdx, null, false},
+            //consistent
+            {moduleIdx, moduleIdx, true},
+            {moduleIdx, moduleIdx, true},
+            {moduleIdx, moduleIdw, false},
+            {moduleIdx, moduleIdw, false},
+            {moduleIdx, "data", false},
+            {moduleIdx, "data", false},
+            {moduleIdx, null, false},
+            {moduleIdx, null, false},
         };
     }
 
     @DataProvider(name = "moduleFilterTestData")
     public static Object[][] getModuleFilterTestData() {
-        return new Object[][] {
-                {
-                        new HashSet<>(Arrays.asList(new ModuleId[] { new ModuleId("urn:TBD:params:xml:ns:yang:network-topology", "network-topology", "2013-10-21") })),
-                        new HashSet<>(Arrays.asList(new String[] { "network-topology", "ietf-inet-types"}))
-                },
-                {
-                        new HashSet<>(Arrays.asList(new ModuleId[] { new ModuleId("urn:TBD:params:xml:ns:yang:network-topology", "ietf-yang-types", "2013-07-15") })),
-                        new HashSet<>(Arrays.asList(new String[] { "ietf-yang-types" }))
-                },
-                {
-                        new HashSet<>(Arrays.asList(new ModuleId[] { new ModuleId("urn:TBD:params:xml:ns:yang:network-topology", "ietf-inet-types", "2013-07-15") })),
-                        new HashSet<>(Arrays.asList(new String[] { "ietf-inet-types" }))
-                },
+        return new Object[][]{
+            {
+                new HashSet<>(Arrays.asList(new ModuleId("urn:TBD:params:xml:ns:yang:network-topology",
+                        "network-topology", "2013-10-21"))),
+                new HashSet<>(Arrays.asList("network-topology", "ietf-inet-types"))
+            },
+            {
+                new HashSet<>(Arrays.asList(new ModuleId("urn:TBD:params:xml:ns:yang:network-topology",
+                        "ietf-yang-types", "2013-07-15"))),
+                new HashSet<>(Arrays.asList("ietf-yang-types"))
+            },
+            {
+                new HashSet<>(Arrays.asList(new ModuleId("urn:TBD:params:xml:ns:yang:network-topology",
+                        "ietf-inet-types", "2013-07-15"))),
+                new HashSet<>(Arrays.asList("ietf-inet-types"))
+            },
 
         };
     }
@@ -83,8 +85,7 @@ public class YangModelUtilsTests {
     }
 
     /**
-     * This test requires test dependency:
-     * org.opendaylight.mdsal.model/ietf-topology
+     * This test requires test dependency: org.opendaylight.mdsal.model/ietf-topology.
      */
     @Test
     public void testLoadAllModules() {
@@ -96,20 +97,23 @@ public class YangModelUtilsTests {
         Set<YangModuleInfo> allModelsFromClasspath = YangModuleUtils.getAllModelsFromClasspath();
         Assert.assertNotNull(allModelsFromClasspath);
         for (String expectedModuleName : expectedModuleNames) {
-            long foundModelCount = allModelsFromClasspath.stream().filter(m -> m.getName().equals(expectedModuleName)).count();
+            long foundModelCount = allModelsFromClasspath.stream()
+                    .filter(m -> m.getName().equals(expectedModuleName))
+                    .count();
             Assert.assertTrue(foundModelCount > 0, expectedModuleName + " not found !");
         }
     }
 
     /**
-     * This test requires test dependency:
-     * org.opendaylight.mdsal.model/ietf-topology
+     * This test requires test dependency: org.opendaylight.mdsal.model/ietf-topology.
      */
     @Test(dataProvider = "moduleFilterTestData")
     public void testLoadFilteredModules(Set<ModuleId> filter, Set<String> expectedModuleNames) {
         Set<YangModuleInfo> filteredModelsFromClasspath = YangModuleUtils.getModelsFromClasspath(filter);
         for (String expectedModuleName : expectedModuleNames) {
-            long foundModelCount = filteredModelsFromClasspath.stream().filter(m -> m.getName().equals(expectedModuleName)).count();
+            long foundModelCount = filteredModelsFromClasspath.stream()
+                    .filter(m -> m.getName().equals(expectedModuleName))
+                    .count();
             Assert.assertTrue(foundModelCount > 0, expectedModuleName + " not found !");
         }
     }

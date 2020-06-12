@@ -8,7 +8,18 @@
 package io.lighty.swagger.mountpoints;
 
 import com.google.common.base.Optional;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.lighty.swagger.impl.BaseYangSwaggerGenerator;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
+import javax.ws.rs.core.UriInfo;
 import org.opendaylight.controller.md.sal.dom.api.DOMMountPoint;
 import org.opendaylight.controller.md.sal.dom.api.DOMMountPointService;
 import org.opendaylight.controller.sal.core.api.model.SchemaService;
@@ -25,25 +36,13 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
-import javax.ws.rs.core.UriInfo;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
-
 public class MountPointSwagger extends BaseYangSwaggerGenerator implements MountProvisionListener {
 
     private static final String DATASTORES_REVISION = "-";
     private static final String DATASTORES_LABEL = "Datastores";
     private static final String RESTCONF_DRAFT = "18";
     private static final AtomicReference<MountPointSwagger> SELF_REF = new AtomicReference<>();
-
-    private DOMMountPointService mountService;
+    private static boolean newDraft;
     private final Map<YangInstanceIdentifier, Long> instanceIdToLongId =
             new TreeMap<>((o1, o2) -> o1.toString().compareToIgnoreCase(o2.toString()));
     private final Map<Long, YangInstanceIdentifier> longIdToInstanceId = new HashMap<>();
@@ -51,9 +50,30 @@ public class MountPointSwagger extends BaseYangSwaggerGenerator implements Mount
     private final Object lock = new Object();
 
     private final AtomicLong idKey = new AtomicLong(0);
+    private DOMMountPointService mountService;
     private SchemaService globalSchema;
-    private static boolean newDraft;
 
+    public static MountPointSwagger getInstance() {
+        MountPointSwagger swagger = SELF_REF.get();
+        if (swagger == null) {
+            SELF_REF.compareAndSet(null, new MountPointSwagger());
+            swagger = SELF_REF.get();
+        }
+        newDraft = false;
+        return swagger;
+    }
+
+    public static MountPointSwagger getInstanceDraft18() {
+        MountPointSwagger swagger = SELF_REF.get();
+        if (swagger == null) {
+            SELF_REF.compareAndSet(null, new MountPointSwagger());
+            swagger = SELF_REF.get();
+        }
+        newDraft = true;
+        return swagger;
+    }
+
+    @SuppressFBWarnings("UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR")
     public Map<String, Long> getInstanceIdentifiers() {
         final Map<String, Long> urlToId = new HashMap<>();
         synchronized (this.lock) {
@@ -104,6 +124,7 @@ public class MountPointSwagger extends BaseYangSwaggerGenerator implements Mount
         return builder.toString();
     }
 
+    @SuppressFBWarnings("UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR")
     private String getYangMountUrl(final YangInstanceIdentifier key) {
         final String modName = findModuleName(key, this.globalSchema.getGlobalContext());
         return generateUrlPrefixFromInstanceID(key, modName) + "yang-ext:mount";
@@ -138,6 +159,7 @@ public class MountPointSwagger extends BaseYangSwaggerGenerator implements Mount
         return instanceId;
     }
 
+    @SuppressFBWarnings("UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR")
     private SchemaContext getSchemaContext(final YangInstanceIdentifier id) {
 
         if (id == null) {
@@ -150,9 +172,6 @@ public class MountPointSwagger extends BaseYangSwaggerGenerator implements Mount
         }
 
         final SchemaContext context = mountPoint.get().getSchemaContext();
-        if (context == null) {
-            return null;
-        }
         return context;
     }
 
@@ -173,10 +192,13 @@ public class MountPointSwagger extends BaseYangSwaggerGenerator implements Mount
 
     private ApiDeclaration generateDataStoreApiDoc(final UriInfo uriInfo, final String context) {
         final List<Api> apis = new LinkedList<>();
-        apis.add(createGetApi("config", "Queries the config (startup) datastore on the mounted hosted.", context));
-        apis.add(createGetApi("operational", "Queries the operational (running) datastore on the mounted hosted.",
+        apis.add(createGetApi("config",
+                "Queries the config (startup) datastore on the mounted hosted.", context));
+        apis.add(createGetApi("operational",
+                "Queries the operational (running) datastore on the mounted hosted.",
                 context));
-        apis.add(createGetApi("operations", "Queries the available operations (RPC calls) on the mounted hosted.",
+        apis.add(createGetApi("operations",
+                "Queries the available operations (RPC calls) on the mounted hosted.",
                 context));
 
         final ApiDeclaration declaration = super.createApiDeclaration(createBasePathFromUriInfo(uriInfo));
@@ -217,25 +239,5 @@ public class MountPointSwagger extends BaseYangSwaggerGenerator implements Mount
             final Long id = this.instanceIdToLongId.remove(path);
             this.longIdToInstanceId.remove(id);
         }
-    }
-
-    public static MountPointSwagger getInstance() {
-        MountPointSwagger swagger = SELF_REF.get();
-        if (swagger == null) {
-            SELF_REF.compareAndSet(null, new MountPointSwagger());
-            swagger = SELF_REF.get();
-        }
-        newDraft = false;
-        return swagger;
-    }
-
-    public static MountPointSwagger getInstanceDraft18() {
-        MountPointSwagger swagger = SELF_REF.get();
-        if (swagger == null) {
-            SELF_REF.compareAndSet(null, new MountPointSwagger());
-            swagger = SELF_REF.get();
-        }
-        newDraft = true;
-        return swagger;
     }
 }

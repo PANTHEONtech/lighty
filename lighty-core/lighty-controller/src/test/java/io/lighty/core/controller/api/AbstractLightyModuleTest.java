@@ -26,13 +26,16 @@ public abstract class AbstractLightyModuleTest {
     private LightyModule moduleUnderTest;
 
     protected abstract LightyModule getModuleUnderTest();
+
     protected abstract long getMaxInitTimeout();
+
     protected abstract long getMaxShutdownTimeout();
 
     /**
      * This method is used in testStartBlocking_and_shutdown test to wait until thread in which blocking start was
      * executed is finished after shutdown was called. If you experience timeouts while waiting for startBlocking method
      * thread to finish, you can try to override this method with bigger value.
+     *
      * @return timeout in milliseconds.
      */
     protected long getSleepAfterShutdownTimeout() {
@@ -42,6 +45,7 @@ public abstract class AbstractLightyModuleTest {
     protected ExecutorService getExecutorService() {
         return executorService;
     }
+
     @BeforeMethod
     public void initExecutor() {
         this.executorService = Mockito.spy(new ScheduledThreadPoolExecutor(1));
@@ -65,7 +69,7 @@ public abstract class AbstractLightyModuleTest {
         try {
             this.moduleUnderTest.start().get(getMaxInitTimeout(), TimeUnit.MILLISECONDS);
             this.moduleUnderTest.start().get(getMaxInitTimeout(), TimeUnit.MILLISECONDS);
-        } catch (TimeoutException e ) {
+        } catch (TimeoutException e) {
             Assert.fail("Init timed out.", e);
         }
         Mockito.verify(executorService, Mockito.times(1)).execute(Mockito.any());
@@ -109,7 +113,7 @@ public abstract class AbstractLightyModuleTest {
         Future<Boolean> startBlockingFuture;
         if (this.moduleUnderTest instanceof AbstractLightyModule) {
             startBlockingFuture = startBlockingOnLightyModuleAbstractClass();
-        } else{
+        } else {
             startBlockingFuture = startBlockingOnLightyModuleInterface();
         }
         //test if thread which invokes startBlocking method is still running (it should be)
@@ -121,8 +125,8 @@ public abstract class AbstractLightyModuleTest {
             //(after small timeout due to synchronization);
             startBlockingFuture.get(getSleepAfterShutdownTimeout(), TimeUnit.MILLISECONDS);
         } catch (TimeoutException e) {
-            Assert.fail("Waiting for finish of startBlocking method thread timed out. you may consider to adjust" +
-                    "timeout by overriding getSleepAfterShutdownTimeout() method", e);
+            Assert.fail("Waiting for finish of startBlocking method thread timed out. you may consider to adjust"
+                    + "timeout by overriding getSleepAfterShutdownTimeout() method", e);
         }
 
         Mockito.verify(executorService, Mockito.times(2)).execute(Mockito.any());
@@ -131,7 +135,7 @@ public abstract class AbstractLightyModuleTest {
     private Future<Boolean> startBlockingOnLightyModuleAbstractClass() throws ExecutionException, InterruptedException {
         SettableFuture<Boolean> initDoneFuture = SettableFuture.create();
         Future<Boolean> startFuture = Executors.newSingleThreadExecutor().submit(() -> {
-            ((AbstractLightyModule)this.moduleUnderTest).startBlocking(initDoneFuture::set);
+            ((AbstractLightyModule) this.moduleUnderTest).startBlocking(initDoneFuture::set);
             return true;
         });
         try {
@@ -154,7 +158,7 @@ public abstract class AbstractLightyModuleTest {
     private void startLightyModuleAndFailIfTimedOut() throws ExecutionException, InterruptedException {
         try {
             this.moduleUnderTest.start().get(getMaxInitTimeout(), TimeUnit.MILLISECONDS);
-        } catch (TimeoutException e ) {
+        } catch (TimeoutException e) {
             Assert.fail("Init timed out.", e);
         }
     }

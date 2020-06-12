@@ -19,11 +19,11 @@ import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTr
 import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.ROLLBACK_ON_ERROR_OPTION;
 import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.toId;
 
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import java.util.Locale;
 import org.opendaylight.controller.md.sal.dom.api.DOMRpcResult;
 import org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.copy.config.input.target.ConfigTarget;
@@ -54,14 +54,13 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 public final class NetconfUtils {
 
+    public static final QName NETCONF_DELETE_CONFIG_QNAME =
+            QName.create(NetconfMessageTransformUtil.NETCONF_QNAME, "delete-config").intern();
     private static final String NETCONF_TOPOLOGY_NAMESPACE = "urn:TBD:params:xml:ns:yang:network-topology";
     private static final String NETCONF_TOPOLOGY_VERSION = "2013-10-21";
     private static final String TOPOLOGY_ID = "topology-id";
     private static final String TOPOLOGY_NETCONF = "topology-netconf";
     private static final String NODE_ID = "node-id";
-
-    public static final QName NETCONF_DELETE_CONFIG_QNAME =
-            QName.create(NetconfMessageTransformUtil.NETCONF_QNAME, "delete-config").intern();
 
     private NetconfUtils() {
     }
@@ -91,20 +90,21 @@ public final class NetconfUtils {
 
     public static ListenableFuture<Optional<NormalizedNode<?, ?>>> extractDataFromRpcResult(
             final Optional<YangInstanceIdentifier> path, final ListenableFuture<DOMRpcResult> rpcFuture) {
-        return Futures.transform(rpcFuture, (Function<DOMRpcResult, Optional<NormalizedNode<?, ?>>>) result -> {
+        return Futures.transform(rpcFuture, result -> {
             Preconditions.checkArgument(
-                    result.getErrors().isEmpty(), "Unable to read data: %s, errors: %s", path, result.getErrors());
+                    result.getErrors().isEmpty(),
+                    "Unable to read data: %s, errors: %s", path, result.getErrors());
             final DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?> dataNode =
                     ((ContainerNode) result.getResult()).getChild(
-                            NetconfMessageTransformUtil.toId(NetconfMessageTransformUtil.NETCONF_DATA_QNAME)).get();
+                            toId(NetconfMessageTransformUtil.NETCONF_DATA_QNAME)).get();
             return Optional.fromJavaUtil(NormalizedNodes.findNode(dataNode, path.get().getPathArguments()));
         });
     }
 
     public static DataContainerChild<?, ?> createEditConfigStructure(final SchemaContext schemaContext,
-                                                             final Optional<NormalizedNode<?, ?>> lastChild,
-                                                             final Optional<ModifyAction> operation,
-                                                             final YangInstanceIdentifier dataPath) {
+                                                                     final Optional<NormalizedNode<?, ?>> lastChild,
+                                                                     final Optional<ModifyAction> operation,
+                                                                     final YangInstanceIdentifier dataPath) {
         final AnyXmlNode configContent = NetconfMessageTransformUtil
                 .createEditConfigAnyxml(schemaContext, dataPath, operation, lastChild);
         return Builders.choiceBuilder().withNodeIdentifier(toId(EditContent.QNAME)).withChild(configContent).build();
@@ -121,7 +121,7 @@ public final class NetconfUtils {
 
         // Default operation
         if (defaultOperation.isPresent()) {
-            final String opString = defaultOperation.get().name().toLowerCase();
+            final String opString = defaultOperation.get().name().toLowerCase(Locale.US);
             editBuilder.withChild(Builders.leafBuilder().withNodeIdentifier(toId(NETCONF_DEFAULT_OPERATION_QNAME))
                     .withValue(opString).build());
         }

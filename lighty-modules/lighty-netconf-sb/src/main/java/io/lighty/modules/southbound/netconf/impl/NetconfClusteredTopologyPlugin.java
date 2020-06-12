@@ -9,11 +9,9 @@ package io.lighty.modules.southbound.netconf.impl;
 
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyServices;
-
+import io.lighty.modules.southbound.netconf.impl.util.NetconfUtils;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
-
-import io.lighty.modules.southbound.netconf.impl.util.NetconfUtils;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.opendaylight.controller.md.sal.dom.api.DOMMountPoint;
 import org.opendaylight.controller.md.sal.dom.api.DOMMountPointService;
@@ -31,8 +29,10 @@ public class NetconfClusteredTopologyPlugin extends AbstractLightyModule impleme
     private final DOMMountPointService domMountPointService;
 
     public NetconfClusteredTopologyPlugin(final LightyServices lightyServices, final String topologyId,
-            final NetconfClientDispatcher clientDispatcher, final Integer writeTxIdleTimeout,
-            final ExecutorService executorService, final AAAEncryptionService encryptionService) {
+                                          final NetconfClientDispatcher clientDispatcher,
+                                          final Integer writeTxIdleTimeout,
+                                          final ExecutorService executorService,
+                                          final AAAEncryptionService encryptionService) {
         super(executorService);
         this.domMountPointService = lightyServices.getDOMMountPointService();
         final Config config = new ConfigBuilder()
@@ -64,12 +64,15 @@ public class NetconfClusteredTopologyPlugin extends AbstractLightyModule impleme
     @Override
     public Optional<NetconfBaseService> getNetconfBaseService(NodeId nodeId) {
         YangInstanceIdentifier yangInstanceIdentifier = NetconfUtils.createNetConfNodeMountPointYII(nodeId);
-        com.google.common.base.Optional<DOMMountPoint> mountPoint = domMountPointService.getMountPoint(yangInstanceIdentifier);
+        com.google.common.base.Optional<DOMMountPoint> mountPoint =
+                domMountPointService.getMountPoint(yangInstanceIdentifier);
         if (mountPoint.isPresent()) {
             DOMMountPoint domMountPoint = mountPoint.get();
-            com.google.common.base.Optional<DOMRpcService> optionalDOMMountPoint = domMountPoint.getService(DOMRpcService.class);
+            com.google.common.base.Optional<DOMRpcService> optionalDOMMountPoint =
+                    domMountPoint.getService(DOMRpcService.class);
             if (optionalDOMMountPoint.isPresent()) {
-                return Optional.of(new NetconfBaseServiceImpl(nodeId, optionalDOMMountPoint.get(), domMountPoint.getSchemaContext()));
+                return Optional.of(new NetconfBaseServiceImpl(nodeId, optionalDOMMountPoint.get(),
+                        domMountPoint.getSchemaContext()));
             }
         }
         return Optional.empty();

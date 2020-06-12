@@ -21,22 +21,22 @@ import com.google.common.util.concurrent.ListenableFuture;
 public interface LightyModule {
     /**
      * Start in background and return immediately.
-     * @return
-     *   true if module initialization was successful, false or exception otherwise.
+     *
+     * @return true if module initialization was successful, false or exception otherwise.
      */
     ListenableFuture<Boolean> start();
 
     /**
      * Start and block until shutdown is requested.
-     * @throws InterruptedException
-     *   thrown in case module initialization fails.
+     *
+     * @throws InterruptedException thrown in case module initialization fails.
      */
     void startBlocking() throws InterruptedException;
 
     /**
-     * shutdown module
-     * @return
-     *   true if module shutdown was successful, false or exception otherwise.
+     * shutdown module.
+     *
+     * @return true if module shutdown was successful, false or exception otherwise.
      * @throws Exception - thrown while module shutdown failed
      */
     ListenableFuture<Boolean> shutdown() throws Exception;

@@ -54,11 +54,12 @@ public class CommunityRestConf extends AbstractLightyModule {
     private LightyServerBuilder lightyServerBuilder;
 
     public CommunityRestConf(final DOMDataBroker domDataBroker, final SchemaService schemaService,
-            final DOMRpcService domRpcService, final DOMNotificationService domNotificationService,
-            final DOMMountPointService domMountPointService, final int webSocketPort,
-            final JsonRestConfServiceType jsonRestconfServiceType, final DOMSchemaService domSchemaService,
-            final InetAddress inetAddress, final int httpPort, final String restconfServletContextPath,
-            final ExecutorService executorService, final LightyServerBuilder serverBuilder) {
+                             final DOMRpcService domRpcService, final DOMNotificationService domNotificationService,
+                             final DOMMountPointService domMountPointService, final int webSocketPort,
+                             final JsonRestConfServiceType jsonRestconfServiceType,
+                             final DOMSchemaService domSchemaService, final InetAddress inetAddress,
+                             final int httpPort, final String restconfServletContextPath,
+                             final ExecutorService executorService, final LightyServerBuilder serverBuilder) {
         this.domDataBroker = domDataBroker;
         this.schemaService = schemaService;
         this.domRpcService = domRpcService;
@@ -80,24 +81,24 @@ public class CommunityRestConf extends AbstractLightyModule {
     }
 
     public CommunityRestConf(final DOMDataBroker domDataBroker, final SchemaService schemaService,
-            final DOMRpcService domRpcService, final DOMNotificationService domNotificationService,
-            final DOMMountPointService domMountPointService, final int webSocketPort,
-            final JsonRestConfServiceType jsonRestconfServiceType, final DOMSchemaService domSchemaService,
-            final InetAddress inetAddress, final int httpPort, final String restconfServletContextPath,
-            final ExecutorService executorService) {
+                             final DOMRpcService domRpcService, final DOMNotificationService domNotificationService,
+                             final DOMMountPointService domMountPointService, final int webSocketPort,
+                             final JsonRestConfServiceType jsonRestconfServiceType,
+                             final DOMSchemaService domSchemaService, final InetAddress inetAddress, final int httpPort,
+                             final String restconfServletContextPath, final ExecutorService executorService) {
         this(domDataBroker, schemaService, domRpcService, domNotificationService, domMountPointService, webSocketPort,
                 jsonRestconfServiceType, domSchemaService, inetAddress, httpPort, restconfServletContextPath,
                 executorService, null);
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     @Override
     protected boolean initProcedure() {
         final long startTime = System.nanoTime();
         LOG.info("Starting RestConfProvider websocket port: {}", this.webSocketPort);
-        this.restconfProvider =
-                new RestconfProviderImpl(this.domDataBroker, this.schemaService, this.domRpcService, this.domNotificationService,
-                        this.domMountPointService, this.domSchemaService,
-                        IpAddressBuilder.getDefaultInstance(this.inetAddress.getHostAddress()), this.webSocketPort);
+        this.restconfProvider = new RestconfProviderImpl(this.domDataBroker, this.schemaService, this.domRpcService,
+                this.domNotificationService, this.domMountPointService, this.domSchemaService,
+                IpAddressBuilder.getDefaultInstance(this.inetAddress.getHostAddress()), this.webSocketPort);
         this.restconfProvider.start();
 
         LOG.info("Starting RestConnectorProvider");
@@ -115,10 +116,12 @@ public class CommunityRestConf extends AbstractLightyModule {
                         "org.opendaylight.netconf.sal.rest.impl.RestconfApplication");
                 break;
             case DRAFT_18:
-                jaxrs.setInitParameter(JAVAX_WS_RS_APPLICATION, "org.opendaylight.restconf.nb.rfc8040.RestconfApplication");
+                jaxrs.setInitParameter(JAVAX_WS_RS_APPLICATION,
+                        "org.opendaylight.restconf.nb.rfc8040.RestconfApplication");
                 break;
             default:
-                throw new UnsupportedOperationException("unsupported restconf service type: " + this.jsonRestconfServiceType.name());
+                throw new UnsupportedOperationException("unsupported restconf service type: "
+                        + this.jsonRestconfServiceType.name());
         }
         LOG.info("RestConf init complete, starting Jetty");
         LOG.info("http address:port {}:{}, url prefix: {}", this.inetAddress.toString(), this.httpPort,
@@ -148,6 +151,7 @@ public class CommunityRestConf extends AbstractLightyModule {
         return true;
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     @Override
     protected boolean stopProcedure() {
         boolean stopFailed = false;
@@ -179,6 +183,7 @@ public class CommunityRestConf extends AbstractLightyModule {
         return !stopFailed;
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     public void startServer() {
         if ((this.jettyServer != null) && !this.jettyServer.isStopped()) {
             return;

@@ -7,6 +7,8 @@
  */
 package io.lighty.codecs;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import io.lighty.codecs.api.Codec;
 import io.lighty.codecs.api.NodeConverter;
 import java.io.IOException;
@@ -53,8 +55,6 @@ import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 public class DataCodec<T extends DataObject> implements Codec<T> {
 
@@ -95,10 +95,15 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
     public Collection<T> convertBindingAwareList(final YangInstanceIdentifier identifier, MapNode mapNode) {
         Collection<MapEntryNode> children = mapNode.getValue();
         List<T> resultList = Lists.newArrayListWithCapacity(children.size());
-        for(MapEntryNode entry : children) {
+        for (MapEntryNode entry : children) {
             resultList.add(convertToBindingAwareData(identifier, entry));
         }
         return ImmutableList.copyOf(resultList);
+    }
+
+    @Override
+    public String deserializeIdentifier(final YangInstanceIdentifier identifier) {
+        return this.deserializeIdentifierCodec.deserialize(identifier);
     }
 
     @Override
@@ -168,13 +173,8 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
             return resultHolder.getResult();
         } catch (SAXException | IOException | XMLStreamException | URISyntaxException
                 | ParserConfigurationException e) {
-            throw new RestconfDocumentedException(e.getMessage(), e);
+            throw new RestconfDocumentedException("Problem serializing XML error!", e);
         }
-    }
-
-    @Override
-    public String deserializeIdentifier(final YangInstanceIdentifier identifier) {
-        return this.deserializeIdentifierCodec.deserialize(identifier);
     }
 
     @Override

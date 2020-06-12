@@ -26,6 +26,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.rev151126.aaa
 
 public final class CertificateManagerConfig {
 
+    private CertificateManagerConfig() {
+    }
+
     public static ICertificateManager getDefault(final DataBroker bindingDataBroker) {
         final List<CipherSuites> cipherSuites = new ArrayList<>();
         final CtlKeystore ctlKeystore = new CtlKeystoreBuilder()
