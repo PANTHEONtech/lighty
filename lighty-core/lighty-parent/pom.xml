@@ -23,7 +23,7 @@
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <url>https://github.com/PantheonTechnologies/lighty-core</url>
+    <url>https://github.com/PANTHEONtech/lighty-core</url>
     <description>
         Parent pom for code artifacts using Lighty.io.
     </description>
