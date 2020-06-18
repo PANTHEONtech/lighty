@@ -59,7 +59,7 @@ public class Main {
         LOG.info("        /_____/     \\/      \\/      \\/                     \\/         \\/         \\/");
         LOG.info("Starting lighty.io RESTCONF-NETCONF example application ...");
         LOG.info("https://lighty.io/");
-        LOG.info("https://github.com/PantheonTechnologies/lighty-core");
+        LOG.info("https://github.com/PANTHEONtech/lighty-core");
         try {
             if (args.length > 0) {
                 Path configPath = Paths.get(args[0]);
