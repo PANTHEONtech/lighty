@@ -14,7 +14,7 @@
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <url>https://github.com/PantheonTechnologies/lighty-core</url>
+    <url>https://github.com/PANTHEONtech/lighty-core</url>
     <description>
         This artifact contains dependencyManagement declarations of upstream
         versions.
@@ -189,9 +189,9 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:git:https://github.com/PantheonTechnologies/lighty-core.git</connection>
-        <developerConnection>scm:git:https://github.com/PantheonTechnologies/lighty-core.git</developerConnection>
-        <url>https://github.com/PantheonTechnologies/lighty-core</url>
+        <connection>scm:git:https://github.com/PANTHEONtech/lighty-core.git</connection>
+        <developerConnection>scm:git:https://github.com/PANTHEONtech/lighty-core.git</developerConnection>
+        <url>https://github.com/PANTHEONtech/lighty-core</url>
       <tag>HEAD</tag>
   </scm>
     <developers>
@@ -199,7 +199,7 @@
             <id>rovarga</id>
             <name>Robert Varga</name>
             <email>robert.varga@pantheon.tech</email>
-            <organization>Pantheon Technologies, s.r.o.</organization>
+            <organization>PANTHEON.tech s.r.o.</organization>
             <organizationUrl>https://www.pantheon.tech</organizationUrl>
         </developer>
     </developers>

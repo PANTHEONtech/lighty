@@ -18,7 +18,7 @@
     <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-netconf-sb</artifactId>
     <name>${project.groupId}:${project.artifactId}</name>
-    <url>https://github.com/PantheonTechnologies/lighty-core</url>
+    <url>https://github.com/PANTHEONtech/lighty-core</url>
 
     <build>
         <plugins>

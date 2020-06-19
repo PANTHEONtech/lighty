@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/PantheonTechnologies/lighty-core.svg?branch=8.3.x)](https://travis-ci.org/PantheonTechnologies/lighty-core)
+[![Build Status](https://travis-ci.org/PANTHEONtech/lighty-core.svg?branch=8.4.x)](https://travis-ci.org/PANTHEONtech/lighty-core)
 [![License](https://img.shields.io/badge/License-EPL%201.0-blue.svg)](https://opensource.org/licenses/EPL-1.0)
 
 
