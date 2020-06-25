@@ -12,7 +12,7 @@
     <parent>
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-parent</artifactId>
-        <version>8.4.3-SNAPSHOT</version>
+        <version>8.4.3</version>
         <relativePath>../../lighty-core/lighty-parent</relativePath>
     </parent>
 
@@ -76,7 +76,7 @@
         <dependency>
             <groupId>io.lighty.kit.examples.controllers</groupId>
             <artifactId>lighty-community-aaa-restconf-app</artifactId>
-            <version>8.4.3-SNAPSHOT</version>
+            <version>8.4.3</version>
         </dependency>
 
         <dependency>
