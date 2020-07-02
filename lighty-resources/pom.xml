@@ -12,7 +12,7 @@
     <groupId>io.lighty.resources</groupId>
     <artifactId>lighty-resources-aggregator</artifactId>
     <packaging>pom</packaging>
-    <version>11.3.1</version>
+    <version>11.3.2-SNAPSHOT</version>
 
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
