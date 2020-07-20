@@ -21,7 +21,7 @@ before_install:
 # the default java install step does
 # mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 install:
-  - mvn install -DskipTests=true -B -V
+  - mvn install -DskipTests=true -B -V -Psource-quality
 
 # addons are executed between install and script
 addons:
