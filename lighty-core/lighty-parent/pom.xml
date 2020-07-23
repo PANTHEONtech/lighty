@@ -166,17 +166,17 @@
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
                             <!-- This should match the dependency management on com.puppycrawl.tools:checkstyle above -->
-                            <version>8.33</version>
+                            <version>8.34</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>
                             <artifactId>sevntu-checks</artifactId>
-                            <version>1.36.0</version>
+                            <version>1.37.1</version>
                         </dependency>
                         <dependency>
                             <groupId>org.opendaylight.odlparent</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>6.0.5</version>
+                            <version>5.0.7</version>
                         </dependency>
                     </dependencies>
                 </plugin>
