@@ -46,7 +46,6 @@ import org.opendaylight.aaa.datastore.h2.H2TokenStore;
 import org.opendaylight.aaa.datastore.h2.IdmLightConfig;
 import org.opendaylight.aaa.datastore.h2.IdmLightConfigBuilder;
 import org.opendaylight.aaa.datastore.h2.IdmLightSimpleConnectionProvider;
-import org.opendaylight.aaa.filterchain.configuration.CustomFilterAdapterConfiguration;
 import org.opendaylight.aaa.filterchain.configuration.impl.CustomFilterAdapterConfigurationImpl;
 import org.opendaylight.aaa.filterchain.filters.CustomFilterAdapter;
 import org.opendaylight.aaa.impl.password.service.DefaultPasswordHashService;
@@ -160,8 +159,9 @@ public final class AAALightyShiroProvider {
         server.addCommonEventListener(shiroWebEnvironmentLoaderListener);
 
         final Map<String, String> properties = new HashMap<>();
-        final CustomFilterAdapterConfiguration customFilterAdapterConfig =
-            new CustomFilterAdapterConfigurationImpl(properties);
+        final CustomFilterAdapterConfigurationImpl customFilterAdapterConfig =
+                new CustomFilterAdapterConfigurationImpl();
+        customFilterAdapterConfig.update(properties);
         final FilterHolder customFilterAdapter = new FilterHolder(new CustomFilterAdapter(customFilterAdapterConfig));
         server.addCommonFilter(customFilterAdapter, "/*");
 
