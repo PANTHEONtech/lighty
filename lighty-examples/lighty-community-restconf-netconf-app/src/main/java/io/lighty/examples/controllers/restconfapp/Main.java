@@ -182,7 +182,7 @@ public class Main {
             LOG.info("lighty.io and RESTCONF-NETCONF shutting down ...");
             long startTime = System.nanoTime();
             try {
-                swagger.shutdown();
+                swagger.shutdown().get();
             } catch (Exception e) {
                 LOG.error("Exception while shutting down lighty.io swagger:", e);
             }
