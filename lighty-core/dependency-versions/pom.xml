@@ -48,7 +48,7 @@
             <dependency>
                 <groupId>org.opendaylight.infrautils</groupId>
                 <artifactId>infrautils-artifacts</artifactId>
-                <version>1.8.0-SNAPSHOT</version>
+                <version>1.8.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
