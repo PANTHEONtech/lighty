@@ -10,6 +10,7 @@ package io.lighty.modules.northbound.restconf.community.impl;
 import com.google.common.base.Throwables;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.modules.northbound.restconf.community.impl.config.JsonRestConfServiceType;
+import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import io.lighty.server.LightyServerBuilder;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -41,6 +42,7 @@ import org.opendaylight.restconf.nb.rfc8040.handlers.RpcServiceHandler;
 import org.opendaylight.restconf.nb.rfc8040.handlers.SchemaContextHandler;
 import org.opendaylight.restconf.nb.rfc8040.handlers.TransactionChainHandler;
 import org.opendaylight.restconf.nb.rfc8040.services.wrapper.ServicesWrapper;
+import org.opendaylight.restconf.nb.rfc8040.streams.Configuration;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yangtools.yang.common.Uint16;
@@ -133,9 +135,10 @@ public class CommunityRestConf extends AbstractLightyModule {
         final ActionServiceHandler actionServiceHandler = new ActionServiceHandler(this.domActionService);
         final NotificationServiceHandler notificationServiceHandler = new NotificationServiceHandler(
                 this.domNotificationService);
+        final Configuration streamsConfiguration = RestConfConfigUtils.getStreamsConfiguration();
         final ServicesWrapper servicesWrapper = ServicesWrapper.newInstance(schemaCtxHandler,
                 domMountPointServiceHandler, transactionChainHandler, domDataBrokerHandler, rpcServiceHandler,
-                actionServiceHandler, notificationServiceHandler, this.domSchemaService);
+                actionServiceHandler, notificationServiceHandler, this.domSchemaService, streamsConfiguration);
 
         ServletHolder jaxrs = null;
 
