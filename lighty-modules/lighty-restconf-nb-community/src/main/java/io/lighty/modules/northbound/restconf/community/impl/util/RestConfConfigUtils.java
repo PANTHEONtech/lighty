@@ -17,6 +17,7 @@ import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfi
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
+import org.opendaylight.restconf.nb.rfc8040.streams.Configuration;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,11 @@ public final class RestConfConfigUtils {
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.monitoring.rev170126
                     .$YangModuleInfoImpl.getInstance()
             );
+    public static final int MAXIMUM_FRAGMENT_LENGTH = 0;
+    public static final int IDLE_TIMEOUT =  30000;
+    public static final int HEARTBEAT_INTERVAL = 10000;
+    public static final boolean USE_SSE = true;
+
 
     private RestConfConfigUtils() {
         throw new UnsupportedOperationException();
@@ -161,5 +167,9 @@ public final class RestConfConfigUtils {
      */
     public static RestConfConfiguration getDefaultRestConfConfiguration() {
         return new RestConfConfiguration();
+    }
+
+    public static Configuration getStreamsConfiguration() {
+        return new Configuration(MAXIMUM_FRAGMENT_LENGTH, IDLE_TIMEOUT, HEARTBEAT_INTERVAL, USE_SSE);
     }
 }
