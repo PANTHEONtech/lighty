@@ -26,8 +26,7 @@ public interface Deserializer<BA extends DataObject> {
     /**
      * Deserialize Binding Independent identifier FROM Binding Aware identifier.
      *
-     * @param identifier
-     *            - Binding Aware identifier to be deserialized
+     * @param identifier Binding Aware identifier to be deserialized
      * @return deserialized Binding Independent identifier
      */
     YangInstanceIdentifier deserializeIdentifier(InstanceIdentifier<BA> identifier);
@@ -37,10 +36,8 @@ public interface Deserializer<BA extends DataObject> {
     /**
      * Deserialize Binding Independent data FROM Binding Aware data.
      *
-     * @param identifier
-     *            - identifier of Binding Aware data
-     * @param data
-     *            - Binding Aware data to be deserialized
+     * @param identifier Identifier of Binding Aware data
+     * @param data Binding Aware data to be deserialized
      * @return deserialized Binding Independent data with Binding Independent identifier wrapped in {@link Entry}
      */
     Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> convertToNormalizedNode(InstanceIdentifier<BA> identifier,
@@ -49,8 +46,7 @@ public interface Deserializer<BA extends DataObject> {
     /**
      * Deserialize Binding Independent RPC data(input/output) FROM Binding Aware RPC data(input/output).
      *
-     * @param rpcData
-     *            - Binding Aware RPC data to be deserialized
+     * @param rpcData Binding Aware RPC data to be deserialized
      * @return deserialized Binding Independent RPC data
      */
     ContainerNode convertToBindingIndependentRpc(DataContainer rpcData);
@@ -59,8 +55,7 @@ public interface Deserializer<BA extends DataObject> {
      * Deserialize Binding Independent Notification data(input/output) FROM Binding Aware Notification
      * data(input/output).
      *
-     * @param notificationData
-     *            - Binding Aware Notification data to be deserialized
+     * @param notificationData Binding Aware Notification data to be deserialized
      * @return deserialized Binding Independent Notification data
      */
     ContainerNode convertToBindingIndependentNotification(Notification notificationData);
