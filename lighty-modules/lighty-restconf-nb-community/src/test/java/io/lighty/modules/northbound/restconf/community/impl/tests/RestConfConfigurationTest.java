@@ -14,7 +14,6 @@ import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfi
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import java.io.InputStream;
 import java.net.InetAddress;
-
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

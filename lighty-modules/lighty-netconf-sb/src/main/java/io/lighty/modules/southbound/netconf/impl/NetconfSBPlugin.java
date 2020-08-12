@@ -18,8 +18,7 @@ public interface NetconfSBPlugin extends LightyModule {
 
     /**
      * Indicates if this instance is clustered or not.
-     * @return
-     *   True if this instance of NETCONF SBP is clustered, false otherwise.
+     * @return True if this instance of NETCONF SBP is clustered, false otherwise.
      */
     boolean isClustered();
 

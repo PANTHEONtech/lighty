@@ -82,12 +82,10 @@ public final class ControllerConfigUtils {
 
     /**
      * Read configuration from InputStream representing JSON configuration data.
-     * @param jsonConfigInputStream
-     *   InputStream representing JSON configuration.
-     * @return
-     *   Instance of LightyController configuration data.
-     * @throws ConfigurationException
-     *   Thrown in case that JSON configuration is not readable or incorrect, or yang model resources cannot be loaded.
+     * @param jsonConfigInputStream InputStream representing JSON configuration.
+     * @return Instance of LightyController configuration data.
+     * @throws ConfigurationException Thrown in case that JSON configuration is not readable or incorrect, or yang
+     *                                model resources cannot be loaded.
      */
     public static ControllerConfiguration getConfiguration(final InputStream jsonConfigInputStream)
             throws ConfigurationException {
@@ -186,8 +184,7 @@ public final class ControllerConfigUtils {
 
     /**
      * Get typical single node configuration with default model set.
-     * @return
-     *   Instance of LightyController configuration data.
+     * @return Instance of LightyController configuration data.
      * @throws ConfigurationException if unable to find akka config files
      */
     public static ControllerConfiguration getDefaultSingleNodeConfiguration()
@@ -197,10 +194,8 @@ public final class ControllerConfigUtils {
 
     /**
      * Get typical single node configuration with custom model set.
-     * @param additionalModels
-     *    List of models which is used in addition to default model set.
-     * @return
-     *    Instance of LightyController configuration data.
+     * @param additionalModels List of models which is used in addition to default model set.
+     * @return Instance of LightyController configuration data.
      * @throws ConfigurationException if unable to find akka config files
      */
     public static ControllerConfiguration getDefaultSingleNodeConfiguration(final Set<YangModuleInfo> additionalModels)
