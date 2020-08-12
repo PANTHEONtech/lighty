@@ -54,8 +54,10 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
 
     public static final QName NETCONF_NMDA_EXTENSION_QNAME =
             QName.create("urn:ietf:params:xml:ns:yang:ietf-netconf-nmda", "2019-01-07", "ietf-netconf-nmda").intern();
-    public static final QName NETCONF_GET_DATA_QNAME = QName.create(NETCONF_NMDA_EXTENSION_QNAME, "get-data").intern();
-    public static final QName NETCONF_EDIT_DATA_QNAME = QName.create(NETCONF_NMDA_EXTENSION_QNAME, "edit-data").intern();
+    public static final QName NETCONF_GET_DATA_QNAME =
+            QName.create(NETCONF_NMDA_EXTENSION_QNAME, "get-data").intern();
+    public static final QName NETCONF_EDIT_DATA_QNAME =
+            QName.create(NETCONF_NMDA_EXTENSION_QNAME, "edit-data").intern();
     private static final NodeIdentifier NETCONF_FILTER_NODEID =
             NodeIdentifier.create(QName.create(NETCONF_GET_DATA_QNAME, "subtree-filter").intern());
     private static final NodeIdentifier NETCONF_FILTER_CHOICE_NODEID =
@@ -107,7 +109,8 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
                             .withNodeIdentifier(NETCONF_FILTER_NODEID)
                             .withValue(new ImmutableNormalizedAnydata(getSchemaContext(),
                                     dataTreeChild.orElseThrow(() -> new NoSuchElementException(
-                                            String.format("Node [%s] was not found in schema context", nodeType.toString()))),
+                                            String.format("Node [%s] was not found in schema context",
+                                                    nodeType.toString()))),
                                     filterNN))
                             .build();
             final ChoiceNode filterSpecChoice =
@@ -160,7 +163,9 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
         QName nodeType = editNNContent.getNodeType();
         Optional<DataSchemaNode> dataTreeChild = getSchemaContext().findDataTreeChild(nodeType);
 
-        final NormalizedMetadata metadata = dataModifyActionAttribute.map(oper -> leafMetadata(dataPath, oper)).orElse(null);
+        final NormalizedMetadata metadata = dataModifyActionAttribute
+                .map(oper -> leafMetadata(dataPath, oper))
+                .orElse(null);
 
         final AnydataNode<NormalizedAnydata> editContent = ImmutableAnydataNodeBuilder.create(NormalizedAnydata.class)
                 .withNodeIdentifier(NETCONF_EDIT_DATA_CONFIG_NODEID)
@@ -200,7 +205,8 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
         List<LeafSetEntryNode<Object>> leafSetEntryNodes = new ArrayList<>();
         originFilter.forEach(originFilterEntry -> {
             leafSetEntryNodes.add(Builders.leafSetEntryBuilder()
-                    .withNodeIdentifier(new NodeWithValue(NETCONF_ORIGIN_FILTER_NODEID.getNodeType(), originFilterEntry))
+                    .withNodeIdentifier(new NodeWithValue(NETCONF_ORIGIN_FILTER_NODEID.getNodeType(),
+                            originFilterEntry))
                     .withValue(originFilterEntry)
                     .build());
         });
@@ -212,7 +218,8 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
         List<LeafSetEntryNode<Object>> leafSetEntryNodes = new ArrayList<>();
         negatedOriginFilter.forEach(negatedOriginFilterEntry -> {
             leafSetEntryNodes.add(Builders.leafSetEntryBuilder()
-                    .withNodeIdentifier(new NodeWithValue(NETCONF_NEGATED_ORIGIN_FILTER_NODEID.getNodeType(), negatedOriginFilterEntry))
+                    .withNodeIdentifier(new NodeWithValue(NETCONF_NEGATED_ORIGIN_FILTER_NODEID.getNodeType(),
+                            negatedOriginFilterEntry))
                     .withValue(negatedOriginFilterEntry)
                     .build());
         });
@@ -227,7 +234,7 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
     }
 
     private DataContainerChild<?, ?> getDefaultOperationNode(ModifyAction defaultModifyAction) {
-        final String opString = defaultModifyAction.name().toLowerCase();
+        final String opString = defaultModifyAction.name().toLowerCase(Locale.US);
         return Builders.leafBuilder().withNodeIdentifier(NETCONF_DEFAULT_OPERATION_NODEID)
                 .withValue(opString).build();
     }
@@ -243,7 +250,9 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
 
         // Step two: set the top builder's metadata
         Optional.ofNullable(builders.peek())
-                .ifPresent(builder -> builder.withAnnotation(NETCONF_OPERATION_QNAME_LEGACY, oper.toString().toLowerCase(Locale.US)));
+                .ifPresent(builder -> builder.withAnnotation(
+                        NETCONF_OPERATION_QNAME_LEGACY,
+                        oper.toString().toLowerCase(Locale.US)));
 
         // Step three: build the tree
         while (true) {

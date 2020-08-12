@@ -80,7 +80,8 @@ public class NetconfClusteredTopologyPlugin extends AbstractLightyModule impleme
             final DOMMountPoint domMountPoint = domMountPointOptional.get();
             final Optional<DOMRpcService> domRpcServiceOptional = domMountPoint.getService(DOMRpcService.class);
             if (domRpcServiceOptional.isPresent()) {
-                return Optional.of(new NetconfNmdaBaseServiceImpl(nodeId, domRpcServiceOptional.get(), domMountPoint.getSchemaContext()));
+                return Optional.of(new NetconfNmdaBaseServiceImpl(nodeId, domRpcServiceOptional.get(),
+                        domMountPoint.getSchemaContext()));
             }
         }
         return Optional.empty();

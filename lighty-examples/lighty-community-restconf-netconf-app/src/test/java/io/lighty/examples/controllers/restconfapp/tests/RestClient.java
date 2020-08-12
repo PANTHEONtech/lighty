@@ -8,6 +8,8 @@
 
 package io.lighty.examples.controllers.restconfapp.tests;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
@@ -16,16 +18,15 @@ import org.eclipse.jetty.http.HttpMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-
+@SuppressWarnings("MethodName")
 public class RestClient implements AutoCloseable {
 
-    final private static Logger LOG = LoggerFactory.getLogger(RestClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RestClient.class);
 
     private String baseUrl;
     private HttpClient httpClient;
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     public RestClient(String baseUrl) {
         try {
             this.baseUrl = baseUrl;
@@ -42,7 +43,8 @@ public class RestClient implements AutoCloseable {
         return httpClient.GET(baseUrl + uri);
     }
 
-    public ContentResponse POST(String uri, String data) throws InterruptedException, ExecutionException, TimeoutException {
+    public ContentResponse POST(String uri, String data)
+            throws InterruptedException, ExecutionException, TimeoutException {
         Request request =  httpClient.POST(baseUrl + uri);
         request.content(new StringContentProvider(data), "application/json");
         return request.send();
@@ -54,6 +56,7 @@ public class RestClient implements AutoCloseable {
         return request.send();
     }
 
+    @SuppressWarnings("AbbreviationAsWordInName")
     public ContentResponse DELETE(String uri) throws InterruptedException, ExecutionException, TimeoutException {
         Request request =  httpClient.newRequest(baseUrl + uri);
         request.method(HttpMethod.DELETE);

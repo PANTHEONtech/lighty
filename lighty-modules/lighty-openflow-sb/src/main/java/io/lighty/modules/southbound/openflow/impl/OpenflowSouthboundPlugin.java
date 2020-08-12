@@ -11,12 +11,12 @@ import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.modules.southbound.openflow.impl.config.ConfigurationServiceFactory;
 import io.lighty.modules.southbound.openflow.impl.config.OpenflowpluginConfiguration;
+import io.lighty.modules.southbound.openflow.impl.util.OpenflowConfigUtils;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import io.lighty.modules.southbound.openflow.impl.util.OpenflowConfigUtils;
 import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcServiceAdapter;
 import org.opendaylight.openflowjava.protocol.api.connection.OpenflowDiagStatusProvider;
@@ -140,8 +140,8 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
                 } catch (MastershipChangeException e) {
                     LOG.error("Failed registration ReconciliationManagerImpl", e);
                 }
-                this.arbitratorReconciliationManager
-                        = new ArbitratorReconciliationManagerImpl(this.lightyServices.getControllerRpcProviderRegistry(),
+                this.arbitratorReconciliationManager = new ArbitratorReconciliationManagerImpl(
+                        this.lightyServices.getControllerRpcProviderRegistry(),
                         reconciliationManagerImpl,
                         upgradeStateListener);
                 this.arbitratorReconciliationManager.start();
@@ -151,10 +151,11 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
 
                 //FRM implementation
                 final ServiceRecoveryRegistryImpl serviceRecoveryRegistryImpl = new ServiceRecoveryRegistryImpl();
-                this.openflowServiceRecoveryHandlerImpl = new OpenflowServiceRecoveryHandlerImpl(serviceRecoveryRegistryImpl);
+                this.openflowServiceRecoveryHandlerImpl =
+                        new OpenflowServiceRecoveryHandlerImpl(serviceRecoveryRegistryImpl);
                 final RpcConsumerRegistry rpcConsumerRegistry
-                        = new BindingDOMRpcServiceAdapter(this.lightyServices.getDOMRpcService()
-                                                         ,this.lightyServices.getNormalizedNodeCodec());
+                        = new BindingDOMRpcServiceAdapter(this.lightyServices.getDOMRpcService(),
+                        this.lightyServices.getNormalizedNodeCodec());
                 this.forwardingRulesManagerImpl
                         = new ForwardingRulesManagerImpl(this.lightyServices.getBindingDataBroker(),
                         rpcConsumerRegistry,
@@ -221,22 +222,23 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule implements Op
     }
 
     /**
-     * Start close() method in AutoCloseable instance
-     * @param instance instance of {@link AutoCloseable}
+     * Start close() method in AutoCloseable instance.
+     * @param instance instance of {@link AutoCloseable}.
      */
-    private void destroy(final AutoCloseable instance){
+    @SuppressWarnings("checkstyle:illegalCatch")
+    private void destroy(final AutoCloseable instance) {
         if (instance != null) {
             try {
                 instance.close();
             } catch (final Exception e) {
-                LOG.warn("Exception was thrown during closing " + instance.getClass().getSimpleName(), e);
+                LOG.warn("Exception was thrown during closing {}", instance.getClass().getSimpleName(), e);
             }
         }
     }
 
     /**
-     * Expose FrmReconciliationService,
-     * @return return null if ForwardingRulesManager wasn't initialized
+     * Expose FrmReconciliationService.
+     * @return return null if ForwardingRulesManager wasn't initialized.
      */
     @Override
     public FrmReconciliationService getFrmReconciliationService() {

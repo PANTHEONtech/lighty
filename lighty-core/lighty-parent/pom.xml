@@ -18,12 +18,11 @@
 
     <!-- This is the main parent for building LightyModule jars. -->
 
-    <groupId>io.lighty.core</groupId>
     <artifactId>lighty-parent</artifactId>
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <url>https://github.com/PantheonTechnologies/lighty-core</url>
+    <url>https://github.com/PANTHEONtech/lighty-core</url>
     <description>
         Parent pom for code artifacts using Lighty.io.
     </description>
@@ -106,11 +105,18 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.4</version>
+                    <version>0.8.5</version>
                     <executions>
                         <execution>
+                            <id>jacoco-prepare-agent</id>
                             <goals>
                                 <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>jacoco-report</id>
+                            <goals>
+                                <goal>report</goal>
                             </goals>
                         </execution>
                     </executions>
@@ -152,23 +158,23 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.1.1</version>
                     <dependencies>
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
                             <!-- This should match the dependency management on com.puppycrawl.tools:checkstyle above -->
-                            <version>8.29</version>
+                            <version>8.34</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>
                             <artifactId>sevntu-checks</artifactId>
-                            <version>1.36.0</version>
+                            <version>1.37.1</version>
                         </dependency>
                         <dependency>
                             <groupId>org.opendaylight.odlparent</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>6.0.5</version>
+                            <version>6.0.6</version>
                         </dependency>
                     </dependencies>
                 </plugin>

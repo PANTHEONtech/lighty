@@ -115,8 +115,8 @@ public class OpenflowpluginConfiguration {
     }
 
     /**
-     * Create configuration settings need for initialize ForwardingRulesManager
-     * @return instance of {@link ForwardingRulesManagerConfigBuilder}
+     * Create configuration settings need for initialize ForwardingRulesManager.
+     * @return instance of {@link ForwardingRulesManagerConfigBuilder}.
      */
     public ForwardingRulesManagerConfigBuilder getFrmConfigBuilder() {
         final ForwardingRulesManagerConfigBuilder frmConfigBuilder = new ForwardingRulesManagerConfigBuilder();
@@ -140,7 +140,7 @@ public class OpenflowpluginConfiguration {
     }
 
     public void setFrmDisableReconciliation(boolean frmDisableReconciliation) {
-         this.isFrmDisableReconciliation = frmDisableReconciliation;
+        this.isFrmDisableReconciliation = frmDisableReconciliation;
     }
 
     public boolean isFrmStaleMarkingEnabled() {
@@ -148,7 +148,7 @@ public class OpenflowpluginConfiguration {
     }
 
     public void setFrmStaleMarkingEnabled(boolean frmStaleMarkingEnabled) {
-         this.isFrmStaleMarkingEnabled = frmStaleMarkingEnabled;
+        this.isFrmStaleMarkingEnabled = frmStaleMarkingEnabled;
     }
 
     public int getFrmReconciliationRetryCount() {
@@ -211,8 +211,8 @@ public class OpenflowpluginConfiguration {
         return this.skipTableFeatures;
     }
 
-    public void setIsSkipTableFeatures(final boolean skipTableFeatures) {
-        this.skipTableFeatures = skipTableFeatures;
+    public void setIsSkipTableFeatures(final boolean skipFeatures) {
+        this.skipTableFeatures = skipFeatures;
     }
 
     public long getBasicTimerDelay() {

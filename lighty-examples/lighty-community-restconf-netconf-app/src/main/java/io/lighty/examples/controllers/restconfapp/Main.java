@@ -8,6 +8,7 @@
 package io.lighty.examples.controllers.restconfapp;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.lighty.core.common.models.YangModuleUtils;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
@@ -24,6 +25,7 @@ import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
 import io.lighty.server.LightyServerBuilder;
 import io.lighty.swagger.SwaggerLighty;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,6 +48,7 @@ public class Main {
         start(new String[] {}, false);
     }
 
+    @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
     public void start(String[] args, boolean registerShutdownHook) {
         long startTime = System.nanoTime();
         LOG.info(".__  .__       .__     __              .__           _________________    _______");
@@ -56,7 +59,7 @@ public class Main {
         LOG.info("        /_____/     \\/      \\/      \\/                     \\/         \\/         \\/");
         LOG.info("Starting lighty.io RESTCONF-NETCONF example application ...");
         LOG.info("https://lighty.io/");
-        LOG.info("https://github.com/PantheonTechnologies/lighty-core");
+        LOG.info("https://github.com/PANTHEONtech/lighty-core");
         try {
             if (args.length > 0) {
                 Path configPath = Paths.get(args[0]);
@@ -65,12 +68,13 @@ public class Main {
                 ControllerConfiguration singleNodeConfiguration =
                         ControllerConfigUtils.getConfiguration(Files.newInputStream(configPath));
                 //2. get RESTCONF NBP configuration
-                RestConfConfiguration restConfConfiguration = RestConfConfigUtils
-                        .getRestConfConfiguration(Files.newInputStream(configPath));
+                RestConfConfiguration restConfConfiguration =
+                        RestConfConfigUtils.getRestConfConfiguration(Files.newInputStream(configPath));
                 //3. NETCONF SBP configuration
-                NetconfConfiguration netconfSBPConfiguration
-                        = NetconfConfigUtils.createNetconfConfiguration(Files.newInputStream(configPath));
-                startLighty(singleNodeConfiguration, restConfConfiguration, netconfSBPConfiguration, registerShutdownHook);
+                NetconfConfiguration netconfSBPConfiguration =
+                        NetconfConfigUtils.createNetconfConfiguration(Files.newInputStream(configPath));
+                startLighty(singleNodeConfiguration, restConfConfiguration, netconfSBPConfiguration,
+                        registerShutdownHook);
             } else {
                 LOG.info("using default configuration ...");
                 Set<YangModuleInfo> modelPaths = Stream.concat(RestConfConfigUtils.YANG_MODELS.stream(),
@@ -92,10 +96,12 @@ public class Main {
                 NetconfConfiguration netconfSBPConfig = NetconfConfigUtils.createDefaultNetconfConfiguration();
                 startLighty(defaultSingleNodeConfiguration, restConfConfig, netconfSBPConfig, registerShutdownHook);
             }
-            float duration = (System.nanoTime() - startTime)/1_000_000f;
+            float duration = (System.nanoTime() - startTime) / 1_000_000f;
             LOG.info("lighty.io and RESTCONF-NETCONF started in {}ms", duration);
-        } catch (Exception e) {
-            LOG.error("Main RESTCONF-NETCONF application exception: ", e);
+        } catch (IOException cause) {
+            LOG.error("Main RESTCONF-NETCONF application - error reading config file: ", cause);
+        } catch (ConfigurationException | ExecutionException | InterruptedException cause) {
+            LOG.error("Main RESTCONF-NETCONF application exception: ", cause);
         }
     }
 
@@ -110,16 +116,17 @@ public class Main {
         lightyController.start().get();
 
         //2. start RestConf server
-        CommunityRestConfBuilder communityRestConfBuilder = new CommunityRestConfBuilder();
         LightyServerBuilder jettyServerBuilder = new LightyServerBuilder(new InetSocketAddress(
                 restConfConfiguration.getInetAddress(), restConfConfiguration.getHttpPort()));
-        CommunityRestConf communityRestConf = communityRestConfBuilder.from(RestConfConfigUtils
-                .getRestConfConfiguration(restConfConfiguration, lightyController.getServices()))
+        CommunityRestConf communityRestConf = CommunityRestConfBuilder
+                .from(RestConfConfigUtils.getRestConfConfiguration(restConfConfiguration,
+                        lightyController.getServices()))
                 .withLightyServer(jettyServerBuilder)
                 .build();
 
         //3. start swagger
-        SwaggerLighty swagger = new SwaggerLighty(restConfConfiguration, jettyServerBuilder, lightyController.getServices());
+        SwaggerLighty swagger =
+                new SwaggerLighty(restConfConfiguration, jettyServerBuilder, lightyController.getServices());
         swagger.start().get();
         communityRestConf.start().get();
         communityRestConf.startServer();
@@ -128,8 +135,7 @@ public class Main {
         LightyModule netconfSouthboundPlugin;
         netconfSBPConfiguration = NetconfConfigUtils.injectServicesToTopologyConfig(
                 netconfSBPConfiguration, lightyController.getServices());
-        NetconfTopologyPluginBuilder netconfSBPBuilder = new NetconfTopologyPluginBuilder();
-        netconfSouthboundPlugin = netconfSBPBuilder
+        netconfSouthboundPlugin = NetconfTopologyPluginBuilder
                 .from(netconfSBPConfiguration, lightyController.getServices())
                 .build();
         netconfSouthboundPlugin.start().get();
@@ -171,11 +177,12 @@ public class Main {
             this.execute();
         }
 
+        @SuppressWarnings({"checkstyle:illegalCatch", "VariableDeclarationUsageDistance"})
         public void execute() {
             LOG.info("lighty.io and RESTCONF-NETCONF shutting down ...");
             long startTime = System.nanoTime();
             try {
-                swagger.shutdown();
+                swagger.shutdown().get();
             } catch (Exception e) {
                 LOG.error("Exception while shutting down lighty.io swagger:", e);
             }

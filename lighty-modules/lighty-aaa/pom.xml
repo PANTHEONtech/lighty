@@ -19,7 +19,7 @@
     <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-aaa</artifactId>
     <name>${project.groupId}:${project.artifactId}</name>
-    <url>https://github.com/PantheonTechnologies/lighty-core</url>
+    <url>https://github.com/PANTHEONtech/lighty-core</url>
 
     <dependencies>
         <dependency>
@@ -41,6 +41,12 @@
         <dependency>
             <groupId>org.opendaylight.aaa</groupId>
             <artifactId>aaa-encrypt-service-impl</artifactId>
+        </dependency>
+        <dependency>
+            <!-- Required only for 3rd-party libraries (especially commons-beanutils), that expect to call the commons
+                 logging APIs -->
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
         </dependency>
 
         <!-- Jersey + Jetty for RESTCONF -->

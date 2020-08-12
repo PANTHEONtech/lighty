@@ -32,8 +32,7 @@ public final class YangModuleUtils {
 
     /**
      * Get all Yang modules from classpath using ServiceLoader scanning.
-     * @return
-     *   Complete list of models found on classpath.
+     * @return Complete list of models found on classpath.
      */
     public static Set<YangModuleInfo> getAllModelsFromClasspath() {
         Set<YangModuleInfo> moduleInfos = new HashSet<>();
@@ -48,10 +47,8 @@ public final class YangModuleUtils {
     /**
      * Filter top-level models from given entry set.
      * Top level model is considered the model which is never used as dependency for other model.
-     * @param models
-     *    Unfiltered entry set of models.
-     * @return
-     *    Filtered set of top-level models only.
+     * @param models Unfiltered entry set of models.
+     * @return Filtered set of top-level models only.
      */
     public static Set<YangModuleInfo> filterTopLevelModels(final Set<YangModuleInfo> models) {
         Set<YangModuleInfo> result = new HashSet<>();
@@ -66,10 +63,8 @@ public final class YangModuleUtils {
     /**
      * Filter unique models from given entry set.
      * This filter scans recursively dependencies and returns minimal set of models that are unique.
-     * @param models
-     *   Unfiltered entry set of models.
-     * @return
-     *   Filtered set of unique models only.
+     * @param models Unfiltered entry set of models.
+     * @return Filtered set of unique models only.
      */
     public static Set<YangModuleInfo> filterUniqueModels(final Collection<YangModuleInfo> models) {
         Map<ModuleId, YangModuleInfo> result = new HashMap<>();
