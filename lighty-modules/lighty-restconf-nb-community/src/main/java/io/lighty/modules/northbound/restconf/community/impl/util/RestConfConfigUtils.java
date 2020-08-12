@@ -24,11 +24,19 @@ import org.slf4j.LoggerFactory;
 public final class RestConfConfigUtils {
 
     public static final String RESTCONF_CONFIG_ROOT_ELEMENT_NAME = "restconf";
-    @SuppressWarnings("checkstyle:LineLength") // Long lines kept for brevity
     public static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.monitoring.rev170126.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126.$YangModuleInfoImpl.getInstance()
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621
+                    .$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.monitoring.rev170126
+                    .$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126
+                    .$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.remote.rev140114
+                    .$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.sal.restconf.event.subscription.rev140708
+                    .$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.subscribe.to.notification.rev161028.$YangModuleInfoImpl
+                    .getInstance()
     );
     private static final Logger LOG = LoggerFactory.getLogger(RestConfConfigUtils.class);
 
