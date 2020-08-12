@@ -20,7 +20,7 @@ To use RESTCONF in your project:
 ```
   RestConfConfiguration restConfConfig
       = RestConfConfigUtils.getDefaultRestConfConfiguration();
-  CommunityRestConf communityRestConf = new CommunityRestConfBuilder()
+  CommunityRestConf communityRestConf = CommunityRestConfBuilder
       .from(restConfConfig)
       .build();
   communityRestConf.start();
