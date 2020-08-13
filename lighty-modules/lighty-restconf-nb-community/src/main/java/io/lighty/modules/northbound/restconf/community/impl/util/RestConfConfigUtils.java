@@ -31,7 +31,13 @@ public final class RestConfConfigUtils {
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126
                     .$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.monitoring.rev170126
-                    .$YangModuleInfoImpl.getInstance()
+                    .$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.remote.rev140114
+                    .$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.sal.restconf.event.subscription.rev140708
+                    .$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.subscribe.to.notification.rev161028.$YangModuleInfoImpl
+                    .getInstance()
             );
 
     private RestConfConfigUtils() {
