@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.lighty.core</groupId>
     <artifactId>lighty-bom</artifactId>
-    <version>12.1.1</version>
+    <version>12.1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -26,93 +26,93 @@
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-codecs</artifactId>
-                <version>12.1.1</version>
+                <version>12.1.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-common</artifactId>
-                <version>12.1.1</version>
+                <version>12.1.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-controller</artifactId>
-                <version>12.1.1</version>
+                <version>12.1.2-SNAPSHOT</version>
             </dependency>
 
             <!-- DI framework integrations -->
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-controller-guice-di</artifactId>
-                <version>12.1.1</version>
+                <version>12.1.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-controller-spring-di</artifactId>
-                <version>12.1.1</version>
+                <version>12.1.2-SNAPSHOT</version>
             </dependency>
 
             <!-- Modules -->
             <dependency>
                 <groupId>io.lighty.modules</groupId>
                 <artifactId>lighty-aaa</artifactId>
-                <version>12.1.1</version>
+                <version>12.1.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules</groupId>
                 <artifactId>lighty-jetty-server</artifactId>
-                <version>12.1.1</version>
+                <version>12.1.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules</groupId>
                 <artifactId>lighty-netconf-sb</artifactId>
-                <version>12.1.1</version>
+                <version>12.1.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules</groupId>
                 <artifactId>lighty-restconf-nb-community</artifactId>
-                <version>12.1.1</version>
+                <version>12.1.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules</groupId>
                 <artifactId>lighty-swagger</artifactId>
-                <version>12.1.1</version>
+                <version>12.1.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules</groupId>
                 <artifactId>lighty-openflow-sb</artifactId>
-                <version>12.1.1</version>
+                <version>12.1.2-SNAPSHOT</version>
             </dependency>
 
             <!-- Utility resources -->
             <dependency>
                 <groupId>io.lighty.resources</groupId>
                 <artifactId>controller-application-assembly</artifactId>
-                <version>12.1.1</version>
+                <version>12.1.2-SNAPSHOT</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>io.lighty.resources</groupId>
                 <artifactId>singlenode-configuration</artifactId>
-                <version>12.1.1</version>
+                <version>12.1.2-SNAPSHOT</version>
             </dependency>
 
             <!-- Dependencies and resources which should not normally leak into production -->
             <dependency>
                 <groupId>io.lighty.models.test</groupId>
                 <artifactId>lighty-test-models</artifactId>
-                <version>12.1.1</version>
+                <version>12.1.2-SNAPSHOT</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>io.lighty.models.test</groupId>
                 <artifactId>lighty-toaster</artifactId>
-                <version>12.1.1</version>
+                <version>12.1.2-SNAPSHOT</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>io.lighty.resources</groupId>
                 <artifactId>log4j-properties</artifactId>
-                <version>12.1.1</version>
+                <version>12.1.2-SNAPSHOT</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -153,7 +153,7 @@
         <connection>scm:git:https://github.com/PANTHEONtech/lighty-core.git</connection>
         <developerConnection>scm:git:https://github.com/PANTHEONtech/lighty-core.git</developerConnection>
         <url>https://github.com/PANTHEONtech/lighty-core</url>
-      <tag>12.1.1</tag>
+      <tag>HEAD</tag>
   </scm>
     <developers>
         <developer>

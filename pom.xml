@@ -11,7 +11,7 @@
 
     <groupId>io.lighty</groupId>
     <artifactId>lighty-aggregator</artifactId>
-    <version>12.1.1</version>
+    <version>12.1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>lighty-core</name>
 
@@ -58,7 +58,7 @@
         <connection>scm:git:https://github.com/PANTHEONtech/lighty-core.git</connection>
         <developerConnection>scm:git:https://github.com/PANTHEONtech/lighty-core.git</developerConnection>
         <url>https://github.com/PANTHEONtech/lighty-core</url>
-      <tag>12.1.1</tag>
+      <tag>HEAD</tag>
   </scm>
     <developers>
         <developer>
