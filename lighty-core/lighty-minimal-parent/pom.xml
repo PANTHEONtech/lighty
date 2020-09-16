@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.lighty.core</groupId>
     <artifactId>lighty-minimal-parent</artifactId>
-    <version>11.3.2-SNAPSHOT</version>
+    <version>11.3.2</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -29,14 +29,14 @@
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>dependency-versions</artifactId>
-                <version>11.3.2-SNAPSHOT</version>
+                <version>11.3.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-bom</artifactId>
-                <version>11.3.2-SNAPSHOT</version>
+                <version>11.3.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -103,7 +103,7 @@
         <connection>scm:git:https://github.com/PANTHEONtech/lighty-core.git</connection>
         <developerConnection>scm:git:https://github.com/PANTHEONtech/lighty-core.git</developerConnection>
         <url>https://github.com/PANTHEONtech/lighty-core</url>
-      <tag>HEAD</tag>
+      <tag>11.3.2</tag>
   </scm>
     <developers>
         <developer>
