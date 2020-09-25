@@ -17,7 +17,7 @@ ODL core services represent MD-SAL layer, controller, DataStore, global schema c
    <dependency>
       <groupId>io.lighty.core.parents</groupId>
       <artifactId>lighty-dependency-artifacts</artifactId>
-      <version>11.0.0</version>
+      <version>11.3.3-SNAPSHOT</version>
       <type>pom</type>
       <scope>import</scope>
    </dependency>
