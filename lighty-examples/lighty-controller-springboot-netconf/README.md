@@ -46,7 +46,7 @@ mvn spring-boot:run
 or
 
 ```
-java -jar target/lighty-controller-springboot-9.2.1.jar
+java -jar target/lighty-controller-springboot-11.4.2-SNAPSHOT.jar
 ```
 
 or in any IDE, run main in 
