@@ -21,12 +21,12 @@ build the project: ```mvn clean install```
 ### Start this demo example
 * build the project using ```mvn clean install```
 * go to target directory ```cd lighty-examples/lighty-community-restconf-netconf-app/target``` 
-* unzip example application bundle ```unzip  lighty-community-restconf-netconf-app-12.2.0-SNAPSHOT-bin.zip```
-* go to unzipped application directory ```cd lighty-community-restconf-netconf-app-12.2.0-SNAPSHOT```
-* start controller example controller application ```java -jar lighty-community-restconf-netconf-app-12.2.0-SNAPSHOT.jar```
+* unzip example application bundle ```unzip  lighty-community-restconf-netconf-app-12.2.1-SNAPSHOT-bin.zip```
+* go to unzipped application directory ```cd lighty-community-restconf-netconf-app-12.2.1-SNAPSHOT```
+* start controller example controller application ```java -jar lighty-community-restconf-netconf-app-12.2.1-SNAPSHOT.jar``` 
 
 ### Test example application
-Once example application has been started using command ```java -jar lighty-community-restconf-netconf-app-12.2.0-SNAPSHOT.jar```
+Once example application has been started using command ```java -jar lighty-community-restconf-netconf-app-12.2.1-SNAPSHOT.jar``` 
 RESTCONF web interface is available at URL ```http://localhost:8888/restconf/*```
 
 ##### URLs to start with
@@ -37,17 +37,13 @@ RESTCONF web interface is available at URL ```http://localhost:8888/restconf/*``
 ##### Swagger UI
 This application example has active [Swagger](https://swagger.io/) UI for RESTCONF.
 
-URLs for Swagger RESTCONF [draft18](https://tools.ietf.org/html/draft-ietf-netconf-restconf-18) implementation (enabled by default):
-* __Swagger APIs__ ``http://localhost:8888/apidoc/18/apis`` 
-* __Swagger UI__ ``http://localhost:8888/apidoc/18/explorer/index.html`` 
-
-URLs for Swagger RESTCONF [draft02](https://tools.ietf.org/html/draft-bierman-netconf-restconf-02) implementation:
-* __Swagger APIs__ ``http://localhost:8888/apidoc/apis`` 
-* __Swagger UI__ ``http://localhost:8888/apidoc/explorer/index.html`` 
+URLs for Swagger (choose RESTCONF [draft18](https://tools.ietf.org/html/draft-ietf-netconf-restconf-18) or
+[draft02](https://tools.ietf.org/html/draft-bierman-netconf-restconf-02) in upper right corner):
+* __Swagger UI__ ``http://localhost:8888/apidoc/18/explorer/index.html``
 
 ### Use custom config files
 There are two separated config files: for NETCONF SBP single node and for cluster.
-`java -jar lighty-community-restconf-netconf-app-12.2.0-SNAPSHOT.jar /path/to/singleNodeConfig.json`
+`java -jar lighty-community-restconf-netconf-app-12.2.1-SNAPSHOT.jar /path/to/singleNodeConfig.json`
 
 Example configuration for single node is [here](src/main/assembly/resources/sampleConfigSingleNode.json)
 
