@@ -22,18 +22,14 @@ before_install:
 install:
   - mvn install -DskipTests=true -B -V -Psource-quality
 
-# addons are executed between install and script
-addons:
-  sonarcloud:
-    organization: "pantheon-tech"
-    token:
-      secure: "fkcWYUhv3v2sq2uJXu+IPhnZAQpMoytVk/GxzpYsnRVXIv1Ttm3aWWIn9NekhCRvKbSPTvggc522D/uxz1uiCTbpK4HM8Pf3pCQZkVCrAWFrTmeIuhJY4lz4JrEWzUmFH0qx/9xUrktxUESIcJsbr6BEDOtYfN3r4BhaCXkXqgfNZT2mas9gAxlLjDecauaETbSuQZydR6wkuzPLq5o7VvEyYt7jC3iNaCpSb05Nk+tdr2B36pe/O92bLasgbmCxUMY/UELE/Dk/YxMBXv4/sH1Kw45NGTqq5b0317OM8xhAylNokruw22J8k788xtXwySetGkyMsnOiu+ibtDVFbt+mlJ7p5JaMX7ZWkHP5iHgQypqm0gsLRwq2HdwZj4UramwmOPqvAl2veCzTkQ+R01nr/BjAmRxO1kVtK7/lTjHFwV527e7e2ZtvvEJEq1ukzJ25jbHDxZrrYqykMAPwgHztjiHZpQymSN7fnXSnbmo3LDsXnQwKv+z3f6J6zkh/EonxDEr3XEP+ixGCbl4M/Duq0M5Qy6Qi/j8KmhD1JQ/Hys0tl2Co9BoQ+wLRM0DqkWrWisay9ZsJKO6PB7mmo0JGbH9H1JHiuiC2CHPMxktbe+lf476Vnewe1yU/O/116QC+vPlBy0DBgNXSr4Q7BtaR6P/eUoRag06uAOk3fLw="
-
 # splitting the build into install and test parts gives us a quicker way
 # to identify what went wrong
 script:
   - mvn verify -B
-  - if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then mvn sonar:sonar -Dsonar.projectKey=PantheonTechnologies_lighty-core -Dsonar.host.url=https://sonarcloud.io; fi
+  # sonarcloud addon not used, preset environment variables in your sonarCloud: SONAR_TOKEN (un-encrypted), SONAR_PROJECT_KEY, SONAR_ORGANIZATION
+  - echo ${SONAR_PROJECT_KEY}
+  - echo ${SONAR_ORGANIZATION}
+  - if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then mvn sonar:sonar -Dsonar.projectKey="${SONAR_PROJECT_KEY}" -Dsonar.organization=${SONAR_ORGANIZATION} -Dsonar.host.url=https://sonarcloud.io -Dsonar.branch.name=$TRAVIS_BRANCH; fi
 
 # before_cache happens before the second part of the cache phase,
 # which happens after script
