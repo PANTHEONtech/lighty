@@ -32,6 +32,7 @@
         <module>lighty-controller</module>
         <module>lighty-controller-spring-di</module>
         <module>lighty-controller-guice-di</module>
+        <module>lighty-controller-configuration</module>
     </modules>
 </project>
 
