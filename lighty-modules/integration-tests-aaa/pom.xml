@@ -129,11 +129,5 @@
             <version>6.10</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>osgi.cmpn</artifactId>
-            <version>6.0.0</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 </project>
