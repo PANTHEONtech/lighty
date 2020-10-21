@@ -30,7 +30,7 @@ mvn clean compile quarkus:dev
 ## Build package & Run
 ```
 mvn clean package
-java -Xms128m -Xmx128m -XX:MaxMetaspaceSize=128m -jar target/lighty-quarkus-netconf-app-13.0.2-SNAPSHOT-runner.jar
+java -Xms128m -Xmx128m -XX:MaxMetaspaceSize=128m -jar target/lighty-quarkus-netconf-app-13.1.0-SNAPSHOT-runner.jar
 ```
 
 ## Build native image
