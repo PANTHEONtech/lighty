@@ -46,6 +46,10 @@
         </dependency>
         <dependency>
             <groupId>io.lighty.resources</groupId>
+            <artifactId>start-script</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.resources</groupId>
             <artifactId>controller-application-assembly</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -163,6 +167,23 @@
                                     <includeGroupIds>io.lighty.resources</includeGroupIds>
                                     <includeArtifactIds>singlenode-configuration</includeArtifactIds>
                                     <excludes>META-INF\/**</excludes>
+                                    <excludeTransitive>true</excludeTransitive>
+                                    <!-- Other resources belong to the package. -->
+                                    <outputDirectory>${project.build.directory}/assembly/resources</outputDirectory>
+                                    <silent>${lighty.silent.unpack}</silent>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>unpack-start-script</id>
+                                <goals>
+                                    <goal>unpack-dependencies</goal>
+                                </goals>
+                                <phase>prepare-package</phase>
+                                <configuration>
+                                    <includeGroupIds>io.lighty.resources</includeGroupIds>
+                                    <includeArtifactIds>start-script</includeArtifactIds>
+                                    <excludes>META-INF\/**</excludes>
+                                    <includes>*.sh</includes>
                                     <excludeTransitive>true</excludeTransitive>
                                     <!-- Other resources belong to the package. -->
                                     <outputDirectory>${project.build.directory}/assembly/resources</outputDirectory>

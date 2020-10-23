@@ -7,22 +7,20 @@
   and is available at https://www.eclipse.org/legal/epl-v10.html
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.lighty.resources</groupId>
-    <artifactId>lighty-resources-aggregator</artifactId>
-    <packaging>pom</packaging>
+  <parent>
+    <groupId>io.lighty.core</groupId>
+    <artifactId>lighty-parent</artifactId>
     <version>12.2.1-SNAPSHOT</version>
+    <relativePath>../../lighty-core/lighty-parent</relativePath>
+  </parent>
 
-    <properties>
-        <maven.deploy.skip>true</maven.deploy.skip>
-        <maven.install.skip>true</maven.install.skip>
-    </properties>
+  <groupId>io.lighty.resources</groupId>
+  <artifactId>start-script</artifactId>
+  <packaging>jar</packaging>
 
-    <modules>
-        <module>log4j-properties</module>
-        <module>singlenode-configuration</module>
-        <module>controller-application-assembly</module>
-        <module>start-script</module>
-    </modules>
+  <name>${project.groupId}:${project.artifactId}</name>
+  <url>https://github.com/PANTHEONtech/lighty-core</url>
+
 </project>
