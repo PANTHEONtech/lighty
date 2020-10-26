@@ -53,7 +53,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.api.DataContainerNodeBuilder;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public final class NetconfUtils {
     public static final QName NETCONF_DELETE_CONFIG_QNAME =
@@ -101,12 +101,12 @@ public final class NetconfUtils {
         }, MoreExecutors.directExecutor());
     }
 
-    public static DataContainerChild<?, ?> createEditConfigStructure(final SchemaContext schemaContext,
+    public static DataContainerChild<?, ?> createEditConfigStructure(final EffectiveModelContext modelContext,
                                                              final Optional<NormalizedNode<?, ?>> lastChild,
                                                              final Optional<ModifyAction> operation,
                                                              final YangInstanceIdentifier dataPath) {
         final AnyxmlNode<?> configContent = NetconfMessageTransformUtil
-                .createEditConfigAnyxml(schemaContext, dataPath, operation, lastChild);
+                .createEditConfigAnyxml(modelContext, dataPath, operation, lastChild);
         return Builders.choiceBuilder().withNodeIdentifier(EDIT_CONTENT_NODEID).withChild(configContent).build();
     }
 

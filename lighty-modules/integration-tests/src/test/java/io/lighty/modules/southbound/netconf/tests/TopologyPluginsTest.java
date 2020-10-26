@@ -123,7 +123,7 @@ public class TopologyPluginsTest {
         final NodeKey nodeKey = new NodeKey(nodeId);
         final Node node = new NodeBuilder()
                 .setNodeId(nodeId)
-                .addAugmentation(NetconfNode.class, netconfNode)
+                .addAugmentation(netconfNode)
                 .build();
         final InstanceIdentifier<Node> path = InstanceIdentifier.create(NetworkTopology.class)
                 .child(Topology.class, new TopologyKey(new TopologyId("topology-netconf")))

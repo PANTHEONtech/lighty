@@ -27,8 +27,7 @@ import org.opendaylight.netconf.sal.connect.api.RemoteDeviceCommunicator;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier;
 
 public final class LightyDOMActionService implements DOMActionService {
 
@@ -36,19 +35,19 @@ public final class LightyDOMActionService implements DOMActionService {
     private final RemoteDeviceCommunicator<NetconfMessage> communicator;
 
     public LightyDOMActionService(final MessageTransformer<NetconfMessage> messageTransformer,
-            final RemoteDeviceCommunicator<NetconfMessage> communicator, final SchemaContext schemaContext) {
+                                  final RemoteDeviceCommunicator<NetconfMessage> communicator) {
         this.messageTransformer = messageTransformer;
         this.communicator = communicator;
     }
 
     @Override
-    public ListenableFuture<? extends DOMActionResult> invokeAction(final SchemaPath type,
+    public ListenableFuture<? extends DOMActionResult> invokeAction(final SchemaNodeIdentifier.Absolute type,
             final DOMDataTreeIdentifier path, final ContainerNode input) {
         final NetconfMessage actionRequest = this.messageTransformer.toActionRequest(type, path, input);
         final SettableFuture<DOMActionResult> settableFuture = SettableFuture.create();
         final ListenableFuture<RpcResult<NetconfMessage>> responseFuture = this.communicator.sendRequest(actionRequest,
-                type.getLastComponent());
-        Futures.addCallback(responseFuture, new FutureCallback<RpcResult<NetconfMessage>>() {
+                type.lastNodeIdentifier());
+        Futures.addCallback(responseFuture, new FutureCallback<>() {
 
             @Override
             public void onSuccess(final RpcResult<NetconfMessage> result) {

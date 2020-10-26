@@ -16,6 +16,7 @@ import org.opendaylight.netconf.callhome.mount.IetfZeroTouchCallHomeServerProvid
 import org.opendaylight.netconf.sal.connect.api.SchemaResourceManager;
 import org.opendaylight.netconf.sal.connect.impl.DefaultSchemaResourceManager;
 import org.opendaylight.netconf.sal.connect.netconf.schema.mapping.DefaultBaseNetconfSchemas;
+import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.slf4j.LoggerFactory;
 
 public class NetconfCallhomePlugin extends AbstractLightyModule {
@@ -27,8 +28,14 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
     public NetconfCallhomePlugin(final LightyServices lightyServices, final String topologyId,
             final ExecutorService executorService, final AAAEncryptionService encryptionService) {
         super(executorService);
-        final DefaultBaseNetconfSchemas defaultBaseNetconfSchemas =
-                new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
+        DefaultBaseNetconfSchemas defaultBaseNetconfSchemas;
+        try {
+            defaultBaseNetconfSchemas = new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
+        } catch (YangParserException ex) {
+            LOG.error("Cannot create DefaultBaseNetconfSchemas.", ex);
+            this.provider = null;
+            return;
+        }
         final SchemaResourceManager schemaResourceManager =
                 new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
         final CallHomeMountDispatcher dispatcher =
@@ -41,8 +48,13 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
 
     @Override
     protected boolean initProcedure() {
-        this.provider.init();
-        return true;
+        if (provider != null) {
+            this.provider.init();
+            return true;
+        } else {
+            LOG.error("NetconfCallhomePlugin initialization failed.");
+            return false;
+        }
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")

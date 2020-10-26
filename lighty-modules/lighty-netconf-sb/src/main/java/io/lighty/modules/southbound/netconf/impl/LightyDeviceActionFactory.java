@@ -19,7 +19,7 @@ public class LightyDeviceActionFactory implements DeviceActionFactory {
     @Override
     public DOMActionService createDeviceAction(final MessageTransformer<NetconfMessage> messageTransformer,
             final RemoteDeviceCommunicator<NetconfMessage> listener, final SchemaContext schemaContext) {
-        return new LightyDOMActionService(messageTransformer, listener, schemaContext);
+        return new LightyDOMActionService(messageTransformer, listener);
     }
 }
 

@@ -16,6 +16,7 @@ import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
+import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.netconf.client.NetconfClientDispatcher;
 import org.opendaylight.netconf.sal.connect.api.SchemaResourceManager;
 import org.opendaylight.netconf.sal.connect.impl.DefaultSchemaResourceManager;
@@ -23,9 +24,14 @@ import org.opendaylight.netconf.sal.connect.netconf.schema.mapping.DefaultBaseNe
 import org.opendaylight.netconf.topology.impl.NetconfTopologyImpl;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NetconfTopologyPlugin extends AbstractLightyModule implements NetconfSBPlugin {
 
+    private static final Logger LOG = LoggerFactory.getLogger(NetconfTopologyPlugin.class);
     private final NetconfTopologyImpl topology;
     private final DOMMountPointService domMountPointService;
 
@@ -34,8 +40,14 @@ public class NetconfTopologyPlugin extends AbstractLightyModule implements Netco
             final AAAEncryptionService encryptionService) {
         super(executorService);
         this.domMountPointService = lightyServices.getDOMMountPointService();
-        final DefaultBaseNetconfSchemas defaultBaseNetconfSchemas =
-                new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
+        DefaultBaseNetconfSchemas defaultBaseNetconfSchemas;
+        try {
+            defaultBaseNetconfSchemas = new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
+        } catch (YangParserException ex) {
+            LOG.error("Cannot create DefaultBaseNetconfSchemas.", ex);
+            this.topology=null;
+            return;
+        }
         final SchemaResourceManager schemaResourceManager =
                 new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
         this.topology = new NetconfTopologyImpl(topologyId, clientDispatcher,
@@ -47,8 +59,13 @@ public class NetconfTopologyPlugin extends AbstractLightyModule implements Netco
 
     @Override
     protected boolean initProcedure() {
-        this.topology.init();
-        return true;
+        if (topology != null) {
+            this.topology.init();
+            return true;
+        } else {
+            LOG.error("NetconfTopologyPlugin initialization failed.");
+            return false;
+        }
     }
 
     @Override
@@ -68,8 +85,11 @@ public class NetconfTopologyPlugin extends AbstractLightyModule implements Netco
             final DOMMountPoint domMountPoint = domMountPointOptional.get();
             final Optional<DOMRpcService> domRpcServiceOptional = domMountPoint.getService(DOMRpcService.class);
             if (domRpcServiceOptional.isPresent()) {
-                return Optional.of(new NetconfBaseServiceImpl(nodeId, domRpcServiceOptional.get(),
-                    domMountPoint.getSchemaContext()));
+                Optional<DOMSchemaService> schemaService = domMountPoint.getService(DOMSchemaService.class);
+                if (schemaService.isPresent()) {
+                    return Optional.of(new NetconfBaseServiceImpl(nodeId, domRpcServiceOptional.get(),
+                            schemaService.get().getGlobalContext()));
+                }
             }
         }
         return Optional.empty();
@@ -82,8 +102,11 @@ public class NetconfTopologyPlugin extends AbstractLightyModule implements Netco
             final DOMMountPoint domMountPoint = domMountPointOptional.get();
             final Optional<DOMRpcService> domRpcServiceOptional = domMountPoint.getService(DOMRpcService.class);
             if (domRpcServiceOptional.isPresent()) {
-                return Optional.of(new NetconfNmdaBaseServiceImpl(nodeId, domRpcServiceOptional.get(),
-                    domMountPoint.getSchemaContext()));
+                Optional<DOMSchemaService> schemaService = domMountPoint.getService(DOMSchemaService.class);
+                if (schemaService.isPresent()) {
+                    return Optional.of(new NetconfNmdaBaseServiceImpl(nodeId, domRpcServiceOptional.get(),
+                            schemaService.get().getGlobalContext()));
+                }
             }
         }
         return Optional.empty();

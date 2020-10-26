@@ -37,9 +37,9 @@ import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLeafNodeBuilder;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.testng.annotations.Test;
 import org.w3c.dom.Element;
+
 
 public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
 
@@ -66,10 +66,10 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
 
         baseService.get(Optional.of(yangInstanceId));
 
-        ArgumentCaptor<SchemaPath> capturedSchemaPath = ArgumentCaptor.forClass(SchemaPath.class);
+        ArgumentCaptor<QName> capturedQname = ArgumentCaptor.forClass(QName.class);
         ArgumentCaptor<NormalizedNode> capturedNN = ArgumentCaptor.forClass(NormalizedNode.class);
         Mockito.verify(domRpcService, times(1))
-                .invokeRpc(capturedSchemaPath.capture(), capturedNN.capture());
+                .invokeRpc(capturedQname.capture(), capturedNN.capture());
         assertTrue(capturedNN.getValue() instanceof ContainerNode);
         Collection<DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>> children =
                 ((ContainerNode) capturedNN.getValue()).getValue();
@@ -78,7 +78,7 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
         assertTrue(hasSpecificChild(children, "filter"));
 
         NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true, baseSchema);
-        NetconfMessage netconfMessage = transformer.toRpcRequest(capturedSchemaPath.getValue(), capturedNN.getValue());
+        NetconfMessage netconfMessage = transformer.toRpcRequest(capturedQname.getValue(), capturedNN.getValue());
         Element getElement =
                 getSpecificElementSubtree(netconfMessage.getDocument().getDocumentElement(), QNAME_BASE, "get");
         assertNotNull(getElement);
@@ -104,10 +104,10 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
 
         baseService.getConfig(RUNNING_DATASTORE, Optional.of(yangInstanceId));
 
-        ArgumentCaptor<SchemaPath> capturedSchemaPath = ArgumentCaptor.forClass(SchemaPath.class);
+        ArgumentCaptor<QName> capturedQname = ArgumentCaptor.forClass(QName.class);
         ArgumentCaptor<NormalizedNode> capturedNN = ArgumentCaptor.forClass(NormalizedNode.class);
         Mockito.verify(domRpcService, times(1))
-                .invokeRpc(capturedSchemaPath.capture(), capturedNN.capture());
+                .invokeRpc(capturedQname.capture(), capturedNN.capture());
         assertTrue(capturedNN.getValue() instanceof ContainerNode);
         Collection<DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>> children =
                 ((ContainerNode) capturedNN.getValue()).getValue();
@@ -117,7 +117,7 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
         assertTrue(hasSpecificChild(children, "filter"));
 
         NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true, baseSchema);
-        NetconfMessage netconfMessage = transformer.toRpcRequest(capturedSchemaPath.getValue(), capturedNN.getValue());
+        NetconfMessage netconfMessage = transformer.toRpcRequest(capturedQname.getValue(), capturedNN.getValue());
         Element getElement =
                 getSpecificElementSubtree(netconfMessage.getDocument().getDocumentElement(), QNAME_BASE, "get-config");
         assertNotNull(getElement);
@@ -157,9 +157,10 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
         baseService.editConfig(RUNNING_DATASTORE, Optional.of(schema), yangInstanceId, Optional.of(ModifyAction.MERGE),
                 Optional.of(ModifyAction.CREATE), true);
 
-        ArgumentCaptor<SchemaPath> capturedSchemaPath = ArgumentCaptor.forClass(SchemaPath.class);
+        ArgumentCaptor<QName> capturedQname = ArgumentCaptor.forClass(QName.class);
         ArgumentCaptor<NormalizedNode> capturedNN = ArgumentCaptor.forClass(NormalizedNode.class);
-        Mockito.verify(domRpcService, times(1)).invokeRpc(capturedSchemaPath.capture(), capturedNN.capture());
+        Mockito.verify(domRpcService, times(1))
+                .invokeRpc(capturedQname.capture(), capturedNN.capture());
         assertTrue(capturedNN.getValue() instanceof ContainerNode);
         Collection<DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>> children =
                 ((ContainerNode) capturedNN.getValue()).getValue();
@@ -171,7 +172,7 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
         assertTrue(hasSpecificChild(children, "error-option"));
 
         NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true, baseSchema);
-        NetconfMessage netconfMessage = transformer.toRpcRequest(capturedSchemaPath.getValue(), capturedNN.getValue());
+        NetconfMessage netconfMessage = transformer.toRpcRequest(capturedQname.getValue(), capturedNN.getValue());
         Element editData =
                 getSpecificElementSubtree(netconfMessage.getDocument().getDocumentElement(), QNAME_BASE, "edit-config");
         assertNotNull(editData);

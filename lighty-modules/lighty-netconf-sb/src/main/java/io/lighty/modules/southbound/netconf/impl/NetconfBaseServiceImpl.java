@@ -13,7 +13,6 @@ import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTr
 import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_LOCK_QNAME;
 import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_RUNNING_QNAME;
 import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.NETCONF_UNLOCK_QNAME;
-import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil.toPath;
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -28,30 +27,31 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public class NetconfBaseServiceImpl implements NetconfBaseService {
 
     private final NodeId nodeId;
     private final DOMRpcService domRpcService;
-    private final SchemaContext schemaContext;
+    private final EffectiveModelContext effectiveModelContext;
 
     public NetconfBaseServiceImpl(final NodeId nodeId,
-                                  final DOMRpcService domRpcService, final SchemaContext schemaContext) {
+                                  final DOMRpcService domRpcService,
+                                  final EffectiveModelContext effectiveModelContext) {
         this.nodeId = nodeId;
         this.domRpcService = domRpcService;
-        this.schemaContext = schemaContext;
+        this.effectiveModelContext = effectiveModelContext;
     }
 
     @Override
     public ListenableFuture<? extends DOMRpcResult> get(final Optional<YangInstanceIdentifier> filterYII) {
         if (filterYII.isPresent() && !filterYII.get().isEmpty()) {
             final DataContainerChild<?, ?> filter =
-                    NetconfMessageTransformUtil.toFilterStructure(filterYII.get(), schemaContext);
-            return domRpcService.invokeRpc(toPath(NETCONF_GET_QNAME),
-                    NetconfMessageTransformUtil.wrap(NETCONF_GET_QNAME, filter));
+                    NetconfMessageTransformUtil.toFilterStructure(filterYII.get(), effectiveModelContext);
+            return domRpcService.invokeRpc(NETCONF_GET_QNAME,
+                    NetconfMessageTransformUtil.wrap(NetconfMessageTransformUtil.toId(NETCONF_GET_QNAME), filter));
         } else {
-            return domRpcService.invokeRpc(toPath(NETCONF_GET_QNAME), NetconfMessageTransformUtil.GET_RPC_CONTENT);
+            return domRpcService.invokeRpc(NETCONF_GET_QNAME, NetconfMessageTransformUtil.GET_RPC_CONTENT);
         }
     }
 
@@ -62,13 +62,13 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
 
         if (filterYII.isPresent() && !filterYII.get().isEmpty()) {
             final DataContainerChild<?, ?> filter =
-                    NetconfMessageTransformUtil.toFilterStructure(filterYII.get(), schemaContext);
-            return domRpcService.invokeRpc(toPath(NETCONF_GET_CONFIG_QNAME),
-                    NetconfMessageTransformUtil.wrap(NETCONF_GET_CONFIG_QNAME,
+                    NetconfMessageTransformUtil.toFilterStructure(filterYII.get(), effectiveModelContext);
+            return domRpcService.invokeRpc(NETCONF_GET_CONFIG_QNAME,
+                    NetconfMessageTransformUtil.wrap(NetconfMessageTransformUtil.toId(NETCONF_GET_CONFIG_QNAME),
                             NetconfUtils.getSourceNode(sourceDatastore), filter));
         } else {
-            return domRpcService.invokeRpc(toPath(NETCONF_GET_CONFIG_QNAME),
-                    NetconfMessageTransformUtil.wrap(NETCONF_GET_CONFIG_QNAME,
+            return domRpcService.invokeRpc(NETCONF_GET_CONFIG_QNAME,
+                    NetconfMessageTransformUtil.wrap(NetconfMessageTransformUtil.toId(NETCONF_GET_CONFIG_QNAME),
                             NetconfUtils.getSourceNode(sourceDatastore)));
         }
     }
@@ -80,12 +80,12 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
             final Optional<ModifyAction> defaultModifyAction, final boolean rollback) {
         Preconditions.checkNotNull(targetDatastore);
 
-        DataContainerChild<?, ?> editStructure = NetconfUtils.createEditConfigStructure(schemaContext, data,
+        DataContainerChild<?, ?> editStructure = NetconfUtils.createEditConfigStructure(effectiveModelContext, data,
                 dataModifyActionAttribute, dataPath);
 
         Preconditions.checkNotNull(editStructure);
 
-        return domRpcService.invokeRpc(toPath(NETCONF_EDIT_CONFIG_QNAME),
+        return domRpcService.invokeRpc(NETCONF_EDIT_CONFIG_QNAME,
                 NetconfUtils.getEditConfigContent(targetDatastore, editStructure, defaultModifyAction, rollback));
     }
 
@@ -95,8 +95,7 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
         Preconditions.checkNotNull(sourceDatastore);
         Preconditions.checkNotNull(targetDatastore);
 
-        return domRpcService.invokeRpc(
-                toPath(NetconfMessageTransformUtil.NETCONF_COPY_CONFIG_QNAME),
+        return domRpcService.invokeRpc(NetconfMessageTransformUtil.NETCONF_COPY_CONFIG_QNAME,
                 NetconfUtils.getCopyConfigContent(sourceDatastore, targetDatastore));
     }
 
@@ -106,8 +105,7 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
         Preconditions.checkArgument(!NETCONF_RUNNING_QNAME.equals(targetDatastore),
                 "Running datastore cannot be deleted.");
 
-        return domRpcService.invokeRpc(
-                toPath(NetconfUtils.NETCONF_DELETE_CONFIG_QNAME),
+        return domRpcService.invokeRpc(NetconfUtils.NETCONF_DELETE_CONFIG_QNAME,
                 NetconfUtils.getDeleteConfigContent(targetDatastore));
     }
 
@@ -115,14 +113,14 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
     public ListenableFuture<? extends DOMRpcResult> lock(final QName targetDatastore) {
         Preconditions.checkNotNull(targetDatastore);
 
-        return domRpcService.invokeRpc(toPath(NETCONF_LOCK_QNAME), NetconfUtils.getLockContent(targetDatastore));
+        return domRpcService.invokeRpc(NETCONF_LOCK_QNAME, NetconfUtils.getLockContent(targetDatastore));
     }
 
     @Override
     public ListenableFuture<? extends DOMRpcResult> unlock(final QName targetDatastore) {
         Preconditions.checkNotNull(targetDatastore);
 
-        return domRpcService.invokeRpc(toPath(NETCONF_UNLOCK_QNAME), NetconfUtils.getUnLockContent(targetDatastore));
+        return domRpcService.invokeRpc(NETCONF_UNLOCK_QNAME, NetconfUtils.getUnLockContent(targetDatastore));
     }
 
     @Override
@@ -136,8 +134,8 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
     }
 
     @Override
-    public SchemaContext getSchemaContext() {
-        return schemaContext;
+    public EffectiveModelContext getEffectiveModelContext() {
+        return effectiveModelContext;
     }
 
 }

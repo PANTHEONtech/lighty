@@ -129,7 +129,7 @@ public class NetconfDeviceRestService {
 
         final Node netconfDeviceData = new NodeBuilder()
             .setNodeId(nodeId)
-            .addAugmentation(NetconfNode.class, new NetconfNodeBuilder()
+            .addAugmentation(new NetconfNodeBuilder()
                 .setHost(new Host(new IpAddress(new Ipv4Address(deviceInfo.getAddress()))))
                 .setPort(new PortNumber(deviceInfo.getPort()))
                 .setCredentials(new LoginPasswordBuilder()
