@@ -35,7 +35,10 @@
             <groupId>io.lighty.core</groupId>
             <artifactId>lighty-common</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>io.lighty.core</groupId>
+            <artifactId>lighty-clustering</artifactId>
+        </dependency>
         <!--ODL-->
         <!--odl-guava-22-->
         <dependency>
@@ -300,6 +303,11 @@
         <dependency>
             <groupId>org.scala-lang.modules</groupId>
             <artifactId>scala-java8-compat_2.13</artifactId>
+        </dependency>
+        <!--akka management-->
+        <dependency>
+            <groupId>com.lightbend.akka.management</groupId>
+            <artifactId>akka-management_2.12</artifactId>
         </dependency>
         <!--odl-akka-system-2.4-->
         <dependency>
