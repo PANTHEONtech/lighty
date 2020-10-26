@@ -23,11 +23,13 @@ import org.opendaylight.openflowjava.protocol.api.connection.OpenflowDiagStatusP
 import org.opendaylight.openflowjava.protocol.impl.core.OpenflowDiagStatusProviderImpl;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProviderList;
+import org.opendaylight.openflowplugin.api.openflow.FlowGroupCacheManager;
 import org.opendaylight.openflowplugin.api.openflow.OpenFlowPluginProvider;
 import org.opendaylight.openflowplugin.api.openflow.configuration.ConfigurationService;
 import org.opendaylight.openflowplugin.api.openflow.mastership.MastershipChangeException;
 import org.opendaylight.openflowplugin.applications.arbitratorreconciliation.impl.ArbitratorReconciliationManagerImpl;
 import org.opendaylight.openflowplugin.applications.frm.impl.ForwardingRulesManagerImpl;
+import org.opendaylight.openflowplugin.applications.frm.impl.ListenerRegistrationHelper;
 import org.opendaylight.openflowplugin.applications.frm.recovery.impl.OpenflowServiceRecoveryHandlerImpl;
 import org.opendaylight.openflowplugin.applications.reconciliation.impl.ReconciliationManagerImpl;
 import org.opendaylight.openflowplugin.applications.topology.manager.FlowCapableTopologyProvider;
@@ -69,6 +71,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
     private MastershipChangeServiceManagerImpl mastershipChangeServiceManager;
     private TerminationPointChangeListenerImpl terminationPointChangeListener;
     private NodeChangeListenerImpl nodeChangeListener;
+    private ListenerRegistrationHelper listenerRegistrationHelper;
 
     public OpenflowSouthboundPlugin(final LightyServices lightyServices, final ExecutorService executorService) {
 
@@ -115,6 +118,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
             this.mastershipChangeServiceManager = new MastershipChangeServiceManagerImpl();
             final OpenflowDiagStatusProvider diagStat = new OpenflowDiagStatusProviderImpl(this.lightyServices
                     .getDiagStatusService());
+            final FlowGroupCacheManager flowGroupCacheManager = new FlowGroupCacheManagerImpl();
             this.openFlowPluginProvider = new OpenFlowPluginProviderImpl(
                     this.configurationService,
                     switchConnectionProviders,
@@ -124,7 +128,8 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
                     this.lightyServices.getClusterSingletonServiceProvider(),
                     this.lightyServices.getEntityOwnershipService(),
                     this.mastershipChangeServiceManager, diagStat,
-                    this.lightyServices.getSystemReadyMonitor());
+                    this.lightyServices.getSystemReadyMonitor(),
+                    flowGroupCacheManager);
             this.openFlowPluginProvider.initialize();
 
             //start ForwardingRulesManager in OFP
@@ -158,6 +163,8 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
                 this.openflowServiceRecoveryHandlerImpl =
                         new OpenflowServiceRecoveryHandlerImpl(serviceRecoveryRegistryImpl);
 
+                this.listenerRegistrationHelper = new ListenerRegistrationHelper(lightyServices.getBindingDataBroker());
+
                 this.forwardingRulesManagerImpl
                         = new ForwardingRulesManagerImpl(this.lightyServices.getBindingDataBroker(),
                         rpcConsumerRegistry,
@@ -169,7 +176,8 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
                         reconciliationManagerImpl,
                         this.openflowServiceRecoveryHandlerImpl,
                         serviceRecoveryRegistryImpl,
-                        new FlowGroupCacheManagerImpl());
+                        new FlowGroupCacheManagerImpl(),
+                        this.listenerRegistrationHelper);
                 this.forwardingRulesManagerImpl.start();
 
                 LOG.info("OFP started with FRM & ARM");

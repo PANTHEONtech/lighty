@@ -37,7 +37,7 @@ public class SwitchConfig {
     @JsonIgnore
     private final SwitchConnectionConfig legacySwitch;
 
-    private String instanceName;
+    private String instanceName = ""; // = "openflow-switch-connection-provider-default-impl";
     private int port = 0;
     private int transportProtocol = 0;
     private String address;
@@ -57,6 +57,7 @@ public class SwitchConfig {
     protected SwitchConfig() {
         this.defaultSwitch =
                 new SwitchConnectionConfigBuilder()
+                        .setInstanceName(this.instanceName)
                         .setPort(Uint16.valueOf(this.port))
                         .setTransportProtocol(TransportProtocol.forValue(this.transportProtocol))
                         .setSwitchIdleTimeout(Uint32.valueOf(this.switchIdleTimeout))

@@ -31,6 +31,9 @@ public class OFPJsonTest {
         OpenflowpluginConfiguration ofpJSONConfig = OpenflowConfigUtils.getOfpConfiguration(ofConfig);
 
         Assert.assertNotNull(ofpJSONConfig);
+        Assert.assertNotNull(ofpJSONConfig.getSwitchConfig());
+        Assert.assertEquals(ofpJSONConfig.getSwitchConfig().getInstanceName(),
+                "openflow-switch-connection-provider-default-impl");
         Assert.assertEquals(ofpJSONConfig.getBarrierCountLimit(), 1234);
         Assert.assertEquals(ofpJSONConfig.getSwitchConfig().getPort(), 1234);
         Assert.assertEquals(ofpJSONConfig.getSwitchConfig().getSwitchIdleTimeout().longValue(), 15001L);
