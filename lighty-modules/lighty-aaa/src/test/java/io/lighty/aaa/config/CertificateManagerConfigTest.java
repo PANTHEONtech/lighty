@@ -24,6 +24,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev1603
 import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321.KeyStoresBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321.key.stores.SslData;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321.key.stores.SslDataBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321.key.stores.SslDataKey;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.testng.Assert;
@@ -50,7 +51,7 @@ public class CertificateManagerConfigTest {
         when(readTransaction.read(LogicalDatastoreType.CONFIGURATION, InstanceIdentifier.create(KeyStores.class)))
                 .thenReturn(FluentFutures.immediateFluentFuture(Optional.of(keyStores)));
 
-        SslData sslData = new SslDataBuilder().build();
+        SslData sslData = new SslDataBuilder().withKey(new SslDataKey("opendayight")).build();
         when(readTransaction.read(LogicalDatastoreType.CONFIGURATION, KeyStoresDataUtils.getSslDataIid("opendaylight")))
                 .thenReturn(FluentFutures.immediateFluentFuture(Optional.of(sslData)));
     }
