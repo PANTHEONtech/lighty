@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -37,7 +37,7 @@ public final class ConverterUtils {
     }
 
     /**
-     * Returns the {@link RpcDefinition} from the given {@link SchemaContext} and given {@link QName}.
+     * Returns the {@link RpcDefinition} from the given {@link EffectiveModelContext} and given {@link QName}.
      * The {@link QName} of a rpc can be constructed via
      *
      * <p>
@@ -46,16 +46,16 @@ public final class ConverterUtils {
      * } , where {@code "make-toast"} is the name of the RPC given in the yang model.
      *
      * <p>
-     * If the given RPC was found in the {@link SchemaContext} the {@link RpcDefinition} will be present
+     * If the given RPC was found in the {@link EffectiveModelContext} the {@link RpcDefinition} will be present
      *
      * @see QName
-     * @param schemaContext the schema context used for the RPC resolution
+     * @param modelContext the model context used for the RPC resolution
      * @param rpcQName {@link QName} of the RPC
      * @return {@link Optional} representation of the {@link RpcDefinition}
      */
-    public static Optional<? extends RpcDefinition> loadRpc(final SchemaContext schemaContext, final QName rpcQName) {
-        Optional<Module> findModule = findModule(schemaContext, rpcQName);
-        if (!findModule.isPresent()) {
+    public static Optional<? extends RpcDefinition> loadRpc(final EffectiveModelContext modelContext, final QName rpcQName) {
+        Optional<Module> findModule = findModule(modelContext, rpcQName);
+        if (findModule.isEmpty()) {
             return Optional.empty();
         }
         return findDefinition(rpcQName, findModule.get().getRpcs());
@@ -64,14 +64,14 @@ public final class ConverterUtils {
     /**
      * Utility method to extract the {@link SchemaNode} for the given Notification.
      *
-     * @param schemaContext to be used
+     * @param modelContext to be used
      * @param notificationQname yang RPC name
      * @return {@link Optional} of {@link SchemaNode}
      */
-    public static Optional<? extends NotificationDefinition> loadNotification(final SchemaContext schemaContext,
+    public static Optional<? extends NotificationDefinition> loadNotification(final EffectiveModelContext modelContext,
             final QName notificationQname) {
-        Optional<Module> findModule = findModule(schemaContext, notificationQname);
-        if (!findModule.isPresent()) {
+        Optional<Module> findModule = findModule(modelContext, notificationQname);
+        if (findModule.isEmpty()) {
             return Optional.empty();
         }
         return findDefinition(notificationQname, findModule.get().getNotifications());
@@ -168,38 +168,50 @@ public final class ConverterUtils {
     }
 
     /**
-     * Creates an instance of {@link SchemaNode} for the given {@link QName} in the given {@link SchemaContext}.
+     * Creates an instance of {@link SchemaNode} for the given {@link QName} in the given {@link EffectiveModelContext}.
      *
-     * @see ConverterUtils#getSchemaNode(SchemaContext, String, String, String)
-     * @param schemaContext the given schema context which contains the {@link QName}
+     * @see ConverterUtils#getSchemaNode(EffectiveModelContext, String, String, String)
+     * @param modelContext the given model context which contains the {@link QName}
      * @param qname the given {@link QName}
      * @return instance of {@link SchemaNode}
      */
-    public static SchemaNode getSchemaNode(final SchemaContext schemaContext, final QName qname) {
-        return DataSchemaContextTree.from(schemaContext).getChild(YangInstanceIdentifier.of(qname)).getDataSchemaNode();
+    public static SchemaNode getSchemaNode(final EffectiveModelContext modelContext,
+                                           final QName qname) throws IllegalArgumentException {
+        return DataSchemaContextTree.from(modelContext).findChild(YangInstanceIdentifier.of(qname))
+                .orElseThrow(() -> new IllegalArgumentException(
+                        String.format("Cannot resolve SchemaNode by given Qname: %s",qname.toString())))
+                .getDataSchemaNode();
     }
 
-    public static SchemaNode getSchemaNode(final SchemaContext schemaContext,
-            final YangInstanceIdentifier yangInstanceIdentifier) {
-        return DataSchemaContextTree.from(schemaContext).getChild(yangInstanceIdentifier).getDataSchemaNode();
+    public static SchemaNode getSchemaNode(final EffectiveModelContext modelContext,
+                                           final YangInstanceIdentifier yangIid) throws IllegalArgumentException {
+        return DataSchemaContextTree.from(modelContext).findChild(yangIid)
+                .orElseThrow(
+                        () -> new IllegalArgumentException(
+                                String.format("Cannot resolve SchemaNode by given YangIid: %s", yangIid)))
+                .getDataSchemaNode();
     }
 
     /**
      * Creates an instance of {@link SchemaNode} for the given namespace, revision and localname. The
      * namespace, revision and localname are used to construct the {@link QName} which must exist in the
-     * {@link SchemaContext}.
+     * {@link EffectiveModelContext}.
      *
-     * @see ConverterUtils#getSchemaNode(SchemaContext, QName)
-     * @param schemaContext given schema context
+     * @see ConverterUtils#getSchemaNode(EffectiveModelContext, QName)
+     * @param modelContext given model context
      * @param namespace {@link QName} namespace
      * @param revision {@link QName} revision
      * @param localName {@link QName} localname
      * @return instance of {@link SchemaNode}
      */
-    public static SchemaNode getSchemaNode(final SchemaContext schemaContext, final String namespace,
-            final String revision, final String localName) {
+    public static SchemaNode getSchemaNode(final EffectiveModelContext modelContext, final String namespace,
+            final String revision, final String localName) throws IllegalArgumentException {
         QName qname = QName.create(namespace, revision, localName);
-        return DataSchemaContextTree.from(schemaContext).getChild(YangInstanceIdentifier.of(qname)).getDataSchemaNode();
+        return DataSchemaContextTree.from(modelContext).findChild(YangInstanceIdentifier.of(qname))
+                .orElseThrow(() -> new IllegalArgumentException(
+                        String.format("Cannot resolve SchemaNode by given namespace: %s , revision: %s, localName: %s",
+                                namespace, revision, localName)))
+                .getDataSchemaNode();
     }
 
     /**
@@ -228,12 +240,12 @@ public final class ConverterUtils {
         return XmlElement.fromDomDocument(document);
     }
 
-    private static Optional<Module> findModule(final SchemaContext schemaContext, final QName qname) {
+    private static Optional<Module> findModule(final EffectiveModelContext modelContext, final QName qname) {
         if (qname.getRevision().isPresent()) {
-            return schemaContext.findModule(qname.getNamespace(), qname.getRevision());
+            return modelContext.findModule(qname.getNamespace(), qname.getRevision());
         }
 
-        Collection<? extends Module> moduleByNamespace = schemaContext.findModules(qname.getNamespace());
+        Collection<? extends Module> moduleByNamespace = modelContext.findModules(qname.getNamespace());
         return Optional.ofNullable(moduleByNamespace.isEmpty() || moduleByNamespace.size() > 1 ? null
                 : moduleByNamespace.iterator().next());
     }

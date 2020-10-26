@@ -15,11 +15,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ServiceLoader;
-import org.opendaylight.binding.runtime.api.BindingRuntimeGenerator;
-import org.opendaylight.binding.runtime.api.DefaultBindingRuntimeContext;
-import org.opendaylight.binding.runtime.spi.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
 import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
+import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeGenerator;
+import org.opendaylight.mdsal.binding.runtime.api.DefaultBindingRuntimeContext;
+import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
+import org.opendaylight.mdsal.binding.runtime.spi.ModuleInfoSnapshotBuilder;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.DisplayString;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.MakeToastInput;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.MakeToastInputBuilder;
@@ -45,6 +46,7 @@ import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLe
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapEntryNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.parser.impl.YangParserFactoryImpl;
 import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
 import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
@@ -88,7 +90,7 @@ public abstract class AbstractCodecTest {
     protected final BindingCodecContext bindingCodecContext;
     protected final EffectiveModelContext effectiveModelContext;
 
-    public AbstractCodecTest() {
+    public AbstractCodecTest() throws YangParserException {
         List<YangModuleInfo> moduleInfos = loadModuleInfos();
         this.bindingCodecContext = createCodecContext(moduleInfos);
         this.effectiveModelContext = bindingCodecContext.getRuntimeContext().getEffectiveModelContext();
@@ -107,15 +109,16 @@ public abstract class AbstractCodecTest {
         this.testedSampleMapNodeNormalizedNodes = sampleMapNode();
     }
 
-    protected BindingCodecContext createCodecContext(List<YangModuleInfo> moduleInfos) {
+    protected BindingCodecContext createCodecContext(List<YangModuleInfo> moduleInfos) throws YangParserException {
         final YangXPathParserFactory xpathFactory = new AntlrXPathParserFactory();
         final YangParserFactoryImpl yangParserFactory = new YangParserFactoryImpl(xpathFactory);
         final BindingRuntimeGenerator bindingRuntimeGenerator = new DefaultBindingRuntimeGenerator();
-        final ModuleInfoBackedContext ctx = ModuleInfoBackedContext.create("tests", yangParserFactory);
-        ctx.registerModuleInfos(moduleInfos);
+        final ModuleInfoSnapshotBuilder moduleInfoSnapshotBuilder = new ModuleInfoSnapshotBuilder(yangParserFactory);
+        moduleInfoSnapshotBuilder.add(moduleInfos);
+        ModuleInfoSnapshot moduleInfoSnapshot = moduleInfoSnapshotBuilder.build();
 
-        final DefaultBindingRuntimeContext runtimeContext = DefaultBindingRuntimeContext
-                .create(bindingRuntimeGenerator.generateTypeMapping(ctx.tryToCreateModelContext().orElseThrow()), ctx);
+        final DefaultBindingRuntimeContext runtimeContext =
+                new DefaultBindingRuntimeContext(bindingRuntimeGenerator.generateTypeMapping(moduleInfoSnapshot.getEffectiveModelContext()), moduleInfoSnapshot);
         return new BindingCodecContext(runtimeContext);
     }
 

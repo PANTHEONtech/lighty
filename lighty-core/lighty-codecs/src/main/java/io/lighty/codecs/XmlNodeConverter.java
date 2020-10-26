@@ -102,7 +102,7 @@ public class XmlNodeConverter implements NodeConverter {
      * representation into XML string representation.
      *
      * <p>
-     * To obtain correct {@link SchemaNode} use {@link ConverterUtils#loadRpc(SchemaContext, QName)} method.
+     * To obtain correct {@link SchemaNode} use {@link ConverterUtils#loadRpc(EffectiveModelContext, QName)} method.
      *
      * @param schemaNode input or output {@link SchemaNode}
      * @param normalizedNode {@link NormalizedNode} representation of input or output
@@ -137,7 +137,7 @@ public class XmlNodeConverter implements NodeConverter {
      * This method deserializes the provided XML string representation (via {@link Reader}) interface
      * into {@link NormalizedNode}s. During deserialization of RPC input and output a proper
      * {@link SchemaNode} (given for input or output) must be passed. This may be obtained via
-     * {@link ConverterUtils#loadRpc(SchemaContext, QName)}.
+     * {@link ConverterUtils#loadRpc(EffectiveModelContext, QName)}.
      *
      * @param schemaNode parent schema node which contains information about the input data
      * @param inputData XML input
@@ -171,30 +171,30 @@ public class XmlNodeConverter implements NodeConverter {
     /**
      * Utility method to obtain an instance of {@link NormalizedNodeWriter} by using the {@link Writer}.
      */
-    private static NormalizedNodeWriter createNormalizedNodeWriter(final SchemaContext schemaContext,
+    private static NormalizedNodeWriter createNormalizedNodeWriter(final EffectiveModelContext modelContext,
             final Writer backingWriter, final SchemaPath pathToParent) {
         XMLStreamWriter createXMLStreamWriter = createXmlStreamWriter(backingWriter);
-        return createNormalizedNodeWriter(schemaContext, createXMLStreamWriter, pathToParent);
+        return createNormalizedNodeWriter(modelContext, createXMLStreamWriter, pathToParent);
     }
 
     /**
      * Create a new {@link NormalizedNodeWriter}.
      *
-     * @see XMLStreamNormalizedNodeStreamWriter#create(XMLStreamWriter, SchemaContext)
-     * @see XMLStreamNormalizedNodeStreamWriter#create(XMLStreamWriter, SchemaContext, SchemaPath)
+     * @see XMLStreamNormalizedNodeStreamWriter#create(XMLStreamWriter, EffectiveModelContext)
+     * @see XMLStreamNormalizedNodeStreamWriter#create(XMLStreamWriter, EffectiveModelContext, SchemaPath)
      *
-     * @param schemaContext the root schema context
+     * @param modelContext the root schema context
      * @param backingWriter used backing writer
-     * @param pathToParent path to parent, may be the same as {@link SchemaContext} param
+     * @param pathToParent path to parent, may be the same as {@link EffectiveModelContext} param
      * @return a new instance of {@link NormalizedNodeWriter}
      */
-    private static NormalizedNodeWriter createNormalizedNodeWriter(final SchemaContext schemaContext,
+    private static NormalizedNodeWriter createNormalizedNodeWriter(final EffectiveModelContext modelContext,
             final XMLStreamWriter backingWriter, final SchemaPath pathToParent) {
         NormalizedNodeStreamWriter streamWriter;
         if (pathToParent == null) {
-            streamWriter = XMLStreamNormalizedNodeStreamWriter.create(backingWriter, schemaContext);
+            streamWriter = XMLStreamNormalizedNodeStreamWriter.create(backingWriter, modelContext);
         } else {
-            streamWriter = XMLStreamNormalizedNodeStreamWriter.create(backingWriter, schemaContext, pathToParent);
+            streamWriter = XMLStreamNormalizedNodeStreamWriter.create(backingWriter, modelContext, pathToParent);
         }
         return NormalizedNodeWriter.forStreamWriter(streamWriter);
     }

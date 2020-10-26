@@ -20,19 +20,19 @@ import org.opendaylight.yangtools.yang.data.util.DataSchemaContextNode;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 public class SerializeIdentifierCodec {
 
-    private final SchemaContext schemaContext;
+    private final EffectiveModelContext effectiveModelContext;
     private final DataSchemaContextTree dataSchemaContextTree;
 
-    public SerializeIdentifierCodec(final SchemaContext schemaContext) {
-        this.schemaContext = schemaContext;
-        this.dataSchemaContextTree = DataSchemaContextTree.from(schemaContext);
+    public SerializeIdentifierCodec(final EffectiveModelContext effectiveModelContext) {
+        this.effectiveModelContext = effectiveModelContext;
+        this.dataSchemaContextTree = DataSchemaContextTree.from(effectiveModelContext);
     }
 
     public YangInstanceIdentifier serialize(final String identifier) {
@@ -46,8 +46,8 @@ public class SerializeIdentifierCodec {
         final List<String> pathArgs = Arrays.asList(data.split("/"));
         final String[] first = pathArgs.get(0).split(":");
         final String moduleName = first[0];
-        final Optional<? extends Module> module = this.schemaContext.findModule(moduleName);
-        if (! module.isPresent()) {
+        final Optional<? extends Module> module = this.effectiveModelContext.findModule(moduleName);
+        if (module.isEmpty()) {
             throw new IllegalStateException("Module with name" + moduleName + " not found");
         }
         final QNameModule qNameModule = module.get().getQNameModule();

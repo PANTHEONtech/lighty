@@ -17,18 +17,18 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextNode;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 public class DeserializeIdentifierCodec {
 
     private final DataSchemaContextTree dataSchemaContextTree;
-    private final SchemaContext schemaContext;
+    private final EffectiveModelContext modelContext;
 
-    public DeserializeIdentifierCodec(final SchemaContext schemaContext) {
-        this.schemaContext = schemaContext;
-        this.dataSchemaContextTree = DataSchemaContextTree.from(schemaContext);
+    public DeserializeIdentifierCodec(final EffectiveModelContext modelContext) {
+        this.modelContext = modelContext;
+        this.dataSchemaContextTree = DataSchemaContextTree.from(modelContext);
     }
 
     public final String deserialize(final YangInstanceIdentifier identifier) {
@@ -57,10 +57,10 @@ public class DeserializeIdentifierCodec {
         final Optional<Revision> moduleRevision = nodeType.getRevision();
         if (moduleRevision.isPresent()) {
             revision = moduleRevision.get().toString();
-            module = this.schemaContext.findModule(nodeType.getNamespace(), moduleRevision.get());
+            module = this.modelContext.findModule(nodeType.getNamespace(), moduleRevision.get());
         } else {
             revision = "[not present]";
-            module = this.schemaContext.findModule(nodeType.getNamespace());
+            module = this.modelContext.findModule(nodeType.getNamespace());
         }
         if (! module.isPresent()) {
             throw new IllegalStateException("Module with namespace " + nodeType.getNamespace() + " and revision "

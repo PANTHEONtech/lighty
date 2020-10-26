@@ -15,8 +15,13 @@ import org.junit.Test;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
+import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 
 public class ConverterUtilsTest extends AbstractCodecTest {
+
+    public ConverterUtilsTest() throws YangParserException {
+        super();
+    }
 
     @Test
     public void testGetRpcQName_norevision() throws Exception {

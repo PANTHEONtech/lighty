@@ -18,6 +18,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
+import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +28,8 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
 
     private final NodeConverter bindingSerializer;
 
-    public JsonNodeConverterTest() {
+    public JsonNodeConverterTest() throws YangParserException {
+        super();
         bindingSerializer = new JsonNodeConverter(this.effectiveModelContext);
     }
 

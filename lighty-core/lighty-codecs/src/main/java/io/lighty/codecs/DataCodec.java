@@ -23,6 +23,8 @@ import java.util.Optional;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.dom.DOMSource;
+
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.adapter.ConstantAdapterContext;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
@@ -50,6 +52,9 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -135,13 +140,13 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
     @SuppressWarnings("unchecked")
     @Override
     public T convertToBindingAwareRpc(final SchemaPath schemaPath, final ContainerNode rpcData) {
-        return (T) this.codec.fromNormalizedNodeRpcData(schemaPath, rpcData);
+        return (T) this.codec.fromNormalizedNodeRpcData(schemaPath.asAbsolute(), rpcData);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public T convertToBindingAwareNotification(final SchemaPath schemaPath, final ContainerNode norificationData) {
-        return (T) this.codec.fromNormalizedNodeNotification(schemaPath, norificationData);
+        return (T) this.codec.fromNormalizedNodeNotification(schemaPath.asAbsolute(), norificationData);
     }
 
     @Override

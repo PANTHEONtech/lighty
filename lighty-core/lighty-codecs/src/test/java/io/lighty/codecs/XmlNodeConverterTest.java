@@ -28,6 +28,7 @@ import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
+import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +37,8 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
 
     private final NodeConverter bindingSerializer;
 
-    public XmlNodeConverterTest() {
+    public XmlNodeConverterTest() throws YangParserException {
+        super();
         bindingSerializer = new XmlNodeConverter(this.effectiveModelContext);
     }
 
@@ -71,7 +73,7 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
     @Test
     public void testDeserializeData() throws Exception {
         final DataSchemaNode schemaNode = DataSchemaContextTree.from(this.effectiveModelContext)
-                .getChild(YangInstanceIdentifier.of(Toaster.QNAME)).getDataSchemaNode();
+                .findChild(YangInstanceIdentifier.of(Toaster.QNAME)).orElseThrow().getDataSchemaNode();
 
         NormalizedNode<?, ?> deserializeData =
                 bindingSerializer.deserialize(schemaNode, new StringReader(loadToasterXml()));
@@ -125,7 +127,7 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
     @Test
     public void testSerializeData_container() throws SerializationException {
         final DataSchemaNode schemaNode = DataSchemaContextTree.from(this.effectiveModelContext)
-                .getChild(YangInstanceIdentifier.of(TopLevelContainer.QNAME)).getDataSchemaNode();
+                .findChild(YangInstanceIdentifier.of(TopLevelContainer.QNAME)).orElseThrow().getDataSchemaNode();
 
         NormalizedNode<?, ?> deserializeData = bindingSerializer.deserialize(schemaNode,
                 new StringReader(loadResourceAsString("top-level-container.xml")));
