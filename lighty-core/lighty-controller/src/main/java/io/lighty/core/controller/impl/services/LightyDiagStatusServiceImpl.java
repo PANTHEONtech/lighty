@@ -11,6 +11,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
@@ -60,7 +61,7 @@ public class LightyDiagStatusServiceImpl implements DiagStatusService {
         SystemState systemState = systemReadyMonitor.getSystemState();
         Collection<ServiceDescriptor> serviceDescriptors = getAllServiceDescriptors();
         return new ServiceStatusSummary(isOperational(systemState, serviceDescriptors),
-                systemState, systemReadyMonitor.getFailureCause(), serviceDescriptors);
+                systemState, systemReadyMonitor.getFailureCause(), new HashSet<>(serviceDescriptors));
     }
 
     private static boolean isOperational(final SystemState systemState,

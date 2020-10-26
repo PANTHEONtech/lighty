@@ -42,7 +42,7 @@ import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
 
 public class TestService {
 
@@ -53,7 +53,7 @@ public class TestService {
     private ActorSystemProvider actorSystemProvider;
 
     @Inject
-    private SchemaContextProvider schemaContextProvider;
+    private EffectiveModelContextProvider effectiveModelContextProvider;
 
     @Inject
     private DOMSchemaService domSchemaService;
@@ -168,8 +168,8 @@ public class TestService {
         return actorSystemProvider;
     }
 
-    public SchemaContextProvider getSchemaContextProvider() {
-        return schemaContextProvider;
+    public EffectiveModelContextProvider getEffectiveModelContextProvider() {
+        return effectiveModelContextProvider;
     }
 
     public DOMSchemaService getDomSchemaService() {

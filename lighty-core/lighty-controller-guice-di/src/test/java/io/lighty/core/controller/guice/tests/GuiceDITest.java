@@ -67,8 +67,8 @@ public class GuiceDITest {
     }
 
     @Test
-    public void testDISchemaContextProvider() {
-        assertNotNull(testService.getSchemaContextProvider());
+    public void testDIEffectiveModelContextProvider() {
+        assertNotNull(testService.getEffectiveModelContextProvider());
     }
 
     @Test

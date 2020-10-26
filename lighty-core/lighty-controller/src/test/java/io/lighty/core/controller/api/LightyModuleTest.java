@@ -24,8 +24,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class LightyModuleTest {
-    private static long MAX_INIT_TIMEOUT = 15000L;
-    private static long MAX_SHUTDOWN_TIMEOUT = 15000L;
+    private static long MAX_INIT_TIMEOUT = 60000L;
+    private static long MAX_SHUTDOWN_TIMEOUT = 60000L;
     private static long SLEEP_AFTER_SHUTDOWN_TIMEOUT = 200L;
     private ExecutorService executorService;
     private LightyModule moduleUnderTest;
