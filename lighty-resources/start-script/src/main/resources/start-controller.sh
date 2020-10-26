@@ -24,4 +24,3 @@ APP_VERSION=`echo "${JAR_FILE}" | sed -e 's/^.*-\([0-9]\+\.[0-9]\+\.[0-9]\+\)\(-
 
 # Run the application
 ( cd "${SCRIPT_DIR}" && ${JAVA_HOME}/bin/java -jar "${APP_NAME}-${APP_VERSION}.jar" $* )
-

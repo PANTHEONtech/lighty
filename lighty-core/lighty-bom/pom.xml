@@ -95,6 +95,11 @@
                 <artifactId>singlenode-configuration</artifactId>
                 <version>13.0.1-SNAPSHOT</version>
             </dependency>
+            <dependency>
+                <groupId>io.lighty.resources</groupId>
+                <artifactId>start-script</artifactId>
+                <version>13.0.1-SNAPSHOT</version>
+            </dependency>
 
             <!-- Dependencies and resources which should not normally leak into production -->
             <dependency>
