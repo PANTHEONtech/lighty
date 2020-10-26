@@ -35,6 +35,26 @@
             <groupId>io.lighty.core</groupId>
             <artifactId>lighty-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20131018</version>
+        </dependency>
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>kubernetes-client</artifactId>
+            <version>4.6.0</version>
+        </dependency>
 
         <!--ODL-->
         <!--odl-guava-22-->
@@ -342,6 +362,23 @@
             <groupId>org.scala-lang.modules</groupId>
             <artifactId>scala-java8-compat_2.12</artifactId>
         </dependency>
+        <!--akka management and bootstrap-->
+        <dependency>
+            <groupId>com.lightbend.akka.discovery</groupId>
+            <artifactId>akka-discovery-kubernetes-api_2.12</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lightbend.akka.management</groupId>
+            <artifactId>akka-management_2.12</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lightbend.akka.management</groupId>
+            <artifactId>akka-management-cluster-http_2.12</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lightbend.akka.management</groupId>
+            <artifactId>akka-management-cluster-bootstrap_2.12</artifactId>
+        </dependency>
         <!--odl-akka-system-2.4-->
         <dependency>
             <groupId>com.typesafe.akka</groupId>
@@ -490,7 +527,6 @@
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>sal-common-api</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
