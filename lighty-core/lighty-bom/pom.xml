@@ -38,6 +38,11 @@
                 <artifactId>lighty-controller</artifactId>
                 <version>14.0.0-SNAPSHOT</version>
             </dependency>
+            <dependency>
+                <groupId>io.lighty.core</groupId>
+                <artifactId>lighty-clustering</artifactId>
+                <version>12.2.1-SNAPSHOT</version>
+            </dependency>
 
             <!-- DI framework integrations -->
             <dependency>
