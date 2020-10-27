@@ -81,7 +81,6 @@ akka.lighty-kubernetes {
 #### Create docker image
 ```
 docker build . -f Dockerfile.k8s -t lighty-k8s-cluster:1.0.0-SNAPSHOT
-docker save --output="target/lighty-k8s-cluster:1.0.0-SNAPSHOT.tar" lighty-k8s-cluster:1.0.0-SNAPSHOT
 
 # run docker
 docker run -p 8891:8891 -p 2552:2552 -p 8558:8558 lighty-k8s-cluster:1.0.0-SNAPSHOT
@@ -116,3 +115,34 @@ Where __NodeIp__ is IP address assigned by kubernetes.
 #### Load-Balancer REST endpoints  
 * __GET__ ``http://{LoadBalancerIp}:30558/cluster/members`` - akka http
 * __GET__ ``http://{LoadBalancerIp}:30888/restconf/operations`` - loghty.io RESTCONF 
+
+## Run demo in local environment using microk8s
+To start cluster:
+1. Install [microk8s](https://microk8s.io/docs) tool
+2. Build Docker Image:  
+  `docker build . -f Dockerfile.k8s -t lighty-k8s-cluster:1.0.0-SNAPSHOT`
+3. Save Docker Image as .tar:  
+  `docker save --output="target/lighty-k8s-cluster:1.0.0-SNAPSHOT.tar" lighty-k8s-cluster:1.0.0-SNAPSHOT`
+4. Copy saved image into microk8s environment (more information [here](https://microk8s.io/docs/registry-images)).  
+  NOTE: defining namespace (`-n k8s.io`) is needed for versions prior to 1.17.  
+  `microk8s ctr --namespace k8s.io image import target/lighty-k8s-cluster\:1.0.0-SNAPSHOT.tar`
+5. Enable DNS:  
+  `microk8s enable dns`
+6. Apply configurations:  
+  `microk8s kubectl apply -f lighty-k8s-cluster-roles.yaml`  
+  `microk8s kubectl apply -f lighty-k8s-cluster-deployment.yaml`
+  
+To access Dashboard:
+1. Enable Dashboard:  
+  `microk8s enable dashboard`
+2. Obtain token to log in:  
+  `token=$(microk8s kubectl -n kube-system get secret | grep default-token | cut -d " " -f1)`  
+   `microk8s kubectl -n kube-system describe secret $token`
+3. Go to URL `https://127.0.0.1:10443`
+4. Log in using obtained token in previous steps
+
+To reset and clean microk8s environment:
+1. Delete started service:  
+  `microk8s kubectl delete service/lighty-k8s-cluster service/lighty-k8s-cluster-lb deployment.apps/lighty-k8s-cluster`
+2. Reset microk8s:  
+  `microk8s reset`

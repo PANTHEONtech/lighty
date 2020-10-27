@@ -1,5 +1,9 @@
-FROM openjdk:8-jdk-alpine
+FROM openjdk:11-jre-slim
+
 COPY target/lighty-cluster-app-12.2.1-SNAPSHOT-bin.zip /
-RUN unzip /lighty-cluster-app-12.2.1-SNAPSHOT-bin.zip
-RUN rm /lighty-cluster-app-12.2.1-SNAPSHOT-bin.zip
+
+RUN apt-get update && apt-get install unzip \
+    && unzip /lighty-cluster-app-12.2.1-SNAPSHOT-bin.zip \
+    && rm /lighty-cluster-app-12.2.1-SNAPSHOT-bin.zip
+
 ENTRYPOINT ["/lighty-cluster-app-12.2.1-SNAPSHOT/start-controller-node-k8s.sh"]
