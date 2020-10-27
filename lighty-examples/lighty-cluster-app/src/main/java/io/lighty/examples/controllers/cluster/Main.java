@@ -137,9 +137,8 @@ public class Main {
     }
 
     private void startLighty(ControllerConfiguration controllerConfiguration,
-                             RestConfConfiguration restConfConfiguration,
-                             NetconfConfiguration netconfSBPConfiguration, boolean registerShutdownHook)
-            throws ConfigurationException, ExecutionException, InterruptedException {
+            RestConfConfiguration restConfConfiguration, NetconfConfiguration netconfSBPConfiguration,
+            boolean registerShutdownHook) throws ConfigurationException, ExecutionException, InterruptedException {
 
         //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
         LOG.info("Trying to start LightyController ...");
@@ -241,12 +240,9 @@ public class Main {
      * @param akkaConfigPath         - path to the akka-config file
      * @param factoryAkkaConfigPath  - path to tke factory-akka-config file
      * @param generateRandomMemberId - specifies whether to generate random member name or use the one from akka-config
-     * @return
-     * @throws ConfigurationException
      */
     private static Config createAkkaConfiguration(String akkaConfigPath, String factoryAkkaConfigPath,
-                                                  boolean generateRandomMemberId)
-            throws ConfigurationException {
+            boolean generateRandomMemberId) throws ConfigurationException {
         Config akkaConfig = ControllerConfigUtils.getAkkaConfigFromPath(akkaConfigPath);
         if (generateRandomMemberId) {
             String randomMemberId = "member-" + RandomStringUtils.random(6, true, true);

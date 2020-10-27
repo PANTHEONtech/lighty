@@ -20,16 +20,16 @@ import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
 
 public class UnreachableListenerService implements ClusterSingletonService {
-    private ActorRef unreachableListener;
-    private Cluster cluster;
-    private Long podRestartTimeout;
-    private ActorSystem actorSystem;
-    private DataBroker dataBroker;
-    private ClusterAdminService clusterAdminRPCService;
     private static final String CLUSTER_SINGLETON_ID = "singletonUnreachableListener";
+    private final Cluster cluster;
+    private final Long podRestartTimeout;
+    private final ActorSystem actorSystem;
+    private final DataBroker dataBroker;
+    private final ClusterAdminService clusterAdminRPCService;
+    private ActorRef unreachableListener;
 
     public UnreachableListenerService(ActorSystem actorSystem, DataBroker dataBroker,
-                                      ClusterAdminService clusterAdminRPCService, Long podRestartTimeout) {
+            ClusterAdminService clusterAdminRPCService, Long podRestartTimeout) {
         this.actorSystem = actorSystem;
         this.dataBroker = dataBroker;
         this.clusterAdminRPCService = clusterAdminRPCService;
@@ -39,8 +39,8 @@ public class UnreachableListenerService implements ClusterSingletonService {
 
     @Override
     public void instantiateServiceInstance() {
-        this.unreachableListener = actorSystem.actorOf(UnreachableListener.
-                props(actorSystem, dataBroker, clusterAdminRPCService, podRestartTimeout), "unreachableListener");
+        this.unreachableListener = actorSystem.actorOf(UnreachableListener.props(actorSystem, dataBroker,
+                clusterAdminRPCService, podRestartTimeout), "unreachableListener");
     }
 
     @Override

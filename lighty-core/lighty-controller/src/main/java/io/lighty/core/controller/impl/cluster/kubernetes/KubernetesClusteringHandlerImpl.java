@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 
 public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(UnreachableListener.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KubernetesClusteringHandlerImpl.class);
 
     private final Config akkaDeploymentConfig;
     private final LightyController controller;
@@ -47,7 +47,7 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
     public KubernetesClusteringHandlerImpl(@NonNull LightyController controller, @NonNull Config akkaDeploymentConfig) {
         this.akkaDeploymentConfig = akkaDeploymentConfig;
         this.controller = controller;
-        moduleShardsConfig = Optional.empty();
+        this.moduleShardsConfig = Optional.empty();
     }
 
     /**
@@ -131,9 +131,6 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
 
     /**
      * Wait for the cluster to form and then release the latch.
-     *
-     * @param latch
-     * @return
      */
     private ListenableScheduledFuture getClusterLeaderElectionFuture(CountDownLatch latch) {
         ListeningScheduledExecutorService listeningScheduledExecutorService =

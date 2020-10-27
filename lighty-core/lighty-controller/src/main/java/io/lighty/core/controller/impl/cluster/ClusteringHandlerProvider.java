@@ -19,9 +19,8 @@ public class ClusteringHandlerProvider {
             @NonNull Config akkaDeploymentConfig) {
         if (akkaDeploymentConfig.hasPath("akka.discovery.method")) {
             String clusteringTool = akkaDeploymentConfig.getString("akka.discovery.method");
-            switch (clusteringTool) {
-                case "kubernetes-api":
-                    return Optional.of(new KubernetesClusteringHandlerImpl(controller, akkaDeploymentConfig));
+            if ("kubernetes-api".equals(clusteringTool)) {
+                return Optional.of(new KubernetesClusteringHandlerImpl(controller, akkaDeploymentConfig));
             }
         }
         return Optional.empty();

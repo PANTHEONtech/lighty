@@ -71,18 +71,18 @@ import org.slf4j.LoggerFactory;
 public class UnreachableListener extends AbstractActor {
     private static final Logger LOG = LoggerFactory.getLogger(UnreachableListener.class);
 
-    private final Cluster cluster = Cluster.get(getContext().getSystem());
-    private final ActorSystem actorSystem;
-    private final DataBroker dataBroker;
-    private final ClusterAdminService clusterAdminRPCService;
-    private final Long podRestartTimeout;
-    private Set<Member> initialUnreachableSet;
-
     private static final String K8S_SCHEME = "https";
     private static final String K8S_HOST = "kubernetes";
     private static final String K8S_GET_PODS_PATH = "/api/v1/namespaces/default/pods";
     private static final String K8S_LIGHTY_SELECTOR = "lighty-k8s-cluster";
     private static final long DEFAULT_UNREACHABLE_RESTART_TIMEOUT = 30;
+
+    private final Cluster cluster = Cluster.get(getContext().getSystem());
+    private final ActorSystem actorSystem;
+    private final DataBroker dataBroker;
+    private final ClusterAdminService clusterAdminRPCService;
+    private final Long podRestartTimeout;
+    private final Set<Member> initialUnreachableSet;
 
     public UnreachableListener(final ActorSystem actorSystem, final DataBroker dataBroker,
             final ClusterAdminService clusterAdminRPCService, final Long podRestartTimeout) {
@@ -109,8 +109,7 @@ public class UnreachableListener extends AbstractActor {
 
     @Override
     public void preStart() {
-        cluster.subscribe(
-                getSelf(), ClusterEvent.initialStateAsEvents(), ClusterEvent.MemberEvent.class,
+        cluster.subscribe(getSelf(), ClusterEvent.initialStateAsEvents(), ClusterEvent.MemberEvent.class,
                 ClusterEvent.UnreachableMember.class);
 
         initialUnreachableSet.addAll(cluster.state().getUnreachable());
@@ -130,21 +129,15 @@ public class UnreachableListener extends AbstractActor {
 
     @Override
     public Receive createReceive() {
-        return receiveBuilder()
-                .match(
-                        ClusterEvent.UnreachableMember.class,
-                        mUnreachable -> {
-                            if (initialUnreachableSet.contains(mUnreachable.member())) {
-                                initialUnreachableSet.remove(mUnreachable.member());
-                                LOG.info("Member {} was already removed during PreStart.", mUnreachable.member().address());
-                                return;
-                            }
-                            LOG.info("Member detected as unreachable, processing: {}", mUnreachable.member().address());
-                            processUnreachableMember(mUnreachable.member());
-                        })
-                .match(
-                        ClusterEvent.MemberRemoved.class,
-                        mRemoved -> LOG.info("Member was Removed: {}", mRemoved.member()))
+        return receiveBuilder().match(ClusterEvent.UnreachableMember.class, mUnreachable -> {
+            if (initialUnreachableSet.contains(mUnreachable.member())) {
+                initialUnreachableSet.remove(mUnreachable.member());
+                LOG.info("Member {} was already removed during PreStart.", mUnreachable.member().address());
+                return;
+            }
+            LOG.info("Member detected as unreachable, processing: {}", mUnreachable.member().address());
+            processUnreachableMember(mUnreachable.member());
+        }).match(ClusterEvent.MemberRemoved.class, mRemoved -> LOG.info("Member was Removed: {}", mRemoved.member()))
                 .build();
     }
 
@@ -213,7 +206,6 @@ public class UnreachableListener extends AbstractActor {
      * Find all occurrences where the member is registered as candidate for entity ownership
      *
      * @param removedMember - member which is being removed from cluster
-     * @return
      */
     private List<InstanceIdentifier<Candidate>> getCandidatesFromDatastore(Member removedMember) {
         List<String> removedMemberRoles = removedMember.getRoles().stream()
@@ -256,7 +248,6 @@ public class UnreachableListener extends AbstractActor {
      *
      * @param unreachable        - the unreachable member
      * @param unreachablePodName - Pod name of the unreachable member
-     * @return
      */
     private ListenableScheduledFuture schedulePodRestart(Member unreachable, String unreachablePodName) {
         if (unreachablePodName == null || unreachablePodName.isEmpty()) {
@@ -319,8 +310,6 @@ public class UnreachableListener extends AbstractActor {
     /**
      * Decide, whether the member is safe to Down without the risk of causing Split-Brain. Data from Kubernetes
      * are used for this decision.
-     *
-     * @param unreachableMember
      */
     public boolean safeToDownMember(Member unreachableMember) {
         Address unreachableAddress = unreachableMember.address();
@@ -412,7 +401,6 @@ public class UnreachableListener extends AbstractActor {
      *
      * @param unreachableMember - unreachable member
      * @param podInfo           - data of the unreachable member's pod
-     * @return
      */
     private boolean analyzePodState(Member unreachableMember, JsonNode podInfo) {
         try {
