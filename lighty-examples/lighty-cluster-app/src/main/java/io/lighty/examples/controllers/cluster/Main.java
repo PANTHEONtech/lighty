@@ -11,6 +11,7 @@ import com.beust.jcommander.JCommander;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigValueFactory;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.lighty.core.common.models.YangModuleUtils;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
@@ -52,6 +53,8 @@ public class Main {
         start(new String[] {}, false);
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
+    @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
     public void start(String[] args, boolean registerShutdownHook) {
         long startTime = System.nanoTime();
         LOG.info(".__  .__       .__     __              .__           _________________    _______");
@@ -86,7 +89,8 @@ public class Main {
                 //3. NETCONF SBP configuration
                 NetconfConfiguration netconfSBPConfiguration
                         = NetconfConfigUtils.createNetconfConfiguration(Files.newInputStream(configPath));
-                startLighty(clusterNodeConfiguration, restConfConfiguration, netconfSBPConfiguration, registerShutdownHook);
+                startLighty(clusterNodeConfiguration, restConfConfiguration, netconfSBPConfiguration,
+                        registerShutdownHook);
             } else {
                 LOG.info("using default configuration ...");
                 Set<YangModuleInfo> modelPaths = Stream.concat(RestConfConfigUtils.YANG_MODELS.stream(),
@@ -107,12 +111,14 @@ public class Main {
                     LOG.info("Loading k8s akka config.");
                     akkaConfig = createAkkaConfiguration("cluster/akka-node-k8s.conf",
                             "cluster/factory-akka-default.conf", true);
-                    defaultClusterNodeConfiguration.getActorSystemConfig().setAkkaConfigPath("cluster/akka-node-k8s.conf");
+                    defaultClusterNodeConfiguration.getActorSystemConfig()
+                            .setAkkaConfigPath("cluster/akka-node-k8s.conf");
                 } else {
                     LOG.info("Loading akka config for node {}.", arguments.getMemberOrdinal());
                     akkaConfig = createAkkaConfiguration("cluster/akka-node-0" + arguments.getMemberOrdinal() + ".conf",
                             "cluster/factory-akka-default.conf", false);
-                    defaultClusterNodeConfiguration.getActorSystemConfig().setAkkaConfigPath("cluster/akka-node-0" + arguments.getMemberOrdinal() + ".conf");
+                    defaultClusterNodeConfiguration.getActorSystemConfig().setAkkaConfigPath("cluster/akka-node-0"
+                            + arguments.getMemberOrdinal() + ".conf");
                 }
                 akkaConfig = akkaConfig.resolve();
                 defaultClusterNodeConfiguration.getActorSystemConfig().setConfig(akkaConfig);
@@ -129,9 +135,7 @@ public class Main {
             }
             float duration = (System.nanoTime() - startTime) / 1_000_000f;
             LOG.info("lighty.io and RESTCONF-NETCONF started in {}ms", duration);
-        } catch (RuntimeException e) {
-            LOG.error("Main RESTCONF-NETCONF RuntimeException: ", e);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             LOG.error("Main RESTCONF-NETCONF application exception: ", e);
         }
     }
@@ -155,7 +159,8 @@ public class Main {
                 .build();
 
         //3. start swagger
-        SwaggerLighty swagger = new SwaggerLighty(restConfConfiguration, jettyServerBuilder, lightyController.getServices());
+        SwaggerLighty swagger =
+                new SwaggerLighty(restConfConfiguration, jettyServerBuilder, lightyController.getServices());
         swagger.start().get();
         communityRestConf.start().get();
         communityRestConf.startServer();
@@ -184,6 +189,7 @@ public class Main {
         app.start(args, true);
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     private static class ShutdownHook extends Thread {
 
         private static final Logger LOG = LoggerFactory.getLogger(ShutdownHook.class);
@@ -207,7 +213,7 @@ public class Main {
 
         public void execute() {
             LOG.info("lighty.io and RESTCONF-NETCONF shutting down ...");
-            long stopTime = System.nanoTime();
+            final long stopTime = System.nanoTime();
             try {
                 swagger.shutdown();
             } catch (Exception e) {
@@ -235,7 +241,7 @@ public class Main {
 
     /**
      * In case this is kubernetes deployment replace the member-role from akka-config with randomly generated name
-     * in format member-[random]
+     * in format member-[random].
      *
      * @param akkaConfigPath         - path to the akka-config file
      * @param factoryAkkaConfigPath  - path to tke factory-akka-config file

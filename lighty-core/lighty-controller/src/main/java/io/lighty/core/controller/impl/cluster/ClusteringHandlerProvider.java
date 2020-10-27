@@ -13,7 +13,11 @@ import io.lighty.core.controller.impl.cluster.kubernetes.KubernetesClusteringHan
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 
-public class ClusteringHandlerProvider {
+public final class ClusteringHandlerProvider {
+
+    private ClusteringHandlerProvider() {
+        // should not be instantiated
+    }
 
     public static Optional<ClusteringHandler> getClusteringHandler(@NonNull LightyController controller,
             @NonNull Config akkaDeploymentConfig) {

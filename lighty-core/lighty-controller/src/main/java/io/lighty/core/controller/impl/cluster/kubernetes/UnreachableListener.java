@@ -24,6 +24,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -157,9 +158,9 @@ public class UnreachableListener extends AbstractActor {
             downMember(member);
             LOG.info("Downing complete");
         } else {
-            LOG.warn("Majority of cluster seems to be unreachable. This is probably due to network " +
-                    "partition in which case the other side will resolve it (since they are the majority). " +
-                    "Downing members from this side isn't safe");
+            LOG.warn("Majority of cluster seems to be unreachable. This is probably due to network "
+                    + "partition in which case the other side will resolve it (since they are the majority). "
+                    + "Downing members from this side isn't safe");
         }
     }
 
@@ -168,7 +169,7 @@ public class UnreachableListener extends AbstractActor {
     }
 
     /**
-     * Switch members status to Down and clean his data from datastore
+     * Switch members status to Down and clean his data from datastore.
      *
      * @param member - unreachable member
      */
@@ -198,12 +199,12 @@ public class UnreachableListener extends AbstractActor {
             deleteTransaction.commit().get();
             LOG.debug("Delete-Candidates transaction was successful");
         } catch (InterruptedException | ExecutionException e) {
-            LOG.error("Delete-Candidates transaction failed: {}", e.getMessage(), e);
+            LOG.error("Delete-Candidates transaction failed", e);
         }
     }
 
     /**
-     * Find all occurrences where the member is registered as candidate for entity ownership
+     * Find all occurrences where the member is registered as candidate for entity ownership.
      *
      * @param removedMember - member which is being removed from cluster
      */
@@ -268,8 +269,8 @@ public class UnreachableListener extends AbstractActor {
                     LOG.debug("Member {} is reachable again. Aborting POD restart", unreachablePodName);
                 }
             } else {
-                LOG.warn("Member {} is no longer listed among other cluster members. This is very unexpected, so " +
-                        "lets try restarting him.", unreachablePodName);
+                LOG.warn("Member {} is no longer listed among other cluster members. Trying to restart it.",
+                        unreachablePodName);
                 sendRestartRequest(unreachable, unreachablePodName);
             }
 
@@ -282,14 +283,17 @@ public class UnreachableListener extends AbstractActor {
         try {
             LOG.debug("Creating REST request for Deleting Pod: {}", uriBuilder.toString());
             HttpDelete deletePodRequest = new HttpDelete(uriBuilder.build());
-            CloseableHttpClient httpClient = getHttpClient();
             Config k8sClient = new ConfigBuilder().build();
             deletePodRequest.addHeader("Authorization", "Bearer " + k8sClient.getOauthToken());
             deletePodRequest.addHeader("Content-Type", "application/json");
+
             LOG.debug("Executing REST request for Deleting Pod");
+            CloseableHttpClient httpClient = getHttpClient();
             CloseableHttpResponse response = httpClient.execute(deletePodRequest);
+
             LOG.trace("Response from Kubernetes: {}", response);
             String result = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
+
             LOG.trace("Response Entity from Kubernetes: {}", result);
             if (response.getStatusLine().getStatusCode() >= 200 && response.getStatusLine().getStatusCode() < 300) {
                 LOG.info("Request successful. Kubernetes will restart Pod with name: {}", unreachablePodName);
@@ -302,8 +306,9 @@ public class UnreachableListener extends AbstractActor {
                 LOG.error("Request to delete Pod {} failed. Not safe to down member. Response from Kubernetes: {}",
                         unreachablePodName, response);
             }
-        } catch (Exception e) {
-            LOG.error("Request to delete Pop failed: {}", e.getMessage(), e);
+        } catch (URISyntaxException | KeyStoreException | NoSuchAlgorithmException | KeyManagementException
+                | IOException e) {
+            LOG.error("Request to delete Pod failed", e);
         }
     }
 
@@ -312,7 +317,6 @@ public class UnreachableListener extends AbstractActor {
      * are used for this decision.
      */
     public boolean safeToDownMember(Member unreachableMember) {
-        Address unreachableAddress = unreachableMember.address();
         JSONObject podList = getAllLightyPods();
         if (podList == null) {
             LOG.error("List of Pods wasn't received. Can't decide whether it's safe to Down the unreachable member {}",
@@ -337,6 +341,7 @@ public class UnreachableListener extends AbstractActor {
             }
         }
         LOG.debug("List of all Pod IPs: {}", podMap.keySet());
+        Address unreachableAddress = unreachableMember.address();
         if (unreachableAddress.host().nonEmpty()) {
             LOG.debug("Address of unreachable member is: {}", unreachableAddress.host().get());
             if (podMap.containsKey(unreachableAddress.host().get())) {
@@ -351,7 +356,7 @@ public class UnreachableListener extends AbstractActor {
     }
 
     /**
-     * Get data of all the Pods in Kubernetes running Lighty application
+     * Get data of all the Pods in Kubernetes running Lighty application.
      *
      * @return JsonObject containing data about Pods running Lighty
      */
@@ -359,8 +364,8 @@ public class UnreachableListener extends AbstractActor {
         LOG.debug("Getting Lighty Pods from Kubernetes");
         try {
             CloseableHttpClient httpClient = getHttpClient();
-            HttpGet request = new HttpGet(getURIForKubernetesAPICall(K8S_GET_PODS_PATH).
-                    setParameter("labelSelector", "app=" + K8S_LIGHTY_SELECTOR).build());
+            HttpGet request = new HttpGet(getURIForKubernetesAPICall(K8S_GET_PODS_PATH)
+                    .setParameter("labelSelector", "app=" + K8S_LIGHTY_SELECTOR).build());
 
             Config k8sClient = new ConfigBuilder().build();
             request.addHeader("Authorization", "Bearer " + k8sClient.getOauthToken());
@@ -370,7 +375,8 @@ public class UnreachableListener extends AbstractActor {
             String result = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
             LOG.debug("Get Lighty Pods from Kubernetes result: {}", result);
             return new JSONObject(result);
-        } catch (Exception e) {
+        } catch (KeyStoreException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException
+                | IOException e) {
             LOG.error("Requesting Pods from Kubernetes failed = {}", e.toString(), e);
         }
         return null;
@@ -403,26 +409,22 @@ public class UnreachableListener extends AbstractActor {
      * @param podInfo           - data of the unreachable member's pod
      */
     private boolean analyzePodState(Member unreachableMember, JsonNode podInfo) {
-        try {
-            JsonNode containerStatusesNode = podInfo.at("/status/containerStatuses");
-            if (!containerStatusesNode.isMissingNode() && containerStatusesNode.isArray()
-                    && containerStatusesNode.size() > 0) {
-                ArrayNode containerStatuses = (ArrayNode) containerStatusesNode;
-                if (!containerStatuses.get(0).at("/ready").asBoolean()) {
-                    if (!containerStatuses.get(0).at("/state/terminated").isMissingNode()) {
-                        LOG.debug("Found state container - Terminated, safe to Down member");
-                        return true;
-                    }
-                    LOG.debug("State container doesn't say Terminated");
-                } else {
-                    LOG.debug("ContainerStatus is READY");
+        JsonNode containerStatusesNode = podInfo.at("/status/containerStatuses");
+        if (!containerStatusesNode.isMissingNode() && containerStatusesNode.isArray()
+                && containerStatusesNode.size() > 0) {
+            ArrayNode containerStatuses = (ArrayNode) containerStatusesNode;
+            if (!containerStatuses.get(0).at("/ready").asBoolean()) {
+                if (!containerStatuses.get(0).at("/state/terminated").isMissingNode()) {
+                    LOG.debug("Found state container - Terminated, safe to Down member");
+                    return true;
                 }
+                LOG.debug("State container doesn't say Terminated");
             } else {
-                LOG.warn("ContainerStatuses list missing or empty");
-                LOG.debug("ContainerStatuses detail: {}", podInfo);
+                LOG.debug("ContainerStatus is READY");
             }
-        } catch (Exception e) {
-            LOG.error("Failed to analyze Pod info of unreachable member. Reason: {}", e.getMessage(), e);
+        } else {
+            LOG.warn("ContainerStatuses list missing or empty");
+            LOG.debug("ContainerStatuses detail: {}", podInfo);
         }
         String name = podInfo.at("/metadata/name").asText();
         schedulePodRestart(unreachableMember, name);

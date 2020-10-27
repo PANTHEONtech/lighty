@@ -16,10 +16,13 @@ import com.google.common.util.concurrent.ListenableScheduledFuture;
 import com.google.common.util.concurrent.ListeningScheduledExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.typesafe.config.Config;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.core.controller.impl.cluster.ClusteringHandler;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -56,6 +59,7 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
      * default module-shards.conf will be used. In this case shards will not be created but received from leader
      * as snapshots and installed.
      */
+    @SuppressFBWarnings("DMI_HARDCODED_ABSOLUTE_FILENAME")
     @Override
     public void initClustering() {
         LOG.info("Starting ClusterBootstrap");
@@ -69,21 +73,22 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
             latch.await();
             clusterLeaderElectionFuture.cancel(true);
         } catch (InterruptedException e) {
-            LOG.error("Error occurred while waiting for the Cluster to form: {}", e.getMessage(), e);
+            LOG.error("Error occurred while waiting for the Cluster to form", e);
             return;
         }
 
-        LOG.info("Cluster is formed, leader= {}", Cluster.get(actorSystemProvider.getActorSystem()).state().getLeader());
-        if (Cluster.get(actorSystemProvider.getActorSystem()).selfAddress().
-                equals(Cluster.get(actorSystemProvider.getActorSystem()).state().getLeader())) {
+        LOG.info("Cluster is formed, leader= {}",
+                Cluster.get(actorSystemProvider.getActorSystem()).state().getLeader());
+        if (Cluster.get(actorSystemProvider.getActorSystem()).selfAddress()
+                .equals(Cluster.get(actorSystemProvider.getActorSystem()).state().getLeader())) {
             LOG.info("I am leader, generating custom module-shards.conf");
             try {
                 List<String> memberRoles = akkaDeploymentConfig.getStringList("akka.cluster.roles");
                 String data = generateModuleShardsForMembers(memberRoles);
-                Files.write(Paths.get(MODULE_SHARDS_TMP_PATH), data.getBytes());
+                Files.write(Paths.get(MODULE_SHARDS_TMP_PATH), data.getBytes(StandardCharsets.UTF_8));
                 this.moduleShardsConfig = Optional.of(MODULE_SHARDS_TMP_PATH);
                 return;
-            } catch (Exception e) {
+            } catch (IOException e) {
                 LOG.info("Tmp module-shards.conf file was not created - error received {}", e.getMessage());
             }
         }
@@ -115,8 +120,8 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
      */
     private void askForShards() {
         final LightyServices services = this.controller.getServices();
-        if (!Cluster.get(services.getActorSystemProvider().getActorSystem()).selfAddress().
-                equals(Cluster.get(services.getActorSystemProvider().getActorSystem()).state().getLeader())) {
+        if (!Cluster.get(services.getActorSystemProvider().getActorSystem()).selfAddress()
+                .equals(Cluster.get(services.getActorSystemProvider().getActorSystem()).state().getLeader())) {
             LOG.debug("RPC call - Asking for Shard Snapshots");
             try {
                 RpcResult<AddReplicasForAllShardsOutput> rpcResult =
@@ -124,7 +129,7 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
                                 new AddReplicasForAllShardsInputBuilder().build()).get();
                 LOG.debug("RPC call - Asking for Shard Snapshots result: {}", rpcResult.getResult());
             } catch (InterruptedException | ExecutionException e) {
-                LOG.error("RPC call - Asking for Shard Snapshots failed: {}", e.getMessage(), e);
+                LOG.error("RPC call - Asking for Shard Snapshots failed", e);
             }
         }
     }
