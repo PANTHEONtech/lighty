@@ -10,12 +10,12 @@ package io.lighty.core.controller.impl;
 import akka.actor.Terminated;
 import akka.management.javadsl.AkkaManagement;
 import com.typesafe.config.Config;
+import io.lighty.core.cluster.ClusteringHandler;
+import io.lighty.core.cluster.ClusteringHandlerProvider;
 import io.lighty.core.common.SocketAnalyzer;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyServices;
-import io.lighty.core.controller.impl.cluster.ClusteringHandler;
-import io.lighty.core.controller.impl.cluster.ClusteringHandlerProvider;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.services.LightyDiagStatusServiceImpl;
 import io.lighty.core.controller.impl.services.LightySystemReadyMonitorImpl;
@@ -267,7 +267,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         akkaManagement.start();
 
         //INIT cluster bootstrap
-        this.clusteringHandler = ClusteringHandlerProvider.getClusteringHandler(this, this.actorSystemConfig);
+        this.clusteringHandler = ClusteringHandlerProvider.getClusteringHandler(actorSystemProvider,
+                this.actorSystemConfig);
         this.clusteringHandler.ifPresent(handler -> {
             handler.initClustering();
             if (handler.getModuleConfig().isPresent()) {
@@ -377,7 +378,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.domPingPongDataBrokerOld = new org.opendaylight.controller.md.sal.binding.impl.BindingDOMDataBrokerAdapter(
                 this.pingPongDataBrokerOld, this.codecOld);
 
-        this.clusteringHandler.ifPresent(ClusteringHandler::start);
+        this.clusteringHandler.ifPresent(handler ->
+                handler.start(clusterSingletonServiceProvider, clusterAdminRpcService, domDataBroker));
 
         this.bossGroup = new NioEventLoopGroup();
         this.workerGroup = new NioEventLoopGroup();

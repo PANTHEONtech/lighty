@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -82,8 +81,6 @@ public final class ControllerConfigUtils {
     public static final String CONTROLLER_CONFIG_ROOT_ELEMENT_NAME = "controller";
     public static final String SCHEMA_SERVICE_CONFIG_ELEMENT_NAME = "schemaServiceConfig";
     public static final String TOP_LEVEL_MODELS_ELEMENT_NAME = "topLevelModels";
-    public static final String MODULE_SHARDS_TMP_PATH = "/tmp/module-shards.conf";
-    public static final String K8S_POD_RESTART_TIMEOUT_PATH = "akka.lighty-kubernetes.pod-restart-timeout";
 
     private static final String JSON_PATH_DELIMITER = "/";
 
@@ -224,48 +221,6 @@ public final class ControllerConfigUtils {
                 DatastoreConfigurationUtils.createDefaultOperationalDatastoreContext());
 
         return controllerConfiguration;
-    }
-
-    /**
-     * Generate content of a Module-Shards.conf that specifies the members on which the Shards should be replicated.
-     * @param memberRoles - roles (members) to which the module shards should be replicated to
-     */
-    public static String generateModuleShardsForMembers(List<String> memberRoles) {
-        return String.format("module-shards = [%n%s]", String.join(",\n",
-                new String[]{generateShard("default", memberRoles),
-                        generateShard("topology", memberRoles),
-                        generateShard("inventory", memberRoles)
-                }));
-    }
-
-    public static boolean isKubernetesDeployment(Config actorSystemConfig) {
-        return actorSystemConfig.hasPath("akka.discovery.method")
-                && actorSystemConfig.getString("akka.discovery.method").equalsIgnoreCase("kubernetes-api");
-    }
-
-    private static String generateShard(String name, List<String> replicas) {
-        return "    {"
-                + "        name = \"" + name + "\"\n"
-                + "        shards = [\n"
-                + "            {\n"
-                + "                name=\"" + name + "\"\n"
-                + "                replicas = " + replicas
-                + "                \n"
-                + "            }\n"
-                + "        ]\n"
-                + "    }";
-    }
-
-    /**
-     * Prepared for future when Module Shards Config could be created and loaded dynamically in runtime
-     * instead of creating File and then passing it's path.
-     *
-     * @param memberRoles - roles (members) to which the module shards should be replicated to
-     * @return Config object representing this Module-Shards configuration
-     */
-    public static Config getModuleShardsConfigForMember(List<String> memberRoles) {
-        LOG.info("Generating Module-Shards CONFIG");
-        return ConfigFactory.parseString(generateModuleShardsForMembers(memberRoles));
     }
 
     private static void injectActorSystemConfigToControllerConfig(final ControllerConfiguration controllerConfiguration)

@@ -5,10 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-package io.lighty.core.controller.impl.cluster.kubernetes;
-
-import static io.lighty.core.controller.impl.util.ControllerConfigUtils.MODULE_SHARDS_TMP_PATH;
-import static io.lighty.core.controller.impl.util.ControllerConfigUtils.generateModuleShardsForMembers;
+package io.lighty.core.cluster.kubernetes;
 
 import akka.cluster.Cluster;
 import akka.management.cluster.bootstrap.ClusterBootstrap;
@@ -17,10 +14,8 @@ import com.google.common.util.concurrent.ListeningScheduledExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.typesafe.config.Config;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.lighty.core.controller.api.LightyController;
-import io.lighty.core.controller.api.LightyServices;
-import io.lighty.core.controller.impl.cluster.ClusteringHandler;
-import io.lighty.core.controller.impl.util.ControllerConfigUtils;
+import io.lighty.core.cluster.ClusteringHandler;
+import io.lighty.core.cluster.config.ClusteringConfigUtils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -33,8 +28,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.AddReplicasForAllShardsInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.AddReplicasForAllShardsOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,12 +42,13 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
     private static final Logger LOG = LoggerFactory.getLogger(KubernetesClusteringHandlerImpl.class);
 
     private final Config akkaDeploymentConfig;
-    private final LightyController controller;
+    private final ActorSystemProvider actorSystemProvider;
     private Optional<String> moduleShardsConfig;
 
-    public KubernetesClusteringHandlerImpl(@NonNull LightyController controller, @NonNull Config akkaDeploymentConfig) {
+    public KubernetesClusteringHandlerImpl(@NonNull ActorSystemProvider actorSystemProvider,
+            @NonNull Config akkaDeploymentConfig) {
+        this.actorSystemProvider = actorSystemProvider;
         this.akkaDeploymentConfig = akkaDeploymentConfig;
-        this.controller = controller;
         this.moduleShardsConfig = Optional.empty();
     }
 
@@ -63,7 +62,6 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
     @Override
     public void initClustering() {
         LOG.info("Starting ClusterBootstrap");
-        ActorSystemProvider actorSystemProvider = controller.getServices().getActorSystemProvider();
         ClusterBootstrap clusterBootstrap = ClusterBootstrap.get(actorSystemProvider.getActorSystem());
         clusterBootstrap.start();
         CountDownLatch latch = new CountDownLatch(1);
@@ -84,9 +82,10 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
             LOG.info("I am leader, generating custom module-shards.conf");
             try {
                 List<String> memberRoles = akkaDeploymentConfig.getStringList("akka.cluster.roles");
-                String data = generateModuleShardsForMembers(memberRoles);
-                Files.write(Paths.get(MODULE_SHARDS_TMP_PATH), data.getBytes(StandardCharsets.UTF_8));
-                this.moduleShardsConfig = Optional.of(MODULE_SHARDS_TMP_PATH);
+                String data = ClusteringConfigUtils.generateModuleShardsForMembers(memberRoles);
+                Files.write(Paths.get(ClusteringConfigUtils.MODULE_SHARDS_TMP_PATH),
+                        data.getBytes(StandardCharsets.UTF_8));
+                this.moduleShardsConfig = Optional.of(ClusteringConfigUtils.MODULE_SHARDS_TMP_PATH);
                 return;
             } catch (IOException e) {
                 LOG.info("Tmp module-shards.conf file was not created - error received {}", e.getMessage());
@@ -96,17 +95,17 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
     }
 
     @Override
-    public void start() {
+    public void start(@NonNull ClusterSingletonServiceProvider clusterSingletonServiceProvider,
+            @NonNull ClusterAdminService clusterAdminRPCService, @NonNull DataBroker bindingDataBroker) {
         Long podRestartTimeout = null;
-        if (this.akkaDeploymentConfig.hasPath(ControllerConfigUtils.K8S_POD_RESTART_TIMEOUT_PATH)) {
-            podRestartTimeout = this.akkaDeploymentConfig.getLong(ControllerConfigUtils.K8S_POD_RESTART_TIMEOUT_PATH);
+        if (this.akkaDeploymentConfig.hasPath(ClusteringConfigUtils.K8S_POD_RESTART_TIMEOUT_PATH)) {
+            podRestartTimeout = this.akkaDeploymentConfig.getLong(ClusteringConfigUtils.K8S_POD_RESTART_TIMEOUT_PATH);
         }
 
-        final LightyServices services = this.controller.getServices();
-        controller.getServices().getClusterSingletonServiceProvider().registerClusterSingletonService(
-                new UnreachableListenerService(services.getActorSystemProvider().getActorSystem(),
-                        services.getBindingDataBroker(), services.getClusterAdminRPCService(), podRestartTimeout));
-        this.askForShards();
+        clusterSingletonServiceProvider.registerClusterSingletonService(
+                new UnreachableListenerService(actorSystemProvider.getActorSystem(), bindingDataBroker,
+                        clusterAdminRPCService, podRestartTimeout));
+        this.askForShards(clusterAdminRPCService);
     }
 
     @Override
@@ -118,15 +117,13 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
      * The first member of the cluster (leader) will create his shards. Other joining members will query
      * the leader for snapshots of the shards.
      */
-    private void askForShards() {
-        final LightyServices services = this.controller.getServices();
-        if (!Cluster.get(services.getActorSystemProvider().getActorSystem()).selfAddress()
-                .equals(Cluster.get(services.getActorSystemProvider().getActorSystem()).state().getLeader())) {
+    private void askForShards(ClusterAdminService clusterAdminRPCService) {
+        if (!Cluster.get(actorSystemProvider.getActorSystem()).selfAddress()
+                .equals(Cluster.get(actorSystemProvider.getActorSystem()).state().getLeader())) {
             LOG.debug("RPC call - Asking for Shard Snapshots");
             try {
-                RpcResult<AddReplicasForAllShardsOutput> rpcResult =
-                        services.getClusterAdminRPCService().addReplicasForAllShards(
-                                new AddReplicasForAllShardsInputBuilder().build()).get();
+                RpcResult<AddReplicasForAllShardsOutput> rpcResult = clusterAdminRPCService.addReplicasForAllShards(
+                        new AddReplicasForAllShardsInputBuilder().build()).get();
                 LOG.debug("RPC call - Asking for Shard Snapshots result: {}", rpcResult.getResult());
             } catch (InterruptedException | ExecutionException e) {
                 LOG.error("RPC call - Asking for Shard Snapshots failed", e);
@@ -140,7 +137,6 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
     private ListenableScheduledFuture getClusterLeaderElectionFuture(CountDownLatch latch) {
         ListeningScheduledExecutorService listeningScheduledExecutorService =
                 MoreExecutors.listeningDecorator(Executors.newSingleThreadScheduledExecutor());
-        final ActorSystemProvider actorSystemProvider = controller.getServices().getActorSystemProvider();
         return listeningScheduledExecutorService.scheduleAtFixedRate(() -> {
             if (Cluster.get(actorSystemProvider.getActorSystem()).state().getLeader() != null) {
                 latch.countDown();

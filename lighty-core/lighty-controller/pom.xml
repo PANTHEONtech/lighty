@@ -36,27 +36,9 @@
             <artifactId>lighty-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
+            <groupId>io.lighty.core</groupId>
+            <artifactId>lighty-clustering</artifactId>
         </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20131018</version>
-        </dependency>
-        <dependency>
-            <groupId>io.fabric8</groupId>
-            <artifactId>kubernetes-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.spotbugs</groupId>
-            <artifactId>spotbugs-annotations</artifactId>
-        </dependency>
-
         <!--ODL-->
         <!--odl-guava-22-->
         <dependency>
@@ -363,22 +345,10 @@
             <groupId>org.scala-lang.modules</groupId>
             <artifactId>scala-java8-compat_2.12</artifactId>
         </dependency>
-        <!--akka management and bootstrap-->
-        <dependency>
-            <groupId>com.lightbend.akka.discovery</groupId>
-            <artifactId>akka-discovery-kubernetes-api_2.12</artifactId>
-        </dependency>
+        <!--akka management-->
         <dependency>
             <groupId>com.lightbend.akka.management</groupId>
             <artifactId>akka-management_2.12</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.lightbend.akka.management</groupId>
-            <artifactId>akka-management-cluster-http_2.12</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.lightbend.akka.management</groupId>
-            <artifactId>akka-management-cluster-bootstrap_2.12</artifactId>
         </dependency>
         <!--odl-akka-system-2.4-->
         <dependency>

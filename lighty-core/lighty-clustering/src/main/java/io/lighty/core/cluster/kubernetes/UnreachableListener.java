@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-package io.lighty.core.controller.impl.cluster.kubernetes;
+package io.lighty.core.cluster.kubernetes;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorSystem;
