@@ -1,7 +1,7 @@
 # Lighty Clustered NETCONF/RESTCONF Application
 
 This demo application is based on [NETCONF/RESTCONF Application](../lighty-community-restconf-netconf-app/README.md), but 
-demonstrates [Akka cluster](https://doc.akka.io/docs/akka/current/cluster-usage.html) capabilities of [lighty.io](https://github.com/PantheonTechnologies/lighty-core) and [OpenDaylight](https://www.opendaylight.org/). 
+demonstrates [Akka cluster](https://doc.akka.io/docs/akka/current/cluster-usage.html) capabilities of [lighty.io](https://github.com/PANTHEONtech/lighty-core) and [OpenDaylight](https://www.opendaylight.org/). 
 
 This application starts:
 * Lighty Controller

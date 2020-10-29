@@ -65,7 +65,7 @@ public class Main {
         LOG.info("        /_____/     \\/      \\/      \\/                     \\/         \\/         \\/");
         LOG.info("Starting lighty.io RESTCONF-NETCONF example application ...");
         LOG.info("https://lighty.io/");
-        LOG.info("https://github.com/PantheonTechnologies/lighty-core");
+        LOG.info("https://github.com/PANTHEONtech/lighty-core");
 
         Arguments arguments = new Arguments();
         JCommander.newBuilder()
