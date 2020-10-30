@@ -126,12 +126,24 @@ To start cluster:
 4. Copy saved image into microk8s environment (more information [here](https://microk8s.io/docs/registry-images)).  
   NOTE: defining namespace (`-n k8s.io`) is needed for versions prior to 1.17.  
   `microk8s ctr --namespace k8s.io image import target/lighty-k8s-cluster\:1.0.0-SNAPSHOT.tar`
-5. Enable DNS:  
-  `microk8s enable dns`
+5. Enable DNS and Ingress:  
+  `microk8s enable dns ingress`
 6. Apply configurations:  
   `microk8s kubectl apply -f lighty-k8s-cluster-roles.yaml`  
   `microk8s kubectl apply -f lighty-k8s-cluster-deployment.yaml`
-  
+
+To execute REST requests on lighty.io app:
+- Inside of the cluster RESTCONF is exposed via port 8888
+- Inside of the cluster `akka` management is exposed via port 8558
+- Kubernetes `Ingress` contains configuration to redirect requests issued on certain hosts to these services
+    - Host `management.lighty.io` is redirected to management port
+    - Host `restconf.lighty.io` is redirected to RESTCONF port
+- When executing REST request, either:
+    - add entries for both hosts to the `/etc/hosts` file (pointing to the `127.0.0.1`) and in the request use URL
+    `your-host.com/rest/of/the/url`
+    - or in the request use URL `127.0.0.1:80/rest/of/the/url` and set `Host` header manually 
+
+
 To access Dashboard:
 1. Enable Dashboard:  
   `microk8s enable dashboard`

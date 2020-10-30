@@ -1,21 +1,24 @@
 ---
-apiVersion: v1
-kind: Service
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
 metadata:
-  name: lighty-k8s-cluster
+  name: lighty-k8s-ingress
 spec:
-  type: NodePort
-  selector:
-    app: lighty-k8s-cluster
-  ports:
-    - protocol: TCP
-      name: management
-      port: 8558
-      targetPort: management
-    - protocol: TCP
-      name: api
-      port: 2552
-      targetPort: api
+  rules:
+    - host: "management.lighty.io"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: lighty-k8s-cluster-lb
+              servicePort: 8558
+    - host: "restconf.lighty.io"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: lighty-k8s-cluster-lb
+              servicePort: 8888
 ---
 apiVersion: v1
 kind: Service
@@ -27,13 +30,10 @@ spec:
   ports:
     - protocol: TCP
       port: 8558
-      nodePort: 30558
       name: http-akka
     - protocol: TCP
       port: 8888
-      nodePort: 30888
       name: http-restconf
-  type: LoadBalancer
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -78,4 +78,8 @@ spec:
             # is defined, it must correspond to this name:
             - name: management
               containerPort: 8558
+              protocol: TCP
+            # restconf port
+            - name: restconf
+              containerPort: 8888
               protocol: TCP
