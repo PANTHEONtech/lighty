@@ -1,5 +1,5 @@
 # How-To migrate from ODL to lighty.io
-This guide describes migration procedure of SDN application from [OpenDaylight](https://www.opendaylight.org/)/[Karaf](https://karaf.apache.org/) to [lighty.io](https://github.com/PantheonTechnologies/lighty-core).
+This guide describes migration procedure of SDN application from [OpenDaylight](https://www.opendaylight.org/)/[Karaf](https://karaf.apache.org/) to [lighty.io](https://github.com/PANTHEONtech/lighty-core).
 It contains summary of practical experiences based on real-life ODL project migrations.
 
 ### 1. ODL application review

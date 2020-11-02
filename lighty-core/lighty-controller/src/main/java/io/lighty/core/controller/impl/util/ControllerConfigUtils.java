@@ -75,7 +75,9 @@ public final class ControllerConfigUtils {
         org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.clustering.prefix.shard
             .configuration.rev170110.$YangModuleInfoImpl.getInstance(),
         org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013
-            .$YangModuleInfoImpl.getInstance()
+            .$YangModuleInfoImpl.getInstance(),
+        org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930
+                .$YangModuleInfoImpl.getInstance()
     );
 
     public static final String CONTROLLER_CONFIG_ROOT_ELEMENT_NAME = "controller";
@@ -216,9 +218,9 @@ public final class ControllerConfigUtils {
         controllerConfiguration.getSchemaServiceConfig().setModels(allModels);
 
         controllerConfiguration.setConfigDatastoreContext(
-            DatastoreConfigurationUtils.createDefaultConfigDatastoreContext());
+                DatastoreConfigurationUtils.createDefaultConfigDatastoreContext());
         controllerConfiguration.setOperDatastoreContext(
-            DatastoreConfigurationUtils.createDefaultOperationalDatastoreContext());
+                DatastoreConfigurationUtils.createDefaultOperationalDatastoreContext());
 
         return controllerConfiguration;
     }
@@ -236,7 +238,7 @@ public final class ControllerConfigUtils {
         controllerConfiguration.getActorSystemConfig().setConfig(finalConfig);
     }
 
-    private static Config getAkkaConfigFromPath(final String pathToConfig) throws ConfigurationException {
+    public static Config getAkkaConfigFromPath(final String pathToConfig) throws ConfigurationException {
         Config akkaConfig = null;
         try {
             akkaConfig = ConfigFactory.parseFile(new File(pathToConfig));
