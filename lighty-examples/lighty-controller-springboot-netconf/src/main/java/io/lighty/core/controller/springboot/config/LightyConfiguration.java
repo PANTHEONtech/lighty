@@ -96,7 +96,7 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
 
         @Override
         public void run() {
-            Stopwatch stopwatch = Stopwatch.createStarted();
+            final Stopwatch stopwatch = Stopwatch.createStarted();
             try {
                 LOG.info("Lighty module {} shutting down ...", lightyModule);
                 lightyModule.shutdown();
