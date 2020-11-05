@@ -118,7 +118,8 @@ public abstract class AbstractCodecTest {
         ModuleInfoSnapshot moduleInfoSnapshot = moduleInfoSnapshotBuilder.build();
 
         final DefaultBindingRuntimeContext runtimeContext =
-                new DefaultBindingRuntimeContext(bindingRuntimeGenerator.generateTypeMapping(moduleInfoSnapshot.getEffectiveModelContext()), moduleInfoSnapshot);
+                new DefaultBindingRuntimeContext(bindingRuntimeGenerator.generateTypeMapping(
+                        moduleInfoSnapshot.getEffectiveModelContext()), moduleInfoSnapshot);
         return new BindingCodecContext(runtimeContext);
     }
 

@@ -7,12 +7,8 @@
  */
 package io.lighty.core.controller.api;
 
-import java.util.List;
-
 import org.opendaylight.mdsal.binding.runtime.spi.ModuleInfoSnapshotBuilder;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 
 /**
  * Yang module registration service for global schema context.

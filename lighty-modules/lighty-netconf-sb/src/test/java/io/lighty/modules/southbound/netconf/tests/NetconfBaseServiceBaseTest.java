@@ -55,7 +55,8 @@ public abstract class NetconfBaseServiceBaseTest {
         baseSchema = new DefaultBaseNetconfSchemas(new YangParserFactoryImpl()).getBaseSchema();
     }
 
-    static EffectiveModelContext getEffectiveModelContext(final List<YangModuleInfo> moduleInfos) throws YangParserException {
+    static EffectiveModelContext getEffectiveModelContext(final List<YangModuleInfo> moduleInfos)
+            throws YangParserException {
         final YangXPathParserFactory xpathFactory = new AntlrXPathParserFactory();
         final YangParserFactoryImpl yangParserFactory = new YangParserFactoryImpl(xpathFactory);
         ModuleInfoSnapshotBuilder moduleInfoBackedCntxt = new ModuleInfoSnapshotBuilder(yangParserFactory);

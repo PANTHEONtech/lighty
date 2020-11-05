@@ -24,7 +24,6 @@ import org.opendaylight.netconf.sal.connect.netconf.schema.mapping.DefaultBaseNe
 import org.opendaylight.netconf.topology.impl.NetconfTopologyImpl;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +44,7 @@ public class NetconfTopologyPlugin extends AbstractLightyModule implements Netco
             defaultBaseNetconfSchemas = new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
         } catch (YangParserException ex) {
             LOG.error("Cannot create DefaultBaseNetconfSchemas.", ex);
-            this.topology=null;
+            this.topology = null;
             return;
         }
         final SchemaResourceManager schemaResourceManager =

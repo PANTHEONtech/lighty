@@ -53,7 +53,8 @@ public final class ConverterUtils {
      * @param rpcQName {@link QName} of the RPC
      * @return {@link Optional} representation of the {@link RpcDefinition}
      */
-    public static Optional<? extends RpcDefinition> loadRpc(final EffectiveModelContext modelContext, final QName rpcQName) {
+    public static Optional<? extends RpcDefinition> loadRpc(final EffectiveModelContext modelContext,
+                                                            final QName rpcQName) {
         Optional<Module> findModule = findModule(modelContext, rpcQName);
         if (findModule.isEmpty()) {
             return Optional.empty();
@@ -186,9 +187,8 @@ public final class ConverterUtils {
     public static SchemaNode getSchemaNode(final EffectiveModelContext modelContext,
                                            final YangInstanceIdentifier yangIid) throws IllegalArgumentException {
         return DataSchemaContextTree.from(modelContext).findChild(yangIid)
-                .orElseThrow(
-                        () -> new IllegalArgumentException(
-                                String.format("Cannot resolve SchemaNode by given YangIid: %s", yangIid)))
+                .orElseThrow(() -> new IllegalArgumentException(
+                        String.format("Cannot resolve SchemaNode by given YangIid: %s", yangIid)))
                 .getDataSchemaNode();
     }
 

@@ -50,7 +50,7 @@ public class NetconfClusteredTopologyPlugin extends AbstractLightyModule impleme
             defaultBaseNetconfSchemas = new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
         } catch (YangParserException ex) {
             LOG.error("Cannot create DefaultBaseNetconfSchemas.", ex);
-            this.topology=null;
+            this.topology = null;
             return;
         }
 
