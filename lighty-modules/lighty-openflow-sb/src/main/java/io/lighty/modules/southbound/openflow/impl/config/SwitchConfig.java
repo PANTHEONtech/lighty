@@ -37,7 +37,7 @@ public class SwitchConfig {
     @JsonIgnore
     private final SwitchConnectionConfig legacySwitch;
 
-    private String instanceName = ""; // = "openflow-switch-connection-provider-default-impl";
+    private String instanceName = "";
     private int port = 0;
     private int transportProtocol = 0;
     private String address;
