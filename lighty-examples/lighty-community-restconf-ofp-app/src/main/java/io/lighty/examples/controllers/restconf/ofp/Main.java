@@ -1,5 +1,6 @@
 package io.lighty.examples.controllers.restconf.ofp;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -38,7 +39,7 @@ public final class Main {
 
     @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
     public static void main(final String[] args) throws Exception {
-        final long startTime = System.nanoTime();
+        Stopwatch stopwatch = Stopwatch.createStarted();
         LOG.info(".__  .__       .__     __              .__         ________  ___________");
         LOG.info("|  | |__| ____ |  |___/  |_ ___.__.    |__| ____   \\_____  \\ \\_   _____/");
         LOG.info("|  | |  |/ ___\\|  |  \\   __<   |  |    |  |/  _ \\   /   |   \\ |    __)  ");
@@ -76,8 +77,7 @@ public final class Main {
                     restConfConfiguration,
                     openflowpluginConfiguration
             );
-            final float duration = (System.nanoTime() - startTime) / 1_000_000f;
-            LOG.info("Lighty and OFP started in {}ms", duration);
+            LOG.info("Lighty and OFP started in {}", stopwatch.stop());
         } catch (IOException cause) {
             LOG.error("Main OFP application - could not read configuration: ", cause);
         } catch (ConfigurationException | ExecutionException | InterruptedException cause) {
@@ -164,7 +164,7 @@ public final class Main {
         @SuppressWarnings("checkstyle:illegalCatch")
         public void execute() {
             LOG.info("Lighty and OFP shutting down ...");
-            final long startTime = System.nanoTime();
+            Stopwatch stopwatch = Stopwatch.createStarted();
             try {
                 this.opennflowPlugin.shutdown();
             } catch (final Exception e) {
@@ -180,8 +180,7 @@ public final class Main {
             } catch (final Exception e) {
                 LOG.error("Exception while shutting down Lighty controller:", e);
             }
-            final float duration = (System.nanoTime() - startTime) / 1_000_000f;
-            LOG.info("Lighty and OFP stopped in {}ms", duration);
+            LOG.info("Lighty and OFP stopped in {}", stopwatch.stop());
         }
     }
 
