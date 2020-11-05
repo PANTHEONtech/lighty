@@ -39,7 +39,7 @@ public final class Main {
 
     @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
     public static void main(final String[] args) throws Exception {
-        Stopwatch stopwatch = Stopwatch.createStarted();
+        final Stopwatch stopwatch = Stopwatch.createStarted();
         LOG.info(".__  .__       .__     __              .__         ________  ___________");
         LOG.info("|  | |__| ____ |  |___/  |_ ___.__.    |__| ____   \\_____  \\ \\_   _____/");
         LOG.info("|  | |  |/ ___\\|  |  \\   __<   |  |    |  |/  _ \\   /   |   \\ |    __)  ");
@@ -164,7 +164,7 @@ public final class Main {
         @SuppressWarnings("checkstyle:illegalCatch")
         public void execute() {
             LOG.info("Lighty and OFP shutting down ...");
-            Stopwatch stopwatch = Stopwatch.createStarted();
+            final Stopwatch stopwatch = Stopwatch.createStarted();
             try {
                 this.opennflowPlugin.shutdown();
             } catch (final Exception e) {
