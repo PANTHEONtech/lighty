@@ -7,6 +7,7 @@
  */
 package io.lighty.modules.northbound.restconf.community.impl;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.base.Throwables;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.modules.northbound.restconf.community.impl.config.JsonRestConfServiceType;
@@ -109,7 +110,7 @@ public class CommunityRestConf extends AbstractLightyModule {
 
     @Override
     protected boolean initProcedure() {
-        final long startTime = System.nanoTime();
+        Stopwatch stopwatch = Stopwatch.createStarted();
         LOG.info("Starting RestConfProvider websocket port: {}", this.webSocketPort);
         this.controllerContext = new ControllerContext(this.domSchemaService,
                 this.domMountPointService, this.domSchemaService);
@@ -182,8 +183,7 @@ public class CommunityRestConf extends AbstractLightyModule {
         } catch (final IllegalStateException e) {
             LOG.error("Failed to start jetty: ", e);
         }
-        final float delay = (System.nanoTime() - startTime) / 1_000_000f;
-        LOG.info("Lighty RestConf started in {}ms", delay);
+        LOG.info("Lighty RestConf started in {}", stopwatch.stop());
         return true;
     }
 
