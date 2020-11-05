@@ -50,7 +50,7 @@ public final class Main {
 
     @SuppressWarnings("checkstyle:illegalCatch")
     public static void main(final String[] args) throws Exception {
-        Stopwatch stopwatch = Stopwatch.createStarted();
+        final Stopwatch stopwatch = Stopwatch.createStarted();
         try {
             if (args.length > 0) {
                 final Path configPath = Paths.get(args[0]);
@@ -157,7 +157,7 @@ public final class Main {
         @Override
         public void run() {
             LOG.info("Lighty and Restconf shutting down ...");
-            Stopwatch stopwatch = Stopwatch.createStarted();
+            final Stopwatch stopwatch = Stopwatch.createStarted();
             try {
                 this.communityRestConf.shutdown();
             } catch (final Exception e) {

@@ -236,7 +236,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     protected boolean initProcedure() {
-        Stopwatch stopwatch = Stopwatch.createStarted();
+        final Stopwatch stopwatch = Stopwatch.createStarted();
 
         //INIT actor system provider
         this.actorSystemProvider = new ActorSystemProviderImpl(this.actorSystemClassLoader,

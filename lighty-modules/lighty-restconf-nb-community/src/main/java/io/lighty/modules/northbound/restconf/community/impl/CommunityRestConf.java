@@ -112,7 +112,7 @@ public class CommunityRestConf extends AbstractLightyModule {
 
     @Override
     protected boolean initProcedure() {
-        Stopwatch stopwatch = Stopwatch.createStarted();
+        final Stopwatch stopwatch = Stopwatch.createStarted();
         LOG.info("Starting RestConfProvider websocket port: {}", this.webSocketPort);
         this.controllerContext = new ControllerContext(this.domSchemaService,
                 this.domMountPointService, this.domSchemaService);

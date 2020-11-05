@@ -51,7 +51,7 @@ public class Main {
 
     @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
     public void start(String[] args, boolean registerShutdownHook) {
-        Stopwatch stopwatch = Stopwatch.createStarted();
+        final Stopwatch stopwatch = Stopwatch.createStarted();
         LOG.info(".__  .__       .__     __              .__           _________________    _______");
         LOG.info("|  | |__| ____ |  |___/  |_ ___.__.    |__| ____    /   _____/\\______ \\   \\      \\");
         LOG.info("|  | |  |/ ___\\|  |  \\   __<   |  |    |  |/  _ \\   \\_____  \\  |    |  \\  /   |   \\");
@@ -180,7 +180,7 @@ public class Main {
         @SuppressWarnings({"checkstyle:illegalCatch", "VariableDeclarationUsageDistance"})
         public void execute() {
             LOG.info("lighty.io and RESTCONF-NETCONF shutting down ...");
-            Stopwatch stopwatch = Stopwatch.createStarted();
+            final Stopwatch stopwatch = Stopwatch.createStarted();
             try {
                 swagger.shutdown().get();
             } catch (Exception e) {
