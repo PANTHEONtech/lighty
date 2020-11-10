@@ -8,6 +8,7 @@
 package io.lighty.core.controller.impl;
 
 import akka.actor.Terminated;
+import com.google.common.base.Stopwatch;
 import com.typesafe.config.Config;
 import io.lighty.core.common.SocketAnalyzer;
 import io.lighty.core.controller.api.AbstractLightyModule;
@@ -235,7 +236,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     protected boolean initProcedure() {
-        final long startTime = System.nanoTime();
+        final Stopwatch stopwatch = Stopwatch.createStarted();
 
         //INIT actor system provider
         this.actorSystemProvider = new ActorSystemProviderImpl(this.actorSystemClassLoader,
@@ -318,8 +319,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                 new FixedThreadPoolWrapper(2, new DefaultThreadFactory("default-pool"));
         this.scheduledThreadPool =
                 new ScheduledThreadPoolWrapper(2, new DefaultThreadFactory("default-scheduled-pool"));
-        final float delay = (System.nanoTime() - startTime) / 1_000_000f;
-        LOG.info("Lighty controller started in {}ms", delay);
+        LOG.info("Lighty controller started in {}", stopwatch.stop());
         return true;
     }
 
