@@ -9,50 +9,35 @@ package io.lighty.core.cluster.kubernetes;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorSystem;
-import akka.actor.Address;
 import akka.actor.Props;
 import akka.cluster.Cluster;
 import akka.cluster.ClusterEvent;
 import akka.cluster.Member;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListenableScheduledFuture;
 import com.google.common.util.concurrent.ListeningScheduledExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
-import io.fabric8.kubernetes.client.Config;
-import io.fabric8.kubernetes.client.ConfigBuilder;
+import io.kubernetes.client.openapi.ApiClient;
+import io.kubernetes.client.openapi.ApiException;
+import io.kubernetes.client.openapi.ApiResponse;
+import io.kubernetes.client.openapi.Configuration;
+import io.kubernetes.client.openapi.apis.CoreV1Api;
+import io.kubernetes.client.openapi.models.V1ContainerStatus;
+import io.kubernetes.client.openapi.models.V1Pod;
+import io.kubernetes.client.openapi.models.V1PodList;
+import io.kubernetes.client.util.ClientBuilder;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import org.apache.commons.io.IOUtils;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContextBuilder;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
@@ -71,10 +56,6 @@ import org.slf4j.LoggerFactory;
 
 public class UnreachableListener extends AbstractActor {
     private static final Logger LOG = LoggerFactory.getLogger(UnreachableListener.class);
-
-    private static final String K8S_SCHEME = "https";
-    private static final String K8S_HOST = "kubernetes";
-    private static final String K8S_GET_PODS_PATH = "/api/v1/namespaces/default/pods";
     private static final String K8S_LIGHTY_SELECTOR = "lighty-k8s-cluster";
     private static final long DEFAULT_UNREACHABLE_RESTART_TIMEOUT = 30;
 
@@ -84,9 +65,11 @@ public class UnreachableListener extends AbstractActor {
     private final ClusterAdminService clusterAdminRPCService;
     private final Long podRestartTimeout;
     private final Set<Member> initialUnreachableSet;
+    private CoreV1Api kubernetesApi;
 
     public UnreachableListener(final ActorSystem actorSystem, final DataBroker dataBroker,
-            final ClusterAdminService clusterAdminRPCService, final Long podRestartTimeout) {
+                               final ClusterAdminService clusterAdminRPCService,
+                               final Long podRestartTimeout) {
         LOG.info("UnreachableListener created");
 
         this.dataBroker = dataBroker;
@@ -100,21 +83,28 @@ public class UnreachableListener extends AbstractActor {
             this.podRestartTimeout = podRestartTimeout;
             LOG.info("Pod-restart-timeout value was loaded from akka-config:{}", this.podRestartTimeout);
         }
+        try {
+            ApiClient client = ClientBuilder.cluster().build();
+            Configuration.setDefaultApiClient(client);
+            this.kubernetesApi = new CoreV1Api();
+        } catch (IOException e) {
+            LOG.error("IOException while initializing cluster ApiClient", e);
+        }
     }
 
     public static Props props(ActorSystem actorSystem, DataBroker dataBroker,
-            ClusterAdminService clusterAdminRPCService, Long podRestartTimeout) {
+                              ClusterAdminService clusterAdminRPCService, Long podRestartTimeout) {
         return Props.create(UnreachableListener.class, () ->
                 new UnreachableListener(actorSystem, dataBroker, clusterAdminRPCService, podRestartTimeout));
     }
 
     @Override
     public void preStart() {
+
         cluster.subscribe(getSelf(), ClusterEvent.initialStateAsEvents(), ClusterEvent.MemberEvent.class,
                 ClusterEvent.UnreachableMember.class);
 
         initialUnreachableSet.addAll(cluster.state().getUnreachable());
-
         if (!initialUnreachableSet.isEmpty()) {
             for (Member member : initialUnreachableSet) {
                 LOG.info("PreStart: Member detected as unreachable, preparing for downing: {}", member.address());
@@ -279,26 +269,16 @@ public class UnreachableListener extends AbstractActor {
 
     private void sendRestartRequest(Member unreachableMember, String unreachablePodName) {
         LOG.info("Member didn't return to reachable state, trying to restart its Pod");
-        URIBuilder uriBuilder = getURIForKubernetesAPICall(K8S_GET_PODS_PATH + "/" + unreachablePodName);
         try {
-            LOG.debug("Creating REST request for Deleting Pod: {}", uriBuilder.toString());
-            HttpDelete deletePodRequest = new HttpDelete(uriBuilder.build());
-            Config k8sClient = new ConfigBuilder().build();
-            deletePodRequest.addHeader("Authorization", "Bearer " + k8sClient.getOauthToken());
-            deletePodRequest.addHeader("Content-Type", "application/json");
+            ApiResponse<V1Pod> response = this.kubernetesApi.deleteNamespacedPodWithHttpInfo(unreachablePodName,
+                    "default", null, null, null,
+                    null, null, null);
 
-            LOG.debug("Executing REST request for Deleting Pod");
-            CloseableHttpClient httpClient = getHttpClient();
-            CloseableHttpResponse response = httpClient.execute(deletePodRequest);
-
-            LOG.trace("Response from Kubernetes: {}", response);
-            String result = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
-
-            LOG.trace("Response Entity from Kubernetes: {}", result);
-            if (response.getStatusLine().getStatusCode() >= 200 && response.getStatusLine().getStatusCode() < 300) {
+            int responseStatusCode = response.getStatusCode();
+            if (responseStatusCode >= 200 && responseStatusCode < 300) {
                 LOG.info("Request successful. Kubernetes will restart Pod with name: {}", unreachablePodName);
                 downMember(unreachableMember);
-            } else if (response.getStatusLine().getStatusCode() == 404) {
+            } else if (responseStatusCode == 404) {
                 LOG.info("Request to delete Pod {} failed because the pod no longer exists. Safe to down member.",
                         unreachablePodName);
                 downMember(unreachableMember);
@@ -306,9 +286,20 @@ public class UnreachableListener extends AbstractActor {
                 LOG.error("Request to delete Pod {} failed. Not safe to down member. Response from Kubernetes: {}",
                         unreachablePodName, response);
             }
-        } catch (URISyntaxException | KeyStoreException | NoSuchAlgorithmException | KeyManagementException
-                | IOException e) {
-            LOG.error("Request to delete Pod failed", e);
+            /*
+                API calls can return ApiException with response codes even when used with WithHttpInfo(),
+                so we have to handle the 404 in catch as well -(in v kubernetes client version 10.0.0)
+             */
+        } catch (ApiException e) {
+            LOG.debug("ApiException on api.deleteNamespacedPodWithHttpInfo", e);
+            if (e.getCode() == 404) {
+                LOG.info("Request to delete Pod {} failed because the pod no longer exists. Safe to down member.",
+                        unreachablePodName);
+                downMember(unreachableMember);
+            } else {
+                LOG.error("Unhandled response from API on api.deleteNamedSpacedPod with response code {} ."
+                        + " Not safe to down member. ", e.getCode());
+            }
         }
     }
 
@@ -317,88 +308,61 @@ public class UnreachableListener extends AbstractActor {
      * are used for this decision.
      */
     public boolean safeToDownMember(Member unreachableMember) {
-        JSONObject podList = getAllLightyPods();
-        if (podList == null) {
+        Optional<V1PodList> podListOptional = getAllLightyPods();
+        if (podListOptional.isEmpty()) {
             LOG.error("List of Pods wasn't received. Can't decide whether it's safe to Down the unreachable member {}",
                     unreachableMember.address());
             return false;
         }
-        JSONArray items = podList.getJSONArray("items");
-        HashMap<String, JsonNode> podMap = new HashMap<>();
-        for (int i = 0; i < items.length(); i++) {
-            ObjectMapper mapper = new ObjectMapper();
-            try {
-                JsonNode podDetail = mapper.readTree(items.getJSONObject(i).toString());
-                String podIP = podDetail.at("/status/podIP").asText();
-                if (podIP != null && !podIP.isEmpty()) {
-                    podMap.put(podIP, podDetail);
-                } else {
-                    LOG.debug("PodIP wasn't found in Pod info");
-                    LOG.trace("Pod info: {}", podDetail);
-                }
-            } catch (IOException e) {
-                LOG.warn("Couldn't get podIP from Pod info");
+        // Check if pods contains IP of unreachableMember
+        boolean containsUnreachableIP = false;
+        V1Pod conflictingPod = null;
+        String unreachableMemberHostIP = unreachableMember.address().host().get();
+        LOG.debug("Address of unreachable member is: {}", unreachableMemberHostIP);
+        for (V1Pod pod : podListOptional.get().getItems()) {
+            LOG.debug("Pod: {} has PodIP: {}", pod.getMetadata().getName(), pod.getStatus().getPodIP());
+            if (pod.getStatus().getPodIP().equals(unreachableMemberHostIP)) {
+                containsUnreachableIP = true;
+                conflictingPod = pod;
+                break;
             }
         }
-        LOG.debug("List of all Pod IPs: {}", podMap.keySet());
-        Address unreachableAddress = unreachableMember.address();
-        if (unreachableAddress.host().nonEmpty()) {
-            LOG.debug("Address of unreachable member is: {}", unreachableAddress.host().get());
-            if (podMap.containsKey(unreachableAddress.host().get())) {
-                LOG.debug("IP of unreachable was found in Pods List. Checking container state");
-                return analyzePodState(unreachableMember, podMap.get(unreachableAddress.host().get()));
-            } else {
-                LOG.debug("IP of unreachable was not found in Pods List.. it is safe to delete it");
-                return true;
-            }
+        if (containsUnreachableIP) {
+            LOG.debug("IP of unreachable was found in Pods List. Checking container state");
+            return analyzePodState(unreachableMember, conflictingPod);
+        } else {
+            LOG.debug("IP of unreachable was not found in Pods List.. it is safe to delete it");
+            return true;
         }
-        return false;
     }
 
     /**
      * Get data of all the Pods in Kubernetes running Lighty application.
      *
-     * @return JsonObject containing data about Pods running Lighty
+     * @return V1PodList containing Pods running Lighty
      */
-    private JSONObject getAllLightyPods() {
+    private Optional<V1PodList> getAllLightyPods() {
         LOG.debug("Getting Lighty Pods from Kubernetes");
         try {
-            CloseableHttpClient httpClient = getHttpClient();
-            HttpGet request = new HttpGet(getURIForKubernetesAPICall(K8S_GET_PODS_PATH)
-                    .setParameter("labelSelector", "app=" + K8S_LIGHTY_SELECTOR).build());
+            ApiResponse<V1PodList> apiResponse = this.kubernetesApi.listNamespacedPodWithHttpInfo("default",
+                    null, null,
+                    null, null,
+                    "app=" + K8S_LIGHTY_SELECTOR,
+                    null, null,
+                    null, null);
 
-            Config k8sClient = new ConfigBuilder().build();
-            request.addHeader("Authorization", "Bearer " + k8sClient.getOauthToken());
-            request.addHeader("Content-Type", "application/json");
-
-            CloseableHttpResponse response = httpClient.execute(request);
-            String result = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
-            LOG.debug("Get Lighty Pods from Kubernetes result: {}", result);
-            return new JSONObject(result);
-        } catch (KeyStoreException | NoSuchAlgorithmException | KeyManagementException | URISyntaxException
-                | IOException e) {
-            LOG.error("Requesting Pods from Kubernetes failed = {}", e.toString(), e);
+            int responseStatusCode = apiResponse.getStatusCode();
+            if (responseStatusCode >= 200 && responseStatusCode < 300) {
+                LOG.info("Successfully retrieved Pods List");
+                return Optional.of(apiResponse.getData());
+            } else {
+                LOG.warn("Error retrieving Pods List , Http status code = {}", responseStatusCode);
+            }
+        } catch (ApiException e) {
+            LOG.debug("ApiException on api.listNamespacedPodWithHttpInfo", e);
+            LOG.warn("Error retrieving Pods List , Http status code = {}", e.getCode());
         }
-        return null;
-    }
-
-    private CloseableHttpClient getHttpClient() throws KeyStoreException, NoSuchAlgorithmException,
-            KeyManagementException {
-        SSLContextBuilder builder = new SSLContextBuilder();
-        builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
-        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(builder.build(),
-                NoopHostnameVerifier.INSTANCE);
-        CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
-        LOG.debug("SSL factory and HttpClient created");
-        return httpClient;
-    }
-
-    private URIBuilder getURIForKubernetesAPICall(String path) {
-        URIBuilder uri = new URIBuilder();
-        uri.setScheme(K8S_SCHEME);
-        uri.setHost(K8S_HOST);
-        uri.setPath(path);
-        return uri;
+        return Optional.empty();
     }
 
     /**
@@ -406,28 +370,28 @@ public class UnreachableListener extends AbstractActor {
      * of terminating.
      *
      * @param unreachableMember - unreachable member
-     * @param podInfo           - data of the unreachable member's pod
+     * @param pod               - unreachable member's pod
      */
-    private boolean analyzePodState(Member unreachableMember, JsonNode podInfo) {
-        JsonNode containerStatusesNode = podInfo.at("/status/containerStatuses");
-        if (!containerStatusesNode.isMissingNode() && containerStatusesNode.isArray()
-                && containerStatusesNode.size() > 0) {
-            ArrayNode containerStatuses = (ArrayNode) containerStatusesNode;
-            if (!containerStatuses.get(0).at("/ready").asBoolean()) {
-                if (!containerStatuses.get(0).at("/state/terminated").isMissingNode()) {
+    private boolean analyzePodState(Member unreachableMember, V1Pod pod) {
+        List<V1ContainerStatus> containerStatuses = pod.getStatus().getContainerStatuses();
+
+        if (containerStatuses != null && !containerStatuses.isEmpty()) {
+            if (!containerStatuses.get(0).getReady()) {
+                LOG.debug("State of the container is - {} ", containerStatuses.get(0).getState().toString());
+                if (containerStatuses.get(0).getState().getTerminated() != null) {
                     LOG.debug("Found state container - Terminated, safe to Down member");
                     return true;
+                } else {
+                    LOG.debug("State of the container is not terminated");
                 }
-                LOG.debug("State container doesn't say Terminated");
             } else {
                 LOG.debug("ContainerStatus is READY");
             }
         } else {
             LOG.warn("ContainerStatuses list missing or empty");
-            LOG.debug("ContainerStatuses detail: {}", podInfo);
+            LOG.debug("ContainerStatuses detail: {}", pod.getStatus().getContainerStatuses());
         }
-        String name = podInfo.at("/metadata/name").asText();
-        schedulePodRestart(unreachableMember, name);
+        schedulePodRestart(unreachableMember, pod.getMetadata().getName());
         return false;
     }
 }

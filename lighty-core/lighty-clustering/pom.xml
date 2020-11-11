@@ -35,13 +35,8 @@
             <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20131018</version>
-        </dependency>
-        <dependency>
-            <groupId>io.fabric8</groupId>
-            <artifactId>kubernetes-client</artifactId>
+            <groupId>io.kubernetes</groupId>
+            <artifactId>client-java</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.spotbugs</groupId>
@@ -50,10 +45,6 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
         </dependency>
 
         <!--ODL dependencies-->
