@@ -8,6 +8,7 @@
 
 package io.lighty.core.controller.springboot.config;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
@@ -95,16 +96,14 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
 
         @Override
         public void run() {
-            long startTime = System.nanoTime();
+            final Stopwatch stopwatch = Stopwatch.createStarted();
             try {
                 LOG.info("Lighty module {} shutting down ...", lightyModule);
                 lightyModule.shutdown();
             } catch (Exception e) {
                 LOG.error("Exception while shutting module: {} :", lightyModule, e);
             }
-
-            float duration = (System.nanoTime() - startTime)/1_000_000f;
-            LOG.info("Lighty module {} stopped in {}ms", lightyModule, duration);
+            LOG.info("Lighty module {} stopped in {}", lightyModule, stopwatch.stop());
         }
 
     }

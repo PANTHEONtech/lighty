@@ -7,6 +7,7 @@
  */
 package io.lighty.examples.controllers.quarkus;
 
+import com.google.common.base.Stopwatch;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
@@ -46,7 +47,7 @@ public class QuarkusApp {
     }
 
     public void start() {
-        long startTime = System.nanoTime();
+        final Stopwatch stopwatch = Stopwatch.createStarted();
         LOG.info(".__  .__       .__     __              .__           _________________    _______");
         LOG.info("|  | |__| ____ |  |___/  |_ ___.__.    |__| ____    /   _____/\\______ \\   \\      \\");
         LOG.info("|  | |  |/ ___\\|  |  \\   __<   |  |    |  |/  _ \\   \\_____  \\  |    |  \\  /   |   \\");
@@ -64,8 +65,7 @@ public class QuarkusApp {
             //2. NETCONF SBP configuration
             NetconfConfiguration netconfSBPConfig = NetconfConfigUtils.createDefaultNetconfConfiguration();
             startLighty(defaultSingleNodeConfiguration, netconfSBPConfig);
-            float duration = (System.nanoTime() - startTime)/1_000_000f;
-            LOG.info("lighty.io and quarkus.io-NETCONF started in {}ms", duration);
+            LOG.info("lighty.io and quarkus.io-NETCONF started in {}", stopwatch.stop());
         } catch (Exception e) {
             LOG.error("Main quarkus.io-NETCONF application exception: ", e);
         }
@@ -95,7 +95,7 @@ public class QuarkusApp {
 
     public void shutdown() {
         LOG.info("lighty.io and quarkus.io-NETCONF shutting down ...");
-        long startTime = System.nanoTime();
+        final Stopwatch stopwatch = Stopwatch.createStarted();
         try {
             netconfSouthboundPlugin.shutdown().get();
         } catch (Exception e) {
@@ -106,8 +106,7 @@ public class QuarkusApp {
         } catch (Exception e) {
             LOG.error("Exception while shutting down lighty.io controller:", e);
         }
-        float duration = (System.nanoTime() - startTime)/1_000_000f;
-        LOG.info("lighty.io and quarkus.io-NETCONF stopped in {}ms", duration);
+        LOG.info("lighty.io and quarkus.io-NETCONF stopped in {}", stopwatch.stop());
     }
 
     @Produces

@@ -7,6 +7,7 @@
  */
 package io.lighty.kit.examples.community.aaa.restconf;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -49,7 +50,7 @@ public final class Main {
 
     @SuppressWarnings("checkstyle:illegalCatch")
     public static void main(final String[] args) throws Exception {
-        final long startTime = System.nanoTime();
+        final Stopwatch stopwatch = Stopwatch.createStarted();
         try {
             if (args.length > 0) {
                 final Path configPath = Paths.get(args[0]);
@@ -70,8 +71,7 @@ public final class Main {
                         RestConfConfigUtils.getDefaultRestConfConfiguration();
                 startLighty(defaultSingleNodeConfiguration, restConfConfig);
             }
-            final float duration = (System.nanoTime() - startTime) / 1_000_000f;
-            LOG.info("Lighty and Restconf started in {}ms", duration);
+            LOG.info("Lighty and Restconf started in {}", stopwatch.stop());
         } catch (final Throwable e) {
             LOG.error("Main Restconf application exception: ", e);
         }
@@ -157,7 +157,7 @@ public final class Main {
         @Override
         public void run() {
             LOG.info("Lighty and Restconf shutting down ...");
-            final long startTime = System.nanoTime();
+            final Stopwatch stopwatch = Stopwatch.createStarted();
             try {
                 this.communityRestConf.shutdown();
             } catch (final Exception e) {
@@ -173,8 +173,7 @@ public final class Main {
             } catch (final Exception e) {
                 LOG.error("Exception while shutting down Lighty controller:", e);
             }
-            final float duration = (System.nanoTime() - startTime) / 1_000_000f;
-            LOG.info("Lighty and Restconf stopped in {}ms", duration);
+            LOG.info("Lighty and Restconf stopped in {}", stopwatch.stop());
         }
     }
 }
