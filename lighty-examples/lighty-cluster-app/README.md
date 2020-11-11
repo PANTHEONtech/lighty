@@ -19,22 +19,22 @@ build the project: ```mvn clean install```
 ### Start this demo example
 * build the project using ```mvn clean install```
 * go to target directory ```cd lighty-examples/lighty-cluster-app/target``` 
-* unzip example application bundle ```unzip  lighty-cluster-app-12.2.1-SNAPSHOT-bin.zip```
+* unzip example application bundle ```unzip  lighty-cluster-app-12.2.2-SNAPSHOT-bin.zip```
 * make 3 separate instances of this application 
 ```
-cp -a lighty-cluster-app-12.2.1-SNAPSHOT lighty-cluster-app-12.2.1-SNAPSHOT-01
-cp -a lighty-cluster-app-12.2.1-SNAPSHOT lighty-cluster-app-12.2.1-SNAPSHOT-02
-cp -a lighty-cluster-app-12.2.1-SNAPSHOT lighty-cluster-app-12.2.1-SNAPSHOT-03
+cp -a lighty-cluster-app-12.2.2-SNAPSHOT lighty-cluster-app-12.2.2-SNAPSHOT-01
+cp -a lighty-cluster-app-12.2.2-SNAPSHOT lighty-cluster-app-12.2.2-SNAPSHOT-02
+cp -a lighty-cluster-app-12.2.2-SNAPSHOT lighty-cluster-app-12.2.2-SNAPSHOT-03
 ```
 * start all 3 cluster nodes in separate terminals 
 ```
-cd lighty-cluster-app-12.2.1-SNAPSHOT-01
+cd lighty-cluster-app-12.2.2-SNAPSHOT-01
 ./start-controller-node-01.sh
 
-cd lighty-cluster-app-12.2.1-SNAPSHOT-02
+cd lighty-cluster-app-12.2.2-SNAPSHOT-02
 ./start-controller-node-02.sh
 
-cd lighty-cluster-app-12.2.1-SNAPSHOT-03
+cd lighty-cluster-app-12.2.2-SNAPSHOT-03
 ./start-controller-node-03.sh
 ```
 * all 3 cluster nodes are running on localhost ``127.0.0.1``
@@ -64,7 +64,7 @@ __GET__ ``http://127.0.0.1:{akka_http_management_port}/management/cluster/member
 
 ## Kubernetes deployment
 In order to deploy this lighty.io cluster demo into kubernetes cluster, make sure you follow guide below.
-This demo was tested using kubernetes cluster v1.16.2.
+This demo was tested using kubernetes cluster v1.19.2.
 
 #### Configure pod-restart-timeout
 It is used in situation when Cluster member becomes unreachable but his Pod still remains in Kubernetes.
@@ -150,8 +150,10 @@ To access Dashboard:
 2. Obtain token to log in:  
   `token=$(microk8s kubectl -n kube-system get secret | grep default-token | cut -d " " -f1)`  
    `microk8s kubectl -n kube-system describe secret $token`
-3. Go to URL `https://127.0.0.1:10443`
-4. Log in using obtained token in previous steps
+3. You also may need to enable port forwarding for dashboard:  
+    `microk8s kubectl port-forward -n kube-system service/kubernetes-dashboard 10443:443`
+4. Go to URL `https://127.0.0.1:10443`
+5. Log in using obtained token in previous steps
 
 To reset and clean microk8s environment:
 1. Delete started service:  
