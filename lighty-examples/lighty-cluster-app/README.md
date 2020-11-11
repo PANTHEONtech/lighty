@@ -64,7 +64,7 @@ __GET__ ``http://127.0.0.1:{akka_http_management_port}/management/cluster/member
 
 ## Kubernetes deployment
 In order to deploy this lighty.io cluster demo into kubernetes cluster, make sure you follow guide below.
-This demo was tested using kubernetes cluster v1.16.2.
+This demo was tested using kubernetes cluster v1.19.2.
 
 #### Configure pod-restart-timeout
 It is used in situation when Cluster member becomes unreachable but his Pod still remains in Kubernetes.
@@ -150,8 +150,10 @@ To access Dashboard:
 2. Obtain token to log in:  
   `token=$(microk8s kubectl -n kube-system get secret | grep default-token | cut -d " " -f1)`  
    `microk8s kubectl -n kube-system describe secret $token`
-3. Go to URL `https://127.0.0.1:10443`
-4. Log in using obtained token in previous steps
+3. You also may need to enable port forwarding for dashboard:  
+    `microk8s kubectl port-forward -n kube-system service/kubernetes-dashboard 10443:443`
+4. Go to URL `https://127.0.0.1:10443`
+5. Log in using obtained token in previous steps
 
 To reset and clean microk8s environment:
 1. Delete started service:  
