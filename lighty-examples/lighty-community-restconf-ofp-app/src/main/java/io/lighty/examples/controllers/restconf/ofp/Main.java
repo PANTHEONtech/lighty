@@ -48,7 +48,7 @@ public final class Main {
         LOG.info("       /_____/      \\/      \\/      \\/                     \\/     \\/    ");
         LOG.info("Starting lighty.io RESTCONF-OPENFLOW example application ...");
         LOG.info("https://lighty.io/");
-        LOG.info("https://github.com/PANTHEONtech/lighty-core");
+        LOG.info("https://github.com/PANTHEONtech/lighty");
         try {
             final ControllerConfiguration controllerConfiguration;
             final RestConfConfiguration restConfConfiguration;

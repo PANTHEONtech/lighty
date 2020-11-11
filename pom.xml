@@ -13,7 +13,7 @@
     <artifactId>lighty-aggregator</artifactId>
     <version>13.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>lighty-core</name>
+    <name>lighty</name>
 
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
@@ -55,9 +55,9 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:git:https://github.com/PANTHEONtech/lighty-core.git</connection>
-        <developerConnection>scm:git:https://github.com/PANTHEONtech/lighty-core.git</developerConnection>
-        <url>https://github.com/PANTHEONtech/lighty-core</url>
+        <connection>scm:git:https://github.com/PANTHEONtech/lighty.git</connection>
+        <developerConnection>scm:git:https://github.com/PANTHEONtech/lighty.git</developerConnection>
+        <url>https://github.com/PANTHEONtech/lighty</url>
       <tag>HEAD</tag>
   </scm>
     <developers>

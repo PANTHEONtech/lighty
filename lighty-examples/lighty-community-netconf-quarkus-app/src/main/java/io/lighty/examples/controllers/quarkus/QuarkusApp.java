@@ -56,7 +56,7 @@ public class QuarkusApp {
         LOG.info("        /_____/     \\/      \\/      \\/                     \\/         \\/         \\/");
         LOG.info("Starting lighty.io quarkus.io-NETCONF example application ...");
         LOG.info("https://lighty.io/");
-        LOG.info("https://github.com/PANTHEONtech/lighty-core");
+        LOG.info("https://github.com/PANTHEONtech/lighty");
         try {
             LOG.info("using default configuration ...");
             //1. get controller configuration
