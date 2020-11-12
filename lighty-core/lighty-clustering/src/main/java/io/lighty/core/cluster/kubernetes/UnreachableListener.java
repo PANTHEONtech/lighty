@@ -295,8 +295,8 @@ public class UnreachableListener extends AbstractActor {
                         unreachablePodName);
                 downMember(unreachableMember);
             } else {
-                LOG.error("Unhandled response from API on api.deleteNamedSpacedPod with response code {} ." +
-                        " Not safe to down member. ", e.getCode());
+                LOG.error("Unhandled response from API on api.deleteNamedSpacedPod with response code {} ."
+                        + " Not safe to down member. ", e.getCode());
             }
         }
     }
