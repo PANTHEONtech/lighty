@@ -82,6 +82,13 @@ public class UnreachableListener extends AbstractActor {
             this.podRestartTimeout = podRestartTimeout;
             LOG.info("Pod-restart-timeout value was loaded from akka-config:{}", this.podRestartTimeout);
         }
+        try {
+            ApiClient client = ClientBuilder.cluster().build();
+            Configuration.setDefaultApiClient(client);
+            this.kubernetesApi = new CoreV1Api();
+        } catch (IOException e) {
+            LOG.error("IOException while initializing cluster ApiClient", e);
+        }
     }
 
     public static Props props(ActorSystem actorSystem, DataBroker dataBroker,
@@ -92,13 +99,7 @@ public class UnreachableListener extends AbstractActor {
 
     @Override
     public void preStart() {
-        try {
-            ApiClient client = ClientBuilder.cluster().build();
-            Configuration.setDefaultApiClient(client);
-            this.kubernetesApi = new CoreV1Api();
-        } catch (IOException e) {
-            LOG.error("IOException while initializing cluster ApiClient", e);
-        }
+
         cluster.subscribe(getSelf(), ClusterEvent.initialStateAsEvents(), ClusterEvent.MemberEvent.class,
                 ClusterEvent.UnreachableMember.class);
 
