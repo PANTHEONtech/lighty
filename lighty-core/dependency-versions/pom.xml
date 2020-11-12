@@ -14,7 +14,7 @@
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <url>https://github.com/PANTHEONtech/lighty-core</url>
+    <url>https://github.com/PANTHEONtech/lighty</url>
     <description>
         This artifact contains dependencyManagement declarations of upstream
         versions.
@@ -216,9 +216,9 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:git:https://github.com/PANTHEONtech/lighty-core.git</connection>
-        <developerConnection>scm:git:https://github.com/PANTHEONtech/lighty-core.git</developerConnection>
-        <url>https://github.com/PANTHEONtech/lighty-core</url>
+        <connection>scm:git:https://github.com/PANTHEONtech/lighty.git</connection>
+        <developerConnection>scm:git:https://github.com/PANTHEONtech/lighty.git</developerConnection>
+        <url>https://github.com/PANTHEONtech/lighty</url>
       <tag>HEAD</tag>
   </scm>
     <developers>
