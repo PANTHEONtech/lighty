@@ -20,6 +20,6 @@
     <artifactId>lighty-test-models</artifactId>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <url>https://github.com/PANTHEONtech/lighty-core</url>
+    <url>https://github.com/PANTHEONtech/lighty</url>
 
 </project>
