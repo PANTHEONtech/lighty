@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -307,8 +308,8 @@ public class UnreachableListener extends AbstractActor {
      * are used for this decision.
      */
     public boolean safeToDownMember(Member unreachableMember) {
-        V1PodList podList = getAllLightyPods();
-        if (podList == null) {
+        Optional<V1PodList> podListOptional = getAllLightyPods();
+        if (podListOptional.isEmpty()) {
             LOG.error("List of Pods wasn't received. Can't decide whether it's safe to Down the unreachable member {}",
                     unreachableMember.address());
             return false;
@@ -318,7 +319,7 @@ public class UnreachableListener extends AbstractActor {
         V1Pod conflictingPod = null;
         String unreachableMemberHostIP = unreachableMember.address().host().get();
         LOG.debug("Address of unreachable member is: {}", unreachableMemberHostIP);
-        for (V1Pod pod : podList.getItems()) {
+        for (V1Pod pod : podListOptional.get().getItems()) {
             LOG.debug("Pod: {} has PodIP: {}", pod.getMetadata().getName(), pod.getStatus().getPodIP());
             if (pod.getStatus().getPodIP().equals(unreachableMemberHostIP)) {
                 containsUnreachableIP = true;
@@ -338,9 +339,9 @@ public class UnreachableListener extends AbstractActor {
     /**
      * Get data of all the Pods in Kubernetes running Lighty application.
      *
-     * @return JsonObject containing data about Pods running Lighty
+     * @return V1PodList containing Pods running Lighty
      */
-    private V1PodList getAllLightyPods() {
+    private Optional<V1PodList> getAllLightyPods() {
         LOG.debug("Getting Lighty Pods from Kubernetes");
         try {
             ApiResponse<V1PodList> apiResponse = this.kubernetesApi.listNamespacedPodWithHttpInfo("default",
@@ -353,7 +354,7 @@ public class UnreachableListener extends AbstractActor {
             int responseStatusCode = apiResponse.getStatusCode();
             if (responseStatusCode >= 200 && responseStatusCode < 300) {
                 LOG.info("Successfully retrieved Pods List");
-                return apiResponse.getData();
+                return Optional.of(apiResponse.getData());
             } else {
                 LOG.warn("Error retrieving Pods List , Http status code = {}", responseStatusCode);
             }
@@ -361,7 +362,7 @@ public class UnreachableListener extends AbstractActor {
             LOG.debug("ApiException on api.listNamespacedPodWithHttpInfo", e);
             LOG.warn("Error retrieving Pods List , Http status code = {}", e.getCode());
         }
-        return null;
+        return Optional.empty();
     }
 
     /**
