@@ -22,7 +22,6 @@ import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.ApiResponse;
 import io.kubernetes.client.openapi.Configuration;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
-import io.kubernetes.client.openapi.models.V1ContainerState;
 import io.kubernetes.client.openapi.models.V1ContainerStatus;
 import io.kubernetes.client.openapi.models.V1Pod;
 import io.kubernetes.client.openapi.models.V1PodList;
@@ -93,17 +92,6 @@ public class UnreachableListener extends AbstractActor {
 
     @Override
     public void preStart() {
-        cluster.subscribe(getSelf(), ClusterEvent.initialStateAsEvents(), ClusterEvent.MemberEvent.class,
-                ClusterEvent.UnreachableMember.class);
-
-        initialUnreachableSet.addAll(cluster.state().getUnreachable());
-
-        if (!initialUnreachableSet.isEmpty()) {
-            for (Member member : initialUnreachableSet) {
-                LOG.info("PreStart: Member detected as unreachable, preparing for downing: {}", member.address());
-                processUnreachableMember(member);
-            }
-        }
         try {
             ApiClient client = ClientBuilder.cluster().build();
             Configuration.setDefaultApiClient(client);
@@ -111,7 +99,16 @@ public class UnreachableListener extends AbstractActor {
         } catch (IOException e) {
             LOG.error("IOException while initializing cluster ApiClient", e);
         }
+        cluster.subscribe(getSelf(), ClusterEvent.initialStateAsEvents(), ClusterEvent.MemberEvent.class,
+                ClusterEvent.UnreachableMember.class);
 
+        initialUnreachableSet.addAll(cluster.state().getUnreachable());
+        if (!initialUnreachableSet.isEmpty()) {
+            for (Member member : initialUnreachableSet) {
+                LOG.info("PreStart: Member detected as unreachable, preparing for downing: {}", member.address());
+                processUnreachableMember(member);
+            }
+        }
     }
 
     @Override
@@ -271,7 +268,6 @@ public class UnreachableListener extends AbstractActor {
     private void sendRestartRequest(Member unreachableMember, String unreachablePodName) {
         LOG.info("Member didn't return to reachable state, trying to restart its Pod");
         try {
-
             ApiResponse<V1Pod> response = this.kubernetesApi.deleteNamespacedPodWithHttpInfo(unreachablePodName,
                     "default", null, null, null,
                     null, null, null);
@@ -288,9 +284,20 @@ public class UnreachableListener extends AbstractActor {
                 LOG.error("Request to delete Pod {} failed. Not safe to down member. Response from Kubernetes: {}",
                         unreachablePodName, response);
             }
-
+            /*
+                API calls can return ApiException with response codes even when used with WithHttpInfo(),
+                so we have to handle the 404 in catch as well -(in v kubernetes client version 10.0.0)
+             */
         } catch (ApiException e) {
-            LOG.error("ApiException on api.deleteNamedSpacedPod", e);
+            LOG.debug("ApiException on api.deleteNamespacedPodWithHttpInfo", e);
+            if (e.getCode() == 404) {
+                LOG.info("Request to delete Pod {} failed because the pod no longer exists. Safe to down member.",
+                        unreachablePodName);
+                downMember(unreachableMember);
+            } else {
+                LOG.error("Unhandled response from API on api.deleteNamedSpacedPod with response code {} ." +
+                        " Not safe to down member. ", e.getCode());
+            }
         }
     }
 
@@ -311,8 +318,7 @@ public class UnreachableListener extends AbstractActor {
         String unreachableMemberHostIP = unreachableMember.address().host().get();
         LOG.debug("Address of unreachable member is: {}", unreachableMemberHostIP);
         for (V1Pod pod : podList.getItems()) {
-            LOG.debug("Pod: " + pod.getMetadata().getName() + " has PodIP: " + pod.getStatus().getPodIP());
-            LOG.debug("Pod: " + pod.getMetadata().getName() + " has HostIP: " + pod.getStatus().getHostIP());
+            LOG.debug("Pod: {} has PodIP: {}", pod.getMetadata().getName(), pod.getStatus().getPodIP());
             if (pod.getStatus().getPodIP().equals(unreachableMemberHostIP)) {
                 containsUnreachableIP = true;
                 conflictingPod = pod;
@@ -336,9 +342,6 @@ public class UnreachableListener extends AbstractActor {
     private V1PodList getAllLightyPods() {
         LOG.debug("Getting Lighty Pods from Kubernetes");
         try {
-            ApiClient client = ClientBuilder.cluster().build();
-            Configuration.setDefaultApiClient(client);
-            CoreV1Api api = new CoreV1Api();
             ApiResponse<V1PodList> apiResponse = this.kubernetesApi.listNamespacedPodWithHttpInfo("default",
                     null, null,
                     null, null,
@@ -351,11 +354,11 @@ public class UnreachableListener extends AbstractActor {
                 LOG.info("Successfully retrieved Pods List");
                 return apiResponse.getData();
             } else {
-                LOG.error("Error retrieving Pods List , Http status code = " + responseStatusCode);
+                LOG.warn("Error retrieving Pods List , Http status code = {}", responseStatusCode);
             }
-        } catch (IOException | ApiException e) {
-            LOG.error("Exception on api.deleteNamedSpacedPod" + e);
-
+        } catch (ApiException e) {
+            LOG.debug("ApiException on api.listNamespacedPodWithHttpInfo", e);
+            LOG.warn("Error retrieving Pods List , Http status code = {}", e.getCode());
         }
         return null;
     }
@@ -372,7 +375,8 @@ public class UnreachableListener extends AbstractActor {
 
         if (containerStatuses != null && !containerStatuses.isEmpty()) {
             if (!containerStatuses.get(0).getReady()) {
-                if (!containerStatuses.get(0).getState().equals(V1ContainerState.SERIALIZED_NAME_TERMINATED)) {
+                LOG.debug("State of the container is - {} ", containerStatuses.get(0).getState().toString());
+                if (containerStatuses.get(0).getState().getTerminated() != null) {
                     LOG.debug("Found state container - Terminated, safe to Down member");
                     return true;
                 } else {
@@ -385,7 +389,6 @@ public class UnreachableListener extends AbstractActor {
             LOG.warn("ContainerStatuses list missing or empty");
             LOG.debug("ContainerStatuses detail: {}", pod.getStatus().getContainerStatuses());
         }
-        LOG.debug("Found state container - Terminated, safe to Down member");
         schedulePodRestart(unreachableMember, pod.getMetadata().getName());
         return false;
     }
