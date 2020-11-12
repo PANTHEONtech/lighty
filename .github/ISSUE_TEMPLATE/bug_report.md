@@ -16,7 +16,7 @@ lighty.io branch [eg. 12.2.x]
 **To Reproduce**
 Steps to reproduce the behavior:
 1. git checkout https://...
-2. cd lighty-core
+2. cd lighty
 3. mvn clean install
 4. See error
 
