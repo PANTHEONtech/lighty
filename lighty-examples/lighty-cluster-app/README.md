@@ -19,22 +19,22 @@ build the project: ```mvn clean install```
 ### Start this demo example
 * build the project using ```mvn clean install```
 * go to target directory ```cd lighty-examples/lighty-cluster-app/target``` 
-* unzip example application bundle ```unzip  lighty-cluster-app-12.2.1-SNAPSHOT-bin.zip```
+* unzip example application bundle ```unzip  lighty-cluster-app-12.2.2-SNAPSHOT-bin.zip```
 * make 3 separate instances of this application 
 ```
-cp -a lighty-cluster-app-12.2.1-SNAPSHOT lighty-cluster-app-12.2.1-SNAPSHOT-01
-cp -a lighty-cluster-app-12.2.1-SNAPSHOT lighty-cluster-app-12.2.1-SNAPSHOT-02
-cp -a lighty-cluster-app-12.2.1-SNAPSHOT lighty-cluster-app-12.2.1-SNAPSHOT-03
+cp -a lighty-cluster-app-12.2.2-SNAPSHOT lighty-cluster-app-12.2.2-SNAPSHOT-01
+cp -a lighty-cluster-app-12.2.2-SNAPSHOT lighty-cluster-app-12.2.2-SNAPSHOT-02
+cp -a lighty-cluster-app-12.2.2-SNAPSHOT lighty-cluster-app-12.2.2-SNAPSHOT-03
 ```
 * start all 3 cluster nodes in separate terminals 
 ```
-cd lighty-cluster-app-12.2.1-SNAPSHOT-01
+cd lighty-cluster-app-12.2.2-SNAPSHOT-01
 ./start-controller-node-01.sh
 
-cd lighty-cluster-app-12.2.1-SNAPSHOT-02
+cd lighty-cluster-app-12.2.2-SNAPSHOT-02
 ./start-controller-node-02.sh
 
-cd lighty-cluster-app-12.2.1-SNAPSHOT-03
+cd lighty-cluster-app-12.2.2-SNAPSHOT-03
 ./start-controller-node-03.sh
 ```
 * all 3 cluster nodes are running on localhost ``127.0.0.1``
