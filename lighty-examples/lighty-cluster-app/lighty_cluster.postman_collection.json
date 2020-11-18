@@ -1,0 +1,173 @@
+{
+	"info": {
+		"_postman_id": "f939b98c-2873-4975-b77c-ce61ceb36c81",
+		"name": "Lighty Cluster",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Connect NETCONF device",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Host",
+						"value": "restconf.lighty.io",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"netconf-topology:node\" :[ \n    \t{\n\t      \"node-id\": \"device-id\",\n\t      \"host\": \"127.0.0.1\",\n\t      \"port\": 17830,\n\t      \"username\": \"admin\",\n\t      \"password\": \"admin\",\n\t      \"tcp-only\": false,\n\t      \"keepalive-delay\": 0,\n\t      \"netconf-node-configuration:schemaless\": false\n        }\n    ]\n  }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:80/restconf/data/network-topology:network-topology/topology=topology-netconf/node=device-id",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "80",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=topology-netconf",
+						"node=device-id"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get NETCONF device",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Host",
+						"value": "restconf.lighty.io",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"netconf-topology:node\" :[ \n    \t{\n\t      \"node-id\": \"device-id\",\n\t      \"host\": \"127.0.0.1\",\n\t      \"port\": 17830,\n\t      \"username\": \"admin\",\n\t      \"password\": \"admin\",\n\t      \"tcp-only\": false,\n\t      \"keepalive-delay\": 0,\n\t      \"netconf-node-configuration:schemaless\": false\n        }\n    ]\n  }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:80/restconf/data/network-topology:network-topology/topology=topology-netconf/node=device-id",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "80",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=topology-netconf",
+						"node=device-id"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Akka Cluster Bootstrap get Seed Nodes",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Host",
+						"value": "management.lighty.io",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:80/bootstrap/seed-nodes",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "80",
+					"path": [
+						"bootstrap",
+						"seed-nodes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Akka get cluster members",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Host",
+						"value": "management.lighty.io",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:80/cluster/members",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "80",
+					"path": [
+						"cluster",
+						"members"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
