@@ -9,7 +9,7 @@ Components used:
 * OpenDaylight Swagger servlet
 
 ## Application architecture
-![Application Architecture](docs/app-architecture.svg)
+![Application Architecture](docs/app-k8s-deployment.svg)
 
 # Kubernetes deployment
 Follow this guide in order to deploy this lighty.io cluster demo into kubernetes cluster.
