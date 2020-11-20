@@ -23,6 +23,13 @@ public interface NetconfNmdaBaseService extends NetconfBaseService {
      *
      * @param sourceDatastore type of the configuration datastore being queried
      * @param filterYII may contain filter YangInstanceIdentifier if needed
+     * @param configFilter flag for getting the configuration nodes only
+     * @param maxDepth flag for limiting the number of subtree levels returned in the reply
+     * @param originFilter flag for specifying the origin filter which selects nodes
+     *                    equal to or derived from any of the given values
+     * @param negateOriginFilter flag if we want to negate the origin filter
+     * @param withOrigin requests that the server includes "origin" metadata
+     *                   annotations in its response, as detailed in the NMDA.
      * @return future with RPC result
      */
     ListenableFuture<? extends DOMRpcResult> getData(QName sourceDatastore,
