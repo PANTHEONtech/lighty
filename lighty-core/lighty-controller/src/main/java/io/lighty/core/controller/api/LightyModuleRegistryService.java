@@ -17,7 +17,9 @@ import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
  */
 public interface LightyModuleRegistryService {
     /**
-     * Register an instance of Yang module into global schema context.
+     * Register instances of Yang modules into global schema context.
+     * @param yangModuleInfo module to register
+     * @return registration of the module
      */
     ObjectRegistration<YangModuleInfo> registerModuleInfo(YangModuleInfo yangModuleInfo);
 }

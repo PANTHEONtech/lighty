@@ -123,6 +123,7 @@ public final class NetconfConfigUtils {
      *
      * @param configuration Netconf southbound configuration where should be services injected.
      * @return Netconf southbound configuration with injected services from Lighty core.
+     * @throws ConfigurationException in case provided configuration is not valid.
      */
     public static NetconfConfiguration injectServicesToConfig(
             final NetconfConfiguration configuration) throws ConfigurationException {
@@ -138,6 +139,7 @@ public final class NetconfConfigUtils {
      * @param configuration  Netconf southbound topology configuration where should be services injected.
      * @param lightyServices LightyServices from running Lighty core.
      * @return Netconf southbound topology configuration with injected services from Lighty core.
+     * @throws ConfigurationException in case provided configuration is not valid.
      */
     public static NetconfConfiguration injectServicesToTopologyConfig(
             final NetconfConfiguration configuration, final LightyServices lightyServices) throws

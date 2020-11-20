@@ -86,6 +86,7 @@ public abstract class AbstractLightyModule implements LightyModule {
      * This method is called in {@link AbstractLightyModule#start()} method.
      * Implementation of this method should initialize everything necessary.
      * @return success of initialization
+     * @throws InterruptedException if initialization was interrupted.
      */
     protected abstract boolean initProcedure() throws InterruptedException;
 
@@ -94,6 +95,7 @@ public abstract class AbstractLightyModule implements LightyModule {
      * Implementation of this method should do everything necessary to
      * shutdown correctly (e.g. stop initialized beans, release resources, ...).
      * @return success of stop.
+     * @throws InterruptedException if stopping was interrupted.
      */
     protected abstract boolean stopProcedure() throws InterruptedException;
 
