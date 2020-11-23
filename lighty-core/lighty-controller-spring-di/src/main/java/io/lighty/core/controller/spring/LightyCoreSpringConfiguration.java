@@ -94,6 +94,7 @@ public abstract class LightyCoreSpringConfiguration {
      *
      * @return initialized lightyController
      * @throws LightyLaunchException if any problem occurred during initialization
+     * @throws InterruptedException if interrupted while initializing
      */
     protected abstract LightyController initLightyController() throws LightyLaunchException, InterruptedException;
 
