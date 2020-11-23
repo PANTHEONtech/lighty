@@ -107,8 +107,8 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
         if (optPodNamespace.isPresent()) {
             podNamespace = optPodNamespace.get();
         } else {
-            LOG.info("akka.discovery.kubernetes-api.pod-namespace wasn't specified in .conf file, " +
-                    "using k8s default value: {} ", K8S_DEFAULT_POD_NAMESPACE);
+            LOG.info("akka.discovery.kubernetes-api.pod-namespace wasn't specified in .conf file, "
+                    + "using k8s default value: {} ", K8S_DEFAULT_POD_NAMESPACE);
             podNamespace = K8S_DEFAULT_POD_NAMESPACE;
         }
 
@@ -118,9 +118,9 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
             podSelector = optPodSelector.get();
         } else {
             String defaultPodSelector = this.actorSystemProvider.getActorSystem().name();
-            LOG.warn("akka.discovery.kubernetes-api.pod-label-selector wasn't specified in .conf file, " +
-                    "using k8s default value (akka actor system name): {} " +
-                    "Make sure that the value match the deployment label selector", defaultPodSelector);
+            LOG.warn("akka.discovery.kubernetes-api.pod-label-selector wasn't specified in .conf file, "
+                    + "using k8s default value (akka actor system name): {} "
+                    + "Make sure that the value match the deployment label selector", defaultPodSelector);
             podSelector = defaultPodSelector;
         }
 
