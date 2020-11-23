@@ -40,13 +40,14 @@ import org.slf4j.LoggerFactory;
 public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(KubernetesClusteringHandlerImpl.class);
+    public static final String K8S_DEFAULT_POD_NAMESPACE = "default";
 
     private final Config akkaDeploymentConfig;
     private final ActorSystemProvider actorSystemProvider;
     private Optional<String> moduleShardsConfig;
 
     public KubernetesClusteringHandlerImpl(@NonNull ActorSystemProvider actorSystemProvider,
-            @NonNull Config akkaDeploymentConfig) {
+                                           @NonNull Config akkaDeploymentConfig) {
         this.actorSystemProvider = actorSystemProvider;
         this.akkaDeploymentConfig = akkaDeploymentConfig;
         this.moduleShardsConfig = Optional.empty();
@@ -96,15 +97,36 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
 
     @Override
     public void start(@NonNull ClusterSingletonServiceProvider clusterSingletonServiceProvider,
-            @NonNull ClusterAdminService clusterAdminRPCService, @NonNull DataBroker bindingDataBroker) {
+                      @NonNull ClusterAdminService clusterAdminRPCService, @NonNull DataBroker bindingDataBroker) {
         Long podRestartTimeout = null;
         if (this.akkaDeploymentConfig.hasPath(ClusteringConfigUtils.K8S_POD_RESTART_TIMEOUT_PATH)) {
             podRestartTimeout = this.akkaDeploymentConfig.getLong(ClusteringConfigUtils.K8S_POD_RESTART_TIMEOUT_PATH);
         }
+        Optional<String> optPodNamespace = ClusteringConfigUtils.getPodNamespaceFromConfig(this.akkaDeploymentConfig);
+        String podNamespace;
+        if (optPodNamespace.isPresent()) {
+            podNamespace = optPodNamespace.get();
+        } else {
+            LOG.info("akka.discovery.kubernetes-api.pod-namespace wasn't specified in .conf file, " +
+                    "using k8s default value: {} ", K8S_DEFAULT_POD_NAMESPACE);
+            podNamespace = K8S_DEFAULT_POD_NAMESPACE;
+        }
+
+        Optional<String> optPodSelector = ClusteringConfigUtils.getPodSelectorFromConfig(this.akkaDeploymentConfig);
+        String podSelector;
+        if (optPodSelector.isPresent()) {
+            podSelector = optPodSelector.get();
+        } else {
+            String defaultPodSelector = this.actorSystemProvider.getActorSystem().name();
+            LOG.warn("akka.discovery.kubernetes-api.pod-label-selector wasn't specified in .conf file, " +
+                    "using k8s default value (akka actor system name): {} " +
+                    "Make sure that the value match the deployment label selector", defaultPodSelector);
+            podSelector = defaultPodSelector;
+        }
 
         clusterSingletonServiceProvider.registerClusterSingletonService(
                 new UnreachableListenerService(actorSystemProvider.getActorSystem(), bindingDataBroker,
-                        clusterAdminRPCService, podRestartTimeout));
+                        clusterAdminRPCService, podNamespace, podSelector, podRestartTimeout));
         this.askForShards(clusterAdminRPCService);
     }
 

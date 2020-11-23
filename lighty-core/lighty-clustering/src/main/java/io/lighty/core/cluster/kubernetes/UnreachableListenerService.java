@@ -27,20 +27,27 @@ public class UnreachableListenerService implements ClusterSingletonService {
     private final DataBroker dataBroker;
     private final ClusterAdminService clusterAdminRPCService;
     private ActorRef unreachableListener;
+    private String kubernetesPodsNamespace;
+    private String kubernetesPodsSelector;
 
     public UnreachableListenerService(ActorSystem actorSystem, DataBroker dataBroker,
-            ClusterAdminService clusterAdminRPCService, Long podRestartTimeout) {
+                                      ClusterAdminService clusterAdminRPCService,
+                                      String kubernetesPodsNamespace, String kubernetesPodsSelector,
+                                      Long podRestartTimeout) {
         this.actorSystem = actorSystem;
         this.dataBroker = dataBroker;
         this.clusterAdminRPCService = clusterAdminRPCService;
         this.cluster = Cluster.get(actorSystem);
         this.podRestartTimeout = podRestartTimeout;
+        this.kubernetesPodsNamespace = kubernetesPodsNamespace;
+        this.kubernetesPodsSelector = kubernetesPodsSelector;
     }
 
     @Override
     public void instantiateServiceInstance() {
         this.unreachableListener = actorSystem.actorOf(UnreachableListener.props(actorSystem, dataBroker,
-                clusterAdminRPCService, podRestartTimeout), "unreachableListener");
+                clusterAdminRPCService, kubernetesPodsNamespace, kubernetesPodsSelector, podRestartTimeout),
+                "unreachableListener");
     }
 
     @Override

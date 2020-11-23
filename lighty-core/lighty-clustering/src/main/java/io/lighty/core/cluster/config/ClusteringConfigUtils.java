@@ -10,6 +10,7 @@ package io.lighty.core.cluster.config;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +41,27 @@ public final class ClusteringConfigUtils {
     public static boolean isKubernetesDeployment(Config actorSystemConfig) {
         return actorSystemConfig.hasPath("akka.discovery.method")
                 && actorSystemConfig.getString("akka.discovery.method").equalsIgnoreCase("kubernetes-api");
+    }
+
+    /**
+     * Reads pod-namespace from akka.discovery.kubernetes-api.
+     * @param actorSystemConfig provided akka configuration
+     * @return configured pod-namespace value
+     */
+    public static Optional<String> getPodNamespaceFromConfig(Config actorSystemConfig){
+        String path = "akka.discovery.kubernetes-api.pod-namespace";
+
+        return actorSystemConfig.hasPath(path) ? Optional.of(actorSystemConfig.getString(path)) : Optional.empty();
+    }
+    /**
+     * Reads pod-label-selector from akka.discovery.kubernetes-api.
+     * @param actorSystemConfig provided akka configuration
+     * @return configured pod-label-selector value
+     */
+    public static Optional<String> getPodSelectorFromConfig(Config actorSystemConfig){
+        String path = "akka.discovery.kubernetes-api.pod-label-selector";
+
+        return actorSystemConfig.hasPath(path) ? Optional.of(actorSystemConfig.getString(path)) : Optional.empty();
     }
 
     private static String generateShard(String name, List<String> replicas) {

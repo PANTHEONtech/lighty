@@ -56,7 +56,6 @@ import org.slf4j.LoggerFactory;
 
 public class UnreachableListener extends AbstractActor {
     private static final Logger LOG = LoggerFactory.getLogger(UnreachableListener.class);
-    private static final String K8S_LIGHTY_SELECTOR = "lighty-k8s-cluster";
     private static final long DEFAULT_UNREACHABLE_RESTART_TIMEOUT = 30;
 
     private final Cluster cluster = Cluster.get(getContext().getSystem());
@@ -66,15 +65,20 @@ public class UnreachableListener extends AbstractActor {
     private final Long podRestartTimeout;
     private final Set<Member> initialUnreachableSet;
     private CoreV1Api kubernetesApi;
+    private String kubernetesPodNamespace;
+    private String kubernetesPodSelector;
 
     public UnreachableListener(final ActorSystem actorSystem, final DataBroker dataBroker,
                                final ClusterAdminService clusterAdminRPCService,
+                               final String kubernetesPodNamespace, final String kubernetesPodSelector,
                                final Long podRestartTimeout) {
         LOG.info("UnreachableListener created");
 
         this.dataBroker = dataBroker;
         this.clusterAdminRPCService = clusterAdminRPCService;
         this.actorSystem = actorSystem;
+        this.kubernetesPodNamespace = kubernetesPodNamespace;
+        this.kubernetesPodSelector = kubernetesPodSelector;
         this.initialUnreachableSet = new HashSet<>();
         if (podRestartTimeout == null || podRestartTimeout == 0) {
             this.podRestartTimeout = DEFAULT_UNREACHABLE_RESTART_TIMEOUT;
@@ -93,9 +97,12 @@ public class UnreachableListener extends AbstractActor {
     }
 
     public static Props props(ActorSystem actorSystem, DataBroker dataBroker,
-                              ClusterAdminService clusterAdminRPCService, Long podRestartTimeout) {
+                              ClusterAdminService clusterAdminRPCService,
+                              String kubernetesPodNamespace, String kubernetesPodSelector,
+                              Long podRestartTimeout) {
         return Props.create(UnreachableListener.class, () ->
-                new UnreachableListener(actorSystem, dataBroker, clusterAdminRPCService, podRestartTimeout));
+                new UnreachableListener(actorSystem, dataBroker, clusterAdminRPCService,
+                        kubernetesPodNamespace, kubernetesPodSelector, podRestartTimeout));
     }
 
     @Override
@@ -273,7 +280,7 @@ public class UnreachableListener extends AbstractActor {
         LOG.info("Member didn't return to reachable state, trying to restart its Pod");
         try {
             ApiResponse<V1Pod> response = this.kubernetesApi.deleteNamespacedPodWithHttpInfo(unreachablePodName,
-                    "default", null, null, null,
+                    this.kubernetesPodNamespace, null, null, null,
                     null, null, null);
 
             int responseStatusCode = response.getStatusCode();
@@ -348,12 +355,14 @@ public class UnreachableListener extends AbstractActor {
     private Optional<V1PodList> getAllLightyPods() {
         LOG.debug("Getting Lighty Pods from Kubernetes");
         try {
-            ApiResponse<V1PodList> apiResponse = this.kubernetesApi.listNamespacedPodWithHttpInfo("default",
+            ApiResponse<V1PodList> apiResponse = this.kubernetesApi
+                    .listNamespacedPodWithHttpInfo(this.kubernetesPodNamespace,
                     null, null,
                     null, null,
-                    "app=" + K8S_LIGHTY_SELECTOR,
+                    this.kubernetesPodSelector,
                     null, null,
                     null, null);
+
 
             int responseStatusCode = apiResponse.getStatusCode();
             if (responseStatusCode >= 200 && responseStatusCode < 300) {
