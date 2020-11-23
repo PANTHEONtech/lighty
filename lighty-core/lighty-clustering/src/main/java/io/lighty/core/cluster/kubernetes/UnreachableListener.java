@@ -197,6 +197,7 @@ public class UnreachableListener extends AbstractActor {
      * Find all occurrences where the member is registered as candidate for entity ownership.
      *
      * @param removedMember - member which is being removed from cluster
+     * @return list of candidates
      */
     private List<InstanceIdentifier<Candidate>> getCandidatesFromDatastore(Member removedMember) {
         List<String> removedMemberRoles = removedMember.getRoles().stream()
@@ -239,6 +240,7 @@ public class UnreachableListener extends AbstractActor {
      *
      * @param unreachable        - the unreachable member
      * @param unreachablePodName - Pod name of the unreachable member
+     * @return scheduled pod restart
      */
     private ListenableScheduledFuture schedulePodRestart(Member unreachable, String unreachablePodName) {
         if (unreachablePodName == null || unreachablePodName.isEmpty()) {
@@ -306,6 +308,8 @@ public class UnreachableListener extends AbstractActor {
     /**
      * Decide, whether the member is safe to Down without the risk of causing Split-Brain. Data from Kubernetes
      * are used for this decision.
+     * @param unreachableMember member to check status of
+     * @return is member safe to down
      */
     public boolean safeToDownMember(Member unreachableMember) {
         Optional<V1PodList> podListOptional = getAllLightyPods();
@@ -371,6 +375,7 @@ public class UnreachableListener extends AbstractActor {
      *
      * @param unreachableMember - unreachable member
      * @param pod               - unreachable member's pod
+     * @return is member terminated
      */
     private boolean analyzePodState(Member unreachableMember, V1Pod pod) {
         List<V1ContainerStatus> containerStatuses = pod.getStatus().getContainerStatuses();

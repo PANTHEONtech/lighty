@@ -27,6 +27,7 @@ public final class ClusteringConfigUtils {
     /**
      * Generate content of a Module-Shards.conf that specifies the members on which the Shards should be replicated.
      * @param memberRoles - roles (members) to which the module shards should be replicated to
+     * @return generated content
      */
     public static String generateModuleShardsForMembers(List<String> memberRoles) {
         return String.format("module-shards = [%n%s]", String.join(",\n",
