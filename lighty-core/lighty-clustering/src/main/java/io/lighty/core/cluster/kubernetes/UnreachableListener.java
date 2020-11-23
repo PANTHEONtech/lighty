@@ -315,6 +315,7 @@ public class UnreachableListener extends AbstractActor {
     /**
      * Decide, whether the member is safe to Down without the risk of causing Split-Brain. Data from Kubernetes
      * are used for this decision.
+     *
      * @param unreachableMember member to check status of
      * @return is member safe to down
      */
@@ -357,11 +358,11 @@ public class UnreachableListener extends AbstractActor {
         try {
             ApiResponse<V1PodList> apiResponse = this.kubernetesApi
                     .listNamespacedPodWithHttpInfo(this.kubernetesPodNamespace,
-                    null, null,
-                    null, null,
-                    this.kubernetesPodSelector,
-                    null, null,
-                    null, null);
+                            null, null,
+                            null, null,
+                            this.kubernetesPodSelector,
+                            null, null,
+                            null, null);
 
 
             int responseStatusCode = apiResponse.getStatusCode();

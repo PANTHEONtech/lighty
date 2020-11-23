@@ -27,6 +27,7 @@ public final class ClusteringConfigUtils {
 
     /**
      * Generate content of a Module-Shards.conf that specifies the members on which the Shards should be replicated.
+     *
      * @param memberRoles - roles (members) to which the module shards should be replicated to
      * @return generated content
      */
@@ -45,20 +46,23 @@ public final class ClusteringConfigUtils {
 
     /**
      * Reads pod-namespace from akka.discovery.kubernetes-api.
+     *
      * @param actorSystemConfig provided akka configuration
      * @return configured pod-namespace value
      */
-    public static Optional<String> getPodNamespaceFromConfig(Config actorSystemConfig){
+    public static Optional<String> getPodNamespaceFromConfig(Config actorSystemConfig) {
         String path = "akka.discovery.kubernetes-api.pod-namespace";
 
         return actorSystemConfig.hasPath(path) ? Optional.of(actorSystemConfig.getString(path)) : Optional.empty();
     }
+
     /**
      * Reads pod-label-selector from akka.discovery.kubernetes-api.
+     *
      * @param actorSystemConfig provided akka configuration
      * @return configured pod-label-selector value
      */
-    public static Optional<String> getPodSelectorFromConfig(Config actorSystemConfig){
+    public static Optional<String> getPodSelectorFromConfig(Config actorSystemConfig) {
         String path = "akka.discovery.kubernetes-api.pod-label-selector";
 
         return actorSystemConfig.hasPath(path) ? Optional.of(actorSystemConfig.getString(path)) : Optional.empty();
