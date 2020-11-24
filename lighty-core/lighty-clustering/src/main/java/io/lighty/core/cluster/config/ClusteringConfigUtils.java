@@ -19,7 +19,12 @@ public final class ClusteringConfigUtils {
     private static final Logger LOG = LoggerFactory.getLogger(ClusteringConfigUtils.class);
 
     public static final String MODULE_SHARDS_TMP_PATH = "/tmp/module-shards.conf";
+    public static final String AKKA_DISCOVERY_METHOD_PATH = "akka.discovery.method";
+
+    public static final String K8S_DISCOVERY_API_NAME = "kubernetes-api";
     public static final String K8S_POD_RESTART_TIMEOUT_PATH = "akka.lighty-kubernetes.pod-restart-timeout";
+    public static final String K8S_POD_NAMESPACE_PATH = "akka.discovery.kubernetes-api.pod-namespace";
+    public static final String K8S_POD_LABEL_SELECTOR_PATH = "akka.discovery.kubernetes-api.pod-label-selector";
 
     private ClusteringConfigUtils() {
         // this class should not be instantiated
@@ -40,8 +45,8 @@ public final class ClusteringConfigUtils {
     }
 
     public static boolean isKubernetesDeployment(Config actorSystemConfig) {
-        return actorSystemConfig.hasPath("akka.discovery.method")
-                && actorSystemConfig.getString("akka.discovery.method").equalsIgnoreCase("kubernetes-api");
+        return actorSystemConfig.hasPath(AKKA_DISCOVERY_METHOD_PATH)
+                && actorSystemConfig.getString(AKKA_DISCOVERY_METHOD_PATH).equalsIgnoreCase(K8S_DISCOVERY_API_NAME);
     }
 
     /**
@@ -51,9 +56,8 @@ public final class ClusteringConfigUtils {
      * @return configured pod-namespace value
      */
     public static Optional<String> getPodNamespaceFromConfig(Config actorSystemConfig) {
-        String path = "akka.discovery.kubernetes-api.pod-namespace";
-
-        return actorSystemConfig.hasPath(path) ? Optional.of(actorSystemConfig.getString(path)) : Optional.empty();
+        return actorSystemConfig.hasPath(K8S_POD_NAMESPACE_PATH)
+                ? Optional.of(actorSystemConfig.getString(K8S_POD_NAMESPACE_PATH)) : Optional.empty();
     }
 
     /**
@@ -63,9 +67,8 @@ public final class ClusteringConfigUtils {
      * @return configured pod-label-selector value
      */
     public static Optional<String> getPodSelectorFromConfig(Config actorSystemConfig) {
-        String path = "akka.discovery.kubernetes-api.pod-label-selector";
-
-        return actorSystemConfig.hasPath(path) ? Optional.of(actorSystemConfig.getString(path)) : Optional.empty();
+        return actorSystemConfig.hasPath(K8S_POD_LABEL_SELECTOR_PATH)
+                ? Optional.of(actorSystemConfig.getString(K8S_POD_LABEL_SELECTOR_PATH)) : Optional.empty();
     }
 
     private static String generateShard(String name, List<String> replicas) {

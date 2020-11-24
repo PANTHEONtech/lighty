@@ -21,6 +21,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controll
 
 public class UnreachableListenerService implements ClusterSingletonService {
     private static final String CLUSTER_SINGLETON_ID = "singletonUnreachableListener";
+    private static final String UNREACHABLE_LISTENER_ACTOR_NAME = "unreachableListener";
+
     private final Cluster cluster;
     private final Long podRestartTimeout;
     private final ActorSystem actorSystem;
@@ -47,7 +49,7 @@ public class UnreachableListenerService implements ClusterSingletonService {
     public void instantiateServiceInstance() {
         this.unreachableListener = actorSystem.actorOf(UnreachableListener.props(actorSystem, dataBroker,
                 clusterAdminRPCService, kubernetesPodsNamespace, kubernetesPodsSelector, podRestartTimeout),
-                "unreachableListener");
+                UNREACHABLE_LISTENER_ACTOR_NAME);
     }
 
     @Override
