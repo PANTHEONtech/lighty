@@ -14,7 +14,7 @@
     <parent>
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-app-parent</artifactId>
-        <version>12.2.1-SNAPSHOT</version>
+        <version>14.0.0-SNAPSHOT</version>
         <relativePath>../../lighty-core/lighty-app-parent</relativePath>
     </parent>
 
