@@ -220,8 +220,8 @@ public class UnreachableListener extends AbstractActor {
             return Collections.emptyList();
         }
 
-        for (EntityType entityType : owners.getEntityType()) {
-            for (Entity entity : entityType.getEntity()) {
+        for (EntityType entityType : owners.getEntityType().values()) {
+            for (Entity entity : entityType.getEntity().values()) {
                 for (Candidate candidate : entity.getCandidate()) {
                     if (removedMemberRoles.contains(candidate.getName())) {
                         LOG.debug("Found candidate in shard: {}", entity.getId());

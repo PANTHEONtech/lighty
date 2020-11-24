@@ -210,9 +210,9 @@ public final class ControllerConfigUtils {
         controllerConfiguration.getSchemaServiceConfig().setModels(allModels);
 
         controllerConfiguration.setConfigDatastoreContext(
-                DatastoreConfigurationUtils.createDefaultConfigDatastoreContext());
+            DatastoreConfigurationUtils.createDefaultConfigDatastoreContext());
         controllerConfiguration.setOperDatastoreContext(
-                DatastoreConfigurationUtils.createDefaultOperationalDatastoreContext());
+            DatastoreConfigurationUtils.createDefaultOperationalDatastoreContext());
 
         return controllerConfiguration;
     }

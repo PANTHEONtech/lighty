@@ -41,7 +41,7 @@
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-clustering</artifactId>
-                <version>12.2.1-SNAPSHOT</version>
+                <version>13.0.1-SNAPSHOT</version>
             </dependency>
 
             <!-- DI framework integrations -->
