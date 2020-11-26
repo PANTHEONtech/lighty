@@ -14,6 +14,7 @@
 # docker run -i --rm -p 8080:8080 quarkus/lighty-quarkus-jvm
 #
 ###
+# TODO Once quarkus-app is added to the build, bump the java jdk to 11 try to use (FROM openjdk:11-jre-slim).
 FROM fabric8/java-jboss-openjdk8-jdk
 ENV JAVA_OPTIONS=-Dquarkus.http.host=0.0.0.0
 COPY target/lib/* /deployments/lib/
