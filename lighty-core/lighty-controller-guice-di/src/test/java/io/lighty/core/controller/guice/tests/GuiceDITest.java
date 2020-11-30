@@ -7,7 +7,6 @@
  */
 package io.lighty.core.controller.guice.tests;
 
-import static org.testng.Assert.fail;
 import static org.testng.AssertJUnit.assertNotNull;
 
 import com.google.inject.Guice;
@@ -19,11 +18,14 @@ import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import java.util.concurrent.ExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class GuiceDITest {
+    private static final Logger LOG = LoggerFactory.getLogger(GuiceDITest.class);
 
     private LightyController lightyController;
     private TestService testService;
@@ -51,8 +53,7 @@ public class GuiceDITest {
                 lightyController.shutdown();
             }
         } catch (Exception e) {
-            // FIXME: this is ugly, find a nicer solution
-            fail();
+            LOG.error("Shutdown of LightyController failed", e);
         }
     }
 

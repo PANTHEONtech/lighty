@@ -15,6 +15,9 @@ import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import java.lang.reflect.Method;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
@@ -29,6 +32,7 @@ import org.testng.annotations.BeforeMethod;
 public abstract class CommunityRestConfTestBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(CommunityRestConfTestBase.class);
+    public static final long SHUTDOWN_TIMEOUT_MILLIS = 15_000;
 
     private LightyController lightyController;
     private CommunityRestConf communityRestConf;
@@ -67,19 +71,29 @@ public abstract class CommunityRestConfTestBase {
                 result.getName(), parseTestNGStatus(result.getStatus()), result.getThrowable());
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     @AfterClass
-    public void shutdownLighty() throws Exception {
+    public void shutdownLighty() {
         if (communityRestConf != null) {
             LOG.info("Shutting down CommunityRestConf");
-            ListenableFuture<Boolean> shutdown = communityRestConf.shutdown();
-            shutdown.get();
-            Thread.sleep(3_000);
+            try {
+                communityRestConf.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                LOG.error("Interrupted while shutting down CommunityRestConf ", e);
+            } catch (TimeoutException e) {
+                LOG.error("Timeout while shutting down CommunityRestConf ", e);
+            } catch (ExecutionException e) {
+                LOG.error("Execution of CommunityRestConf shutdown failed", e);
+            }
+
         }
         if (lightyController != null) {
             LOG.info("Shutting down LightyController");
-            ListenableFuture<Boolean> shutdown = lightyController.shutdown();
-            shutdown.get();
-            Thread.sleep(1_000);
+            try {
+                lightyController.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS,TimeUnit.MILLISECONDS);
+            } catch (Exception e) {
+                LOG.error("Shutdown of LightyController failed", e);
+            }
         }
     }
 

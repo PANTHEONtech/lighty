@@ -21,6 +21,9 @@ import io.lighty.modules.southbound.openflow.impl.util.OpenflowConfigUtils;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +36,7 @@ import org.testng.annotations.BeforeMethod;
 public abstract class OpenflowSouthboundPluginTestBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(OpenflowSouthboundPluginTestBase.class);
+    public static final long SHUTDOWN_TIMEOUT_MILLIS = 15_000;
 
     private LightyController lightyController;
     private CommunityRestConf communityRestConf;
@@ -91,24 +95,40 @@ public abstract class OpenflowSouthboundPluginTestBase {
                 result.getName(), parseTestNGStatus(result.getStatus()), result.getThrowable());
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     @AfterClass
-    public void shutdownLighty() throws Exception {
+    public void shutdownLighty() {
         if (this.ofplugin != null) {
             LOG.info("Shutting down openflow");
-            final ListenableFuture<Boolean> shutdown = this.ofplugin.shutdown();
-            shutdown.get();
+            try {
+                this.ofplugin.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                LOG.error("Interrupted while shutting down openflow", e);
+            } catch (TimeoutException e) {
+                LOG.error("Timeout while shutting down openflow", e);
+            } catch (ExecutionException e) {
+                LOG.error("Execution of openflow shutdown failed", e);
+            }
         }
         if (this.communityRestConf != null) {
             LOG.info("Shutting down CommunityRestConf");
-            final ListenableFuture<Boolean> shutdown = this.communityRestConf.shutdown();
-            shutdown.get();
-            Thread.sleep(5_000);
+            try {
+                this.communityRestConf.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                LOG.error("Interrupted while shutting down CommunityRestConf", e);
+            } catch (TimeoutException e) {
+                LOG.error("Timeout while shutting down CommunityRestConf", e);
+            } catch (ExecutionException e) {
+                LOG.error("Execution of CommunityRestConf shutdown failed", e);
+            }
         }
         if (this.lightyController != null) {
             LOG.info("Shutting down LightyController");
-            final ListenableFuture<Boolean> shutdown = this.lightyController.shutdown();
-            shutdown.get();
-            Thread.sleep(10_000);
+            try {
+                this.lightyController.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+            } catch (Exception e) {
+                LOG.error("Shutdown of LightyController failed", e);
+            }
         }
     }
 
