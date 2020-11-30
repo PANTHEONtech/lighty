@@ -77,9 +77,8 @@ public class RestconfAppTest {
         restconfApp.shutdown();
         try {
             restClient.close();
-            Thread.sleep(3_000);
         } catch (Exception e) {
-            LOG.error("Error: ", e);
+            LOG.error("Shutdown of restClient failed", e);
         }
     }
 

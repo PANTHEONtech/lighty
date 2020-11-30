@@ -18,6 +18,9 @@ import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigU
 import io.lighty.server.LightyServerBuilder;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
@@ -32,6 +35,7 @@ import org.testng.annotations.BeforeMethod;
 public abstract class SwaggerLightyTestBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(SwaggerLightyTestBase.class);
+    public static final long SHUTDOWN_TIMEOUT_MILLIS = 15_000;
 
     private LightyController lightyController;
     private SwaggerLighty swaggerModule;
@@ -81,19 +85,28 @@ public abstract class SwaggerLightyTestBase {
                 result.getName(), parseTestNGStatus(result.getStatus()), result.getThrowable());
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     @AfterClass
-    public void shutdownLighty() throws Exception {
+    public void shutdownLighty() {
         if (swaggerModule != null) {
             LOG.info("Shutting down Lighty Swagger");
-            ListenableFuture<Boolean> shutdown = swaggerModule.shutdown();
-            shutdown.get();
-            Thread.sleep(3_000);
-        }
-        if (lightyController != null) {
-            LOG.info("Shutting down LightyController");
-            ListenableFuture<Boolean> shutdown = lightyController.shutdown();
-            shutdown.get();
-            Thread.sleep(1_000);
+            try {
+                swaggerModule.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                LOG.error("Interrupted while shutting down Lighty Swagger", e);
+            } catch (TimeoutException e) {
+                LOG.error("Timeout while shutting down Lighty Swagger", e);
+            } catch (ExecutionException e) {
+                LOG.error("Execution of Lighty Swagger shutdown failed", e);
+            }
+            if (lightyController != null) {
+                LOG.info("Shutting down LightyController");
+                try {
+                    lightyController.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+                } catch (Exception e) {
+                    LOG.error("Shutdown of LightyController failed", e);
+                }
+            }
         }
     }
 
