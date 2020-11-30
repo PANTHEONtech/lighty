@@ -1,0 +1,91 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lighty-k8s-ingress
+spec:
+  rules:
+    - host: "management.lighty.io"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: lighty-k8s-cluster-lb
+                port:
+                  number: 8558
+    - host: "restconf.lighty.io"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: lighty-k8s-cluster-lb
+                port:
+                  number: 8888
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lighty-k8s-cluster-lb
+spec:
+  selector:
+    app: lighty-k8s-cluster
+  ports:
+    - protocol: TCP
+      port: 8558
+      name: http-akka
+    - protocol: TCP
+      port: 8888
+      name: http-restconf
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: lighty-k8s-cluster
+  name: lighty-k8s-cluster
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: lighty-k8s-cluster
+  template:
+    metadata:
+      labels:
+        app: lighty-k8s-cluster
+    spec:
+      containers:
+        - name: lighty-k8s-cluster
+          image: lighty-k8s-cluster:1.0.0-SNAPSHOT
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: 512Mi
+              cpu: 1000m
+            requests:
+              memory: 256Mi
+              cpu: 500m
+          env:
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+          ports:
+            # akka remoting
+            - name: remoting
+              containerPort: 2552
+              protocol: TCP
+            # When
+            # akka.management.cluster.bootstrap.contact-point-discovery.port-name
+            # is defined, it must correspond to this name:
+            - name: management
+              containerPort: 8558
+              protocol: TCP
+            # restconf port
+            - name: restconf
+              containerPort: 8888
+              protocol: TCP

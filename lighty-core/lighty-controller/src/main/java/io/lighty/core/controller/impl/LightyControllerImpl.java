@@ -8,8 +8,11 @@
 package io.lighty.core.controller.impl;
 
 import akka.actor.Terminated;
+import akka.management.javadsl.AkkaManagement;
 import com.google.common.base.Stopwatch;
 import com.typesafe.config.Config;
+import io.lighty.core.cluster.ClusteringHandler;
+import io.lighty.core.cluster.ClusteringHandlerProvider;
 import io.lighty.core.common.SocketAnalyzer;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyController;
@@ -29,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -142,7 +146,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private final DatastoreContext configDatastoreContext;
     private final DatastoreContext operDatastoreContext;
     private final Map<String, Object> datastoreProperties;
-    private final String moduleShardsConfig;
     private final String modulesConfig;
     private final String restoreDirectoryPath;
     private final int maxDataBrokerFutureCallbackQueueSize;
@@ -150,6 +153,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private final int mailboxCapacity;
     private final boolean metricCaptureEnabled;
 
+    private String moduleShardsConfig;
     private ActorSystemProviderImpl actorSystemProvider;
     private DatastoreSnapshotRestore datastoreSnapshotRestore;
     private AbstractDataStore configDatastore;
@@ -188,6 +192,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private final MetricProvider metricProvider;
     private final CacheProvider cacheProvider;
     private List<ObjectRegistration<YangModuleInfo>> modelsRegistration = new ArrayList<>();
+    private AkkaManagement akkaManagement;
+    private Optional<ClusteringHandler> clusteringHandler;
 
     public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
             final ClassLoader actorSystemClassLoader,
@@ -241,6 +247,20 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         //INIT actor system provider
         this.actorSystemProvider = new ActorSystemProviderImpl(this.actorSystemClassLoader,
                 QuarantinedMonitorActor.props(() -> { }), this.actorSystemConfig);
+
+        this.akkaManagement = AkkaManagement.get(actorSystemProvider.getActorSystem());
+        akkaManagement.start();
+
+        //INIT cluster bootstrap
+        this.clusteringHandler = ClusteringHandlerProvider.getClusteringHandler(actorSystemProvider,
+                this.actorSystemConfig);
+        this.clusteringHandler.ifPresent(handler -> {
+            handler.initClustering();
+            if (handler.getModuleConfig().isPresent()) {
+                this.moduleShardsConfig = handler.getModuleConfig().get();
+            }
+        });
+
         this.datastoreSnapshotRestore = DatastoreSnapshotRestore.instance(this.restoreDirectoryPath);
 
         //INIT schema context
@@ -311,6 +331,9 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         //create binding data broker
         this.domDataBroker = new BindingDOMDataBrokerAdapter(this.codec, this.concurrentDOMDataBroker);
 
+        this.clusteringHandler.ifPresent(handler ->
+                handler.start(clusterSingletonServiceProvider, clusterAdminRpcService, domDataBroker));
+
         this.bossGroup = new NioEventLoopGroup();
         this.workerGroup = new NioEventLoopGroup();
         this.eventExecutor = new DefaultEventExecutor();
@@ -358,7 +381,12 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         if (this.domNotificationRouter != null) {
             this.domNotificationRouter.close();
         }
+
         modelsRegistration.forEach(Registration::close);
+
+        if (this.akkaManagement != null) {
+            this.akkaManagement.stop();
+        }
         if (this.actorSystemProvider != null) {
 
             final CompletableFuture<Terminated> actorSystemTerminatedFuture = this.actorSystemProvider
