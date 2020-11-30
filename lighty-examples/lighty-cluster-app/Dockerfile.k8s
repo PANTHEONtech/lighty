@@ -1,9 +1,9 @@
 FROM openjdk:11-jre-slim
 
-COPY target/lighty-cluster-app-13.0.2-SNAPSHOT-bin.zip /
+COPY target/lighty-cluster-app-13.1.0-SNAPSHOT-bin.zip /
 
 RUN apt-get update && apt-get install unzip \
-    && unzip /lighty-cluster-app-13.0.2-SNAPSHOT-bin.zip \
-    && rm /lighty-cluster-app-13.0.2-SNAPSHOT-bin.zip
+    && unzip /lighty-cluster-app-13.1.0-SNAPSHOT-bin.zip \
+    && rm /lighty-cluster-app-13.1.0-SNAPSHOT-bin.zip
 
-ENTRYPOINT ["/lighty-cluster-app-13.0.2-SNAPSHOT/start-controller-node-k8s.sh"]
+ENTRYPOINT ["/lighty-cluster-app-13.1.0-SNAPSHOT/start-controller-node-k8s.sh"]
