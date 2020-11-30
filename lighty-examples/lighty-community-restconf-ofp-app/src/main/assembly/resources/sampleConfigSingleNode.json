@@ -121,6 +121,7 @@
     "frmBundleBasedReconciliationEnabled": false,
     "nonZeroUint32Type": 900000,
     "enableForwardingRulesManager": true,
+    "deviceConnectionHoldTimeInSeconds": 0,
     "switchConfig": {
       "instanceName": "openflow-switch-connection-provider-default-impl",
       "port": 6653,
