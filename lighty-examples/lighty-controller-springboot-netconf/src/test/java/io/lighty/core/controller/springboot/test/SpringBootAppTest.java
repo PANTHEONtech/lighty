@@ -92,6 +92,7 @@ public class SpringBootAppTest {
         Assert.assertEquals(contentResponse.getStatus(), 200);
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     @AfterClass
     public static void shutdown() {
         if (appContext != null) {
@@ -100,9 +101,8 @@ public class SpringBootAppTest {
         if (restClient != null) {
             try {
                 restClient.close();
-                Thread.sleep(1_000);
             } catch (Exception e) {
-                LOG.error("Exception: ", e);
+                LOG.error("Shutdown of restClient failed", e);
             }
         }
     }

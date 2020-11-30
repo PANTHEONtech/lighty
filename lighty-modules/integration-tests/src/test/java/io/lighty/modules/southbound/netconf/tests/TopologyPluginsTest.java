@@ -12,7 +12,6 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.api.LightyServices;
@@ -22,6 +21,9 @@ import io.lighty.modules.southbound.netconf.impl.NetconfTopologyPluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
 import io.netty.util.concurrent.Future;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -55,6 +57,7 @@ import org.testng.annotations.Test;
 public class TopologyPluginsTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(TopologyPluginsTest.class);
+    public static final long SHUTDOWN_TIMEOUT_MILLIS = 15_000;
 
     private LightyController lightyController;
     private CommunityRestConf restConf;
@@ -85,24 +88,36 @@ public class TopologyPluginsTest {
         this.netconfPlugin.start();
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     @AfterClass
-    public void afterClass() throws Exception {
+    public void afterClass() {
         if (this.netconfPlugin != null) {
             LOG.info("Shutting down Netconf topology Plugin");
-            final ListenableFuture<Boolean> shutdown = this.netconfPlugin.shutdown();
-            shutdown.get();
+            try {
+                this.netconfPlugin.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+            } catch (Exception e) {
+                LOG.error("Shutdown of Netconf topology Plugin failed", e);
+            }
         }
         if (this.restConf != null) {
             LOG.info("Shutting down CommunityRestConf");
-            final ListenableFuture<Boolean> shutdown = this.restConf.shutdown();
-            shutdown.get();
-            Thread.sleep(3_000);
+            try {
+                this.restConf.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                LOG.error("Interrupted while shutting down CommunityRestConf", e);
+            } catch (TimeoutException e) {
+                LOG.error("Timeout while shutting down CommunityRestConf", e);
+            } catch (ExecutionException e) {
+                LOG.error("Execution of CommunityRestConf shutdown failed", e);
+            }
         }
         if (this.lightyController != null) {
             LOG.info("Shutting down LightyController");
-            final ListenableFuture<Boolean> shutdown = this.lightyController.shutdown();
-            shutdown.get();
-            Thread.sleep(1_000);
+            try {
+                this.lightyController.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+            } catch (Exception e) {
+                LOG.error("Shutdown of LightyController failed", e);
+            }
         }
     }
 
