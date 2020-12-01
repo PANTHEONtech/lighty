@@ -25,6 +25,7 @@ public abstract class LightyControllerTestBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(LightyControllerTestBase.class);
     public static final long SHUTDOWN_TIMEOUT_MILLIS = 15_000;
+    public static final long SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS = 1_000;
 
     private LightyController lightyController;
 
@@ -58,6 +59,7 @@ public abstract class LightyControllerTestBase {
             LOG.info("Shutting down Lighty controller");
             try {
                 lightyController.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+                Thread.sleep(SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS);
             } catch (Exception e) {
                 LOG.error("Shutdown of LightyController failed", e);
             }
