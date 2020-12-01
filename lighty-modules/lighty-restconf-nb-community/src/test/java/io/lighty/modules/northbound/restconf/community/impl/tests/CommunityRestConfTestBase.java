@@ -33,6 +33,7 @@ public abstract class CommunityRestConfTestBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(CommunityRestConfTestBase.class);
     public static final long SHUTDOWN_TIMEOUT_MILLIS = 15_000;
+    public static final long SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS = 3_000;
 
     private LightyController lightyController;
     private CommunityRestConf communityRestConf;
@@ -78,6 +79,7 @@ public abstract class CommunityRestConfTestBase {
             LOG.info("Shutting down CommunityRestConf");
             try {
                 communityRestConf.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+                Thread.sleep(SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS);
             } catch (InterruptedException e) {
                 LOG.error("Interrupted while shutting down CommunityRestConf ", e);
             } catch (TimeoutException e) {
@@ -91,6 +93,7 @@ public abstract class CommunityRestConfTestBase {
             LOG.info("Shutting down LightyController");
             try {
                 lightyController.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS,TimeUnit.MILLISECONDS);
+                Thread.sleep(SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS);
             } catch (Exception e) {
                 LOG.error("Shutdown of LightyController failed", e);
             }

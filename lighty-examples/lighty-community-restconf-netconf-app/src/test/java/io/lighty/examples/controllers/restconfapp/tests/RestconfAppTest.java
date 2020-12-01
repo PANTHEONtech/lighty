@@ -30,6 +30,7 @@ import org.testng.annotations.Test;
 public class RestconfAppTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(RestconfAppTest.class);
+    public static final long SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS = 3_000;
 
     private static Main restconfApp;
     private static RestClient restClient;
@@ -77,6 +78,7 @@ public class RestconfAppTest {
         restconfApp.shutdown();
         try {
             restClient.close();
+            Thread.sleep(SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS);
         } catch (Exception e) {
             LOG.error("Shutdown of restClient failed", e);
         }
