@@ -36,7 +36,6 @@ import org.testng.annotations.BeforeMethod;
 public abstract class OpenflowSouthboundPluginTestBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(OpenflowSouthboundPluginTestBase.class);
-    public static final long SHUTDOWN_TIMEOUT_MILLIS = 15_000;
     public static final long SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS = 10_000;
 
     private LightyController lightyController;
@@ -102,11 +101,9 @@ public abstract class OpenflowSouthboundPluginTestBase {
         if (this.ofplugin != null) {
             LOG.info("Shutting down openflow");
             try {
-                this.ofplugin.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+                this.ofplugin.shutdown().get();
             } catch (InterruptedException e) {
                 LOG.error("Interrupted while shutting down openflow", e);
-            } catch (TimeoutException e) {
-                LOG.error("Timeout while shutting down openflow", e);
             } catch (ExecutionException e) {
                 LOG.error("Execution of openflow shutdown failed", e);
             }
@@ -114,12 +111,10 @@ public abstract class OpenflowSouthboundPluginTestBase {
         if (this.communityRestConf != null) {
             LOG.info("Shutting down CommunityRestConf");
             try {
-                this.communityRestConf.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+                this.communityRestConf.shutdown().get();
                 Thread.sleep(SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS);
             } catch (InterruptedException e) {
                 LOG.error("Interrupted while shutting down CommunityRestConf", e);
-            } catch (TimeoutException e) {
-                LOG.error("Timeout while shutting down CommunityRestConf", e);
             } catch (ExecutionException e) {
                 LOG.error("Execution of CommunityRestConf shutdown failed", e);
             }
@@ -127,7 +122,7 @@ public abstract class OpenflowSouthboundPluginTestBase {
         if (this.lightyController != null) {
             LOG.info("Shutting down LightyController");
             try {
-                this.lightyController.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+                this.lightyController.shutdown().get();
                 Thread.sleep(SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS);
             } catch (Exception e) {
                 LOG.error("Shutdown of LightyController failed", e);
