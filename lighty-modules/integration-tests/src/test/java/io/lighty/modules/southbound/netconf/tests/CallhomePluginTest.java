@@ -7,7 +7,6 @@
  */
 package io.lighty.modules.southbound.netconf.tests;
 
-import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.impl.config.ConfigurationException;
@@ -20,6 +19,9 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterClass;
@@ -30,6 +32,9 @@ import org.testng.annotations.Test;
 public class CallhomePluginTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(CallhomePluginTest.class);
+    public static final long SHUTDOWN_TIMEOUT_MILLIS = 15_000;
+    public static final long SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS = 3_000;
+
     private LightyController lightyController;
     private CommunityRestConf restConf;
     private LightyModule netconfPlugin;
@@ -44,24 +49,38 @@ public class CallhomePluginTest {
         netconfPlugin = NetconfCallhomePluginBuilder.from(configuration, lightyController.getServices()).build();
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     @AfterClass
-    public void afterClass() throws Exception {
+    public void afterClass() {
         if (netconfPlugin != null) {
             LOG.info("Shutting down Netconf topology Plugin");
-            final ListenableFuture<Boolean> shutdown = netconfPlugin.shutdown();
-            shutdown.get();
+            try {
+                netconfPlugin.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+            } catch (Exception e) {
+                LOG.error("Shutdown of Netconf topology Plugin failed", e);
+            }
         }
         if (restConf != null) {
             LOG.info("Shutting down CommunityRestConf");
-            final ListenableFuture<Boolean> shutdown = restConf.shutdown();
-            shutdown.get();
-            Thread.sleep(3_000);
+            try {
+                restConf.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+                Thread.sleep(SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS);
+            } catch (InterruptedException e) {
+                LOG.error("Interrupted while shutting down CommunityRestConf", e);
+            } catch (TimeoutException e) {
+                LOG.error("Timeout while shutting down Lighty Swagger", e);
+            } catch (ExecutionException e) {
+                LOG.error("Execution of CommunityRestConf shutdown failed", e);
+            }
         }
         if (lightyController != null) {
             LOG.info("Shutting down LightyController");
-            final ListenableFuture<Boolean> shutdown = lightyController.shutdown();
-            shutdown.get();
-            Thread.sleep(1_000);
+            try {
+                lightyController.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+                Thread.sleep(SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS);
+            } catch (Exception e) {
+                LOG.error("Shutdown of LightyController failed", e);
+            }
         }
     }
 
