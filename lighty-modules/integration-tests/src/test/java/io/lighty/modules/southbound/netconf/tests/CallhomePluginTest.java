@@ -32,7 +32,6 @@ import org.testng.annotations.Test;
 public class CallhomePluginTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(CallhomePluginTest.class);
-    public static final long SHUTDOWN_TIMEOUT_MILLIS = 15_000;
     public static final long SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS = 3_000;
 
     private LightyController lightyController;
@@ -55,7 +54,7 @@ public class CallhomePluginTest {
         if (netconfPlugin != null) {
             LOG.info("Shutting down Netconf topology Plugin");
             try {
-                netconfPlugin.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+                netconfPlugin.shutdown().get();
             } catch (Exception e) {
                 LOG.error("Shutdown of Netconf topology Plugin failed", e);
             }
@@ -63,12 +62,10 @@ public class CallhomePluginTest {
         if (restConf != null) {
             LOG.info("Shutting down CommunityRestConf");
             try {
-                restConf.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+                restConf.shutdown().get();
                 Thread.sleep(SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS);
             } catch (InterruptedException e) {
                 LOG.error("Interrupted while shutting down CommunityRestConf", e);
-            } catch (TimeoutException e) {
-                LOG.error("Timeout while shutting down Lighty Swagger", e);
             } catch (ExecutionException e) {
                 LOG.error("Execution of CommunityRestConf shutdown failed", e);
             }
@@ -76,7 +73,7 @@ public class CallhomePluginTest {
         if (lightyController != null) {
             LOG.info("Shutting down LightyController");
             try {
-                lightyController.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+                lightyController.shutdown().get();
                 Thread.sleep(SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS);
             } catch (Exception e) {
                 LOG.error("Shutdown of LightyController failed", e);
