@@ -19,8 +19,6 @@ import io.lighty.server.LightyServerBuilder;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
