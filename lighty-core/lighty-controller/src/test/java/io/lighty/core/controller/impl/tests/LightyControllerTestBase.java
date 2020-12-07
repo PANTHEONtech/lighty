@@ -12,6 +12,7 @@ import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
@@ -23,6 +24,7 @@ import org.testng.annotations.BeforeMethod;
 public abstract class LightyControllerTestBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(LightyControllerTestBase.class);
+    public static final long SHUTDOWN_TIMEOUT_MILLIS = 60_000;
     public static final long SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS = 1_000;
 
     private LightyController lightyController;
@@ -56,7 +58,7 @@ public abstract class LightyControllerTestBase {
         if (lightyController != null) {
             LOG.info("Shutting down Lighty controller");
             try {
-                lightyController.shutdown().get();
+                lightyController.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
                 Thread.sleep(SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS);
             } catch (Exception e) {
                 LOG.error("Shutdown of LightyController failed", e);
