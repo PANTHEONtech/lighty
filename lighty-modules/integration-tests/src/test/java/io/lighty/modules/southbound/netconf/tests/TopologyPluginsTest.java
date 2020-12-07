@@ -22,6 +22,8 @@ import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
 import io.netty.util.concurrent.Future;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -55,6 +57,7 @@ import org.testng.annotations.Test;
 public class TopologyPluginsTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(TopologyPluginsTest.class);
+    public static final long SHUTDOWN_TIMEOUT_MILLIS = 60_000;
     public static final long SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS = 3_000;
 
     private LightyController lightyController;
@@ -92,7 +95,7 @@ public class TopologyPluginsTest {
         if (this.netconfPlugin != null) {
             LOG.info("Shutting down Netconf topology Plugin");
             try {
-                this.netconfPlugin.shutdown().get();
+                this.netconfPlugin.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
             } catch (Exception e) {
                 LOG.error("Shutdown of Netconf topology Plugin failed", e);
             }
@@ -100,10 +103,12 @@ public class TopologyPluginsTest {
         if (this.restConf != null) {
             LOG.info("Shutting down CommunityRestConf");
             try {
-                this.restConf.shutdown().get();
+                this.restConf.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
                 Thread.sleep(SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS);
             } catch (InterruptedException e) {
                 LOG.error("Interrupted while shutting down CommunityRestConf", e);
+            } catch (TimeoutException e) {
+                LOG.error("Timeout while shutting down CommunityRestConf", e);
             } catch (ExecutionException e) {
                 LOG.error("Execution of CommunityRestConf shutdown failed", e);
             }
@@ -111,7 +116,7 @@ public class TopologyPluginsTest {
         if (this.lightyController != null) {
             LOG.info("Shutting down LightyController");
             try {
-                this.lightyController.shutdown().get();
+                this.lightyController.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
                 Thread.sleep(SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS);
             } catch (Exception e) {
                 LOG.error("Shutdown of LightyController failed", e);

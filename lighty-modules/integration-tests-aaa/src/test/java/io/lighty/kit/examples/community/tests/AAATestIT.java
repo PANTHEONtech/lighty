@@ -40,7 +40,7 @@ import org.testng.annotations.Test;
 public class AAATestIT {
 
     private static final Logger LOG = LoggerFactory.getLogger(AAATestIT.class);
-    public static final long SHUTDOWN_TIMEOUT_MILLIS = 15_000;
+    public static final long SHUTDOWN_TIMEOUT_MILLIS = 60_000;
 
     private static final String PATH_PREFIX = "http://localhost:8888/";
     private static final String AUTH = "Authorization";
