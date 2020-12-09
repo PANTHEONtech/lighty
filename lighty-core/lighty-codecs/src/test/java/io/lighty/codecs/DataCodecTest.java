@@ -128,6 +128,31 @@ public class DataCodecTest extends AbstractCodecTest {
         dataCodec.convertIdentifier("/badToaster:badToaster");
     }
 
+    @Test
+    public void testCConvertIdentifierWithNoRevision() {
+        DataCodec<Toaster> dataCodec = new DataCodec<>(this.bindingCodecContext);
+        YangInstanceIdentifier expected = YangInstanceIdentifier.of(MAKE_TOAST_RPC_QNAME);
+        YangInstanceIdentifier ours = dataCodec.convertIdentifier("toaster:make-toast");
+        Assert.assertEquals(expected, ours);
+    }
+
+    @Test
+    public void testCConvertIdentifierWithCorrectRevision() {
+        DataCodec<Toaster> dataCodec = new DataCodec<>(this.bindingCodecContext);
+        YangInstanceIdentifier expected = YangInstanceIdentifier.of(MAKE_TOAST_RPC_QNAME);
+        YangInstanceIdentifier ours = dataCodec
+                .convertIdentifier("toaster@" + TOASTER_REVISION + ":make-toast");
+        Assert.assertEquals(expected, ours);
+    }
+
+    @Test
+    public void testCConvertIdentifierWithWrongRevision() {
+        DataCodec<Toaster> dataCodec = new DataCodec<>(this.bindingCodecContext);
+        YangInstanceIdentifier expected = YangInstanceIdentifier.of(MAKE_TOAST_RPC_QNAME);
+        YangInstanceIdentifier ours = dataCodec.convertIdentifier("toaster@1111-11-11:make-toast");
+        Assert.assertEquals(expected, ours);
+    }
+
     @Test(expected = Exception.class)
     public void testSerializeXMLError_invalidErrorXML() {
         List<YangModuleInfo> yangModuleInfos = Collections.singletonList(org.opendaylight.yang.gen.v1.urn.ietf.params
