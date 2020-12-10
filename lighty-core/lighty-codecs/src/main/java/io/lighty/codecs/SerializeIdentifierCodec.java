@@ -96,7 +96,7 @@ public class SerializeIdentifierCodec {
             LOG.debug("Multiple revisions of module {} found: ", moduleName);
             modules = modules.stream()
                     .filter(m -> m.getRevision().isPresent())
-                    .peek(m -> LOG.info("\t Revision: {} ", m.getRevision().get().toString()))
+                    .peek(m -> LOG.debug("\t Revision: {} ", m.getRevision().get().toString()))
                     .sorted((m1, m2) -> m2.getRevision().get().compareTo(m1.getRevision().get()))
                     .collect(Collectors.toList());
             LOG.debug("Using latest revision");
