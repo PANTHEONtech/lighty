@@ -14,9 +14,6 @@ cache:
   directories:
     - $HOME/.m2/repository
 
-before_install:
-  - cp ./settings.xml $HOME/.m2/settings.xml
-
 # the default java install step does
 # mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 install:
