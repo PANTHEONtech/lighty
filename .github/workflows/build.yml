@@ -13,6 +13,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 1.11
@@ -21,14 +24,14 @@ jobs:
         java-version: 1.11
     - name: Cache SonarCloud packages
       uses: actions/cache@v1
-      if: ${{ secrets.SONAR_TOKEN != 0 }}
+      if: ${{ env.SONAR_TOKEN != 0 }}
       with:
         path: ~/.sonar/cache
         key: ${{ runner.os }}-sonar
         restore-keys: ${{ runner.os }}-sonar
     - name: Cache Maven packages
       uses: actions/cache@v1
-      if: ${{ secrets.SONAR_TOKEN != 0 }}
+      if: ${{ env.SONAR_TOKEN != 0 }}
       with:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
@@ -36,8 +39,5 @@ jobs:
     - name: Maven install (skip test)
       run: mvn install -DskipTests=true -B -V -Psource-quality
     - name: Maven test and Sonar
-      if: ${{ secrets.SONAR_TOKEN != 0 }}
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      if: ${{ env.SONAR_TOKEN != 0 }}
       run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
