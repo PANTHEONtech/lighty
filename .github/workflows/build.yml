@@ -4,10 +4,6 @@
 name: Build
 
 on:
-  push:
-    branches:
-      - master
-      - 13.0.x
   pull_request:
     types: [opened, synchronize, reopened]
 
