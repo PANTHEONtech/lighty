@@ -18,8 +18,8 @@
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
         <maven.install.skip>true</maven.install.skip>
-        <sonar.projectKey>mmiklus_lighty</sonar.projectKey>
-        <sonar.organization>mmiklus-github</sonar.organization>
+        <sonar.projectKey>PantheonTechnologies_lighty-core</sonar.projectKey>
+        <sonar.organization>pantheon-tech</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
