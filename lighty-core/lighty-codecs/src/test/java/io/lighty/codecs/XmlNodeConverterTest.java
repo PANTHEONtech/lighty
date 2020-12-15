@@ -18,7 +18,7 @@ import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster;
+import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev201216.Toaster;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.TopLevelContainer;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;

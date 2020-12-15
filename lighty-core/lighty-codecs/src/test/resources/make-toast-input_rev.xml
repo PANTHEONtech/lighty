@@ -1,4 +1,4 @@
-<make-toast xmlns="http://netconfcentral.org/ns/toaster?revision=2009-11-20">
+<make-toast xmlns="http://netconfcentral.org/ns/toaster?revision=2020-12-16">
     <toasterDoneness>5</toasterDoneness>
     <toasterToastType>wheat-bread</toasterToastType>
 </make-toast>

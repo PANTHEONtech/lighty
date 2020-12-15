@@ -12,7 +12,7 @@ import io.lighty.codecs.xml.XmlElement;
 import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Test;
-import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster;
+import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev201216.Toaster;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 
@@ -51,7 +51,7 @@ public class ConverterUtilsTest extends AbstractCodecTest {
     public void testRpcAsInput() throws Exception {
         XmlElement makeToastRpc = XmlElement.fromString(loadResourceAsString("make-toast-input_rev.xml"));
         XmlElement rpcAsInput =
-                ConverterUtils.rpcAsInput(makeToastRpc, "http://netconfcentral.org/ns/toaster?revision=2009-11-20");
+                ConverterUtils.rpcAsInput(makeToastRpc, "http://netconfcentral.org/ns/toaster?revision=2020-12-16");
         Assert.assertNotNull(rpcAsInput);
         Assert.assertTrue(rpcAsInput.getName().equals("input"));
         rpcAsInput = ConverterUtils.rpcAsInput(makeToastRpc);
@@ -63,7 +63,7 @@ public class ConverterUtilsTest extends AbstractCodecTest {
     public void testRpcAsOutput() throws Exception {
         XmlElement makeToastRpc = XmlElement.fromString(loadResourceAsString("make-toast-input_rev.xml"));
         XmlElement rpcAsOutput =
-                ConverterUtils.rpcAsOutput(makeToastRpc, "http://netconfcentral.org/ns/toaster?revision=2009-11-20");
+                ConverterUtils.rpcAsOutput(makeToastRpc, "http://netconfcentral.org/ns/toaster?revision=2020-12-16");
         Assert.assertNotNull(rpcAsOutput);
         Assert.assertTrue(rpcAsOutput.getName().equals("output"));
         rpcAsOutput = ConverterUtils.rpcAsOutput(makeToastRpc);

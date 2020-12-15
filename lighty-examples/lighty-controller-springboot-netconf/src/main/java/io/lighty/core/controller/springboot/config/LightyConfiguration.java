@@ -24,7 +24,7 @@ import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.$YangModuleInfoImpl;
+import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev201216.$YangModuleInfoImpl;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

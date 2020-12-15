@@ -37,7 +37,7 @@ mvn clean install
 
 
 ## Start
-It is necessary to copy toaster@2009-11-20.yang file to $WORKING_DIR/cache/schema/toaster@2009-11-20.yang, to be 
+It is necessary to copy toaster@2020-12-16.yang file to $WORKING_DIR/cache/schema/toaster@2020-12-16.yang, to be 
 possible to read NETCONF data from testing device (lighty-toaster-device).
 ```
 mvn spring-boot:run

@@ -20,6 +20,10 @@
         "Toaster module in progress.";
     }
 
+    revision "2020-12-16" {
+      description
+        "Missing toastDone notification.";
+    }
 
     identity toast-type {
       description
@@ -126,8 +130,6 @@
     rpc make-toast {
       description
         "Make some toast.
-           The toastDone notification will be sent when 
-           the toast is finished.
            An 'in-use' error will be returned if toast
            is already being made.
            A 'resource-denied' error will be returned 
@@ -196,5 +198,4 @@
           "Indicates the amount of bread that was re-stocked";
       }
     }  // notification toasterOutOfStock
-    
   }  // module toaster

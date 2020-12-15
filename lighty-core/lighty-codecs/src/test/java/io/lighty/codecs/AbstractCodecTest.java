@@ -20,12 +20,12 @@ import org.opendaylight.binding.runtime.api.DefaultBindingRuntimeContext;
 import org.opendaylight.binding.runtime.spi.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
 import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
-import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.DisplayString;
-import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.MakeToastInput;
-import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.MakeToastInputBuilder;
-import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster;
-import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster.ToasterStatus;
-import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.ToasterBuilder;
+import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev201216.DisplayString;
+import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev201216.MakeToastInput;
+import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev201216.MakeToastInputBuilder;
+import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev201216.Toaster;
+import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev201216.Toaster.ToasterStatus;
+import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev201216.ToasterBuilder;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SampleList;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
@@ -54,7 +54,7 @@ public abstract class AbstractCodecTest {
     protected static final Uint32 EXPECTED_ONE = Uint32.ONE;
     protected static final Uint32 COFFEE_VALUE = Uint32.valueOf(0xC00FFEEL);
     protected static final String TOASTER_NAMESPACE = "http://netconfcentral.org/ns/toaster";
-    protected static final String TOASTER_REVISION = "2009-11-20";
+    protected static final String TOASTER_REVISION = "2020-12-16";
 
     protected static final String SAMPLES_NAMESPACE = "http://pantheon.tech/ns/test-models";
     protected static final String SAMPLES_REVISION = "2018-01-19";

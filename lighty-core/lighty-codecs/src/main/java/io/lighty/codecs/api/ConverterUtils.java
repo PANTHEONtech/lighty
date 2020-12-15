@@ -42,7 +42,7 @@ public final class ConverterUtils {
      *
      * <p>
      * {@code
-     *  QName.create("http://netconfcentral.org/ns/toaster", "2009-11-20", "make-toast");
+     *  QName.create("http://netconfcentral.org/ns/toaster", "2020-12-16", "make-toast");
      * } , where {@code "make-toast"} is the name of the RPC given in the yang model.
      *
      * <p>
