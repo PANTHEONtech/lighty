@@ -36,8 +36,8 @@ import org.testng.annotations.BeforeMethod;
 public abstract class OpenflowSouthboundPluginTestBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(OpenflowSouthboundPluginTestBase.class);
-    public static final long SHUTDOWN_TIMEOUT_MILLIS = 15_000;
-    public static final long SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS = 5_000;
+    public static final long SHUTDOWN_TIMEOUT_MILLIS = 60_000;
+    public static final long SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS = 10_000;
 
     private LightyController lightyController;
     private CommunityRestConf communityRestConf;
