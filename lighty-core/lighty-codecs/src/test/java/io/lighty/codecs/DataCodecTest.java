@@ -157,21 +157,21 @@ public class DataCodecTest extends AbstractCodecTest {
     public void testCConvertIdentifierNonExistingModule() {
         DataCodec<Toaster> dataCodec = new DataCodec<>(this.bindingCodecContext);
         Assert.assertThrows(IllegalStateException.class,
-                () -> dataCodec.convertIdentifier("toasterX:make-toast"));
+            () -> dataCodec.convertIdentifier("toasterX:make-toast"));
     }
 
     @Test
     public void testCConvertIdentifierWrongOrderIdentifier() {
         DataCodec<Toaster> dataCodec = new DataCodec<>(this.bindingCodecContext);
         Assert.assertThrows(IllegalStateException.class,
-                () -> dataCodec.convertIdentifier(TOASTER_REVISION + "@toaster:make-toast"));
+            () -> dataCodec.convertIdentifier(TOASTER_REVISION + "@toaster:make-toast"));
     }
 
     @Test
     public void testCConvertIdentifierWithWronglyFormattedRevision() {
         DataCodec<Toaster> dataCodec = new DataCodec<>(this.bindingCodecContext);
         Assert.assertThrows(IllegalStateException.class,
-                () -> dataCodec.convertIdentifier("toaster@err-11-11:make-toast"));
+            () -> dataCodec.convertIdentifier("toaster@err-11-11:make-toast"));
     }
 
     @Test(expected = Exception.class)

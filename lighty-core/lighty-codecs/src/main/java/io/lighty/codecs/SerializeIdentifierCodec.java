@@ -118,11 +118,11 @@ public class SerializeIdentifierCodec {
      * @return found module
      */
     private Module findModule(String moduleName, String revisionString) {
-        Optional<Revision> requestedRevision = Optional.empty();
+        Optional<Revision> requestedRevision;
         try {
             requestedRevision = Revision.ofNullable(revisionString);
         } catch (DateTimeException e) {
-            throw new IllegalStateException("Wrongly formatted revision provided" + revisionString);
+            throw new IllegalStateException(e + "--> Wrongly formatted revision provided" + revisionString);
         }
         Collection<? extends Module> modules = this.schemaContext.findModules(moduleName);
 
