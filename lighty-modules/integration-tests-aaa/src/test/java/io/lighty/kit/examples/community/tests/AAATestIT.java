@@ -12,6 +12,7 @@ import static org.testng.Assert.assertEquals;
 
 import io.lighty.kit.examples.community.aaa.restconf.Main;
 import java.io.File;
+import java.io.IOException;
 import java.util.Base64;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -39,6 +40,8 @@ import org.testng.annotations.Test;
 public class AAATestIT {
 
     private static final Logger LOG = LoggerFactory.getLogger(AAATestIT.class);
+    public static final long SHUTDOWN_TIMEOUT_MILLIS = 60_000;
+
     private static final String PATH_PREFIX = "http://localhost:8888/";
     private static final String AUTH = "Authorization";
     private static final String USERS_PATH = "auth/v1/users/";
@@ -361,17 +364,26 @@ public class AAATestIT {
     }
 
     @AfterClass
-    public void shutdown() throws Exception {
+    public void shutdown() {
         LOG.info("removing db files");
         File currentDirFile = new File(".");
         String lightyTestsPath = currentDirFile.getAbsolutePath();
-        FileUtils.deleteDirectory(new File(lightyTestsPath + "/configuration"));
-        FileUtils.deleteDirectory(new File(lightyTestsPath + "/data"));
+        try {
+            FileUtils.deleteDirectory(new File(lightyTestsPath + "/configuration"));
+            FileUtils.deleteDirectory(new File(lightyTestsPath + "/data"));
+        } catch (IOException e) {
+            LOG.error("Deletion of directory failed", e);
+        }
+
 
         LOG.info("shutdown.");
         final ExecutorService executorService = Executors.newFixedThreadPool(5);
         executorService.shutdown();
-        executorService.awaitTermination(15, TimeUnit.SECONDS);
+        try {
+            executorService.awaitTermination(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            LOG.error("Interrupted while shutting down", e);
+        }
     }
 
     private static class Connection {
