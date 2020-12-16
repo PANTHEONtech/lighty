@@ -44,14 +44,14 @@ public class SerializeIdentifierCodec {
 
     /**
      * Returns an unique {@link YangInstanceIdentifier} based on the provided String identifier.
+     *
      * @param identifier URI like String identifier of a node in the schema tree formatted like:
      *                   <br>
      *                   {@code MODULE_NAME@REVISION:path_to_node/..}
      *                   <br>
-     *                   If the specified revision is not present (or is wrongly formatted) and there are
+     *                   If the specified revision is not present and there are
      *                   multiple revisions of the MODULE_NAME loaded, we perform the serialization on
      *                   the latest revision.
-     *
      * @return YangInstanceIdentifier of a node
      */
     public YangInstanceIdentifier serialize(final String identifier) {
@@ -63,18 +63,66 @@ public class SerializeIdentifierCodec {
             data = data.substring(0, data.length() - 1);
         }
         final List<String> pathArgs = Arrays.asList(data.split("/"));
-        final String[] nameRevision_pathStart = pathArgs.get(0).split(":");
-        final String[] name_Revision = nameRevision_pathStart[0].split("@");
-        final String moduleName = name_Revision[0];
-        String revisionString = null;
-        if (name_Revision.length > 1) {
-            revisionString = name_Revision[1];
+        final String[] nameRevisionSplitPath = pathArgs.get(0).split(":");
+        final String[] nameSplitRevision = nameRevisionSplitPath[0].split("@");
+        final String moduleName = nameSplitRevision[0];
+        String revisionString = (nameSplitRevision.length > 1) ? nameSplitRevision[1] : null;
+
+        Module module = this.findModule(moduleName, revisionString);
+        LOG.debug("Using module {} with revision: {} ", module.getName(),
+                module.getRevision().isPresent() ? module.getRevision().get() : "none");
+
+        final QNameModule qNameModule = module.getQNameModule();
+        pathArgs.set(0, nameRevisionSplitPath[1]);
+        final YangInstanceIdentifier.InstanceIdentifierBuilder builder = YangInstanceIdentifier.builder();
+        DataSchemaContextNode<?> schemaNode = this.dataSchemaContextTree.getRoot();
+        /*
+         Traverses the schema tree of the module based on the List pathArgs, which contains String identifiers of nodes
+         */
+        for (final String args : pathArgs) {
+            final QName qName = getQname(qNameModule, args);
+            DataSchemaContextNode<?> foundChild = schemaNode.getChild(qName);
+            if (foundChild != null && foundChild.isMixin()) {
+                // If the node exists in schema tree of module, dive deeper
+                schemaNode = schemaNode.getChild(qName);
+                final DataSchemaNode dataSchemaNode = schemaNode.getDataSchemaNode();
+                if (dataSchemaNode instanceof ListSchemaNode) {
+                    builder.node(qName);
+                    final ListSchemaNode listSchemaNode = (ListSchemaNode) dataSchemaNode;
+                    builder.node(buildNodeWithKey(listSchemaNode, args, qName));
+                    schemaNode = schemaNode.getChild(qName);
+                } else if (dataSchemaNode instanceof ChoiceSchemaNode) {
+                    builder.node(dataSchemaNode.getQName());
+                    builder.node(qName);
+                } else if (dataSchemaNode instanceof LeafListSchemaNode) {
+                    builder.node(qName);
+                    final LeafListSchemaNode leafListSchemaNode = (LeafListSchemaNode) dataSchemaNode;
+                    builder.node(buildNodeWithValue(leafListSchemaNode, args));
+                }
+            } else {
+                // If node does not exist in schema tree, just append the name and do not dive deeper
+                builder.node(qName);
+            }
         }
+        return builder.build();
+
+    }
+
+    /**
+     * Finds the module from loaded schema context based on name and revision.
+     * If multiple revisions of module are present in the schema, and no specific revision was provided
+     * we return the module with the latest revision.
+     *
+     * @param moduleName     name of the module to find
+     * @param revisionString revision of the module
+     * @return found module
+     */
+    private Module findModule(String moduleName, String revisionString) {
         Optional<Revision> requestedRevision = Optional.empty();
         try {
             requestedRevision = Revision.ofNullable(revisionString);
         } catch (DateTimeException e) {
-            LOG.warn("Wrongly formatted revision detected {} ", revisionString);
+            throw new IllegalStateException("Wrongly formatted revision provided" + revisionString);
         }
         Collection<? extends Module> modules = this.schemaContext.findModules(moduleName);
 
@@ -101,44 +149,11 @@ public class SerializeIdentifierCodec {
                     .collect(Collectors.toList());
             LOG.debug("Using latest revision");
         }
-        Module module;
         if (foundModule.isEmpty()) {
-            module = modules.stream().findFirst().get();
+            return modules.stream().findFirst().get();
         } else {
-            module = foundModule.get();
+            return foundModule.get();
         }
-        LOG.debug("Using module {} with revision: {} ", module.getName(),
-                module.getRevision().isPresent() ? module.getRevision().get() : "none");
-
-        final QNameModule qNameModule = module.getQNameModule();
-        pathArgs.set(0, nameRevision_pathStart[1]);
-        final YangInstanceIdentifier.InstanceIdentifierBuilder builder = YangInstanceIdentifier.builder();
-        DataSchemaContextNode<?> schemaNode = this.dataSchemaContextTree.getRoot();
-        for (final String args : pathArgs) {
-            final QName qName = getQname(qNameModule, args);
-            DataSchemaContextNode<?> foundChild = schemaNode.getChild(qName);
-            if (foundChild != null && foundChild.isMixin()) {
-                schemaNode = schemaNode.getChild(qName);
-                final DataSchemaNode dataSchemaNode = schemaNode.getDataSchemaNode();
-                if (dataSchemaNode instanceof ListSchemaNode) {
-                    builder.node(qName);
-                    final ListSchemaNode listSchemaNode = (ListSchemaNode) dataSchemaNode;
-                    builder.node(buildNodeWithKey(listSchemaNode, args, qName));
-                    schemaNode = schemaNode.getChild(qName);
-                } else if (dataSchemaNode instanceof ChoiceSchemaNode) {
-                    builder.node(dataSchemaNode.getQName());
-                    builder.node(qName);
-                } else if (dataSchemaNode instanceof LeafListSchemaNode) {
-                    builder.node(qName);
-                    final LeafListSchemaNode leafListSchemaNode = (LeafListSchemaNode) dataSchemaNode;
-                    builder.node(buildNodeWithValue(leafListSchemaNode, args));
-                }
-            } else {
-                builder.node(qName);
-            }
-        }
-        return builder.build();
-
     }
 
     private static YangInstanceIdentifier.NodeWithValue<?> buildNodeWithValue(
