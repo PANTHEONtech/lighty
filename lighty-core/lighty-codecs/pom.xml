@@ -52,6 +52,10 @@
             <groupId>org.opendaylight.netconf</groupId>
             <artifactId>restconf-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.lighty.resources</groupId>
+            <artifactId>log4j-properties</artifactId>
+        </dependency>
 
         <!-- Test scoped dependencies -->
         <dependency>
@@ -71,7 +75,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
         </dependency>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
