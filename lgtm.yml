@@ -1,5 +1,0 @@
-extraction:
-  java:
-    index:
-      maven:
-        settings_file: settings.xml
