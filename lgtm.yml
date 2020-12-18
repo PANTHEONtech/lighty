@@ -1,5 +1,4 @@
 extraction:
   java:
     index:
-      maven:
-        settings_file: settings.xml
+      java_version: 11
