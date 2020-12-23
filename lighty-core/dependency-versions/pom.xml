@@ -93,12 +93,12 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
-                <version>1.7.28</version>
+                <version>1.7.30</version>
             </dependency>
             <dependency>
                 <groupId>com.google.inject</groupId>
                 <artifactId>guice</artifactId>
-                <version>4.2.2</version>
+                <version>4.2.3</version>
             </dependency>
             <dependency>
                 <groupId>org.testng</groupId>
