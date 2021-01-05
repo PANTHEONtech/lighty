@@ -16,6 +16,8 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
+      SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY}}
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 1.11
@@ -40,6 +42,10 @@ jobs:
     - name: Maven test + SonarCloud
       if: ${{ env.SONAR_TOKEN != 0 }}
       run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+        -Dsonar.java.source=1.11
+        -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
+        -Dsonar.organization=${{ env.SONAR_ORGANIZATION }}
+        -Dsonar.host.url=https://sonarcloud.io
     - name: Maven test no SonarCloud
       if: ${{ env.SONAR_TOKEN == 0 }}
       run: mvn -B verify
