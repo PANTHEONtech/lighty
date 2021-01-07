@@ -7,6 +7,7 @@
  */
 package io.lighty.examples.controllers.restconfapp;
 
+import com.beust.jcommander.JCommander;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.base.Stopwatch;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -26,15 +27,18 @@ import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
 import io.lighty.server.LightyServerBuilder;
 import io.lighty.swagger.SwaggerLighty;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.log4j.PropertyConfigurator;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +50,7 @@ public class Main {
     private ShutdownHook shutdownHook;
 
     public void start() {
-        start(new String[] {}, false);
+        start(new String[]{}, false);
     }
 
     @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
@@ -61,10 +65,29 @@ public class Main {
         LOG.info("Starting lighty.io RESTCONF-NETCONF example application ...");
         LOG.info("https://lighty.io/");
         LOG.info("https://github.com/PANTHEONtech/lighty");
+
+        Arguments arguments = new Arguments();
+        JCommander.newBuilder()
+                .addObject(arguments)
+                .build()
+                .parse(args);
+
+        if (arguments.getLoggerPath() != null) {
+            LOG.info("Argument for custom logger path is present: {} ", arguments.getLoggerPath());
+            Properties properties = new Properties();
+            try (FileInputStream fileStream = new FileInputStream(arguments.getLoggerPath())) {
+                properties.load(fileStream);
+                PropertyConfigurator.configure(properties);
+                LOG.info("Logger properties loaded successfully");
+            } catch (IOException e) {
+                LOG.warn("Error reading provided logger properties file ", e);
+                LOG.info("Will use default logger properties available on class path, if present");
+            }
+        }
         try {
-            if (args.length > 0) {
-                Path configPath = Paths.get(args[0]);
-                LOG.info("using configuration from file {} ...", configPath);
+            if (arguments.getConfigPath() != null) {
+                Path configPath = Paths.get(arguments.getConfigPath());
+                LOG.info("Using lighty configuration from file {} ...", configPath);
                 //1. get controller configuration
                 ControllerConfiguration singleNodeConfiguration =
                         ControllerConfigUtils.getConfiguration(Files.newInputStream(configPath));
@@ -77,7 +100,7 @@ public class Main {
                 startLighty(singleNodeConfiguration, restConfConfiguration, netconfSBPConfiguration,
                         registerShutdownHook);
             } else {
-                LOG.info("using default configuration ...");
+                LOG.info("Using default lighty configuration ...");
                 Set<YangModuleInfo> modelPaths = Stream.concat(RestConfConfigUtils.YANG_MODELS.stream(),
                         NetconfConfigUtils.NETCONF_TOPOLOGY_MODELS.stream()).collect(Collectors.toSet());
                 ArrayNode arrayNode = YangModuleUtils
