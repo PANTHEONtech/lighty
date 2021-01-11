@@ -11,7 +11,7 @@
 
     <groupId>io.lighty.kit.examples</groupId>
     <artifactId>example-applications-aggregator</artifactId>
-    <version>13.1.0</version>
+    <version>13.1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
