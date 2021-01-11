@@ -53,7 +53,6 @@ import org.opendaylight.aaa.shiro.filters.AAAShiroFilter;
 import org.opendaylight.aaa.shiro.idm.IdmLightApplication;
 import org.opendaylight.aaa.shiro.idm.IdmLightProxy;
 import org.opendaylight.aaa.shiro.moon.MoonTokenEndpoint;
-import org.opendaylight.aaa.shiro.tokenauthrealm.auth.AuthenticationManager;
 import org.opendaylight.aaa.shiro.tokenauthrealm.auth.HttpBasicAuth;
 import org.opendaylight.aaa.shiro.tokenauthrealm.auth.TokenAuthenticators;
 import org.opendaylight.aaa.shiro.web.env.ShiroWebEnvironmentLoaderListener;
