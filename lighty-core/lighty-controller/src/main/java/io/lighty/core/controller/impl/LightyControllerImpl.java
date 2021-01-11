@@ -53,6 +53,7 @@ import org.opendaylight.controller.cluster.datastore.DatastoreContext;
 import org.opendaylight.controller.cluster.datastore.DatastoreContextIntrospector;
 import org.opendaylight.controller.cluster.datastore.DatastoreContextPropertiesUpdater;
 import org.opendaylight.controller.cluster.datastore.DatastoreSnapshotRestore;
+import org.opendaylight.controller.cluster.datastore.DefaultDatastoreSnapshotRestore;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreFactory;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
@@ -118,12 +119,15 @@ import org.opendaylight.mdsal.eos.binding.dom.adapter.BindingDOMEntityOwnershipS
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.mdsal.singleton.dom.impl.DOMClusterSingletonServiceProviderImpl;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.config.distributed.datastore.provider.rev140612.DataStorePropertiesContainer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
 import org.opendaylight.yangtools.yang.parser.impl.YangParserFactoryImpl;
@@ -261,7 +265,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             }
         });
 
-        this.datastoreSnapshotRestore = DatastoreSnapshotRestore.instance(this.restoreDirectoryPath);
+        this.datastoreSnapshotRestore = new DefaultDatastoreSnapshotRestore(this.restoreDirectoryPath);
 
         //INIT schema context
         this.moduleInfoBackedContext = ModuleInfoBackedContext.create();
@@ -351,8 +355,13 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             final DatastoreSnapshotRestore newDatastoreSnapshotRestore,
             final ActorSystemProvider newActorSystemProvider) {
         final ConfigurationImpl configuration = new ConfigurationImpl(newModuleShardsConfig, newModulesConfig);
+
+        final DataStorePropertiesContainer propertiesContainer =
+                (DataStorePropertiesContainer) this.codec.currentSerializer()
+                        .fromNormalizedNode(YangInstanceIdentifier.of(DataStorePropertiesContainer.QNAME),
+                                ImmutableNodes.containerNode(DataStorePropertiesContainer.QNAME)).getValue();
         final DatastoreContextIntrospector introspector = new DatastoreContextIntrospector(datastoreContext,
-                this.codec.currentSerializer());
+                propertiesContainer);
         final DatastoreContextPropertiesUpdater updater = new DatastoreContextPropertiesUpdater(introspector,
                 datastoreProperties);
         return DistributedDataStoreFactory.createInstance(domSchemaService, datastoreContext,
