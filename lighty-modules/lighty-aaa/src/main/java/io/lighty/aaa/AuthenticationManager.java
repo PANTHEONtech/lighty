@@ -7,13 +7,12 @@
  */
 package io.lighty.aaa;
 
-import io.lighty.aaa.service.ManagedService;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import java.util.Dictionary;
 import org.opendaylight.aaa.api.Authentication;
 import org.opendaylight.aaa.api.AuthenticationService;
 
-public class AuthenticationManager implements AuthenticationService, ManagedService {
+public class AuthenticationManager implements AuthenticationService {
 
     private static final String AUTH_ENABLED_ERR = "Error setting authEnabled";
 
