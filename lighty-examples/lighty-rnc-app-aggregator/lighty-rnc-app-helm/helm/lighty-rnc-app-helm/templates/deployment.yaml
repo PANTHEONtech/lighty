@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "lighty-rnc-app-helm.fullname" . }}
+  labels:
+    {{- include "lighty-rnc-app-helm.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.lighty.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "lighty-rnc-app-helm.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "lighty-rnc-app-helm.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.name }}:{{ .Values.image.version }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["{{ .Values.lighty.configDirectoryName }}/{{ .Values.lighty.configFilename }}"]
+          volumeMounts:
+            - name: config-volume
+              mountPath: {{ .Values.lighty.workdir }}/{{ .Values.lighty.configDirectoryName }}
+            - name: secrets-volume
+              mountPath: {{ .Values.lighty.workdir }}/{{ .Values.lighty.restconf.keyStoreDirectory }}
+          env:
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+          ports:
+            # akka remoting
+            - name: remoting
+              containerPort: {{ .Values.lighty.akka.remotingPort }}
+              protocol: TCP
+            # When
+            # akka.management.cluster.bootstrap.contact-point-discovery.port-name
+            # is defined, it must correspond to this name:
+            - name: management
+              containerPort: {{ .Values.lighty.akka.managementPort }}
+              protocol: TCP
+            # restconf port
+            - name: restconf
+              containerPort: {{ .Values.lighty.restconf.restconfPort }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "lighty-rnc-app-helm.fullname" . }}
+        - name: secrets-volume
+          secret:
+            secretName: {{ include "lighty-rnc-app-helm.fullname" . }}
+            items:
+              - key: keystore.jks
+                path: {{ .Values.lighty.restconf.keyStoreFileName }}
