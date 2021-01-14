@@ -14,7 +14,7 @@ Most important lighty.io components used are:
   authentication and accounting which for example enables to use Basic Authentication for RESTCONF northbound interface.
   This module is optional and can be turned ON/OFF using application configuration.
 
-![RNC lighty.io architecture](../../docs/lighty-architecture.png)
+![RNC lighty.io architecture](docs/lighty-architecture.png)
 
 ## Prerequisites
 In order to build and start the RNC lighty.io application locally, you need:
