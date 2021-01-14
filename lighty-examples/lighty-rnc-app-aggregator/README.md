@@ -84,3 +84,23 @@ which creates new `lightyio.jks` keystore file with hostnames: `lighty.io, light
 
 The path to correct certificate can be placed in `configuration.json file` (`restconf.keyStoreFile`)
 Also you need to provide file type for this certificate (`restconf.keyStoreType`) and password (`restconf.keyStorePassword`)
+
+## Build and start with the docker
+To build and start the RNC lighty.io application using docker in the local environment follow these steps:
+
+1. Build the application using this maven command:  
+   `mvn clean install -P docker`
+
+2. Start the application using following docker command.   
+   `docker run -it --name lighty-rnc --network host --rm lighty-rnc`
+
+3. To start the application with custom configuration use command:
+   `docker run -it --name lighty-rnc --network host -v /path/to/config-file:/lighty-rnc/conf.json --rm lighty-rnc conf.json`
+   
+   Example configuration is located on following path:  
+   `lighty-rnc-app/src/main/resources/configuration.json`
+
+4. If the application was started successfully, then a log similar should be present in the console:  
+   `INFO [main] (Main.java:81) - RNC lighty.io application started in 5989.108ms`
+
+5. Test the RNC lighty.io application. Default RESTCONF port is `8888`
