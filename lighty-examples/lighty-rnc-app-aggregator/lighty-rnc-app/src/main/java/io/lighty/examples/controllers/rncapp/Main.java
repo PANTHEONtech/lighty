@@ -86,8 +86,9 @@ public class Main {
                 final org.apache.log4j.Logger logger = (org.apache.log4j.Logger) loggersEnumer.nextElement();
                 hierarchyDynamicMBean.addLoggerMBean(logger.getName());
             }
-        } catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException | MalformedObjectNameException e) {
-            e.printStackTrace();
+        } catch (InstanceAlreadyExistsException | MBeanRegistrationException
+                | NotCompliantMBeanException | MalformedObjectNameException e) {
+            LOG.warn("Exception while initializing JXM with MBeans classes", e);
         }
 
         try {
