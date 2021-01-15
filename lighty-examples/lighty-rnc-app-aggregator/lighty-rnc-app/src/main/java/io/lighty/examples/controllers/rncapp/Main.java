@@ -17,10 +17,21 @@ import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.rnc.module.RncLightyModule;
 import io.lighty.rnc.module.config.RncLightyModuleConfigUtils;
 import io.lighty.rnc.module.config.RncLightyModuleConfiguration;
+import java.lang.management.ManagementFactory;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Enumeration;
 import java.util.concurrent.ExecutionException;
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.MBeanRegistrationException;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.NotCompliantMBeanException;
+import javax.management.ObjectName;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.jmx.HierarchyDynamicMBean;
+import org.apache.log4j.spi.LoggerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +70,24 @@ public class Main {
             LOG.debug("Argument for custom logging settings path is present: {} ", arguments.getLoggerPath());
             PropertyConfigurator.configure(arguments.getLoggerPath());
             LOG.info("Custom logger properties loaded successfully");
+        }
+
+        try {
+            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+            HierarchyDynamicMBean hierarchyDynamicMBean = new HierarchyDynamicMBean();
+            final ObjectName mbo = new ObjectName("log4j:hierarchy=LoggerHierarchy");
+            mbs.registerMBean(hierarchyDynamicMBean, mbo);
+
+            final org.apache.log4j.Logger rootLogger = org.apache.log4j.Logger.getRootLogger();
+            hierarchyDynamicMBean.addLoggerMBean(rootLogger.getName());
+            final LoggerRepository loggersRepo = LogManager.getLoggerRepository();
+            final Enumeration loggersEnumer = loggersRepo.getCurrentLoggers();
+            while (loggersEnumer.hasMoreElements()) {
+                final org.apache.log4j.Logger logger = (org.apache.log4j.Logger) loggersEnumer.nextElement();
+                hierarchyDynamicMBean.addLoggerMBean(logger.getName());
+            }
+        } catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException | MalformedObjectNameException e) {
+            e.printStackTrace();
         }
 
         try {

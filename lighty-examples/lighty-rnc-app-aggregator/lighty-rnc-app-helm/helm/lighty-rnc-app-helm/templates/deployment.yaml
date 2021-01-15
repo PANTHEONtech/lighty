@@ -46,6 +46,10 @@ spec:
             - name: restconf
               containerPort: {{ .Values.lighty.restconf.restconfPort }}
               protocol: TCP
+              # JXM port on which JXM server is listening
+            - name: jxm
+              containerPort: {{ .Values.lighty.jxm.jxmPort }}
+              protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:

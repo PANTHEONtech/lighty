@@ -26,6 +26,10 @@ lighty:
     keyStoreDirectory: "keystore"
     keyStoreFileName: "lightyio.jks"
 
+  jxm:
+    # Port on which JXM server in image is listening, should be same as defined in dockerfile
+    jxmPort: 1099
+
   akka:
     # If true, overrides akka cluster configuration with default single-node
     isSingleNode: true
