@@ -20,7 +20,7 @@ public class RncRestConfConfiguration extends RestConfConfiguration {
     private String keyStorePassword = "8pgETwat";
     private String keyStoreType = "JKS";
     private String keyStoreFilePath = "keystore/lightyio.jks";
-    private boolean useHttps = true;
+    private boolean useHttps = false;
 
     public RncRestConfConfiguration() {
         super();
