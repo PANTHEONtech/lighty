@@ -50,6 +50,12 @@
                                     </includes>
                                 </resource>
                                 <resource>
+                                <directory>src/main/docker</directory>
+                                <includes>
+                                    <include>entrypoint.sh</include>
+                                </includes>
+                            </resource>
+                                <resource>
                                     <directory>${basedir}/../../../</directory>
                                     <includes>
                                         <include>LICENSE</include>
