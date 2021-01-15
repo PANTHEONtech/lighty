@@ -46,7 +46,7 @@ To build and start the RNC lighty.io application in the local environment follow
 6. Test the RNC lighty.io application. Default RESTCONF port is `8888`
 
 7. The default credential for http requests is login:`admin`, password: `admin`. 
-To manipulate user's credentials [idmtool](https://docs.opendaylight.org/projects/aaa/en/stable-magnesium/user-guide.html#idmtool) can be used:
+To manipulate user's credentials [idmtool](https://docs.opendaylight.org/projects/aaa/en/stable-aluminium/user-guide.html#idmtool) can be used:
     - create new `etc` directory and create there `org.ops4j.pax.web.cfg` file
     - add this two lines in the `org.ops4j.pax.web.cfg` file: 
        
@@ -57,7 +57,7 @@ To manipulate user's credentials [idmtool](https://docs.opendaylight.org/project
         where `8888` - default RESTCONF port. It can be different according to your configuration.
     - download `idmtool.py` script from AAA project github repository and place downloaded file into `etc` directory
         
-        `curl -O https://raw.githubusercontent.com/opendaylight/aaa/stable/magnesium/aaa-shiro/impl/src/main/resources/idmtool.py`
+        `curl -O https://raw.githubusercontent.com/opendaylight/aaa/stable/aluminium/aaa-shiro/impl/src/main/resources/idmtool.py`
     - run script (latest python version must be installed)
     
         `python etc/idmtool.py -h`
@@ -71,7 +71,7 @@ To manipulate user's credentials [idmtool](https://docs.opendaylight.org/project
         where `admin` - user name (the default name); `list-users` command to show all users.
         It will ask to write password for `admin` user (the default one is `admin`)    
     
-    Also, it is possible to configure user's credentials via [REST](https://docs.opendaylight.org/projects/aaa/en/latest/user-guide.html#configuration-using-the-restful-web-service)
+    Also, it is possible to configure user's credentials via [REST](https://docs.opendaylight.org/projects/aaa/en/stable-aluminium/user-guide.html#configuration-using-the-restful-web-service)
 
 8. For using ssl connection the correct certificate must be used.
 By default, a test certificate is used (`lighty-rnc-module/src/main/resources/keystore/lightyio.jks`).
