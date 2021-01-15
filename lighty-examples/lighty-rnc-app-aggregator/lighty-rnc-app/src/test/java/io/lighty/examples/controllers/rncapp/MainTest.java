@@ -37,13 +37,13 @@ public class MainTest {
         doReturn(Futures.immediateFuture(true)).when(lighty).start();
         doReturn(Futures.immediateFuture(true)).when(lighty).shutdown();
         doReturn(lighty).when(app).createRncLightyModule(any());
-        app.start(new String[] {"src/main/resources/configuration.json"});
+        app.start(new String[] {"-c","src/main/resources/configuration.json"});
     }
 
     @Test
     public void testStartWithConfigFileNoSuchFile() {
         Main app = spy(new Main());
         verify(app, never()).createRncLightyModule(any());
-        app.start(new String[] {"no_config.json"});
+        app.start(new String[] {"-c","no_config.json"});
     }
 }

@@ -7,6 +7,7 @@
  */
 package io.lighty.examples.controllers.rncapp;
 
+import com.beust.jcommander.JCommander;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.lighty.core.common.models.YangModuleUtils;
@@ -18,6 +19,7 @@ import io.lighty.rnc.module.config.RncLightyModuleConfiguration;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.ExecutionException;
+import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,10 +47,22 @@ public class Main {
         LOG.info("Starting RNC lighty.io application...");
 
         RncLightyModuleConfiguration rncModuleConfig;
+        // Parse args
+        Arguments arguments = new Arguments();
+        JCommander.newBuilder()
+                .addObject(arguments)
+                .build()
+                .parse(args);
+
+        if (arguments.getLoggerPath() != null) {
+            LOG.debug("Argument for custom logging settings path is present: {} ", arguments.getLoggerPath());
+            PropertyConfigurator.configure(arguments.getLoggerPath());
+            LOG.info("Custom logger properties loaded successfully");
+        }
 
         try {
-            if (args.length > 0) {
-                Path configPath = Paths.get(args[0]);
+            if (arguments.getConfigPath() != null) {
+                Path configPath = Paths.get(arguments.getConfigPath());
                 rncModuleConfig = RncLightyModuleConfigUtils.loadConfigFromFile(configPath);
             } else {
                 rncModuleConfig = RncLightyModuleConfigUtils.loadDefaultConfig();
