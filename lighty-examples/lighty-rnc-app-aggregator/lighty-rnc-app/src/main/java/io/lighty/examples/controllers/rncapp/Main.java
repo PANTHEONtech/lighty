@@ -9,6 +9,7 @@ package io.lighty.examples.controllers.rncapp;
 
 import com.beust.jcommander.JCommander;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.google.common.base.Stopwatch;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.lighty.core.common.models.YangModuleUtils;
 import io.lighty.core.controller.api.AbstractLightyModule;
@@ -37,7 +38,7 @@ public class Main {
 
     @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
     public void start(String[] args) {
-        final long startTime = System.nanoTime();
+        final Stopwatch stopwatch = Stopwatch.createStarted();
         LOG.info(".__  .__       .__     __              .__           ");
         LOG.info("|  | |__| ____ |  |___/  |_ ___.__.    |__| ____     ");
         LOG.info("|  | |  |/ ___\\|  |  \\   __<   |  |    |  |/  _ \\ ");
@@ -91,8 +92,7 @@ public class Main {
         // Register shutdown hook for graceful shutdown
         LOG.info("Registering ShutdownHook to gracefully shutdown application");
         registerShutdownHook(rncLightyModule);
-        float duration = (System.nanoTime() - startTime) / 1_000_000f;
-        LOG.info("RNC lighty.io application started in {}ms", duration);
+        LOG.info("RNC lighty.io application started in {}", stopwatch.stop());
     }
 
     public RncLightyModule createRncLightyModule(RncLightyModuleConfiguration rncModuleConfig) {
