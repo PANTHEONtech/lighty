@@ -74,18 +74,7 @@ public class Main {
 
         try {
             MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-            HierarchyDynamicMBean hierarchyDynamicMBean = new HierarchyDynamicMBean();
-            final ObjectName mbo = new ObjectName("log4j:hierarchy=LoggerHierarchy");
-            mbs.registerMBean(hierarchyDynamicMBean, mbo);
-
-            final org.apache.log4j.Logger rootLogger = org.apache.log4j.Logger.getRootLogger();
-            hierarchyDynamicMBean.addLoggerMBean(rootLogger.getName());
-            final LoggerRepository loggersRepo = LogManager.getLoggerRepository();
-            final Enumeration loggersEnumer = loggersRepo.getCurrentLoggers();
-            while (loggersEnumer.hasMoreElements()) {
-                final org.apache.log4j.Logger logger = (org.apache.log4j.Logger) loggersEnumer.nextElement();
-                hierarchyDynamicMBean.addLoggerMBean(logger.getName());
-            }
+            registerLoggerMBeans(mbs);
         } catch (InstanceAlreadyExistsException | MBeanRegistrationException
                 | NotCompliantMBeanException | MalformedObjectNameException e) {
             LOG.warn("Exception while initializing JXM with MBeans classes", e);
@@ -142,5 +131,30 @@ public class Main {
                 Thread.currentThread().interrupt();
             }
         }));
+    }
+
+    /**
+     * Registers necessary log4j MBeans in JXM.
+     * @param server MBeanServer
+     * @throws MalformedObjectNameException wrong formatted ObjectName
+     * @throws NotCompliantMBeanException not compliant MBean
+     * @throws InstanceAlreadyExistsException if MBean is already registered
+     * @throws MBeanRegistrationException if MBean cant be registered
+     */
+    private void registerLoggerMBeans(MBeanServer server) throws MalformedObjectNameException,
+            NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException {
+
+        HierarchyDynamicMBean hierarchyDynamicMBean = new HierarchyDynamicMBean();
+        final ObjectName mbo = new ObjectName("log4j:hierarchy=LoggerHierarchy");
+        server.registerMBean(hierarchyDynamicMBean, mbo);
+
+        final org.apache.log4j.Logger rootLogger = org.apache.log4j.Logger.getRootLogger();
+        hierarchyDynamicMBean.addLoggerMBean(rootLogger.getName());
+        final LoggerRepository loggersRepo = LogManager.getLoggerRepository();
+        final Enumeration loggersEnumer = loggersRepo.getCurrentLoggers();
+        while (loggersEnumer.hasMoreElements()) {
+            final org.apache.log4j.Logger logger = (org.apache.log4j.Logger) loggersEnumer.nextElement();
+            hierarchyDynamicMBean.addLoggerMBean(logger.getName());
+        }
     }
 }
