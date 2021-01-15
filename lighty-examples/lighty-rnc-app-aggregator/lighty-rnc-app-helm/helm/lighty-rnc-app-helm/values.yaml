@@ -28,6 +28,8 @@ lighty:
 
   jxm:
     # Port on which JXM server in image is listening, should be same as defined in dockerfile
+    # If true, allow remote connections to JXM server running in container image, useful for debugging
+    enableJmxRemoting: true
     jxmPort: 1099
 
   akka:
