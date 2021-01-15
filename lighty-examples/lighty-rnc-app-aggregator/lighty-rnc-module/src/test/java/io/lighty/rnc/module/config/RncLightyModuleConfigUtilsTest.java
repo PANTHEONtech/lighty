@@ -73,7 +73,7 @@ public class RncLightyModuleConfigUtilsTest {
         assertEquals(restconfConfig.getHttpPort(), 8888);
         assertEquals(restconfConfig.getRestconfServletContextPath(), "/restconf");
         assertEquals(restconfConfig.getJsonRestconfServiceType(), JsonRestConfServiceType.DRAFT_18);
-        assertTrue(restconfConfig.isUseHttps());
+        assertFalse(restconfConfig.isUseHttps());
         assertEquals(restconfConfig.getKeyStoreFilePath(), "keystore/lightyio.jks");
         checkDefaultKeystoreConfig(restconfConfig);
 
@@ -106,6 +106,7 @@ public class RncLightyModuleConfigUtilsTest {
         assertEquals(aaaConfig.getMoonEndpointPath(), "/moon");
         assertEquals(aaaConfig.getDbPassword(), "bar");
         assertEquals(aaaConfig.getDbUsername(), "foo");
+        assertFalse(aaaConfig.isEnableAAA());
     }
 
     private void checkDefaultKeystoreConfig(RncRestConfConfiguration restconfConfig) {

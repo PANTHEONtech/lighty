@@ -18,7 +18,7 @@ lighty:
   restconf:
     restconfPort: 8888
     restconfPath: "/restconf"
-    useHttps: true
+    useHttps: false
     keyStorePassword: "8pgETwat"
     keyStoreType: "JKS"
     keyStoreDirectory: "keystore"
@@ -44,7 +44,7 @@ lighty:
 
   aaa:
     # If true, AAA lighty.io component will be enabled
-    enableAAA: true
+    enableAAA: false
 
 nodePort:
   # If switched to "true", NodePort service will be created; If switched to "false", ClusterIp service will be created
@@ -54,7 +54,7 @@ nodePort:
   managementNodePort: 30558
 
 ingress:
-  useIngress: false
+  useIngress: true
   restconfHost: "restconf.lighty.io"
   exposeManagement: false
   managementHost: "management.lighty.io"
