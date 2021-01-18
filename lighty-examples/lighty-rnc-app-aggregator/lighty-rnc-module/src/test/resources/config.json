@@ -93,7 +93,7 @@
         "topologyId":"topology-netconf-test"
     },
     "aaa": {
-        "enableAAA": true,
+        "enableAAA": false,
         "moonEndpointPath" : "/moon",
         "dbPassword" : "bar",
         "dbUsername" : "foo"
