@@ -13,6 +13,8 @@ lighty:
   configDirectoryName: "k8s-config"
   # Name of the config file must be same as property in configmap
   configFilename: "lighty-config.json"
+  # Name of the config file for initial logger configuration, must be same as property in configmap
+  loggerConfigFilename: "log4j.properties"
   # If using cluster (not single-node deployment), don't forget to increase replica count
   replicaCount: 1
   restconf:
@@ -23,6 +25,12 @@ lighty:
     keyStoreType: "JKS"
     keyStoreDirectory: "keystore"
     keyStoreFileName: "lightyio.jks"
+
+  jxm:
+    # Port on which JXM server in image is listening, should be same as defined in dockerfile
+    # If true, allow remote connections to JXM server running in container image, useful for debugging
+    enableJmxRemoting: true
+    jxmPort: 1099
 
   akka:
     # If true, overrides akka cluster configuration with default single-node
