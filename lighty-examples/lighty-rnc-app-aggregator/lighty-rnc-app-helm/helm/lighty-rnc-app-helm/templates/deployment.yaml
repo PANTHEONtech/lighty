@@ -31,14 +31,14 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: status.podIP
-            {{- if .Values.lighty.jxm.enableJmxRemoting }}
+            {{- if .Values.lighty.jmx.enableJmxRemoting }}
             - name: JAVA_OPTS
               value: "-Dcom.sun.management.jmxremote
                       -Dcom.sun.management.jmxremote.authenticate=false
                       -Dcom.sun.management.jmxremote.ssl=false
                       -Dcom.sun.management.jmxremote.local.only=false
-                      -Dcom.sun.management.jmxremote.port={{ .Values.lighty.jxm.jxmPort }}
-                      -Dcom.sun.management.jmxremote.rmi.port={{ .Values.lighty.jxm.jxmPort }}
+                      -Dcom.sun.management.jmxremote.port={{ .Values.lighty.jmx.jmxPort }}
+                      -Dcom.sun.management.jmxremote.rmi.port={{ .Values.lighty.jmx.jmxPort }}
                       -Djava.rmi.server.hostname=127.0.0.1"
             {{- end }}
           ports:
@@ -56,10 +56,10 @@ spec:
             - name: restconf
               containerPort: {{ .Values.lighty.restconf.restconfPort }}
               protocol: TCP
-              {{- if .Values.lighty.jxm.enableJmxRemoting }}
-              # JXM port on which JXM server is listening
-            - name: jxm
-              containerPort: {{ .Values.lighty.jxm.jxmPort }}
+              {{- if .Values.lighty.jmx.enableJmxRemoting }}
+              # JMX port on which JMX server is listening
+            - name: jmx
+              containerPort: {{ .Values.lighty.jmx.jmxPort }}
               protocol: TCP
               {{- end }}
           resources:

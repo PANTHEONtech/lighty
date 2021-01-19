@@ -77,7 +77,7 @@ public class Main {
             registerLoggerMBeans(mbs);
         } catch (InstanceAlreadyExistsException | MBeanRegistrationException
                 | NotCompliantMBeanException | MalformedObjectNameException e) {
-            LOG.warn("Exception while initializing JXM with MBeans classes", e);
+            LOG.warn("Exception while initializing JMX with MBeans classes", e);
         }
 
         try {
@@ -134,7 +134,7 @@ public class Main {
     }
 
     /**
-     * Registers necessary log4j MBeans in JXM.
+     * Registers necessary log4j MBeans in JMX.
      * @param server MBeanServer
      * @throws MalformedObjectNameException wrong formatted ObjectName
      * @throws NotCompliantMBeanException not compliant MBean
