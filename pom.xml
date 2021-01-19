@@ -21,6 +21,7 @@
     </properties>
 
     <modules>
+        <module>lighty-applications</module>
         <module>lighty-core</module>
         <module>lighty-examples</module>
         <module>lighty-models</module>

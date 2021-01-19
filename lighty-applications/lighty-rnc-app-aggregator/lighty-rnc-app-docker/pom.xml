@@ -9,7 +9,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.lighty.kit.examples</groupId>
+    <groupId>io.lighty.applications.rnc</groupId>
     <artifactId>lighty-rnc-app-docker</artifactId>
     <version>13.1.1-SNAPSHOT</version>
 
@@ -22,7 +22,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.lighty.kit.examples.controllers</groupId>
+            <groupId>io.lighty.applications.rnc</groupId>
             <artifactId>lighty-rnc-app</artifactId>
             <version>${project.version}</version>
         </dependency>

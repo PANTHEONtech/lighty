@@ -11,46 +11,43 @@
 
     <parent>
         <groupId>io.lighty.core</groupId>
-        <artifactId>lighty-app-parent</artifactId>
+        <artifactId>lighty-parent</artifactId>
         <version>13.1.1-SNAPSHOT</version>
-        <relativePath>../../../lighty-core/lighty-app-parent</relativePath>
+        <relativePath>../../../lighty-core/lighty-parent/pom.xml</relativePath>
     </parent>
 
-    <groupId>io.lighty.kit.examples.controllers</groupId>
-    <artifactId>lighty-rnc-app</artifactId>
+    <groupId>io.lighty.applications.rnc</groupId>
+    <artifactId>lighty-rnc-module</artifactId>
     <version>13.1.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
-
-    <properties>
-        <application.main.class>io.lighty.examples.controllers.rncapp.Main</application.main.class>
-        <application.attach.zip>true</application.attach.zip>
-        <maven.deploy.skip>true</maven.deploy.skip>
-    </properties>
 
     <dependencies>
         <dependency>
-            <groupId>io.lighty.kit.examples</groupId>
-            <artifactId>lighty-rnc-module</artifactId>
-            <version>${project.version}</version>
+            <groupId>io.lighty.modules</groupId>
+            <artifactId>lighty-netconf-sb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.modules</groupId>
+            <artifactId>lighty-restconf-nb-community</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.modules</groupId>
+            <artifactId>lighty-aaa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty.http2</groupId>
+            <artifactId>http2-server</artifactId>
         </dependency>
 
         <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>singlenode-configuration</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.spotbugs</groupId>
-            <artifactId>spotbugs-annotations</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.beust</groupId>
-            <artifactId>jcommander</artifactId>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
+
 </project>
