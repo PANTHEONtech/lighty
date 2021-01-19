@@ -22,14 +22,14 @@
     <packaging>jar</packaging>
 
     <properties>
-        <application.main.class>io.lighty.examples.controllers.rncapp.Main</application.main.class>
+        <application.main.class>io.lighty.applications.rnc.app.Main</application.main.class>
         <application.attach.zip>true</application.attach.zip>
         <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>io.lighty.kit.examples</groupId>
+            <groupId>io.lighty.applications.rnc</groupId>
             <artifactId>lighty-rnc-module</artifactId>
             <version>${project.version}</version>
         </dependency>
