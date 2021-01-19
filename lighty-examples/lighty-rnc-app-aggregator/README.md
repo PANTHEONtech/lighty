@@ -34,11 +34,11 @@ To build and start the RNC lighty.io application in the local environment follow
 3. Start the application by running it's _.jar_ file:  
    `java -jar lighty-rnc-app-<version>.jar`
    
-4. To start the application with custom configuration use command:  
-   `java -jar lighty-rnc-app-<version>.jar /path/to/config-file`  
+4. To start the application with custom lighty configuration, use arg -c and for custom initial log4j configuration use argument -l:  
+   `java -jar lighty-rnc-app-<version>.jar -c /path/to/config-file -l /path/to/log4j-config-file`  
    
-   Example configuration is located on following path:  
-   `lighty-rnc-app/src/main/resources/configuration.json`
+   Example configuration files are located on following path:  
+   `lighty-rnc-app/src/main/resources/*`
 
 5. If the application was started successfully, then a log similar should be present in the console:  
    `INFO [main] (Main.java:80) - RNC lighty.io application started in 5989.108ms`
@@ -94,13 +94,53 @@ To build and start the RNC lighty.io application using docker in the local envir
 2. Start the application using following docker command.   
    `docker run -it --name lighty-rnc --network host --rm lighty-rnc`
 
-3. To start the application with custom configuration use command:
-   `docker run -it --name lighty-rnc --network host -v /path/to/config-file:/lighty-rnc/conf.json --rm lighty-rnc conf.json`
+3. To start the application with custom lighty configuration( -c ) and custom initial log4j config file( -l ) use command:
+   `docker run -it --name lighty-rnc --network host -v /absolute_path/to/config-file/conf.json:/lighty-rnc/conf.json -v /absolute_path/to/config-file/logger.properties:/lighty-rnc/logger.properties --rm lighty-rnc -c conf.json -l logger.properties`
    
-   Example configuration is located on following path:  
-   `lighty-rnc-app/src/main/resources/configuration.json`
+   Example configuration files are located on following path:  
+   `lighty-rnc-app/src/main/resources/*`
 
 4. If the application was started successfully, then a log similar should be present in the console:  
    `INFO [main] (Main.java:81) - RNC lighty.io application started in 5989.108ms`
 
 5. Test the RNC lighty.io application. Default RESTCONF port is `8888`
+
+## JMX debugging
+Java Management Extensions is a tool enabled by default which makes it easy to change runtime
+configuration of the application. Among other options, we expose the option to change logging behaviour during runtime
+via JMX client which can be connected to running lighty instance.
+1. Start the application (see previous sections)
+2. Connect the JXM client  
+  We recommend using `jconsole` because it is part of the standard java JRE.  
+  The command for connecting jconsole to JMX server is:  
+    `jconsole <ip-of-running-lighty>:<JMX-port>`, the default JMX-port is 1099.
+      
+This approach works only if the application is running locally.  
+  
+If you want to connect the JMX client to application running remotely or containerized (k8s deployment or/and docker),
+you need to start the application using following JAVA_OPTS:  
+`JAVA_OPTS = -Dcom.sun.management.jmxremote
+             -Dcom.sun.management.jmxremote.authenticate=false
+             -Dcom.sun.management.jmxremote.ssl=false
+             -Dcom.sun.management.jmxremote.local.only=false
+             -Dcom.sun.management.jmxremote.port=<JMX_PORT>
+             -Dcom.sun.management.jmxremote.rmi.port=<JMX_PORT>
+             -Djava.rmi.server.hostname=127.0.0.1`
+             
+Then run `java $JAVA_OPTS -jar lighty-rnc-app-<version> ...`  
+## Connecting JMX client to application running in docker
+1. As we said, if we want to be able to connect the JMX, we need to start the app with JAVA_OPTS described in
+ previous chapter.  
+ In docker the most convenient way to do this is to create env.file and run the docker run with `--env-file env.file` argument
+ The env.file must contain the definition of the described JAVA_OPTS environment variable.  
+ We also need to publish the container JMX_PORT to host, this is done via `-p <JMX_PORT>:<JMX_PORT>` argument.
+ So the docker run command becomes:  
+  `docker run -it --name lighty-rnc --env-file env.file -p <JMX_PORT>:<JMX_PORT> ...`
+ The rest of the command stays the same as explained in previous chapters.
+ 2. Connect the JMX client via command `jconsole <ip-of-container>:<JMX_PORT>`.
+ ## Connecting JMX client to application deployed in kubernetes
+Once you have deployed the application via our provided helm chart in which you enabled jmxRemoting,
+you just need to forward the JMX port of the pod in which the instance of the application you want to debug is running.
+In kubernetes this is done via `kubectl port-forward` command.
+1. Forward the pod's JMX port, run `kubectl port-forward <name-of-the-pod> <JMX_PORT>`  
+2. Connect JMX client, run `jconsole <pod-ip>:<JMX-port>`
