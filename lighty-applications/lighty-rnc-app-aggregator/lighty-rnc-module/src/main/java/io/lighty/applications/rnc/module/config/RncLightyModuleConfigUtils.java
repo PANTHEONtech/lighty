@@ -9,14 +9,14 @@ package io.lighty.applications.rnc.module.config;
 
 import com.typesafe.config.Config;
 import io.lighty.aaa.AAALighty;
+import io.lighty.applications.rnc.module.config.util.AAAConfigUtils;
+import io.lighty.applications.rnc.module.config.util.RncRestConfConfigUtils;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
-import io.lighty.applications.rnc.module.config.util.AAAConfigUtils;
-import io.lighty.applications.rnc.module.config.util.RncRestConfConfigUtils;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
