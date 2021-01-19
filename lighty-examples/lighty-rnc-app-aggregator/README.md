@@ -2,15 +2,15 @@
 Lighty Restconf Netconf application allows to easily initialize, start and use most used OpenDaylight services and optionally add custom business logic.
 
 Most important lighty.io components used are:
-- [lighty.io controller](https://github.com/PANTHEONtech/lighty/tree/master/lighty-core/lighty-controller)
+- [lighty.io controller](https://github.com/PANTHEONtech/lighty/tree/13.1.x/lighty-core/lighty-controller)
   provides core ODL services (like MDSAL, yangtools, global schema context,...) that are required
   for other services or plugins.
-- [RESTCONF northbound plugin](https://github.com/PANTHEONtech/lighty/tree/master/lighty-modules/lighty-restconf-nb-community)
+- [RESTCONF northbound plugin](https://github.com/PANTHEONtech/lighty/tree/13.1.x/lighty-modules/lighty-restconf-nb-community)
   provides the RESTCONF interface that is used to communicate with the application using the RESTCONF protocol over the HTTP.
-- [NETCONF southbound plugin](https://github.com/PANTHEONtech/lighty/tree/master/lighty-modules/lighty-netconf-sb)
+- [NETCONF southbound plugin](https://github.com/PANTHEONtech/lighty/tree/13.1.x/lighty-modules/lighty-netconf-sb)
   enables application to connect to the NETCONF devices using the NETCONF protocol and read/write configuration
   from them or execute RPCs.
-- [AAA module](https://github.com/PANTHEONtech/lighty/tree/master/lighty-modules/lighty-aaa) provides authorization,
+- [AAA module](https://github.com/PANTHEONtech/lighty/tree/13.1.x/lighty-modules/lighty-aaa) provides authorization,
   authentication and accounting which for example enables to use Basic Authentication for RESTCONF northbound interface.
   This module is optional and can be turned ON/OFF using application configuration.
 
@@ -46,7 +46,7 @@ To build and start the RNC lighty.io application in the local environment follow
 6. Test the RNC lighty.io application. Default RESTCONF port is `8888`
 
 7. The default credential for http requests is login:`admin`, password: `admin`. 
-To manipulate user's credentials [idmtool](https://docs.opendaylight.org/projects/aaa/en/stable-magnesium/user-guide.html#idmtool) can be used:
+To manipulate user's credentials [idmtool](https://docs.opendaylight.org/projects/aaa/en/stable-aluminium/user-guide.html#idmtool) can be used:
     - create new `etc` directory and create there `org.ops4j.pax.web.cfg` file
     - add this two lines in the `org.ops4j.pax.web.cfg` file: 
        
@@ -57,7 +57,7 @@ To manipulate user's credentials [idmtool](https://docs.opendaylight.org/project
         where `8888` - default RESTCONF port. It can be different according to your configuration.
     - download `idmtool.py` script from AAA project github repository and place downloaded file into `etc` directory
         
-        `curl -O https://raw.githubusercontent.com/opendaylight/aaa/stable/magnesium/aaa-shiro/impl/src/main/resources/idmtool.py`
+        `curl -O https://raw.githubusercontent.com/opendaylight/aaa/stable/aluminium/aaa-shiro/impl/src/main/resources/idmtool.py`
     - run script (latest python version must be installed)
     
         `python etc/idmtool.py -h`
@@ -71,7 +71,7 @@ To manipulate user's credentials [idmtool](https://docs.opendaylight.org/project
         where `admin` - user name (the default name); `list-users` command to show all users.
         It will ask to write password for `admin` user (the default one is `admin`)    
     
-    Also, it is possible to configure user's credentials via [REST](https://docs.opendaylight.org/projects/aaa/en/latest/user-guide.html#configuration-using-the-restful-web-service)
+    Also, it is possible to configure user's credentials via [REST](https://docs.opendaylight.org/projects/aaa/en/stable-aluminium/user-guide.html#configuration-using-the-restful-web-service)
 
 8. For using ssl connection the correct certificate must be used.
 By default, a test certificate is used (`lighty-rnc-module/src/main/resources/keystore/lightyio.jks`).
@@ -104,6 +104,7 @@ To build and start the RNC lighty.io application using docker in the local envir
    `INFO [main] (Main.java:81) - RNC lighty.io application started in 5989.108ms`
 
 5. Test the RNC lighty.io application. Default RESTCONF port is `8888`
+
 ## JMX debugging
 Java Management Extensions is a tool enabled by default which makes it easy to change runtime
 configuration of the application. Among other options, we expose the option to change logging behaviour during runtime
@@ -143,7 +144,3 @@ you just need to forward the JMX port of the pod in which the instance of the ap
 In kubernetes this is done via `kubectl port-forward` command.
 1. Forward the pod's JMX port, run `kubectl port-forward <name-of-the-pod> <JMX_PORT>`  
 2. Connect JMX client, run `jconsole <pod-ip>:<JMX-port>`
-
-
-
-

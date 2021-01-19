@@ -2,7 +2,9 @@
 **/target
 **/test-output
 **/journal
+**/segmented-journal
 **/snapshots
+**/data/idmlight.db.mv.db
 
 bin/
 dist

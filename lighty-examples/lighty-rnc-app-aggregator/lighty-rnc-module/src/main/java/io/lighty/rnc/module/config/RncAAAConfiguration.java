@@ -22,7 +22,7 @@ public class RncAAAConfiguration {
     @JsonIgnore
     private DatastoreConfig datastoreConf;
 
-    private boolean enableAAA = true;
+    private boolean enableAAA = false;
 
     // These are default configuration and that should be rewritten
     private String moonEndpointPath = "/moon";

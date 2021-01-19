@@ -73,7 +73,7 @@
         "webSocketPort": 8185,
         "restconfServletContextPath":"/restconf",
         "jsonRestconfServiceType": "DRAFT_18",
-        "useHttps": true,
+        "useHttps": false,
         "keyStorePassword":"8pgETwat",
         "keyStoreType":"JKS",
         "keyStoreFilePath":"keystore/lightyio.jks"
@@ -93,7 +93,7 @@
         "topologyId":"topology-netconf"
     },
     "aaa": {
-        "enableAAA": true,
+        "enableAAA": false,
         "moonEndpointPath" : "/moon",
         "dbPassword" : "bar",
         "dbUsername" : "foo"
