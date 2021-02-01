@@ -10,7 +10,7 @@ is Lighty's version of openflow plugin.
 <dependency>
     <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-openflow-sb</artifactId>
-    <version>12.2.2-SNAPSHOT</version>
+    <version>12.3.0-SNAPSHOT</version>
 </dependency>
 ```
 

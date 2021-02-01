@@ -11,7 +11,7 @@ assignees: ''
 A clear and concise description of what the bug is.
 
 **Branch**
-lighty.io branch [eg. 12.2.x]
+lighty.io branch [eg. 12.3.x]
 
 **To Reproduce**
 Steps to reproduce the behavior:
