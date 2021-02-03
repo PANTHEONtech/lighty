@@ -4,7 +4,7 @@ Software-Defined Networking (SDN) solutions in Java. Developed by [PANTHEON.tech
 
 It utilizes core [OpenDaylight](https://www.opendaylight.org/) components, which are available as a set of libraries and are adapted to run in a __plain Java SE environment__.
 
-[![Build Status](https://github.com/PANTHEONtech/lighty/workflows/Build/badge.svg?branch=13.0.x)](https://github.com/PANTHEONtech/lighty/actions)
+[![Build Status](https://github.com/PANTHEONtech/lighty/workflows/Build/badge.svg?branch=13.2.x)](https://github.com/PANTHEONtech/lighty/actions)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.lighty.core/lighty-bom/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.lighty.core/lighty-bom)
 [![License](https://img.shields.io/badge/License-EPL%201.0-blue.svg)](https://opensource.org/licenses/EPL-1.0)
 
