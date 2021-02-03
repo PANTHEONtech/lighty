@@ -12,7 +12,7 @@
     <parent>
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-minimal-parent</artifactId>
-        <version>13.2.0-SNAPSHOT</version>
+        <version>13.2.1-SNAPSHOT</version>
         <relativePath>../lighty-minimal-parent</relativePath>
     </parent>
 
@@ -240,9 +240,9 @@
                             <includeTestResources>true</includeTestResources>
                             <includes>**\/*.java, **\/*.xtend</includes>
                             <excludes>
-                                    org/opendaylight/yang/gen/**,
-                                    **/protobuff/messages/**,
-                                    **/thrift/gen/*.java
+                                org/opendaylight/yang/gen/**,
+                                **/protobuff/messages/**,
+                                **/thrift/gen/*.java
                             </excludes>
                             <failsOnError>true</failsOnError>
                             <consoleOutput>true</consoleOutput>
