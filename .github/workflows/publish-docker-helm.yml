@@ -1,0 +1,75 @@
+name: Publish docker image and helm chart
+on:
+  workflow_dispatch:
+    inputs:
+      app-name:
+        description: Name of the application in /lighty-applications
+        default: lighty-rnc-app
+        required: true
+      image-name:
+        description: Desired name of the built image
+        default: lighty-rnc
+        required: true
+      image-tag:
+        description: Desired tag of the built image
+        default: latest
+        required: true
+jobs:
+  publish-docker-helm:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    env:
+      app-aggregator-dir: lighty-applications/${{ github.event.inputs.app-name }}-aggregator
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_REPO: ${{ github.repository }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
+      SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY}}
+      GHCR_KEY: ${{ secrets.PACKAGE_REGISTRY_KEY}}
+    name: Setup, Install and Test
+    steps:
+      - name: Print env
+        run: |
+          echo ${{ github.event.inputs.image-name }}:${{ github.event.inputs.image-tag }}
+      - name: Clone Repository
+        uses: actions/checkout@v2
+      - name: Set up JDK 1.11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+      - name: Cache Maven packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Log in docker
+        run: |
+          echo ${{ env.GHCR_KEY}} | docker login  --username marekzatko --password-stdin ghcr.io
+      - name: Build docker image
+        run: mvn install -pl :lighty-rnc-app,:lighty-rnc-app-docker -am -P docker
+#        run: docker build -t ${{ github.event.inputs.image-name }}:${{ github.event.inputs.image-tag }} f ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-docker/
+      - name: Rename image to desired
+        run: |
+          image_name=$(mvn help:evaluate -f ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-docker/pom.xml -Dexpression=image.name -q -DforceStdout)
+          image_tag=$(mvn help:evaluate -f ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-docker/pom.xml -Dexpression=image.version -q -DforceStdout)
+          echo Old IMAGE name:tag: $image_name:$image_tag
+          docker images
+          echo Renaming
+          DOCKER_IMAGE_NAME=$(echo ghcr.io/marekzatko/${{ github.event.inputs.image-name }})
+          DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME:${{ github.event.inputs.image-tag }})
+          echo "DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME_TAG)" >> $GITHUB_ENV
+          docker tag $image_name:$image_tag $DOCKER_IMAGE_NAME_TAG
+          docker images
+      - name: Test
+        run: echo $DOCKER_IMAGE_NAME
+      - name: List docker images
+        run: |
+          docker images
+      - name: Publish to packages
+        run: |
+          echo $DOCKER_IMAGE_NAME_TAG
+          docker push $DOCKER_IMAGE_NAME_TAG
+
