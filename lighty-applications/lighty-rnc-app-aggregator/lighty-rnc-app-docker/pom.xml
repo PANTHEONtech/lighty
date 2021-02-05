@@ -15,6 +15,7 @@
 
     <properties>
         <image.name>lighty-rnc</image.name>
+        <image.version>latest</image.version>
         <lighty.app.name>lighty-rnc-app-${project.version}</lighty.app.name>
         <lighty.app.zip>${lighty.app.name}-bin.zip</lighty.app.zip>
         <lighty.app.jar>${lighty.app.name}.jar</lighty.app.jar>
@@ -95,7 +96,7 @@
                 <configuration>
                     <images>
                         <image>
-                            <name>${image.name}</name>
+                            <name>${image.name}:${image.version}</name>
                             <build>
                                 <cleanup>try</cleanup>
                                 <contextDir>${basedir}/target/docker-stage</contextDir>
