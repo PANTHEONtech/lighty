@@ -1,0 +1,1 @@
+module ietf-interfaces@2018-02-20 depends on following modules: ietf-yang-types

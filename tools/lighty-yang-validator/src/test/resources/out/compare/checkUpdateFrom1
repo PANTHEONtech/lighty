@@ -1,0 +1,107 @@
+1 namespace error: According to RFC 6020 namespace of the module MUST not change. New module-> changed:urn:ietf:params:xml:ns:yang:ietf-interfaces | Old module-> urn:ietf:params:xml:ns:yang:ietf-interfaces
+
+2 missing old revision: According to RFC 6020 all the revisions from old module should be kept on the new module. New module-> does not exists | Old module-> 2018-02-20
+
+3 missing base identity error: According to RFC 6020 a "base" statement may be added to an "identity" statement but it can not be changed with other "base" statement. New module-> does not exists | Old module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)test-identity3]}
+
+4 base identity error: According to RFC 6020 a "base" statement may be added to an "identity" statement but it can not be removed. New module-> [] | Old module-> [RegularIdentityEffectiveStatement{qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)test-identity, path=AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)test-identity]}}]
+
+5 missing identity error: According to RFC 6020 an identity should not be removed. New module-> does not exists | Old module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)test-identity3]}
+
+6 min-elements error: According to RFC 6020 a "min-elements" statement may be removed, or changed to require fewer elements, it can not require more elements or be added New module-> AbsoluteSchemaPath{path=[(changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interfaces, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interface]}
+min-elements: 3 | Old module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface]}
+min-elements: 2
+
+7 missing node error: According to RFC 6020 node from old module must be present in new module as well. New module-> missing node | Old module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)testLeaf]}
+
+8 type error: According to RFC 6020 a "type" statement may not be replaced with another type statement that changes syntax or semantics of the type New module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:1)int32]}
+type: int32 | Old module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:1)string]}
+type: string
+
+9 length error: According to RFC 6020 length statement may expand the allowed value space. New module-> AbsoluteSchemaPath{path=[(changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interfaces, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interface, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)name, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)string]}
+length: [[0..4]] | Old module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)name, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)string]}
+length: [[0..4], [7..10]]
+
+10 pattern error: According to RFC 6020 new patterns may be added but old ones can not be removed or changed. New module-> [EmptyPatternConstraint{regex=^(?:[0-9a-fA-F]*)$, errorAppTag=invalid-regular-expression}, EmptyPatternConstraint{regex=^(?:[0-9F]*)$, errorAppTag=invalid-regular-expression}] | Old module-> [EmptyPatternConstraint{regex=^(?:[0-9a-fA-F]*)$, errorAppTag=invalid-regular-expression}, EmptyPatternConstraint{regex=^(?:[0-9A-F]*)$, errorAppTag=invalid-regular-expression}, EmptyPatternConstraint{regex=^(?:[0-9F]*)$, errorAppTag=invalid-regular-expression}]
+
+11 default error: According to RFC 6020 a "default" statement may be added to a leaf that does not have a default value but can not be removed or changed. New module-> does not exists | Old module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)mybits]}
+default: auto-sense-speed
+
+12 missing bit error: According to RFC 6020 bits may have new bits added but they can not be removed or its position changed. New module-> [Bit[name=disable-nagle, position=0], Bit[name=auto-sense-speed, position=6]] | Old module-> [Bit[name=disable-nagle, position=0], Bit[name=auto-sense-speed, position=1]]
+
+13 missing bit error: According to RFC 6020 bits may have new bits added but they can not be removed or its position changed. New module-> [Bit[name=disable-nagle, position=0], Bit[name=auto-sense-speed, position=1]] | Old module-> [Bit[name=disable-nagle, position=0], Bit[name=auto-sense-speed, position=1], Bit[name=auto-sense-speed2, position=2]]
+
+14 length error: According to RFC 6020 length statement may expand the allowed value space. New module-> AbsoluteSchemaPath{path=[(changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interfaces, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interface, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)description, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)string]}
+length: [[0..8]] | Old module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)description, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)string]}
+length: [[0..9]]
+
+15 pattern error: According to RFC 6020 new patterns may be added but old ones can not be removed or changed. New module-> [] | Old module-> [EmptyPatternConstraint{regex=^(?:[0-9A-F]*)$, errorAppTag=invalid-regular-expression}]
+
+16 identityRef base error: According to RFC 6020 A "base" statement may be removed from an "identityref" type provided there is at least one "base" statement left. New module-> [RegularIdentityEffectiveStatement{qname=(changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interface-type, path=AbsoluteSchemaPath{path=[(changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interface-type]}}, RegularIdentityEffectiveStatement{qname=(changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)test-identity, path=AbsoluteSchemaPath{path=[(changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)test-identity]}}] | Old module-> [RegularIdentityEffectiveStatement{qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface-type, path=AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface-type]}}]
+
+17 check when warning: According to RFC 6020 a "when" statement may be removed or its constraint relaxed. "When" exists and might have been relaxed but should be check by user if the constraint isn t changed or more strict. New module-> AbsoluteSchemaPath{path=[(changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interfaces, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interface, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)enabled]}
+when: ../enabled = 'true' | Old module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)enabled]}
+when: ../enabled = 'false'
+
+18 mandatory error: According to RFC 6020 a "mandatory" statement may be removed or changed from "true" to "false", but it can not become mandatory if it was not. New module-> AbsoluteSchemaPath{path=[(changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interfaces, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interface, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)enabled]}
+mandatory: true | Old module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)enabled]}
+mandatroy: false
+
+19 added when error: According to RFC 6020 a "when" statement may be removed or its constraint relaxed, but new one can not be added. New module-> AbsoluteSchemaPath{path=[(changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interfaces, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interface, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)link-up-down-trap-enable]}
+when: ../enabled = 'true' | Old module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)link-up-down-trap-enable]}
+when: does not exists
+
+20 illegal config change error: According to RFC 6020 a node that represented configuration data may not be changed to represent state data New module-> AbsoluteSchemaPath{path=[(changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interfaces, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interface, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)link-up-down-trap-enable]}
+config: false | Old module-> (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)link-up-down-trap-enable
+config: true
+
+21 missing enum error: According to RFC 6020 an "enumeration" type may have new enums added, provided the old enums's values do not change. New module-> [EnumPairImpl{name=enabled, value=1}, EnumPairImpl{name=disabled, value=2}] | Old module-> [EnumPairImpl{name=enabled, value=1}, EnumPairImpl{name=disabled, value=5}]
+
+22 illegal config state error: According to RFC 6020 a node that represented state data may be changed to represent configuration, provided it is not mandatory, but can change to configuration if it is not mandatory New module-> AbsoluteSchemaPath{path=[(changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interfaces, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interface, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)admin-status]}
+config: true mandatory true | Old module-> (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)admin-status
+config: false
+
+23 range error: According to RFC 6020 range statement may only expand the allowed value space, it can not remove or shorten allowed value space. New module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:1)int32]}
+ranges: [[-2147483648..2147483647]] | Old module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)if-index, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)int32]}
+ranges: [[1..2147483647]]
+
+24 min-elements error: According to RFC 6020 a "min-elements" statement may be removed, or changed to require fewer elements, it can not require more elements or be added New module-> AbsoluteSchemaPath{path=[(changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interfaces, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interface, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)higher-layer-if]}
+min-elements: 3 | Old module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)higher-layer-if]}
+min-elements: does not exists
+
+25 units error: According to RFC 6020 a "units" statement may be added but can not be removed. New module-> does not exists | Old module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)speed]}
+units: bits/second
+
+26 reference error: According to RFC 6020 a "reference" statement may be added or updated but can not be removed. New module-> does not exists | Old module-> RFC 2863: The Interfaces Group MIB - ifInDiscards
+
+27 status error: According to RFC 6020 a "status" statement may be added, or changed from "current" to "deprecated" or "obsolete", or from "deprecated" to "obsolete", but not other way arround New module-> AbsoluteSchemaPath{path=[(changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interfaces-state]}
+status: CURRENT | Old module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces-state]}
+status: DEPRECATED
+
+28 max-elements error: According to RFC 6020 A "max-elements" statement may be removed, or changed to allow more elements, it can not require less elements New module-> AbsoluteSchemaPath{path=[(changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interfaces-state, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interface]}
+maX-elements: 2 | Old module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces-state, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface]}
+maX-elements: 3
+
+29 length error: According to RFC 6020 length statement may expand the allowed value space. New module-> does not exists | Old module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces-state, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)name, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)string]}
+length: [[0..9]]
+
+30 missing enum error: According to RFC 6020 an "enumeration" type may have new enums added, provided the old enums's values do not change. New module-> [EnumPairImpl{name=up, value=1}, EnumPairImpl{name=down, value=2}] | Old module-> [EnumPairImpl{name=up, value=1}, EnumPairImpl{name=down, value=2}, EnumPairImpl{name=testing, value=3}]
+
+31 missing enum error: According to RFC 6020 an "enumeration" type may have new enums added, provided the old enums's values do not change. New module-> [EnumPairImpl{name=up, value=1}, EnumPairImpl{name=down, value=2}, EnumPairImpl{name=testing, value=3}, EnumPairImpl{name=unknown2, value=4}, EnumPairImpl{name=dormant, value=5}, EnumPairImpl{name=not-present, value=6}, EnumPairImpl{name=lower-layer-down, value=7}] | Old module-> [EnumPairImpl{name=up, value=1}, EnumPairImpl{name=down, value=2}, EnumPairImpl{name=testing, value=3}, EnumPairImpl{name=unknown, value=4}, EnumPairImpl{name=dormant, value=5}, EnumPairImpl{name=not-present, value=6}, EnumPairImpl{name=lower-layer-down, value=7}]
+
+32 range error: According to RFC 6020 range statement may only expand the allowed value space, it can not remove or shorten allowed value space. New module-> AbsoluteSchemaPath{path=[(changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interfaces-state, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interface, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)if-index, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)int32]}
+ranges: [[1..8]] | Old module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces-state, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)if-index, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)int32]}
+ranges: [[1..2147483647]]
+
+33 added must error: According to RFC 6020 a "must" statement may be removed or its constraint relaxed, but new one can not be added. New module-> AbsoluteSchemaPath{path=[(changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interfaces-state, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interface, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)statistics, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)in-broadcast-pkts]}
+must: [. <= ../in-multicast-pkts] | Old module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces-state, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)statistics, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)in-broadcast-pkts]}
+must: []
+
+34 check must warning: According to RFC 6020 a "must" statement may be removed or its constraint relaxed. "Must" exists and might have been relaxed but should be check by user if the constraint isn t changed or more strict. New module-> AbsoluteSchemaPath{path=[(changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interfaces-state, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interface, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)statistics, (changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)in-multicast-pkts]}
+must: . > 50 | Old module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces-state, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)statistics, (urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)in-multicast-pkts]}
+must: [. > 60]
+
+35 status error: According to RFC 6020 a "status" statement may be added, or changed from "current" to "deprecated" or "obsolete", or from "deprecated" to "obsolete", but not other way arround New module-> AbsoluteSchemaPath{path=[(changed:urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2019-02-20)interface-state-ref]}
+status: DEPRECATED | Old module-> AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface-state-ref]}
+status: OBSOLETE
+

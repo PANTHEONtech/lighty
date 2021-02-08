@@ -1,0 +1,590 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <style>
+  .fa-share {
+    color: blue;
+  }
+  .fa-reply {
+    color: blue;
+  }
+  .fa-play {
+    color: red;
+  }
+  .fa-envelope {
+    color: red;
+  }
+  .fa-bell {
+    color: red;
+  }
+  .fa-check {
+    color: blue;
+  }
+  .fa-tasks {
+    color: blue;
+  }
+  .fa-external-link-alt {
+    color: red;
+  }
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+  .fa-leaf {
+    color: green;
+  }
+  .fa-pagelines {
+    color: green;
+  }
+  .fa-folder-open {
+    color: orange;
+  }
+table.simple-tree-table .tree-icon {
+ display:inline-block;
+ width:1.5em;
+ line-height:1.5em;
+ margin:.1em;
+ background-color:#eee;
+ text-align:center;
+ cursor:pointer
+}
+table.simple-tree-table tr.tree-opened .tree-icon:after {
+ content:"-"
+}
+table.simple-tree-table tr.tree-closed .tree-icon:after {
+ content:"+"
+}
+  </style>
+</head><body>
+<div> <b> module name ietf-ip@2018-02-22, namespace urn:ietf:params:xml:ns:yang:ietf-ip, prefix ip </b></div><div>
+    <button type="button" id="expander" class="btn btn-danger">Expand All</button>
+    <button type="button" id="collapser" class="btn btn-info">Collapse All</button>
+    <table id="basic" class="table table-bordered table-striped simple-tree-table">
+        <th> element </th>
+        <th> schema </th>
+        <th> type </th>
+        <th> flag </th>
+        <th> status </th>
+        <th> path </th>
+        <tr data-node-id="1" data-node-pid=""><td title="IP parameters on interfaces.
+
+If an interface is not capable of running IP, the server
+must not allow the client to configure these parameters.">interface <span><i class="fas fa-external-link-alt"></i></span> </td><td>augment</td><td></td><td></td><td>current</td><td>/if:interfaces/if:interface</td></tr>
+        <tr data-node-id="1.1" data-node-pid="1"><td title="Parameters for the IPv4 address family.">ipv4 <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv4</td></tr>
+        <tr data-node-id="1.1.1" data-node-pid="1.1"><td title="Controls whether IPv4 is enabled or disabled on this
+interface.  When IPv4 is enabled, this interface is
+connected to an IPv4 stack, and the interface can send
+and receive IPv4 packets.">enabled <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>boolean</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv4/ip:enabled</td></tr>
+        <tr data-node-id="1.1.2" data-node-pid="1.1"><td title="Controls IPv4 packet forwarding of datagrams received by,
+but not addressed to, this interface.  IPv4 routers
+forward datagrams.  IPv4 hosts do not (except those
+source-routed via the host).">forwarding <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>boolean</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv4/ip:forwarding</td></tr>
+        <tr data-node-id="1.1.3" data-node-pid="1.1"><td title="The size, in octets, of the largest IPv4 packet that the
+interface will send and receive.
+
+The server may restrict the allowed values for this leaf,
+depending on the interface's type.
+
+If this leaf is not configured, the operationally used MTU
+depends on the interface's type.">mtu <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint16</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv4/ip:mtu</td></tr>
+        <tr data-node-id="1.1.4" data-node-pid="1.1"><td title="The list of IPv4 addresses on the interface.">address[ip] <span><i class="fas fa-list"></i></span> </td><td>list</td><td></td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv4/ip:address</td></tr>
+        <tr data-node-id="1.1.4.1" data-node-pid="1.1.4"><td title="The IPv4 address on the interface.">ip <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>inet:ipv4-address-no-zone</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv4/ip:address/ip:ip</td></tr>
+        <tr data-node-id="1.1.4.2" data-node-pid="1.1.4"><td title="The subnet can be specified as a prefix length or,
+if the server supports non-contiguous netmasks, as
+a netmask.">subnet <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv4/ip:address/ip:subnet</td></tr>
+        <tr data-node-id="1.1.4.2.1" data-node-pid="1.1.4.2"><td title="">prefix-length <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/if:interfaces/if:interface/ip:ipv4/ip:address/ip:subnet/ip:prefix-length</td></tr>
+        <tr data-node-id="1.1.4.2.1.1" data-node-pid="1.1.4.2.1"><td title="The length of the subnet prefix.">prefix-length <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint8</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv4/ip:address/ip:subnet/ip:prefix-length/ip:prefix-length</td></tr>
+        <tr data-node-id="1.1.4.2.2" data-node-pid="1.1.4.2"><td title="">netmask <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/if:interfaces/if:interface/ip:ipv4/ip:address/ip:subnet/ip:netmask</td></tr>
+        <tr data-node-id="1.1.4.2.2.1" data-node-pid="1.1.4.2.2"><td title="The subnet specified as a netmask.">netmask <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:dotted-quad</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv4/ip:address/ip:subnet/ip:netmask/ip:netmask</td></tr>
+        <tr data-node-id="1.1.4.3" data-node-pid="1.1.4"><td title="The origin of this address.">origin <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>ip-address-origin</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv4/ip:address/ip:origin</td></tr>
+        <tr data-node-id="1.1.5" data-node-pid="1.1"><td title="A list of mappings from IPv4 addresses to
+link-layer addresses.
+
+Entries in this list in the intended configuration are
+used as static entries in the ARP Cache.
+
+In the operational state, this list represents the ARP
+Cache.">neighbor[ip] <span><i class="fas fa-list"></i></span> </td><td>list</td><td></td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv4/ip:neighbor</td></tr>
+        <tr data-node-id="1.1.5.1" data-node-pid="1.1.5"><td title="The IPv4 address of the neighbor node.">ip <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>inet:ipv4-address-no-zone</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv4/ip:neighbor/ip:ip</td></tr>
+        <tr data-node-id="1.1.5.2" data-node-pid="1.1.5"><td title="The link-layer address of the neighbor node.">link-layer-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:phys-address</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv4/ip:neighbor/ip:link-layer-address</td></tr>
+        <tr data-node-id="1.1.5.3" data-node-pid="1.1.5"><td title="The origin of this neighbor entry.">origin <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>neighbor-origin</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv4/ip:neighbor/ip:origin</td></tr>
+        <tr data-node-id="1.2" data-node-pid="1"><td title="Parameters for the IPv6 address family.">ipv6 <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv6</td></tr>
+        <tr data-node-id="1.2.1" data-node-pid="1.2"><td title="Controls whether IPv6 is enabled or disabled on this
+interface.  When IPv6 is enabled, this interface is
+connected to an IPv6 stack, and the interface can send
+and receive IPv6 packets.">enabled <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>boolean</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv6/ip:enabled</td></tr>
+        <tr data-node-id="1.2.2" data-node-pid="1.2"><td title="Controls IPv6 packet forwarding of datagrams received by,
+but not addressed to, this interface.  IPv6 routers
+forward datagrams.  IPv6 hosts do not (except those
+source-routed via the host).">forwarding <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>boolean</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv6/ip:forwarding</td></tr>
+        <tr data-node-id="1.2.3" data-node-pid="1.2"><td title="The size, in octets, of the largest IPv6 packet that the
+interface will send and receive.
+
+The server may restrict the allowed values for this leaf,
+depending on the interface's type.
+
+If this leaf is not configured, the operationally used MTU
+depends on the interface's type.">mtu <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint32</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv6/ip:mtu</td></tr>
+        <tr data-node-id="1.2.4" data-node-pid="1.2"><td title="The list of IPv6 addresses on the interface.">address[ip] <span><i class="fas fa-list"></i></span> </td><td>list</td><td></td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv6/ip:address</td></tr>
+        <tr data-node-id="1.2.4.1" data-node-pid="1.2.4"><td title="The IPv6 address on the interface.">ip <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>inet:ipv6-address-no-zone</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv6/ip:address/ip:ip</td></tr>
+        <tr data-node-id="1.2.4.2" data-node-pid="1.2.4"><td title="The length of the subnet prefix.">prefix-length <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint8</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv6/ip:address/ip:prefix-length</td></tr>
+        <tr data-node-id="1.2.4.3" data-node-pid="1.2.4"><td title="The origin of this address.">origin <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>ip-address-origin</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv6/ip:address/ip:origin</td></tr>
+        <tr data-node-id="1.2.4.4" data-node-pid="1.2.4"><td title="The status of an address.  Most of the states correspond
+to states from the IPv6 Stateless Address
+Autoconfiguration protocol.">status <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>enumeration</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv6/ip:address/ip:status</td></tr>
+        <tr data-node-id="1.2.5" data-node-pid="1.2"><td title="A list of mappings from IPv6 addresses to
+link-layer addresses.
+
+Entries in this list in the intended configuration are
+used as static entries in the Neighbor Cache.
+
+In the operational state, this list represents the
+Neighbor Cache.">neighbor[ip] <span><i class="fas fa-list"></i></span> </td><td>list</td><td></td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv6/ip:neighbor</td></tr>
+        <tr data-node-id="1.2.5.1" data-node-pid="1.2.5"><td title="The IPv6 address of the neighbor node.">ip <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>inet:ipv6-address-no-zone</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv6/ip:neighbor/ip:ip</td></tr>
+        <tr data-node-id="1.2.5.2" data-node-pid="1.2.5"><td title="The link-layer address of the neighbor node.
+
+In the operational state, if the neighbor's 'state' leaf
+is 'incomplete', this leaf is not instantiated.">link-layer-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:phys-address</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv6/ip:neighbor/ip:link-layer-address</td></tr>
+        <tr data-node-id="1.2.5.3" data-node-pid="1.2.5"><td title="The origin of this neighbor entry.">origin <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>neighbor-origin</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv6/ip:neighbor/ip:origin</td></tr>
+        <tr data-node-id="1.2.5.4" data-node-pid="1.2.5"><td title="Indicates that the neighbor node acts as a router.">is-router <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>empty</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv6/ip:neighbor/ip:is-router</td></tr>
+        <tr data-node-id="1.2.5.5" data-node-pid="1.2.5"><td title="The Neighbor Unreachability Detection state of this
+entry.">state <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>enumeration</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv6/ip:neighbor/ip:state</td></tr>
+        <tr data-node-id="1.2.6" data-node-pid="1.2"><td title="The number of consecutive Neighbor Solicitation messages
+sent while performing Duplicate Address Detection on a
+tentative address.  A value of zero indicates that
+Duplicate Address Detection is not performed on
+tentative addresses.  A value of one indicates a single
+transmission with no follow-up retransmissions.">dup-addr-detect-transmits <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint32</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv6/ip:dup-addr-detect-transmits</td></tr>
+        <tr data-node-id="1.2.7" data-node-pid="1.2"><td title="Parameters to control the autoconfiguration of IPv6
+addresses, as described in RFC 4862.">autoconf <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv6/ip:autoconf</td></tr>
+        <tr data-node-id="1.2.7.1" data-node-pid="1.2.7"><td title="If enabled, the host creates global addresses as
+described in RFC 4862.">create-global-addresses <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>boolean</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv6/ip:autoconf/ip:create-global-addresses</td></tr>
+        <tr data-node-id="1.2.7.2" data-node-pid="1.2.7"><td title="If enabled, the host creates temporary addresses as
+described in RFC 4941.">create-temporary-addresses <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>boolean</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv6/ip:autoconf/ip:create-temporary-addresses</td></tr>
+        <tr data-node-id="1.2.7.3" data-node-pid="1.2.7"><td title="The time period during which the temporary address
+is valid.">temporary-valid-lifetime <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint32</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv6/ip:autoconf/ip:temporary-valid-lifetime</td></tr>
+        <tr data-node-id="1.2.7.4" data-node-pid="1.2.7"><td title="The time period during which the temporary address is
+preferred.">temporary-preferred-lifetime <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint32</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/ip:ipv6/ip:autoconf/ip:temporary-preferred-lifetime</td></tr>
+        <tr data-node-id="2" data-node-pid=""><td title="Data nodes for the operational state of IP on interfaces.">interface <span><i class="fas fa-external-link-alt"></i></span> </td><td>augment</td><td></td><td></td><td>deprecated</td><td>/if:interfaces-state/if:interface</td></tr>
+        <tr data-node-id="2.1" data-node-pid="2"><td title="Interface-specific parameters for the IPv4 address family.">ipv4 <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv4</td></tr>
+        <tr data-node-id="2.1.1" data-node-pid="2.1"><td title="Indicates whether IPv4 packet forwarding is enabled or
+disabled on this interface.">forwarding <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>boolean</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv4/ip:forwarding</td></tr>
+        <tr data-node-id="2.1.2" data-node-pid="2.1"><td title="The size, in octets, of the largest IPv4 packet that the
+interface will send and receive.">mtu <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint16</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv4/ip:mtu</td></tr>
+        <tr data-node-id="2.1.3" data-node-pid="2.1"><td title="The list of IPv4 addresses on the interface.">address[ip] <span><i class="fas fa-list"></i></span> </td><td>list</td><td></td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv4/ip:address</td></tr>
+        <tr data-node-id="2.1.3.1" data-node-pid="2.1.3"><td title="The IPv4 address on the interface.">ip <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>inet:ipv4-address-no-zone</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv4/ip:address/ip:ip</td></tr>
+        <tr data-node-id="2.1.3.2" data-node-pid="2.1.3"><td title="The subnet can be specified as a prefix length or,
+if the server supports non-contiguous netmasks, as
+a netmask.">subnet <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv4/ip:address/ip:subnet</td></tr>
+        <tr data-node-id="2.1.3.2.1" data-node-pid="2.1.3.2"><td title="">prefix-length <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/if:interfaces-state/if:interface/ip:ipv4/ip:address/ip:subnet/ip:prefix-length</td></tr>
+        <tr data-node-id="2.1.3.2.1.1" data-node-pid="2.1.3.2.1"><td title="The length of the subnet prefix.">prefix-length <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint8</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv4/ip:address/ip:subnet/ip:prefix-length/ip:prefix-length</td></tr>
+        <tr data-node-id="2.1.3.2.2" data-node-pid="2.1.3.2"><td title="">netmask <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/if:interfaces-state/if:interface/ip:ipv4/ip:address/ip:subnet/ip:netmask</td></tr>
+        <tr data-node-id="2.1.3.2.2.1" data-node-pid="2.1.3.2.2"><td title="The subnet specified as a netmask.">netmask <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:dotted-quad</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv4/ip:address/ip:subnet/ip:netmask/ip:netmask</td></tr>
+        <tr data-node-id="2.1.3.3" data-node-pid="2.1.3"><td title="The origin of this address.">origin <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>ip-address-origin</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv4/ip:address/ip:origin</td></tr>
+        <tr data-node-id="2.1.4" data-node-pid="2.1"><td title="A list of mappings from IPv4 addresses to
+link-layer addresses.
+
+This list represents the ARP Cache.">neighbor[ip] <span><i class="fas fa-list"></i></span> </td><td>list</td><td></td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv4/ip:neighbor</td></tr>
+        <tr data-node-id="2.1.4.1" data-node-pid="2.1.4"><td title="The IPv4 address of the neighbor node.">ip <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>inet:ipv4-address-no-zone</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv4/ip:neighbor/ip:ip</td></tr>
+        <tr data-node-id="2.1.4.2" data-node-pid="2.1.4"><td title="The link-layer address of the neighbor node.">link-layer-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:phys-address</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv4/ip:neighbor/ip:link-layer-address</td></tr>
+        <tr data-node-id="2.1.4.3" data-node-pid="2.1.4"><td title="The origin of this neighbor entry.">origin <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>neighbor-origin</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv4/ip:neighbor/ip:origin</td></tr>
+        <tr data-node-id="2.2" data-node-pid="2"><td title="Parameters for the IPv6 address family.">ipv6 <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv6</td></tr>
+        <tr data-node-id="2.2.1" data-node-pid="2.2"><td title="Indicates whether IPv6 packet forwarding is enabled or
+disabled on this interface.">forwarding <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>boolean</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv6/ip:forwarding</td></tr>
+        <tr data-node-id="2.2.2" data-node-pid="2.2"><td title="The size, in octets, of the largest IPv6 packet that the
+interface will send and receive.">mtu <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint32</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv6/ip:mtu</td></tr>
+        <tr data-node-id="2.2.3" data-node-pid="2.2"><td title="The list of IPv6 addresses on the interface.">address[ip] <span><i class="fas fa-list"></i></span> </td><td>list</td><td></td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv6/ip:address</td></tr>
+        <tr data-node-id="2.2.3.1" data-node-pid="2.2.3"><td title="The IPv6 address on the interface.">ip <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>inet:ipv6-address-no-zone</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv6/ip:address/ip:ip</td></tr>
+        <tr data-node-id="2.2.3.2" data-node-pid="2.2.3"><td title="The length of the subnet prefix.">prefix-length <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint8</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv6/ip:address/ip:prefix-length</td></tr>
+        <tr data-node-id="2.2.3.3" data-node-pid="2.2.3"><td title="The origin of this address.">origin <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>ip-address-origin</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv6/ip:address/ip:origin</td></tr>
+        <tr data-node-id="2.2.3.4" data-node-pid="2.2.3"><td title="The status of an address.  Most of the states correspond
+to states from the IPv6 Stateless Address
+Autoconfiguration protocol.">status <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>enumeration</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv6/ip:address/ip:status</td></tr>
+        <tr data-node-id="2.2.4" data-node-pid="2.2"><td title="A list of mappings from IPv6 addresses to
+link-layer addresses.
+
+This list represents the Neighbor Cache.">neighbor[ip] <span><i class="fas fa-list"></i></span> </td><td>list</td><td></td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv6/ip:neighbor</td></tr>
+        <tr data-node-id="2.2.4.1" data-node-pid="2.2.4"><td title="The IPv6 address of the neighbor node.">ip <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>inet:ipv6-address-no-zone</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv6/ip:neighbor/ip:ip</td></tr>
+        <tr data-node-id="2.2.4.2" data-node-pid="2.2.4"><td title="The link-layer address of the neighbor node.">link-layer-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:phys-address</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv6/ip:neighbor/ip:link-layer-address</td></tr>
+        <tr data-node-id="2.2.4.3" data-node-pid="2.2.4"><td title="The origin of this neighbor entry.">origin <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>neighbor-origin</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv6/ip:neighbor/ip:origin</td></tr>
+        <tr data-node-id="2.2.4.4" data-node-pid="2.2.4"><td title="Indicates that the neighbor node acts as a router.">is-router <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>empty</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv6/ip:neighbor/ip:is-router</td></tr>
+        <tr data-node-id="2.2.4.5" data-node-pid="2.2.4"><td title="The Neighbor Unreachability Detection state of this
+entry.">state <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>enumeration</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/ip:ipv6/ip:neighbor/ip:state</td></tr>
+    </table>
+</div>
+<script>
+class JsStore {
+  constructor(opts = {}) {
+    this.opts = {
+      type: opts.type || 'session',
+      key: opts.key
+    }
+    this.inst = new WebStorage(this.opts);
+  }
+
+  get(defs = null) {
+    return this.inst.get(this.opts.key) || defs;
+  }
+
+  set(data) {
+    this.inst.set(this.opts.key, data);
+  }
+
+  remove() {
+    this.inst.remove(this.opts.key);
+  }
+}
+
+class WebStorage {
+  constructor(opts = {}) {
+    this.storage = {
+      local: window.localStorage,
+      session: window.sessionStorage
+    }[opts.type];
+  }
+
+  get(key) {
+    try {
+      let json = this.storage.getItem(key);
+      if (!json) return null;
+      return JSON.parse(json)
+    } catch(e) {
+      console.log(e);
+      return null;
+    }
+  }
+
+  set(key, value) {
+    try {
+      this.storage.setItem(key, JSON.stringify(value));
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
+  remove(key) {
+    this.storage.removeItem(key);
+  }
+}
+
+
+const NAMESPACE = 'simple-tree-table';
+
+const DEFAULTS = {
+  expander: null,
+  collapser: null,
+  opened: 'all',
+  margin: 20,
+  iconPosition: ':first',
+  iconTemplate: '<span />',
+  store: null,
+  storeKey: null
+};
+
+class SimpleTreeTable {
+  constructor(element, options = {}) {
+    this.options = $.extend({}, DEFAULTS, options);
+
+    this.$table = $(element);
+    this.$expander = $(this.options.expander);
+    this.$collapser = $(this.options.collapser);
+
+    if (this.options.store && this.options.storeKey) {
+      this.store = new Store({
+        type: this.options.store,
+        key: this.options.storeKey
+      });
+    }
+
+    this.init();
+    this.load();
+  }
+
+  init() {
+    this.$table.addClass(NAMESPACE);
+    this.build();
+    this.unbind();
+    this.bind();
+  }
+
+  destroy() {
+    this.$table.removeClass(NAMESPACE);
+    this.$table.find('.tree-icon').remove();
+    this.nodes().removeClass('tree-empty tree-opened tree-closed');
+
+    this.unbind();
+  }
+
+  build() {
+    this.nodes().not('[data-node-depth]').each((i, node) => {
+      let $node = $(node);
+      let depth = this.depth($node);
+      $node.data('node-depth', depth);
+      if (depth == 1) {
+        $node.addClass('tree-root');
+      }
+    });
+
+    this.nodes().filter((i, node) => {
+      return $(node).find(this.options.iconPosition).find('.tree-handler').length == 0;
+    }).each((i, node) => {
+      let $node = $(node);
+      let depth = this.depth($node);
+      let margin = this.options.margin * (depth - 1);
+      let $icon = $(this.options.iconTemplate).addClass('tree-handler tree-icon').css('margin-left', `${margin}px`);
+      $node.find(this.options.iconPosition).prepend($icon);
+    });
+
+    this.nodes().not('.tree-empty, .tree-opened, .tree-closed').each((i, node) => {
+      let $node = $(node);
+      if (!this.hasChildren($node)) {
+        $node.addClass('tree-empty');
+      } else if (this.opensDefault($node)) {
+        $node.addClass('tree-opened');
+      } else {
+        $node.addClass('tree-closed');
+      }
+    });
+
+    this.nodes().filter('.tree-opened').each((i, node) => {
+      this.show($(node));
+    });
+    this.nodes().filter('.tree-closed').each((i, node) => {
+      this.hide($(node));
+    });
+  }
+
+  opensDefault($node) {
+    let opened = this.options.opened;
+    return opened && (opened == 'all' || opened.indexOf($node.data('node-id')) != -1);
+  }
+
+  bind() {
+    this.$expander.on(`click.${NAMESPACE}`, (e) => {
+      this.expand();
+    });
+
+    this.$collapser.on(`click.${NAMESPACE}`, (e) => {
+      this.collapse();
+    });
+
+    this.$table.on(`click.${NAMESPACE}`, 'tr .tree-handler', (e) => {
+      let $node = $(e.currentTarget).closest('tr');
+      if ($node.hasClass('tree-opened')) {
+        this.close($node);
+      } else {
+        this.open($node);
+      }
+    });
+  }
+
+  unbind() {
+    this.$expander.off(`.${NAMESPACE}`);
+    this.$collapser.off(`.${NAMESPACE}`);
+    this.$table.off(`.${NAMESPACE} node:open node:close`);
+  }
+
+  expand() {
+    this.nodes().each((i, node) => {
+      this.show($(node));
+    });
+    this.save();
+  }
+
+  collapse() {
+    this.nodes().each((i, node) => {
+      this.hide($(node));
+    });
+    this.save();
+  }
+
+  nodes() {
+    return this.$table.find('tr[data-node-id]');
+  }
+
+  depth($node) {
+    let d = $node.data('node-depth');
+    if (d) {
+      return d;
+    }
+
+    let $parent = this.findByID($node.data('node-pid'));
+    if ($parent.length != 0) {
+      return this.depth($parent) + 1;
+    } else {
+      return 1;
+    }
+  }
+
+  open($node) {
+    this.show($node);
+    this.save();
+
+    $node.trigger('node:open', [$node]);
+  }
+
+  show($node) {
+    if (!$node.hasClass('tree-empty')) {
+      $node.removeClass('tree-closed').addClass('tree-opened');
+      this.showDescs($node);
+    }
+  }
+
+  showDescs($node) {
+    let $children = this.findChildren($node);
+    $children.each((i, child) => {
+      let $child = $(child);
+      $child.show();
+      if ($child.hasClass('tree-opened')) {
+        this.showDescs($child);
+      }
+    });
+  }
+
+  close($node) {
+    this.hide($node);
+    this.save();
+
+    $node.trigger('node:close', [$node]);
+  }
+
+  hide($node) {
+    if (!$node.hasClass('tree-empty')) {
+      $node.removeClass('tree-opened').addClass('tree-closed');
+      this.hideDescs($node);
+    }
+  }
+
+  hideDescs($node) {
+    let $children = this.findChildren($node);
+    $children.each((i, child) => {
+      let $child = $(child);
+      $child.hide();
+      this.hideDescs($child);
+    });
+  }
+
+  hasChildren($node) {
+    return this.findChildren($node).length != 0;
+  }
+
+  findChildren($node) {
+    let pid = $node.data('node-id');
+    return this.$table.find(`tr[data-node-pid="${pid}"]`);
+  }
+
+  findDescendants($node, descendants = []) {
+    let children = this.findChildren($node)
+    descendants.push(children);
+    children.each((i, child) => {
+      this.findDescendants($(child), descendants);
+    })
+    return descendants;
+  }
+
+  findByID(id) {
+    return this.$table.find(`tr[data-node-id="${id}"]`);
+  }
+
+  openByID(id) {
+    this.open(this.findByID(id));
+  }
+
+  closeByID(id) {
+    this.close(this.findByID(id));
+  }
+
+  load() {
+    if (!this.store) return;
+
+    let ids = this.store.get();
+    if (!ids) return;
+
+    this.nodes().each((i, node) => {
+      this.show($(node));
+    });
+    this.nodes().filter((i, node) => {
+      return ids.indexOf($(node).data('node-id')) != -1;
+    }).each((i, node) => {
+      this.hide($(node));
+    });
+  }
+
+  save() {
+    if (!this.store) return;
+
+    let ids = this.nodes().filter('.tree-closed').map((i, node) => {
+      return $(node).data('node-id');
+    }).get();
+
+    this.store.set(ids)
+  }
+
+  static getDefaults() {
+    return DEFAULTS;
+  }
+
+  static setDefaults(options) {
+    return $.extend(DEFAULTS, options);
+  }
+}
+
+$.fn.simpleTreeTable = function(options) {
+  return this.each((i, elem) => {
+    let $elem = $(elem);
+    if ($elem.data(NAMESPACE)) $elem.data(NAMESPACE).destroy();
+    $elem.data(NAMESPACE, new SimpleTreeTable($elem, options));
+  });
+};
+
+$.SimpleTreeTable = SimpleTreeTable;
+
+	$('#basic').simpleTreeTable({
+  expander: $('#expander'),
+  collapser: $('#collapser')
+});
+
+$('#collapsed').simpleTreeTable({
+  opened: 'none',
+});
+$('#collapsed').simpleTreeTable({
+  margin: 25
+});
+</script>
+</body>
+</html>

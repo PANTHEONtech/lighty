@@ -1,0 +1,1 @@
+module ietf-routing@2018-03-13 depends on following modules: ietf-interfaces ietf-yang-types

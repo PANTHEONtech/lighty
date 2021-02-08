@@ -1,0 +1,58 @@
+module: ietf-interfa
+  +--rw interfaces
+  |  +--rw interface
+  |     +--rw name  
+  |     +--rw descri
+  |     +--rw type  
+  |     +--rw enable
+  |     +--rw link-u
+  |     +--ro admin-
+  |     +--ro oper-s
+  |     +--ro last-c
+  |     +--ro if-ind
+  |     +--ro phys-a
+  |     +--ro higher
+  |     +--ro lower-
+  |     +--ro speed?
+  |     +--ro statis
+  |        +--ro dis
+  |        +--ro in-
+  |        +--ro in-
+  |        +--ro in-
+  |        +--ro in-
+  |        +--ro in-
+  |        +--ro in-
+  |        +--ro in-
+  |        +--ro out
+  |        +--ro out
+  |        +--ro out
+  |        +--ro out
+  |        +--ro out
+  |        +--ro out
+  x--ro interfaces-s
+     x--ro interface
+        x--ro name  
+        x--ro type  
+        x--ro admin-
+        x--ro oper-s
+        x--ro last-c
+        x--ro if-ind
+        x--ro phys-a
+        x--ro higher
+        x--ro lower-
+        x--ro speed?
+        x--ro statis
+           x--ro dis
+           x--ro in-
+           x--ro in-
+           x--ro in-
+           x--ro in-
+           x--ro in-
+           x--ro in-
+           x--ro in-
+           x--ro out
+           x--ro out
+           x--ro out
+           x--ro out
+           x--ro out
+           x--ro out

@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+  <style>
+  .fa-share {
+    color: blue;
+  }
+  .fa-reply {
+    color: blue;
+  }
+  .fa-play {
+    color: red;
+  }
+  .fa-envelope {
+    color: red;
+  }
+  .fa-bell {
+    color: red;
+  }
+  .fa-check {
+    color: blue;
+  }
+  .fa-tasks {
+    color: blue;
+  }
+  .fa-external-link-alt {
+    color: red;
+  }
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+} 
+  .fa-leaf {
+    color: green;
+  } 
+  .fa-pagelines {
+    color: green;
+  } 
+  .fa-folder-open {
+    color: orange;
+  } 
+table.simple-tree-table .tree-icon {
+ display:inline-block;
+ width:1.5em;
+ line-height:1.5em;
+ margin:.1em;
+ background-color:#eee;
+ text-align:center;
+ cursor:pointer
+}
+table.simple-tree-table tr.tree-opened .tree-icon:after {
+ content:"-"
+}
+table.simple-tree-table tr.tree-closed .tree-icon:after {
+ content:"+"
+}
+  </style>
+</head><body>
+<div> <b> module name <NAME_REVISION>, namespace <NAMESPACE>, prefix <PREFIX> </b></div><div>
+<button type="button" id="expander" class="btn btn-danger">Expand All</button>
+<button type="button" id="collapser" class="btn btn-info">Collapse All</button>
+  <table id="basic" class="table table-bordered table-striped simple-tree-table">
+<th> element </th>
+<th> schema </th>
+<th> type </th>
+<th> flag </th>
+<th> status </th>
+<th> path </th>

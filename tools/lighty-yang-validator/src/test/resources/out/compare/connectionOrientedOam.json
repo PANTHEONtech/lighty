@@ -1,0 +1,2169 @@
+{
+  "children": [{
+    "path": "/co-oam:domains/",
+    "type_info": {},
+    "children": [{
+      "path": "/co-oam:domains/co-oam:domain/",
+      "type_info": {},
+      "children": [
+        {
+          "path": "/co-oam:domains/co-oam:domain/co-oam:technology/",
+          "type_info": {
+            "description": "",
+            "type": "identityref",
+            "base": ["technology-types"]
+          },
+          "children": [],
+          "name": "technology",
+          "description": "Defines the technology.",
+          "config": true,
+          "class": "leaf",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/co-oam:domains/co-oam:domain/co-oam:md-name-string/",
+          "type_info": {
+            "description": "Generic administrative name for Maintenance Domain (MD).",
+            "type": "co-oam:md-name-string"
+          },
+          "children": [],
+          "name": "md-name-string",
+          "description": "Defines the generic administrative Maintenance Domain name.",
+          "config": true,
+          "class": "leaf",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/co-oam:domains/co-oam:domain/co-oam:md-name-format/",
+          "type_info": {
+            "description": "",
+            "type": "identityref",
+            "base": ["name-format"]
+          },
+          "children": [],
+          "name": "md-name-format",
+          "description": "Maintenance Domain Name format.",
+          "config": true,
+          "class": "leaf",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/co-oam:domains/co-oam:domain/co-oam:md-name/",
+          "type_info": {},
+          "children": [{
+            "path": "/co-oam:domains/co-oam:domain/co-oam:md-name/co-oam:md-name-null/",
+            "type_info": {},
+            "children": [{
+              "path": "/co-oam:domains/co-oam:domain/co-oam:md-name/co-oam:md-name-null/co-oam:md-name-null/",
+              "type_info": {
+                "description": "",
+                "type": "empty"
+              },
+              "children": [],
+              "name": "md-name-null",
+              "description": "MD name null.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            }],
+            "name": "md-name-null",
+            "description": "",
+            "config": true,
+            "class": "case",
+            "status": "CURRENT"
+          }],
+          "name": "md-name",
+          "description": "MD name.",
+          "config": true,
+          "class": "choice",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/co-oam:domains/co-oam:domain/co-oam:md-level/",
+          "type_info": {
+            "description": "Maintenance Domain Level.  The level may be restricted in\ncertain protocols (e.g., protocol in layer 0 to layer 7).",
+            "type": "co-oam:md-level"
+          },
+          "children": [],
+          "name": "md-level",
+          "description": "Define the MD level.",
+          "config": true,
+          "class": "leaf",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/co-oam:domains/co-oam:domain/co-oam:mas/",
+          "type_info": {},
+          "children": [{
+            "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/",
+            "type_info": {},
+            "children": [
+              {
+                "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:ma-name-string/",
+                "type_info": {
+                  "description": "Generic administrative name for a\nMaintenance Association (MA).",
+                  "type": "co-oam:ma-name-string"
+                },
+                "children": [],
+                "name": "ma-name-string",
+                "description": "MA name string.",
+                "config": true,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:ma-name-format/",
+                "type_info": {
+                  "description": "",
+                  "type": "identityref",
+                  "base": ["name-format"]
+                },
+                "children": [],
+                "name": "ma-name-format",
+                "description": "MA name format.",
+                "config": true,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:ma-name/",
+                "type_info": {},
+                "children": [{
+                  "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:ma-name/co-oam:ma-name-null/",
+                  "type_info": {},
+                  "children": [{
+                    "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:ma-name/co-oam:ma-name-null/co-oam:ma-name-null/",
+                    "type_info": {
+                      "description": "",
+                      "type": "empty"
+                    },
+                    "children": [],
+                    "name": "ma-name-null",
+                    "description": "Empty",
+                    "config": true,
+                    "class": "leaf",
+                    "status": "CURRENT"
+                  }],
+                  "name": "ma-name-null",
+                  "description": "",
+                  "config": true,
+                  "class": "case",
+                  "status": "CURRENT"
+                }],
+                "name": "ma-name",
+                "description": "MA name.",
+                "config": true,
+                "class": "choice",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:connectivity-context/",
+                "type_info": {},
+                "children": [{
+                  "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:connectivity-context/co-oam:context-null/",
+                  "type_info": {},
+                  "children": [{
+                    "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:connectivity-context/co-oam:context-null/co-oam:context-null/",
+                    "type_info": {
+                      "description": "",
+                      "type": "empty"
+                    },
+                    "children": [],
+                    "name": "context-null",
+                    "description": "There is no context to be defined.",
+                    "config": true,
+                    "class": "leaf",
+                    "status": "CURRENT"
+                  }],
+                  "name": "context-null",
+                  "description": "This is a placeholder when no context is needed.",
+                  "config": true,
+                  "class": "case",
+                  "status": "CURRENT"
+                }],
+                "name": "connectivity-context",
+                "description": "Connectivity context.",
+                "config": true,
+                "class": "choice",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:cos-id/",
+                "type_info": {
+                  "description": "",
+                  "type": "uint8"
+                },
+                "children": [],
+                "name": "cos-id",
+                "description": "Class of Service (CoS) ID; this value is used to indicate\nClass of Service information .",
+                "config": true,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:cc-enable/",
+                "type_info": {
+                  "description": "",
+                  "type": "boolean"
+                },
+                "children": [],
+                "name": "cc-enable",
+                "description": "Indicate whether the CC is enabled.",
+                "config": true,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/",
+                "type_info": {},
+                "children": [
+                  {
+                    "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:mep-name/",
+                    "type_info": {
+                      "description": "Generic administrative name for a MEP.",
+                      "type": "co-oam:mep-name"
+                    },
+                    "children": [],
+                    "name": "mep-name",
+                    "description": "Generic administrative name of the\nMEP.",
+                    "config": true,
+                    "class": "leaf",
+                    "status": "CURRENT"
+                  },
+                  {
+                    "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:mep-id/",
+                    "type_info": {},
+                    "children": [{
+                      "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:mep-id/co-oam:mep-id-int/",
+                      "type_info": {},
+                      "children": [{
+                        "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:mep-id/co-oam:mep-id-int/co-oam:mep-id-int/",
+                        "type_info": {
+                          "description": "",
+                          "type": "int32"
+                        },
+                        "children": [],
+                        "name": "mep-id-int",
+                        "description": "MEP ID\nin integer format.",
+                        "config": true,
+                        "class": "leaf",
+                        "status": "CURRENT"
+                      }],
+                      "name": "mep-id-int",
+                      "description": "",
+                      "config": true,
+                      "class": "case",
+                      "status": "CURRENT"
+                    }],
+                    "name": "mep-id",
+                    "description": "MEP ID.",
+                    "config": true,
+                    "class": "choice",
+                    "status": "CURRENT"
+                  },
+                  {
+                    "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:mep-id-format/",
+                    "type_info": {
+                      "description": "",
+                      "type": "identityref",
+                      "base": ["identifier-format"]
+                    },
+                    "children": [],
+                    "name": "mep-id-format",
+                    "description": "MEP ID format.",
+                    "config": true,
+                    "class": "leaf",
+                    "status": "CURRENT"
+                  },
+                  {
+                    "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:mep-address/",
+                    "type_info": {},
+                    "children": [
+                      {
+                        "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:mep-address/co-oam:mac-address/",
+                        "type_info": {},
+                        "children": [{
+                          "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:mep-address/co-oam:mac-address/co-oam:mac-address/",
+                          "type_info": {
+                            "description": "The mac-address type represents an IEEE 802 MAC address.\nThe canonical representation uses lowercase characters.\n\nIn the value set and its semantics, this type is equivalent\nto the MacAddress textual convention of the SMIv2.",
+                            "type": "yang:mac-address"
+                          },
+                          "children": [],
+                          "name": "mac-address",
+                          "description": "MAC Address.",
+                          "config": true,
+                          "class": "leaf",
+                          "status": "CURRENT"
+                        }],
+                        "name": "mac-address",
+                        "description": "MAC Address based MEP Addressing.",
+                        "config": true,
+                        "class": "case",
+                        "status": "CURRENT"
+                      },
+                      {
+                        "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:mep-address/co-oam:ip-address/",
+                        "type_info": {},
+                        "children": [{
+                          "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:mep-address/co-oam:ip-address/co-oam:ip-address/",
+                          "type_info": {
+                            "description": "The ip-address type represents an IP address and is IP\nversion neutral.  The format of the textual representation\nimplies the IP version.  This type supports scoped addresses\nby allowing zone identifiers in the address format.",
+                            "type": "inet:ip-address"
+                          },
+                          "children": [],
+                          "name": "ip-address",
+                          "description": "IP Address.",
+                          "config": true,
+                          "class": "leaf",
+                          "status": "CURRENT"
+                        }],
+                        "name": "ip-address",
+                        "description": "IP Address based MEP Addressing.",
+                        "config": true,
+                        "class": "case",
+                        "status": "CURRENT"
+                      }
+                    ],
+                    "name": "mep-address",
+                    "description": "MEP Addressing.",
+                    "config": true,
+                    "class": "choice",
+                    "status": "CURRENT"
+                  },
+                  {
+                    "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:cos-id/",
+                    "type_info": {
+                      "description": "",
+                      "type": "uint8"
+                    },
+                    "children": [],
+                    "name": "cos-id",
+                    "description": "Class of Service (CoS) ID; this value is used to indicate\nClass of Service information .",
+                    "config": true,
+                    "class": "leaf",
+                    "status": "CURRENT"
+                  },
+                  {
+                    "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:cc-enable/",
+                    "type_info": {
+                      "description": "",
+                      "type": "boolean"
+                    },
+                    "children": [],
+                    "name": "cc-enable",
+                    "description": "Indicate whether the CC is enabled.",
+                    "config": true,
+                    "class": "leaf",
+                    "status": "CURRENT"
+                  },
+                  {
+                    "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/",
+                    "type_info": {},
+                    "children": [
+                      {
+                        "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:session-cookie/",
+                        "type_info": {
+                          "description": "",
+                          "type": "uint32"
+                        },
+                        "children": [],
+                        "name": "session-cookie",
+                        "description": "Cookie to identify different sessions, when there\nare multiple remote MEPs or multiple sessions to\nthe same remote MEP.",
+                        "config": true,
+                        "class": "leaf",
+                        "status": "CURRENT"
+                      },
+                      {
+                        "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep/",
+                        "type_info": {},
+                        "children": [
+                          {
+                            "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep/co-oam:mep-id/",
+                            "type_info": {},
+                            "children": [{
+                              "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep/co-oam:mep-id/co-oam:mep-id-int/",
+                              "type_info": {},
+                              "children": [{
+                                "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep/co-oam:mep-id/co-oam:mep-id-int/co-oam:mep-id-int/",
+                                "type_info": {
+                                  "description": "",
+                                  "type": "int32"
+                                },
+                                "children": [],
+                                "name": "mep-id-int",
+                                "description": "MEP ID\nin integer format.",
+                                "config": true,
+                                "class": "leaf",
+                                "status": "CURRENT"
+                              }],
+                              "name": "mep-id-int",
+                              "description": "",
+                              "config": true,
+                              "class": "case",
+                              "status": "CURRENT"
+                            }],
+                            "name": "mep-id",
+                            "description": "MEP ID.",
+                            "config": true,
+                            "class": "choice",
+                            "status": "CURRENT"
+                          },
+                          {
+                            "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep/co-oam:mep-id-format/",
+                            "type_info": {
+                              "description": "",
+                              "type": "identityref",
+                              "base": ["identifier-format"]
+                            },
+                            "children": [],
+                            "name": "mep-id-format",
+                            "description": "MEP ID format.",
+                            "config": true,
+                            "class": "leaf",
+                            "status": "CURRENT"
+                          }
+                        ],
+                        "name": "destination-mep",
+                        "description": "Destination MEP.",
+                        "config": true,
+                        "class": "container",
+                        "status": "CURRENT"
+                      },
+                      {
+                        "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep-address/",
+                        "type_info": {},
+                        "children": [{
+                          "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep-address/co-oam:mep-address/",
+                          "type_info": {},
+                          "children": [
+                            {
+                              "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep-address/co-oam:mep-address/co-oam:mac-address/",
+                              "type_info": {},
+                              "children": [{
+                                "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep-address/co-oam:mep-address/co-oam:mac-address/co-oam:mac-address/",
+                                "type_info": {
+                                  "description": "The mac-address type represents an IEEE 802 MAC address.\nThe canonical representation uses lowercase characters.\n\nIn the value set and its semantics, this type is equivalent\nto the MacAddress textual convention of the SMIv2.",
+                                  "type": "yang:mac-address"
+                                },
+                                "children": [],
+                                "name": "mac-address",
+                                "description": "MAC Address.",
+                                "config": true,
+                                "class": "leaf",
+                                "status": "CURRENT"
+                              }],
+                              "name": "mac-address",
+                              "description": "MAC Address based MEP Addressing.",
+                              "config": true,
+                              "class": "case",
+                              "status": "CURRENT"
+                            },
+                            {
+                              "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep-address/co-oam:mep-address/co-oam:ip-address/",
+                              "type_info": {},
+                              "children": [{
+                                "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep-address/co-oam:mep-address/co-oam:ip-address/co-oam:ip-address/",
+                                "type_info": {
+                                  "description": "The ip-address type represents an IP address and is IP\nversion neutral.  The format of the textual representation\nimplies the IP version.  This type supports scoped addresses\nby allowing zone identifiers in the address format.",
+                                  "type": "inet:ip-address"
+                                },
+                                "children": [],
+                                "name": "ip-address",
+                                "description": "IP Address.",
+                                "config": true,
+                                "class": "leaf",
+                                "status": "CURRENT"
+                              }],
+                              "name": "ip-address",
+                              "description": "IP Address based MEP Addressing.",
+                              "config": true,
+                              "class": "case",
+                              "status": "CURRENT"
+                            }
+                          ],
+                          "name": "mep-address",
+                          "description": "MEP Addressing.",
+                          "config": true,
+                          "class": "choice",
+                          "status": "CURRENT"
+                        }],
+                        "name": "destination-mep-address",
+                        "description": "Destination MEP Address.",
+                        "config": true,
+                        "class": "container",
+                        "status": "CURRENT"
+                      },
+                      {
+                        "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:cos-id/",
+                        "type_info": {
+                          "description": "",
+                          "type": "uint8"
+                        },
+                        "children": [],
+                        "name": "cos-id",
+                        "description": "Class of Service (CoS) ID; this value is used to indicate\nClass of Service information .",
+                        "config": true,
+                        "class": "leaf",
+                        "status": "CURRENT"
+                      }
+                    ],
+                    "name": "session",
+                    "description": "Monitoring session to/from a particular remote MEP.\nDepending on the protocol, this could represent\nCC messages received from a single remote MEP (if the\nprotocol uses multicast CCs) or a target to which\nunicast echo request CCs are sent and from which\nresponses are received (if the protocol uses a\nunicast request/response mechanism).",
+                    "config": true,
+                    "class": "list",
+                    "status": "CURRENT"
+                  }
+                ],
+                "name": "mep",
+                "description": "Contain a list of MEPs.",
+                "config": true,
+                "class": "list",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mip/",
+                "type_info": {},
+                "children": [
+                  {
+                    "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mip/co-oam:name/",
+                    "type_info": {
+                      "description": "",
+                      "type": "string"
+                    },
+                    "children": [],
+                    "name": "name",
+                    "description": "Identifier of Maintenance Intermediate Point",
+                    "config": true,
+                    "class": "leaf",
+                    "status": "CURRENT"
+                  },
+                  {
+                    "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mip/co-oam:interface/",
+                    "type_info": {
+                      "description": "This type is used by data models that need to reference\ninterfaces.",
+                      "type": "if:interface-ref"
+                    },
+                    "children": [],
+                    "name": "interface",
+                    "description": "Interface.",
+                    "config": true,
+                    "class": "leaf",
+                    "status": "CURRENT"
+                  },
+                  {
+                    "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mip/co-oam:mip-address/",
+                    "type_info": {},
+                    "children": [
+                      {
+                        "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mip/co-oam:mip-address/co-oam:mac-address/",
+                        "type_info": {},
+                        "children": [{
+                          "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mip/co-oam:mip-address/co-oam:mac-address/co-oam:mac-address/",
+                          "type_info": {
+                            "description": "The mac-address type represents an IEEE 802 MAC address.\nThe canonical representation uses lowercase characters.\n\nIn the value set and its semantics, this type is equivalent\nto the MacAddress textual convention of the SMIv2.",
+                            "type": "yang:mac-address"
+                          },
+                          "children": [],
+                          "name": "mac-address",
+                          "description": "MAC Address of Maintenance Intermediate Point",
+                          "config": true,
+                          "class": "leaf",
+                          "status": "CURRENT"
+                        }],
+                        "name": "mac-address",
+                        "description": "MAC Address based MIP Addressing.",
+                        "config": true,
+                        "class": "case",
+                        "status": "CURRENT"
+                      },
+                      {
+                        "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mip/co-oam:mip-address/co-oam:ip-address/",
+                        "type_info": {},
+                        "children": [{
+                          "path": "/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mip/co-oam:mip-address/co-oam:ip-address/co-oam:ip-address/",
+                          "type_info": {
+                            "description": "The ip-address type represents an IP address and is IP\nversion neutral.  The format of the textual representation\nimplies the IP version.  This type supports scoped addresses\nby allowing zone identifiers in the address format.",
+                            "type": "inet:ip-address"
+                          },
+                          "children": [],
+                          "name": "ip-address",
+                          "description": "IP Address.",
+                          "config": true,
+                          "class": "leaf",
+                          "status": "CURRENT"
+                        }],
+                        "name": "ip-address",
+                        "description": "IP Address based MIP Addressing.",
+                        "config": true,
+                        "class": "case",
+                        "status": "CURRENT"
+                      }
+                    ],
+                    "name": "mip-address",
+                    "description": "MIP Addressing.",
+                    "config": true,
+                    "class": "choice",
+                    "status": "CURRENT"
+                  }
+                ],
+                "name": "mip",
+                "description": "List for MIP.",
+                "config": true,
+                "class": "list",
+                "status": "CURRENT"
+              }
+            ],
+            "name": "ma",
+            "description": "Maintenance Association list.",
+            "config": true,
+            "class": "list",
+            "status": "CURRENT"
+          }],
+          "name": "mas",
+          "description": "Contains configuration-related data.  Within the\ncontainer, there is a list of MAs.  Each MA has a\nlist of MEPs.",
+          "config": true,
+          "class": "container",
+          "status": "CURRENT"
+        }
+      ],
+      "name": "domain",
+      "description": "Define a list of Domains within the\nietf-connection-oriented-oam module.",
+      "config": true,
+      "class": "list",
+      "status": "CURRENT"
+    }],
+    "name": "domains",
+    "description": "Contains configuration related data.  Within the\ncontainer, there is a list of fault domains.  Each\ndomain has a list of MAs.",
+    "config": true,
+    "class": "container",
+    "status": "CURRENT"
+  }],
+  "module": {
+    "prefix": "co-oam",
+    "contact": "WG Web:    http://datatracker.ietf.org/wg/lime\nWG List:   <mailto:lime@ietf.org>\nEditor:    Deepak Kumar <dekumar@cisco.com>\nEditor:    Qin Wu <bill.wu@huawei.com>\nEditor:    Michael Wang <wangzitao@huawei.com>",
+    "name": "ietf-connection-oriented-oam",
+    "namespace": "urn:ietf:params:xml:ns:yang:ietf-connection-oriented-oam",
+    "description": "This YANG module defines the generic configuration,\nstatistics and RPC for connection-oriented OAM\nto be used within IETF in a protocol-independent manner.\nFunctional-level abstraction is independent\nwith YANG modeling. It is assumed that each protocol\nmaps corresponding abstracts to its native format.\nEach protocol may extend the YANG data model defined\nhere to include protocol-specific extensions\n\nCopyright (c) 2019 IETF Trust and the persons identified as\nauthors of the code.  All rights reserved.\n\nRedistribution and use in source and binary forms, with or\nwithout modification, is permitted pursuant to, and subject\nto the license terms contained in, the Simplified BSD License\nset forth in Section 4.c of the IETF Trust's Legal Provisions\nRelating to IETF Documents\n(http://trustee.ietf.org/license-info).\n\nThis version of this YANG module is part of RFC 8531; see\nthe RFC itself for full legal notices.",
+    "revision": "2019-04-16"
+  },
+  "rpcs": [
+    {
+      "path": "/co-oam:continuity-check/",
+      "type_info": {},
+      "children": [
+        {
+          "path": "/co-oam:continuity-check/co-oam:input/",
+          "type_info": {},
+          "children": [
+            {
+              "path": "/co-oam:continuity-check/co-oam:input/co-oam:technology/",
+              "type_info": {
+                "description": "",
+                "type": "identityref",
+                "base": ["technology-types"]
+              },
+              "children": [],
+              "name": "technology",
+              "description": "The technology.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:continuity-check/co-oam:input/co-oam:md-name-string/",
+              "type_info": {
+                "description": "",
+                "type": "co-oam:leafref"
+              },
+              "children": [],
+              "name": "md-name-string",
+              "description": "Indicate which MD the defect belongs to.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:continuity-check/co-oam:input/co-oam:md-level/",
+              "type_info": {
+                "description": "",
+                "type": "co-oam:leafref"
+              },
+              "children": [],
+              "name": "md-level",
+              "description": "The Maintenance Domain Level.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:continuity-check/co-oam:input/co-oam:ma-name-string/",
+              "type_info": {
+                "description": "",
+                "type": "co-oam:leafref"
+              },
+              "children": [],
+              "name": "ma-name-string",
+              "description": "Indicate which MA the defect is associated with.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:continuity-check/co-oam:input/co-oam:cos-id/",
+              "type_info": {
+                "description": "",
+                "type": "uint8"
+              },
+              "children": [],
+              "name": "cos-id",
+              "description": "Class of Service (CoS) ID; this value is used to indicate\nClass of Service information .",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:continuity-check/co-oam:input/co-oam:ttl/",
+              "type_info": {
+                "description": "",
+                "type": "uint8"
+              },
+              "children": [],
+              "name": "ttl",
+              "description": "Time to Live.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:continuity-check/co-oam:input/co-oam:sub-type/",
+              "type_info": {
+                "description": "",
+                "type": "identityref",
+                "base": ["command-sub-type"]
+              },
+              "children": [],
+              "name": "sub-type",
+              "description": "Defines different command types.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:continuity-check/co-oam:input/co-oam:source-mep/",
+              "type_info": {
+                "description": "",
+                "type": "co-oam:leafref"
+              },
+              "children": [],
+              "name": "source-mep",
+              "description": "Source MEP.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:continuity-check/co-oam:input/co-oam:destination-mep/",
+              "type_info": {},
+              "children": [
+                {
+                  "path": "/co-oam:continuity-check/co-oam:input/co-oam:destination-mep/co-oam:mep-address/",
+                  "type_info": {},
+                  "children": [
+                    {
+                      "path": "/co-oam:continuity-check/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:mac-address/",
+                      "type_info": {},
+                      "children": [{
+                        "path": "/co-oam:continuity-check/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:mac-address/co-oam:mac-address/",
+                        "type_info": {
+                          "description": "The mac-address type represents an IEEE 802 MAC address.\nThe canonical representation uses lowercase characters.\n\nIn the value set and its semantics, this type is equivalent\nto the MacAddress textual convention of the SMIv2.",
+                          "type": "yang:mac-address"
+                        },
+                        "children": [],
+                        "name": "mac-address",
+                        "description": "MAC Address.",
+                        "config": true,
+                        "class": "leaf",
+                        "status": "CURRENT"
+                      }],
+                      "name": "mac-address",
+                      "description": "MAC Address based MEP Addressing.",
+                      "config": true,
+                      "class": "case",
+                      "status": "CURRENT"
+                    },
+                    {
+                      "path": "/co-oam:continuity-check/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:ip-address/",
+                      "type_info": {},
+                      "children": [{
+                        "path": "/co-oam:continuity-check/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:ip-address/co-oam:ip-address/",
+                        "type_info": {
+                          "description": "The ip-address type represents an IP address and is IP\nversion neutral.  The format of the textual representation\nimplies the IP version.  This type supports scoped addresses\nby allowing zone identifiers in the address format.",
+                          "type": "inet:ip-address"
+                        },
+                        "children": [],
+                        "name": "ip-address",
+                        "description": "IP Address.",
+                        "config": true,
+                        "class": "leaf",
+                        "status": "CURRENT"
+                      }],
+                      "name": "ip-address",
+                      "description": "IP Address based MEP Addressing.",
+                      "config": true,
+                      "class": "case",
+                      "status": "CURRENT"
+                    }
+                  ],
+                  "name": "mep-address",
+                  "description": "MEP Addressing.",
+                  "config": true,
+                  "class": "choice",
+                  "status": "CURRENT"
+                },
+                {
+                  "path": "/co-oam:continuity-check/co-oam:input/co-oam:destination-mep/co-oam:mep-id/",
+                  "type_info": {},
+                  "children": [{
+                    "path": "/co-oam:continuity-check/co-oam:input/co-oam:destination-mep/co-oam:mep-id/co-oam:mep-id-int/",
+                    "type_info": {},
+                    "children": [{
+                      "path": "/co-oam:continuity-check/co-oam:input/co-oam:destination-mep/co-oam:mep-id/co-oam:mep-id-int/co-oam:mep-id-int/",
+                      "type_info": {
+                        "description": "",
+                        "type": "int32"
+                      },
+                      "children": [],
+                      "name": "mep-id-int",
+                      "description": "MEP ID\nin integer format.",
+                      "config": true,
+                      "class": "leaf",
+                      "status": "CURRENT"
+                    }],
+                    "name": "mep-id-int",
+                    "description": "",
+                    "config": true,
+                    "class": "case",
+                    "status": "CURRENT"
+                  }],
+                  "name": "mep-id",
+                  "description": "MEP ID.",
+                  "config": true,
+                  "class": "choice",
+                  "status": "CURRENT"
+                },
+                {
+                  "path": "/co-oam:continuity-check/co-oam:input/co-oam:destination-mep/co-oam:mep-id-format/",
+                  "type_info": {
+                    "description": "",
+                    "type": "identityref",
+                    "base": ["identifier-format"]
+                  },
+                  "children": [],
+                  "name": "mep-id-format",
+                  "description": "MEP ID format.",
+                  "config": true,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                }
+              ],
+              "name": "destination-mep",
+              "description": "Destination MEP.",
+              "config": true,
+              "class": "container",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:continuity-check/co-oam:input/co-oam:count/",
+              "type_info": {
+                "default": "3",
+                "description": "Number of continuity-check messages to be sent.",
+                "type": "co-oam:count"
+              },
+              "children": [],
+              "name": "count",
+              "description": "Number of continuity-check messages to be sent.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:continuity-check/co-oam:input/co-oam:cc-transmit-interval/",
+              "type_info": {
+                "description": "Time interval between packets in milliseconds.\nTime interval should not be less than 0.\n0 means no packets are sent.",
+                "type": "co-oam:time-interval"
+              },
+              "children": [],
+              "name": "cc-transmit-interval",
+              "description": "Time interval between echo requests.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:continuity-check/co-oam:input/co-oam:packet-size/",
+              "type_info": {
+                "description": "",
+                "type": "co-oam:uint32"
+              },
+              "children": [],
+              "name": "packet-size",
+              "description": "Size of continuity-check packets, in octets.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            }
+          ],
+          "name": "input",
+          "description": "",
+          "config": false,
+          "class": "container",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/co-oam:continuity-check/co-oam:output/",
+          "type_info": {},
+          "children": [{
+            "path": "/co-oam:continuity-check/co-oam:output/co-oam:monitor-stats/",
+            "type_info": {},
+            "children": [{
+              "path": "/co-oam:continuity-check/co-oam:output/co-oam:monitor-stats/co-oam:monitor-null/",
+              "type_info": {},
+              "children": [{
+                "path": "/co-oam:continuity-check/co-oam:output/co-oam:monitor-stats/co-oam:monitor-null/co-oam:monitor-null/",
+                "type_info": {
+                  "description": "",
+                  "type": "empty"
+                },
+                "children": [],
+                "name": "monitor-null",
+                "description": "There are no monitoring statistics to be defined.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              }],
+              "name": "monitor-null",
+              "description": "This is a placeholder when\nno monitoring statistics are needed.",
+              "config": false,
+              "class": "case",
+              "status": "CURRENT"
+            }],
+            "name": "monitor-stats",
+            "description": "Define the monitor stats.",
+            "config": false,
+            "class": "choice",
+            "status": "CURRENT"
+          }],
+          "name": "output",
+          "description": "",
+          "config": false,
+          "class": "container",
+          "status": "CURRENT"
+        }
+      ],
+      "name": "continuity-check",
+      "description": "Generates Continuity Check as per Table 4 of RFC 7276.",
+      "class": "rpc",
+      "status": "CURRENT"
+    },
+    {
+      "path": "/co-oam:continuity-verification/",
+      "type_info": {},
+      "children": [
+        {
+          "path": "/co-oam:continuity-verification/co-oam:input/",
+          "type_info": {},
+          "children": [
+            {
+              "path": "/co-oam:continuity-verification/co-oam:input/co-oam:md-name-string/",
+              "type_info": {
+                "description": "",
+                "type": "co-oam:leafref"
+              },
+              "children": [],
+              "name": "md-name-string",
+              "description": "Indicate which MD the defect belongs to.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:continuity-verification/co-oam:input/co-oam:md-level/",
+              "type_info": {
+                "description": "",
+                "type": "co-oam:leafref"
+              },
+              "children": [],
+              "name": "md-level",
+              "description": "The Maintenance Domain Level.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:continuity-verification/co-oam:input/co-oam:ma-name-string/",
+              "type_info": {
+                "description": "",
+                "type": "co-oam:leafref"
+              },
+              "children": [],
+              "name": "ma-name-string",
+              "description": "Indicate which MA the defect is associated with.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:continuity-verification/co-oam:input/co-oam:cos-id/",
+              "type_info": {
+                "description": "",
+                "type": "uint8"
+              },
+              "children": [],
+              "name": "cos-id",
+              "description": "Class of Service (CoS) ID; this value is used to indicate\nClass of Service information .",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:continuity-verification/co-oam:input/co-oam:ttl/",
+              "type_info": {
+                "description": "",
+                "type": "uint8"
+              },
+              "children": [],
+              "name": "ttl",
+              "description": "Time to Live.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:continuity-verification/co-oam:input/co-oam:sub-type/",
+              "type_info": {
+                "description": "",
+                "type": "identityref",
+                "base": ["command-sub-type"]
+              },
+              "children": [],
+              "name": "sub-type",
+              "description": "Defines different command types.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:continuity-verification/co-oam:input/co-oam:source-mep/",
+              "type_info": {
+                "description": "",
+                "type": "co-oam:leafref"
+              },
+              "children": [],
+              "name": "source-mep",
+              "description": "Source MEP.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:continuity-verification/co-oam:input/co-oam:destination-mep/",
+              "type_info": {},
+              "children": [
+                {
+                  "path": "/co-oam:continuity-verification/co-oam:input/co-oam:destination-mep/co-oam:mep-address/",
+                  "type_info": {},
+                  "children": [
+                    {
+                      "path": "/co-oam:continuity-verification/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:mac-address/",
+                      "type_info": {},
+                      "children": [{
+                        "path": "/co-oam:continuity-verification/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:mac-address/co-oam:mac-address/",
+                        "type_info": {
+                          "description": "The mac-address type represents an IEEE 802 MAC address.\nThe canonical representation uses lowercase characters.\n\nIn the value set and its semantics, this type is equivalent\nto the MacAddress textual convention of the SMIv2.",
+                          "type": "yang:mac-address"
+                        },
+                        "children": [],
+                        "name": "mac-address",
+                        "description": "MAC Address.",
+                        "config": true,
+                        "class": "leaf",
+                        "status": "CURRENT"
+                      }],
+                      "name": "mac-address",
+                      "description": "MAC Address based MEP Addressing.",
+                      "config": true,
+                      "class": "case",
+                      "status": "CURRENT"
+                    },
+                    {
+                      "path": "/co-oam:continuity-verification/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:ip-address/",
+                      "type_info": {},
+                      "children": [{
+                        "path": "/co-oam:continuity-verification/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:ip-address/co-oam:ip-address/",
+                        "type_info": {
+                          "description": "The ip-address type represents an IP address and is IP\nversion neutral.  The format of the textual representation\nimplies the IP version.  This type supports scoped addresses\nby allowing zone identifiers in the address format.",
+                          "type": "inet:ip-address"
+                        },
+                        "children": [],
+                        "name": "ip-address",
+                        "description": "IP Address.",
+                        "config": true,
+                        "class": "leaf",
+                        "status": "CURRENT"
+                      }],
+                      "name": "ip-address",
+                      "description": "IP Address based MEP Addressing.",
+                      "config": true,
+                      "class": "case",
+                      "status": "CURRENT"
+                    }
+                  ],
+                  "name": "mep-address",
+                  "description": "MEP Addressing.",
+                  "config": true,
+                  "class": "choice",
+                  "status": "CURRENT"
+                },
+                {
+                  "path": "/co-oam:continuity-verification/co-oam:input/co-oam:destination-mep/co-oam:mep-id/",
+                  "type_info": {},
+                  "children": [{
+                    "path": "/co-oam:continuity-verification/co-oam:input/co-oam:destination-mep/co-oam:mep-id/co-oam:mep-id-int/",
+                    "type_info": {},
+                    "children": [{
+                      "path": "/co-oam:continuity-verification/co-oam:input/co-oam:destination-mep/co-oam:mep-id/co-oam:mep-id-int/co-oam:mep-id-int/",
+                      "type_info": {
+                        "description": "",
+                        "type": "int32"
+                      },
+                      "children": [],
+                      "name": "mep-id-int",
+                      "description": "MEP ID\nin integer format.",
+                      "config": true,
+                      "class": "leaf",
+                      "status": "CURRENT"
+                    }],
+                    "name": "mep-id-int",
+                    "description": "",
+                    "config": true,
+                    "class": "case",
+                    "status": "CURRENT"
+                  }],
+                  "name": "mep-id",
+                  "description": "MEP ID.",
+                  "config": true,
+                  "class": "choice",
+                  "status": "CURRENT"
+                },
+                {
+                  "path": "/co-oam:continuity-verification/co-oam:input/co-oam:destination-mep/co-oam:mep-id-format/",
+                  "type_info": {
+                    "description": "",
+                    "type": "identityref",
+                    "base": ["identifier-format"]
+                  },
+                  "children": [],
+                  "name": "mep-id-format",
+                  "description": "MEP ID format.",
+                  "config": true,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                }
+              ],
+              "name": "destination-mep",
+              "description": "Destination MEP.",
+              "config": true,
+              "class": "container",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:continuity-verification/co-oam:input/co-oam:count/",
+              "type_info": {
+                "default": "3",
+                "description": "Number of continuity-verification messages to be sent.",
+                "type": "co-oam:count"
+              },
+              "children": [],
+              "name": "count",
+              "description": "Number of continuity-verification messages to be sent.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:continuity-verification/co-oam:input/co-oam:interval/",
+              "type_info": {
+                "description": "Time interval between packets in milliseconds.\nTime interval should not be less than 0.\n0 means no packets are sent.",
+                "type": "co-oam:time-interval"
+              },
+              "children": [],
+              "name": "interval",
+              "description": "Time interval between echo requests.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:continuity-verification/co-oam:input/co-oam:packet-size/",
+              "type_info": {
+                "description": "",
+                "type": "co-oam:uint32"
+              },
+              "children": [],
+              "name": "packet-size",
+              "description": "Size of continuity-verification packets, in octets.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            }
+          ],
+          "name": "input",
+          "description": "",
+          "config": false,
+          "class": "container",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/co-oam:continuity-verification/co-oam:output/",
+          "type_info": {},
+          "children": [{
+            "path": "/co-oam:continuity-verification/co-oam:output/co-oam:monitor-stats/",
+            "type_info": {},
+            "children": [{
+              "path": "/co-oam:continuity-verification/co-oam:output/co-oam:monitor-stats/co-oam:monitor-null/",
+              "type_info": {},
+              "children": [{
+                "path": "/co-oam:continuity-verification/co-oam:output/co-oam:monitor-stats/co-oam:monitor-null/co-oam:monitor-null/",
+                "type_info": {
+                  "description": "",
+                  "type": "empty"
+                },
+                "children": [],
+                "name": "monitor-null",
+                "description": "There are no monitoring statistics to be defined.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              }],
+              "name": "monitor-null",
+              "description": "This is a placeholder when\nno monitoring statistics are needed.",
+              "config": false,
+              "class": "case",
+              "status": "CURRENT"
+            }],
+            "name": "monitor-stats",
+            "description": "Define the monitor stats.",
+            "config": false,
+            "class": "choice",
+            "status": "CURRENT"
+          }],
+          "name": "output",
+          "description": "",
+          "config": false,
+          "class": "container",
+          "status": "CURRENT"
+        }
+      ],
+      "name": "continuity-verification",
+      "description": "Generates Connectivity Verification as per Table 4 in RFC 7276.",
+      "class": "rpc",
+      "status": "CURRENT"
+    },
+    {
+      "path": "/co-oam:traceroute/",
+      "type_info": {},
+      "children": [
+        {
+          "path": "/co-oam:traceroute/co-oam:input/",
+          "type_info": {},
+          "children": [
+            {
+              "path": "/co-oam:traceroute/co-oam:input/co-oam:md-name-string/",
+              "type_info": {
+                "description": "",
+                "type": "co-oam:leafref"
+              },
+              "children": [],
+              "name": "md-name-string",
+              "description": "Indicate which MD the defect belongs to.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:traceroute/co-oam:input/co-oam:md-level/",
+              "type_info": {
+                "description": "",
+                "type": "co-oam:leafref"
+              },
+              "children": [],
+              "name": "md-level",
+              "description": "The Maintenance Domain Level.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:traceroute/co-oam:input/co-oam:ma-name-string/",
+              "type_info": {
+                "description": "",
+                "type": "co-oam:leafref"
+              },
+              "children": [],
+              "name": "ma-name-string",
+              "description": "Indicate which MA the defect is associated with.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:traceroute/co-oam:input/co-oam:cos-id/",
+              "type_info": {
+                "description": "",
+                "type": "uint8"
+              },
+              "children": [],
+              "name": "cos-id",
+              "description": "Class of Service (CoS) ID; this value is used to indicate\nClass of Service information .",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:traceroute/co-oam:input/co-oam:ttl/",
+              "type_info": {
+                "description": "",
+                "type": "uint8"
+              },
+              "children": [],
+              "name": "ttl",
+              "description": "Time to Live.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:traceroute/co-oam:input/co-oam:command-sub-type/",
+              "type_info": {
+                "description": "",
+                "type": "identityref",
+                "base": ["command-sub-type"]
+              },
+              "children": [],
+              "name": "command-sub-type",
+              "description": "Defines different command types.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:traceroute/co-oam:input/co-oam:source-mep/",
+              "type_info": {
+                "description": "",
+                "type": "co-oam:leafref"
+              },
+              "children": [],
+              "name": "source-mep",
+              "description": "Source MEP.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:traceroute/co-oam:input/co-oam:destination-mep/",
+              "type_info": {},
+              "children": [
+                {
+                  "path": "/co-oam:traceroute/co-oam:input/co-oam:destination-mep/co-oam:mep-address/",
+                  "type_info": {},
+                  "children": [
+                    {
+                      "path": "/co-oam:traceroute/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:mac-address/",
+                      "type_info": {},
+                      "children": [{
+                        "path": "/co-oam:traceroute/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:mac-address/co-oam:mac-address/",
+                        "type_info": {
+                          "description": "The mac-address type represents an IEEE 802 MAC address.\nThe canonical representation uses lowercase characters.\n\nIn the value set and its semantics, this type is equivalent\nto the MacAddress textual convention of the SMIv2.",
+                          "type": "yang:mac-address"
+                        },
+                        "children": [],
+                        "name": "mac-address",
+                        "description": "MAC Address.",
+                        "config": true,
+                        "class": "leaf",
+                        "status": "CURRENT"
+                      }],
+                      "name": "mac-address",
+                      "description": "MAC Address based MEP Addressing.",
+                      "config": true,
+                      "class": "case",
+                      "status": "CURRENT"
+                    },
+                    {
+                      "path": "/co-oam:traceroute/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:ip-address/",
+                      "type_info": {},
+                      "children": [{
+                        "path": "/co-oam:traceroute/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:ip-address/co-oam:ip-address/",
+                        "type_info": {
+                          "description": "The ip-address type represents an IP address and is IP\nversion neutral.  The format of the textual representation\nimplies the IP version.  This type supports scoped addresses\nby allowing zone identifiers in the address format.",
+                          "type": "inet:ip-address"
+                        },
+                        "children": [],
+                        "name": "ip-address",
+                        "description": "IP Address.",
+                        "config": true,
+                        "class": "leaf",
+                        "status": "CURRENT"
+                      }],
+                      "name": "ip-address",
+                      "description": "IP Address based MEP Addressing.",
+                      "config": true,
+                      "class": "case",
+                      "status": "CURRENT"
+                    }
+                  ],
+                  "name": "mep-address",
+                  "description": "MEP Addressing.",
+                  "config": true,
+                  "class": "choice",
+                  "status": "CURRENT"
+                },
+                {
+                  "path": "/co-oam:traceroute/co-oam:input/co-oam:destination-mep/co-oam:mep-id/",
+                  "type_info": {},
+                  "children": [{
+                    "path": "/co-oam:traceroute/co-oam:input/co-oam:destination-mep/co-oam:mep-id/co-oam:mep-id-int/",
+                    "type_info": {},
+                    "children": [{
+                      "path": "/co-oam:traceroute/co-oam:input/co-oam:destination-mep/co-oam:mep-id/co-oam:mep-id-int/co-oam:mep-id-int/",
+                      "type_info": {
+                        "description": "",
+                        "type": "int32"
+                      },
+                      "children": [],
+                      "name": "mep-id-int",
+                      "description": "MEP ID\nin integer format.",
+                      "config": true,
+                      "class": "leaf",
+                      "status": "CURRENT"
+                    }],
+                    "name": "mep-id-int",
+                    "description": "",
+                    "config": true,
+                    "class": "case",
+                    "status": "CURRENT"
+                  }],
+                  "name": "mep-id",
+                  "description": "MEP ID.",
+                  "config": true,
+                  "class": "choice",
+                  "status": "CURRENT"
+                },
+                {
+                  "path": "/co-oam:traceroute/co-oam:input/co-oam:destination-mep/co-oam:mep-id-format/",
+                  "type_info": {
+                    "description": "",
+                    "type": "identityref",
+                    "base": ["identifier-format"]
+                  },
+                  "children": [],
+                  "name": "mep-id-format",
+                  "description": "MEP ID format.",
+                  "config": true,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                }
+              ],
+              "name": "destination-mep",
+              "description": "Destination MEP.",
+              "config": true,
+              "class": "container",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:traceroute/co-oam:input/co-oam:count/",
+              "type_info": {
+                "default": "1",
+                "description": "Number of traceroute probes to send.  In protocols where a\nseparate message is sent at each TTL, this is the number\nof packets to be sent at each TTL.",
+                "type": "co-oam:count"
+              },
+              "children": [],
+              "name": "count",
+              "description": "Number of traceroute probes to send.  In protocols where a\nseparate message is sent at each TTL, this is the number\nof packets to be sent at each TTL.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:traceroute/co-oam:input/co-oam:interval/",
+              "type_info": {
+                "description": "Time interval between packets in milliseconds.\nTime interval should not be less than 0.\n0 means no packets are sent.",
+                "type": "co-oam:time-interval"
+              },
+              "children": [],
+              "name": "interval",
+              "description": "Time interval between echo requests.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            }
+          ],
+          "name": "input",
+          "description": "",
+          "config": false,
+          "class": "container",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/co-oam:traceroute/co-oam:output/",
+          "type_info": {},
+          "children": [{
+            "path": "/co-oam:traceroute/co-oam:output/co-oam:response/",
+            "type_info": {},
+            "children": [
+              {
+                "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:response-index/",
+                "type_info": {
+                  "description": "",
+                  "type": "uint8"
+                },
+                "children": [],
+                "name": "response-index",
+                "description": "Arbitrary index for the response.  In protocols that\nguarantee there is only a single response at each TTL,\nthe TTL can be used as the response index.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:ttl/",
+                "type_info": {
+                  "description": "",
+                  "type": "uint8"
+                },
+                "children": [],
+                "name": "ttl",
+                "description": "Time to Live.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:destination-mep/",
+                "type_info": {},
+                "children": [
+                  {
+                    "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:destination-mep/co-oam:mep-address/",
+                    "type_info": {},
+                    "children": [
+                      {
+                        "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:destination-mep/co-oam:mep-address/co-oam:mac-address/",
+                        "type_info": {},
+                        "children": [{
+                          "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:destination-mep/co-oam:mep-address/co-oam:mac-address/co-oam:mac-address/",
+                          "type_info": {
+                            "description": "The mac-address type represents an IEEE 802 MAC address.\nThe canonical representation uses lowercase characters.\n\nIn the value set and its semantics, this type is equivalent\nto the MacAddress textual convention of the SMIv2.",
+                            "type": "yang:mac-address"
+                          },
+                          "children": [],
+                          "name": "mac-address",
+                          "description": "MAC Address.",
+                          "config": false,
+                          "class": "leaf",
+                          "status": "CURRENT"
+                        }],
+                        "name": "mac-address",
+                        "description": "MAC Address based MEP Addressing.",
+                        "config": false,
+                        "class": "case",
+                        "status": "CURRENT"
+                      },
+                      {
+                        "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:destination-mep/co-oam:mep-address/co-oam:ip-address/",
+                        "type_info": {},
+                        "children": [{
+                          "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:destination-mep/co-oam:mep-address/co-oam:ip-address/co-oam:ip-address/",
+                          "type_info": {
+                            "description": "The ip-address type represents an IP address and is IP\nversion neutral.  The format of the textual representation\nimplies the IP version.  This type supports scoped addresses\nby allowing zone identifiers in the address format.",
+                            "type": "inet:ip-address"
+                          },
+                          "children": [],
+                          "name": "ip-address",
+                          "description": "IP Address.",
+                          "config": false,
+                          "class": "leaf",
+                          "status": "CURRENT"
+                        }],
+                        "name": "ip-address",
+                        "description": "IP Address based MEP Addressing.",
+                        "config": false,
+                        "class": "case",
+                        "status": "CURRENT"
+                      }
+                    ],
+                    "name": "mep-address",
+                    "description": "MEP Addressing.",
+                    "config": false,
+                    "class": "choice",
+                    "status": "CURRENT"
+                  },
+                  {
+                    "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:destination-mep/co-oam:mep-id/",
+                    "type_info": {},
+                    "children": [{
+                      "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:destination-mep/co-oam:mep-id/co-oam:mep-id-int/",
+                      "type_info": {},
+                      "children": [{
+                        "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:destination-mep/co-oam:mep-id/co-oam:mep-id-int/co-oam:mep-id-int/",
+                        "type_info": {
+                          "description": "",
+                          "type": "int32"
+                        },
+                        "children": [],
+                        "name": "mep-id-int",
+                        "description": "MEP ID\nin integer format.",
+                        "config": false,
+                        "class": "leaf",
+                        "status": "CURRENT"
+                      }],
+                      "name": "mep-id-int",
+                      "description": "",
+                      "config": false,
+                      "class": "case",
+                      "status": "CURRENT"
+                    }],
+                    "name": "mep-id",
+                    "description": "MEP ID.",
+                    "config": false,
+                    "class": "choice",
+                    "status": "CURRENT"
+                  },
+                  {
+                    "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:destination-mep/co-oam:mep-id-format/",
+                    "type_info": {
+                      "description": "",
+                      "type": "identityref",
+                      "base": ["identifier-format"]
+                    },
+                    "children": [],
+                    "name": "mep-id-format",
+                    "description": "MEP ID format.",
+                    "config": false,
+                    "class": "leaf",
+                    "status": "CURRENT"
+                  }
+                ],
+                "name": "destination-mep",
+                "description": "MEP from which the response has been received",
+                "config": false,
+                "class": "container",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:mip/",
+                "type_info": {},
+                "children": [
+                  {
+                    "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:mip/co-oam:interface/",
+                    "type_info": {
+                      "description": "This type is used by data models that need to reference\ninterfaces.",
+                      "type": "if:interface-ref"
+                    },
+                    "children": [],
+                    "name": "interface",
+                    "description": "MIP interface.",
+                    "config": false,
+                    "class": "leaf",
+                    "status": "CURRENT"
+                  },
+                  {
+                    "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:mip/co-oam:mip-address/",
+                    "type_info": {},
+                    "children": [
+                      {
+                        "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:mip/co-oam:mip-address/co-oam:mac-address/",
+                        "type_info": {},
+                        "children": [{
+                          "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:mip/co-oam:mip-address/co-oam:mac-address/co-oam:mac-address/",
+                          "type_info": {
+                            "description": "The mac-address type represents an IEEE 802 MAC address.\nThe canonical representation uses lowercase characters.\n\nIn the value set and its semantics, this type is equivalent\nto the MacAddress textual convention of the SMIv2.",
+                            "type": "yang:mac-address"
+                          },
+                          "children": [],
+                          "name": "mac-address",
+                          "description": "MAC Address of Maintenance Intermediate Point",
+                          "config": false,
+                          "class": "leaf",
+                          "status": "CURRENT"
+                        }],
+                        "name": "mac-address",
+                        "description": "MAC Address based MIP Addressing.",
+                        "config": false,
+                        "class": "case",
+                        "status": "CURRENT"
+                      },
+                      {
+                        "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:mip/co-oam:mip-address/co-oam:ip-address/",
+                        "type_info": {},
+                        "children": [{
+                          "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:mip/co-oam:mip-address/co-oam:ip-address/co-oam:ip-address/",
+                          "type_info": {
+                            "description": "The ip-address type represents an IP address and is IP\nversion neutral.  The format of the textual representation\nimplies the IP version.  This type supports scoped addresses\nby allowing zone identifiers in the address format.",
+                            "type": "inet:ip-address"
+                          },
+                          "children": [],
+                          "name": "ip-address",
+                          "description": "IP Address.",
+                          "config": false,
+                          "class": "leaf",
+                          "status": "CURRENT"
+                        }],
+                        "name": "ip-address",
+                        "description": "IP Address based MIP Addressing.",
+                        "config": false,
+                        "class": "case",
+                        "status": "CURRENT"
+                      }
+                    ],
+                    "name": "mip-address",
+                    "description": "MIP Addressing.",
+                    "config": false,
+                    "class": "choice",
+                    "status": "CURRENT"
+                  }
+                ],
+                "name": "mip",
+                "description": "MIP responding with traceroute",
+                "config": false,
+                "class": "container",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:monitor-stats/",
+                "type_info": {},
+                "children": [{
+                  "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:monitor-stats/co-oam:monitor-null/",
+                  "type_info": {},
+                  "children": [{
+                    "path": "/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:monitor-stats/co-oam:monitor-null/co-oam:monitor-null/",
+                    "type_info": {
+                      "description": "",
+                      "type": "empty"
+                    },
+                    "children": [],
+                    "name": "monitor-null",
+                    "description": "There are no monitoring statistics to be defined.",
+                    "config": false,
+                    "class": "leaf",
+                    "status": "CURRENT"
+                  }],
+                  "name": "monitor-null",
+                  "description": "This is a placeholder when\nno monitoring statistics are needed.",
+                  "config": false,
+                  "class": "case",
+                  "status": "CURRENT"
+                }],
+                "name": "monitor-stats",
+                "description": "Define the monitor stats.",
+                "config": false,
+                "class": "choice",
+                "status": "CURRENT"
+              }
+            ],
+            "name": "response",
+            "description": "List of responses.",
+            "config": false,
+            "class": "list",
+            "status": "CURRENT"
+          }],
+          "name": "output",
+          "description": "",
+          "config": false,
+          "class": "container",
+          "status": "CURRENT"
+        }
+      ],
+      "name": "traceroute",
+      "description": "Generates Traceroute or Path Trace and returns response.\nReferences RFC 7276 for common Toolset name -- for\nMPLS-TP OAM, it's Route Tracing, and for TRILL OAM, it's\nPath Tracing tool.  Starts with TTL of one and increments\nby one at each hop until the destination is reached or TTL\nreaches max value.",
+      "class": "rpc",
+      "status": "CURRENT"
+    }
+  ],
+  "notifications": [
+    {
+      "path": "AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-connection-oriented-oam?revision=2019-04-16)defect-condition-notification]}",
+      "type_info": {},
+      "children": [
+        {
+          "path": "/co-oam:defect-condition-notification/co-oam:technology/",
+          "type_info": {
+            "description": "",
+            "type": "identityref",
+            "base": ["technology-types"]
+          },
+          "children": [],
+          "name": "technology",
+          "description": "The technology.",
+          "config": false,
+          "class": "leaf",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/co-oam:defect-condition-notification/co-oam:md-name-string/",
+          "type_info": {
+            "description": "",
+            "type": "co-oam:leafref"
+          },
+          "children": [],
+          "name": "md-name-string",
+          "description": "Indicate which MD the defect belongs to.",
+          "config": false,
+          "class": "leaf",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/co-oam:defect-condition-notification/co-oam:ma-name-string/",
+          "type_info": {
+            "description": "",
+            "type": "co-oam:leafref"
+          },
+          "children": [],
+          "name": "ma-name-string",
+          "description": "Indicate which MA the defect is associated with.",
+          "config": false,
+          "class": "leaf",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/co-oam:defect-condition-notification/co-oam:mep-name/",
+          "type_info": {
+            "description": "",
+            "type": "co-oam:leafref"
+          },
+          "children": [],
+          "name": "mep-name",
+          "description": "Indicate which MEP is seeing the defect.",
+          "config": false,
+          "class": "leaf",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/co-oam:defect-condition-notification/co-oam:defect-type/",
+          "type_info": {
+            "description": "",
+            "type": "identityref",
+            "base": ["defect-types"]
+          },
+          "children": [],
+          "name": "defect-type",
+          "description": "The currently active defects on the specific MEP.",
+          "config": false,
+          "class": "leaf",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/co-oam:defect-condition-notification/co-oam:generating-mepid/",
+          "type_info": {},
+          "children": [
+            {
+              "path": "/co-oam:defect-condition-notification/co-oam:generating-mepid/co-oam:mep-id/",
+              "type_info": {},
+              "children": [{
+                "path": "/co-oam:defect-condition-notification/co-oam:generating-mepid/co-oam:mep-id/co-oam:mep-id-int/",
+                "type_info": {},
+                "children": [{
+                  "path": "/co-oam:defect-condition-notification/co-oam:generating-mepid/co-oam:mep-id/co-oam:mep-id-int/co-oam:mep-id-int/",
+                  "type_info": {
+                    "description": "",
+                    "type": "int32"
+                  },
+                  "children": [],
+                  "name": "mep-id-int",
+                  "description": "MEP ID\nin integer format.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                }],
+                "name": "mep-id-int",
+                "description": "",
+                "config": false,
+                "class": "case",
+                "status": "CURRENT"
+              }],
+              "name": "mep-id",
+              "description": "MEP ID.",
+              "config": false,
+              "class": "choice",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:defect-condition-notification/co-oam:generating-mepid/co-oam:mep-id-format/",
+              "type_info": {
+                "description": "",
+                "type": "identityref",
+                "base": ["identifier-format"]
+              },
+              "children": [],
+              "name": "mep-id-format",
+              "description": "MEP ID format.",
+              "config": false,
+              "class": "leaf",
+              "status": "CURRENT"
+            }
+          ],
+          "name": "generating-mepid",
+          "description": "Indicate who is generating the defect (if known). If\nunknown, set it to 0.",
+          "config": false,
+          "class": "container",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/co-oam:defect-condition-notification/co-oam:defect/",
+          "type_info": {},
+          "children": [
+            {
+              "path": "/co-oam:defect-condition-notification/co-oam:defect/co-oam:defect-null/",
+              "type_info": {},
+              "children": [{
+                "path": "/co-oam:defect-condition-notification/co-oam:defect/co-oam:defect-null/co-oam:defect-null/",
+                "type_info": {
+                  "description": "",
+                  "type": "empty"
+                },
+                "children": [],
+                "name": "defect-null",
+                "description": "There is no defect to be defined; it will be defined in\na technology-specific model.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              }],
+              "name": "defect-null",
+              "description": "This is a placeholder when no defect status is needed.",
+              "config": false,
+              "class": "case",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:defect-condition-notification/co-oam:defect/co-oam:defect-code/",
+              "type_info": {},
+              "children": [{
+                "path": "/co-oam:defect-condition-notification/co-oam:defect/co-oam:defect-code/co-oam:defect-code/",
+                "type_info": {
+                  "description": "",
+                  "type": "int32"
+                },
+                "children": [],
+                "name": "defect-code",
+                "description": "Defect code is integer value specific to a technology.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              }],
+              "name": "defect-code",
+              "description": "This is a placeholder to display defect code.",
+              "config": false,
+              "class": "case",
+              "status": "CURRENT"
+            }
+          ],
+          "name": "defect",
+          "description": "Defect Message choices.",
+          "config": false,
+          "class": "choice",
+          "status": "CURRENT"
+        }
+      ],
+      "name": "defect-condition-notification",
+      "description": "When the defect condition is met, this notification is sent.",
+      "class": "notification",
+      "status": "CURRENT"
+    },
+    {
+      "path": "AbsoluteSchemaPath{path=[(urn:ietf:params:xml:ns:yang:ietf-connection-oriented-oam?revision=2019-04-16)defect-cleared-notification]}",
+      "type_info": {},
+      "children": [
+        {
+          "path": "/co-oam:defect-cleared-notification/co-oam:technology/",
+          "type_info": {
+            "description": "",
+            "type": "identityref",
+            "base": ["technology-types"]
+          },
+          "children": [],
+          "name": "technology",
+          "description": "The technology.",
+          "config": false,
+          "class": "leaf",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/co-oam:defect-cleared-notification/co-oam:md-name-string/",
+          "type_info": {
+            "description": "",
+            "type": "co-oam:leafref"
+          },
+          "children": [],
+          "name": "md-name-string",
+          "description": "Indicate which MD the defect belongs to",
+          "config": false,
+          "class": "leaf",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/co-oam:defect-cleared-notification/co-oam:ma-name-string/",
+          "type_info": {
+            "description": "",
+            "type": "co-oam:leafref"
+          },
+          "children": [],
+          "name": "ma-name-string",
+          "description": "Indicate which MA the defect is associated with.",
+          "config": false,
+          "class": "leaf",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/co-oam:defect-cleared-notification/co-oam:mep-name/",
+          "type_info": {
+            "description": "",
+            "type": "co-oam:leafref"
+          },
+          "children": [],
+          "name": "mep-name",
+          "description": "Indicate which MEP is seeing the defect.",
+          "config": false,
+          "class": "leaf",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/co-oam:defect-cleared-notification/co-oam:defect-type/",
+          "type_info": {
+            "description": "",
+            "type": "identityref",
+            "base": ["defect-types"]
+          },
+          "children": [],
+          "name": "defect-type",
+          "description": "The currently active defects on the specific MEP.",
+          "config": false,
+          "class": "leaf",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/co-oam:defect-cleared-notification/co-oam:generating-mepid/",
+          "type_info": {},
+          "children": [
+            {
+              "path": "/co-oam:defect-cleared-notification/co-oam:generating-mepid/co-oam:mep-id/",
+              "type_info": {},
+              "children": [{
+                "path": "/co-oam:defect-cleared-notification/co-oam:generating-mepid/co-oam:mep-id/co-oam:mep-id-int/",
+                "type_info": {},
+                "children": [{
+                  "path": "/co-oam:defect-cleared-notification/co-oam:generating-mepid/co-oam:mep-id/co-oam:mep-id-int/co-oam:mep-id-int/",
+                  "type_info": {
+                    "description": "",
+                    "type": "int32"
+                  },
+                  "children": [],
+                  "name": "mep-id-int",
+                  "description": "MEP ID\nin integer format.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                }],
+                "name": "mep-id-int",
+                "description": "",
+                "config": false,
+                "class": "case",
+                "status": "CURRENT"
+              }],
+              "name": "mep-id",
+              "description": "MEP ID.",
+              "config": false,
+              "class": "choice",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:defect-cleared-notification/co-oam:generating-mepid/co-oam:mep-id-format/",
+              "type_info": {
+                "description": "",
+                "type": "identityref",
+                "base": ["identifier-format"]
+              },
+              "children": [],
+              "name": "mep-id-format",
+              "description": "MEP ID format.",
+              "config": false,
+              "class": "leaf",
+              "status": "CURRENT"
+            }
+          ],
+          "name": "generating-mepid",
+          "description": "Indicate who is generating the defect (if known). If\nunknown, set it to 0.",
+          "config": false,
+          "class": "container",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/co-oam:defect-cleared-notification/co-oam:defect/",
+          "type_info": {},
+          "children": [
+            {
+              "path": "/co-oam:defect-cleared-notification/co-oam:defect/co-oam:defect-null/",
+              "type_info": {},
+              "children": [{
+                "path": "/co-oam:defect-cleared-notification/co-oam:defect/co-oam:defect-null/co-oam:defect-null/",
+                "type_info": {
+                  "description": "",
+                  "type": "empty"
+                },
+                "children": [],
+                "name": "defect-null",
+                "description": "There is no defect to be defined; it will be defined in\na technology-specific model.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              }],
+              "name": "defect-null",
+              "description": "This is a placeholder when no defect status is needed.",
+              "config": false,
+              "class": "case",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/co-oam:defect-cleared-notification/co-oam:defect/co-oam:defect-code/",
+              "type_info": {},
+              "children": [{
+                "path": "/co-oam:defect-cleared-notification/co-oam:defect/co-oam:defect-code/co-oam:defect-code/",
+                "type_info": {
+                  "description": "",
+                  "type": "int32"
+                },
+                "children": [],
+                "name": "defect-code",
+                "description": "Defect code is integer value specific to a technology.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              }],
+              "name": "defect-code",
+              "description": "This is a placeholder to display defect code.",
+              "config": false,
+              "class": "case",
+              "status": "CURRENT"
+            }
+          ],
+          "name": "defect",
+          "description": "Defect Message choices.",
+          "config": false,
+          "class": "choice",
+          "status": "CURRENT"
+        }
+      ],
+      "name": "defect-cleared-notification",
+      "description": "When the defect is cleared, this notification is sent.",
+      "class": "notification",
+      "status": "CURRENT"
+    }
+  ]
+}

@@ -1,0 +1,1075 @@
+{
+  "children": [
+    {
+      "path": "/rt:routing/",
+      "type_info": {},
+      "children": [
+        {
+          "path": "/rt:routing/rt:router-id/",
+          "type_info": {
+            "description": "An unsigned 32-bit number expressed in the dotted-quad\nnotation, i.e., four octets written as decimal numbers\nand separated with the '.' (full stop) character.",
+            "type": "yang:dotted-quad"
+          },
+          "children": [],
+          "name": "router-id",
+          "description": "A 32-bit number in the form of a dotted quad that is used by\nsome routing protocols identifying a router.",
+          "config": true,
+          "class": "leaf",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/rt:routing/rt:interfaces/",
+          "type_info": {},
+          "children": [{
+            "path": "/rt:routing/rt:interfaces/rt:interface/",
+            "type_info": {
+              "description": "This type is used by data models that need to reference\ninterfaces.",
+              "type": "if:interface-ref"
+            },
+            "children": [],
+            "name": "interface",
+            "description": "Each entry is a reference to the name of a configured\nnetwork-layer interface.",
+            "config": false,
+            "class": "leaf-list",
+            "status": "CURRENT"
+          }],
+          "name": "interfaces",
+          "description": "Network-layer interfaces used for routing.",
+          "config": false,
+          "class": "container",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/rt:routing/rt:control-plane-protocols/",
+          "type_info": {},
+          "children": [{
+            "path": "/rt:routing/rt:control-plane-protocols/rt:control-plane-protocol/",
+            "type_info": {},
+            "children": [
+              {
+                "path": "/rt:routing/rt:control-plane-protocols/rt:control-plane-protocol/rt:type/",
+                "type_info": {
+                  "description": "",
+                  "type": "identityref",
+                  "base": ["control-plane-protocol"]
+                },
+                "children": [],
+                "name": "type",
+                "description": "Type of the control-plane protocol -- an identity\nderived from the 'control-plane-protocol'\nbase identity.",
+                "config": true,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/rt:routing/rt:control-plane-protocols/rt:control-plane-protocol/rt:name/",
+                "type_info": {
+                  "description": "",
+                  "type": "string"
+                },
+                "children": [],
+                "name": "name",
+                "description": "An arbitrary name of the control-plane protocol\ninstance.",
+                "config": true,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/rt:routing/rt:control-plane-protocols/rt:control-plane-protocol/rt:description/",
+                "type_info": {
+                  "description": "",
+                  "type": "string"
+                },
+                "children": [],
+                "name": "description",
+                "description": "Textual description of the control-plane protocol\ninstance.",
+                "config": true,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/rt:routing/rt:control-plane-protocols/rt:control-plane-protocol/rt:static-routes/",
+                "type_info": {},
+                "name": "static-routes",
+                "description": "Support for the 'static' pseudo-protocol.\n\nAddress-family-specific modules augment this node with\ntheir lists of routes.",
+                "config": true,
+                "class": "container",
+                "status": "CURRENT"
+              }
+            ],
+            "name": "control-plane-protocol",
+            "description": "Each entry contains a control-plane protocol instance.",
+            "config": true,
+            "class": "list",
+            "status": "CURRENT"
+          }],
+          "name": "control-plane-protocols",
+          "description": "Support for control-plane protocol instances.",
+          "config": true,
+          "class": "container",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/rt:routing/rt:ribs/",
+          "type_info": {},
+          "children": [{
+            "path": "/rt:routing/rt:ribs/rt:rib/",
+            "type_info": {},
+            "children": [
+              {
+                "path": "/rt:routing/rt:ribs/rt:rib/",
+                "type_info": {},
+                "children": [
+                  {
+                    "path": "/rt:routing/rt:ribs/rt:rib/rt:active-route/rt:input/",
+                    "type_info": {},
+                    "name": "input",
+                    "description": "",
+                    "config": false,
+                    "class": "container",
+                    "status": "CURRENT"
+                  },
+                  {
+                    "path": "/rt:routing/rt:ribs/rt:rib/rt:active-route/rt:output/",
+                    "type_info": {},
+                    "children": [{
+                      "path": "/rt:routing/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/",
+                      "type_info": {},
+                      "children": [
+                        {
+                          "path": "/rt:routing/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:next-hop/",
+                          "type_info": {},
+                          "children": [{
+                            "path": "/rt:routing/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:next-hop/rt:next-hop-options/",
+                            "type_info": {},
+                            "children": [
+                              {
+                                "path": "/rt:routing/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:next-hop/rt:next-hop-options/rt:simple-next-hop/",
+                                "type_info": {},
+                                "children": [{
+                                  "path": "/rt:routing/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:next-hop/rt:next-hop-options/rt:simple-next-hop/rt:outgoing-interface/",
+                                  "type_info": {
+                                    "description": "This type is used by data models that need to reference\ninterfaces.",
+                                    "type": "if:interface-ref"
+                                  },
+                                  "children": [],
+                                  "name": "outgoing-interface",
+                                  "description": "Name of the outgoing interface.",
+                                  "config": false,
+                                  "class": "leaf",
+                                  "status": "CURRENT"
+                                }],
+                                "name": "simple-next-hop",
+                                "description": "This case represents a simple next hop consisting of the\nnext-hop address and/or outgoing interface.\n\nModules for address families MUST augment this case with a\nleaf containing a next-hop address of that address\nfamily.",
+                                "config": false,
+                                "class": "case",
+                                "status": "CURRENT"
+                              },
+                              {
+                                "path": "/rt:routing/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:next-hop/rt:next-hop-options/rt:special-next-hop/",
+                                "type_info": {},
+                                "children": [{
+                                  "path": "/rt:routing/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:next-hop/rt:next-hop-options/rt:special-next-hop/rt:special-next-hop/",
+                                  "type_info": {
+                                    "description": "",
+                                    "type": "rt:enumeration"
+                                  },
+                                  "children": [],
+                                  "name": "special-next-hop",
+                                  "description": "Options for special next hops.",
+                                  "config": false,
+                                  "class": "leaf",
+                                  "status": "CURRENT"
+                                }],
+                                "name": "special-next-hop",
+                                "description": "",
+                                "config": false,
+                                "class": "case",
+                                "status": "CURRENT"
+                              },
+                              {
+                                "path": "/rt:routing/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:next-hop/rt:next-hop-options/rt:next-hop-list/",
+                                "type_info": {},
+                                "children": [{
+                                  "path": "/rt:routing/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:next-hop/rt:next-hop-options/rt:next-hop-list/rt:next-hop-list/",
+                                  "type_info": {},
+                                  "children": [{
+                                    "path": "/rt:routing/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:next-hop/rt:next-hop-options/rt:next-hop-list/rt:next-hop-list/rt:next-hop/",
+                                    "type_info": {},
+                                    "children": [{
+                                      "path": "/rt:routing/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:next-hop/rt:next-hop-options/rt:next-hop-list/rt:next-hop-list/rt:next-hop/rt:outgoing-interface/",
+                                      "type_info": {
+                                        "description": "This type is used by data models that need to reference\ninterfaces.",
+                                        "type": "if:interface-ref"
+                                      },
+                                      "children": [],
+                                      "name": "outgoing-interface",
+                                      "description": "Name of the outgoing interface.",
+                                      "config": false,
+                                      "class": "leaf",
+                                      "status": "CURRENT"
+                                    }],
+                                    "name": "next-hop",
+                                    "description": "An entry in a next-hop list.\n\nModules for address families MUST augment this list\nwith a leaf containing a next-hop address of that\naddress family.",
+                                    "config": false,
+                                    "class": "list",
+                                    "status": "CURRENT"
+                                  }],
+                                  "name": "next-hop-list",
+                                  "description": "Container for multiple next hops.",
+                                  "config": false,
+                                  "class": "container",
+                                  "status": "CURRENT"
+                                }],
+                                "name": "next-hop-list",
+                                "description": "",
+                                "config": false,
+                                "class": "case",
+                                "status": "CURRENT"
+                              }
+                            ],
+                            "name": "next-hop-options",
+                            "description": "Options for next hops.\n\nIt is expected that further cases will be added through\naugments from other modules, e.g., for recursive\nnext hops.",
+                            "config": false,
+                            "class": "choice",
+                            "status": "CURRENT"
+                          }],
+                          "name": "next-hop",
+                          "description": "Route's next-hop attribute.",
+                          "config": false,
+                          "class": "container",
+                          "status": "CURRENT"
+                        },
+                        {
+                          "path": "/rt:routing/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:source-protocol/",
+                          "type_info": {
+                            "description": "",
+                            "type": "identityref",
+                            "base": ["routing-protocol"]
+                          },
+                          "children": [],
+                          "name": "source-protocol",
+                          "description": "Type of the routing protocol from which the route\noriginated.",
+                          "config": false,
+                          "class": "leaf",
+                          "status": "CURRENT"
+                        },
+                        {
+                          "path": "/rt:routing/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:active/",
+                          "type_info": {
+                            "description": "",
+                            "type": "empty"
+                          },
+                          "children": [],
+                          "name": "active",
+                          "description": "The presence of this leaf indicates that the route is\npreferred among all routes in the same RIB that have the\nsame destination prefix.",
+                          "config": false,
+                          "class": "leaf",
+                          "status": "CURRENT"
+                        },
+                        {
+                          "path": "/rt:routing/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:last-updated/",
+                          "type_info": {
+                            "description": "The date-and-time type is a profile of the ISO 8601\nstandard for representation of dates and times using the\nGregorian calendar.  The profile is defined by the\ndate-time production in Section 5.6 of RFC 3339.\n\nThe date-and-time type is compatible with the dateTime XML\nschema type with the following notable exceptions:\n\n(a) The date-and-time type does not allow negative years.\n\n(b) The date-and-time time-offset -00:00 indicates an unknown\n    time zone (see RFC 3339) while -00:00 and +00:00 and Z\n    all represent the same time zone in dateTime.\n\n(c) The canonical format (see below) of data-and-time values\n    differs from the canonical format used by the dateTime XML\n    schema type, which requires all times to be in UTC using\n    the time-offset 'Z'.\n\nThis type is not equivalent to the DateAndTime textual\nconvention of the SMIv2 since RFC 3339 uses a different\nseparator between full-date and full-time and provides\nhigher resolution of time-secfrac.\n\nThe canonical format for date-and-time values with a known time\nzone uses a numeric time zone offset that is calculated using\nthe device's configured known offset to UTC time.  A change of\nthe device's offset to UTC time will cause date-and-time values\nto change accordingly.  Such changes might happen periodically\nin case a server follows automatically daylight saving time\n(DST) time zone offset changes.  The canonical format for\ndate-and-time values with an unknown time zone (usually\nreferring to the notion of local time) uses the time-offset\n-00:00.",
+                            "type": "yang:date-and-time"
+                          },
+                          "children": [],
+                          "name": "last-updated",
+                          "description": "Timestamp of the last modification of the route.  If the\nroute was never modified, it is the time when the route was\ninserted into the RIB.",
+                          "config": false,
+                          "class": "leaf",
+                          "status": "CURRENT"
+                        }
+                      ],
+                      "name": "route",
+                      "description": "The active RIB route for the specified destination.\n\nIf no route exists in the RIB for the destination\naddress, no output is returned.\n\nAddress-family-specific modules MUST augment this\ncontainer with appropriate route contents.",
+                      "config": false,
+                      "class": "container",
+                      "status": "CURRENT"
+                    }],
+                    "name": "output",
+                    "description": "",
+                    "config": false,
+                    "class": "container",
+                    "status": "CURRENT"
+                  }
+                ],
+                "name": "active-route",
+                "description": "Return the active RIB route that is used for the\ndestination address.\n\nAddress-family-specific modules MUST augment input\nparameters with a leaf named 'destination-address'.",
+                "class": "action",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/rt:routing/rt:ribs/rt:rib/rt:name/",
+                "type_info": {
+                  "description": "",
+                  "type": "string"
+                },
+                "children": [],
+                "name": "name",
+                "description": "The name of the RIB.\n\nFor system-controlled entries, the value of this leaf\nmust be the same as the name of the corresponding entry\nin the operational state.\n\nFor user-controlled entries, an arbitrary name can be\nused.",
+                "config": true,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/rt:routing/rt:ribs/rt:rib/rt:address-family/",
+                "type_info": {
+                  "description": "",
+                  "type": "identityref",
+                  "base": ["address-family"]
+                },
+                "children": [],
+                "name": "address-family",
+                "description": "Address family.",
+                "config": true,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/rt:routing/rt:ribs/rt:rib/rt:default-rib/",
+                "type_info": {
+                  "default": "true",
+                  "description": "This flag has the value of 'true' if and only if the RIB\nis the default RIB for the given address family.\n\nBy default, control-plane protocols place their routes\nin the default RIBs.",
+                  "type": "rt:default-rib"
+                },
+                "children": [],
+                "name": "default-rib",
+                "description": "This flag has the value of 'true' if and only if the RIB\nis the default RIB for the given address family.\n\nBy default, control-plane protocols place their routes\nin the default RIBs.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/rt:routing/rt:ribs/rt:rib/rt:routes/",
+                "type_info": {},
+                "children": [{
+                  "path": "/rt:routing/rt:ribs/rt:rib/rt:routes/rt:route/",
+                  "type_info": {},
+                  "children": [
+                    {
+                      "path": "/rt:routing/rt:ribs/rt:rib/rt:routes/rt:route/rt:route-preference/",
+                      "type_info": {
+                        "description": "This type is used for route preferences.",
+                        "type": "rt:route-preference"
+                      },
+                      "children": [],
+                      "name": "route-preference",
+                      "description": "This route attribute, also known as 'administrative\ndistance', allows for selecting the preferred route\namong routes with the same destination prefix.  A\nsmaller value indicates a route that is\nmore preferred.",
+                      "config": false,
+                      "class": "leaf",
+                      "status": "CURRENT"
+                    },
+                    {
+                      "path": "/rt:routing/rt:ribs/rt:rib/rt:routes/rt:route/rt:next-hop/",
+                      "type_info": {},
+                      "children": [{
+                        "path": "/rt:routing/rt:ribs/rt:rib/rt:routes/rt:route/rt:next-hop/rt:next-hop-options/",
+                        "type_info": {},
+                        "children": [
+                          {
+                            "path": "/rt:routing/rt:ribs/rt:rib/rt:routes/rt:route/rt:next-hop/rt:next-hop-options/rt:simple-next-hop/",
+                            "type_info": {},
+                            "children": [{
+                              "path": "/rt:routing/rt:ribs/rt:rib/rt:routes/rt:route/rt:next-hop/rt:next-hop-options/rt:simple-next-hop/rt:outgoing-interface/",
+                              "type_info": {
+                                "description": "This type is used by data models that need to reference\ninterfaces.",
+                                "type": "if:interface-ref"
+                              },
+                              "children": [],
+                              "name": "outgoing-interface",
+                              "description": "Name of the outgoing interface.",
+                              "config": false,
+                              "class": "leaf",
+                              "status": "CURRENT"
+                            }],
+                            "name": "simple-next-hop",
+                            "description": "This case represents a simple next hop consisting of the\nnext-hop address and/or outgoing interface.\n\nModules for address families MUST augment this case with a\nleaf containing a next-hop address of that address\nfamily.",
+                            "config": false,
+                            "class": "case",
+                            "status": "CURRENT"
+                          },
+                          {
+                            "path": "/rt:routing/rt:ribs/rt:rib/rt:routes/rt:route/rt:next-hop/rt:next-hop-options/rt:special-next-hop/",
+                            "type_info": {},
+                            "children": [{
+                              "path": "/rt:routing/rt:ribs/rt:rib/rt:routes/rt:route/rt:next-hop/rt:next-hop-options/rt:special-next-hop/rt:special-next-hop/",
+                              "type_info": {
+                                "description": "",
+                                "type": "rt:enumeration"
+                              },
+                              "children": [],
+                              "name": "special-next-hop",
+                              "description": "Options for special next hops.",
+                              "config": false,
+                              "class": "leaf",
+                              "status": "CURRENT"
+                            }],
+                            "name": "special-next-hop",
+                            "description": "",
+                            "config": false,
+                            "class": "case",
+                            "status": "CURRENT"
+                          },
+                          {
+                            "path": "/rt:routing/rt:ribs/rt:rib/rt:routes/rt:route/rt:next-hop/rt:next-hop-options/rt:next-hop-list/",
+                            "type_info": {},
+                            "children": [{
+                              "path": "/rt:routing/rt:ribs/rt:rib/rt:routes/rt:route/rt:next-hop/rt:next-hop-options/rt:next-hop-list/rt:next-hop-list/",
+                              "type_info": {},
+                              "children": [{
+                                "path": "/rt:routing/rt:ribs/rt:rib/rt:routes/rt:route/rt:next-hop/rt:next-hop-options/rt:next-hop-list/rt:next-hop-list/rt:next-hop/",
+                                "type_info": {},
+                                "children": [{
+                                  "path": "/rt:routing/rt:ribs/rt:rib/rt:routes/rt:route/rt:next-hop/rt:next-hop-options/rt:next-hop-list/rt:next-hop-list/rt:next-hop/rt:outgoing-interface/",
+                                  "type_info": {
+                                    "description": "This type is used by data models that need to reference\ninterfaces.",
+                                    "type": "if:interface-ref"
+                                  },
+                                  "children": [],
+                                  "name": "outgoing-interface",
+                                  "description": "Name of the outgoing interface.",
+                                  "config": false,
+                                  "class": "leaf",
+                                  "status": "CURRENT"
+                                }],
+                                "name": "next-hop",
+                                "description": "An entry in a next-hop list.\n\nModules for address families MUST augment this list\nwith a leaf containing a next-hop address of that\naddress family.",
+                                "config": false,
+                                "class": "list",
+                                "status": "CURRENT"
+                              }],
+                              "name": "next-hop-list",
+                              "description": "Container for multiple next hops.",
+                              "config": false,
+                              "class": "container",
+                              "status": "CURRENT"
+                            }],
+                            "name": "next-hop-list",
+                            "description": "",
+                            "config": false,
+                            "class": "case",
+                            "status": "CURRENT"
+                          }
+                        ],
+                        "name": "next-hop-options",
+                        "description": "Options for next hops.\n\nIt is expected that further cases will be added through\naugments from other modules, e.g., for recursive\nnext hops.",
+                        "config": false,
+                        "class": "choice",
+                        "status": "CURRENT"
+                      }],
+                      "name": "next-hop",
+                      "description": "Route's next-hop attribute.",
+                      "config": false,
+                      "class": "container",
+                      "status": "CURRENT"
+                    },
+                    {
+                      "path": "/rt:routing/rt:ribs/rt:rib/rt:routes/rt:route/rt:source-protocol/",
+                      "type_info": {
+                        "description": "",
+                        "type": "identityref",
+                        "base": ["routing-protocol"]
+                      },
+                      "children": [],
+                      "name": "source-protocol",
+                      "description": "Type of the routing protocol from which the route\noriginated.",
+                      "config": false,
+                      "class": "leaf",
+                      "status": "CURRENT"
+                    },
+                    {
+                      "path": "/rt:routing/rt:ribs/rt:rib/rt:routes/rt:route/rt:active/",
+                      "type_info": {
+                        "description": "",
+                        "type": "empty"
+                      },
+                      "children": [],
+                      "name": "active",
+                      "description": "The presence of this leaf indicates that the route is\npreferred among all routes in the same RIB that have the\nsame destination prefix.",
+                      "config": false,
+                      "class": "leaf",
+                      "status": "CURRENT"
+                    },
+                    {
+                      "path": "/rt:routing/rt:ribs/rt:rib/rt:routes/rt:route/rt:last-updated/",
+                      "type_info": {
+                        "description": "The date-and-time type is a profile of the ISO 8601\nstandard for representation of dates and times using the\nGregorian calendar.  The profile is defined by the\ndate-time production in Section 5.6 of RFC 3339.\n\nThe date-and-time type is compatible with the dateTime XML\nschema type with the following notable exceptions:\n\n(a) The date-and-time type does not allow negative years.\n\n(b) The date-and-time time-offset -00:00 indicates an unknown\n    time zone (see RFC 3339) while -00:00 and +00:00 and Z\n    all represent the same time zone in dateTime.\n\n(c) The canonical format (see below) of data-and-time values\n    differs from the canonical format used by the dateTime XML\n    schema type, which requires all times to be in UTC using\n    the time-offset 'Z'.\n\nThis type is not equivalent to the DateAndTime textual\nconvention of the SMIv2 since RFC 3339 uses a different\nseparator between full-date and full-time and provides\nhigher resolution of time-secfrac.\n\nThe canonical format for date-and-time values with a known time\nzone uses a numeric time zone offset that is calculated using\nthe device's configured known offset to UTC time.  A change of\nthe device's offset to UTC time will cause date-and-time values\nto change accordingly.  Such changes might happen periodically\nin case a server follows automatically daylight saving time\n(DST) time zone offset changes.  The canonical format for\ndate-and-time values with an unknown time zone (usually\nreferring to the notion of local time) uses the time-offset\n-00:00.",
+                        "type": "yang:date-and-time"
+                      },
+                      "children": [],
+                      "name": "last-updated",
+                      "description": "Timestamp of the last modification of the route.  If the\nroute was never modified, it is the time when the route was\ninserted into the RIB.",
+                      "config": false,
+                      "class": "leaf",
+                      "status": "CURRENT"
+                    }
+                  ],
+                  "name": "route",
+                  "description": "A RIB route entry.  This data node MUST be augmented\nwith information specific to routes of each address\nfamily.",
+                  "config": false,
+                  "class": "list",
+                  "status": "CURRENT"
+                }],
+                "name": "routes",
+                "description": "Current contents of the RIB.",
+                "config": false,
+                "class": "container",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/rt:routing/rt:ribs/rt:rib/rt:description/",
+                "type_info": {
+                  "description": "",
+                  "type": "string"
+                },
+                "children": [],
+                "name": "description",
+                "description": "Textual description of the RIB.",
+                "config": true,
+                "class": "leaf",
+                "status": "CURRENT"
+              }
+            ],
+            "name": "rib",
+            "description": "Each entry contains a configuration for a RIB identified\nby the 'name' key.\n\nEntries having the same key as a system-controlled entry\nin the list '/routing/ribs/rib' are used for\nconfiguring parameters of that entry.  Other entries\ndefine additional user-controlled RIBs.",
+            "config": true,
+            "class": "list",
+            "status": "CURRENT"
+          }],
+          "name": "ribs",
+          "description": "Support for RIBs.",
+          "config": true,
+          "class": "container",
+          "status": "CURRENT"
+        }
+      ],
+      "name": "routing",
+      "description": "Configuration parameters for the routing subsystem.",
+      "config": true,
+      "class": "container",
+      "status": "CURRENT"
+    },
+    {
+      "path": "/rt:routing-state/",
+      "type_info": {},
+      "children": [
+        {
+          "path": "/rt:routing-state/rt:router-id/",
+          "type_info": {
+            "description": "An unsigned 32-bit number expressed in the dotted-quad\nnotation, i.e., four octets written as decimal numbers\nand separated with the '.' (full stop) character.",
+            "type": "yang:dotted-quad"
+          },
+          "children": [],
+          "name": "router-id",
+          "description": "A 32-bit number in the form of a dotted quad that is used by\nsome routing protocols identifying a router.",
+          "config": false,
+          "class": "leaf",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/rt:routing-state/rt:interfaces/",
+          "type_info": {},
+          "children": [{
+            "path": "/rt:routing-state/rt:interfaces/rt:interface/",
+            "type_info": {
+              "description": "This type is used by data models that need to reference\nthe operationally present interfaces.",
+              "type": "if:interface-state-ref"
+            },
+            "children": [],
+            "name": "interface",
+            "description": "Each entry is a reference to the name of a configured\nnetwork-layer interface.",
+            "config": false,
+            "class": "leaf-list",
+            "status": "OBSOLETE"
+          }],
+          "name": "interfaces",
+          "description": "Network-layer interfaces used for routing.",
+          "config": false,
+          "class": "container",
+          "status": "OBSOLETE"
+        },
+        {
+          "path": "/rt:routing-state/rt:control-plane-protocols/",
+          "type_info": {},
+          "children": [{
+            "path": "/rt:routing-state/rt:control-plane-protocols/rt:control-plane-protocol/",
+            "type_info": {},
+            "children": [
+              {
+                "path": "/rt:routing-state/rt:control-plane-protocols/rt:control-plane-protocol/rt:type/",
+                "type_info": {
+                  "description": "",
+                  "type": "identityref",
+                  "base": ["control-plane-protocol"]
+                },
+                "children": [],
+                "name": "type",
+                "description": "Type of the control-plane protocol.",
+                "config": false,
+                "class": "leaf",
+                "status": "OBSOLETE"
+              },
+              {
+                "path": "/rt:routing-state/rt:control-plane-protocols/rt:control-plane-protocol/rt:name/",
+                "type_info": {
+                  "description": "",
+                  "type": "string"
+                },
+                "children": [],
+                "name": "name",
+                "description": "The name of the control-plane protocol instance.\n\nFor system-controlled instances, this name is\npersistent, i.e., it SHOULD NOT change across\nreboots.",
+                "config": false,
+                "class": "leaf",
+                "status": "OBSOLETE"
+              }
+            ],
+            "name": "control-plane-protocol",
+            "description": "State data of a control-plane protocol instance.\n\nAn implementation MUST provide exactly one\nsystem-controlled instance of the 'direct'\npseudo-protocol.  Instances of other control-plane\nprotocols MAY be created by configuration.",
+            "config": false,
+            "class": "list",
+            "status": "OBSOLETE"
+          }],
+          "name": "control-plane-protocols",
+          "description": "Container for the list of routing protocol instances.",
+          "config": false,
+          "class": "container",
+          "status": "OBSOLETE"
+        },
+        {
+          "path": "/rt:routing-state/rt:ribs/",
+          "type_info": {},
+          "children": [{
+            "path": "/rt:routing-state/rt:ribs/rt:rib/",
+            "type_info": {},
+            "children": [
+              {
+                "path": "/rt:routing-state/rt:ribs/rt:rib/",
+                "type_info": {},
+                "children": [
+                  {
+                    "path": "/rt:routing-state/rt:ribs/rt:rib/rt:active-route/rt:input/",
+                    "type_info": {},
+                    "name": "input",
+                    "description": "",
+                    "config": false,
+                    "class": "container",
+                    "status": "CURRENT"
+                  },
+                  {
+                    "path": "/rt:routing-state/rt:ribs/rt:rib/rt:active-route/rt:output/",
+                    "type_info": {},
+                    "children": [{
+                      "path": "/rt:routing-state/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/",
+                      "type_info": {},
+                      "children": [
+                        {
+                          "path": "/rt:routing-state/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:next-hop/",
+                          "type_info": {},
+                          "children": [{
+                            "path": "/rt:routing-state/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:next-hop/rt:next-hop-options/",
+                            "type_info": {},
+                            "children": [
+                              {
+                                "path": "/rt:routing-state/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:next-hop/rt:next-hop-options/rt:simple-next-hop/",
+                                "type_info": {},
+                                "children": [{
+                                  "path": "/rt:routing-state/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:next-hop/rt:next-hop-options/rt:simple-next-hop/rt:outgoing-interface/",
+                                  "type_info": {
+                                    "description": "This type is used by data models that need to reference\ninterfaces.",
+                                    "type": "if:interface-ref"
+                                  },
+                                  "children": [],
+                                  "name": "outgoing-interface",
+                                  "description": "Name of the outgoing interface.",
+                                  "config": false,
+                                  "class": "leaf",
+                                  "status": "CURRENT"
+                                }],
+                                "name": "simple-next-hop",
+                                "description": "This case represents a simple next hop consisting of the\nnext-hop address and/or outgoing interface.\n\nModules for address families MUST augment this case with a\nleaf containing a next-hop address of that address\nfamily.",
+                                "config": false,
+                                "class": "case",
+                                "status": "CURRENT"
+                              },
+                              {
+                                "path": "/rt:routing-state/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:next-hop/rt:next-hop-options/rt:special-next-hop/",
+                                "type_info": {},
+                                "children": [{
+                                  "path": "/rt:routing-state/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:next-hop/rt:next-hop-options/rt:special-next-hop/rt:special-next-hop/",
+                                  "type_info": {
+                                    "description": "",
+                                    "type": "rt:enumeration"
+                                  },
+                                  "children": [],
+                                  "name": "special-next-hop",
+                                  "description": "Options for special next hops.",
+                                  "config": false,
+                                  "class": "leaf",
+                                  "status": "CURRENT"
+                                }],
+                                "name": "special-next-hop",
+                                "description": "",
+                                "config": false,
+                                "class": "case",
+                                "status": "CURRENT"
+                              },
+                              {
+                                "path": "/rt:routing-state/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:next-hop/rt:next-hop-options/rt:next-hop-list/",
+                                "type_info": {},
+                                "children": [{
+                                  "path": "/rt:routing-state/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:next-hop/rt:next-hop-options/rt:next-hop-list/rt:next-hop-list/",
+                                  "type_info": {},
+                                  "children": [{
+                                    "path": "/rt:routing-state/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:next-hop/rt:next-hop-options/rt:next-hop-list/rt:next-hop-list/rt:next-hop/",
+                                    "type_info": {},
+                                    "children": [{
+                                      "path": "/rt:routing-state/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:next-hop/rt:next-hop-options/rt:next-hop-list/rt:next-hop-list/rt:next-hop/rt:outgoing-interface/",
+                                      "type_info": {
+                                        "description": "This type is used by data models that need to reference\ninterfaces.",
+                                        "type": "if:interface-ref"
+                                      },
+                                      "children": [],
+                                      "name": "outgoing-interface",
+                                      "description": "Name of the outgoing interface.",
+                                      "config": false,
+                                      "class": "leaf",
+                                      "status": "CURRENT"
+                                    }],
+                                    "name": "next-hop",
+                                    "description": "An entry in a next-hop list.\n\nModules for address families MUST augment this list\nwith a leaf containing a next-hop address of that\naddress family.",
+                                    "config": false,
+                                    "class": "list",
+                                    "status": "CURRENT"
+                                  }],
+                                  "name": "next-hop-list",
+                                  "description": "Container for multiple next hops.",
+                                  "config": false,
+                                  "class": "container",
+                                  "status": "CURRENT"
+                                }],
+                                "name": "next-hop-list",
+                                "description": "",
+                                "config": false,
+                                "class": "case",
+                                "status": "CURRENT"
+                              }
+                            ],
+                            "name": "next-hop-options",
+                            "description": "Options for next hops.\n\nIt is expected that further cases will be added through\naugments from other modules, e.g., for recursive\nnext hops.",
+                            "config": false,
+                            "class": "choice",
+                            "status": "CURRENT"
+                          }],
+                          "name": "next-hop",
+                          "description": "Route's next-hop attribute.",
+                          "config": false,
+                          "class": "container",
+                          "status": "OBSOLETE"
+                        },
+                        {
+                          "path": "/rt:routing-state/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:source-protocol/",
+                          "type_info": {
+                            "description": "",
+                            "type": "identityref",
+                            "base": ["routing-protocol"]
+                          },
+                          "children": [],
+                          "name": "source-protocol",
+                          "description": "Type of the routing protocol from which the route\noriginated.",
+                          "config": false,
+                          "class": "leaf",
+                          "status": "CURRENT"
+                        },
+                        {
+                          "path": "/rt:routing-state/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:active/",
+                          "type_info": {
+                            "description": "",
+                            "type": "empty"
+                          },
+                          "children": [],
+                          "name": "active",
+                          "description": "The presence of this leaf indicates that the route is\npreferred among all routes in the same RIB that have the\nsame destination prefix.",
+                          "config": false,
+                          "class": "leaf",
+                          "status": "CURRENT"
+                        },
+                        {
+                          "path": "/rt:routing-state/rt:ribs/rt:rib/rt:active-route/rt:output/rt:route/rt:last-updated/",
+                          "type_info": {
+                            "description": "The date-and-time type is a profile of the ISO 8601\nstandard for representation of dates and times using the\nGregorian calendar.  The profile is defined by the\ndate-time production in Section 5.6 of RFC 3339.\n\nThe date-and-time type is compatible with the dateTime XML\nschema type with the following notable exceptions:\n\n(a) The date-and-time type does not allow negative years.\n\n(b) The date-and-time time-offset -00:00 indicates an unknown\n    time zone (see RFC 3339) while -00:00 and +00:00 and Z\n    all represent the same time zone in dateTime.\n\n(c) The canonical format (see below) of data-and-time values\n    differs from the canonical format used by the dateTime XML\n    schema type, which requires all times to be in UTC using\n    the time-offset 'Z'.\n\nThis type is not equivalent to the DateAndTime textual\nconvention of the SMIv2 since RFC 3339 uses a different\nseparator between full-date and full-time and provides\nhigher resolution of time-secfrac.\n\nThe canonical format for date-and-time values with a known time\nzone uses a numeric time zone offset that is calculated using\nthe device's configured known offset to UTC time.  A change of\nthe device's offset to UTC time will cause date-and-time values\nto change accordingly.  Such changes might happen periodically\nin case a server follows automatically daylight saving time\n(DST) time zone offset changes.  The canonical format for\ndate-and-time values with an unknown time zone (usually\nreferring to the notion of local time) uses the time-offset\n-00:00.",
+                            "type": "yang:date-and-time"
+                          },
+                          "children": [],
+                          "name": "last-updated",
+                          "description": "Timestamp of the last modification of the route.  If the\nroute was never modified, it is the time when the route was\ninserted into the RIB.",
+                          "config": false,
+                          "class": "leaf",
+                          "status": "CURRENT"
+                        }
+                      ],
+                      "name": "route",
+                      "description": "The active RIB route for the specified\ndestination.\n\nIf no route exists in the RIB for the destination\naddress, no output is returned.\n\nAddress-family-specific modules MUST augment this\ncontainer with appropriate route contents.",
+                      "config": false,
+                      "class": "container",
+                      "status": "OBSOLETE"
+                    }],
+                    "name": "output",
+                    "description": "",
+                    "config": false,
+                    "class": "container",
+                    "status": "CURRENT"
+                  }
+                ],
+                "name": "active-route",
+                "description": "Return the active RIB route that is used for the\ndestination address.\n\nAddress-family-specific modules MUST augment input\nparameters with a leaf named 'destination-address'.",
+                "class": "action",
+                "status": "OBSOLETE"
+              },
+              {
+                "path": "/rt:routing-state/rt:ribs/rt:rib/rt:name/",
+                "type_info": {
+                  "description": "",
+                  "type": "string"
+                },
+                "children": [],
+                "name": "name",
+                "description": "The name of the RIB.",
+                "config": false,
+                "class": "leaf",
+                "status": "OBSOLETE"
+              },
+              {
+                "path": "/rt:routing-state/rt:ribs/rt:rib/rt:address-family/",
+                "type_info": {
+                  "description": "",
+                  "type": "identityref",
+                  "base": ["address-family"]
+                },
+                "children": [],
+                "name": "address-family",
+                "description": "Address family.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/rt:routing-state/rt:ribs/rt:rib/rt:default-rib/",
+                "type_info": {
+                  "default": "true",
+                  "description": "This flag has the value of 'true' if and only if the\nRIB is the default RIB for the given address family.\n\nBy default, control-plane protocols place their routes\nin the default RIBs.",
+                  "type": "rt:default-rib"
+                },
+                "children": [],
+                "name": "default-rib",
+                "description": "This flag has the value of 'true' if and only if the\nRIB is the default RIB for the given address family.\n\nBy default, control-plane protocols place their routes\nin the default RIBs.",
+                "config": false,
+                "class": "leaf",
+                "status": "OBSOLETE"
+              },
+              {
+                "path": "/rt:routing-state/rt:ribs/rt:rib/rt:routes/",
+                "type_info": {},
+                "children": [{
+                  "path": "/rt:routing-state/rt:ribs/rt:rib/rt:routes/rt:route/",
+                  "type_info": {},
+                  "children": [
+                    {
+                      "path": "/rt:routing-state/rt:ribs/rt:rib/rt:routes/rt:route/rt:route-preference/",
+                      "type_info": {
+                        "description": "This type is used for route preferences.",
+                        "type": "rt:route-preference"
+                      },
+                      "children": [],
+                      "name": "route-preference",
+                      "description": "This route attribute, also known as 'administrative\ndistance', allows for selecting the preferred route\namong routes with the same destination prefix.  A\nsmaller value indicates a route that is\nmore preferred.",
+                      "config": false,
+                      "class": "leaf",
+                      "status": "OBSOLETE"
+                    },
+                    {
+                      "path": "/rt:routing-state/rt:ribs/rt:rib/rt:routes/rt:route/rt:next-hop/",
+                      "type_info": {},
+                      "children": [{
+                        "path": "/rt:routing-state/rt:ribs/rt:rib/rt:routes/rt:route/rt:next-hop/rt:next-hop-options/",
+                        "type_info": {},
+                        "children": [
+                          {
+                            "path": "/rt:routing-state/rt:ribs/rt:rib/rt:routes/rt:route/rt:next-hop/rt:next-hop-options/rt:simple-next-hop/",
+                            "type_info": {},
+                            "children": [{
+                              "path": "/rt:routing-state/rt:ribs/rt:rib/rt:routes/rt:route/rt:next-hop/rt:next-hop-options/rt:simple-next-hop/rt:outgoing-interface/",
+                              "type_info": {
+                                "description": "This type is used by data models that need to reference\ninterfaces.",
+                                "type": "if:interface-ref"
+                              },
+                              "children": [],
+                              "name": "outgoing-interface",
+                              "description": "Name of the outgoing interface.",
+                              "config": false,
+                              "class": "leaf",
+                              "status": "CURRENT"
+                            }],
+                            "name": "simple-next-hop",
+                            "description": "This case represents a simple next hop consisting of the\nnext-hop address and/or outgoing interface.\n\nModules for address families MUST augment this case with a\nleaf containing a next-hop address of that address\nfamily.",
+                            "config": false,
+                            "class": "case",
+                            "status": "CURRENT"
+                          },
+                          {
+                            "path": "/rt:routing-state/rt:ribs/rt:rib/rt:routes/rt:route/rt:next-hop/rt:next-hop-options/rt:special-next-hop/",
+                            "type_info": {},
+                            "children": [{
+                              "path": "/rt:routing-state/rt:ribs/rt:rib/rt:routes/rt:route/rt:next-hop/rt:next-hop-options/rt:special-next-hop/rt:special-next-hop/",
+                              "type_info": {
+                                "description": "",
+                                "type": "rt:enumeration"
+                              },
+                              "children": [],
+                              "name": "special-next-hop",
+                              "description": "Options for special next hops.",
+                              "config": false,
+                              "class": "leaf",
+                              "status": "CURRENT"
+                            }],
+                            "name": "special-next-hop",
+                            "description": "",
+                            "config": false,
+                            "class": "case",
+                            "status": "CURRENT"
+                          },
+                          {
+                            "path": "/rt:routing-state/rt:ribs/rt:rib/rt:routes/rt:route/rt:next-hop/rt:next-hop-options/rt:next-hop-list/",
+                            "type_info": {},
+                            "children": [{
+                              "path": "/rt:routing-state/rt:ribs/rt:rib/rt:routes/rt:route/rt:next-hop/rt:next-hop-options/rt:next-hop-list/rt:next-hop-list/",
+                              "type_info": {},
+                              "children": [{
+                                "path": "/rt:routing-state/rt:ribs/rt:rib/rt:routes/rt:route/rt:next-hop/rt:next-hop-options/rt:next-hop-list/rt:next-hop-list/rt:next-hop/",
+                                "type_info": {},
+                                "children": [{
+                                  "path": "/rt:routing-state/rt:ribs/rt:rib/rt:routes/rt:route/rt:next-hop/rt:next-hop-options/rt:next-hop-list/rt:next-hop-list/rt:next-hop/rt:outgoing-interface/",
+                                  "type_info": {
+                                    "description": "This type is used by data models that need to reference\ninterfaces.",
+                                    "type": "if:interface-ref"
+                                  },
+                                  "children": [],
+                                  "name": "outgoing-interface",
+                                  "description": "Name of the outgoing interface.",
+                                  "config": false,
+                                  "class": "leaf",
+                                  "status": "CURRENT"
+                                }],
+                                "name": "next-hop",
+                                "description": "An entry in a next-hop list.\n\nModules for address families MUST augment this list\nwith a leaf containing a next-hop address of that\naddress family.",
+                                "config": false,
+                                "class": "list",
+                                "status": "CURRENT"
+                              }],
+                              "name": "next-hop-list",
+                              "description": "Container for multiple next hops.",
+                              "config": false,
+                              "class": "container",
+                              "status": "CURRENT"
+                            }],
+                            "name": "next-hop-list",
+                            "description": "",
+                            "config": false,
+                            "class": "case",
+                            "status": "CURRENT"
+                          }
+                        ],
+                        "name": "next-hop-options",
+                        "description": "Options for next hops.\n\nIt is expected that further cases will be added through\naugments from other modules, e.g., for recursive\nnext hops.",
+                        "config": false,
+                        "class": "choice",
+                        "status": "CURRENT"
+                      }],
+                      "name": "next-hop",
+                      "description": "Route's next-hop attribute.",
+                      "config": false,
+                      "class": "container",
+                      "status": "OBSOLETE"
+                    },
+                    {
+                      "path": "/rt:routing-state/rt:ribs/rt:rib/rt:routes/rt:route/rt:source-protocol/",
+                      "type_info": {
+                        "description": "",
+                        "type": "identityref",
+                        "base": ["routing-protocol"]
+                      },
+                      "children": [],
+                      "name": "source-protocol",
+                      "description": "Type of the routing protocol from which the route\noriginated.",
+                      "config": false,
+                      "class": "leaf",
+                      "status": "CURRENT"
+                    },
+                    {
+                      "path": "/rt:routing-state/rt:ribs/rt:rib/rt:routes/rt:route/rt:active/",
+                      "type_info": {
+                        "description": "",
+                        "type": "empty"
+                      },
+                      "children": [],
+                      "name": "active",
+                      "description": "The presence of this leaf indicates that the route is\npreferred among all routes in the same RIB that have the\nsame destination prefix.",
+                      "config": false,
+                      "class": "leaf",
+                      "status": "CURRENT"
+                    },
+                    {
+                      "path": "/rt:routing-state/rt:ribs/rt:rib/rt:routes/rt:route/rt:last-updated/",
+                      "type_info": {
+                        "description": "The date-and-time type is a profile of the ISO 8601\nstandard for representation of dates and times using the\nGregorian calendar.  The profile is defined by the\ndate-time production in Section 5.6 of RFC 3339.\n\nThe date-and-time type is compatible with the dateTime XML\nschema type with the following notable exceptions:\n\n(a) The date-and-time type does not allow negative years.\n\n(b) The date-and-time time-offset -00:00 indicates an unknown\n    time zone (see RFC 3339) while -00:00 and +00:00 and Z\n    all represent the same time zone in dateTime.\n\n(c) The canonical format (see below) of data-and-time values\n    differs from the canonical format used by the dateTime XML\n    schema type, which requires all times to be in UTC using\n    the time-offset 'Z'.\n\nThis type is not equivalent to the DateAndTime textual\nconvention of the SMIv2 since RFC 3339 uses a different\nseparator between full-date and full-time and provides\nhigher resolution of time-secfrac.\n\nThe canonical format for date-and-time values with a known time\nzone uses a numeric time zone offset that is calculated using\nthe device's configured known offset to UTC time.  A change of\nthe device's offset to UTC time will cause date-and-time values\nto change accordingly.  Such changes might happen periodically\nin case a server follows automatically daylight saving time\n(DST) time zone offset changes.  The canonical format for\ndate-and-time values with an unknown time zone (usually\nreferring to the notion of local time) uses the time-offset\n-00:00.",
+                        "type": "yang:date-and-time"
+                      },
+                      "children": [],
+                      "name": "last-updated",
+                      "description": "Timestamp of the last modification of the route.  If the\nroute was never modified, it is the time when the route was\ninserted into the RIB.",
+                      "config": false,
+                      "class": "leaf",
+                      "status": "CURRENT"
+                    }
+                  ],
+                  "name": "route",
+                  "description": "A RIB route entry.  This data node MUST be augmented\nwith information specific to routes of each address\nfamily.",
+                  "config": false,
+                  "class": "list",
+                  "status": "OBSOLETE"
+                }],
+                "name": "routes",
+                "description": "Current contents of the RIB.",
+                "config": false,
+                "class": "container",
+                "status": "OBSOLETE"
+              }
+            ],
+            "name": "rib",
+            "description": "Each entry represents a RIB identified by the 'name'\nkey.  All routes in a RIB MUST belong to the same address\nfamily.\n\nAn implementation SHOULD provide one system-controlled\ndefault RIB for each supported address family.",
+            "config": false,
+            "class": "list",
+            "status": "OBSOLETE"
+          }],
+          "name": "ribs",
+          "description": "Container for RIBs.",
+          "config": false,
+          "class": "container",
+          "status": "OBSOLETE"
+        }
+      ],
+      "name": "routing-state",
+      "description": "State data of the routing subsystem.",
+      "config": false,
+      "class": "container",
+      "status": "OBSOLETE"
+    }
+  ],
+  "module": {
+    "prefix": "rt",
+    "contact": "WG Web:   <https://datatracker.ietf.org/wg/netmod/>\nWG List:  <mailto:rtgwg@ietf.org>\n\nEditor:   Ladislav Lhotka\n          <mailto:lhotka@nic.cz>\n          Acee Lindem\n          <mailto:acee@cisco.com>\n          Yingzhen Qu\n          <mailto:yingzhen.qu@huawei.com>",
+    "name": "ietf-routing",
+    "namespace": "urn:ietf:params:xml:ns:yang:ietf-routing",
+    "description": "This YANG module defines essential components for the management\nof a routing subsystem.  The model fully conforms to the Network\nManagement Datastore Architecture (NMDA).\n\nCopyright (c) 2018 IETF Trust and the persons\nidentified as authors of the code.  All rights reserved.\n\nRedistribution and use in source and binary forms, with or\nwithout modification, is permitted pursuant to, and subject\nto the license terms contained in, the Simplified BSD License\nset forth in Section 4.c of the IETF Trust's Legal Provisions\nRelating to IETF Documents\n(https://trustee.ietf.org/license-info).\nThis version of this YANG module is part of RFC 8349; see\nthe RFC itself for full legal notices.",
+    "revision": "2018-03-13"
+  }
+}

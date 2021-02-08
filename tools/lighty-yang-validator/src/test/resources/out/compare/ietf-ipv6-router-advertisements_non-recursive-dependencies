@@ -1,0 +1,1 @@
+module ietf-ipv6-unicast-routing@2018-03-13 depends on following modules: ietf-inet-types ietf-routing ietf-ipv6-router-advertisements@2018-03-13 (not recursively)

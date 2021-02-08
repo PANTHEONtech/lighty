@@ -1,0 +1,1 @@
+module ietf-connection-oriented-oam@2019-04-16 depends on following modules: ietf-inet-types ietf-interfaces ietf-yang-types

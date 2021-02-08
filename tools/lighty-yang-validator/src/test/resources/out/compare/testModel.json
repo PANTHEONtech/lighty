@@ -1,0 +1,382 @@
+{
+  "children": [
+    {
+      "path": "/test:result-container/",
+      "type_info": {},
+      "children": [{
+        "path": "/test:result-container/test:result/",
+        "type_info": {},
+        "children": [
+          {
+            "path": "/test:result-container/test:result/test:id/",
+            "type_info": {
+              "description": "",
+              "type": "uint32"
+            },
+            "children": [],
+            "name": "id",
+            "description": "",
+            "config": false,
+            "class": "leaf",
+            "status": "CURRENT"
+          },
+          {
+            "path": "/test:result-container/test:result/test:sum-result/",
+            "type_info": {
+              "description": "",
+              "type": "test:suma-type"
+            },
+            "children": [],
+            "name": "sum-result",
+            "description": "",
+            "config": false,
+            "class": "leaf",
+            "status": "CURRENT"
+          }
+        ],
+        "name": "result",
+        "description": "",
+        "config": false,
+        "class": "list",
+        "status": "CURRENT"
+      }],
+      "name": "result-container",
+      "description": "Used for storing summation results",
+      "config": false,
+      "class": "container",
+      "status": "CURRENT"
+    },
+    {
+      "path": "/test:operands-container/",
+      "type_info": {},
+      "children": [{
+        "path": "/test:operands-container/test:operands/",
+        "type_info": {},
+        "children": [
+          {
+            "path": "/test:operands-container/test:operands/test:id/",
+            "type_info": {
+              "description": "",
+              "type": "uint32"
+            },
+            "children": [],
+            "name": "id",
+            "description": "",
+            "config": true,
+            "class": "leaf",
+            "status": "CURRENT"
+          },
+          {
+            "path": "/test:operands-container/test:operands/test:operand-a/",
+            "type_info": {
+              "description": "",
+              "type": "uint16"
+            },
+            "children": [],
+            "name": "operand-a",
+            "description": "Operand A",
+            "config": true,
+            "class": "leaf",
+            "status": "CURRENT"
+          },
+          {
+            "path": "/test:operands-container/test:operands/test:operand-b/",
+            "type_info": {
+              "description": "",
+              "type": "uint16"
+            },
+            "children": [],
+            "name": "operand-b",
+            "description": "Operand B",
+            "config": true,
+            "class": "leaf",
+            "status": "CURRENT"
+          }
+        ],
+        "name": "operands",
+        "description": "",
+        "config": true,
+        "class": "list",
+        "status": "CURRENT"
+      }],
+      "name": "operands-container",
+      "description": "Used for storing summation operands",
+      "config": true,
+      "class": "container",
+      "status": "CURRENT"
+    },
+    {
+      "path": "/test:server/",
+      "type_info": {},
+      "children": [
+        {
+          "path": "/test:server/",
+          "type_info": {},
+          "children": [
+            {
+              "path": "/test:server/test:reset/test:input/",
+              "type_info": {},
+              "children": [{
+                "path": "/test:server/test:reset/test:input/test:reset-at/",
+                "type_info": {
+                  "description": "",
+                  "type": "uint32"
+                },
+                "children": [],
+                "name": "reset-at",
+                "description": "",
+                "config": true,
+                "class": "leaf",
+                "status": "CURRENT"
+              }],
+              "name": "input",
+              "description": "",
+              "config": false,
+              "class": "container",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/test:server/test:reset/test:output/",
+              "type_info": {},
+              "children": [{
+                "path": "/test:server/test:reset/test:output/test:reset-finished-at/",
+                "type_info": {
+                  "description": "",
+                  "type": "string"
+                },
+                "children": [],
+                "name": "reset-finished-at",
+                "description": "",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              }],
+              "name": "output",
+              "description": "",
+              "config": false,
+              "class": "container",
+              "status": "CURRENT"
+            }
+          ],
+          "name": "reset",
+          "description": "",
+          "class": "action",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/test:server/test:name/",
+          "type_info": {
+            "description": "",
+            "type": "string"
+          },
+          "children": [],
+          "name": "name",
+          "description": "",
+          "config": true,
+          "class": "leaf",
+          "status": "CURRENT"
+        }
+      ],
+      "name": "server",
+      "description": "",
+      "config": true,
+      "class": "list",
+      "status": "CURRENT"
+    }
+  ],
+  "module": {
+    "prefix": "test",
+    "contact": "",
+    "name": "test_model",
+    "namespace": "test:testspace",
+    "description": "Testing module",
+    "revision": "2020-12-03"
+  },
+  "rpcs": [
+    {
+      "path": "/test:multiplication/",
+      "type_info": {},
+      "children": [
+        {
+          "path": "/test:multiplication/test:input/",
+          "type_info": {},
+          "children": [
+            {
+              "path": "/test:multiplication/test:input/test:operand-a/",
+              "type_info": {
+                "default": "5",
+                "description": "",
+                "type": "test:operand-a"
+              },
+              "children": [],
+              "name": "operand-a",
+              "description": "",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/test:multiplication/test:input/test:operand-b/",
+              "type_info": {
+                "description": "",
+                "type": "uint32"
+              },
+              "children": [],
+              "name": "operand-b",
+              "description": "",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            }
+          ],
+          "name": "input",
+          "description": "",
+          "config": false,
+          "class": "container",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/test:multiplication/test:output/",
+          "type_info": {},
+          "children": [{
+            "path": "/test:multiplication/test:output/test:a-times-b/",
+            "type_info": {
+              "description": "",
+              "type": "uint32"
+            },
+            "children": [],
+            "name": "a-times-b",
+            "description": "",
+            "config": false,
+            "class": "leaf",
+            "status": "CURRENT"
+          }],
+          "name": "output",
+          "description": "",
+          "config": false,
+          "class": "container",
+          "status": "CURRENT"
+        }
+      ],
+      "name": "multiplication",
+      "description": "",
+      "class": "rpc",
+      "status": "CURRENT"
+    },
+    {
+      "path": "/test:summation/",
+      "type_info": {},
+      "children": [
+        {
+          "path": "/test:summation/test:input/",
+          "type_info": {},
+          "children": [
+            {
+              "path": "/test:summation/test:input/test:operand-a/",
+              "type_info": {
+                "description": "",
+                "type": "uint16"
+              },
+              "children": [],
+              "name": "operand-a",
+              "description": "Operand A",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/test:summation/test:input/test:operand-b/",
+              "type_info": {
+                "description": "",
+                "type": "uint16"
+              },
+              "children": [],
+              "name": "operand-b",
+              "description": "Operand B",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            }
+          ],
+          "name": "input",
+          "description": "",
+          "config": false,
+          "class": "container",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/test:summation/test:output/",
+          "type_info": {},
+          "children": [
+            {
+              "path": "/test:summation/test:output/test:summation-output/",
+              "type_info": {
+                "description": "",
+                "type": "string"
+              },
+              "children": [],
+              "name": "summation-output",
+              "description": "",
+              "config": false,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/test:summation/test:output/test:sum/",
+              "type_info": {
+                "description": "",
+                "type": "test:suma-type"
+              },
+              "children": [],
+              "name": "sum",
+              "description": "",
+              "config": false,
+              "class": "leaf",
+              "status": "CURRENT"
+            }
+          ],
+          "name": "output",
+          "description": "",
+          "config": false,
+          "class": "container",
+          "status": "CURRENT"
+        }
+      ],
+      "name": "summation",
+      "description": "",
+      "class": "rpc",
+      "status": "CURRENT"
+    }
+  ],
+  "notifications": [
+    {
+      "path": "AbsoluteSchemaPath{path=[(test:testspace?revision=2020-12-03)testNotification]}",
+      "type_info": {},
+      "name": "testNotification",
+      "description": "Indicates that the toaster has run of out bread.",
+      "class": "notification",
+      "status": "CURRENT"
+    },
+    {
+      "path": "AbsoluteSchemaPath{path=[(test:testspace?revision=2020-12-03)testNotificationWithData]}",
+      "type_info": {},
+      "children": [{
+        "path": "/test:testNotificationWithData/test:notificationData/",
+        "type_info": {
+          "description": "",
+          "type": "uint32"
+        },
+        "children": [],
+        "name": "notificationData",
+        "description": "",
+        "config": false,
+        "class": "leaf",
+        "status": "CURRENT"
+      }],
+      "name": "testNotificationWithData",
+      "description": "",
+      "class": "notification",
+      "status": "CURRENT"
+    }
+  ]
+}

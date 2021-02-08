@@ -1,0 +1,15 @@
+<data>
+    <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+        <interface>
+            <name>eth0</name>
+            <enabled>true</enabled>
+            <ipv6 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
+                <enabled>true</enabled>
+                <address>
+                    <ip>2001:0db8:c18:1::3</ip>
+                    <prefix-length>128</prefix-length>
+                </address>
+            </ipv6>
+        </interface>
+    </interfaces>
+</data>

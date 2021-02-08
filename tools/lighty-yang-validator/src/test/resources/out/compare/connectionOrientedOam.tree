@@ -1,0 +1,189 @@
+module: ietf-connection-oriented-oam
+  +--rw domains
+     +--rw domain* [technology, md-name-string]
+        +--rw technology       identityref
+        +--rw md-name-string       string
+        +--rw md-name-format?       identityref
+        +--rw (md-name)?
+        |  +-- :(md-name-null)
+        |     +--rw md-name-null?       empty
+        +--rw md-level?       uint32
+        +--rw mas
+           +--rw ma* [ma-name-string]
+              +--rw ma-name-string       string
+              +--rw ma-name-format?       identityref
+              +--rw (ma-name)?
+              |  +-- :(ma-name-null)
+              |     +--rw ma-name-null?       empty
+              +--rw (connectivity-context)?
+              |  +-- :(context-null)
+              |     +--rw context-null?       empty
+              +--rw cos-id?       uint8
+              +--rw cc-enable?       boolean
+              +--rw mep* [mep-name]
+              |  +--rw mep-name       string
+              |  +--rw (mep-id)?
+              |  |  +-- :(mep-id-int)
+              |  |     +--rw mep-id-int?       int32
+              |  +--rw mep-id-format?       identityref
+              |  +--rw (mep-address)?
+              |  |  +-- :(mac-address)
+              |  |  |  +--rw mac-address?       string
+              |  |  +-- :(ip-address)
+              |  |     +--rw ip-address?       union
+              |  +--rw cos-id?       uint8
+              |  +--rw cc-enable?       boolean
+              |  +--rw session* [session-cookie]
+              |     +--rw session-cookie       uint32
+              |     +--rw destination-mep
+              |     |  +--rw (mep-id)?
+              |     |  |  +-- :(mep-id-int)
+              |     |  |     +--rw mep-id-int?       int32
+              |     |  +--rw mep-id-format?       identityref
+              |     +--rw destination-mep-address
+              |     |  +--rw (mep-address)?
+              |     |     +-- :(mac-address)
+              |     |     |  +--rw mac-address?       string
+              |     |     +-- :(ip-address)
+              |     |        +--rw ip-address?       union
+              |     +--rw cos-id?       uint8
+              +--rw mip* [name] {mip}?
+                 +--rw name       string
+                 +--rw interface?    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)name}]}}, originalString=/if:interfaces/if:interface/if:name}
+                 +--rw (mip-address)?
+                    +-- :(mac-address)
+                    |  +--rw mac-address?       string
+                    +-- :(ip-address)
+                       +--rw ip-address?       union
+RPCs:
+  +---x continuity-check {continuity-check}?
+  |  +---w input
+  |  |  +---w technology?       identityref
+  |  |  +---w md-name-string    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=UnqualifiedQName{localName=domains}}, Step{axis=child, qname=UnqualifiedQName{localName=domain}}, Step{axis=child, qname=UnqualifiedQName{localName=md-name-string}}]}}, originalString=/domains/domain/md-name-string}
+  |  |  +---w md-level?    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=UnqualifiedQName{localName=domains}}, Step{axis=child, qname=UnqualifiedQName{localName=domain}}, Step{axis=child, qname=UnqualifiedQName{localName=md-level}}]}}, originalString=/domains/domain/md-level}
+  |  |  +---w ma-name-string    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=UnqualifiedQName{localName=domains}}, Step{axis=child, qname=UnqualifiedQName{localName=domain}}, Step{axis=child, qname=UnqualifiedQName{localName=mas}}, Step{axis=child, qname=UnqualifiedQName{localName=ma}}, Step{axis=child, qname=UnqualifiedQName{localName=ma-name-string}}]}}, originalString=/domains/domain/mas/ma/ma-name-string}
+  |  |  +---w cos-id?       uint8
+  |  |  +---w ttl?       uint8
+  |  |  +---w sub-type?       identityref
+  |  |  +---w source-mep?    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=UnqualifiedQName{localName=domains}}, Step{axis=child, qname=UnqualifiedQName{localName=domain}}, Step{axis=child, qname=UnqualifiedQName{localName=mas}}, Step{axis=child, qname=UnqualifiedQName{localName=ma}}, Step{axis=child, qname=UnqualifiedQName{localName=mep}}, Step{axis=child, qname=UnqualifiedQName{localName=mep-name}}]}}, originalString=/domains/domain/mas/ma/mep/mep-name}
+  |  |  +---w destination-mep
+  |  |  |  +---w (mep-address)?
+  |  |  |  |  +-- :(mac-address)
+  |  |  |  |  |  +---w mac-address?       string
+  |  |  |  |  +-- :(ip-address)
+  |  |  |  |     +---w ip-address?       union
+  |  |  |  +---w (mep-id)?
+  |  |  |  |  +-- :(mep-id-int)
+  |  |  |  |     +---w mep-id-int?       int32
+  |  |  |  +---w mep-id-format?       identityref
+  |  |  +---w count?       uint32
+  |  |  +---w cc-transmit-interval?       time-interval
+  |  |  +---w packet-size?       uint32
+  |  +--ro output
+  |     +--ro (monitor-stats)?
+  |        +-- :(monitor-null)
+  |           +--ro monitor-null?       empty
+  +---x continuity-verification {connectivity-verification}?
+  |  +---w input
+  |  |  +---w md-name-string    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=UnqualifiedQName{localName=domains}}, Step{axis=child, qname=UnqualifiedQName{localName=domain}}, Step{axis=child, qname=UnqualifiedQName{localName=md-name-string}}]}}, originalString=/domains/domain/md-name-string}
+  |  |  +---w md-level?    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=UnqualifiedQName{localName=domains}}, Step{axis=child, qname=UnqualifiedQName{localName=domain}}, Step{axis=child, qname=UnqualifiedQName{localName=md-level}}]}}, originalString=/domains/domain/md-level}
+  |  |  +---w ma-name-string    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=UnqualifiedQName{localName=domains}}, Step{axis=child, qname=UnqualifiedQName{localName=domain}}, Step{axis=child, qname=UnqualifiedQName{localName=mas}}, Step{axis=child, qname=UnqualifiedQName{localName=ma}}, Step{axis=child, qname=UnqualifiedQName{localName=ma-name-string}}]}}, originalString=/domains/domain/mas/ma/ma-name-string}
+  |  |  +---w cos-id?       uint8
+  |  |  +---w ttl?       uint8
+  |  |  +---w sub-type?       identityref
+  |  |  +---w source-mep?    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=UnqualifiedQName{localName=domains}}, Step{axis=child, qname=UnqualifiedQName{localName=domain}}, Step{axis=child, qname=UnqualifiedQName{localName=mas}}, Step{axis=child, qname=UnqualifiedQName{localName=ma}}, Step{axis=child, qname=UnqualifiedQName{localName=mep}}, Step{axis=child, qname=UnqualifiedQName{localName=mep-name}}]}}, originalString=/domains/domain/mas/ma/mep/mep-name}
+  |  |  +---w destination-mep
+  |  |  |  +---w (mep-address)?
+  |  |  |  |  +-- :(mac-address)
+  |  |  |  |  |  +---w mac-address?       string
+  |  |  |  |  +-- :(ip-address)
+  |  |  |  |     +---w ip-address?       union
+  |  |  |  +---w (mep-id)?
+  |  |  |  |  +-- :(mep-id-int)
+  |  |  |  |     +---w mep-id-int?       int32
+  |  |  |  +---w mep-id-format?       identityref
+  |  |  +---w count?       uint32
+  |  |  +---w interval?       time-interval
+  |  |  +---w packet-size?       uint32
+  |  +--ro output
+  |     +--ro (monitor-stats)?
+  |        +-- :(monitor-null)
+  |           +--ro monitor-null?       empty
+  +---x traceroute {traceroute}?
+     +---w input
+     |  +---w md-name-string    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=UnqualifiedQName{localName=domains}}, Step{axis=child, qname=UnqualifiedQName{localName=domain}}, Step{axis=child, qname=UnqualifiedQName{localName=md-name-string}}]}}, originalString=/domains/domain/md-name-string}
+     |  +---w md-level?    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=UnqualifiedQName{localName=domains}}, Step{axis=child, qname=UnqualifiedQName{localName=domain}}, Step{axis=child, qname=UnqualifiedQName{localName=md-level}}]}}, originalString=/domains/domain/md-level}
+     |  +---w ma-name-string    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=UnqualifiedQName{localName=domains}}, Step{axis=child, qname=UnqualifiedQName{localName=domain}}, Step{axis=child, qname=UnqualifiedQName{localName=mas}}, Step{axis=child, qname=UnqualifiedQName{localName=ma}}, Step{axis=child, qname=UnqualifiedQName{localName=ma-name-string}}]}}, originalString=/domains/domain/mas/ma/ma-name-string}
+     |  +---w cos-id?       uint8
+     |  +---w ttl?       uint8
+     |  +---w command-sub-type?       identityref
+     |  +---w source-mep?    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=UnqualifiedQName{localName=domains}}, Step{axis=child, qname=UnqualifiedQName{localName=domain}}, Step{axis=child, qname=UnqualifiedQName{localName=mas}}, Step{axis=child, qname=UnqualifiedQName{localName=ma}}, Step{axis=child, qname=UnqualifiedQName{localName=mep}}, Step{axis=child, qname=UnqualifiedQName{localName=mep-name}}]}}, originalString=/domains/domain/mas/ma/mep/mep-name}
+     |  +---w destination-mep
+     |  |  +---w (mep-address)?
+     |  |  |  +-- :(mac-address)
+     |  |  |  |  +---w mac-address?       string
+     |  |  |  +-- :(ip-address)
+     |  |  |     +---w ip-address?       union
+     |  |  +---w (mep-id)?
+     |  |  |  +-- :(mep-id-int)
+     |  |  |     +---w mep-id-int?       int32
+     |  |  +---w mep-id-format?       identityref
+     |  +---w count?       uint32
+     |  +---w interval?       time-interval
+     +--ro output
+        +--ro response* [response-index]
+           +--ro response-index       uint8
+           +--ro ttl?       uint8
+           +--ro destination-mep
+           |  +--ro (mep-address)?
+           |  |  +-- :(mac-address)
+           |  |  |  +--ro mac-address?       string
+           |  |  +-- :(ip-address)
+           |  |     +--ro ip-address?       union
+           |  +--ro (mep-id)?
+           |  |  +-- :(mep-id-int)
+           |  |     +--ro mep-id-int?       int32
+           |  +--ro mep-id-format?       identityref
+           +--ro mip {mip}?
+           |  +--ro interface?    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)name}]}}, originalString=/if:interfaces/if:interface/if:name}
+           |  +--ro (mip-address)?
+           |     +-- :(mac-address)
+           |     |  +--ro mac-address?       string
+           |     +-- :(ip-address)
+           |        +--ro ip-address?       union
+           +--ro (monitor-stats)?
+              +-- :(monitor-null)
+                 +--ro monitor-null?       empty
+notifications:
+  +---n defect-condition-notification
+     +--ro technology?       identityref
+     +--ro md-name-string    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=UnqualifiedQName{localName=domains}}, Step{axis=child, qname=UnqualifiedQName{localName=domain}}, Step{axis=child, qname=UnqualifiedQName{localName=md-name-string}}]}}, originalString=/domains/domain/md-name-string}
+     +--ro ma-name-string    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=UnqualifiedQName{localName=domains}}, Step{axis=child, qname=UnqualifiedQName{localName=domain}}, Step{axis=child, qname=UnqualifiedQName{localName=mas}}, Step{axis=child, qname=UnqualifiedQName{localName=ma}}, Step{axis=child, qname=UnqualifiedQName{localName=ma-name-string}}]}}, originalString=/domains/domain/mas/ma/ma-name-string}
+     +--ro mep-name?    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=UnqualifiedQName{localName=domains}}, Step{axis=child, qname=UnqualifiedQName{localName=domain}}, Step{axis=child, qname=UnqualifiedQName{localName=mas}}, Step{axis=child, qname=UnqualifiedQName{localName=ma}}, Step{axis=child, qname=UnqualifiedQName{localName=mep}}, Step{axis=child, qname=UnqualifiedQName{localName=mep-name}}]}}, originalString=/domains/domain/mas/ma/mep/mep-name}
+     +--ro defect-type?       identityref
+     +--ro generating-mepid
+     |  +--ro (mep-id)?
+     |  |  +-- :(mep-id-int)
+     |  |     +--ro mep-id-int?       int32
+     |  +--ro mep-id-format?       identityref
+     +--ro (defect)?
+        +-- :(defect-null)
+        |  +--ro defect-null?       empty
+        +-- :(defect-code)
+           +--ro defect-code?       int32
+  +---n defect-cleared-notification
+     +--ro technology?       identityref
+     +--ro md-name-string    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=UnqualifiedQName{localName=domains}}, Step{axis=child, qname=UnqualifiedQName{localName=domain}}, Step{axis=child, qname=UnqualifiedQName{localName=md-name-string}}]}}, originalString=/domains/domain/md-name-string}
+     +--ro ma-name-string    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=UnqualifiedQName{localName=domains}}, Step{axis=child, qname=UnqualifiedQName{localName=domain}}, Step{axis=child, qname=UnqualifiedQName{localName=mas}}, Step{axis=child, qname=UnqualifiedQName{localName=ma}}, Step{axis=child, qname=UnqualifiedQName{localName=ma-name-string}}]}}, originalString=/domains/domain/mas/ma/ma-name-string}
+     +--ro mep-name?    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=UnqualifiedQName{localName=domains}}, Step{axis=child, qname=UnqualifiedQName{localName=domain}}, Step{axis=child, qname=UnqualifiedQName{localName=mas}}, Step{axis=child, qname=UnqualifiedQName{localName=ma}}, Step{axis=child, qname=UnqualifiedQName{localName=mep}}, Step{axis=child, qname=UnqualifiedQName{localName=mep-name}}]}}, originalString=/domains/domain/mas/ma/mep/mep-name}
+     +--ro defect-type?       identityref
+     +--ro generating-mepid
+     |  +--ro (mep-id)?
+     |  |  +-- :(mep-id-int)
+     |  |     +--ro mep-id-int?       int32
+     |  +--ro mep-id-format?       identityref
+     +--ro (defect)?
+        +-- :(defect-null)
+        |  +--ro defect-null?       empty
+        +-- :(defect-code)
+           +--ro defect-code?       int32

@@ -1,0 +1,35 @@
+module: test_model
+  +--ro result-container
+  |  +--ro result* [id]
+  |     +--ro id       uint32
+  |     +--ro sum-result?       suma-type
+  +--rw operands-container
+  |  +--rw operands* [id]
+  |     +--rw id       uint32
+  |     +--rw operand-a?       uint16
+  |     +--rw operand-b?       uint16
+  +--rw server* [name]
+     +--rw name       string
+     +---x reset
+        +---w input
+        |  +---w reset-at       uint32
+        +--ro output
+           +--ro reset-finished-at       string
+RPCs:
+  +---x multiplication
+  |  +---w input
+  |  |  +---w operand-a?       uint32
+  |  |  +---w operand-b       uint32
+  |  +--ro output
+  |     +--ro a-times-b?       uint32
+  +---x summation
+     +---w input
+     |  +---w operand-a?       uint16
+     |  +---w operand-b?       uint16
+     +--ro output
+        +--ro summation-output       string
+        +--ro sum       suma-type
+notifications:
+  +---n testNotification
+  +---n testNotificationWithData
+     +--ro notificationData?       uint32

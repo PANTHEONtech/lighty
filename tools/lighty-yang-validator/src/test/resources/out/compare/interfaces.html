@@ -1,0 +1,869 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <style>
+  .fa-share {
+    color: blue;
+  }
+  .fa-reply {
+    color: blue;
+  }
+  .fa-play {
+    color: red;
+  }
+  .fa-envelope {
+    color: red;
+  }
+  .fa-bell {
+    color: red;
+  }
+  .fa-check {
+    color: blue;
+  }
+  .fa-tasks {
+    color: blue;
+  }
+  .fa-external-link-alt {
+    color: red;
+  }
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+  .fa-leaf {
+    color: green;
+  }
+  .fa-pagelines {
+    color: green;
+  }
+  .fa-folder-open {
+    color: orange;
+  }
+table.simple-tree-table .tree-icon {
+ display:inline-block;
+ width:1.5em;
+ line-height:1.5em;
+ margin:.1em;
+ background-color:#eee;
+ text-align:center;
+ cursor:pointer
+}
+table.simple-tree-table tr.tree-opened .tree-icon:after {
+ content:"-"
+}
+table.simple-tree-table tr.tree-closed .tree-icon:after {
+ content:"+"
+}
+  </style>
+</head><body>
+<div> <b> module name ietf-interfaces@2018-02-20, namespace urn:ietf:params:xml:ns:yang:ietf-interfaces, prefix if </b></div><div>
+    <button type="button" id="expander" class="btn btn-danger">Expand All</button>
+    <button type="button" id="collapser" class="btn btn-info">Collapse All</button>
+    <table id="basic" class="table table-bordered table-striped simple-tree-table">
+        <th> element </th>
+        <th> schema </th>
+        <th> type </th>
+        <th> flag </th>
+        <th> status </th>
+        <th> path </th>
+        <tr data-node-id="1" data-node-pid=""><td title="Interface parameters.">interfaces <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>config</td><td>current</td><td>/if:interfaces</td></tr>
+        <tr data-node-id="1.1" data-node-pid="1"><td title="The list of interfaces on the device.
+
+The status of an interface is available in this list in the
+operational state.  If the configuration of a
+system-controlled interface cannot be used by the system
+(e.g., the interface hardware present does not match the
+interface type), then the configuration is not applied to
+the system-controlled interface shown in the operational
+state.  If the configuration of a user-controlled interface
+cannot be used by the system, the configured interface is
+not instantiated in the operational state.
+
+System-controlled interfaces created by the system are
+always present in this list in the operational state,
+whether or not they are configured.">interface[name] <span><i class="fas fa-list"></i></span> </td><td>list</td><td></td><td>config</td><td>current</td><td>/if:interfaces/if:interface</td></tr>
+        <tr data-node-id="1.1.1" data-node-pid="1.1"><td title="The name of the interface.
+
+A device MAY restrict the allowed values for this leaf,
+possibly depending on the type of the interface.
+For system-controlled interfaces, this leaf is the
+device-specific name of the interface.
+
+If a client tries to create configuration for a
+system-controlled interface that is not present in the
+operational state, the server MAY reject the request if
+the implementation does not support pre-provisioning of
+interfaces or if the name refers to an interface that can
+never exist in the system.  A Network Configuration
+Protocol (NETCONF) server MUST reply with an rpc-error
+with the error-tag 'invalid-value' in this case.
+
+If the device supports pre-provisioning of interface
+configuration, the 'pre-provisioning' feature is
+advertised.
+
+If the device allows arbitrarily named user-controlled
+interfaces, the 'arbitrary-names' feature is advertised.
+
+When a configured user-controlled interface is created by
+the system, it is instantiated with the same name in the
+operational state.
+
+A server implementation MAY map this leaf to the ifName
+MIB object.  Such an implementation needs to use some
+mechanism to handle the differences in size and characters
+allowed between this leaf and ifName.  The definition of
+such a mechanism is outside the scope of this document.">name <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>string</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/if:name</td></tr>
+        <tr data-node-id="1.1.2" data-node-pid="1.1"><td title="A textual description of the interface.
+
+A server implementation MAY map this leaf to the ifAlias
+MIB object.  Such an implementation needs to use some
+mechanism to handle the differences in size and characters
+allowed between this leaf and ifAlias.  The definition of
+such a mechanism is outside the scope of this document.
+
+Since ifAlias is defined to be stored in non-volatile
+storage, the MIB implementation MUST map ifAlias to the
+value of 'description' in the persistently stored
+configuration.">description <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>string</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/if:description</td></tr>
+        <tr data-node-id="1.1.3" data-node-pid="1.1"><td title="The type of the interface.
+
+When an interface entry is created, a server MAY
+initialize the type leaf with a valid value, e.g., if it
+is possible to derive the type from the name of the
+interface.
+
+If a client tries to set the type of an interface to a
+value that can never be used by the system, e.g., if the
+type is not supported or if the type does not match the
+name of the interface, the server MUST reject the request.
+A NETCONF server MUST reply with an rpc-error with the
+error-tag 'invalid-value' in this case.">type <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>identityref</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/if:type</td></tr>
+        <tr data-node-id="1.1.4" data-node-pid="1.1"><td title="This leaf contains the configured, desired state of the
+interface.
+
+Systems that implement the IF-MIB use the value of this
+leaf in the intended configuration to set
+IF-MIB.ifAdminStatus to 'up' or 'down' after an ifEntry
+has been initialized, as described in RFC 2863.
+
+Changes in this leaf in the intended configuration are
+reflected in ifAdminStatus.">enabled <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>boolean</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/if:enabled</td></tr>
+        <tr data-node-id="1.1.5" data-node-pid="1.1"><td title="Controls whether linkUp/linkDown SNMP notifications
+should be generated for this interface.
+
+If this node is not configured, the value 'enabled' is
+operationally used by the server for interfaces that do
+not operate on top of any other interface (i.e., there are
+no 'lower-layer-if' entries), and 'disabled' otherwise.">link-up-down-trap-enable <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>enumeration</td><td>config</td><td>current</td><td>/if:interfaces/if:interface/if:link-up-down-trap-enable</td></tr>
+        <tr data-node-id="1.1.6" data-node-pid="1.1"><td title="The desired state of the interface.
+
+This leaf has the same read semantics as ifAdminStatus.">admin-status <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>enumeration</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:admin-status</td></tr>
+        <tr data-node-id="1.1.7" data-node-pid="1.1"><td title="The current operational state of the interface.
+
+This leaf has the same semantics as ifOperStatus.">oper-status <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>enumeration</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:oper-status</td></tr>
+        <tr data-node-id="1.1.8" data-node-pid="1.1"><td title="The time the interface entered its current operational
+state.  If the current state was entered prior to the
+last re-initialization of the local network management
+subsystem, then this node is not present.">last-change <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:date-and-time</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:last-change</td></tr>
+        <tr data-node-id="1.1.9" data-node-pid="1.1"><td title="The ifIndex value for the ifEntry represented by this
+interface.">if-index <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>int32</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:if-index</td></tr>
+        <tr data-node-id="1.1.10" data-node-pid="1.1"><td title="The interface's address at its protocol sub-layer.  For
+example, for an 802.x interface, this object normally
+contains a Media Access Control (MAC) address.  The
+interface's media-specific modules must define the bit
+and byte ordering and the format of the value of this
+object.  For interfaces that do not have such an address
+(e.g., a serial line), this node is not present.">phys-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>string</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:phys-address</td></tr>
+        <tr data-node-id="1.1.11" data-node-pid="1.1"><td title="A list of references to interfaces layered on top of this
+interface.">higher-layer-if <span><i class="fab fa-pagelines"></i></span> </td><td>leaf-list</td><td>interface-ref</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:higher-layer-if</td></tr>
+        <tr data-node-id="1.1.12" data-node-pid="1.1"><td title="A list of references to interfaces layered underneath this
+interface.">lower-layer-if <span><i class="fab fa-pagelines"></i></span> </td><td>leaf-list</td><td>interface-ref</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:lower-layer-if</td></tr>
+        <tr data-node-id="1.1.13" data-node-pid="1.1"><td title="An estimate of the interface's current bandwidth in bits
+per second.  For interfaces that do not vary in
+bandwidth or for those where no accurate estimation can
+be made, this node should contain the nominal bandwidth.
+For interfaces that have no concept of bandwidth, this
+node is not present.">speed <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:gauge64</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:speed</td></tr>
+        <tr data-node-id="1.1.14" data-node-pid="1.1"><td title="A collection of interface-related statistics objects.">statistics <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:statistics</td></tr>
+        <tr data-node-id="1.1.14.1" data-node-pid="1.1.14"><td title="The time on the most recent occasion at which any one or
+more of this interface's counters suffered a
+discontinuity.  If no such discontinuities have occurred
+since the last re-initialization of the local management
+subsystem, then this node contains the time the local
+management subsystem re-initialized itself.">discontinuity-time <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:date-and-time</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:statistics/if:discontinuity-time</td></tr>
+        <tr data-node-id="1.1.14.2" data-node-pid="1.1.14"><td title="The total number of octets received on the interface,
+including framing characters.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">in-octets <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter64</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:statistics/if:in-octets</td></tr>
+        <tr data-node-id="1.1.14.3" data-node-pid="1.1.14"><td title="The number of packets, delivered by this sub-layer to a
+higher (sub-)layer, that were not addressed to a
+multicast or broadcast address at this sub-layer.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">in-unicast-pkts <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter64</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:statistics/if:in-unicast-pkts</td></tr>
+        <tr data-node-id="1.1.14.4" data-node-pid="1.1.14"><td title="The number of packets, delivered by this sub-layer to a
+higher (sub-)layer, that were addressed to a broadcast
+address at this sub-layer.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">in-broadcast-pkts <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter64</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:statistics/if:in-broadcast-pkts</td></tr>
+        <tr data-node-id="1.1.14.5" data-node-pid="1.1.14"><td title="The number of packets, delivered by this sub-layer to a
+higher (sub-)layer, that were addressed to a multicast
+address at this sub-layer.  For a MAC-layer protocol,
+this includes both Group and Functional addresses.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">in-multicast-pkts <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter64</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:statistics/if:in-multicast-pkts</td></tr>
+        <tr data-node-id="1.1.14.6" data-node-pid="1.1.14"><td title="The number of inbound packets that were chosen to be
+discarded even though no errors had been detected to
+prevent their being deliverable to a higher-layer
+protocol.  One possible reason for discarding such a
+packet could be to free up buffer space.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">in-discards <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter32</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:statistics/if:in-discards</td></tr>
+        <tr data-node-id="1.1.14.7" data-node-pid="1.1.14"><td title="For packet-oriented interfaces, the number of inbound
+packets that contained errors preventing them from being
+deliverable to a higher-layer protocol.  For character-
+oriented or fixed-length interfaces, the number of
+inbound transmission units that contained errors
+preventing them from being deliverable to a higher-layer
+protocol.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">in-errors <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter32</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:statistics/if:in-errors</td></tr>
+        <tr data-node-id="1.1.14.8" data-node-pid="1.1.14"><td title="For packet-oriented interfaces, the number of packets
+received via the interface that were discarded because
+of an unknown or unsupported protocol.  For
+character-oriented or fixed-length interfaces that
+support protocol multiplexing, the number of
+transmission units received via the interface that were
+discarded because of an unknown or unsupported protocol.
+For any interface that does not support protocol
+multiplexing, this counter is not present.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">in-unknown-protos <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter32</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:statistics/if:in-unknown-protos</td></tr>
+        <tr data-node-id="1.1.14.9" data-node-pid="1.1.14"><td title="The total number of octets transmitted out of the
+interface, including framing characters.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">out-octets <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter64</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:statistics/if:out-octets</td></tr>
+        <tr data-node-id="1.1.14.10" data-node-pid="1.1.14"><td title="The total number of packets that higher-level protocols
+requested be transmitted and that were not addressed
+to a multicast or broadcast address at this sub-layer,
+including those that were discarded or not sent.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">out-unicast-pkts <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter64</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:statistics/if:out-unicast-pkts</td></tr>
+        <tr data-node-id="1.1.14.11" data-node-pid="1.1.14"><td title="The total number of packets that higher-level protocols
+requested be transmitted and that were addressed to a
+broadcast address at this sub-layer, including those
+that were discarded or not sent.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">out-broadcast-pkts <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter64</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:statistics/if:out-broadcast-pkts</td></tr>
+        <tr data-node-id="1.1.14.12" data-node-pid="1.1.14"><td title="The total number of packets that higher-level protocols
+requested be transmitted and that were addressed to a
+multicast address at this sub-layer, including those
+that were discarded or not sent.  For a MAC-layer
+protocol, this includes both Group and Functional
+addresses.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">out-multicast-pkts <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter64</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:statistics/if:out-multicast-pkts</td></tr>
+        <tr data-node-id="1.1.14.13" data-node-pid="1.1.14"><td title="The number of outbound packets that were chosen to be
+discarded even though no errors had been detected to
+prevent their being transmitted.  One possible reason
+for discarding such a packet could be to free up buffer
+space.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">out-discards <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter32</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:statistics/if:out-discards</td></tr>
+        <tr data-node-id="1.1.14.14" data-node-pid="1.1.14"><td title="For packet-oriented interfaces, the number of outbound
+packets that could not be transmitted because of errors.
+For character-oriented or fixed-length interfaces, the
+number of outbound transmission units that could not be
+transmitted because of errors.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">out-errors <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter32</td><td>no config</td><td>current</td><td>/if:interfaces/if:interface/if:statistics/if:out-errors</td></tr>
+        <tr data-node-id="2" data-node-pid=""><td title="Data nodes for the operational state of interfaces.">interfaces-state <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>no config</td><td>deprecated</td><td>/if:interfaces-state</td></tr>
+        <tr data-node-id="2.1" data-node-pid="2"><td title="The list of interfaces on the device.
+
+System-controlled interfaces created by the system are
+always present in this list, whether or not they are
+configured.">interface[name] <span><i class="fas fa-list"></i></span> </td><td>list</td><td></td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface</td></tr>
+        <tr data-node-id="2.1.1" data-node-pid="2.1"><td title="The name of the interface.
+
+A server implementation MAY map this leaf to the ifName
+MIB object.  Such an implementation needs to use some
+mechanism to handle the differences in size and characters
+allowed between this leaf and ifName.  The definition of
+such a mechanism is outside the scope of this document.">name <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>string</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:name</td></tr>
+        <tr data-node-id="2.1.2" data-node-pid="2.1"><td title="The type of the interface.">type <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>identityref</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:type</td></tr>
+        <tr data-node-id="2.1.3" data-node-pid="2.1"><td title="The desired state of the interface.
+
+This leaf has the same read semantics as ifAdminStatus.">admin-status <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>enumeration</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:admin-status</td></tr>
+        <tr data-node-id="2.1.4" data-node-pid="2.1"><td title="The current operational state of the interface.
+
+This leaf has the same semantics as ifOperStatus.">oper-status <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>enumeration</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:oper-status</td></tr>
+        <tr data-node-id="2.1.5" data-node-pid="2.1"><td title="The time the interface entered its current operational
+state.  If the current state was entered prior to the
+last re-initialization of the local network management
+subsystem, then this node is not present.">last-change <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:date-and-time</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:last-change</td></tr>
+        <tr data-node-id="2.1.6" data-node-pid="2.1"><td title="The ifIndex value for the ifEntry represented by this
+interface.">if-index <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>int32</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:if-index</td></tr>
+        <tr data-node-id="2.1.7" data-node-pid="2.1"><td title="The interface's address at its protocol sub-layer.  For
+example, for an 802.x interface, this object normally
+contains a Media Access Control (MAC) address.  The
+interface's media-specific modules must define the bit
+and byte ordering and the format of the value of this
+object.  For interfaces that do not have such an address
+(e.g., a serial line), this node is not present.">phys-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>string</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:phys-address</td></tr>
+        <tr data-node-id="2.1.8" data-node-pid="2.1"><td title="A list of references to interfaces layered on top of this
+interface.">higher-layer-if <span><i class="fab fa-pagelines"></i></span> </td><td>leaf-list</td><td>interface-state-ref</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:higher-layer-if</td></tr>
+        <tr data-node-id="2.1.9" data-node-pid="2.1"><td title="A list of references to interfaces layered underneath this
+interface.">lower-layer-if <span><i class="fab fa-pagelines"></i></span> </td><td>leaf-list</td><td>interface-state-ref</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:lower-layer-if</td></tr>
+        <tr data-node-id="2.1.10" data-node-pid="2.1"><td title="An estimate of the interface's current bandwidth in bits
+per second.  For interfaces that do not vary in
+bandwidth or for those where no accurate estimation can
+
+be made, this node should contain the nominal bandwidth.
+For interfaces that have no concept of bandwidth, this
+node is not present.">speed <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:gauge64</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:speed</td></tr>
+        <tr data-node-id="2.1.11" data-node-pid="2.1"><td title="A collection of interface-related statistics objects.">statistics <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:statistics</td></tr>
+        <tr data-node-id="2.1.11.1" data-node-pid="2.1.11"><td title="The time on the most recent occasion at which any one or
+more of this interface's counters suffered a
+discontinuity.  If no such discontinuities have occurred
+since the last re-initialization of the local management
+subsystem, then this node contains the time the local
+management subsystem re-initialized itself.">discontinuity-time <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:date-and-time</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:statistics/if:discontinuity-time</td></tr>
+        <tr data-node-id="2.1.11.2" data-node-pid="2.1.11"><td title="The total number of octets received on the interface,
+including framing characters.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">in-octets <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter64</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:statistics/if:in-octets</td></tr>
+        <tr data-node-id="2.1.11.3" data-node-pid="2.1.11"><td title="The number of packets, delivered by this sub-layer to a
+higher (sub-)layer, that were not addressed to a
+multicast or broadcast address at this sub-layer.
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">in-unicast-pkts <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter64</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:statistics/if:in-unicast-pkts</td></tr>
+        <tr data-node-id="2.1.11.4" data-node-pid="2.1.11"><td title="The number of packets, delivered by this sub-layer to a
+higher (sub-)layer, that were addressed to a broadcast
+address at this sub-layer.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">in-broadcast-pkts <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter64</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:statistics/if:in-broadcast-pkts</td></tr>
+        <tr data-node-id="2.1.11.5" data-node-pid="2.1.11"><td title="The number of packets, delivered by this sub-layer to a
+higher (sub-)layer, that were addressed to a multicast
+address at this sub-layer.  For a MAC-layer protocol,
+this includes both Group and Functional addresses.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">in-multicast-pkts <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter64</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:statistics/if:in-multicast-pkts</td></tr>
+        <tr data-node-id="2.1.11.6" data-node-pid="2.1.11"><td title="The number of inbound packets that were chosen to be
+discarded even though no errors had been detected to
+prevent their being deliverable to a higher-layer
+protocol.  One possible reason for discarding such a
+packet could be to free up buffer space.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">in-discards <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter32</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:statistics/if:in-discards</td></tr>
+        <tr data-node-id="2.1.11.7" data-node-pid="2.1.11"><td title="For packet-oriented interfaces, the number of inbound
+packets that contained errors preventing them from being
+deliverable to a higher-layer protocol.  For character-
+oriented or fixed-length interfaces, the number of
+inbound transmission units that contained errors
+preventing them from being deliverable to a higher-layer
+protocol.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">in-errors <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter32</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:statistics/if:in-errors</td></tr>
+        <tr data-node-id="2.1.11.8" data-node-pid="2.1.11"><td title="For packet-oriented interfaces, the number of packets
+received via the interface that were discarded because
+of an unknown or unsupported protocol.  For
+character-oriented or fixed-length interfaces that
+support protocol multiplexing, the number of
+transmission units received via the interface that were
+discarded because of an unknown or unsupported protocol.
+For any interface that does not support protocol
+multiplexing, this counter is not present.
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">in-unknown-protos <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter32</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:statistics/if:in-unknown-protos</td></tr>
+        <tr data-node-id="2.1.11.9" data-node-pid="2.1.11"><td title="The total number of octets transmitted out of the
+interface, including framing characters.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">out-octets <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter64</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:statistics/if:out-octets</td></tr>
+        <tr data-node-id="2.1.11.10" data-node-pid="2.1.11"><td title="The total number of packets that higher-level protocols
+requested be transmitted and that were not addressed
+to a multicast or broadcast address at this sub-layer,
+including those that were discarded or not sent.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">out-unicast-pkts <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter64</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:statistics/if:out-unicast-pkts</td></tr>
+        <tr data-node-id="2.1.11.11" data-node-pid="2.1.11"><td title="The total number of packets that higher-level protocols
+requested be transmitted and that were addressed to a
+broadcast address at this sub-layer, including those
+that were discarded or not sent.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">out-broadcast-pkts <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter64</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:statistics/if:out-broadcast-pkts</td></tr>
+        <tr data-node-id="2.1.11.12" data-node-pid="2.1.11"><td title="The total number of packets that higher-level protocols
+requested be transmitted and that were addressed to a
+multicast address at this sub-layer, including those
+that were discarded or not sent.  For a MAC-layer
+protocol, this includes both Group and Functional
+addresses.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">out-multicast-pkts <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter64</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:statistics/if:out-multicast-pkts</td></tr>
+        <tr data-node-id="2.1.11.13" data-node-pid="2.1.11"><td title="The number of outbound packets that were chosen to be
+discarded even though no errors had been detected to
+prevent their being transmitted.  One possible reason
+for discarding such a packet could be to free up buffer
+space.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">out-discards <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter32</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:statistics/if:out-discards</td></tr>
+        <tr data-node-id="2.1.11.14" data-node-pid="2.1.11"><td title="For packet-oriented interfaces, the number of outbound
+packets that could not be transmitted because of errors.
+For character-oriented or fixed-length interfaces, the
+number of outbound transmission units that could not be
+transmitted because of errors.
+
+Discontinuities in the value of this counter can occur
+at re-initialization of the management system and at
+other times as indicated by the value of
+'discontinuity-time'.">out-errors <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>yang:counter32</td><td>no config</td><td>deprecated</td><td>/if:interfaces-state/if:interface/if:statistics/if:out-errors</td></tr>
+    </table>
+</div>
+<script>
+class JsStore {
+  constructor(opts = {}) {
+    this.opts = {
+      type: opts.type || 'session',
+      key: opts.key
+    }
+    this.inst = new WebStorage(this.opts);
+  }
+
+  get(defs = null) {
+    return this.inst.get(this.opts.key) || defs;
+  }
+
+  set(data) {
+    this.inst.set(this.opts.key, data);
+  }
+
+  remove() {
+    this.inst.remove(this.opts.key);
+  }
+}
+
+class WebStorage {
+  constructor(opts = {}) {
+    this.storage = {
+      local: window.localStorage,
+      session: window.sessionStorage
+    }[opts.type];
+  }
+
+  get(key) {
+    try {
+      let json = this.storage.getItem(key);
+      if (!json) return null;
+      return JSON.parse(json)
+    } catch(e) {
+      console.log(e);
+      return null;
+    }
+  }
+
+  set(key, value) {
+    try {
+      this.storage.setItem(key, JSON.stringify(value));
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
+  remove(key) {
+    this.storage.removeItem(key);
+  }
+}
+
+
+const NAMESPACE = 'simple-tree-table';
+
+const DEFAULTS = {
+  expander: null,
+  collapser: null,
+  opened: 'all',
+  margin: 20,
+  iconPosition: ':first',
+  iconTemplate: '<span />',
+  store: null,
+  storeKey: null
+};
+
+class SimpleTreeTable {
+  constructor(element, options = {}) {
+    this.options = $.extend({}, DEFAULTS, options);
+
+    this.$table = $(element);
+    this.$expander = $(this.options.expander);
+    this.$collapser = $(this.options.collapser);
+
+    if (this.options.store && this.options.storeKey) {
+      this.store = new Store({
+        type: this.options.store,
+        key: this.options.storeKey
+      });
+    }
+
+    this.init();
+    this.load();
+  }
+
+  init() {
+    this.$table.addClass(NAMESPACE);
+    this.build();
+    this.unbind();
+    this.bind();
+  }
+
+  destroy() {
+    this.$table.removeClass(NAMESPACE);
+    this.$table.find('.tree-icon').remove();
+    this.nodes().removeClass('tree-empty tree-opened tree-closed');
+
+    this.unbind();
+  }
+
+  build() {
+    this.nodes().not('[data-node-depth]').each((i, node) => {
+      let $node = $(node);
+      let depth = this.depth($node);
+      $node.data('node-depth', depth);
+      if (depth == 1) {
+        $node.addClass('tree-root');
+      }
+    });
+
+    this.nodes().filter((i, node) => {
+      return $(node).find(this.options.iconPosition).find('.tree-handler').length == 0;
+    }).each((i, node) => {
+      let $node = $(node);
+      let depth = this.depth($node);
+      let margin = this.options.margin * (depth - 1);
+      let $icon = $(this.options.iconTemplate).addClass('tree-handler tree-icon').css('margin-left', `${margin}px`);
+      $node.find(this.options.iconPosition).prepend($icon);
+    });
+
+    this.nodes().not('.tree-empty, .tree-opened, .tree-closed').each((i, node) => {
+      let $node = $(node);
+      if (!this.hasChildren($node)) {
+        $node.addClass('tree-empty');
+      } else if (this.opensDefault($node)) {
+        $node.addClass('tree-opened');
+      } else {
+        $node.addClass('tree-closed');
+      }
+    });
+
+    this.nodes().filter('.tree-opened').each((i, node) => {
+      this.show($(node));
+    });
+    this.nodes().filter('.tree-closed').each((i, node) => {
+      this.hide($(node));
+    });
+  }
+
+  opensDefault($node) {
+    let opened = this.options.opened;
+    return opened && (opened == 'all' || opened.indexOf($node.data('node-id')) != -1);
+  }
+
+  bind() {
+    this.$expander.on(`click.${NAMESPACE}`, (e) => {
+      this.expand();
+    });
+
+    this.$collapser.on(`click.${NAMESPACE}`, (e) => {
+      this.collapse();
+    });
+
+    this.$table.on(`click.${NAMESPACE}`, 'tr .tree-handler', (e) => {
+      let $node = $(e.currentTarget).closest('tr');
+      if ($node.hasClass('tree-opened')) {
+        this.close($node);
+      } else {
+        this.open($node);
+      }
+    });
+  }
+
+  unbind() {
+    this.$expander.off(`.${NAMESPACE}`);
+    this.$collapser.off(`.${NAMESPACE}`);
+    this.$table.off(`.${NAMESPACE} node:open node:close`);
+  }
+
+  expand() {
+    this.nodes().each((i, node) => {
+      this.show($(node));
+    });
+    this.save();
+  }
+
+  collapse() {
+    this.nodes().each((i, node) => {
+      this.hide($(node));
+    });
+    this.save();
+  }
+
+  nodes() {
+    return this.$table.find('tr[data-node-id]');
+  }
+
+  depth($node) {
+    let d = $node.data('node-depth');
+    if (d) {
+      return d;
+    }
+
+    let $parent = this.findByID($node.data('node-pid'));
+    if ($parent.length != 0) {
+      return this.depth($parent) + 1;
+    } else {
+      return 1;
+    }
+  }
+
+  open($node) {
+    this.show($node);
+    this.save();
+
+    $node.trigger('node:open', [$node]);
+  }
+
+  show($node) {
+    if (!$node.hasClass('tree-empty')) {
+      $node.removeClass('tree-closed').addClass('tree-opened');
+      this.showDescs($node);
+    }
+  }
+
+  showDescs($node) {
+    let $children = this.findChildren($node);
+    $children.each((i, child) => {
+      let $child = $(child);
+      $child.show();
+      if ($child.hasClass('tree-opened')) {
+        this.showDescs($child);
+      }
+    });
+  }
+
+  close($node) {
+    this.hide($node);
+    this.save();
+
+    $node.trigger('node:close', [$node]);
+  }
+
+  hide($node) {
+    if (!$node.hasClass('tree-empty')) {
+      $node.removeClass('tree-opened').addClass('tree-closed');
+      this.hideDescs($node);
+    }
+  }
+
+  hideDescs($node) {
+    let $children = this.findChildren($node);
+    $children.each((i, child) => {
+      let $child = $(child);
+      $child.hide();
+      this.hideDescs($child);
+    });
+  }
+
+  hasChildren($node) {
+    return this.findChildren($node).length != 0;
+  }
+
+  findChildren($node) {
+    let pid = $node.data('node-id');
+    return this.$table.find(`tr[data-node-pid="${pid}"]`);
+  }
+
+  findDescendants($node, descendants = []) {
+    let children = this.findChildren($node)
+    descendants.push(children);
+    children.each((i, child) => {
+      this.findDescendants($(child), descendants);
+    })
+    return descendants;
+  }
+
+  findByID(id) {
+    return this.$table.find(`tr[data-node-id="${id}"]`);
+  }
+
+  openByID(id) {
+    this.open(this.findByID(id));
+  }
+
+  closeByID(id) {
+    this.close(this.findByID(id));
+  }
+
+  load() {
+    if (!this.store) return;
+
+    let ids = this.store.get();
+    if (!ids) return;
+
+    this.nodes().each((i, node) => {
+      this.show($(node));
+    });
+    this.nodes().filter((i, node) => {
+      return ids.indexOf($(node).data('node-id')) != -1;
+    }).each((i, node) => {
+      this.hide($(node));
+    });
+  }
+
+  save() {
+    if (!this.store) return;
+
+    let ids = this.nodes().filter('.tree-closed').map((i, node) => {
+      return $(node).data('node-id');
+    }).get();
+
+    this.store.set(ids)
+  }
+
+  static getDefaults() {
+    return DEFAULTS;
+  }
+
+  static setDefaults(options) {
+    return $.extend(DEFAULTS, options);
+  }
+}
+
+$.fn.simpleTreeTable = function(options) {
+  return this.each((i, elem) => {
+    let $elem = $(elem);
+    if ($elem.data(NAMESPACE)) $elem.data(NAMESPACE).destroy();
+    $elem.data(NAMESPACE, new SimpleTreeTable($elem, options));
+  });
+};
+
+$.SimpleTreeTable = SimpleTreeTable;
+
+	$('#basic').simpleTreeTable({
+  expander: $('#expander'),
+  collapser: $('#collapser')
+});
+
+$('#collapsed').simpleTreeTable({
+  opened: 'none',
+});
+$('#collapsed').simpleTreeTable({
+  margin: 25
+});
+</script>
+</body>
+</html>

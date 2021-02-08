@@ -1,0 +1,35 @@
+tree - tree is printed in following format <status>--<flags> <name><opts> <type> <if-features>
+
+ <status> is one of:
+
+    +  for current
+    x  for deprecated
+    o  for obsolete
+
+ <flags> is one of:
+
+    rw  for configuration data
+    ro  for non-configuration data, output parameters to rpcs
+       and actions, and notification parameters
+    -w  for input parameters to rpcs and actions
+    -x  for rpcs and actions
+    -n  for notifications
+
+ <name> is the name of the node:
+
+    (<name>) means that the node is a choice node
+    :(<name>) means that the node is a case node
+
+ <opts> is one of:
+
+    ?  for an optional leaf, choice
+    *  for a leaf-list or list
+    [<keys>] for a list's keys
+
+ <type> is the name of the type for leafs and leaf-lists.
+  If the type is a leafref, the type is printed as "-> TARGET",
+  whereTARGET is the leafref path, with prefixes removed if possible.
+
+ <if-features> is the list of features this node depends on, printed
+     within curly brackets and a question mark "{...}?"
+

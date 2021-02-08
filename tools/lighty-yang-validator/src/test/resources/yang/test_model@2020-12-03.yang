@@ -1,0 +1,113 @@
+module test_model{
+    yang-version 1.1;
+
+    namespace "test:testspace";
+    prefix test;
+    description "Testing module";
+    revision "2020-12-03" {}
+
+     typedef suma-type {
+            type uint32;
+     }
+
+    grouping summation-operands {
+        leaf operand-a {
+            type uint16;
+            description "Operand A";
+        }
+        leaf operand-b {
+            type uint16;
+            description "Operand B";
+        }
+    }
+
+    container result-container {
+        description "Used for storing summation results";
+        config false;
+        list result{
+            key "id";
+            leaf id{
+                type uint32;
+            }
+            leaf sum-result{
+                type suma-type;
+            }
+        }
+    }
+
+    container operands-container {
+        description "Used for storing summation operands";
+        list operands {
+            key "id";
+            leaf id {
+                type uint32;
+            }
+            uses summation-operands;
+        }
+    }
+    list server {
+         key name;
+         leaf name {
+           type string;
+         }
+         action reset {
+           input {
+             leaf reset-at {
+               type uint32;
+               mandatory true;
+              }
+            }
+            output {
+              leaf reset-finished-at {
+                type string;
+                mandatory true;
+              }
+            }
+          }
+    }
+
+    notification testNotification {
+          description
+            "Indicates that the toaster has run of out bread.";
+    }
+
+    notification testNotificationWithData {
+      leaf notificationData {
+        type uint32;
+      }
+    }
+
+    rpc multiplication {
+        input {
+            leaf operand-a {
+                type uint32;
+                default '5';
+            }
+            leaf operand-b {
+                type uint32;
+                mandatory true;
+            }
+        }
+        output {
+            leaf a-times-b {
+                type uint32;
+            }
+        }
+    }
+
+    rpc summation {
+        input {
+            uses summation-operands;
+        }
+        output {
+            leaf summation-output{
+                type string;
+                mandatory true;
+            }
+            leaf sum {
+                type suma-type;
+                mandatory true;
+            }
+        }
+    }
+}

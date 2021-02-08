@@ -1,0 +1,740 @@
+{
+  "children": [
+    {
+      "path": "/if:interfaces/",
+      "type_info": {},
+      "children": [{
+        "path": "/if:interfaces/if:interface/",
+        "type_info": {},
+        "children": [
+          {
+            "path": "/if:interfaces/if:interface/if:name/",
+            "type_info": {
+              "description": "",
+              "type": "string"
+            },
+            "children": [],
+            "name": "name",
+            "description": "The name of the interface.\n\nA device MAY restrict the allowed values for this leaf,\npossibly depending on the type of the interface.\nFor system-controlled interfaces, this leaf is the\ndevice-specific name of the interface.\n\nIf a client tries to create configuration for a\nsystem-controlled interface that is not present in the\noperational state, the server MAY reject the request if\nthe implementation does not support pre-provisioning of\ninterfaces or if the name refers to an interface that can\nnever exist in the system.  A Network Configuration\nProtocol (NETCONF) server MUST reply with an rpc-error\nwith the error-tag 'invalid-value' in this case.\n\nIf the device supports pre-provisioning of interface\nconfiguration, the 'pre-provisioning' feature is\nadvertised.\n\nIf the device allows arbitrarily named user-controlled\ninterfaces, the 'arbitrary-names' feature is advertised.\n\nWhen a configured user-controlled interface is created by\nthe system, it is instantiated with the same name in the\noperational state.\n\nA server implementation MAY map this leaf to the ifName\nMIB object.  Such an implementation needs to use some\nmechanism to handle the differences in size and characters\nallowed between this leaf and ifName.  The definition of\nsuch a mechanism is outside the scope of this document.",
+            "config": true,
+            "class": "leaf",
+            "status": "CURRENT"
+          },
+          {
+            "path": "/if:interfaces/if:interface/if:description/",
+            "type_info": {
+              "description": "",
+              "type": "string"
+            },
+            "children": [],
+            "name": "description",
+            "description": "A textual description of the interface.\n\nA server implementation MAY map this leaf to the ifAlias\nMIB object.  Such an implementation needs to use some\nmechanism to handle the differences in size and characters\nallowed between this leaf and ifAlias.  The definition of\nsuch a mechanism is outside the scope of this document.\n\nSince ifAlias is defined to be stored in non-volatile\nstorage, the MIB implementation MUST map ifAlias to the\nvalue of 'description' in the persistently stored\nconfiguration.",
+            "config": true,
+            "class": "leaf",
+            "status": "CURRENT"
+          },
+          {
+            "path": "/if:interfaces/if:interface/if:type/",
+            "type_info": {
+              "description": "",
+              "type": "identityref",
+              "base": ["interface-type"]
+            },
+            "children": [],
+            "name": "type",
+            "description": "The type of the interface.\n\nWhen an interface entry is created, a server MAY\ninitialize the type leaf with a valid value, e.g., if it\nis possible to derive the type from the name of the\ninterface.\n\nIf a client tries to set the type of an interface to a\nvalue that can never be used by the system, e.g., if the\ntype is not supported or if the type does not match the\nname of the interface, the server MUST reject the request.\nA NETCONF server MUST reply with an rpc-error with the\nerror-tag 'invalid-value' in this case.",
+            "config": true,
+            "class": "leaf",
+            "status": "CURRENT"
+          },
+          {
+            "path": "/if:interfaces/if:interface/if:enabled/",
+            "type_info": {
+              "default": "true",
+              "description": "This leaf contains the configured, desired state of the\ninterface.\n\nSystems that implement the IF-MIB use the value of this\nleaf in the intended configuration to set\nIF-MIB.ifAdminStatus to 'up' or 'down' after an ifEntry\nhas been initialized, as described in RFC 2863.\n\nChanges in this leaf in the intended configuration are\nreflected in ifAdminStatus.",
+              "type": "if:enabled"
+            },
+            "children": [],
+            "name": "enabled",
+            "description": "This leaf contains the configured, desired state of the\ninterface.\n\nSystems that implement the IF-MIB use the value of this\nleaf in the intended configuration to set\nIF-MIB.ifAdminStatus to 'up' or 'down' after an ifEntry\nhas been initialized, as described in RFC 2863.\n\nChanges in this leaf in the intended configuration are\nreflected in ifAdminStatus.",
+            "config": true,
+            "class": "leaf",
+            "status": "CURRENT"
+          },
+          {
+            "path": "/if:interfaces/if:interface/if:link-up-down-trap-enable/",
+            "type_info": {
+              "description": "",
+              "type": "if:enumeration"
+            },
+            "children": [],
+            "name": "link-up-down-trap-enable",
+            "description": "Controls whether linkUp/linkDown SNMP notifications\nshould be generated for this interface.\n\nIf this node is not configured, the value 'enabled' is\noperationally used by the server for interfaces that do\nnot operate on top of any other interface (i.e., there are\nno 'lower-layer-if' entries), and 'disabled' otherwise.",
+            "config": true,
+            "class": "leaf",
+            "status": "CURRENT"
+          },
+          {
+            "path": "/if:interfaces/if:interface/if:admin-status/",
+            "type_info": {
+              "description": "",
+              "type": "if:enumeration"
+            },
+            "children": [],
+            "name": "admin-status",
+            "description": "The desired state of the interface.\n\nThis leaf has the same read semantics as ifAdminStatus.",
+            "config": false,
+            "class": "leaf",
+            "status": "CURRENT"
+          },
+          {
+            "path": "/if:interfaces/if:interface/if:oper-status/",
+            "type_info": {
+              "description": "",
+              "type": "if:enumeration"
+            },
+            "children": [],
+            "name": "oper-status",
+            "description": "The current operational state of the interface.\n\nThis leaf has the same semantics as ifOperStatus.",
+            "config": false,
+            "class": "leaf",
+            "status": "CURRENT"
+          },
+          {
+            "path": "/if:interfaces/if:interface/if:last-change/",
+            "type_info": {
+              "description": "The date-and-time type is a profile of the ISO 8601\nstandard for representation of dates and times using the\nGregorian calendar.  The profile is defined by the\ndate-time production in Section 5.6 of RFC 3339.\n\nThe date-and-time type is compatible with the dateTime XML\nschema type with the following notable exceptions:\n\n(a) The date-and-time type does not allow negative years.\n\n(b) The date-and-time time-offset -00:00 indicates an unknown\n    time zone (see RFC 3339) while -00:00 and +00:00 and Z\n    all represent the same time zone in dateTime.\n\n(c) The canonical format (see below) of data-and-time values\n    differs from the canonical format used by the dateTime XML\n    schema type, which requires all times to be in UTC using\n    the time-offset 'Z'.\n\nThis type is not equivalent to the DateAndTime textual\nconvention of the SMIv2 since RFC 3339 uses a different\nseparator between full-date and full-time and provides\nhigher resolution of time-secfrac.\n\nThe canonical format for date-and-time values with a known time\nzone uses a numeric time zone offset that is calculated using\nthe device's configured known offset to UTC time.  A change of\nthe device's offset to UTC time will cause date-and-time values\nto change accordingly.  Such changes might happen periodically\nin case a server follows automatically daylight saving time\n(DST) time zone offset changes.  The canonical format for\ndate-and-time values with an unknown time zone (usually\nreferring to the notion of local time) uses the time-offset\n-00:00.",
+              "type": "yang:date-and-time"
+            },
+            "children": [],
+            "name": "last-change",
+            "description": "The time the interface entered its current operational\nstate.  If the current state was entered prior to the\nlast re-initialization of the local network management\nsubsystem, then this node is not present.",
+            "config": false,
+            "class": "leaf",
+            "status": "CURRENT"
+          },
+          {
+            "path": "/if:interfaces/if:interface/if:if-index/",
+            "type_info": {
+              "description": "",
+              "type": "if:int32"
+            },
+            "children": [],
+            "name": "if-index",
+            "description": "The ifIndex value for the ifEntry represented by this\ninterface.",
+            "config": false,
+            "class": "leaf",
+            "status": "CURRENT"
+          },
+          {
+            "path": "/if:interfaces/if:interface/if:phys-address/",
+            "type_info": {
+              "description": "Represents media- or physical-level addresses represented\nas a sequence octets, each octet represented by two hexadecimal\nnumbers.  Octets are separated by colons.  The canonical\nrepresentation uses lowercase characters.\n\nIn the value set and its semantics, this type is equivalent\nto the PhysAddress textual convention of the SMIv2.",
+              "type": "yang:phys-address"
+            },
+            "children": [],
+            "name": "phys-address",
+            "description": "The interface's address at its protocol sub-layer.  For\nexample, for an 802.x interface, this object normally\ncontains a Media Access Control (MAC) address.  The\ninterface's media-specific modules must define the bit\nand byte ordering and the format of the value of this\nobject.  For interfaces that do not have such an address\n(e.g., a serial line), this node is not present.",
+            "config": false,
+            "class": "leaf",
+            "status": "CURRENT"
+          },
+          {
+            "path": "/if:interfaces/if:interface/if:higher-layer-if/",
+            "type_info": {
+              "description": "This type is used by data models that need to reference\ninterfaces.",
+              "type": "if:interface-ref"
+            },
+            "children": [],
+            "name": "higher-layer-if",
+            "description": "A list of references to interfaces layered on top of this\ninterface.",
+            "config": false,
+            "class": "leaf-list",
+            "status": "CURRENT"
+          },
+          {
+            "path": "/if:interfaces/if:interface/if:lower-layer-if/",
+            "type_info": {
+              "description": "This type is used by data models that need to reference\ninterfaces.",
+              "type": "if:interface-ref"
+            },
+            "children": [],
+            "name": "lower-layer-if",
+            "description": "A list of references to interfaces layered underneath this\ninterface.",
+            "config": false,
+            "class": "leaf-list",
+            "status": "CURRENT"
+          },
+          {
+            "path": "/if:interfaces/if:interface/if:speed/",
+            "type_info": {
+              "description": "An estimate of the interface's current bandwidth in bits\nper second.  For interfaces that do not vary in\nbandwidth or for those where no accurate estimation can\nbe made, this node should contain the nominal bandwidth.\nFor interfaces that have no concept of bandwidth, this\nnode is not present.",
+              "type": "if:speed"
+            },
+            "children": [],
+            "name": "speed",
+            "description": "An estimate of the interface's current bandwidth in bits\nper second.  For interfaces that do not vary in\nbandwidth or for those where no accurate estimation can\nbe made, this node should contain the nominal bandwidth.\nFor interfaces that have no concept of bandwidth, this\nnode is not present.",
+            "config": false,
+            "class": "leaf",
+            "status": "CURRENT"
+          },
+          {
+            "path": "/if:interfaces/if:interface/if:statistics/",
+            "type_info": {},
+            "children": [
+              {
+                "path": "/if:interfaces/if:interface/if:statistics/if:discontinuity-time/",
+                "type_info": {
+                  "description": "The date-and-time type is a profile of the ISO 8601\nstandard for representation of dates and times using the\nGregorian calendar.  The profile is defined by the\ndate-time production in Section 5.6 of RFC 3339.\n\nThe date-and-time type is compatible with the dateTime XML\nschema type with the following notable exceptions:\n\n(a) The date-and-time type does not allow negative years.\n\n(b) The date-and-time time-offset -00:00 indicates an unknown\n    time zone (see RFC 3339) while -00:00 and +00:00 and Z\n    all represent the same time zone in dateTime.\n\n(c) The canonical format (see below) of data-and-time values\n    differs from the canonical format used by the dateTime XML\n    schema type, which requires all times to be in UTC using\n    the time-offset 'Z'.\n\nThis type is not equivalent to the DateAndTime textual\nconvention of the SMIv2 since RFC 3339 uses a different\nseparator between full-date and full-time and provides\nhigher resolution of time-secfrac.\n\nThe canonical format for date-and-time values with a known time\nzone uses a numeric time zone offset that is calculated using\nthe device's configured known offset to UTC time.  A change of\nthe device's offset to UTC time will cause date-and-time values\nto change accordingly.  Such changes might happen periodically\nin case a server follows automatically daylight saving time\n(DST) time zone offset changes.  The canonical format for\ndate-and-time values with an unknown time zone (usually\nreferring to the notion of local time) uses the time-offset\n-00:00.",
+                  "type": "yang:date-and-time"
+                },
+                "children": [],
+                "name": "discontinuity-time",
+                "description": "The time on the most recent occasion at which any one or\nmore of this interface's counters suffered a\ndiscontinuity.  If no such discontinuities have occurred\nsince the last re-initialization of the local management\nsubsystem, then this node contains the time the local\nmanagement subsystem re-initialized itself.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/if:interfaces/if:interface/if:statistics/if:in-octets/",
+                "type_info": {
+                  "description": "The counter64 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^64-1 (18446744073709551615 decimal),\nwhen it wraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter64 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter64 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter64.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter64 type of the SMIv2.",
+                  "type": "yang:counter64"
+                },
+                "children": [],
+                "name": "in-octets",
+                "description": "The total number of octets received on the interface,\nincluding framing characters.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/if:interfaces/if:interface/if:statistics/if:in-unicast-pkts/",
+                "type_info": {
+                  "description": "The counter64 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^64-1 (18446744073709551615 decimal),\nwhen it wraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter64 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter64 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter64.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter64 type of the SMIv2.",
+                  "type": "yang:counter64"
+                },
+                "children": [],
+                "name": "in-unicast-pkts",
+                "description": "The number of packets, delivered by this sub-layer to a\nhigher (sub-)layer, that were not addressed to a\nmulticast or broadcast address at this sub-layer.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/if:interfaces/if:interface/if:statistics/if:in-broadcast-pkts/",
+                "type_info": {
+                  "description": "The counter64 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^64-1 (18446744073709551615 decimal),\nwhen it wraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter64 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter64 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter64.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter64 type of the SMIv2.",
+                  "type": "yang:counter64"
+                },
+                "children": [],
+                "name": "in-broadcast-pkts",
+                "description": "The number of packets, delivered by this sub-layer to a\nhigher (sub-)layer, that were addressed to a broadcast\naddress at this sub-layer.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/if:interfaces/if:interface/if:statistics/if:in-multicast-pkts/",
+                "type_info": {
+                  "description": "The counter64 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^64-1 (18446744073709551615 decimal),\nwhen it wraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter64 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter64 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter64.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter64 type of the SMIv2.",
+                  "type": "yang:counter64"
+                },
+                "children": [],
+                "name": "in-multicast-pkts",
+                "description": "The number of packets, delivered by this sub-layer to a\nhigher (sub-)layer, that were addressed to a multicast\naddress at this sub-layer.  For a MAC-layer protocol,\nthis includes both Group and Functional addresses.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/if:interfaces/if:interface/if:statistics/if:in-discards/",
+                "type_info": {
+                  "description": "The counter32 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^32-1 (4294967295 decimal), when it\nwraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter32 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter32 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter32.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter32 type of the SMIv2.",
+                  "type": "yang:counter32"
+                },
+                "children": [],
+                "name": "in-discards",
+                "description": "The number of inbound packets that were chosen to be\ndiscarded even though no errors had been detected to\nprevent their being deliverable to a higher-layer\nprotocol.  One possible reason for discarding such a\npacket could be to free up buffer space.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/if:interfaces/if:interface/if:statistics/if:in-errors/",
+                "type_info": {
+                  "description": "The counter32 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^32-1 (4294967295 decimal), when it\nwraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter32 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter32 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter32.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter32 type of the SMIv2.",
+                  "type": "yang:counter32"
+                },
+                "children": [],
+                "name": "in-errors",
+                "description": "For packet-oriented interfaces, the number of inbound\npackets that contained errors preventing them from being\ndeliverable to a higher-layer protocol.  For character-\noriented or fixed-length interfaces, the number of\ninbound transmission units that contained errors\npreventing them from being deliverable to a higher-layer\nprotocol.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/if:interfaces/if:interface/if:statistics/if:in-unknown-protos/",
+                "type_info": {
+                  "description": "The counter32 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^32-1 (4294967295 decimal), when it\nwraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter32 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter32 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter32.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter32 type of the SMIv2.",
+                  "type": "yang:counter32"
+                },
+                "children": [],
+                "name": "in-unknown-protos",
+                "description": "For packet-oriented interfaces, the number of packets\nreceived via the interface that were discarded because\nof an unknown or unsupported protocol.  For\ncharacter-oriented or fixed-length interfaces that\nsupport protocol multiplexing, the number of\ntransmission units received via the interface that were\ndiscarded because of an unknown or unsupported protocol.\nFor any interface that does not support protocol\nmultiplexing, this counter is not present.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/if:interfaces/if:interface/if:statistics/if:out-octets/",
+                "type_info": {
+                  "description": "The counter64 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^64-1 (18446744073709551615 decimal),\nwhen it wraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter64 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter64 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter64.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter64 type of the SMIv2.",
+                  "type": "yang:counter64"
+                },
+                "children": [],
+                "name": "out-octets",
+                "description": "The total number of octets transmitted out of the\ninterface, including framing characters.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/if:interfaces/if:interface/if:statistics/if:out-unicast-pkts/",
+                "type_info": {
+                  "description": "The counter64 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^64-1 (18446744073709551615 decimal),\nwhen it wraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter64 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter64 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter64.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter64 type of the SMIv2.",
+                  "type": "yang:counter64"
+                },
+                "children": [],
+                "name": "out-unicast-pkts",
+                "description": "The total number of packets that higher-level protocols\nrequested be transmitted and that were not addressed\nto a multicast or broadcast address at this sub-layer,\nincluding those that were discarded or not sent.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/if:interfaces/if:interface/if:statistics/if:out-broadcast-pkts/",
+                "type_info": {
+                  "description": "The counter64 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^64-1 (18446744073709551615 decimal),\nwhen it wraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter64 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter64 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter64.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter64 type of the SMIv2.",
+                  "type": "yang:counter64"
+                },
+                "children": [],
+                "name": "out-broadcast-pkts",
+                "description": "The total number of packets that higher-level protocols\nrequested be transmitted and that were addressed to a\nbroadcast address at this sub-layer, including those\nthat were discarded or not sent.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/if:interfaces/if:interface/if:statistics/if:out-multicast-pkts/",
+                "type_info": {
+                  "description": "The counter64 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^64-1 (18446744073709551615 decimal),\nwhen it wraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter64 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter64 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter64.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter64 type of the SMIv2.",
+                  "type": "yang:counter64"
+                },
+                "children": [],
+                "name": "out-multicast-pkts",
+                "description": "The total number of packets that higher-level protocols\nrequested be transmitted and that were addressed to a\nmulticast address at this sub-layer, including those\nthat were discarded or not sent.  For a MAC-layer\nprotocol, this includes both Group and Functional\naddresses.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/if:interfaces/if:interface/if:statistics/if:out-discards/",
+                "type_info": {
+                  "description": "The counter32 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^32-1 (4294967295 decimal), when it\nwraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter32 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter32 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter32.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter32 type of the SMIv2.",
+                  "type": "yang:counter32"
+                },
+                "children": [],
+                "name": "out-discards",
+                "description": "The number of outbound packets that were chosen to be\ndiscarded even though no errors had been detected to\nprevent their being transmitted.  One possible reason\nfor discarding such a packet could be to free up buffer\nspace.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              },
+              {
+                "path": "/if:interfaces/if:interface/if:statistics/if:out-errors/",
+                "type_info": {
+                  "description": "The counter32 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^32-1 (4294967295 decimal), when it\nwraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter32 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter32 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter32.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter32 type of the SMIv2.",
+                  "type": "yang:counter32"
+                },
+                "children": [],
+                "name": "out-errors",
+                "description": "For packet-oriented interfaces, the number of outbound\npackets that could not be transmitted because of errors.\nFor character-oriented or fixed-length interfaces, the\nnumber of outbound transmission units that could not be\ntransmitted because of errors.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "CURRENT"
+              }
+            ],
+            "name": "statistics",
+            "description": "A collection of interface-related statistics objects.",
+            "config": false,
+            "class": "container",
+            "status": "CURRENT"
+          }
+        ],
+        "name": "interface",
+        "description": "The list of interfaces on the device.\n\nThe status of an interface is available in this list in the\noperational state.  If the configuration of a\nsystem-controlled interface cannot be used by the system\n(e.g., the interface hardware present does not match the\ninterface type), then the configuration is not applied to\nthe system-controlled interface shown in the operational\nstate.  If the configuration of a user-controlled interface\ncannot be used by the system, the configured interface is\nnot instantiated in the operational state.\n\nSystem-controlled interfaces created by the system are\nalways present in this list in the operational state,\nwhether or not they are configured.",
+        "config": true,
+        "class": "list",
+        "status": "CURRENT"
+      }],
+      "name": "interfaces",
+      "description": "Interface parameters.",
+      "config": true,
+      "class": "container",
+      "status": "CURRENT"
+    },
+    {
+      "path": "/if:interfaces-state/",
+      "type_info": {},
+      "children": [{
+        "path": "/if:interfaces-state/if:interface/",
+        "type_info": {},
+        "children": [
+          {
+            "path": "/if:interfaces-state/if:interface/if:name/",
+            "type_info": {
+              "description": "",
+              "type": "string"
+            },
+            "children": [],
+            "name": "name",
+            "description": "The name of the interface.\n\nA server implementation MAY map this leaf to the ifName\nMIB object.  Such an implementation needs to use some\nmechanism to handle the differences in size and characters\nallowed between this leaf and ifName.  The definition of\nsuch a mechanism is outside the scope of this document.",
+            "config": false,
+            "class": "leaf",
+            "status": "DEPRECATED"
+          },
+          {
+            "path": "/if:interfaces-state/if:interface/if:type/",
+            "type_info": {
+              "description": "",
+              "type": "identityref",
+              "base": ["interface-type"]
+            },
+            "children": [],
+            "name": "type",
+            "description": "The type of the interface.",
+            "config": false,
+            "class": "leaf",
+            "status": "DEPRECATED"
+          },
+          {
+            "path": "/if:interfaces-state/if:interface/if:admin-status/",
+            "type_info": {
+              "description": "",
+              "type": "if:enumeration"
+            },
+            "children": [],
+            "name": "admin-status",
+            "description": "The desired state of the interface.\n\nThis leaf has the same read semantics as ifAdminStatus.",
+            "config": false,
+            "class": "leaf",
+            "status": "DEPRECATED"
+          },
+          {
+            "path": "/if:interfaces-state/if:interface/if:oper-status/",
+            "type_info": {
+              "description": "",
+              "type": "if:enumeration"
+            },
+            "children": [],
+            "name": "oper-status",
+            "description": "The current operational state of the interface.\n\nThis leaf has the same semantics as ifOperStatus.",
+            "config": false,
+            "class": "leaf",
+            "status": "DEPRECATED"
+          },
+          {
+            "path": "/if:interfaces-state/if:interface/if:last-change/",
+            "type_info": {
+              "description": "The date-and-time type is a profile of the ISO 8601\nstandard for representation of dates and times using the\nGregorian calendar.  The profile is defined by the\ndate-time production in Section 5.6 of RFC 3339.\n\nThe date-and-time type is compatible with the dateTime XML\nschema type with the following notable exceptions:\n\n(a) The date-and-time type does not allow negative years.\n\n(b) The date-and-time time-offset -00:00 indicates an unknown\n    time zone (see RFC 3339) while -00:00 and +00:00 and Z\n    all represent the same time zone in dateTime.\n\n(c) The canonical format (see below) of data-and-time values\n    differs from the canonical format used by the dateTime XML\n    schema type, which requires all times to be in UTC using\n    the time-offset 'Z'.\n\nThis type is not equivalent to the DateAndTime textual\nconvention of the SMIv2 since RFC 3339 uses a different\nseparator between full-date and full-time and provides\nhigher resolution of time-secfrac.\n\nThe canonical format for date-and-time values with a known time\nzone uses a numeric time zone offset that is calculated using\nthe device's configured known offset to UTC time.  A change of\nthe device's offset to UTC time will cause date-and-time values\nto change accordingly.  Such changes might happen periodically\nin case a server follows automatically daylight saving time\n(DST) time zone offset changes.  The canonical format for\ndate-and-time values with an unknown time zone (usually\nreferring to the notion of local time) uses the time-offset\n-00:00.",
+              "type": "yang:date-and-time"
+            },
+            "children": [],
+            "name": "last-change",
+            "description": "The time the interface entered its current operational\nstate.  If the current state was entered prior to the\nlast re-initialization of the local network management\nsubsystem, then this node is not present.",
+            "config": false,
+            "class": "leaf",
+            "status": "DEPRECATED"
+          },
+          {
+            "path": "/if:interfaces-state/if:interface/if:if-index/",
+            "type_info": {
+              "description": "",
+              "type": "if:int32"
+            },
+            "children": [],
+            "name": "if-index",
+            "description": "The ifIndex value for the ifEntry represented by this\ninterface.",
+            "config": false,
+            "class": "leaf",
+            "status": "DEPRECATED"
+          },
+          {
+            "path": "/if:interfaces-state/if:interface/if:phys-address/",
+            "type_info": {
+              "description": "Represents media- or physical-level addresses represented\nas a sequence octets, each octet represented by two hexadecimal\nnumbers.  Octets are separated by colons.  The canonical\nrepresentation uses lowercase characters.\n\nIn the value set and its semantics, this type is equivalent\nto the PhysAddress textual convention of the SMIv2.",
+              "type": "yang:phys-address"
+            },
+            "children": [],
+            "name": "phys-address",
+            "description": "The interface's address at its protocol sub-layer.  For\nexample, for an 802.x interface, this object normally\ncontains a Media Access Control (MAC) address.  The\ninterface's media-specific modules must define the bit\nand byte ordering and the format of the value of this\nobject.  For interfaces that do not have such an address\n(e.g., a serial line), this node is not present.",
+            "config": false,
+            "class": "leaf",
+            "status": "DEPRECATED"
+          },
+          {
+            "path": "/if:interfaces-state/if:interface/if:higher-layer-if/",
+            "type_info": {
+              "description": "This type is used by data models that need to reference\nthe operationally present interfaces.",
+              "type": "if:interface-state-ref"
+            },
+            "children": [],
+            "name": "higher-layer-if",
+            "description": "A list of references to interfaces layered on top of this\ninterface.",
+            "config": false,
+            "class": "leaf-list",
+            "status": "DEPRECATED"
+          },
+          {
+            "path": "/if:interfaces-state/if:interface/if:lower-layer-if/",
+            "type_info": {
+              "description": "This type is used by data models that need to reference\nthe operationally present interfaces.",
+              "type": "if:interface-state-ref"
+            },
+            "children": [],
+            "name": "lower-layer-if",
+            "description": "A list of references to interfaces layered underneath this\ninterface.",
+            "config": false,
+            "class": "leaf-list",
+            "status": "DEPRECATED"
+          },
+          {
+            "path": "/if:interfaces-state/if:interface/if:speed/",
+            "type_info": {
+              "description": "An estimate of the interface's current bandwidth in bits\nper second.  For interfaces that do not vary in\nbandwidth or for those where no accurate estimation can\n\nbe made, this node should contain the nominal bandwidth.\nFor interfaces that have no concept of bandwidth, this\nnode is not present.",
+              "type": "if:speed"
+            },
+            "children": [],
+            "name": "speed",
+            "description": "An estimate of the interface's current bandwidth in bits\nper second.  For interfaces that do not vary in\nbandwidth or for those where no accurate estimation can\n\nbe made, this node should contain the nominal bandwidth.\nFor interfaces that have no concept of bandwidth, this\nnode is not present.",
+            "config": false,
+            "class": "leaf",
+            "status": "DEPRECATED"
+          },
+          {
+            "path": "/if:interfaces-state/if:interface/if:statistics/",
+            "type_info": {},
+            "children": [
+              {
+                "path": "/if:interfaces-state/if:interface/if:statistics/if:discontinuity-time/",
+                "type_info": {
+                  "description": "The date-and-time type is a profile of the ISO 8601\nstandard for representation of dates and times using the\nGregorian calendar.  The profile is defined by the\ndate-time production in Section 5.6 of RFC 3339.\n\nThe date-and-time type is compatible with the dateTime XML\nschema type with the following notable exceptions:\n\n(a) The date-and-time type does not allow negative years.\n\n(b) The date-and-time time-offset -00:00 indicates an unknown\n    time zone (see RFC 3339) while -00:00 and +00:00 and Z\n    all represent the same time zone in dateTime.\n\n(c) The canonical format (see below) of data-and-time values\n    differs from the canonical format used by the dateTime XML\n    schema type, which requires all times to be in UTC using\n    the time-offset 'Z'.\n\nThis type is not equivalent to the DateAndTime textual\nconvention of the SMIv2 since RFC 3339 uses a different\nseparator between full-date and full-time and provides\nhigher resolution of time-secfrac.\n\nThe canonical format for date-and-time values with a known time\nzone uses a numeric time zone offset that is calculated using\nthe device's configured known offset to UTC time.  A change of\nthe device's offset to UTC time will cause date-and-time values\nto change accordingly.  Such changes might happen periodically\nin case a server follows automatically daylight saving time\n(DST) time zone offset changes.  The canonical format for\ndate-and-time values with an unknown time zone (usually\nreferring to the notion of local time) uses the time-offset\n-00:00.",
+                  "type": "yang:date-and-time"
+                },
+                "children": [],
+                "name": "discontinuity-time",
+                "description": "The time on the most recent occasion at which any one or\nmore of this interface's counters suffered a\ndiscontinuity.  If no such discontinuities have occurred\nsince the last re-initialization of the local management\nsubsystem, then this node contains the time the local\nmanagement subsystem re-initialized itself.",
+                "config": false,
+                "class": "leaf",
+                "status": "DEPRECATED"
+              },
+              {
+                "path": "/if:interfaces-state/if:interface/if:statistics/if:in-octets/",
+                "type_info": {
+                  "description": "The counter64 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^64-1 (18446744073709551615 decimal),\nwhen it wraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter64 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter64 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter64.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter64 type of the SMIv2.",
+                  "type": "yang:counter64"
+                },
+                "children": [],
+                "name": "in-octets",
+                "description": "The total number of octets received on the interface,\nincluding framing characters.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "DEPRECATED"
+              },
+              {
+                "path": "/if:interfaces-state/if:interface/if:statistics/if:in-unicast-pkts/",
+                "type_info": {
+                  "description": "The counter64 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^64-1 (18446744073709551615 decimal),\nwhen it wraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter64 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter64 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter64.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter64 type of the SMIv2.",
+                  "type": "yang:counter64"
+                },
+                "children": [],
+                "name": "in-unicast-pkts",
+                "description": "The number of packets, delivered by this sub-layer to a\nhigher (sub-)layer, that were not addressed to a\nmulticast or broadcast address at this sub-layer.\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "DEPRECATED"
+              },
+              {
+                "path": "/if:interfaces-state/if:interface/if:statistics/if:in-broadcast-pkts/",
+                "type_info": {
+                  "description": "The counter64 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^64-1 (18446744073709551615 decimal),\nwhen it wraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter64 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter64 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter64.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter64 type of the SMIv2.",
+                  "type": "yang:counter64"
+                },
+                "children": [],
+                "name": "in-broadcast-pkts",
+                "description": "The number of packets, delivered by this sub-layer to a\nhigher (sub-)layer, that were addressed to a broadcast\naddress at this sub-layer.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "DEPRECATED"
+              },
+              {
+                "path": "/if:interfaces-state/if:interface/if:statistics/if:in-multicast-pkts/",
+                "type_info": {
+                  "description": "The counter64 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^64-1 (18446744073709551615 decimal),\nwhen it wraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter64 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter64 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter64.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter64 type of the SMIv2.",
+                  "type": "yang:counter64"
+                },
+                "children": [],
+                "name": "in-multicast-pkts",
+                "description": "The number of packets, delivered by this sub-layer to a\nhigher (sub-)layer, that were addressed to a multicast\naddress at this sub-layer.  For a MAC-layer protocol,\nthis includes both Group and Functional addresses.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "DEPRECATED"
+              },
+              {
+                "path": "/if:interfaces-state/if:interface/if:statistics/if:in-discards/",
+                "type_info": {
+                  "description": "The counter32 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^32-1 (4294967295 decimal), when it\nwraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter32 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter32 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter32.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter32 type of the SMIv2.",
+                  "type": "yang:counter32"
+                },
+                "children": [],
+                "name": "in-discards",
+                "description": "The number of inbound packets that were chosen to be\ndiscarded even though no errors had been detected to\nprevent their being deliverable to a higher-layer\nprotocol.  One possible reason for discarding such a\npacket could be to free up buffer space.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "DEPRECATED"
+              },
+              {
+                "path": "/if:interfaces-state/if:interface/if:statistics/if:in-errors/",
+                "type_info": {
+                  "description": "The counter32 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^32-1 (4294967295 decimal), when it\nwraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter32 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter32 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter32.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter32 type of the SMIv2.",
+                  "type": "yang:counter32"
+                },
+                "children": [],
+                "name": "in-errors",
+                "description": "For packet-oriented interfaces, the number of inbound\npackets that contained errors preventing them from being\ndeliverable to a higher-layer protocol.  For character-\noriented or fixed-length interfaces, the number of\ninbound transmission units that contained errors\npreventing them from being deliverable to a higher-layer\nprotocol.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "DEPRECATED"
+              },
+              {
+                "path": "/if:interfaces-state/if:interface/if:statistics/if:in-unknown-protos/",
+                "type_info": {
+                  "description": "The counter32 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^32-1 (4294967295 decimal), when it\nwraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter32 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter32 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter32.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter32 type of the SMIv2.",
+                  "type": "yang:counter32"
+                },
+                "children": [],
+                "name": "in-unknown-protos",
+                "description": "For packet-oriented interfaces, the number of packets\nreceived via the interface that were discarded because\nof an unknown or unsupported protocol.  For\ncharacter-oriented or fixed-length interfaces that\nsupport protocol multiplexing, the number of\ntransmission units received via the interface that were\ndiscarded because of an unknown or unsupported protocol.\nFor any interface that does not support protocol\nmultiplexing, this counter is not present.\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "DEPRECATED"
+              },
+              {
+                "path": "/if:interfaces-state/if:interface/if:statistics/if:out-octets/",
+                "type_info": {
+                  "description": "The counter64 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^64-1 (18446744073709551615 decimal),\nwhen it wraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter64 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter64 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter64.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter64 type of the SMIv2.",
+                  "type": "yang:counter64"
+                },
+                "children": [],
+                "name": "out-octets",
+                "description": "The total number of octets transmitted out of the\ninterface, including framing characters.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "DEPRECATED"
+              },
+              {
+                "path": "/if:interfaces-state/if:interface/if:statistics/if:out-unicast-pkts/",
+                "type_info": {
+                  "description": "The counter64 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^64-1 (18446744073709551615 decimal),\nwhen it wraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter64 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter64 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter64.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter64 type of the SMIv2.",
+                  "type": "yang:counter64"
+                },
+                "children": [],
+                "name": "out-unicast-pkts",
+                "description": "The total number of packets that higher-level protocols\nrequested be transmitted and that were not addressed\nto a multicast or broadcast address at this sub-layer,\nincluding those that were discarded or not sent.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "DEPRECATED"
+              },
+              {
+                "path": "/if:interfaces-state/if:interface/if:statistics/if:out-broadcast-pkts/",
+                "type_info": {
+                  "description": "The counter64 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^64-1 (18446744073709551615 decimal),\nwhen it wraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter64 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter64 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter64.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter64 type of the SMIv2.",
+                  "type": "yang:counter64"
+                },
+                "children": [],
+                "name": "out-broadcast-pkts",
+                "description": "The total number of packets that higher-level protocols\nrequested be transmitted and that were addressed to a\nbroadcast address at this sub-layer, including those\nthat were discarded or not sent.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "DEPRECATED"
+              },
+              {
+                "path": "/if:interfaces-state/if:interface/if:statistics/if:out-multicast-pkts/",
+                "type_info": {
+                  "description": "The counter64 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^64-1 (18446744073709551615 decimal),\nwhen it wraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter64 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter64 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter64.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter64 type of the SMIv2.",
+                  "type": "yang:counter64"
+                },
+                "children": [],
+                "name": "out-multicast-pkts",
+                "description": "The total number of packets that higher-level protocols\nrequested be transmitted and that were addressed to a\nmulticast address at this sub-layer, including those\nthat were discarded or not sent.  For a MAC-layer\nprotocol, this includes both Group and Functional\naddresses.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "DEPRECATED"
+              },
+              {
+                "path": "/if:interfaces-state/if:interface/if:statistics/if:out-discards/",
+                "type_info": {
+                  "description": "The counter32 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^32-1 (4294967295 decimal), when it\nwraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter32 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter32 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter32.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter32 type of the SMIv2.",
+                  "type": "yang:counter32"
+                },
+                "children": [],
+                "name": "out-discards",
+                "description": "The number of outbound packets that were chosen to be\ndiscarded even though no errors had been detected to\nprevent their being transmitted.  One possible reason\nfor discarding such a packet could be to free up buffer\nspace.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "DEPRECATED"
+              },
+              {
+                "path": "/if:interfaces-state/if:interface/if:statistics/if:out-errors/",
+                "type_info": {
+                  "description": "The counter32 type represents a non-negative integer\nthat monotonically increases until it reaches a\nmaximum value of 2^32-1 (4294967295 decimal), when it\nwraps around and starts increasing again from zero.\n\nCounters have no defined 'initial' value, and thus, a\nsingle value of a counter has (in general) no information\ncontent.  Discontinuities in the monotonically increasing\nvalue normally occur at re-initialization of the\nmanagement system, and at other times as specified in the\ndescription of a schema node using this type.  If such\nother times can occur, for example, the creation of\na schema node of type counter32 at times other than\nre-initialization, then a corresponding schema node\nshould be defined, with an appropriate type, to indicate\nthe last discontinuity.\n\nThe counter32 type should not be used for configuration\nschema nodes.  A default statement SHOULD NOT be used in\ncombination with the type counter32.\n\nIn the value set and its semantics, this type is equivalent\nto the Counter32 type of the SMIv2.",
+                  "type": "yang:counter32"
+                },
+                "children": [],
+                "name": "out-errors",
+                "description": "For packet-oriented interfaces, the number of outbound\npackets that could not be transmitted because of errors.\nFor character-oriented or fixed-length interfaces, the\nnumber of outbound transmission units that could not be\ntransmitted because of errors.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system and at\nother times as indicated by the value of\n'discontinuity-time'.",
+                "config": false,
+                "class": "leaf",
+                "status": "DEPRECATED"
+              }
+            ],
+            "name": "statistics",
+            "description": "A collection of interface-related statistics objects.",
+            "config": false,
+            "class": "container",
+            "status": "DEPRECATED"
+          }
+        ],
+        "name": "interface",
+        "description": "The list of interfaces on the device.\n\nSystem-controlled interfaces created by the system are\nalways present in this list, whether or not they are\nconfigured.",
+        "config": false,
+        "class": "list",
+        "status": "DEPRECATED"
+      }],
+      "name": "interfaces-state",
+      "description": "Data nodes for the operational state of interfaces.",
+      "config": false,
+      "class": "container",
+      "status": "DEPRECATED"
+    }
+  ],
+  "module": {
+    "prefix": "if",
+    "contact": "WG Web:   <https://datatracker.ietf.org/wg/netmod/>\nWG List:  <mailto:netmod@ietf.org>\n\nEditor:   Martin Bjorklund\n          <mailto:mbj@tail-f.com>",
+    "name": "ietf-interfaces",
+    "namespace": "urn:ietf:params:xml:ns:yang:ietf-interfaces",
+    "description": "This module contains a collection of YANG definitions for\nmanaging network interfaces.\n\nCopyright (c) 2018 IETF Trust and the persons identified as\nauthors of the code.  All rights reserved.\n\nRedistribution and use in source and binary forms, with or\nwithout modification, is permitted pursuant to, and subject\nto the license terms contained in, the Simplified BSD License\nset forth in Section 4.c of the IETF Trust's Legal Provisions\nRelating to IETF Documents\n(https://trustee.ietf.org/license-info).\n\nThis version of this YANG module is part of RFC 8343; see\nthe RFC itself for full legal notices.",
+    "revision": "2018-02-20"
+  }
+}

@@ -1,0 +1,478 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <style>
+  .fa-share {
+    color: blue;
+  }
+  .fa-reply {
+    color: blue;
+  }
+  .fa-play {
+    color: red;
+  }
+  .fa-envelope {
+    color: red;
+  }
+  .fa-bell {
+    color: red;
+  }
+  .fa-check {
+    color: blue;
+  }
+  .fa-tasks {
+    color: blue;
+  }
+  .fa-external-link-alt {
+    color: red;
+  }
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+  .fa-leaf {
+    color: green;
+  }
+  .fa-pagelines {
+    color: green;
+  }
+  .fa-folder-open {
+    color: orange;
+  }
+table.simple-tree-table .tree-icon {
+ display:inline-block;
+ width:1.5em;
+ line-height:1.5em;
+ margin:.1em;
+ background-color:#eee;
+ text-align:center;
+ cursor:pointer
+}
+table.simple-tree-table tr.tree-opened .tree-icon:after {
+ content:"-"
+}
+table.simple-tree-table tr.tree-closed .tree-icon:after {
+ content:"+"
+}
+  </style>
+</head><body>
+<div> <b> module name test_model@2020-12-03, namespace test:testspace, prefix test </b></div><div>
+    <button type="button" id="expander" class="btn btn-danger">Expand All</button>
+    <button type="button" id="collapser" class="btn btn-info">Collapse All</button>
+    <table id="basic" class="table table-bordered table-striped simple-tree-table">
+        <th> element </th>
+        <th> schema </th>
+        <th> type </th>
+        <th> flag </th>
+        <th> status </th>
+        <th> path </th>
+        <tr data-node-id="1" data-node-pid=""><td title="Used for storing summation results">result-container <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>no config</td><td>current</td><td>/test:result-container</td></tr>
+        <tr data-node-id="1.1" data-node-pid="1"><td title="">result[id] <span><i class="fas fa-list"></i></span> </td><td>list</td><td></td><td>no config</td><td>current</td><td>/test:result-container/test:result</td></tr>
+        <tr data-node-id="1.1.1" data-node-pid="1.1"><td title="">id <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint32</td><td>no config</td><td>current</td><td>/test:result-container/test:result/test:id</td></tr>
+        <tr data-node-id="1.1.2" data-node-pid="1.1"><td title="">sum-result <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>suma-type</td><td>no config</td><td>current</td><td>/test:result-container/test:result/test:sum-result</td></tr>
+        <tr data-node-id="2" data-node-pid=""><td title="Used for storing summation operands">operands-container <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>config</td><td>current</td><td>/test:operands-container</td></tr>
+        <tr data-node-id="2.1" data-node-pid="2"><td title="">operands[id] <span><i class="fas fa-list"></i></span> </td><td>list</td><td></td><td>config</td><td>current</td><td>/test:operands-container/test:operands</td></tr>
+        <tr data-node-id="2.1.1" data-node-pid="2.1"><td title="">id <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint32</td><td>config</td><td>current</td><td>/test:operands-container/test:operands/test:id</td></tr>
+        <tr data-node-id="2.1.2" data-node-pid="2.1"><td title="Operand A">operand-a <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint16</td><td>config</td><td>current</td><td>/test:operands-container/test:operands/test:operand-a</td></tr>
+        <tr data-node-id="2.1.3" data-node-pid="2.1"><td title="Operand B">operand-b <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint16</td><td>config</td><td>current</td><td>/test:operands-container/test:operands/test:operand-b</td></tr>
+        <tr data-node-id="3" data-node-pid=""><td title="">server[name] <span><i class="fas fa-list"></i></span> </td><td>list</td><td></td><td>config</td><td>current</td><td>/test:server</td></tr>
+        <tr data-node-id="3.1" data-node-pid="3"><td title="">name <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>string</td><td>config</td><td>current</td><td>/test:server/test:name</td></tr>
+        <tr data-node-id="3.1" data-node-pid="3"><td title="">reset <span><i class="fas fa-play"></i></span> </td><td>action</td><td></td><td></td><td>current</td><td>/test:server/test:reset</td></tr>
+        <tr data-node-id="3.1.1" data-node-pid="3.1"><td title="">input <span><i class="fas fa-share"></i></span> </td><td>input</td><td></td><td>config</td><td>current</td><td>/test:server/test:reset/test:input</td></tr>
+        <tr data-node-id="3.1.1.1" data-node-pid="3.1.1"><td title="">reset-at <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint32</td><td>config</td><td>current</td><td>/test:server/test:reset/test:input/test:reset-at</td></tr>
+        <tr data-node-id="3.1.1" data-node-pid="3.1"><td title="">output <span><i class="fas fa-reply"></i></span> </td><td>output</td><td></td><td>no config</td><td>current</td><td>/test:server/test:reset/test:output</td></tr>
+        <tr data-node-id="3.1.1.1" data-node-pid="3.1.1"><td title="">reset-finished-at <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>string</td><td>no config</td><td>current</td><td>/test:server/test:reset/test:output/test:reset-finished-at</td></tr>
+        <tr data-node-id="4" data-node-pid=""><td title="">multiplication <span><i class="fas fa-envelope"></i></span> </td><td>rpc</td><td></td><td></td><td>current</td><td>/test:multiplication</td></tr>
+        <tr data-node-id="4.1" data-node-pid="4"><td title="">input <span><i class="fas fa-share"></i></span> </td><td>input</td><td></td><td>config</td><td>current</td><td>/test:multiplication/test:input</td></tr>
+        <tr data-node-id="4.1.1" data-node-pid="4.1"><td title="">operand-a <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint32</td><td>config</td><td>current</td><td>/test:multiplication/test:input/test:operand-a</td></tr>
+        <tr data-node-id="4.1.2" data-node-pid="4.1"><td title="">operand-b <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint32</td><td>config</td><td>current</td><td>/test:multiplication/test:input/test:operand-b</td></tr>
+        <tr data-node-id="4.2" data-node-pid="4"><td title="">output <span><i class="fas fa-reply"></i></span> </td><td>output</td><td></td><td>no config</td><td>current</td><td>/test:multiplication/test:output</td></tr>
+        <tr data-node-id="4.2.1" data-node-pid="4.2"><td title="">a-times-b <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint32</td><td>no config</td><td>current</td><td>/test:multiplication/test:output/test:a-times-b</td></tr>
+        <tr data-node-id="5" data-node-pid=""><td title="">summation <span><i class="fas fa-envelope"></i></span> </td><td>rpc</td><td></td><td></td><td>current</td><td>/test:summation</td></tr>
+        <tr data-node-id="5.1" data-node-pid="5"><td title="">input <span><i class="fas fa-share"></i></span> </td><td>input</td><td></td><td>config</td><td>current</td><td>/test:summation/test:input</td></tr>
+        <tr data-node-id="5.1.1" data-node-pid="5.1"><td title="Operand A">operand-a <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint16</td><td>config</td><td>current</td><td>/test:summation/test:input/test:operand-a</td></tr>
+        <tr data-node-id="5.1.2" data-node-pid="5.1"><td title="Operand B">operand-b <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint16</td><td>config</td><td>current</td><td>/test:summation/test:input/test:operand-b</td></tr>
+        <tr data-node-id="5.2" data-node-pid="5"><td title="">output <span><i class="fas fa-reply"></i></span> </td><td>output</td><td></td><td>no config</td><td>current</td><td>/test:summation/test:output</td></tr>
+        <tr data-node-id="5.2.1" data-node-pid="5.2"><td title="">summation-output <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>string</td><td>no config</td><td>current</td><td>/test:summation/test:output/test:summation-output</td></tr>
+        <tr data-node-id="5.2.2" data-node-pid="5.2"><td title="">sum <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>suma-type</td><td>no config</td><td>current</td><td>/test:summation/test:output/test:sum</td></tr>
+        <tr data-node-id="6" data-node-pid=""><td title="Indicates that the toaster has run of out bread.">testNotification <span><i class="fas fa-bell"></i></span> </td><td>notification</td><td></td><td></td><td>current</td><td>/test:testNotification</td></tr>
+        <tr data-node-id="7" data-node-pid=""><td title="">testNotificationWithData <span><i class="fas fa-bell"></i></span> </td><td>notification</td><td></td><td></td><td>current</td><td>/test:testNotificationWithData</td></tr>
+        <tr data-node-id="7.1" data-node-pid="7"><td title="">notificationData <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint32</td><td>no config</td><td>current</td><td>/test:testNotificationWithData/test:notificationData</td></tr>
+    </table>
+</div>
+<script>
+class JsStore {
+  constructor(opts = {}) {
+    this.opts = {
+      type: opts.type || 'session',
+      key: opts.key
+    }
+    this.inst = new WebStorage(this.opts);
+  }
+
+  get(defs = null) {
+    return this.inst.get(this.opts.key) || defs;
+  }
+
+  set(data) {
+    this.inst.set(this.opts.key, data);
+  }
+
+  remove() {
+    this.inst.remove(this.opts.key);
+  }
+}
+
+class WebStorage {
+  constructor(opts = {}) {
+    this.storage = {
+      local: window.localStorage,
+      session: window.sessionStorage
+    }[opts.type];
+  }
+
+  get(key) {
+    try {
+      let json = this.storage.getItem(key);
+      if (!json) return null;
+      return JSON.parse(json)
+    } catch(e) {
+      console.log(e);
+      return null;
+    }
+  }
+
+  set(key, value) {
+    try {
+      this.storage.setItem(key, JSON.stringify(value));
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
+  remove(key) {
+    this.storage.removeItem(key);
+  }
+}
+
+
+const NAMESPACE = 'simple-tree-table';
+
+const DEFAULTS = {
+  expander: null,
+  collapser: null,
+  opened: 'all',
+  margin: 20,
+  iconPosition: ':first',
+  iconTemplate: '<span />',
+  store: null,
+  storeKey: null
+};
+
+class SimpleTreeTable {
+  constructor(element, options = {}) {
+    this.options = $.extend({}, DEFAULTS, options);
+
+    this.$table = $(element);
+    this.$expander = $(this.options.expander);
+    this.$collapser = $(this.options.collapser);
+
+    if (this.options.store && this.options.storeKey) {
+      this.store = new Store({
+        type: this.options.store,
+        key: this.options.storeKey
+      });
+    }
+
+    this.init();
+    this.load();
+  }
+
+  init() {
+    this.$table.addClass(NAMESPACE);
+    this.build();
+    this.unbind();
+    this.bind();
+  }
+
+  destroy() {
+    this.$table.removeClass(NAMESPACE);
+    this.$table.find('.tree-icon').remove();
+    this.nodes().removeClass('tree-empty tree-opened tree-closed');
+
+    this.unbind();
+  }
+
+  build() {
+    this.nodes().not('[data-node-depth]').each((i, node) => {
+      let $node = $(node);
+      let depth = this.depth($node);
+      $node.data('node-depth', depth);
+      if (depth == 1) {
+        $node.addClass('tree-root');
+      }
+    });
+
+    this.nodes().filter((i, node) => {
+      return $(node).find(this.options.iconPosition).find('.tree-handler').length == 0;
+    }).each((i, node) => {
+      let $node = $(node);
+      let depth = this.depth($node);
+      let margin = this.options.margin * (depth - 1);
+      let $icon = $(this.options.iconTemplate).addClass('tree-handler tree-icon').css('margin-left', `${margin}px`);
+      $node.find(this.options.iconPosition).prepend($icon);
+    });
+
+    this.nodes().not('.tree-empty, .tree-opened, .tree-closed').each((i, node) => {
+      let $node = $(node);
+      if (!this.hasChildren($node)) {
+        $node.addClass('tree-empty');
+      } else if (this.opensDefault($node)) {
+        $node.addClass('tree-opened');
+      } else {
+        $node.addClass('tree-closed');
+      }
+    });
+
+    this.nodes().filter('.tree-opened').each((i, node) => {
+      this.show($(node));
+    });
+    this.nodes().filter('.tree-closed').each((i, node) => {
+      this.hide($(node));
+    });
+  }
+
+  opensDefault($node) {
+    let opened = this.options.opened;
+    return opened && (opened == 'all' || opened.indexOf($node.data('node-id')) != -1);
+  }
+
+  bind() {
+    this.$expander.on(`click.${NAMESPACE}`, (e) => {
+      this.expand();
+    });
+
+    this.$collapser.on(`click.${NAMESPACE}`, (e) => {
+      this.collapse();
+    });
+
+    this.$table.on(`click.${NAMESPACE}`, 'tr .tree-handler', (e) => {
+      let $node = $(e.currentTarget).closest('tr');
+      if ($node.hasClass('tree-opened')) {
+        this.close($node);
+      } else {
+        this.open($node);
+      }
+    });
+  }
+
+  unbind() {
+    this.$expander.off(`.${NAMESPACE}`);
+    this.$collapser.off(`.${NAMESPACE}`);
+    this.$table.off(`.${NAMESPACE} node:open node:close`);
+  }
+
+  expand() {
+    this.nodes().each((i, node) => {
+      this.show($(node));
+    });
+    this.save();
+  }
+
+  collapse() {
+    this.nodes().each((i, node) => {
+      this.hide($(node));
+    });
+    this.save();
+  }
+
+  nodes() {
+    return this.$table.find('tr[data-node-id]');
+  }
+
+  depth($node) {
+    let d = $node.data('node-depth');
+    if (d) {
+      return d;
+    }
+
+    let $parent = this.findByID($node.data('node-pid'));
+    if ($parent.length != 0) {
+      return this.depth($parent) + 1;
+    } else {
+      return 1;
+    }
+  }
+
+  open($node) {
+    this.show($node);
+    this.save();
+
+    $node.trigger('node:open', [$node]);
+  }
+
+  show($node) {
+    if (!$node.hasClass('tree-empty')) {
+      $node.removeClass('tree-closed').addClass('tree-opened');
+      this.showDescs($node);
+    }
+  }
+
+  showDescs($node) {
+    let $children = this.findChildren($node);
+    $children.each((i, child) => {
+      let $child = $(child);
+      $child.show();
+      if ($child.hasClass('tree-opened')) {
+        this.showDescs($child);
+      }
+    });
+  }
+
+  close($node) {
+    this.hide($node);
+    this.save();
+
+    $node.trigger('node:close', [$node]);
+  }
+
+  hide($node) {
+    if (!$node.hasClass('tree-empty')) {
+      $node.removeClass('tree-opened').addClass('tree-closed');
+      this.hideDescs($node);
+    }
+  }
+
+  hideDescs($node) {
+    let $children = this.findChildren($node);
+    $children.each((i, child) => {
+      let $child = $(child);
+      $child.hide();
+      this.hideDescs($child);
+    });
+  }
+
+  hasChildren($node) {
+    return this.findChildren($node).length != 0;
+  }
+
+  findChildren($node) {
+    let pid = $node.data('node-id');
+    return this.$table.find(`tr[data-node-pid="${pid}"]`);
+  }
+
+  findDescendants($node, descendants = []) {
+    let children = this.findChildren($node)
+    descendants.push(children);
+    children.each((i, child) => {
+      this.findDescendants($(child), descendants);
+    })
+    return descendants;
+  }
+
+  findByID(id) {
+    return this.$table.find(`tr[data-node-id="${id}"]`);
+  }
+
+  openByID(id) {
+    this.open(this.findByID(id));
+  }
+
+  closeByID(id) {
+    this.close(this.findByID(id));
+  }
+
+  load() {
+    if (!this.store) return;
+
+    let ids = this.store.get();
+    if (!ids) return;
+
+    this.nodes().each((i, node) => {
+      this.show($(node));
+    });
+    this.nodes().filter((i, node) => {
+      return ids.indexOf($(node).data('node-id')) != -1;
+    }).each((i, node) => {
+      this.hide($(node));
+    });
+  }
+
+  save() {
+    if (!this.store) return;
+
+    let ids = this.nodes().filter('.tree-closed').map((i, node) => {
+      return $(node).data('node-id');
+    }).get();
+
+    this.store.set(ids)
+  }
+
+  static getDefaults() {
+    return DEFAULTS;
+  }
+
+  static setDefaults(options) {
+    return $.extend(DEFAULTS, options);
+  }
+}
+
+$.fn.simpleTreeTable = function(options) {
+  return this.each((i, elem) => {
+    let $elem = $(elem);
+    if ($elem.data(NAMESPACE)) $elem.data(NAMESPACE).destroy();
+    $elem.data(NAMESPACE, new SimpleTreeTable($elem, options));
+  });
+};
+
+$.SimpleTreeTable = SimpleTreeTable;
+
+	$('#basic').simpleTreeTable({
+  expander: $('#expander'),
+  collapser: $('#collapser')
+});
+
+$('#collapsed').simpleTreeTable({
+  opened: 'none',
+});
+$('#collapsed').simpleTreeTable({
+  margin: 25
+});
+</script>
+</body>
+</html>

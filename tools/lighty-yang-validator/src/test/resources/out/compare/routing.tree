@@ -1,0 +1,94 @@
+module: ietf-routing
+  +--rw routing
+  |  +--rw router-id?       yang:dotted-quad
+  |  +--ro interfaces
+  |  |  +--ro interface*    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)name}]}}, originalString=/if:interfaces/if:interface/if:name}
+  |  +--rw control-plane-protocols
+  |  |  +--rw control-plane-protocol* [type, name]
+  |  |     +--rw type       identityref
+  |  |     +--rw name       string
+  |  |     +--rw description?       string
+  |  |     +--rw static-routes
+  |  +--rw ribs
+  |     +--rw rib* [name]
+  |        +--rw name       string
+  |        +--rw address-family       identityref
+  |        +--ro default-rib?       boolean {multiple-ribs}?
+  |        +--ro routes
+  |        |  +--ro route*
+  |        |     +--ro route-preference?       uint32
+  |        |     +--ro next-hop
+  |        |     |  +--ro (next-hop-options)
+  |        |     |     +-- :(simple-next-hop)
+  |        |     |     |  +--ro outgoing-interface?    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)name}]}}, originalString=/if:interfaces/if:interface/if:name}
+  |        |     |     +-- :(special-next-hop)
+  |        |     |     |  +--ro special-next-hop?       enumeration
+  |        |     |     +-- :(next-hop-list)
+  |        |     |        +--ro next-hop-list
+  |        |     |           +--ro next-hop*
+  |        |     |              +--ro outgoing-interface?    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)name}]}}, originalString=/if:interfaces/if:interface/if:name}
+  |        |     +--ro source-protocol       identityref
+  |        |     +--ro active?       empty
+  |        |     +--ro last-updated?       yang:date-and-time
+  |        +--rw description?       string
+  |        +---x active-route
+  |           +--ro output
+  |              +--ro route
+  |                 +--ro next-hop
+  |                 |  +--ro (next-hop-options)
+  |                 |     +-- :(simple-next-hop)
+  |                 |     |  +--ro outgoing-interface?    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)name}]}}, originalString=/if:interfaces/if:interface/if:name}
+  |                 |     +-- :(special-next-hop)
+  |                 |     |  +--ro special-next-hop?       enumeration
+  |                 |     +-- :(next-hop-list)
+  |                 |        +--ro next-hop-list
+  |                 |           +--ro next-hop*
+  |                 |              +--ro outgoing-interface?    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)name}]}}, originalString=/if:interfaces/if:interface/if:name}
+  |                 +--ro source-protocol       identityref
+  |                 +--ro active?       empty
+  |                 +--ro last-updated?       yang:date-and-time
+  o--ro routing-state
+     +--ro router-id?       yang:dotted-quad
+     o--ro interfaces
+     |  o--ro interface*    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces-state}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)name}]}}, originalString=/if:interfaces-state/if:interface/if:name}
+     o--ro control-plane-protocols
+     |  o--ro control-plane-protocol* [type, name]
+     |     o--ro type       identityref
+     |     o--ro name       string
+     o--ro ribs
+        o--ro rib* [name]
+           o--ro name       string
+           +--ro address-family       identityref
+           o--ro default-rib?       boolean {multiple-ribs}?
+           o--ro routes
+           |  o--ro route*
+           |     o--ro route-preference?       uint32
+           |     o--ro next-hop
+           |     |  +--ro (next-hop-options)
+           |     |     +-- :(simple-next-hop)
+           |     |     |  +--ro outgoing-interface?    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)name}]}}, originalString=/if:interfaces/if:interface/if:name}
+           |     |     +-- :(special-next-hop)
+           |     |     |  +--ro special-next-hop?       enumeration
+           |     |     +-- :(next-hop-list)
+           |     |        +--ro next-hop-list
+           |     |           +--ro next-hop*
+           |     |              +--ro outgoing-interface?    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)name}]}}, originalString=/if:interfaces/if:interface/if:name}
+           |     +--ro source-protocol       identityref
+           |     +--ro active?       empty
+           |     +--ro last-updated?       yang:date-and-time
+           o---x active-route
+              +--ro output
+                 o--ro route
+                    o--ro next-hop
+                    |  +--ro (next-hop-options)
+                    |     +-- :(simple-next-hop)
+                    |     |  +--ro outgoing-interface?    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)name}]}}, originalString=/if:interfaces/if:interface/if:name}
+                    |     +-- :(special-next-hop)
+                    |     |  +--ro special-next-hop?       enumeration
+                    |     +-- :(next-hop-list)
+                    |        +--ro next-hop-list
+                    |           +--ro next-hop*
+                    |              +--ro outgoing-interface?    -> ParsedPathExpression{steps=LocationPathSteps{locationPath=YangLocationPath{absolute=true, steps=[Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interfaces}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)interface}, Step{axis=child, qname=(urn:ietf:params:xml:ns:yang:ietf-interfaces?revision=2018-02-20)name}]}}, originalString=/if:interfaces/if:interface/if:name}
+                    +--ro source-protocol       identityref
+                    +--ro active?       empty
+                    +--ro last-updated?       yang:date-and-time

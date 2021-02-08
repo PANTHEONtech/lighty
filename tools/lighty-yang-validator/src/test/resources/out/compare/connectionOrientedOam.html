@@ -1,0 +1,676 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <style>
+  .fa-share {
+    color: blue;
+  }
+  .fa-reply {
+    color: blue;
+  }
+  .fa-play {
+    color: red;
+  }
+  .fa-envelope {
+    color: red;
+  }
+  .fa-bell {
+    color: red;
+  }
+  .fa-check {
+    color: blue;
+  }
+  .fa-tasks {
+    color: blue;
+  }
+  .fa-external-link-alt {
+    color: red;
+  }
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+  .fa-leaf {
+    color: green;
+  }
+  .fa-pagelines {
+    color: green;
+  }
+  .fa-folder-open {
+    color: orange;
+  }
+table.simple-tree-table .tree-icon {
+ display:inline-block;
+ width:1.5em;
+ line-height:1.5em;
+ margin:.1em;
+ background-color:#eee;
+ text-align:center;
+ cursor:pointer
+}
+table.simple-tree-table tr.tree-opened .tree-icon:after {
+ content:"-"
+}
+table.simple-tree-table tr.tree-closed .tree-icon:after {
+ content:"+"
+}
+  </style>
+</head><body>
+<div> <b> module name ietf-connection-oriented-oam@2019-04-16, namespace urn:ietf:params:xml:ns:yang:ietf-connection-oriented-oam, prefix co-oam </b></div><div>
+    <button type="button" id="expander" class="btn btn-danger">Expand All</button>
+    <button type="button" id="collapser" class="btn btn-info">Collapse All</button>
+    <table id="basic" class="table table-bordered table-striped simple-tree-table">
+        <th> element </th>
+        <th> schema </th>
+        <th> type </th>
+        <th> flag </th>
+        <th> status </th>
+        <th> path </th>
+        <tr data-node-id="1" data-node-pid=""><td title="Contains configuration related data.  Within the
+container, there is a list of fault domains.  Each
+domain has a list of MAs.">domains <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>config</td><td>current</td><td>/co-oam:domains</td></tr>
+        <tr data-node-id="1.1" data-node-pid="1"><td title="Define a list of Domains within the
+ietf-connection-oriented-oam module.">domain[technology,md-name-string] <span><i class="fas fa-list"></i></span> </td><td>list</td><td></td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain</td></tr>
+        <tr data-node-id="1.1.1" data-node-pid="1.1"><td title="Defines the technology.">technology <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>identityref</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:technology</td></tr>
+        <tr data-node-id="1.1.2" data-node-pid="1.1"><td title="Defines the generic administrative Maintenance Domain name.">md-name-string <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>string</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:md-name-string</td></tr>
+        <tr data-node-id="1.1.3" data-node-pid="1.1"><td title="Maintenance Domain Name format.">md-name-format <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>identityref</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:md-name-format</td></tr>
+        <tr data-node-id="1.1.4" data-node-pid="1.1"><td title="MD name.">md-name <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:md-name</td></tr>
+        <tr data-node-id="1.1.4.1" data-node-pid="1.1.4"><td title="">md-name-null <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:md-name/co-oam:md-name-null</td></tr>
+        <tr data-node-id="1.1.4.1.1" data-node-pid="1.1.4.1"><td title="MD name null.">md-name-null <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>empty</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:md-name/co-oam:md-name-null/co-oam:md-name-null</td></tr>
+        <tr data-node-id="1.1.5" data-node-pid="1.1"><td title="Define the MD level.">md-level <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint32</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:md-level</td></tr>
+        <tr data-node-id="1.1.6" data-node-pid="1.1"><td title="Contains configuration-related data.  Within the
+container, there is a list of MAs.  Each MA has a
+list of MEPs.">mas <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas</td></tr>
+        <tr data-node-id="1.1.6.1" data-node-pid="1.1.6"><td title="Maintenance Association list.">ma[ma-name-string] <span><i class="fas fa-list"></i></span> </td><td>list</td><td></td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma</td></tr>
+        <tr data-node-id="1.1.6.1.1" data-node-pid="1.1.6.1"><td title="MA name string.">ma-name-string <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>string</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:ma-name-string</td></tr>
+        <tr data-node-id="1.1.6.1.2" data-node-pid="1.1.6.1"><td title="MA name format.">ma-name-format <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>identityref</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:ma-name-format</td></tr>
+        <tr data-node-id="1.1.6.1.3" data-node-pid="1.1.6.1"><td title="MA name.">ma-name <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:ma-name</td></tr>
+        <tr data-node-id="1.1.6.1.3.1" data-node-pid="1.1.6.1.3"><td title="">ma-name-null <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:ma-name/co-oam:ma-name-null</td></tr>
+        <tr data-node-id="1.1.6.1.3.1.1" data-node-pid="1.1.6.1.3.1"><td title="Empty">ma-name-null <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>empty</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:ma-name/co-oam:ma-name-null/co-oam:ma-name-null</td></tr>
+        <tr data-node-id="1.1.6.1.4" data-node-pid="1.1.6.1"><td title="Connectivity context.">connectivity-context <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:connectivity-context</td></tr>
+        <tr data-node-id="1.1.6.1.4.1" data-node-pid="1.1.6.1.4"><td title="This is a placeholder when no context is needed.">context-null <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:connectivity-context/co-oam:context-null</td></tr>
+        <tr data-node-id="1.1.6.1.4.1.1" data-node-pid="1.1.6.1.4.1"><td title="There is no context to be defined.">context-null <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>empty</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:connectivity-context/co-oam:context-null/co-oam:context-null</td></tr>
+        <tr data-node-id="1.1.6.1.5" data-node-pid="1.1.6.1"><td title="Class of Service (CoS) ID; this value is used to indicate
+Class of Service information .">cos-id <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint8</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:cos-id</td></tr>
+        <tr data-node-id="1.1.6.1.6" data-node-pid="1.1.6.1"><td title="Indicate whether the CC is enabled.">cc-enable <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>boolean</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:cc-enable</td></tr>
+        <tr data-node-id="1.1.6.1.7" data-node-pid="1.1.6.1"><td title="Contain a list of MEPs.">mep[mep-name] <span><i class="fas fa-list"></i></span> </td><td>list</td><td></td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep</td></tr>
+        <tr data-node-id="1.1.6.1.7.1" data-node-pid="1.1.6.1.7"><td title="Generic administrative name of the
+MEP.">mep-name <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>string</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:mep-name</td></tr>
+        <tr data-node-id="1.1.6.1.7.2" data-node-pid="1.1.6.1.7"><td title="MEP ID.">mep-id <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:mep-id</td></tr>
+        <tr data-node-id="1.1.6.1.7.2.1" data-node-pid="1.1.6.1.7.2"><td title="">mep-id-int <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:mep-id/co-oam:mep-id-int</td></tr>
+        <tr data-node-id="1.1.6.1.7.2.1.1" data-node-pid="1.1.6.1.7.2.1"><td title="MEP ID
+in integer format.">mep-id-int <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>int32</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:mep-id/co-oam:mep-id-int/co-oam:mep-id-int</td></tr>
+        <tr data-node-id="1.1.6.1.7.3" data-node-pid="1.1.6.1.7"><td title="MEP ID format.">mep-id-format <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>identityref</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:mep-id-format</td></tr>
+        <tr data-node-id="1.1.6.1.7.4" data-node-pid="1.1.6.1.7"><td title="MEP Addressing.">mep-address <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:mep-address</td></tr>
+        <tr data-node-id="1.1.6.1.7.4.1" data-node-pid="1.1.6.1.7.4"><td title="MAC Address based MEP Addressing.">mac-address <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:mep-address/co-oam:mac-address</td></tr>
+        <tr data-node-id="1.1.6.1.7.4.1.1" data-node-pid="1.1.6.1.7.4.1"><td title="MAC Address.">mac-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>string</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:mep-address/co-oam:mac-address/co-oam:mac-address</td></tr>
+        <tr data-node-id="1.1.6.1.7.4.2" data-node-pid="1.1.6.1.7.4"><td title="IP Address based MEP Addressing.">ip-address <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:mep-address/co-oam:ip-address</td></tr>
+        <tr data-node-id="1.1.6.1.7.4.2.1" data-node-pid="1.1.6.1.7.4.2"><td title="IP Address.">ip-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>union</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:mep-address/co-oam:ip-address/co-oam:ip-address</td></tr>
+        <tr data-node-id="1.1.6.1.7.5" data-node-pid="1.1.6.1.7"><td title="Class of Service (CoS) ID; this value is used to indicate
+Class of Service information .">cos-id <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint8</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:cos-id</td></tr>
+        <tr data-node-id="1.1.6.1.7.6" data-node-pid="1.1.6.1.7"><td title="Indicate whether the CC is enabled.">cc-enable <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>boolean</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:cc-enable</td></tr>
+        <tr data-node-id="1.1.6.1.7.7" data-node-pid="1.1.6.1.7"><td title="Monitoring session to/from a particular remote MEP.
+Depending on the protocol, this could represent
+CC messages received from a single remote MEP (if the
+protocol uses multicast CCs) or a target to which
+unicast echo request CCs are sent and from which
+responses are received (if the protocol uses a
+unicast request/response mechanism).">session[session-cookie] <span><i class="fas fa-list"></i></span> </td><td>list</td><td></td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session</td></tr>
+        <tr data-node-id="1.1.6.1.7.7.1" data-node-pid="1.1.6.1.7.7"><td title="Cookie to identify different sessions, when there
+are multiple remote MEPs or multiple sessions to
+the same remote MEP.">session-cookie <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint32</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:session-cookie</td></tr>
+        <tr data-node-id="1.1.6.1.7.7.2" data-node-pid="1.1.6.1.7.7"><td title="Destination MEP.">destination-mep <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep</td></tr>
+        <tr data-node-id="1.1.6.1.7.7.2.1" data-node-pid="1.1.6.1.7.7.2"><td title="MEP ID.">mep-id <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep/co-oam:mep-id</td></tr>
+        <tr data-node-id="1.1.6.1.7.7.2.1.1" data-node-pid="1.1.6.1.7.7.2.1"><td title="">mep-id-int <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep/co-oam:mep-id/co-oam:mep-id-int</td></tr>
+        <tr data-node-id="1.1.6.1.7.7.2.1.1.1" data-node-pid="1.1.6.1.7.7.2.1.1"><td title="MEP ID
+in integer format.">mep-id-int <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>int32</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep/co-oam:mep-id/co-oam:mep-id-int/co-oam:mep-id-int</td></tr>
+        <tr data-node-id="1.1.6.1.7.7.2.2" data-node-pid="1.1.6.1.7.7.2"><td title="MEP ID format.">mep-id-format <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>identityref</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep/co-oam:mep-id-format</td></tr>
+        <tr data-node-id="1.1.6.1.7.7.3" data-node-pid="1.1.6.1.7.7"><td title="Destination MEP Address.">destination-mep-address <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep-address</td></tr>
+        <tr data-node-id="1.1.6.1.7.7.3.1" data-node-pid="1.1.6.1.7.7.3"><td title="MEP Addressing.">mep-address <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep-address/co-oam:mep-address</td></tr>
+        <tr data-node-id="1.1.6.1.7.7.3.1.1" data-node-pid="1.1.6.1.7.7.3.1"><td title="MAC Address based MEP Addressing.">mac-address <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep-address/co-oam:mep-address/co-oam:mac-address</td></tr>
+        <tr data-node-id="1.1.6.1.7.7.3.1.1.1" data-node-pid="1.1.6.1.7.7.3.1.1"><td title="MAC Address.">mac-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>string</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep-address/co-oam:mep-address/co-oam:mac-address/co-oam:mac-address</td></tr>
+        <tr data-node-id="1.1.6.1.7.7.3.1.2" data-node-pid="1.1.6.1.7.7.3.1"><td title="IP Address based MEP Addressing.">ip-address <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep-address/co-oam:mep-address/co-oam:ip-address</td></tr>
+        <tr data-node-id="1.1.6.1.7.7.3.1.2.1" data-node-pid="1.1.6.1.7.7.3.1.2"><td title="IP Address.">ip-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>union</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:destination-mep-address/co-oam:mep-address/co-oam:ip-address/co-oam:ip-address</td></tr>
+        <tr data-node-id="1.1.6.1.7.7.4" data-node-pid="1.1.6.1.7.7"><td title="Class of Service (CoS) ID; this value is used to indicate
+Class of Service information .">cos-id <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint8</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mep/co-oam:session/co-oam:cos-id</td></tr>
+        <tr data-node-id="1.1.6.1.8" data-node-pid="1.1.6.1"><td title="List for MIP.">mip[name] <span><i class="fas fa-list"></i></span> </td><td>list</td><td></td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mip</td></tr>
+        <tr data-node-id="1.1.6.1.8.1" data-node-pid="1.1.6.1.8"><td title="Identifier of Maintenance Intermediate Point">name <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>string</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mip/co-oam:name</td></tr>
+        <tr data-node-id="1.1.6.1.8.2" data-node-pid="1.1.6.1.8"><td title="Interface.">interface <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>if:interface-ref</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mip/co-oam:interface</td></tr>
+        <tr data-node-id="1.1.6.1.8.3" data-node-pid="1.1.6.1.8"><td title="MIP Addressing.">mip-address <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mip/co-oam:mip-address</td></tr>
+        <tr data-node-id="1.1.6.1.8.3.1" data-node-pid="1.1.6.1.8.3"><td title="MAC Address based MIP Addressing.">mac-address <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mip/co-oam:mip-address/co-oam:mac-address</td></tr>
+        <tr data-node-id="1.1.6.1.8.3.1.1" data-node-pid="1.1.6.1.8.3.1"><td title="MAC Address of Maintenance Intermediate Point">mac-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>string</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mip/co-oam:mip-address/co-oam:mac-address/co-oam:mac-address</td></tr>
+        <tr data-node-id="1.1.6.1.8.3.2" data-node-pid="1.1.6.1.8.3"><td title="IP Address based MIP Addressing.">ip-address <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mip/co-oam:mip-address/co-oam:ip-address</td></tr>
+        <tr data-node-id="1.1.6.1.8.3.2.1" data-node-pid="1.1.6.1.8.3.2"><td title="IP Address.">ip-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>union</td><td>config</td><td>current</td><td>/co-oam:domains/co-oam:domain/co-oam:mas/co-oam:ma/co-oam:mip/co-oam:mip-address/co-oam:ip-address/co-oam:ip-address</td></tr>
+        <tr data-node-id="2" data-node-pid=""><td title="Generates Continuity Check as per Table 4 of RFC 7276.">continuity-check <span><i class="fas fa-envelope"></i></span> </td><td>rpc</td><td></td><td></td><td>current</td><td>/co-oam:continuity-check</td></tr>
+        <tr data-node-id="2.1" data-node-pid="2"><td title="">input <span><i class="fas fa-share"></i></span> </td><td>input</td><td></td><td>config</td><td>current</td><td>/co-oam:continuity-check/co-oam:input</td></tr>
+        <tr data-node-id="2.1.1" data-node-pid="2.1"><td title="The technology.">technology <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>identityref</td><td>config</td><td>current</td><td>/co-oam:continuity-check/co-oam:input/co-oam:technology</td></tr>
+        <tr data-node-id="2.1.2" data-node-pid="2.1"><td title="Indicate which MD the defect belongs to.">md-name-string <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>leafref</td><td>config</td><td>current</td><td>/co-oam:continuity-check/co-oam:input/co-oam:md-name-string</td></tr>
+        <tr data-node-id="2.1.3" data-node-pid="2.1"><td title="The Maintenance Domain Level.">md-level <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>leafref</td><td>config</td><td>current</td><td>/co-oam:continuity-check/co-oam:input/co-oam:md-level</td></tr>
+        <tr data-node-id="2.1.4" data-node-pid="2.1"><td title="Indicate which MA the defect is associated with.">ma-name-string <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>leafref</td><td>config</td><td>current</td><td>/co-oam:continuity-check/co-oam:input/co-oam:ma-name-string</td></tr>
+        <tr data-node-id="2.1.5" data-node-pid="2.1"><td title="Class of Service (CoS) ID; this value is used to indicate
+Class of Service information .">cos-id <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint8</td><td>config</td><td>current</td><td>/co-oam:continuity-check/co-oam:input/co-oam:cos-id</td></tr>
+        <tr data-node-id="2.1.6" data-node-pid="2.1"><td title="Time to Live.">ttl <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint8</td><td>config</td><td>current</td><td>/co-oam:continuity-check/co-oam:input/co-oam:ttl</td></tr>
+        <tr data-node-id="2.1.7" data-node-pid="2.1"><td title="Defines different command types.">sub-type <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>identityref</td><td>config</td><td>current</td><td>/co-oam:continuity-check/co-oam:input/co-oam:sub-type</td></tr>
+        <tr data-node-id="2.1.8" data-node-pid="2.1"><td title="Source MEP.">source-mep <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>leafref</td><td>config</td><td>current</td><td>/co-oam:continuity-check/co-oam:input/co-oam:source-mep</td></tr>
+        <tr data-node-id="2.1.9" data-node-pid="2.1"><td title="Destination MEP.">destination-mep <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>config</td><td>current</td><td>/co-oam:continuity-check/co-oam:input/co-oam:destination-mep</td></tr>
+        <tr data-node-id="2.1.9.1" data-node-pid="2.1.9"><td title="MEP Addressing.">mep-address <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>config</td><td>current</td><td>/co-oam:continuity-check/co-oam:input/co-oam:destination-mep/co-oam:mep-address</td></tr>
+        <tr data-node-id="2.1.9.1.1" data-node-pid="2.1.9.1"><td title="MAC Address based MEP Addressing.">mac-address <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:continuity-check/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:mac-address</td></tr>
+        <tr data-node-id="2.1.9.1.1.1" data-node-pid="2.1.9.1.1"><td title="MAC Address.">mac-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>string</td><td>config</td><td>current</td><td>/co-oam:continuity-check/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:mac-address/co-oam:mac-address</td></tr>
+        <tr data-node-id="2.1.9.1.2" data-node-pid="2.1.9.1"><td title="IP Address based MEP Addressing.">ip-address <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:continuity-check/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:ip-address</td></tr>
+        <tr data-node-id="2.1.9.1.2.1" data-node-pid="2.1.9.1.2"><td title="IP Address.">ip-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>union</td><td>config</td><td>current</td><td>/co-oam:continuity-check/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:ip-address/co-oam:ip-address</td></tr>
+        <tr data-node-id="2.1.9.2" data-node-pid="2.1.9"><td title="MEP ID.">mep-id <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>config</td><td>current</td><td>/co-oam:continuity-check/co-oam:input/co-oam:destination-mep/co-oam:mep-id</td></tr>
+        <tr data-node-id="2.1.9.2.1" data-node-pid="2.1.9.2"><td title="">mep-id-int <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:continuity-check/co-oam:input/co-oam:destination-mep/co-oam:mep-id/co-oam:mep-id-int</td></tr>
+        <tr data-node-id="2.1.9.2.1.1" data-node-pid="2.1.9.2.1"><td title="MEP ID
+in integer format.">mep-id-int <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>int32</td><td>config</td><td>current</td><td>/co-oam:continuity-check/co-oam:input/co-oam:destination-mep/co-oam:mep-id/co-oam:mep-id-int/co-oam:mep-id-int</td></tr>
+        <tr data-node-id="2.1.9.3" data-node-pid="2.1.9"><td title="MEP ID format.">mep-id-format <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>identityref</td><td>config</td><td>current</td><td>/co-oam:continuity-check/co-oam:input/co-oam:destination-mep/co-oam:mep-id-format</td></tr>
+        <tr data-node-id="2.1.10" data-node-pid="2.1"><td title="Number of continuity-check messages to be sent.">count <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint32</td><td>config</td><td>current</td><td>/co-oam:continuity-check/co-oam:input/co-oam:count</td></tr>
+        <tr data-node-id="2.1.11" data-node-pid="2.1"><td title="Time interval between echo requests.">cc-transmit-interval <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>time-interval</td><td>config</td><td>current</td><td>/co-oam:continuity-check/co-oam:input/co-oam:cc-transmit-interval</td></tr>
+        <tr data-node-id="2.1.12" data-node-pid="2.1"><td title="Size of continuity-check packets, in octets.">packet-size <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint32</td><td>config</td><td>current</td><td>/co-oam:continuity-check/co-oam:input/co-oam:packet-size</td></tr>
+        <tr data-node-id="2.2" data-node-pid="2"><td title="">output <span><i class="fas fa-reply"></i></span> </td><td>output</td><td></td><td>no config</td><td>current</td><td>/co-oam:continuity-check/co-oam:output</td></tr>
+        <tr data-node-id="2.2.1" data-node-pid="2.2"><td title="Define the monitor stats.">monitor-stats <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>no config</td><td>current</td><td>/co-oam:continuity-check/co-oam:output/co-oam:monitor-stats</td></tr>
+        <tr data-node-id="2.2.1.1" data-node-pid="2.2.1"><td title="This is a placeholder when
+no monitoring statistics are needed.">monitor-null <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:continuity-check/co-oam:output/co-oam:monitor-stats/co-oam:monitor-null</td></tr>
+        <tr data-node-id="2.2.1.1.1" data-node-pid="2.2.1.1"><td title="There are no monitoring statistics to be defined.">monitor-null <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>empty</td><td>no config</td><td>current</td><td>/co-oam:continuity-check/co-oam:output/co-oam:monitor-stats/co-oam:monitor-null/co-oam:monitor-null</td></tr>
+        <tr data-node-id="3" data-node-pid=""><td title="Generates Connectivity Verification as per Table 4 in RFC 7276.">continuity-verification <span><i class="fas fa-envelope"></i></span> </td><td>rpc</td><td></td><td></td><td>current</td><td>/co-oam:continuity-verification</td></tr>
+        <tr data-node-id="3.1" data-node-pid="3"><td title="">input <span><i class="fas fa-share"></i></span> </td><td>input</td><td></td><td>config</td><td>current</td><td>/co-oam:continuity-verification/co-oam:input</td></tr>
+        <tr data-node-id="3.1.1" data-node-pid="3.1"><td title="Indicate which MD the defect belongs to.">md-name-string <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>leafref</td><td>config</td><td>current</td><td>/co-oam:continuity-verification/co-oam:input/co-oam:md-name-string</td></tr>
+        <tr data-node-id="3.1.2" data-node-pid="3.1"><td title="The Maintenance Domain Level.">md-level <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>leafref</td><td>config</td><td>current</td><td>/co-oam:continuity-verification/co-oam:input/co-oam:md-level</td></tr>
+        <tr data-node-id="3.1.3" data-node-pid="3.1"><td title="Indicate which MA the defect is associated with.">ma-name-string <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>leafref</td><td>config</td><td>current</td><td>/co-oam:continuity-verification/co-oam:input/co-oam:ma-name-string</td></tr>
+        <tr data-node-id="3.1.4" data-node-pid="3.1"><td title="Class of Service (CoS) ID; this value is used to indicate
+Class of Service information .">cos-id <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint8</td><td>config</td><td>current</td><td>/co-oam:continuity-verification/co-oam:input/co-oam:cos-id</td></tr>
+        <tr data-node-id="3.1.5" data-node-pid="3.1"><td title="Time to Live.">ttl <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint8</td><td>config</td><td>current</td><td>/co-oam:continuity-verification/co-oam:input/co-oam:ttl</td></tr>
+        <tr data-node-id="3.1.6" data-node-pid="3.1"><td title="Defines different command types.">sub-type <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>identityref</td><td>config</td><td>current</td><td>/co-oam:continuity-verification/co-oam:input/co-oam:sub-type</td></tr>
+        <tr data-node-id="3.1.7" data-node-pid="3.1"><td title="Source MEP.">source-mep <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>leafref</td><td>config</td><td>current</td><td>/co-oam:continuity-verification/co-oam:input/co-oam:source-mep</td></tr>
+        <tr data-node-id="3.1.8" data-node-pid="3.1"><td title="Destination MEP.">destination-mep <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>config</td><td>current</td><td>/co-oam:continuity-verification/co-oam:input/co-oam:destination-mep</td></tr>
+        <tr data-node-id="3.1.8.1" data-node-pid="3.1.8"><td title="MEP Addressing.">mep-address <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>config</td><td>current</td><td>/co-oam:continuity-verification/co-oam:input/co-oam:destination-mep/co-oam:mep-address</td></tr>
+        <tr data-node-id="3.1.8.1.1" data-node-pid="3.1.8.1"><td title="MAC Address based MEP Addressing.">mac-address <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:continuity-verification/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:mac-address</td></tr>
+        <tr data-node-id="3.1.8.1.1.1" data-node-pid="3.1.8.1.1"><td title="MAC Address.">mac-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>string</td><td>config</td><td>current</td><td>/co-oam:continuity-verification/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:mac-address/co-oam:mac-address</td></tr>
+        <tr data-node-id="3.1.8.1.2" data-node-pid="3.1.8.1"><td title="IP Address based MEP Addressing.">ip-address <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:continuity-verification/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:ip-address</td></tr>
+        <tr data-node-id="3.1.8.1.2.1" data-node-pid="3.1.8.1.2"><td title="IP Address.">ip-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>union</td><td>config</td><td>current</td><td>/co-oam:continuity-verification/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:ip-address/co-oam:ip-address</td></tr>
+        <tr data-node-id="3.1.8.2" data-node-pid="3.1.8"><td title="MEP ID.">mep-id <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>config</td><td>current</td><td>/co-oam:continuity-verification/co-oam:input/co-oam:destination-mep/co-oam:mep-id</td></tr>
+        <tr data-node-id="3.1.8.2.1" data-node-pid="3.1.8.2"><td title="">mep-id-int <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:continuity-verification/co-oam:input/co-oam:destination-mep/co-oam:mep-id/co-oam:mep-id-int</td></tr>
+        <tr data-node-id="3.1.8.2.1.1" data-node-pid="3.1.8.2.1"><td title="MEP ID
+in integer format.">mep-id-int <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>int32</td><td>config</td><td>current</td><td>/co-oam:continuity-verification/co-oam:input/co-oam:destination-mep/co-oam:mep-id/co-oam:mep-id-int/co-oam:mep-id-int</td></tr>
+        <tr data-node-id="3.1.8.3" data-node-pid="3.1.8"><td title="MEP ID format.">mep-id-format <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>identityref</td><td>config</td><td>current</td><td>/co-oam:continuity-verification/co-oam:input/co-oam:destination-mep/co-oam:mep-id-format</td></tr>
+        <tr data-node-id="3.1.9" data-node-pid="3.1"><td title="Number of continuity-verification messages to be sent.">count <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint32</td><td>config</td><td>current</td><td>/co-oam:continuity-verification/co-oam:input/co-oam:count</td></tr>
+        <tr data-node-id="3.1.10" data-node-pid="3.1"><td title="Time interval between echo requests.">interval <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>time-interval</td><td>config</td><td>current</td><td>/co-oam:continuity-verification/co-oam:input/co-oam:interval</td></tr>
+        <tr data-node-id="3.1.11" data-node-pid="3.1"><td title="Size of continuity-verification packets, in octets.">packet-size <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint32</td><td>config</td><td>current</td><td>/co-oam:continuity-verification/co-oam:input/co-oam:packet-size</td></tr>
+        <tr data-node-id="3.2" data-node-pid="3"><td title="">output <span><i class="fas fa-reply"></i></span> </td><td>output</td><td></td><td>no config</td><td>current</td><td>/co-oam:continuity-verification/co-oam:output</td></tr>
+        <tr data-node-id="3.2.1" data-node-pid="3.2"><td title="Define the monitor stats.">monitor-stats <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>no config</td><td>current</td><td>/co-oam:continuity-verification/co-oam:output/co-oam:monitor-stats</td></tr>
+        <tr data-node-id="3.2.1.1" data-node-pid="3.2.1"><td title="This is a placeholder when
+no monitoring statistics are needed.">monitor-null <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:continuity-verification/co-oam:output/co-oam:monitor-stats/co-oam:monitor-null</td></tr>
+        <tr data-node-id="3.2.1.1.1" data-node-pid="3.2.1.1"><td title="There are no monitoring statistics to be defined.">monitor-null <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>empty</td><td>no config</td><td>current</td><td>/co-oam:continuity-verification/co-oam:output/co-oam:monitor-stats/co-oam:monitor-null/co-oam:monitor-null</td></tr>
+        <tr data-node-id="4" data-node-pid=""><td title="Generates Traceroute or Path Trace and returns response.
+References RFC 7276 for common Toolset name -- for
+MPLS-TP OAM, it's Route Tracing, and for TRILL OAM, it's
+Path Tracing tool.  Starts with TTL of one and increments
+by one at each hop until the destination is reached or TTL
+reaches max value.">traceroute <span><i class="fas fa-envelope"></i></span> </td><td>rpc</td><td></td><td></td><td>current</td><td>/co-oam:traceroute</td></tr>
+        <tr data-node-id="4.1" data-node-pid="4"><td title="">input <span><i class="fas fa-share"></i></span> </td><td>input</td><td></td><td>config</td><td>current</td><td>/co-oam:traceroute/co-oam:input</td></tr>
+        <tr data-node-id="4.1.1" data-node-pid="4.1"><td title="Indicate which MD the defect belongs to.">md-name-string <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>leafref</td><td>config</td><td>current</td><td>/co-oam:traceroute/co-oam:input/co-oam:md-name-string</td></tr>
+        <tr data-node-id="4.1.2" data-node-pid="4.1"><td title="The Maintenance Domain Level.">md-level <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>leafref</td><td>config</td><td>current</td><td>/co-oam:traceroute/co-oam:input/co-oam:md-level</td></tr>
+        <tr data-node-id="4.1.3" data-node-pid="4.1"><td title="Indicate which MA the defect is associated with.">ma-name-string <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>leafref</td><td>config</td><td>current</td><td>/co-oam:traceroute/co-oam:input/co-oam:ma-name-string</td></tr>
+        <tr data-node-id="4.1.4" data-node-pid="4.1"><td title="Class of Service (CoS) ID; this value is used to indicate
+Class of Service information .">cos-id <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint8</td><td>config</td><td>current</td><td>/co-oam:traceroute/co-oam:input/co-oam:cos-id</td></tr>
+        <tr data-node-id="4.1.5" data-node-pid="4.1"><td title="Time to Live.">ttl <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint8</td><td>config</td><td>current</td><td>/co-oam:traceroute/co-oam:input/co-oam:ttl</td></tr>
+        <tr data-node-id="4.1.6" data-node-pid="4.1"><td title="Defines different command types.">command-sub-type <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>identityref</td><td>config</td><td>current</td><td>/co-oam:traceroute/co-oam:input/co-oam:command-sub-type</td></tr>
+        <tr data-node-id="4.1.7" data-node-pid="4.1"><td title="Source MEP.">source-mep <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>leafref</td><td>config</td><td>current</td><td>/co-oam:traceroute/co-oam:input/co-oam:source-mep</td></tr>
+        <tr data-node-id="4.1.8" data-node-pid="4.1"><td title="Destination MEP.">destination-mep <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>config</td><td>current</td><td>/co-oam:traceroute/co-oam:input/co-oam:destination-mep</td></tr>
+        <tr data-node-id="4.1.8.1" data-node-pid="4.1.8"><td title="MEP Addressing.">mep-address <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>config</td><td>current</td><td>/co-oam:traceroute/co-oam:input/co-oam:destination-mep/co-oam:mep-address</td></tr>
+        <tr data-node-id="4.1.8.1.1" data-node-pid="4.1.8.1"><td title="MAC Address based MEP Addressing.">mac-address <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:traceroute/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:mac-address</td></tr>
+        <tr data-node-id="4.1.8.1.1.1" data-node-pid="4.1.8.1.1"><td title="MAC Address.">mac-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>string</td><td>config</td><td>current</td><td>/co-oam:traceroute/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:mac-address/co-oam:mac-address</td></tr>
+        <tr data-node-id="4.1.8.1.2" data-node-pid="4.1.8.1"><td title="IP Address based MEP Addressing.">ip-address <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:traceroute/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:ip-address</td></tr>
+        <tr data-node-id="4.1.8.1.2.1" data-node-pid="4.1.8.1.2"><td title="IP Address.">ip-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>union</td><td>config</td><td>current</td><td>/co-oam:traceroute/co-oam:input/co-oam:destination-mep/co-oam:mep-address/co-oam:ip-address/co-oam:ip-address</td></tr>
+        <tr data-node-id="4.1.8.2" data-node-pid="4.1.8"><td title="MEP ID.">mep-id <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>config</td><td>current</td><td>/co-oam:traceroute/co-oam:input/co-oam:destination-mep/co-oam:mep-id</td></tr>
+        <tr data-node-id="4.1.8.2.1" data-node-pid="4.1.8.2"><td title="">mep-id-int <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:traceroute/co-oam:input/co-oam:destination-mep/co-oam:mep-id/co-oam:mep-id-int</td></tr>
+        <tr data-node-id="4.1.8.2.1.1" data-node-pid="4.1.8.2.1"><td title="MEP ID
+in integer format.">mep-id-int <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>int32</td><td>config</td><td>current</td><td>/co-oam:traceroute/co-oam:input/co-oam:destination-mep/co-oam:mep-id/co-oam:mep-id-int/co-oam:mep-id-int</td></tr>
+        <tr data-node-id="4.1.8.3" data-node-pid="4.1.8"><td title="MEP ID format.">mep-id-format <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>identityref</td><td>config</td><td>current</td><td>/co-oam:traceroute/co-oam:input/co-oam:destination-mep/co-oam:mep-id-format</td></tr>
+        <tr data-node-id="4.1.9" data-node-pid="4.1"><td title="Number of traceroute probes to send.  In protocols where a
+separate message is sent at each TTL, this is the number
+of packets to be sent at each TTL.">count <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint32</td><td>config</td><td>current</td><td>/co-oam:traceroute/co-oam:input/co-oam:count</td></tr>
+        <tr data-node-id="4.1.10" data-node-pid="4.1"><td title="Time interval between echo requests.">interval <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>time-interval</td><td>config</td><td>current</td><td>/co-oam:traceroute/co-oam:input/co-oam:interval</td></tr>
+        <tr data-node-id="4.2" data-node-pid="4"><td title="">output <span><i class="fas fa-reply"></i></span> </td><td>output</td><td></td><td>no config</td><td>current</td><td>/co-oam:traceroute/co-oam:output</td></tr>
+        <tr data-node-id="4.2.1" data-node-pid="4.2"><td title="List of responses.">response[response-index] <span><i class="fas fa-list"></i></span> </td><td>list</td><td></td><td>no config</td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response</td></tr>
+        <tr data-node-id="4.2.1.1" data-node-pid="4.2.1"><td title="Arbitrary index for the response.  In protocols that
+guarantee there is only a single response at each TTL,
+the TTL can be used as the response index.">response-index <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint8</td><td>no config</td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:response-index</td></tr>
+        <tr data-node-id="4.2.1.2" data-node-pid="4.2.1"><td title="Time to Live.">ttl <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>uint8</td><td>no config</td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:ttl</td></tr>
+        <tr data-node-id="4.2.1.3" data-node-pid="4.2.1"><td title="MEP from which the response has been received">destination-mep <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>no config</td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:destination-mep</td></tr>
+        <tr data-node-id="4.2.1.3.1" data-node-pid="4.2.1.3"><td title="MEP Addressing.">mep-address <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>no config</td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:destination-mep/co-oam:mep-address</td></tr>
+        <tr data-node-id="4.2.1.3.1.1" data-node-pid="4.2.1.3.1"><td title="MAC Address based MEP Addressing.">mac-address <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:destination-mep/co-oam:mep-address/co-oam:mac-address</td></tr>
+        <tr data-node-id="4.2.1.3.1.1.1" data-node-pid="4.2.1.3.1.1"><td title="MAC Address.">mac-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>string</td><td>no config</td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:destination-mep/co-oam:mep-address/co-oam:mac-address/co-oam:mac-address</td></tr>
+        <tr data-node-id="4.2.1.3.1.2" data-node-pid="4.2.1.3.1"><td title="IP Address based MEP Addressing.">ip-address <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:destination-mep/co-oam:mep-address/co-oam:ip-address</td></tr>
+        <tr data-node-id="4.2.1.3.1.2.1" data-node-pid="4.2.1.3.1.2"><td title="IP Address.">ip-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>union</td><td>no config</td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:destination-mep/co-oam:mep-address/co-oam:ip-address/co-oam:ip-address</td></tr>
+        <tr data-node-id="4.2.1.3.2" data-node-pid="4.2.1.3"><td title="MEP ID.">mep-id <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>no config</td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:destination-mep/co-oam:mep-id</td></tr>
+        <tr data-node-id="4.2.1.3.2.1" data-node-pid="4.2.1.3.2"><td title="">mep-id-int <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:destination-mep/co-oam:mep-id/co-oam:mep-id-int</td></tr>
+        <tr data-node-id="4.2.1.3.2.1.1" data-node-pid="4.2.1.3.2.1"><td title="MEP ID
+in integer format.">mep-id-int <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>int32</td><td>no config</td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:destination-mep/co-oam:mep-id/co-oam:mep-id-int/co-oam:mep-id-int</td></tr>
+        <tr data-node-id="4.2.1.3.3" data-node-pid="4.2.1.3"><td title="MEP ID format.">mep-id-format <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>identityref</td><td>no config</td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:destination-mep/co-oam:mep-id-format</td></tr>
+        <tr data-node-id="4.2.1.4" data-node-pid="4.2.1"><td title="MIP responding with traceroute">mip <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>no config</td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:mip</td></tr>
+        <tr data-node-id="4.2.1.4.1" data-node-pid="4.2.1.4"><td title="MIP interface.">interface <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>if:interface-ref</td><td>no config</td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:mip/co-oam:interface</td></tr>
+        <tr data-node-id="4.2.1.4.2" data-node-pid="4.2.1.4"><td title="MIP Addressing.">mip-address <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>no config</td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:mip/co-oam:mip-address</td></tr>
+        <tr data-node-id="4.2.1.4.2.1" data-node-pid="4.2.1.4.2"><td title="MAC Address based MIP Addressing.">mac-address <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:mip/co-oam:mip-address/co-oam:mac-address</td></tr>
+        <tr data-node-id="4.2.1.4.2.1.1" data-node-pid="4.2.1.4.2.1"><td title="MAC Address of Maintenance Intermediate Point">mac-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>string</td><td>no config</td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:mip/co-oam:mip-address/co-oam:mac-address/co-oam:mac-address</td></tr>
+        <tr data-node-id="4.2.1.4.2.2" data-node-pid="4.2.1.4.2"><td title="IP Address based MIP Addressing.">ip-address <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:mip/co-oam:mip-address/co-oam:ip-address</td></tr>
+        <tr data-node-id="4.2.1.4.2.2.1" data-node-pid="4.2.1.4.2.2"><td title="IP Address.">ip-address <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>union</td><td>no config</td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:mip/co-oam:mip-address/co-oam:ip-address/co-oam:ip-address</td></tr>
+        <tr data-node-id="4.2.1.5" data-node-pid="4.2.1"><td title="Define the monitor stats.">monitor-stats <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>no config</td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:monitor-stats</td></tr>
+        <tr data-node-id="4.2.1.5.1" data-node-pid="4.2.1.5"><td title="This is a placeholder when
+no monitoring statistics are needed.">monitor-null <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:monitor-stats/co-oam:monitor-null</td></tr>
+        <tr data-node-id="4.2.1.5.1.1" data-node-pid="4.2.1.5.1"><td title="There are no monitoring statistics to be defined.">monitor-null <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>empty</td><td>no config</td><td>current</td><td>/co-oam:traceroute/co-oam:output/co-oam:response/co-oam:monitor-stats/co-oam:monitor-null/co-oam:monitor-null</td></tr>
+        <tr data-node-id="5" data-node-pid=""><td title="When the defect condition is met, this notification is sent.">defect-condition-notification <span><i class="fas fa-bell"></i></span> </td><td>notification</td><td></td><td></td><td>current</td><td>/co-oam:defect-condition-notification</td></tr>
+        <tr data-node-id="5.1" data-node-pid="5"><td title="The technology.">technology <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>identityref</td><td>no config</td><td>current</td><td>/co-oam:defect-condition-notification/co-oam:technology</td></tr>
+        <tr data-node-id="5.2" data-node-pid="5"><td title="Indicate which MD the defect belongs to.">md-name-string <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>leafref</td><td>no config</td><td>current</td><td>/co-oam:defect-condition-notification/co-oam:md-name-string</td></tr>
+        <tr data-node-id="5.3" data-node-pid="5"><td title="Indicate which MA the defect is associated with.">ma-name-string <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>leafref</td><td>no config</td><td>current</td><td>/co-oam:defect-condition-notification/co-oam:ma-name-string</td></tr>
+        <tr data-node-id="5.4" data-node-pid="5"><td title="Indicate which MEP is seeing the defect.">mep-name <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>leafref</td><td>no config</td><td>current</td><td>/co-oam:defect-condition-notification/co-oam:mep-name</td></tr>
+        <tr data-node-id="5.5" data-node-pid="5"><td title="The currently active defects on the specific MEP.">defect-type <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>identityref</td><td>no config</td><td>current</td><td>/co-oam:defect-condition-notification/co-oam:defect-type</td></tr>
+        <tr data-node-id="5.6" data-node-pid="5"><td title="Indicate who is generating the defect (if known). If
+unknown, set it to 0.">generating-mepid <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>no config</td><td>current</td><td>/co-oam:defect-condition-notification/co-oam:generating-mepid</td></tr>
+        <tr data-node-id="5.6.1" data-node-pid="5.6"><td title="MEP ID.">mep-id <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>no config</td><td>current</td><td>/co-oam:defect-condition-notification/co-oam:generating-mepid/co-oam:mep-id</td></tr>
+        <tr data-node-id="5.6.1.1" data-node-pid="5.6.1"><td title="">mep-id-int <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:defect-condition-notification/co-oam:generating-mepid/co-oam:mep-id/co-oam:mep-id-int</td></tr>
+        <tr data-node-id="5.6.1.1.1" data-node-pid="5.6.1.1"><td title="MEP ID
+in integer format.">mep-id-int <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>int32</td><td>no config</td><td>current</td><td>/co-oam:defect-condition-notification/co-oam:generating-mepid/co-oam:mep-id/co-oam:mep-id-int/co-oam:mep-id-int</td></tr>
+        <tr data-node-id="5.6.2" data-node-pid="5.6"><td title="MEP ID format.">mep-id-format <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>identityref</td><td>no config</td><td>current</td><td>/co-oam:defect-condition-notification/co-oam:generating-mepid/co-oam:mep-id-format</td></tr>
+        <tr data-node-id="5.7" data-node-pid="5"><td title="Defect Message choices.">defect <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>no config</td><td>current</td><td>/co-oam:defect-condition-notification/co-oam:defect</td></tr>
+        <tr data-node-id="5.7.1" data-node-pid="5.7"><td title="This is a placeholder when no defect status is needed.">defect-null <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:defect-condition-notification/co-oam:defect/co-oam:defect-null</td></tr>
+        <tr data-node-id="5.7.1.1" data-node-pid="5.7.1"><td title="There is no defect to be defined; it will be defined in
+a technology-specific model.">defect-null <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>empty</td><td>no config</td><td>current</td><td>/co-oam:defect-condition-notification/co-oam:defect/co-oam:defect-null/co-oam:defect-null</td></tr>
+        <tr data-node-id="5.7.2" data-node-pid="5.7"><td title="This is a placeholder to display defect code.">defect-code <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:defect-condition-notification/co-oam:defect/co-oam:defect-code</td></tr>
+        <tr data-node-id="5.7.2.1" data-node-pid="5.7.2"><td title="Defect code is integer value specific to a technology.">defect-code <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>int32</td><td>no config</td><td>current</td><td>/co-oam:defect-condition-notification/co-oam:defect/co-oam:defect-code/co-oam:defect-code</td></tr>
+        <tr data-node-id="6" data-node-pid=""><td title="When the defect is cleared, this notification is sent.">defect-cleared-notification <span><i class="fas fa-bell"></i></span> </td><td>notification</td><td></td><td></td><td>current</td><td>/co-oam:defect-cleared-notification</td></tr>
+        <tr data-node-id="6.1" data-node-pid="6"><td title="The technology.">technology <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>identityref</td><td>no config</td><td>current</td><td>/co-oam:defect-cleared-notification/co-oam:technology</td></tr>
+        <tr data-node-id="6.2" data-node-pid="6"><td title="Indicate which MD the defect belongs to">md-name-string <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>leafref</td><td>no config</td><td>current</td><td>/co-oam:defect-cleared-notification/co-oam:md-name-string</td></tr>
+        <tr data-node-id="6.3" data-node-pid="6"><td title="Indicate which MA the defect is associated with.">ma-name-string <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>leafref</td><td>no config</td><td>current</td><td>/co-oam:defect-cleared-notification/co-oam:ma-name-string</td></tr>
+        <tr data-node-id="6.4" data-node-pid="6"><td title="Indicate which MEP is seeing the defect.">mep-name <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>leafref</td><td>no config</td><td>current</td><td>/co-oam:defect-cleared-notification/co-oam:mep-name</td></tr>
+        <tr data-node-id="6.5" data-node-pid="6"><td title="The currently active defects on the specific MEP.">defect-type <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>identityref</td><td>no config</td><td>current</td><td>/co-oam:defect-cleared-notification/co-oam:defect-type</td></tr>
+        <tr data-node-id="6.6" data-node-pid="6"><td title="Indicate who is generating the defect (if known). If
+unknown, set it to 0.">generating-mepid <span><i class="fas fa-folder-open"></i></span> </td><td>container</td><td></td><td>no config</td><td>current</td><td>/co-oam:defect-cleared-notification/co-oam:generating-mepid</td></tr>
+        <tr data-node-id="6.6.1" data-node-pid="6.6"><td title="MEP ID.">mep-id <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>no config</td><td>current</td><td>/co-oam:defect-cleared-notification/co-oam:generating-mepid/co-oam:mep-id</td></tr>
+        <tr data-node-id="6.6.1.1" data-node-pid="6.6.1"><td title="">mep-id-int <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:defect-cleared-notification/co-oam:generating-mepid/co-oam:mep-id/co-oam:mep-id-int</td></tr>
+        <tr data-node-id="6.6.1.1.1" data-node-pid="6.6.1.1"><td title="MEP ID
+in integer format.">mep-id-int <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>int32</td><td>no config</td><td>current</td><td>/co-oam:defect-cleared-notification/co-oam:generating-mepid/co-oam:mep-id/co-oam:mep-id-int/co-oam:mep-id-int</td></tr>
+        <tr data-node-id="6.6.2" data-node-pid="6.6"><td title="MEP ID format.">mep-id-format <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>identityref</td><td>no config</td><td>current</td><td>/co-oam:defect-cleared-notification/co-oam:generating-mepid/co-oam:mep-id-format</td></tr>
+        <tr data-node-id="6.7" data-node-pid="6"><td title="Defect Message choices.">defect <span><i class="fas fa-tasks"></i></span> </td><td>choice</td><td></td><td>no config</td><td>current</td><td>/co-oam:defect-cleared-notification/co-oam:defect</td></tr>
+        <tr data-node-id="6.7.1" data-node-pid="6.7"><td title="This is a placeholder when no defect status is needed.">defect-null <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:defect-cleared-notification/co-oam:defect/co-oam:defect-null</td></tr>
+        <tr data-node-id="6.7.1.1" data-node-pid="6.7.1"><td title="There is no defect to be defined; it will be defined in
+a technology-specific model.">defect-null <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>empty</td><td>no config</td><td>current</td><td>/co-oam:defect-cleared-notification/co-oam:defect/co-oam:defect-null/co-oam:defect-null</td></tr>
+        <tr data-node-id="6.7.2" data-node-pid="6.7"><td title="This is a placeholder to display defect code.">defect-code <span><i class="fas fa-check"></i></span> </td><td>case</td><td></td><td></td><td>current</td><td>/co-oam:defect-cleared-notification/co-oam:defect/co-oam:defect-code</td></tr>
+        <tr data-node-id="6.7.2.1" data-node-pid="6.7.2"><td title="Defect code is integer value specific to a technology.">defect-code <span><i class="fas fa-leaf"></i></span> </td><td>leaf</td><td>int32</td><td>no config</td><td>current</td><td>/co-oam:defect-cleared-notification/co-oam:defect/co-oam:defect-code/co-oam:defect-code</td></tr>
+    </table>
+</div>
+<script>
+class JsStore {
+  constructor(opts = {}) {
+    this.opts = {
+      type: opts.type || 'session',
+      key: opts.key
+    }
+    this.inst = new WebStorage(this.opts);
+  }
+
+  get(defs = null) {
+    return this.inst.get(this.opts.key) || defs;
+  }
+
+  set(data) {
+    this.inst.set(this.opts.key, data);
+  }
+
+  remove() {
+    this.inst.remove(this.opts.key);
+  }
+}
+
+class WebStorage {
+  constructor(opts = {}) {
+    this.storage = {
+      local: window.localStorage,
+      session: window.sessionStorage
+    }[opts.type];
+  }
+
+  get(key) {
+    try {
+      let json = this.storage.getItem(key);
+      if (!json) return null;
+      return JSON.parse(json)
+    } catch(e) {
+      console.log(e);
+      return null;
+    }
+  }
+
+  set(key, value) {
+    try {
+      this.storage.setItem(key, JSON.stringify(value));
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
+  remove(key) {
+    this.storage.removeItem(key);
+  }
+}
+
+
+const NAMESPACE = 'simple-tree-table';
+
+const DEFAULTS = {
+  expander: null,
+  collapser: null,
+  opened: 'all',
+  margin: 20,
+  iconPosition: ':first',
+  iconTemplate: '<span />',
+  store: null,
+  storeKey: null
+};
+
+class SimpleTreeTable {
+  constructor(element, options = {}) {
+    this.options = $.extend({}, DEFAULTS, options);
+
+    this.$table = $(element);
+    this.$expander = $(this.options.expander);
+    this.$collapser = $(this.options.collapser);
+
+    if (this.options.store && this.options.storeKey) {
+      this.store = new Store({
+        type: this.options.store,
+        key: this.options.storeKey
+      });
+    }
+
+    this.init();
+    this.load();
+  }
+
+  init() {
+    this.$table.addClass(NAMESPACE);
+    this.build();
+    this.unbind();
+    this.bind();
+  }
+
+  destroy() {
+    this.$table.removeClass(NAMESPACE);
+    this.$table.find('.tree-icon').remove();
+    this.nodes().removeClass('tree-empty tree-opened tree-closed');
+
+    this.unbind();
+  }
+
+  build() {
+    this.nodes().not('[data-node-depth]').each((i, node) => {
+      let $node = $(node);
+      let depth = this.depth($node);
+      $node.data('node-depth', depth);
+      if (depth == 1) {
+        $node.addClass('tree-root');
+      }
+    });
+
+    this.nodes().filter((i, node) => {
+      return $(node).find(this.options.iconPosition).find('.tree-handler').length == 0;
+    }).each((i, node) => {
+      let $node = $(node);
+      let depth = this.depth($node);
+      let margin = this.options.margin * (depth - 1);
+      let $icon = $(this.options.iconTemplate).addClass('tree-handler tree-icon').css('margin-left', `${margin}px`);
+      $node.find(this.options.iconPosition).prepend($icon);
+    });
+
+    this.nodes().not('.tree-empty, .tree-opened, .tree-closed').each((i, node) => {
+      let $node = $(node);
+      if (!this.hasChildren($node)) {
+        $node.addClass('tree-empty');
+      } else if (this.opensDefault($node)) {
+        $node.addClass('tree-opened');
+      } else {
+        $node.addClass('tree-closed');
+      }
+    });
+
+    this.nodes().filter('.tree-opened').each((i, node) => {
+      this.show($(node));
+    });
+    this.nodes().filter('.tree-closed').each((i, node) => {
+      this.hide($(node));
+    });
+  }
+
+  opensDefault($node) {
+    let opened = this.options.opened;
+    return opened && (opened == 'all' || opened.indexOf($node.data('node-id')) != -1);
+  }
+
+  bind() {
+    this.$expander.on(`click.${NAMESPACE}`, (e) => {
+      this.expand();
+    });
+
+    this.$collapser.on(`click.${NAMESPACE}`, (e) => {
+      this.collapse();
+    });
+
+    this.$table.on(`click.${NAMESPACE}`, 'tr .tree-handler', (e) => {
+      let $node = $(e.currentTarget).closest('tr');
+      if ($node.hasClass('tree-opened')) {
+        this.close($node);
+      } else {
+        this.open($node);
+      }
+    });
+  }
+
+  unbind() {
+    this.$expander.off(`.${NAMESPACE}`);
+    this.$collapser.off(`.${NAMESPACE}`);
+    this.$table.off(`.${NAMESPACE} node:open node:close`);
+  }
+
+  expand() {
+    this.nodes().each((i, node) => {
+      this.show($(node));
+    });
+    this.save();
+  }
+
+  collapse() {
+    this.nodes().each((i, node) => {
+      this.hide($(node));
+    });
+    this.save();
+  }
+
+  nodes() {
+    return this.$table.find('tr[data-node-id]');
+  }
+
+  depth($node) {
+    let d = $node.data('node-depth');
+    if (d) {
+      return d;
+    }
+
+    let $parent = this.findByID($node.data('node-pid'));
+    if ($parent.length != 0) {
+      return this.depth($parent) + 1;
+    } else {
+      return 1;
+    }
+  }
+
+  open($node) {
+    this.show($node);
+    this.save();
+
+    $node.trigger('node:open', [$node]);
+  }
+
+  show($node) {
+    if (!$node.hasClass('tree-empty')) {
+      $node.removeClass('tree-closed').addClass('tree-opened');
+      this.showDescs($node);
+    }
+  }
+
+  showDescs($node) {
+    let $children = this.findChildren($node);
+    $children.each((i, child) => {
+      let $child = $(child);
+      $child.show();
+      if ($child.hasClass('tree-opened')) {
+        this.showDescs($child);
+      }
+    });
+  }
+
+  close($node) {
+    this.hide($node);
+    this.save();
+
+    $node.trigger('node:close', [$node]);
+  }
+
+  hide($node) {
+    if (!$node.hasClass('tree-empty')) {
+      $node.removeClass('tree-opened').addClass('tree-closed');
+      this.hideDescs($node);
+    }
+  }
+
+  hideDescs($node) {
+    let $children = this.findChildren($node);
+    $children.each((i, child) => {
+      let $child = $(child);
+      $child.hide();
+      this.hideDescs($child);
+    });
+  }
+
+  hasChildren($node) {
+    return this.findChildren($node).length != 0;
+  }
+
+  findChildren($node) {
+    let pid = $node.data('node-id');
+    return this.$table.find(`tr[data-node-pid="${pid}"]`);
+  }
+
+  findDescendants($node, descendants = []) {
+    let children = this.findChildren($node)
+    descendants.push(children);
+    children.each((i, child) => {
+      this.findDescendants($(child), descendants);
+    })
+    return descendants;
+  }
+
+  findByID(id) {
+    return this.$table.find(`tr[data-node-id="${id}"]`);
+  }
+
+  openByID(id) {
+    this.open(this.findByID(id));
+  }
+
+  closeByID(id) {
+    this.close(this.findByID(id));
+  }
+
+  load() {
+    if (!this.store) return;
+
+    let ids = this.store.get();
+    if (!ids) return;
+
+    this.nodes().each((i, node) => {
+      this.show($(node));
+    });
+    this.nodes().filter((i, node) => {
+      return ids.indexOf($(node).data('node-id')) != -1;
+    }).each((i, node) => {
+      this.hide($(node));
+    });
+  }
+
+  save() {
+    if (!this.store) return;
+
+    let ids = this.nodes().filter('.tree-closed').map((i, node) => {
+      return $(node).data('node-id');
+    }).get();
+
+    this.store.set(ids)
+  }
+
+  static getDefaults() {
+    return DEFAULTS;
+  }
+
+  static setDefaults(options) {
+    return $.extend(DEFAULTS, options);
+  }
+}
+
+$.fn.simpleTreeTable = function(options) {
+  return this.each((i, elem) => {
+    let $elem = $(elem);
+    if ($elem.data(NAMESPACE)) $elem.data(NAMESPACE).destroy();
+    $elem.data(NAMESPACE, new SimpleTreeTable($elem, options));
+  });
+};
+
+$.SimpleTreeTable = SimpleTreeTable;
+
+	$('#basic').simpleTreeTable({
+  expander: $('#expander'),
+  collapser: $('#collapser')
+});
+
+$('#collapsed').simpleTreeTable({
+  opened: 'none',
+});
+$('#collapsed').simpleTreeTable({
+  margin: 25
+});
+</script>
+</body>
+</html>

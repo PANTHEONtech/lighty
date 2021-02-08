@@ -1,0 +1,854 @@
+{
+  "module": {
+    "prefix": "ip",
+    "contact": "WG Web:   <https://datatracker.ietf.org/wg/netmod/>\nWG List:  <mailto:netmod@ietf.org>\n\nEditor:   Martin Bjorklund\n          <mailto:mbj@tail-f.com>",
+    "name": "ietf-ip",
+    "namespace": "urn:ietf:params:xml:ns:yang:ietf-ip",
+    "description": "This module contains a collection of YANG definitions for\nmanaging IP implementations.\n\nCopyright (c) 2018 IETF Trust and the persons identified as\nauthors of the code.  All rights reserved.\n\nRedistribution and use in source and binary forms, with or\nwithout modification, is permitted pursuant to, and subject\nto the license terms contained in, the Simplified BSD License\nset forth in Section 4.c of the IETF Trust's Legal Provisions\nRelating to IETF Documents\n(https://trustee.ietf.org/license-info).\n\nThis version of this YANG module is part of RFC 8344; see\nthe RFC itself for full legal notices.",
+    "revision": "2018-02-22"
+  },
+  "augments": [
+    {
+      "path": "/if:interfaces/if:interface/",
+      "children": [
+        {
+          "path": "/if:interfaces/if:interface/ip:ipv4/",
+          "type_info": {},
+          "children": [
+            {
+              "path": "/if:interfaces/if:interface/ip:ipv4/ip:enabled/",
+              "type_info": {
+                "default": "true",
+                "description": "Controls whether IPv4 is enabled or disabled on this\ninterface.  When IPv4 is enabled, this interface is\nconnected to an IPv4 stack, and the interface can send\nand receive IPv4 packets.",
+                "type": "ip:enabled"
+              },
+              "children": [],
+              "name": "enabled",
+              "description": "Controls whether IPv4 is enabled or disabled on this\ninterface.  When IPv4 is enabled, this interface is\nconnected to an IPv4 stack, and the interface can send\nand receive IPv4 packets.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/if:interfaces/if:interface/ip:ipv4/ip:forwarding/",
+              "type_info": {
+                "default": "false",
+                "description": "Controls IPv4 packet forwarding of datagrams received by,\nbut not addressed to, this interface.  IPv4 routers\nforward datagrams.  IPv4 hosts do not (except those\nsource-routed via the host).",
+                "type": "ip:forwarding"
+              },
+              "children": [],
+              "name": "forwarding",
+              "description": "Controls IPv4 packet forwarding of datagrams received by,\nbut not addressed to, this interface.  IPv4 routers\nforward datagrams.  IPv4 hosts do not (except those\nsource-routed via the host).",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/if:interfaces/if:interface/ip:ipv4/ip:mtu/",
+              "type_info": {
+                "description": "The size, in octets, of the largest IPv4 packet that the\ninterface will send and receive.\n\nThe server may restrict the allowed values for this leaf,\ndepending on the interface's type.\n\nIf this leaf is not configured, the operationally used MTU\ndepends on the interface's type.",
+                "type": "ip:mtu"
+              },
+              "children": [],
+              "name": "mtu",
+              "description": "The size, in octets, of the largest IPv4 packet that the\ninterface will send and receive.\n\nThe server may restrict the allowed values for this leaf,\ndepending on the interface's type.\n\nIf this leaf is not configured, the operationally used MTU\ndepends on the interface's type.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/if:interfaces/if:interface/ip:ipv4/ip:address/",
+              "type_info": {},
+              "children": [
+                {
+                  "path": "/if:interfaces/if:interface/ip:ipv4/ip:address/ip:ip/",
+                  "type_info": {
+                    "description": "An IPv4 address without a zone index.  This type, derived from\nipv4-address, may be used in situations where the zone is\nknown from the context and hence no zone index is needed.",
+                    "type": "inet:ipv4-address-no-zone"
+                  },
+                  "children": [],
+                  "name": "ip",
+                  "description": "The IPv4 address on the interface.",
+                  "config": true,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                },
+                {
+                  "path": "/if:interfaces/if:interface/ip:ipv4/ip:address/ip:subnet/",
+                  "type_info": {},
+                  "children": [
+                    {
+                      "path": "/if:interfaces/if:interface/ip:ipv4/ip:address/ip:subnet/ip:prefix-length/",
+                      "type_info": {},
+                      "children": [{
+                        "path": "/if:interfaces/if:interface/ip:ipv4/ip:address/ip:subnet/ip:prefix-length/ip:prefix-length/",
+                        "type_info": {
+                          "description": "",
+                          "type": "ip:uint8"
+                        },
+                        "children": [],
+                        "name": "prefix-length",
+                        "description": "The length of the subnet prefix.",
+                        "config": true,
+                        "class": "leaf",
+                        "status": "CURRENT"
+                      }],
+                      "name": "prefix-length",
+                      "description": "",
+                      "config": true,
+                      "class": "case",
+                      "status": "CURRENT"
+                    },
+                    {
+                      "path": "/if:interfaces/if:interface/ip:ipv4/ip:address/ip:subnet/ip:netmask/",
+                      "type_info": {},
+                      "children": [{
+                        "path": "/if:interfaces/if:interface/ip:ipv4/ip:address/ip:subnet/ip:netmask/ip:netmask/",
+                        "type_info": {
+                          "description": "An unsigned 32-bit number expressed in the dotted-quad\nnotation, i.e., four octets written as decimal numbers\nand separated with the '.' (full stop) character.",
+                          "type": "yang:dotted-quad"
+                        },
+                        "children": [],
+                        "name": "netmask",
+                        "description": "The subnet specified as a netmask.",
+                        "config": true,
+                        "class": "leaf",
+                        "status": "CURRENT"
+                      }],
+                      "name": "netmask",
+                      "description": "",
+                      "config": true,
+                      "class": "case",
+                      "status": "CURRENT"
+                    }
+                  ],
+                  "name": "subnet",
+                  "description": "The subnet can be specified as a prefix length or,\nif the server supports non-contiguous netmasks, as\na netmask.",
+                  "config": true,
+                  "class": "choice",
+                  "status": "CURRENT"
+                },
+                {
+                  "path": "/if:interfaces/if:interface/ip:ipv4/ip:address/ip:origin/",
+                  "type_info": {
+                    "description": "The origin of an address.",
+                    "type": "ip:ip-address-origin"
+                  },
+                  "children": [],
+                  "name": "origin",
+                  "description": "The origin of this address.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                }
+              ],
+              "name": "address",
+              "description": "The list of IPv4 addresses on the interface.",
+              "config": true,
+              "class": "list",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/if:interfaces/if:interface/ip:ipv4/ip:neighbor/",
+              "type_info": {},
+              "children": [
+                {
+                  "path": "/if:interfaces/if:interface/ip:ipv4/ip:neighbor/ip:ip/",
+                  "type_info": {
+                    "description": "An IPv4 address without a zone index.  This type, derived from\nipv4-address, may be used in situations where the zone is\nknown from the context and hence no zone index is needed.",
+                    "type": "inet:ipv4-address-no-zone"
+                  },
+                  "children": [],
+                  "name": "ip",
+                  "description": "The IPv4 address of the neighbor node.",
+                  "config": true,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                },
+                {
+                  "path": "/if:interfaces/if:interface/ip:ipv4/ip:neighbor/ip:link-layer-address/",
+                  "type_info": {
+                    "description": "Represents media- or physical-level addresses represented\nas a sequence octets, each octet represented by two hexadecimal\nnumbers.  Octets are separated by colons.  The canonical\nrepresentation uses lowercase characters.\n\nIn the value set and its semantics, this type is equivalent\nto the PhysAddress textual convention of the SMIv2.",
+                    "type": "yang:phys-address"
+                  },
+                  "children": [],
+                  "name": "link-layer-address",
+                  "description": "The link-layer address of the neighbor node.",
+                  "config": true,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                },
+                {
+                  "path": "/if:interfaces/if:interface/ip:ipv4/ip:neighbor/ip:origin/",
+                  "type_info": {
+                    "description": "The origin of a neighbor entry.",
+                    "type": "ip:neighbor-origin"
+                  },
+                  "children": [],
+                  "name": "origin",
+                  "description": "The origin of this neighbor entry.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                }
+              ],
+              "name": "neighbor",
+              "description": "A list of mappings from IPv4 addresses to\nlink-layer addresses.\n\nEntries in this list in the intended configuration are\nused as static entries in the ARP Cache.\n\nIn the operational state, this list represents the ARP\nCache.",
+              "config": true,
+              "class": "list",
+              "status": "CURRENT"
+            }
+          ],
+          "name": "ipv4",
+          "description": "Parameters for the IPv4 address family.",
+          "config": true,
+          "class": "container",
+          "status": "CURRENT"
+        },
+        {
+          "path": "/if:interfaces/if:interface/ip:ipv6/",
+          "type_info": {},
+          "children": [
+            {
+              "path": "/if:interfaces/if:interface/ip:ipv6/ip:enabled/",
+              "type_info": {
+                "default": "true",
+                "description": "Controls whether IPv6 is enabled or disabled on this\ninterface.  When IPv6 is enabled, this interface is\nconnected to an IPv6 stack, and the interface can send\nand receive IPv6 packets.",
+                "type": "ip:enabled"
+              },
+              "children": [],
+              "name": "enabled",
+              "description": "Controls whether IPv6 is enabled or disabled on this\ninterface.  When IPv6 is enabled, this interface is\nconnected to an IPv6 stack, and the interface can send\nand receive IPv6 packets.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/if:interfaces/if:interface/ip:ipv6/ip:forwarding/",
+              "type_info": {
+                "default": "false",
+                "description": "Controls IPv6 packet forwarding of datagrams received by,\nbut not addressed to, this interface.  IPv6 routers\nforward datagrams.  IPv6 hosts do not (except those\nsource-routed via the host).",
+                "type": "ip:forwarding"
+              },
+              "children": [],
+              "name": "forwarding",
+              "description": "Controls IPv6 packet forwarding of datagrams received by,\nbut not addressed to, this interface.  IPv6 routers\nforward datagrams.  IPv6 hosts do not (except those\nsource-routed via the host).",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/if:interfaces/if:interface/ip:ipv6/ip:mtu/",
+              "type_info": {
+                "description": "The size, in octets, of the largest IPv6 packet that the\ninterface will send and receive.\n\nThe server may restrict the allowed values for this leaf,\ndepending on the interface's type.\n\nIf this leaf is not configured, the operationally used MTU\ndepends on the interface's type.",
+                "type": "ip:mtu"
+              },
+              "children": [],
+              "name": "mtu",
+              "description": "The size, in octets, of the largest IPv6 packet that the\ninterface will send and receive.\n\nThe server may restrict the allowed values for this leaf,\ndepending on the interface's type.\n\nIf this leaf is not configured, the operationally used MTU\ndepends on the interface's type.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/if:interfaces/if:interface/ip:ipv6/ip:address/",
+              "type_info": {},
+              "children": [
+                {
+                  "path": "/if:interfaces/if:interface/ip:ipv6/ip:address/ip:ip/",
+                  "type_info": {
+                    "description": "An IPv6 address without a zone index.  This type, derived from\nipv6-address, may be used in situations where the zone is\nknown from the context and hence no zone index is needed.",
+                    "type": "inet:ipv6-address-no-zone"
+                  },
+                  "children": [],
+                  "name": "ip",
+                  "description": "The IPv6 address on the interface.",
+                  "config": true,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                },
+                {
+                  "path": "/if:interfaces/if:interface/ip:ipv6/ip:address/ip:prefix-length/",
+                  "type_info": {
+                    "description": "",
+                    "type": "ip:uint8"
+                  },
+                  "children": [],
+                  "name": "prefix-length",
+                  "description": "The length of the subnet prefix.",
+                  "config": true,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                },
+                {
+                  "path": "/if:interfaces/if:interface/ip:ipv6/ip:address/ip:origin/",
+                  "type_info": {
+                    "description": "The origin of an address.",
+                    "type": "ip:ip-address-origin"
+                  },
+                  "children": [],
+                  "name": "origin",
+                  "description": "The origin of this address.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                },
+                {
+                  "path": "/if:interfaces/if:interface/ip:ipv6/ip:address/ip:status/",
+                  "type_info": {
+                    "description": "",
+                    "type": "ip:enumeration"
+                  },
+                  "children": [],
+                  "name": "status",
+                  "description": "The status of an address.  Most of the states correspond\nto states from the IPv6 Stateless Address\nAutoconfiguration protocol.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                }
+              ],
+              "name": "address",
+              "description": "The list of IPv6 addresses on the interface.",
+              "config": true,
+              "class": "list",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/if:interfaces/if:interface/ip:ipv6/ip:neighbor/",
+              "type_info": {},
+              "children": [
+                {
+                  "path": "/if:interfaces/if:interface/ip:ipv6/ip:neighbor/ip:ip/",
+                  "type_info": {
+                    "description": "An IPv6 address without a zone index.  This type, derived from\nipv6-address, may be used in situations where the zone is\nknown from the context and hence no zone index is needed.",
+                    "type": "inet:ipv6-address-no-zone"
+                  },
+                  "children": [],
+                  "name": "ip",
+                  "description": "The IPv6 address of the neighbor node.",
+                  "config": true,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                },
+                {
+                  "path": "/if:interfaces/if:interface/ip:ipv6/ip:neighbor/ip:link-layer-address/",
+                  "type_info": {
+                    "description": "Represents media- or physical-level addresses represented\nas a sequence octets, each octet represented by two hexadecimal\nnumbers.  Octets are separated by colons.  The canonical\nrepresentation uses lowercase characters.\n\nIn the value set and its semantics, this type is equivalent\nto the PhysAddress textual convention of the SMIv2.",
+                    "type": "yang:phys-address"
+                  },
+                  "children": [],
+                  "name": "link-layer-address",
+                  "description": "The link-layer address of the neighbor node.\n\nIn the operational state, if the neighbor's 'state' leaf\nis 'incomplete', this leaf is not instantiated.",
+                  "config": true,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                },
+                {
+                  "path": "/if:interfaces/if:interface/ip:ipv6/ip:neighbor/ip:origin/",
+                  "type_info": {
+                    "description": "The origin of a neighbor entry.",
+                    "type": "ip:neighbor-origin"
+                  },
+                  "children": [],
+                  "name": "origin",
+                  "description": "The origin of this neighbor entry.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                },
+                {
+                  "path": "/if:interfaces/if:interface/ip:ipv6/ip:neighbor/ip:is-router/",
+                  "type_info": {
+                    "description": "",
+                    "type": "empty"
+                  },
+                  "children": [],
+                  "name": "is-router",
+                  "description": "Indicates that the neighbor node acts as a router.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                },
+                {
+                  "path": "/if:interfaces/if:interface/ip:ipv6/ip:neighbor/ip:state/",
+                  "type_info": {
+                    "description": "",
+                    "type": "ip:enumeration"
+                  },
+                  "children": [],
+                  "name": "state",
+                  "description": "The Neighbor Unreachability Detection state of this\nentry.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                }
+              ],
+              "name": "neighbor",
+              "description": "A list of mappings from IPv6 addresses to\nlink-layer addresses.\n\nEntries in this list in the intended configuration are\nused as static entries in the Neighbor Cache.\n\nIn the operational state, this list represents the\nNeighbor Cache.",
+              "config": true,
+              "class": "list",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/if:interfaces/if:interface/ip:ipv6/ip:dup-addr-detect-transmits/",
+              "type_info": {
+                "default": "1",
+                "description": "The number of consecutive Neighbor Solicitation messages\nsent while performing Duplicate Address Detection on a\ntentative address.  A value of zero indicates that\nDuplicate Address Detection is not performed on\ntentative addresses.  A value of one indicates a single\ntransmission with no follow-up retransmissions.",
+                "type": "ip:dup-addr-detect-transmits"
+              },
+              "children": [],
+              "name": "dup-addr-detect-transmits",
+              "description": "The number of consecutive Neighbor Solicitation messages\nsent while performing Duplicate Address Detection on a\ntentative address.  A value of zero indicates that\nDuplicate Address Detection is not performed on\ntentative addresses.  A value of one indicates a single\ntransmission with no follow-up retransmissions.",
+              "config": true,
+              "class": "leaf",
+              "status": "CURRENT"
+            },
+            {
+              "path": "/if:interfaces/if:interface/ip:ipv6/ip:autoconf/",
+              "type_info": {},
+              "children": [
+                {
+                  "path": "/if:interfaces/if:interface/ip:ipv6/ip:autoconf/ip:create-global-addresses/",
+                  "type_info": {
+                    "default": "true",
+                    "description": "If enabled, the host creates global addresses as\ndescribed in RFC 4862.",
+                    "type": "ip:create-global-addresses"
+                  },
+                  "children": [],
+                  "name": "create-global-addresses",
+                  "description": "If enabled, the host creates global addresses as\ndescribed in RFC 4862.",
+                  "config": true,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                },
+                {
+                  "path": "/if:interfaces/if:interface/ip:ipv6/ip:autoconf/ip:create-temporary-addresses/",
+                  "type_info": {
+                    "default": "false",
+                    "description": "If enabled, the host creates temporary addresses as\ndescribed in RFC 4941.",
+                    "type": "ip:create-temporary-addresses"
+                  },
+                  "children": [],
+                  "name": "create-temporary-addresses",
+                  "description": "If enabled, the host creates temporary addresses as\ndescribed in RFC 4941.",
+                  "config": true,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                },
+                {
+                  "path": "/if:interfaces/if:interface/ip:ipv6/ip:autoconf/ip:temporary-valid-lifetime/",
+                  "type_info": {
+                    "default": "604800",
+                    "description": "The time period during which the temporary address\nis valid.",
+                    "type": "ip:temporary-valid-lifetime"
+                  },
+                  "children": [],
+                  "name": "temporary-valid-lifetime",
+                  "description": "The time period during which the temporary address\nis valid.",
+                  "config": true,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                },
+                {
+                  "path": "/if:interfaces/if:interface/ip:ipv6/ip:autoconf/ip:temporary-preferred-lifetime/",
+                  "type_info": {
+                    "default": "86400",
+                    "description": "The time period during which the temporary address is\npreferred.",
+                    "type": "ip:temporary-preferred-lifetime"
+                  },
+                  "children": [],
+                  "name": "temporary-preferred-lifetime",
+                  "description": "The time period during which the temporary address is\npreferred.",
+                  "config": true,
+                  "class": "leaf",
+                  "status": "CURRENT"
+                }
+              ],
+              "name": "autoconf",
+              "description": "Parameters to control the autoconfiguration of IPv6\naddresses, as described in RFC 4862.",
+              "config": true,
+              "class": "container",
+              "status": "CURRENT"
+            }
+          ],
+          "name": "ipv6",
+          "description": "Parameters for the IPv6 address family.",
+          "config": true,
+          "class": "container",
+          "status": "CURRENT"
+        }
+      ],
+      "name": "/if:interfaces/if:interface/",
+      "description": "IP parameters on interfaces.\n\nIf an interface is not capable of running IP, the server\nmust not allow the client to configure these parameters.",
+      "config": true,
+      "class": "augmentation",
+      "status": "CURRENT"
+    },
+    {
+      "path": "/if:interfaces-state/if:interface/",
+      "children": [
+        {
+          "path": "/if:interfaces-state/if:interface/ip:ipv4/",
+          "type_info": {},
+          "children": [
+            {
+              "path": "/if:interfaces-state/if:interface/ip:ipv4/ip:forwarding/",
+              "type_info": {
+                "description": "",
+                "type": "boolean"
+              },
+              "children": [],
+              "name": "forwarding",
+              "description": "Indicates whether IPv4 packet forwarding is enabled or\ndisabled on this interface.",
+              "config": false,
+              "class": "leaf",
+              "status": "DEPRECATED"
+            },
+            {
+              "path": "/if:interfaces-state/if:interface/ip:ipv4/ip:mtu/",
+              "type_info": {
+                "description": "The size, in octets, of the largest IPv4 packet that the\ninterface will send and receive.",
+                "type": "ip:mtu"
+              },
+              "children": [],
+              "name": "mtu",
+              "description": "The size, in octets, of the largest IPv4 packet that the\ninterface will send and receive.",
+              "config": false,
+              "class": "leaf",
+              "status": "DEPRECATED"
+            },
+            {
+              "path": "/if:interfaces-state/if:interface/ip:ipv4/ip:address/",
+              "type_info": {},
+              "children": [
+                {
+                  "path": "/if:interfaces-state/if:interface/ip:ipv4/ip:address/ip:ip/",
+                  "type_info": {
+                    "description": "An IPv4 address without a zone index.  This type, derived from\nipv4-address, may be used in situations where the zone is\nknown from the context and hence no zone index is needed.",
+                    "type": "inet:ipv4-address-no-zone"
+                  },
+                  "children": [],
+                  "name": "ip",
+                  "description": "The IPv4 address on the interface.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "DEPRECATED"
+                },
+                {
+                  "path": "/if:interfaces-state/if:interface/ip:ipv4/ip:address/ip:subnet/",
+                  "type_info": {},
+                  "children": [
+                    {
+                      "path": "/if:interfaces-state/if:interface/ip:ipv4/ip:address/ip:subnet/ip:prefix-length/",
+                      "type_info": {},
+                      "children": [{
+                        "path": "/if:interfaces-state/if:interface/ip:ipv4/ip:address/ip:subnet/ip:prefix-length/ip:prefix-length/",
+                        "type_info": {
+                          "description": "",
+                          "type": "ip:uint8"
+                        },
+                        "children": [],
+                        "name": "prefix-length",
+                        "description": "The length of the subnet prefix.",
+                        "config": false,
+                        "class": "leaf",
+                        "status": "DEPRECATED"
+                      }],
+                      "name": "prefix-length",
+                      "description": "",
+                      "config": false,
+                      "class": "case",
+                      "status": "CURRENT"
+                    },
+                    {
+                      "path": "/if:interfaces-state/if:interface/ip:ipv4/ip:address/ip:subnet/ip:netmask/",
+                      "type_info": {},
+                      "children": [{
+                        "path": "/if:interfaces-state/if:interface/ip:ipv4/ip:address/ip:subnet/ip:netmask/ip:netmask/",
+                        "type_info": {
+                          "description": "An unsigned 32-bit number expressed in the dotted-quad\nnotation, i.e., four octets written as decimal numbers\nand separated with the '.' (full stop) character.",
+                          "type": "yang:dotted-quad"
+                        },
+                        "children": [],
+                        "name": "netmask",
+                        "description": "The subnet specified as a netmask.",
+                        "config": false,
+                        "class": "leaf",
+                        "status": "DEPRECATED"
+                      }],
+                      "name": "netmask",
+                      "description": "",
+                      "config": false,
+                      "class": "case",
+                      "status": "CURRENT"
+                    }
+                  ],
+                  "name": "subnet",
+                  "description": "The subnet can be specified as a prefix length or,\nif the server supports non-contiguous netmasks, as\na netmask.",
+                  "config": false,
+                  "class": "choice",
+                  "status": "DEPRECATED"
+                },
+                {
+                  "path": "/if:interfaces-state/if:interface/ip:ipv4/ip:address/ip:origin/",
+                  "type_info": {
+                    "description": "The origin of an address.",
+                    "type": "ip:ip-address-origin"
+                  },
+                  "children": [],
+                  "name": "origin",
+                  "description": "The origin of this address.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "DEPRECATED"
+                }
+              ],
+              "name": "address",
+              "description": "The list of IPv4 addresses on the interface.",
+              "config": false,
+              "class": "list",
+              "status": "DEPRECATED"
+            },
+            {
+              "path": "/if:interfaces-state/if:interface/ip:ipv4/ip:neighbor/",
+              "type_info": {},
+              "children": [
+                {
+                  "path": "/if:interfaces-state/if:interface/ip:ipv4/ip:neighbor/ip:ip/",
+                  "type_info": {
+                    "description": "An IPv4 address without a zone index.  This type, derived from\nipv4-address, may be used in situations where the zone is\nknown from the context and hence no zone index is needed.",
+                    "type": "inet:ipv4-address-no-zone"
+                  },
+                  "children": [],
+                  "name": "ip",
+                  "description": "The IPv4 address of the neighbor node.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "DEPRECATED"
+                },
+                {
+                  "path": "/if:interfaces-state/if:interface/ip:ipv4/ip:neighbor/ip:link-layer-address/",
+                  "type_info": {
+                    "description": "Represents media- or physical-level addresses represented\nas a sequence octets, each octet represented by two hexadecimal\nnumbers.  Octets are separated by colons.  The canonical\nrepresentation uses lowercase characters.\n\nIn the value set and its semantics, this type is equivalent\nto the PhysAddress textual convention of the SMIv2.",
+                    "type": "yang:phys-address"
+                  },
+                  "children": [],
+                  "name": "link-layer-address",
+                  "description": "The link-layer address of the neighbor node.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "DEPRECATED"
+                },
+                {
+                  "path": "/if:interfaces-state/if:interface/ip:ipv4/ip:neighbor/ip:origin/",
+                  "type_info": {
+                    "description": "The origin of a neighbor entry.",
+                    "type": "ip:neighbor-origin"
+                  },
+                  "children": [],
+                  "name": "origin",
+                  "description": "The origin of this neighbor entry.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "DEPRECATED"
+                }
+              ],
+              "name": "neighbor",
+              "description": "A list of mappings from IPv4 addresses to\nlink-layer addresses.\n\nThis list represents the ARP Cache.",
+              "config": false,
+              "class": "list",
+              "status": "DEPRECATED"
+            }
+          ],
+          "name": "ipv4",
+          "description": "Interface-specific parameters for the IPv4 address family.",
+          "config": false,
+          "class": "container",
+          "status": "DEPRECATED"
+        },
+        {
+          "path": "/if:interfaces-state/if:interface/ip:ipv6/",
+          "type_info": {},
+          "children": [
+            {
+              "path": "/if:interfaces-state/if:interface/ip:ipv6/ip:forwarding/",
+              "type_info": {
+                "default": "false",
+                "description": "Indicates whether IPv6 packet forwarding is enabled or\ndisabled on this interface.",
+                "type": "ip:forwarding"
+              },
+              "children": [],
+              "name": "forwarding",
+              "description": "Indicates whether IPv6 packet forwarding is enabled or\ndisabled on this interface.",
+              "config": false,
+              "class": "leaf",
+              "status": "DEPRECATED"
+            },
+            {
+              "path": "/if:interfaces-state/if:interface/ip:ipv6/ip:mtu/",
+              "type_info": {
+                "description": "The size, in octets, of the largest IPv6 packet that the\ninterface will send and receive.",
+                "type": "ip:mtu"
+              },
+              "children": [],
+              "name": "mtu",
+              "description": "The size, in octets, of the largest IPv6 packet that the\ninterface will send and receive.",
+              "config": false,
+              "class": "leaf",
+              "status": "DEPRECATED"
+            },
+            {
+              "path": "/if:interfaces-state/if:interface/ip:ipv6/ip:address/",
+              "type_info": {},
+              "children": [
+                {
+                  "path": "/if:interfaces-state/if:interface/ip:ipv6/ip:address/ip:ip/",
+                  "type_info": {
+                    "description": "An IPv6 address without a zone index.  This type, derived from\nipv6-address, may be used in situations where the zone is\nknown from the context and hence no zone index is needed.",
+                    "type": "inet:ipv6-address-no-zone"
+                  },
+                  "children": [],
+                  "name": "ip",
+                  "description": "The IPv6 address on the interface.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "DEPRECATED"
+                },
+                {
+                  "path": "/if:interfaces-state/if:interface/ip:ipv6/ip:address/ip:prefix-length/",
+                  "type_info": {
+                    "description": "",
+                    "type": "ip:uint8"
+                  },
+                  "children": [],
+                  "name": "prefix-length",
+                  "description": "The length of the subnet prefix.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "DEPRECATED"
+                },
+                {
+                  "path": "/if:interfaces-state/if:interface/ip:ipv6/ip:address/ip:origin/",
+                  "type_info": {
+                    "description": "The origin of an address.",
+                    "type": "ip:ip-address-origin"
+                  },
+                  "children": [],
+                  "name": "origin",
+                  "description": "The origin of this address.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "DEPRECATED"
+                },
+                {
+                  "path": "/if:interfaces-state/if:interface/ip:ipv6/ip:address/ip:status/",
+                  "type_info": {
+                    "description": "",
+                    "type": "ip:enumeration"
+                  },
+                  "children": [],
+                  "name": "status",
+                  "description": "The status of an address.  Most of the states correspond\nto states from the IPv6 Stateless Address\nAutoconfiguration protocol.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "DEPRECATED"
+                }
+              ],
+              "name": "address",
+              "description": "The list of IPv6 addresses on the interface.",
+              "config": false,
+              "class": "list",
+              "status": "DEPRECATED"
+            },
+            {
+              "path": "/if:interfaces-state/if:interface/ip:ipv6/ip:neighbor/",
+              "type_info": {},
+              "children": [
+                {
+                  "path": "/if:interfaces-state/if:interface/ip:ipv6/ip:neighbor/ip:ip/",
+                  "type_info": {
+                    "description": "An IPv6 address without a zone index.  This type, derived from\nipv6-address, may be used in situations where the zone is\nknown from the context and hence no zone index is needed.",
+                    "type": "inet:ipv6-address-no-zone"
+                  },
+                  "children": [],
+                  "name": "ip",
+                  "description": "The IPv6 address of the neighbor node.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "DEPRECATED"
+                },
+                {
+                  "path": "/if:interfaces-state/if:interface/ip:ipv6/ip:neighbor/ip:link-layer-address/",
+                  "type_info": {
+                    "description": "Represents media- or physical-level addresses represented\nas a sequence octets, each octet represented by two hexadecimal\nnumbers.  Octets are separated by colons.  The canonical\nrepresentation uses lowercase characters.\n\nIn the value set and its semantics, this type is equivalent\nto the PhysAddress textual convention of the SMIv2.",
+                    "type": "yang:phys-address"
+                  },
+                  "children": [],
+                  "name": "link-layer-address",
+                  "description": "The link-layer address of the neighbor node.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "DEPRECATED"
+                },
+                {
+                  "path": "/if:interfaces-state/if:interface/ip:ipv6/ip:neighbor/ip:origin/",
+                  "type_info": {
+                    "description": "The origin of a neighbor entry.",
+                    "type": "ip:neighbor-origin"
+                  },
+                  "children": [],
+                  "name": "origin",
+                  "description": "The origin of this neighbor entry.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "DEPRECATED"
+                },
+                {
+                  "path": "/if:interfaces-state/if:interface/ip:ipv6/ip:neighbor/ip:is-router/",
+                  "type_info": {
+                    "description": "",
+                    "type": "empty"
+                  },
+                  "children": [],
+                  "name": "is-router",
+                  "description": "Indicates that the neighbor node acts as a router.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "DEPRECATED"
+                },
+                {
+                  "path": "/if:interfaces-state/if:interface/ip:ipv6/ip:neighbor/ip:state/",
+                  "type_info": {
+                    "description": "",
+                    "type": "ip:enumeration"
+                  },
+                  "children": [],
+                  "name": "state",
+                  "description": "The Neighbor Unreachability Detection state of this\nentry.",
+                  "config": false,
+                  "class": "leaf",
+                  "status": "DEPRECATED"
+                }
+              ],
+              "name": "neighbor",
+              "description": "A list of mappings from IPv6 addresses to\nlink-layer addresses.\n\nThis list represents the Neighbor Cache.",
+              "config": false,
+              "class": "list",
+              "status": "DEPRECATED"
+            }
+          ],
+          "name": "ipv6",
+          "description": "Parameters for the IPv6 address family.",
+          "config": false,
+          "class": "container",
+          "status": "DEPRECATED"
+        }
+      ],
+      "name": "/if:interfaces-state/if:interface/",
+      "description": "Data nodes for the operational state of IP on interfaces.",
+      "config": false,
+      "class": "augmentation",
+      "status": "DEPRECATED"
+    }
+  ]
+}

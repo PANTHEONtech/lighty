@@ -1,0 +1,129 @@
+module ietf-interfaces {
+    yang-version 1.1;
+
+    namespace "urn:ietf:params:xml:ns:yang:ietf-interfaces";
+
+    prefix if;
+
+    organization "IETF NETMOD (Network Modeling) Working Group";
+
+    contact
+        "WG Web:   <https://datatracker.ietf.org/wg/netmod/
+        WG List:  <mailto:netmod@ietf.org>
+
+        Editor:   Martin Bjorklund
+                  <mailto:mbj@tail-f.com>";
+
+    description
+        "This module contains a collection of YANG definitions fo
+        managing network interfaces.
+
+        Copyright (c) 2018 IETF Trust and the persons identified as
+        authors of the code.  All rights reserved.
+
+        Redistribution and use in source and binary forms, with or
+        without modification, is permitted pursuant to, and subject
+        to the license terms contained in, the Simplified BSD License
+        set forth in Section 4.c of the IETF Trust's Legal Provisions
+        Relating to IETF Documents
+        (https://trustee.ietf.org/license-info).
+
+        This version of this YANG module is part of RFC 8343; see
+        the RFC itself for full legal notices.";
+
+    revision 2018-02-20 {
+        reference
+            "RFC 8343: A YANG Data Model for Interface Management";
+        description
+            "Updated to support NMDA.";
+    }
+
+    revision 2014-05-08 {
+        reference
+            "RFC 7223: A YANG Data Model for Interface Management";
+        description
+            "Initial revision.";
+    }
+
+    container interfaces {
+        config true;
+        description "Interface parameters.";
+
+        list interface {
+            key "name";
+            description
+                "The list of interfaces on the device
+
+                The status of an interface is available in this list in the
+                operational state.  If the configuration of a
+                system-controlled interface cannot be used by the system
+                (e.g., the interface hardware present does not match the
+                interface type), then the configuration is not applied to
+                the system-controlled interface shown in the operational
+                state.  If the configuration of a user-controlled interface
+                cannot be used by the system, the configured interface is
+                not instantiated in the operational state.
+
+                System-controlled interfaces created by the system are
+                always present in this list in the operational state,
+                whether or not they are configured.";
+
+            leaf name {
+                type string;
+                description
+                    "The name of the interface
+
+                    A device MAY restrict the allowed values for this leaf,
+                    possibly depending on the type of the interface.
+                    For system-controlled interfaces, this leaf is the
+                    device-specific name of the interface.
+
+                    If a client tries to create configuration for a
+                    system-controlled interface that is not present in the
+                    operational state, the server MAY reject the request if
+                    the implementation does not support pre-provisioning of
+                    interfaces or if the name refers to an interface that can
+                    never exist in the system.  A Network Configuration
+                    Protocol (NETCONF) server MUST reply with an rpc-error
+                    with the error-tag 'invalid-value' in this case.
+
+                    If the device supports pre-provisioning of interface
+                    configuration, the 'pre-provisioning' feature is
+                    advertised.
+
+                    If the device allows arbitrarily named user-controlled
+                    interfaces, the 'arbitrary-names' feature is advertised.
+
+                    When a configured user-controlled interface is created by
+                    the system, it is instantiated with the same name in the
+                    operational state.
+
+                    A server implementation MAY map this leaf to the ifName
+                    MIB object.  Such an implementation needs to use some
+                    mechanism to handle the differences in size and characters
+                    allowed between this leaf and ifName.  The definition of
+                    such a mechanism is outside the scope of this document.";
+
+                reference "RFC 2863: The Interfaces Group MIB - ifName";
+
+            }
+            leaf enabled {
+                type boolean;
+                description
+                    "This leaf contains the configured, desired state of th
+                    interface.
+
+                    Systems that implement the IF-MIB use the value of this
+                    leaf in the intended configuration to set
+                    IF-MIB.ifAdminStatus to 'up' or 'down' after an ifEntry
+                    has been initialized, as described in RFC 2863.
+
+                    Changes in this leaf in the intended configuration are
+                    reflected in ifAdminStatus.";
+
+                reference "RFC 2863: The Interfaces Group MIB - ifAdminStatus";
+
+            }
+        }
+    }
+}
