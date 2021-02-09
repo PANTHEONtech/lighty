@@ -75,7 +75,6 @@ public final class ControllerConfigUtils {
     public static final String CONTROLLER_CONFIG_ROOT_ELEMENT_NAME = "controller";
     public static final String SCHEMA_SERVICE_CONFIG_ELEMENT_NAME = "schemaServiceConfig";
     public static final String TOP_LEVEL_MODELS_ELEMENT_NAME = "topLevelModels";
-
     private static final String JSON_PATH_DELIMITER = "/";
 
     private ControllerConfigUtils() {

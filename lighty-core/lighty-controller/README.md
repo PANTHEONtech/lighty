@@ -72,7 +72,18 @@ instance of LightyController.
   controllerConfiguration.setRestoreDirectoryPath("custom/path");
   ...
 ```
+### Initial configuration data
 
+Lighty can be started with arbitrary yang modeled configuration data, which will be imported on startup to config datastore
+as a merge operation so other data loaded (e.g from some persistence mechanism) will also be kept.\
+To use this feature, create json/xml file with data you want to load on startup, then put:
+```
+"initialConfigData": {
+      "pathToInitDataFile": "path/to/data/file",
+      "format": "json"
+    }
+```
+in your lighty .json controller configuration.
 ### Configuration Files
 
 * __lightyControllerConfig.json__ - main configuration file containing LightyController config options and paths to other configuration files.
