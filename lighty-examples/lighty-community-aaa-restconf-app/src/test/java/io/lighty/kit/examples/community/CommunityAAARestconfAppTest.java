@@ -1,13 +1,22 @@
+/*
+ * Copyright (c) 2021 Pantheon Technologies s.r.o. All Rights Reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at https://www.eclipse.org/legal/epl-v10.html
+ */
+
 package io.lighty.kit.examples.community;
 
 import io.lighty.kit.examples.community.aaa.restconf.Main;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Base64;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-import org.eclipse.jetty.client.HttpClient;
-import org.eclipse.jetty.client.api.ContentResponse;
-import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.http.HttpStatus;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -18,37 +27,45 @@ public class CommunityAAARestconfAppTest {
 
     private static final String TEST_ADDRESS = "http://localhost:8888/restconf/data/ietf-yang-library:modules-state";
     private static final String BASIC_AUTH =
-        "Basic " + Base64.getEncoder().encodeToString(("admin:admin").getBytes(StandardCharsets.UTF_8));
+            "Basic " + Base64.getEncoder().encodeToString(("admin:admin").getBytes(StandardCharsets.UTF_8));
+    private static final String BASIC_AUTH_WRONG =
+            "Basic " + Base64.getEncoder().encodeToString(("wrong:admin").getBytes(StandardCharsets.UTF_8));
     private static final String AUTH = "Authorization";
-
-    private HttpClient httpClient;
+    private static HttpClient httpClient;
+    private static Main main;
 
     @BeforeClass
-    public void startUp() throws Exception {
-        Main.start();
+    public static void startUp() {
+        main = new Main();
+        main.start(new String[]{}, false);
+        httpClient = HttpClient.newHttpClient();
+    }
 
-        this.httpClient = new HttpClient();
-        this.httpClient.setIdleTimeout(60000 * 60);
-        this.httpClient.start();
+    @AfterClass
+    public static void tearDown() {
+        httpClient = null;
+        main.shutdown();
     }
 
     @Test
     public void readDataCorrectCredentials() throws Exception {
-        Assert.assertEquals(sendGetRequestJSON(this.httpClient, TEST_ADDRESS).getStatus(), HttpStatus.OK_200);
+        HttpResponse<String> response
+                = httpClient.send(sendGetRequestJSON(BASIC_AUTH), BodyHandlers.ofString());
+        Assert.assertEquals(HttpStatus.OK_200, response.statusCode());
     }
 
-    private ContentResponse sendGetRequestJSON(final HttpClient client, final String path)
-        throws InterruptedException, ExecutionException, TimeoutException {
-        return client.newRequest(path)
-            .method(HttpMethod.GET)
-            .header(AUTH, BASIC_AUTH)
-            .send();
+    @Test
+    public void readDataWrongCredentials() throws Exception {
+        HttpResponse<String> response
+                = httpClient.send(sendGetRequestJSON(BASIC_AUTH_WRONG), BodyHandlers.ofString());
+        Assert.assertEquals(HttpStatus.UNAUTHORIZED_401, response.statusCode());
     }
 
-    @AfterClass
-    public void tearDown() throws Exception {
-        this.httpClient.stop();
-        this.httpClient.destroy();
-        this.httpClient = null;
+    private HttpRequest sendGetRequestJSON(final String basicAuth) {
+        return HttpRequest.newBuilder()
+                .uri(URI.create(TEST_ADDRESS))
+                .timeout(Duration.ofMinutes(1))
+                .header(AUTH, basicAuth)
+                .build();
     }
 }
