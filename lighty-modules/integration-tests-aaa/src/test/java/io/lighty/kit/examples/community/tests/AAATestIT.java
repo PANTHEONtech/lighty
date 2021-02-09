@@ -73,11 +73,13 @@ public class AAATestIT {
     private HttpClient httpClient;
     private HttpClient httpClientOther;
     private HttpClient httpClientWrongCredentials;
+    private Main main;
 
     @BeforeClass
     public void initClass() throws Exception {
         LOG.info("init restconf and controller");
-        Main.start();
+        this.main = new Main();
+        this.main.start(new String[]{}, false);
 
         LOG.info("controller and restconf started successfully");
         adminAuth = BASIC + Base64.getEncoder().encodeToString((ADMIN + ":admin").getBytes(UTF_8));
@@ -384,6 +386,7 @@ public class AAATestIT {
         } catch (InterruptedException e) {
             LOG.error("Interrupted while shutting down", e);
         }
+        this.main.shutdown();
     }
 
     private static class Connection {
