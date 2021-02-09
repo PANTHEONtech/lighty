@@ -7,6 +7,7 @@
  */
 package io.lighty.core.controller.api;
 
+import io.lighty.codecs.XmlNodeConverter;
 import io.lighty.core.controller.impl.services.LightySystemReadyService;
 import io.netty.channel.EventLoopGroup;
 import io.netty.util.Timer;
@@ -142,5 +143,7 @@ public interface LightyServices extends LightyModuleRegistryService {
     CacheProvider getCacheProvider();
 
     AdapterContext getAdapterContext();
+
+    XmlNodeConverter getXmlNodeConverter();
 
 }

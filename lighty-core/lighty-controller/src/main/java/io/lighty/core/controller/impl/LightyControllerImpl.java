@@ -11,6 +11,7 @@ import akka.actor.Terminated;
 import akka.management.javadsl.AkkaManagement;
 import com.google.common.base.Stopwatch;
 import com.typesafe.config.Config;
+import io.lighty.codecs.XmlNodeConverter;
 import io.lighty.core.cluster.ClusteringHandler;
 import io.lighty.core.cluster.ClusteringHandlerProvider;
 import io.lighty.core.common.SocketAnalyzer;
@@ -21,6 +22,7 @@ import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.services.LightyDiagStatusServiceImpl;
 import io.lighty.core.controller.impl.services.LightySystemReadyMonitorImpl;
 import io.lighty.core.controller.impl.services.LightySystemReadyService;
+import io.lighty.core.controller.impl.util.InitialDataImportUtil;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.HashedWheelTimer;
@@ -28,6 +30,7 @@ import io.netty.util.Timer;
 import io.netty.util.concurrent.DefaultEventExecutor;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.EventExecutor;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -197,7 +200,10 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private final CacheProvider cacheProvider;
     private List<ObjectRegistration<YangModuleInfo>> modelsRegistration = new ArrayList<>();
     private AkkaManagement akkaManagement;
+    private XmlNodeConverter xmlNodeConverter;
     private Optional<ClusteringHandler> clusteringHandler;
+    private Optional<File> initialConfigDataFile;
+
 
     public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
             final ClassLoader actorSystemClassLoader,
@@ -207,7 +213,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             final int mailboxCapacity, final Properties distributedEosProperties, final String moduleShardsConfig,
             final String modulesConfig, final DatastoreContext configDatastoreContext,
             final DatastoreContext operDatastoreContext, final Map<String, Object> datastoreProperties,
-            final Set<YangModuleInfo> modelSet) {
+            final Set<YangModuleInfo> modelSet, Optional<File> initialConfigDataFile) {
         super(executorService);
         initSunXMLWriterProperty();
         this.actorSystemConfig = actorSystemConfig;
@@ -235,6 +241,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.metricProvider = new MetricProviderImpl();
         this.jobCoordinator = new JobCoordinatorImpl(metricProvider);
         this.cacheProvider = new GuavaCacheProvider(new CacheManagersRegistryImpl());
+        this.initialConfigDataFile = initialConfigDataFile;
     }
 
     /**
@@ -338,6 +345,14 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.clusteringHandler.ifPresent(handler ->
                 handler.start(clusterSingletonServiceProvider, clusterAdminRpcService, domDataBroker));
 
+        this.initialConfigDataFile.ifPresent(initialOperationalDataFile -> {
+            LOG.info("Initial config data file is present, will import when system is ready");
+            this.systemReadyMonitor.registerListener(() -> {
+                InitialDataImportUtil.importInitialConfigDataFile(initialOperationalDataFile, this);
+            });
+        });
+
+        this.xmlNodeConverter = new XmlNodeConverter(schemaService.getGlobalContext());
         this.bossGroup = new NioEventLoopGroup();
         this.workerGroup = new NioEventLoopGroup();
         this.eventExecutor = new DefaultEventExecutor();
@@ -349,6 +364,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         LOG.info("Lighty controller started in {}", stopwatch.stop());
         return true;
     }
+
 
     private AbstractDataStore prepareDataStore(final DatastoreContext datastoreContext,
             final String newModuleShardsConfig, final String newModulesConfig, final DOMSchemaService domSchemaService,
@@ -636,6 +652,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     public AdapterContext getAdapterContext() {
         return codec;
+    }
+
+    @Override
+    public XmlNodeConverter getXmlNodeConverter() {
+        return xmlNodeConverter;
     }
 
     @Override

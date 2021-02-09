@@ -10,6 +10,8 @@ package io.lighty.core.controller.impl;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
+import java.io.File;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
@@ -21,6 +23,7 @@ public class LightyControllerBuilder {
 
     private ControllerConfiguration controllerConfiguration = null;
     private ExecutorService executorService = null;
+    private File initialConfigDataFile = null;
 
     public LightyControllerBuilder() {
     }
@@ -44,6 +47,17 @@ public class LightyControllerBuilder {
      */
     public LightyControllerBuilder withExecutorService(final ExecutorService newExecutorService) {
         this.executorService = newExecutorService;
+        return this;
+    }
+
+    /**
+     * Set File which contains yang modeled configuration data to be loaded on startup.
+     *
+     * @param newInitialConfigDataFile - File with data
+     * @return instance of {@link LightyControllerBuilder}.
+     */
+    public LightyControllerBuilder withInitialConfigDataFile(final File newInitialConfigDataFile) {
+        this.initialConfigDataFile = newInitialConfigDataFile;
         return this;
     }
 
@@ -72,8 +86,9 @@ public class LightyControllerBuilder {
                     this.controllerConfiguration.getConfigDatastoreContext(),
                     this.controllerConfiguration.getOperDatastoreContext(),
                     this.controllerConfiguration.getDatastoreProperties(),
-                    modelSet
-                    );
+                    modelSet,
+                    Optional.ofNullable(this.initialConfigDataFile)
+            );
         } catch (final Exception e) {
             throw new ConfigurationException(e);
         }

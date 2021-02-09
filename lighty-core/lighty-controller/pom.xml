@@ -39,6 +39,10 @@
             <groupId>io.lighty.core</groupId>
             <artifactId>lighty-clustering</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.lighty.core</groupId>
+            <artifactId>lighty-codecs</artifactId>
+        </dependency>
         <!--ODL-->
         <!--odl-guava-22-->
         <dependency>
@@ -484,6 +488,11 @@
         <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>singlenode-configuration</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.models.test</groupId>
+            <artifactId>lighty-toaster</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -72,6 +72,26 @@ instance of LightyController.
   controllerConfiguration.setRestoreDirectoryPath("custom/path");
   ...
 ```
+### Initial configuration data
+
+Lighty can be started with arbitrary yang modeled configuration data, which will be imported on startup to config datastore
+as a merge operation so other data loaded (e.g from some persistence mechanism) will also be kept.\
+To use this feature, create json/xml file with data you want to load on startup, then:
+```
+  File initDataFile = ...
+  LightyController lightyController = new LightyControllerBuilder()
+     .from(yourConfiguration)
+     .withInitialConfigDataFile(initDataFile)
+     .build();
+  lightyController.start();
+```
+will supply lighty with data file.\
+ To actually load content of the file to config datastore call:
+```
+services.getLightySystemReadyService().onSystemBootReady();
+```
+after starting your modules, listeners so the appropriate datastore listeners are ready to act on loaded data 
+(e.g connect netconf device).
 
 ### Configuration Files
 
