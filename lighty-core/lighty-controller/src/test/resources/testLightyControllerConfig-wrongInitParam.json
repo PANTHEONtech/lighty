@@ -1,0 +1,8 @@
+{
+  "controller": {
+    "initialConfigData": {
+      "wrongParam": "path",
+      "format": "json"
+    }
+  }
+}
