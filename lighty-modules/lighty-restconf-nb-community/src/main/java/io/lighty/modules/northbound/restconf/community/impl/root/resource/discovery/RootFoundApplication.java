@@ -9,14 +9,20 @@
 package io.lighty.modules.northbound.restconf.community.impl.root.resource.discovery;
 
 import java.util.Set;
+import javax.ws.rs.core.Application;
+import org.opendaylight.restconf.nb.rfc8040.jersey.providers.errors.RestconfDocumentedExceptionMapper;
 import org.opendaylight.restconf.nb.rfc8040.rests.services.api.RootResourceDiscoveryService;
 
-// FIXME remove once the upstream class is fixed
-public class RootFoundApplication extends org.opendaylight.restconf.nb.rfc8040.RootFoundApplication {
+public class RootFoundApplication extends Application {
     private final RootResourceDiscoveryService rrds;
 
     public RootFoundApplication(final String restconfServletContextPath) {
         this.rrds = new RootResourceDiscoveryServiceImpl(restconfServletContextPath);
+    }
+
+    @Override
+    public Set<Class<?>> getClasses() {
+        return Set.of(RestconfDocumentedExceptionMapper.class);
     }
 
     @Override

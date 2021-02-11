@@ -13,7 +13,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.opendaylight.restconf.nb.rfc8040.rests.services.api.RootResourceDiscoveryService;
 
-// FIXME remove once the upstream class is fixed
 @Path("/")
 public final class RootResourceDiscoveryServiceImpl implements RootResourceDiscoveryService {
 
