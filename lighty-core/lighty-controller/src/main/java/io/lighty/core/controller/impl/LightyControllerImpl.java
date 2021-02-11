@@ -12,6 +12,7 @@ import akka.management.javadsl.AkkaManagement;
 import com.google.common.base.Stopwatch;
 import com.typesafe.config.Config;
 import io.lighty.codecs.XmlNodeConverter;
+import io.lighty.codecs.api.SerializationException;
 import io.lighty.core.cluster.ClusteringHandler;
 import io.lighty.core.cluster.ClusteringHandlerProvider;
 import io.lighty.core.common.SocketAnalyzer;
@@ -31,6 +32,7 @@ import io.netty.util.concurrent.DefaultEventExecutor;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.EventExecutor;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -345,13 +347,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.clusteringHandler.ifPresent(handler ->
                 handler.start(clusterSingletonServiceProvider, clusterAdminRpcService, domDataBroker));
 
-        this.initialConfigDataFile.ifPresent(initialOperationalDataFile -> {
-            LOG.info("Initial config data file is present, will import when system is ready");
-            this.systemReadyMonitor.registerListener(() -> {
-                InitialDataImportUtil.importInitialConfigDataFile(initialOperationalDataFile, this);
-            });
-        });
-
         this.xmlNodeConverter = new XmlNodeConverter(schemaService.getGlobalContext());
         this.bossGroup = new NioEventLoopGroup();
         this.workerGroup = new NioEventLoopGroup();
@@ -361,7 +356,18 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                 new FixedThreadPoolWrapper(2, new DefaultThreadFactory("default-pool"));
         this.scheduledThreadPool =
                 new ScheduledThreadPoolWrapper(2, new DefaultThreadFactory("default-scheduled-pool"));
+
+        if (this.initialConfigDataFile.isPresent()) {
+            try {
+                InitialDataImportUtil.importInitialConfigDataFile(this.initialConfigDataFile.get(), this);
+            } catch (InterruptedException | TimeoutException | ExecutionException | IOException
+                    | SerializationException | IllegalStateException e) {
+                LOG.error("Exception occurred while importing config data from file", e);
+                return false;
+            }
+        }
         LOG.info("Lighty controller started in {}", stopwatch.stop());
+
         return true;
     }
 

@@ -32,7 +32,8 @@ public class DataInitTest {
     private static int EXPECTED_DARKNESS_FACTOR = 200;
     private static final String PATH_TO_JSON_INIT_FILE = "/initial_config_data.json";
     private static final String PATH_TO_XML_INIT_FILE = "/initial_config_data.xml";
-    private static final String PATH_TO_INVALID_INIT_FILE = "/invalid_initial_config_data.json";
+    private static final String PATH_TO_INVALID_JSON_INIT_FILE = "/invalid_initial_config_data.json";
+    private static final String PATH_TO_INVALID_XML_INIT_FILE = "/invalid_initial_config_data.xml";
     private static final InstanceIdentifier<Toaster> NODE_YIID = InstanceIdentifier
             .builder(Toaster.class).build();
     private static final long TIMEOUT_MILLIS = 20_000;
@@ -53,15 +54,12 @@ public class DataInitTest {
         lightyController = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(TOASTER_MODEL))
                 .withInitialConfigDataFile(jsonFile).build();
+
         lightyController.start().get(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-
-        LightyServices services = lightyController.getServices();
         CountDownLatch listenerLatch = new CountDownLatch(1);
+        LightyServices services = lightyController.getServices();
+        // Should receive notification even when listener is registered after data was changed
         registerToasterListener(services.getBindingDataBroker(), NODE_YIID, listenerLatch);
-
-        // Import data
-        services.getLightySystemReadyService().onSystemBootReady();
-        // Wait for listener trigger
         listenerLatch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         Assert.assertEquals(listenerLatch.getCount(), 0);
     }
@@ -85,27 +83,32 @@ public class DataInitTest {
         LightyServices services = lightyController.getServices();
         CountDownLatch listenerLatch = new CountDownLatch(1);
         registerToasterListener(services.getBindingDataBroker(), NODE_YIID, listenerLatch);
-
-        // Import data
-        services.getLightySystemReadyService().onSystemBootReady();
-        // Wait for listener trigger
+        // Should receive notification even when listener is registered after data was changed
         listenerLatch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         Assert.assertEquals(listenerLatch.getCount(), 0);
 
     }
 
-    @Test(expectedExceptions = {IllegalStateException.class})
-    public void testInvalidInitConfigFile() throws Exception {
-        URL fileUrl = this.getClass().getResource(PATH_TO_INVALID_INIT_FILE);
+    @Test()
+    public void testInvalidInitConfigFileXML() throws Exception {
+        URL fileUrl = this.getClass().getResource(PATH_TO_INVALID_XML_INIT_FILE);
         File jsonFile = new File(fileUrl.getPath());
         lightyController = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(TOASTER_MODEL))
                 .withInitialConfigDataFile(jsonFile).build();
-        lightyController.start().get(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-        LightyServices services = lightyController.getServices();
-        // Import data
-        services.getLightySystemReadyService().onSystemBootReady();
+        boolean result = lightyController.start().get(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+        Assert.assertEquals(result,false);
+    }
 
+    @Test()
+    public void testInvalidInitConfigFileJSON() throws Exception {
+        URL fileUrl = this.getClass().getResource(PATH_TO_INVALID_JSON_INIT_FILE);
+        File jsonFile = new File(fileUrl.getPath());
+        lightyController = new LightyControllerBuilder()
+                .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(TOASTER_MODEL))
+                .withInitialConfigDataFile(jsonFile).build();
+        boolean result = lightyController.start().get(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+        Assert.assertEquals(result,false);
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")

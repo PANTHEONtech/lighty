@@ -85,14 +85,7 @@ To use this feature, create json/xml file with data you want to load on startup,
      .build();
   lightyController.start();
 ```
-will supply lighty with data file.\
- To actually load content of the file to config datastore call:
-```
-services.getLightySystemReadyService().onSystemBootReady();
-```
-after starting your modules, listeners so the appropriate datastore listeners are ready to act on loaded data 
-(e.g connect netconf device).
-
+will supply lighty with data file.
 ### Configuration Files
 
 * __lightyControllerConfig.json__ - main configuration file containing LightyController config options and paths to other configuration files.

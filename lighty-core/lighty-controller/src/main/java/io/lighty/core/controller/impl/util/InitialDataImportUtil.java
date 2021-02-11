@@ -39,7 +39,7 @@ public final class InitialDataImportUtil {
     }
 
     private static void importConfigDatastoreFromJSON(File initialConfigDataFile, LightyServices services)
-            throws IOException, InterruptedException, ExecutionException, TimeoutException {
+            throws IOException, InterruptedException, ExecutionException, TimeoutException, IllegalStateException {
         LOG.info("Loading data into config datastore from file {}", initialConfigDataFile.getAbsolutePath());
         SchemaNode rootSchemaNode = DataSchemaContextTree.from(services.getSchemaContextProvider()
                 .getSchemaContext()).getRoot().getDataSchemaNode();
@@ -70,7 +70,8 @@ public final class InitialDataImportUtil {
     }
 
     public static void importInitialConfigDataFile(@NonNull File file, @NonNull LightyServices services)
-            throws InterruptedException, ExecutionException, TimeoutException, IOException, SerializationException {
+            throws InterruptedException, ExecutionException, TimeoutException, IOException, SerializationException,
+            IllegalStateException {
         String extension = FilenameUtils.getExtension(file.getAbsolutePath());
         if (extension.equalsIgnoreCase("json")) {
             importConfigDatastoreFromJSON(file, services);
