@@ -47,7 +47,12 @@ public final class Main {
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
     private static final String PASS = "bar";
     private static final String USER = "foo";
-    private static ShutdownHook shutdownHook;
+    private ShutdownHook shutdownHook;
+
+    public static void main(String[] args) {
+        Main app = new Main();
+        app.start(args, true);
+    }
 
     @SuppressWarnings("checkstyle:illegalCatch")
     public void start(final String[] args, final boolean registerShutdownHook) {
@@ -78,7 +83,7 @@ public final class Main {
         }
     }
 
-    private static void startLighty(final ControllerConfiguration controllerConfiguration,
+    private void startLighty(final ControllerConfiguration controllerConfiguration,
             final RestConfConfiguration restconfConfiguration, final boolean registerShutdownHook)
                     throws ConfigurationException, ExecutionException, InterruptedException {
         //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
@@ -110,21 +115,15 @@ public final class Main {
         communityRestConf.startServer();
 
         //3. Register shutdown hook for graceful shutdown.
-        shutdownHook = new ShutdownHook(lightyController, communityRestConf, aaaLighty);
+        this.shutdownHook = new ShutdownHook(lightyController, communityRestConf, aaaLighty);
         if (registerShutdownHook) {
-            Runtime.getRuntime().addShutdownHook(shutdownHook);
+            Runtime.getRuntime().addShutdownHook(this.shutdownHook);
         }
     }
 
     public void shutdown() {
-        shutdownHook.execute();
+        this.shutdownHook.execute();
     }
-
-    public static void main(String[] args) {
-        Main app = new Main();
-        app.start(args, true);
-    }
-
 
     @SuppressWarnings("checkstyle:illegalCatch")
     private static void addCallback(final ListenableFuture<Boolean> start)
