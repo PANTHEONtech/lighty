@@ -50,18 +50,18 @@ public class CommunityAAARestconfAppTest {
     @Test
     public void readDataCorrectCredentials() throws Exception {
         HttpResponse<String> response
-                = httpClient.send(sendGetRequestJSON(BASIC_AUTH), BodyHandlers.ofString());
+                = httpClient.send(createGetRequestJson(BASIC_AUTH), BodyHandlers.ofString());
         Assert.assertEquals(HttpStatus.OK_200, response.statusCode());
     }
 
     @Test
     public void readDataWrongCredentials() throws Exception {
         HttpResponse<String> response
-                = httpClient.send(sendGetRequestJSON(BASIC_AUTH_WRONG), BodyHandlers.ofString());
+                = httpClient.send(createGetRequestJson(BASIC_AUTH_WRONG), BodyHandlers.ofString());
         Assert.assertEquals(HttpStatus.UNAUTHORIZED_401, response.statusCode());
     }
 
-    private HttpRequest sendGetRequestJSON(final String basicAuth) {
+    private HttpRequest createGetRequestJson(final String basicAuth) {
         return HttpRequest.newBuilder()
                 .uri(URI.create(TEST_ADDRESS))
                 .timeout(Duration.ofMinutes(1))
