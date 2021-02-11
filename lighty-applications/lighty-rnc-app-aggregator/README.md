@@ -2,15 +2,15 @@
 Lighty Restconf Netconf application allows to easily initialize, start and use most used OpenDaylight services and optionally add custom business logic.
 
 Most important lighty.io components used are:
-- [lighty.io controller](https://github.com/PANTHEONtech/lighty/tree/13.1.x/lighty-core/lighty-controller)
+- [lighty.io controller](https://github.com/PANTHEONtech/lighty/tree/13.2.x/lighty-core/lighty-controller)
   provides core ODL services (like MDSAL, yangtools, global schema context,...) that are required
   for other services or plugins.
-- [RESTCONF northbound plugin](https://github.com/PANTHEONtech/lighty/tree/13.1.x/lighty-modules/lighty-restconf-nb-community)
+- [RESTCONF northbound plugin](https://github.com/PANTHEONtech/lighty/tree/13.2.x/lighty-modules/lighty-restconf-nb-community)
   provides the RESTCONF interface that is used to communicate with the application using the RESTCONF protocol over the HTTP.
-- [NETCONF southbound plugin](https://github.com/PANTHEONtech/lighty/tree/13.1.x/lighty-modules/lighty-netconf-sb)
+- [NETCONF southbound plugin](https://github.com/PANTHEONtech/lighty/tree/13.2.x/lighty-modules/lighty-netconf-sb)
   enables application to connect to the NETCONF devices using the NETCONF protocol and read/write configuration
   from them or execute RPCs.
-- [AAA module](https://github.com/PANTHEONtech/lighty/tree/13.1.x/lighty-modules/lighty-aaa) provides authorization,
+- [AAA module](https://github.com/PANTHEONtech/lighty/tree/13.2.x/lighty-modules/lighty-aaa) provides authorization,
   authentication and accounting which for example enables to use Basic Authentication for RESTCONF northbound interface.
   This module is optional and can be turned ON/OFF using application configuration.
 

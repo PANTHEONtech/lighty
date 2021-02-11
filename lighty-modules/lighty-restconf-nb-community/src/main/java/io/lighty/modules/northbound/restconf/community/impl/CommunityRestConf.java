@@ -11,6 +11,7 @@ import com.google.common.base.Stopwatch;
 import com.google.common.base.Throwables;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.modules.northbound.restconf.community.impl.config.JsonRestConfServiceType;
+import io.lighty.modules.northbound.restconf.community.impl.root.resource.discovery.RootFoundApplication;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import io.lighty.server.LightyServerBuilder;
 import java.net.InetAddress;
@@ -173,6 +174,19 @@ public class CommunityRestConf extends AbstractLightyModule {
             final ServletContextHandler mainHandler =
                     new ServletContextHandler(contexts, this.restconfServletContextPath, true, false);
             mainHandler.addServlet(jaxrs, "/*");
+
+            // FIXME resource registering should be supported also for other resources, not only for RESTCONF 8040
+            switch (this.jsonRestconfServiceType) {
+                case DRAFT_18:
+                    final ServletContextHandler rrdHandler =
+                            new ServletContextHandler(contexts, "/.well-known", true, false);
+                    final RootFoundApplication rootDiscoveryApp = new RootFoundApplication(restconfServletContextPath);
+                    rrdHandler.addServlet(new ServletHolder(new ServletContainer(ResourceConfig
+                            .forApplication(rootDiscoveryApp))), "/*");
+                    break;
+                default:
+                    LOG.info("Resource Discovery skipped for RESTCONF service type {}", jsonRestconfServiceType);
+            }
 
             boolean startDefault = false;
             if (this.lightyServerBuilder == null) {
