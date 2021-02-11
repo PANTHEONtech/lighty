@@ -1,10 +1,9 @@
 package io.lighty.core.controller.impl.util;
 
-import com.google.gson.stream.JsonReader;
+import io.lighty.codecs.JsonNodeConverter;
+import io.lighty.codecs.XmlNodeConverter;
 import io.lighty.codecs.api.SerializationException;
-import io.lighty.core.controller.api.LightyServices;
-import java.io.File;
-import java.io.FileInputStream;
+import io.lighty.core.controller.impl.config.ControllerConfiguration.InitialConfigData.ImportFileFormat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,19 +12,17 @@ import java.nio.charset.Charset;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.apache.commons.io.FilenameUtils;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
-import org.opendaylight.yangtools.yang.data.codec.gson.JSONCodecFactorySupplier;
-import org.opendaylight.yangtools.yang.data.codec.gson.JsonParserStream;
-import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
-import org.opendaylight.yangtools.yang.data.impl.schema.builder.api.NormalizedNodeContainerBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,69 +32,66 @@ public final class InitialDataImportUtil {
     public static final long IMPORT_TIMEOUT_MILLIS = 20_000;
 
     private InitialDataImportUtil() {
-
+        throw new UnsupportedOperationException("Init of utility class is forbidden");
     }
 
-    private static void importConfigDatastoreFromJSON(File initialConfigDataFile, LightyServices services)
-            throws IOException, InterruptedException, ExecutionException, TimeoutException, IllegalStateException {
-        LOG.info("Loading data into config datastore from file {}", initialConfigDataFile.getAbsolutePath());
-        SchemaNode rootSchemaNode = DataSchemaContextTree.from(services.getSchemaContextProvider()
-                .getSchemaContext()).getRoot().getDataSchemaNode();
-
-        try (InputStream dataStream = new FileInputStream(initialConfigDataFile)) {
-            final NormalizedNodeContainerBuilder<?, ?, ?, ?> builder = ImmutableContainerNodeBuilder.create()
-                    .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(
-                            rootSchemaNode.getQName()));
-            try (NormalizedNodeStreamWriter writer = ImmutableNormalizedNodeStreamWriter.from(builder)) {
-                try (JsonParserStream jsonParser =
-                             JsonParserStream.create(writer,
-                                     JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02
-                                             .getShared(services.getDOMSchemaService().getGlobalContext()))) {
-                    try (JsonReader reader =
-                                 new JsonReader(new InputStreamReader(dataStream, Charset.defaultCharset()))) {
-                        jsonParser.parse(reader);
-                        NormalizedNode<?, ?> nodes = builder.build();
-                        DOMDataTreeWriteTransaction wrTrx = services.getClusteredDOMDataBroker()
-                                .newWriteOnlyTransaction();
-                        wrTrx.merge(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty(), nodes);
-                        wrTrx.commit().get(IMPORT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-                        LOG.debug("Normalized nodes loaded on startup from file {} :\n {}",
-                                initialConfigDataFile.getAbsolutePath(), nodes);
-                    }
-                }
-            }
-        }
-    }
-
-    public static void importInitialConfigDataFile(@NonNull File file, @NonNull LightyServices services)
-            throws InterruptedException, ExecutionException, TimeoutException, IOException, SerializationException,
-            IllegalStateException {
-        String extension = FilenameUtils.getExtension(file.getAbsolutePath());
-        if (extension.equalsIgnoreCase("json")) {
-            importConfigDatastoreFromJSON(file, services);
-        } else if (extension.equalsIgnoreCase("xml")) {
-            importConfigDatastoreFromXML(file, services);
-        } else {
-            throw new UnsupportedOperationException("File extension"
-                    + extension
-                    + " is not supported as initial config data format");
-        }
-    }
-
-    private static void importConfigDatastoreFromXML(File initialConfigDataFile, LightyServices services)
+    private static void importConfigDatastoreFromJSON(InputStream inputStream,
+                                                      SchemaContext schemaContext,
+                                                      EffectiveModelContext effectiveModelContext,
+                                                      DOMDataBroker dataBroker)
             throws IOException, InterruptedException, ExecutionException, TimeoutException, SerializationException {
-        LOG.info("Loading data into config datastore from file {}", initialConfigDataFile.getAbsolutePath());
-        SchemaNode rootSchemaNode = DataSchemaContextTree.from(services.getSchemaContextProvider()
-                .getSchemaContext()).getRoot().getDataSchemaNode();
-
+        LOG.info("Loading data into config datastore from JSON");
+        SchemaNode rootSchemaNode = DataSchemaContextTree.from(effectiveModelContext).getRoot().getDataSchemaNode();
+        JsonNodeConverter jsonNodeConverter = new JsonNodeConverter(schemaContext);
         try (Reader reader =
-                     new InputStreamReader(new FileInputStream(initialConfigDataFile), Charset.defaultCharset())) {
-            NormalizedNode<?, ?> nodes = services.getXmlNodeConverter().deserialize(rootSchemaNode, reader);
-            DOMDataTreeWriteTransaction wrTrx = services.getClusteredDOMDataBroker().newWriteOnlyTransaction();
+                     new InputStreamReader(inputStream, Charset.defaultCharset())) {
+            NormalizedNode<?, ?> nodes = jsonNodeConverter.deserialize(rootSchemaNode, reader);
+            // For some reason JsonParserStream.parse() doesn't wrap deserialized NormalizedNode in root schema node
+            // (urn:ietf:params:xml:ns:netconf:base:1.0)data as XMLParserStream does..
+            // Wrap it here:
+            nodes = ImmutableContainerNodeBuilder.create()
+                    .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(
+                            rootSchemaNode.getQName()))
+                    .addChild((DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>) nodes)
+                    .build();
+            DOMDataTreeWriteTransaction wrTrx = dataBroker.newWriteOnlyTransaction();
             wrTrx.merge(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty(), nodes);
             wrTrx.commit().get(IMPORT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-            LOG.debug("Normalized nodes loaded on startup from file {} :\n {}",
-                    initialConfigDataFile.getAbsolutePath(), nodes);
+            LOG.debug("Normalized nodes loaded on startup from json file: {}", nodes);
+        }
+    }
+
+
+    public static void importInitialConfigDataFile(@NonNull InputStream inputFileStream,
+                                                   @NonNull ImportFileFormat fileFormat,
+                                                   @NonNull SchemaContext schemaContext,
+                                                   @NonNull EffectiveModelContext effectiveModelContext,
+                                                   @NonNull DOMDataBroker dataBroker)
+            throws InterruptedException, ExecutionException, TimeoutException, IOException, SerializationException,
+            IllegalStateException, UnsupportedOperationException {
+        if (fileFormat == ImportFileFormat.JSON) {
+            importConfigDatastoreFromJSON(inputFileStream, schemaContext, effectiveModelContext, dataBroker);
+        } else if (fileFormat == ImportFileFormat.XML) {
+            importConfigDatastoreFromXML(inputFileStream, effectiveModelContext, dataBroker);
+        } else {
+            throw new UnsupportedOperationException("Unsupported format of init config data file detected");
+        }
+    }
+
+    private static void importConfigDatastoreFromXML(InputStream inputStream,
+                                                     EffectiveModelContext effectiveModelContext,
+                                                     DOMDataBroker dataBroker)
+            throws IOException, InterruptedException, ExecutionException, TimeoutException, SerializationException {
+        LOG.info("Loading data into config datastore from XML");
+        SchemaNode rootSchemaNode = DataSchemaContextTree.from(effectiveModelContext).getRoot().getDataSchemaNode();
+        XmlNodeConverter xmlNodeConverter = new XmlNodeConverter(effectiveModelContext);
+        try (Reader reader =
+                     new InputStreamReader(inputStream, Charset.defaultCharset())) {
+            NormalizedNode<?, ?> nodes = xmlNodeConverter.deserialize(rootSchemaNode, reader);
+            DOMDataTreeWriteTransaction wrTrx = dataBroker.newWriteOnlyTransaction();
+            wrTrx.merge(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty(), nodes);
+            wrTrx.commit().get(IMPORT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+            LOG.debug("Normalized nodes loaded on startup from json file: {}", nodes);
         }
     }
 
