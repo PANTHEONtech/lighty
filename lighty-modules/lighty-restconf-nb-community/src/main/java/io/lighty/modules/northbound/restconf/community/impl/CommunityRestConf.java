@@ -175,12 +175,18 @@ public class CommunityRestConf extends AbstractLightyModule {
                     new ServletContextHandler(contexts, this.restconfServletContextPath, true, false);
             mainHandler.addServlet(jaxrs, "/*");
 
-            // TODO registering of resources should be supported also for other resources
-            final ServletContextHandler rrdHandler =
-                    new ServletContextHandler(contexts, "/.well-known", true, false);
-            final RootFoundApplication rootDiscoveryApp = new RootFoundApplication(restconfServletContextPath);
-            rrdHandler.addServlet(new ServletHolder(new ServletContainer(ResourceConfig
-                    .forApplication(rootDiscoveryApp))), "/*");
+            // FIXME resource registering should be supported also for other resources, not only for RESTCONF 8040
+            switch (this.jsonRestconfServiceType) {
+                case DRAFT_18:
+                    final ServletContextHandler rrdHandler =
+                            new ServletContextHandler(contexts, "/.well-known", true, false);
+                    final RootFoundApplication rootDiscoveryApp = new RootFoundApplication(restconfServletContextPath);
+                    rrdHandler.addServlet(new ServletHolder(new ServletContainer(ResourceConfig
+                            .forApplication(rootDiscoveryApp))), "/*");
+                    break;
+                default:
+                    LOG.info("Resource Discovery skipped for RESTCONF service type {}", jsonRestconfServiceType);
+            }
 
             boolean startDefault = false;
             if (this.lightyServerBuilder == null) {
