@@ -3,6 +3,7 @@
 **/test-output
 **/journal
 **/snapshots
+**/*.db.mv.db
 
 bin/
 dist

@@ -47,9 +47,15 @@ public final class Main {
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
     private static final String PASS = "bar";
     private static final String USER = "foo";
+    private ShutdownHook shutdownHook;
+
+    public static void main(String[] args) {
+        Main app = new Main();
+        app.start(args, true);
+    }
 
     @SuppressWarnings("checkstyle:illegalCatch")
-    public static void main(final String[] args) throws Exception {
+    public void start(final String[] args, final boolean registerShutdownHook) {
         final Stopwatch stopwatch = Stopwatch.createStarted();
         try {
             if (args.length > 0) {
@@ -59,7 +65,7 @@ public final class Main {
                         ControllerConfigUtils.getConfiguration(Files.newInputStream(configPath));
                 final RestConfConfiguration restConfConfiguration = RestConfConfigUtils
                         .getRestConfConfiguration(Files.newInputStream(configPath));
-                startLighty(singleNodeConfiguration, restConfConfiguration);
+                startLighty(singleNodeConfiguration, restConfConfiguration, registerShutdownHook);
             } else {
                 LOG.info("Lighty and Restconf starting, using default configuration ...");
                 final Set<YangModuleInfo> modelPaths = Stream.concat(RestConfConfigUtils.YANG_MODELS.stream(),
@@ -69,7 +75,7 @@ public final class Main {
                         ControllerConfigUtils.getDefaultSingleNodeConfiguration(modelPaths);
                 final RestConfConfiguration restConfConfig =
                         RestConfConfigUtils.getDefaultRestConfConfiguration();
-                startLighty(defaultSingleNodeConfiguration, restConfConfig);
+                startLighty(defaultSingleNodeConfiguration, restConfConfig, registerShutdownHook);
             }
             LOG.info("Lighty and Restconf started in {}", stopwatch.stop());
         } catch (final Throwable e) {
@@ -77,8 +83,8 @@ public final class Main {
         }
     }
 
-    private static void startLighty(final ControllerConfiguration controllerConfiguration,
-            final RestConfConfiguration restconfConfiguration)
+    private void startLighty(final ControllerConfiguration controllerConfiguration,
+            final RestConfConfiguration restconfConfiguration, final boolean registerShutdownHook)
                     throws ConfigurationException, ExecutionException, InterruptedException {
         //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
         final LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
@@ -108,17 +114,16 @@ public final class Main {
 
         communityRestConf.startServer();
 
-        Runtime.getRuntime().addShutdownHook(new ShutdownHook(lightyController, communityRestConf, aaaLighty));
+        //3. Register shutdown hook for graceful shutdown.
+        this.shutdownHook = new ShutdownHook(lightyController, communityRestConf, aaaLighty);
+        if (registerShutdownHook) {
+            Runtime.getRuntime().addShutdownHook(this.shutdownHook);
+        }
     }
 
-    public static void start() throws Exception {
-        main(new String[]{});
+    public void shutdown() {
+        this.shutdownHook.execute();
     }
-
-    private Main() {
-        /** Hide constructor, this is a utility class **/
-    }
-
 
     @SuppressWarnings("checkstyle:illegalCatch")
     private static void addCallback(final ListenableFuture<Boolean> start)
@@ -156,6 +161,10 @@ public final class Main {
 
         @Override
         public void run() {
+            this.execute();
+        }
+
+        public void execute() {
             LOG.info("Lighty and Restconf shutting down ...");
             final Stopwatch stopwatch = Stopwatch.createStarted();
             try {
