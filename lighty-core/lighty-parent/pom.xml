@@ -240,9 +240,9 @@
                             <includeTestResources>true</includeTestResources>
                             <includes>**\/*.java, **\/*.xtend</includes>
                             <excludes>
-                                    org/opendaylight/yang/gen/**,
-                                    **/protobuff/messages/**,
-                                    **/thrift/gen/*.java
+                                org/opendaylight/yang/gen/**,
+                                **/protobuff/messages/**,
+                                **/thrift/gen/*.java
                             </excludes>
                             <failsOnError>true</failsOnError>
                             <consoleOutput>true</consoleOutput>
