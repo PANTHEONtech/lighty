@@ -14,9 +14,6 @@ jobs:
         shell: bash
     env:
       app-aggregator-dir: lighty-applications/${{ github.event.inputs.app-name }}-aggregator
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
-      SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY}}
     name: Setup, Install and Test
     steps:
       - name: Clone Repository
@@ -31,23 +28,8 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Maven install + build docker image (skip test)
+      - name: Maven install + build docker image
         run: mvn install -Pdocker -DskipTests -B -V -Psource-quality
-      - name: Maven test + SonarCloud
-        if: ${{ env.SONAR_TOKEN != 0 }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
-          -Dsonar.java.source=1.11
-          -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
-          -Dsonar.organization=${{ env.SONAR_ORGANIZATION }}
-          -Dsonar.host.url=https://sonarcloud.io
-      - name: Maven test no SonarCloud
-        if: ${{ env.SONAR_TOKEN == 0 }}
-        run: mvn -B verify
-      - name: Upload surefire test results
-        uses: actions/upload-artifact@v2
-        with:
-          name: Surefire-Test-Results
-          path: ~/**/surefire-reports/**/*.txt
       - name: Start app in docker container
         run: |
           image_name=$(mvn help:evaluate -f ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-docker/pom.xml -Dexpression=image.name -q -DforceStdout)
@@ -85,7 +67,7 @@ jobs:
       - name: Helm version
         run: |
           helm version
-      - name: Kubernetes versions
+      - name: Kubernetes version
         run: |
           minikube kubectl -- version
       - name: Load image to minikube
