@@ -14,6 +14,10 @@ on:
         description: Desired TAG of docker image
         default: latest
         required: true
+      checkout-ref:
+        description: The branch, tag or SHA to checkout. (if "default" the selected branch will be used)
+        default: default
+        required: true
 jobs:
   publish-docker-helm:
     runs-on: ubuntu-latest
@@ -25,8 +29,14 @@ jobs:
       PUBLISH_ACCESS_KEY: ${{ secrets.MM_PKG_WRITE}}
     name: Publish docker image
     steps:
-      - name: Clone Repository
+      - name: Clone Repository, default
+        if: ${{ github.event.inputs.checkout-ref == 'default' }}
         uses: actions/checkout@v2
+      - name: Clone Repository, specified ref
+        if: ${{ github.event.inputs.checkout-ref != 'default' }}
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.checkout-ref }}
       - name: Set up JDK 1.11
         uses: actions/setup-java@v1
         with:
@@ -39,7 +49,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Env docker image name
         run: |
-          DOCKER_IMAGE_NAME=$(echo ghcr.io/PANTHEONtech/${{ github.event.inputs.image-name }})
+          DOCKER_IMAGE_NAME=$(echo ghcr.io/pantheontech/${{ github.event.inputs.image-name }})
           DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME:${{ github.event.inputs.image-tag }})
           echo "DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME_TAG)" >> $GITHUB_ENV
       - name: Build docker image
