@@ -1,4 +1,4 @@
-name: Publish docker image
+name: Publish docker image and helm chart
 on:
   workflow_dispatch:
     inputs:
@@ -14,6 +14,10 @@ on:
         description: Desired TAG of docker image
         default: latest
         required: true
+      helm-chart-version:
+        description: Desired version of released helm chart, (if "default" the version from Chart.yaml will be used)
+        default: default
+        required: false
       checkout-ref:
         description: The branch, tag or SHA to checkout. (if "default" the selected branch will be used)
         default: default
@@ -27,7 +31,7 @@ jobs:
     env:
       app-aggregator-dir: lighty-applications/${{ github.event.inputs.app-name }}-aggregator
       PUBLISH_ACCESS_KEY: ${{ secrets.MM_PKG_WRITE}}
-    name: "Publish docker image. App: ${{ github.event.inputs.app-name }}, Checkout-ref: ${{ github.event.inputs.checkout-ref }}"
+    name: "Publish docker image and helm chart. App: ${{ github.event.inputs.app-name }}, Checkout-ref: ${{ github.event.inputs.checkout-ref }}"
     steps:
       - name: Clone Repository
         if: ${{ github.event.inputs.checkout-ref == 'default' }}
@@ -72,3 +76,31 @@ jobs:
         run: |
           docker rmi $DOCKER_IMAGE_NAME_TAG
           docker pull $DOCKER_IMAGE_NAME_TAG
+      - name: Install yq (yaml processor)
+        run: |
+          sudo snap install yq
+      - name: Set image.name, image.version in values.yaml of helm chart
+        run: |
+          yq eval '.image.name="ghcr.io/pantheontech/${{ github.event.inputs.image-name }}" | .image.version="${{ github.event.inputs.image-tag }}"' ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-helm/helm/${{ github.event.inputs.app-name }}-helm/values.yaml -i
+      - name: Print values.yaml
+        run: |
+          cat -A ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-helm/helm/${{ github.event.inputs.app-name }}-helm/values.yaml
+      - name: "Publish Helm chart to Helm repository (Version: ${{ github.event.inputs.helm-chart-version }} )"
+        if: ${{ github.event.inputs.helm-chart-version != 'default' }}
+        uses: stefanprodan/helm-gh-pages@master
+        with:
+          token: ${{ env.PUBLISH_ACCESS_KEY }}
+          charts_dir: ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-helm/helm/
+          charts_url: https://pantheontech.github.io/helm-charts/
+          repository: helm-charts
+          branch: main
+          chart_version: ${{ github.event.inputs.helm-chart-version }}
+      - name: "Publish Helm chart to Helm repository (Version: from Chart.yaml)"
+        if: ${{ github.event.inputs.helm-chart-version == 'default' }}
+        uses: stefanprodan/helm-gh-pages@master
+        with:
+          token: ${{ env.PUBLISH_ACCESS_KEY }}
+          charts_dir: ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-helm/helm/
+          charts_url: https://pantheontech.github.io/helm-charts/
+          repository: helm-charts
+          branch: main
