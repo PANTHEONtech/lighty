@@ -6,6 +6,10 @@ on:
         description: Name of the application in /lighty-applications
         default: lighty-rnc-app
         required: true
+      checkout-ref:
+        description: The branch, tag or SHA to checkout. (if "default" the selected branch will be used)
+        default: default
+        required: true
 jobs:
   setup:
     runs-on: ubuntu-latest
@@ -14,10 +18,16 @@ jobs:
         shell: bash
     env:
       app-aggregator-dir: lighty-applications/${{ github.event.inputs.app-name }}-aggregator
-    name: Setup, Install and Test
+    name: "Setup, Install and Test. App: ${{ github.event.inputs.app-name }}, Checkout-ref: ${{ github.event.inputs.checkout-ref }}"
     steps:
       - name: Clone Repository
+        if: ${{ github.event.inputs.checkout-ref == 'default' }}
         uses: actions/checkout@v2
+      - name: "Clone Repository, Ref: ${{ github.event.inputs.checkout-ref }}"
+        if: ${{ github.event.inputs.checkout-ref != 'default' }}
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.checkout-ref }}
       - name: Set up JDK 1.11
         uses: actions/setup-java@v1
         with:
