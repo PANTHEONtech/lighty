@@ -27,12 +27,12 @@ jobs:
     env:
       app-aggregator-dir: lighty-applications/${{ github.event.inputs.app-name }}-aggregator
       PUBLISH_ACCESS_KEY: ${{ secrets.MM_PKG_WRITE}}
-    name: Publish docker image
+    name: "Publish docker image. App: ${{ github.event.inputs.app-name }}, Checkout-ref: ${{ github.event.inputs.checkout-ref }}"
     steps:
-      - name: Clone Repository, default
+      - name: Clone Repository
         if: ${{ github.event.inputs.checkout-ref == 'default' }}
         uses: actions/checkout@v2
-      - name: Clone Repository, specified ref
+      - name: "Clone Repository, Ref: ${{ github.event.inputs.checkout-ref }}"
         if: ${{ github.event.inputs.checkout-ref != 'default' }}
         uses: actions/checkout@v2
         with:
@@ -53,7 +53,7 @@ jobs:
           DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME:${{ github.event.inputs.image-tag }})
           echo "DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME_TAG)" >> $GITHUB_ENV
       - name: Build docker image
-        run: mvn install -pl :${{ github.event.inputs.app-name }},:${{ github.event.inputs.app-name }}-docker -am -P docker
+        run: mvn install -B -pl :${{ github.event.inputs.app-name }},:${{ github.event.inputs.app-name }}-docker -am -P docker
       - name: Rename image to desired
         run: |
           image_name=$(mvn help:evaluate -f ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-docker/pom.xml -Dexpression=image.name -q -DforceStdout)
