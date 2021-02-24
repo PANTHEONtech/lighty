@@ -48,6 +48,8 @@ import org.xml.sax.SAXException;
  *
  * @see JsonNodeConverter
  */
+// FIXME find ODL implementation alternative, replace if exists
+//  or refactor to be stateless
 public class XmlNodeConverter implements NodeConverter {
 
     private static final Logger LOG = LoggerFactory.getLogger(XmlNodeConverter.class);

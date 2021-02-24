@@ -9,9 +9,9 @@ package io.lighty.codecs.api;
 
 import io.lighty.codecs.JsonNodeConverter;
 import io.lighty.codecs.XmlNodeConverter;
-import io.lighty.codecs.xml.XmlElement;
 import java.io.Reader;
 import java.io.Writer;
+import org.opendaylight.netconf.api.xml.XmlElement;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;

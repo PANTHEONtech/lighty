@@ -8,10 +8,10 @@
 package io.lighty.codecs.api;
 
 import io.lighty.codecs.AbstractCodecTest;
-import io.lighty.codecs.xml.XmlElement;
 import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Test;
+import org.opendaylight.netconf.api.xml.XmlElement;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;

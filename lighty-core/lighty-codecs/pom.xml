@@ -53,6 +53,11 @@
             <artifactId>restconf-common</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.opendaylight.netconf</groupId>
+            <artifactId>netconf-api</artifactId>
+        </dependency>
+
         <!-- Test scoped dependencies -->
         <dependency>
             <groupId>io.lighty.models.test</groupId>

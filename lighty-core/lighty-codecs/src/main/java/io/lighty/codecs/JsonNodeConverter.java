@@ -37,6 +37,8 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
  *
  * @see XmlNodeConverter
  */
+// FIXME find ODL implementation alternative, replace if exists
+//  or refactor to be stateless
 public class JsonNodeConverter implements NodeConverter {
 
     private final SchemaContext schemaContext;

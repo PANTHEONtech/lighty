@@ -8,14 +8,14 @@
 package io.lighty.codecs.api;
 
 import com.google.common.base.Strings;
-import io.lighty.codecs.xml.DocumentedException;
-import io.lighty.codecs.xml.XmlElement;
-import io.lighty.codecs.xml.XmlUtil;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.opendaylight.netconf.api.DocumentedException;
+import org.opendaylight.netconf.api.xml.XmlElement;
+import org.opendaylight.netconf.api.xml.XmlUtil;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
@@ -85,7 +85,7 @@ public final class ConverterUtils {
      * @return {@link QName} for input data or empty.
      */
     public static Optional<QName> getRpcQName(final XmlElement xmlElement) {
-        Optional<String> optionalNamespace = xmlElement.getNamespaceOptionally().toJavaUtil();
+        Optional<String> optionalNamespace = xmlElement.getNamespaceOptionally();
         String name = xmlElement.getName();
         if (Strings.isNullOrEmpty(name)) {
             return Optional.empty();

@@ -21,6 +21,10 @@ import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
+/**
+ * @deprecated use {@link org.opendaylight.yangtools.yang.data.util.AbstractStringInstanceIdentifierCodec}
+ */
+@Deprecated
 public class DeserializeIdentifierCodec {
 
     private final DataSchemaContextTree dataSchemaContextTree;

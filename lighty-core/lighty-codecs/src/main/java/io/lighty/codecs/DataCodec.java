@@ -12,8 +12,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import io.lighty.codecs.api.Codec;
 import io.lighty.codecs.api.NodeConverter;
-import io.lighty.codecs.xml.XmlElement;
-import io.lighty.codecs.xml.XmlUtil;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -27,6 +25,8 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.adapter.ConstantAdapterContext;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
+import org.opendaylight.netconf.api.xml.XmlElement;
+import org.opendaylight.netconf.api.xml.XmlUtil;
 import org.opendaylight.restconf.common.errors.RestconfDocumentedException;
 import org.opendaylight.yangtools.rfc8040.model.api.YangDataSchemaNode;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
@@ -54,6 +54,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+/**
+ * @deprecated use {@link org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer} directly
+ */
+@Deprecated
 public class DataCodec<T extends DataObject> implements Codec<T> {
 
     private static final XMLOutputFactory XML_FACTORY;
