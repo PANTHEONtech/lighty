@@ -95,15 +95,81 @@ To build and start the RNC lighty.io application using docker in the local envir
    `docker run -it --name lighty-rnc --network host --rm lighty-rnc`
 
 3. To start the application with custom lighty configuration( -c ) and custom initial log4j config file( -l ) use command:
-   `docker run -it --name lighty-rnc --network host -v /absolute_path/to/config-file/conf.json:/lighty-rnc/conf.json -v /absolute_path/to/config-file/logger.properties:/lighty-rnc/logger.properties --rm lighty-rnc -c conf.json -l logger.properties`
+   `docker run -it --name lighty-rnc --network host
+   -v /absolute_path/to/config-file/configuration.json:/lighty-rnc/configuration.json 
+   -v /absolute_path/to/config-file/logger.properties:/lighty-rnc/logger.properties 
+   --rm lighty-rnc -c configuration.json -l logger.properties`
+  
+   If your configuration.json file specifies path to initial configuration data to load on start up
+   (for more information, check 
+   [lighty-controller](https://github.com/PANTHEONtech/lighty/tree/master/lighty-core/lighty-controller))
+   you need to mount the json/xml file as well:
+   `-v /absolute/path/to/file/initData.xml:/lighty-rnc/initData.xml`
+   , then your path to this file in configuration.json becomes just "./initData.xml": 
+   ` "initialConfigData": {
+          "pathToInitDataFile": "./initData.xml",
+          "format": "xml"
+         }`
    
    Example configuration files are located on following path:  
-   `lighty-rnc-app/src/main/resources/*`
+   `lighty-rnc-app-docker/example-config/*`
 
 4. If the application was started successfully, then a log similar should be present in the console:  
    `INFO [main] (Main.java:81) - RNC lighty.io application started in 5989.108ms`
 
 5. Test the RNC lighty.io application. Default RESTCONF port is `8888`
+
+
+## Deployment via helm chart
+### Prerequisites
+* kubernetes cluster 1.15.11 (minikube / microk8s /..)
+* helm 2.17
+### Deploy
+To easily deploy Lighty RNC application to kubernetes we provide custom helm chart located in /lighty-rnc-app-helm/helm/.
+To install, make sure that the docker image defined in `values.yaml` is accessible, then run command:
+`helm install microk8s helm install --name lighty-rnc-app ./lighty-rnc-app-helm/`
+in `/lighty-rnc-app-helm/helm/` directory.
+### Providing startup configuration
+By default, the deployed application is started with custom configuration.json 
+(for more information check [lighty-controller](https://github.com/PANTHEONtech/lighty/tree/master/lighty-core/lighty-controller)).
+We supply this configuration file by passing kubernetes configmap (`configmaps.yaml`), which you can modify to your needs.
+To use the functionality of loading configuration data on startup, add new entry to configmaps.yaml:
+`initData: |
+     your initial yang modeled json/xml data
+`
+Then add:
+` "initialConfigData": {
+       "pathToInitDataFile": "{{ .Values.lighty.configDirectoryName }}/initData",
+       "format": "xml"/"json" depending on format
+      }` 
+entry to controller json node in lighty-config.json in `configmaps.yaml`.
+If everything was set up corectly, then your data will be loaded to controller on startup and appropriate listeners should be triggered.
+For example, if your initial json data contains node in netconf topology: 
+`{
+  "network-topology:network-topology": {
+    "topology": [
+      {
+        "topology-id": "topology-netconf",
+        "node": [
+          {
+            "node-id": "device1",
+            "netconf-node-topology:schemaless": false,
+            "netconf-node-topology:port": <port-of-device>,
+            "netconf-node-topology:tcp-only": false,
+            "netconf-node-topology:username": "admin",
+            "netconf-node-topology:password": "admin",
+            "netconf-node-topology:host": "<ip-of-device>",
+            "netconf-node-topology:keepalive-delay": 0
+          }
+        ]
+      }
+    ]
+  }
+}`
+and the device is running, the connection should be established upon startup.
+For testing purposes, you can use [lighty-netconf-simulator](https://github.com/PANTHEONtech/lighty-netconf-simulator)
+as a netconf device.
+
 ## JMX debugging
 Java Management Extensions is a tool enabled by default which makes it easy to change runtime
 configuration of the application. Among other options, we expose the option to change logging behaviour during runtime
@@ -143,7 +209,3 @@ you just need to forward the JMX port of the pod in which the instance of the ap
 In kubernetes this is done via `kubectl port-forward` command.
 1. Forward the pod's JMX port, run `kubectl port-forward <name-of-the-pod> <JMX_PORT>`  
 2. Connect JMX client, run `jconsole <pod-ip>:<JMX-port>`
-
-
-
-
