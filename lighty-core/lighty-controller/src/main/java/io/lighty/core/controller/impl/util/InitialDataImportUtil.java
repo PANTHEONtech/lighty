@@ -64,6 +64,16 @@ public final class InitialDataImportUtil {
         }
     }
 
+    private static NormalizedNode<?, ?> inputStreamXMLtoNormalizedNodes(InputStream inputStream,
+                                                                        EffectiveModelContext effectiveModelContext)
+            throws IOException, SerializationException {
+        SchemaNode rootSchemaNode = DataSchemaContextTree.from(effectiveModelContext).getRoot().getDataSchemaNode();
+        XmlNodeConverter xmlNodeConverter = new XmlNodeConverter(effectiveModelContext);
+        try (Reader reader =
+                     new InputStreamReader(inputStream, Charset.defaultCharset())) {
+            return xmlNodeConverter.deserialize(rootSchemaNode, reader);
+        }
+    }
 
     public static void importInitialConfigDataFile(@NonNull InputStream inputFileStream,
                                                    @NonNull ImportFileFormat fileFormat,
@@ -87,18 +97,6 @@ public final class InitialDataImportUtil {
         mergeConfigNormalizedNodes(nodes, dataBroker);
         LOG.info("Load of initial config data was successful");
         LOG.debug("Normalized nodes loaded on startup from file: {}", nodes);
-    }
-
-
-    private static NormalizedNode<?, ?> inputStreamXMLtoNormalizedNodes(InputStream inputStream,
-                                                                        EffectiveModelContext effectiveModelContext)
-            throws IOException, SerializationException {
-        SchemaNode rootSchemaNode = DataSchemaContextTree.from(effectiveModelContext).getRoot().getDataSchemaNode();
-        XmlNodeConverter xmlNodeConverter = new XmlNodeConverter(effectiveModelContext);
-        try (Reader reader =
-                     new InputStreamReader(inputStream, Charset.defaultCharset())) {
-            return xmlNodeConverter.deserialize(rootSchemaNode, reader);
-        }
     }
 
     private static void mergeConfigNormalizedNodes(NormalizedNode<?, ?> nodes, DOMDataBroker dataBroker)
