@@ -88,6 +88,34 @@ public class ConfigLoadingTest {
         Assert.assertEquals(operDatastoreContext.getBackendAlivenessTimerInterval(), 30000000000L);
         Assert.assertEquals(operDatastoreContext.getRequestTimeout(), 120000000000L);
         Assert.assertEquals(operDatastoreContext.getNoProgressTimeout(), 900000000000L);
+        Assert.assertNull(configuration.getInitialConfigData());
+    }
+
+    @Test(expectedExceptions = ConfigurationException.class)
+    public void loadMissingInitConfigParam() throws ConfigurationException {
+        InputStream inputStream = this.getClass()
+                .getResourceAsStream("/testLightyControllerConfig-missingInitParam.json");
+        final ControllerConfiguration configuration = ControllerConfigUtils.getConfiguration(inputStream);
+        Assert.assertNotNull(configuration);
+    }
+
+    @Test(expectedExceptions = ConfigurationException.class)
+    public void loadWrongInitParam() throws ConfigurationException {
+        InputStream inputStream = this.getClass()
+                .getResourceAsStream("/testLightyControllerConfig-wrongInitParam.json");
+        final ControllerConfiguration configuration = ControllerConfigUtils.getConfiguration(inputStream);
+        Assert.assertNotNull(configuration);
+    }
+
+    @Test
+    public void loadOkDataInitConfig() throws ConfigurationException {
+        InputStream inputStream = this.getClass()
+                .getResourceAsStream("/testLightyControllerConfig-okDataInit.json");
+        final ControllerConfiguration configuration = ControllerConfigUtils.getConfiguration(inputStream);
+        Assert.assertNotNull(configuration);
+        Assert.assertTrue(configuration.getInitialConfigData().getPathToInitDataFile().equals("test-path"));
+        Assert.assertTrue(configuration.getInitialConfigData().getFormat()
+                .equals(ControllerConfiguration.InitialConfigData.ImportFileFormat.JSON));
     }
 
     @Test
