@@ -22,14 +22,7 @@
     <modules>
         <module>lighty-rnc-app</module>
         <module>lighty-rnc-module</module>
+        <module>lighty-rnc-app-docker</module>
     </modules>
 
-    <profiles>
-        <profile>
-            <id>docker</id>
-            <modules>
-                <module>lighty-rnc-app-docker</module>
-            </modules>
-        </profile>
-    </profiles>
 </project>
