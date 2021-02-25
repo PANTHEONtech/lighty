@@ -82,7 +82,7 @@ public class DataInitTest {
         Assert.assertEquals(listenerLatch.getCount(), 0);
     }
 
-    @Test()
+    @Test
     public void testInvalidInitFilePath() throws Exception {
         InputStream configStream =  this.getClass().getResourceAsStream(PATH_TO_INVALID_PATH_TO_INIT_CONFIG);
         lightyController = new LightyControllerBuilder()
@@ -93,7 +93,7 @@ public class DataInitTest {
 
     }
 
-    @Test()
+    @Test
     public void testInvalidInitConfigFileJSON() throws Exception {
         InputStream configStream =  this.getClass().getResourceAsStream(PATH_TO_INVALID_JSON_NODES_INIT_CONFIG);
         lightyController = new LightyControllerBuilder()
@@ -103,7 +103,7 @@ public class DataInitTest {
         Assert.assertEquals(result,false);
     }
 
-    @Test()
+    @Test
     public void testInvalidInitConfigFileXML() throws Exception {
         InputStream configStream =  this.getClass().getResourceAsStream(PATH_TO_INVALID_XML_NODES_INIT_CONFIG);
         lightyController = new LightyControllerBuilder()
