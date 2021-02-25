@@ -8,7 +8,7 @@
         "moduleShardsConfig": "configuration/initial/module-shards.conf",
         "modulesConfig": "configuration/initial/modules.conf",
         "initialConfigData": {
-            "pathToInitDataFile": "lighty-applications/lighty-rnc-app-aggregator/lighty-rnc-app/src/main/resources/initData.xml",
+            "pathToInitDataFile": "./initData.xml",
             "format": "xml"
         },
         "domNotificationRouterConfig":{
