@@ -83,7 +83,10 @@ To use this feature, create json/xml file with data you want to load on startup,
       "format": "json"
     }
 ```
-in your lighty .json controller configuration.
+in your lighty .json controller configuration.\
+If something goes wrong (e.g file doesn't exist, initial data isn't valid ..) `lightyController.start()` returns false
+ and your application should react to it, for example initialize shutdown procedure.
+
 ### Configuration Files
 
 * __lightyControllerConfig.json__ - main configuration file containing LightyController config options and paths to other configuration files.
