@@ -102,7 +102,7 @@ To build and start the RNC lighty.io application using docker in the local envir
   
    If your configuration.json file specifies path to initial configuration data to load on start up
    (for more information, check 
-   [lighty-controller](https://github.com/PANTHEONtech/lighty/tree/13.1.x/lighty-core/lighty-controller))
+   [lighty-controller](https://github.com/PANTHEONtech/lighty/tree/13.2.x/lighty-core/lighty-controller))
    you need to mount the json/xml file as well:
    `-v /absolute/path/to/file/initData.xml:/lighty-rnc/initData.xml`
    , then your path to this file in configuration.json becomes just "./initData.xml": 
@@ -131,7 +131,7 @@ To install, make sure that the docker image defined in `values.yaml` is accessib
 in `/lighty-rnc-app-helm/helm/` directory.
 ### Providing startup configuration
 By default, the deployed application is started with custom configuration.json 
-(for more information check [lighty-controller](https://github.com/PANTHEONtech/lighty/tree/13.1.x/lighty-core/lighty-controller)).
+(for more information check [lighty-controller](https://github.com/PANTHEONtech/lighty/tree/13.2.x/lighty-core/lighty-controller)).
 We supply this configuration file by passing kubernetes configmap (`configmaps.yaml`), which you can modify to your needs.
 To use the functionality of loading configuration data on startup, add new entry to configmaps.yaml:
 `initData: |
