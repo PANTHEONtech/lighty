@@ -7,8 +7,10 @@
  */
 package io.lighty.core.controller.impl.config;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
 import com.typesafe.config.Config;
 import io.lighty.core.controller.impl.util.DatastoreConfigurationUtils;
@@ -36,6 +38,7 @@ public class ControllerConfiguration {
 
     private DOMNotificationRouterConfig domNotificationRouterConfig;
     private ActorSystemConfig actorSystemConfig;
+    private InitialConfigData initialConfigData;
 
     @JsonIgnore
     private SchemaServiceConfig schemaServiceConfig;
@@ -58,7 +61,78 @@ public class ControllerConfiguration {
         this.datastoreProperties = DatastoreConfigurationUtils.getDefaultDatastoreProperties();
     }
 
-    public static class  DOMNotificationRouterConfig {
+    public static class InitialConfigData {
+
+        public enum ImportFileFormat {
+            JSON("json"),
+            XML("xml"),
+            NOT_SUPPORTED("");
+
+            private String fileFormat;
+
+            ImportFileFormat(String formatString) {
+                this.fileFormat = formatString;
+            }
+
+            public String getFormatString() {
+                return fileFormat;
+            }
+
+            @JsonCreator
+            public static ImportFileFormat getFormatType(String fullName) {
+                for (ImportFileFormat formatType : ImportFileFormat.values()) {
+                    if (formatType.fileFormat.equalsIgnoreCase(fullName)) {
+                        return formatType;
+                    }
+                }
+                return NOT_SUPPORTED;
+            }
+        }
+
+        private String pathToInitDataFile = null;
+        @JsonProperty(value = "format")
+        private ImportFileFormat fileFormat = null;
+
+        public String getPathToInitDataFile() {
+            return pathToInitDataFile;
+        }
+
+        public void setPathToInitDataFile(String pathToInitDataFile) {
+            this.pathToInitDataFile = pathToInitDataFile;
+        }
+
+        public ImportFileFormat getFormat() {
+            return fileFormat;
+        }
+
+        public void setFormat(ImportFileFormat newFileFormat) {
+            this.fileFormat = newFileFormat;
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null || getClass() != obj.getClass()) {
+                return false;
+            }
+
+            InitialConfigData that = (InitialConfigData) obj;
+
+            if (fileFormat != that.fileFormat) {
+                return false;
+            }
+            return pathToInitDataFile.equals(that.pathToInitDataFile);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(this);
+        }
+    }
+
+    public static class DOMNotificationRouterConfig {
 
         private int queueDepth = 65536;
         private long spinTime = 0;
@@ -359,6 +433,14 @@ public class ControllerConfiguration {
         this.datastoreProperties = datastoreProperties;
     }
 
+    public void setInitialConfigData(InitialConfigData initialConfigData) {
+        this.initialConfigData = initialConfigData;
+    }
+
+    public InitialConfigData getInitialConfigData() {
+        return initialConfigData;
+    }
+
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
@@ -406,6 +488,11 @@ public class ControllerConfiguration {
         if (!operDatastoreContext.equals(that.operDatastoreContext)) {
             return false;
         }
+        if (initialConfigData != null && that.initialConfigData != null) {
+            if (!initialConfigData.equals(that.initialConfigData)) {
+                return false;
+            }
+        }
         return distributedEosProperties.equals(that.distributedEosProperties);
     }
 
@@ -424,6 +511,9 @@ public class ControllerConfiguration {
         result = 31 * result + distributedEosProperties.hashCode();
         result = 31 * result + configDatastoreContext.hashCode();
         result = 31 * result + operDatastoreContext.hashCode();
+        if (initialConfigData != null) {
+            result = 31 * result + initialConfigData.hashCode();
+        }
         return result;
     }
 }

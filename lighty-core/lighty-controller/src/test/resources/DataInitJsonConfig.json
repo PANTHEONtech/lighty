@@ -1,0 +1,27 @@
+{
+  "controller": {
+    "initialConfigData": {
+      "pathToInitDataFile": "src/test/resources/initial_json_config_data",
+      "format": "json"
+    },
+    "schemaServiceConfig": {
+      "topLevelModels": [
+        {
+          "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:clustering:prefix-shard-configuration",
+          "name": "prefix-shard-configuration",
+          "revision": "2017-01-10"
+        },
+        {
+          "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:distributed-datastore-provider",
+          "name": "distributed-datastore-provider",
+          "revision": "2014-06-12"
+        },
+        {
+          "nameSpace": "http://netconfcentral.org/ns/toaster",
+          "name": "toaster",
+          "revision": "2009-11-20"
+        }
+      ]
+    }
+  }
+}
