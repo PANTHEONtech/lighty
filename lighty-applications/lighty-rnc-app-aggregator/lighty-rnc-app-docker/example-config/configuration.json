@@ -7,6 +7,10 @@
         "mailboxCapacity":1000,
         "moduleShardsConfig": "configuration/initial/module-shards.conf",
         "modulesConfig": "configuration/initial/modules.conf",
+        "initialConfigData": {
+            "pathToInitDataFile": "./initData.xml",
+            "format": "xml"
+        },
         "domNotificationRouterConfig":{
             "queueDepth":65536,
             "spinTime":0,
