@@ -38,7 +38,7 @@ To build and start the RNC lighty.io application in the local environment follow
    `java -jar lighty-rnc-app-<version>.jar -c /path/to/config-file -l /path/to/log4j-config-file`  
    
    Example configuration files are located on following path:  
-   `lighty-rnc-app/src/main/resources/*`
+   `lighty-rnc-app-docker/example-config/*`
 
 5. If the application was started successfully, then a log similar should be present in the console:  
    `INFO [main] (Main.java:80) - RNC lighty.io application started in 5989.108ms`
@@ -95,22 +95,25 @@ To build and start the RNC lighty.io application using docker in the local envir
    `docker run -it --name lighty-rnc --network host --rm lighty-rnc`
 
 3. To start the application with custom lighty configuration( -c ) and custom initial log4j config file( -l ) use command:
-   `docker run -it --name lighty-rnc --network host
+  ```
+   docker run -it --name lighty-rnc --network host
    -v /absolute_path/to/config-file/configuration.json:/lighty-rnc/configuration.json 
    -v /absolute_path/to/config-file/logger.properties:/lighty-rnc/logger.properties 
-   --rm lighty-rnc -c configuration.json -l logger.properties`
-  
+   --rm lighty-rnc -c configuration.json -l logger.properties
+  ```
+
    If your configuration.json file specifies path to initial configuration data to load on start up
    (for more information, check 
    [lighty-controller](https://github.com/PANTHEONtech/lighty/tree/13.1.x/lighty-core/lighty-controller))
    you need to mount the json/xml file as well:
    `-v /absolute/path/to/file/initData.xml:/lighty-rnc/initData.xml`
-   , then your path to this file in configuration.json becomes just "./initData.xml": 
-   ` "initialConfigData": {
+   , then your path to this file in configuration.json becomes just "./initData.xml":
+   ``` 
+    "initialConfigData": {
           "pathToInitDataFile": "./initData.xml",
           "format": "xml"
-         }`
-   
+    }
+   ```
    Example configuration files are located on following path:  
    `lighty-rnc-app-docker/example-config/*`
 
@@ -145,7 +148,8 @@ Then add:
 entry to controller json node in lighty-config.json in `configmaps.yaml`.
 If everything was set up corectly, then your data will be loaded to controller on startup and appropriate listeners should be triggered.
 For example, if your initial json data contains node in netconf topology: 
-`{
+ ```
+{
   "network-topology:network-topology": {
     "topology": [
       {
@@ -154,18 +158,19 @@ For example, if your initial json data contains node in netconf topology:
           {
             "node-id": "device1",
             "netconf-node-topology:schemaless": false,
-            "netconf-node-topology:port": <port-of-device>,
+            "netconf-node-topology:port": <device-port>,
             "netconf-node-topology:tcp-only": false,
             "netconf-node-topology:username": "admin",
             "netconf-node-topology:password": "admin",
-            "netconf-node-topology:host": "<ip-of-device>",
+            "netconf-node-topology:host": "<device-ip>",
             "netconf-node-topology:keepalive-delay": 0
           }
         ]
       }
     ]
   }
-}`
+}
+```
 and the device is running, the connection should be established upon startup.
 For testing purposes, you can use [lighty-netconf-simulator](https://github.com/PANTHEONtech/lighty-netconf-simulator)
 as a netconf device.
@@ -184,14 +189,15 @@ This approach works only if the application is running locally.
   
 If you want to connect the JMX client to application running remotely or containerized (k8s deployment or/and docker),
 you need to start the application using following JAVA_OPTS:  
-`JAVA_OPTS = -Dcom.sun.management.jmxremote
+```
+JAVA_OPTS = -Dcom.sun.management.jmxremote
              -Dcom.sun.management.jmxremote.authenticate=false
              -Dcom.sun.management.jmxremote.ssl=false
              -Dcom.sun.management.jmxremote.local.only=false
              -Dcom.sun.management.jmxremote.port=<JMX_PORT>
              -Dcom.sun.management.jmxremote.rmi.port=<JMX_PORT>
-             -Djava.rmi.server.hostname=127.0.0.1`
-             
+             -Djava.rmi.server.hostname=127.0.0.1
+```          
 Then run `java $JAVA_OPTS -jar lighty-rnc-app-<version> ...`  
 ## Connecting JMX client to application running in docker
 1. As we said, if we want to be able to connect the JMX, we need to start the app with JAVA_OPTS described in
