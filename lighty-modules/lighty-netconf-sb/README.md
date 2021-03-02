@@ -42,7 +42,7 @@ To use NETCONF in your project:
   <dependency>
     <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-netconf-sb</artifactId>
-    <version>13.2.1</version>
+    <version>13.2.2-SNAPSHOT</version>
   </dependency>  
 ```
 2. Initialize and start an instance of NETCONF SBP in your code:
