@@ -17,6 +17,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextNode;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
@@ -26,7 +27,7 @@ public class DeserializeIdentifierCodec {
     private final DataSchemaContextTree dataSchemaContextTree;
     private final SchemaContext schemaContext;
 
-    public DeserializeIdentifierCodec(final SchemaContext schemaContext) {
+    public DeserializeIdentifierCodec(final EffectiveModelContext schemaContext) {
         this.schemaContext = schemaContext;
         this.dataSchemaContextTree = DataSchemaContextTree.from(schemaContext);
     }

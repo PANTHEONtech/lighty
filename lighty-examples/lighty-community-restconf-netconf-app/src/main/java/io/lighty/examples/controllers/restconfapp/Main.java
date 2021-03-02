@@ -36,6 +36,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,13 +103,15 @@ public class Main {
             LOG.error("Main RESTCONF-NETCONF application - error reading config file: ", cause);
         } catch (ConfigurationException | ExecutionException | InterruptedException cause) {
             LOG.error("Main RESTCONF-NETCONF application exception: ", cause);
+        } catch (YangParserException cause) {
+            LOG.error("Main RESTCONF-NETCONF application - error reading yang model: ", cause);
         }
     }
 
     private void startLighty(ControllerConfiguration controllerConfiguration,
                              RestConfConfiguration restConfConfiguration,
                              NetconfConfiguration netconfSBPConfiguration, boolean registerShutdownHook)
-            throws ConfigurationException, ExecutionException, InterruptedException {
+            throws ConfigurationException, ExecutionException, InterruptedException, YangParserException {
 
         //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
         LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();

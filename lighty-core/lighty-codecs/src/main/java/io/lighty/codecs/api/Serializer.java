@@ -13,7 +13,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
  * This class serializes Binding Independent (DOM) objects TO Binding Aware (BA) objects.
@@ -53,20 +53,20 @@ public interface Serializer<BA extends DataObject> {
     /**
      * Serialize Binding Independent RPC data (input/output) TO Binding Aware RPC data (input/output).
      *
-     * @param schemaPath
+     * @param schemaNodeIdentifier
      *            - schema path of RPC
      * @param rpcData
      *            - Binding Independent RPC data to be serialized
      * @return serialized Binding Aware RPC data
      */
-    BA convertToBindingAwareRpc(SchemaPath schemaPath, ContainerNode rpcData);
+    BA convertToBindingAwareRpc(Absolute schemaNodeIdentifier, ContainerNode rpcData);
 
     /**
      * Serialize Binding Independent Notification data TO Binding Aware Notification data.
      *
-     * @param schemaPath schema path of Notification
+     * @param schemaNodeIdentifier schema path of Notification
      * @param norificationData Binding Independent Notification data to be serialized
      * @return serialized Binding Aware Notification data
      */
-    BA convertToBindingAwareNotification(SchemaPath schemaPath, ContainerNode norificationData);
+    BA convertToBindingAwareNotification(Absolute schemaNodeIdentifier, ContainerNode norificationData);
 }

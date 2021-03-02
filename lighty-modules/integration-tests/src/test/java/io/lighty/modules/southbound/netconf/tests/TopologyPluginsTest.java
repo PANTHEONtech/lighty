@@ -47,6 +47,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterClass;
@@ -70,7 +71,7 @@ public class TopologyPluginsTest {
 
     private static LightyModule startSingleNodeNetconf(final LightyServices services,
                                                        final NetconfClientDispatcher dispatcher)
-            throws ConfigurationException {
+            throws ConfigurationException, YangParserException {
         final NetconfConfiguration config = NetconfConfigUtils.createDefaultNetconfConfiguration();
         NetconfConfigUtils.injectServicesToConfig(config);
         config.setClientDispatcher(dispatcher);
@@ -78,7 +79,7 @@ public class TopologyPluginsTest {
     }
 
     @BeforeClass
-    public void beforeClass() throws ConfigurationException {
+    public void beforeClass() throws ConfigurationException, YangParserException {
         MockitoAnnotations.initMocks(this);
         when(this.dispatcher.createReconnectingClient(any())).thenReturn(this.initFuture);
 
@@ -141,7 +142,7 @@ public class TopologyPluginsTest {
         final NodeKey nodeKey = new NodeKey(nodeId);
         final Node node = new NodeBuilder()
                 .setNodeId(nodeId)
-                .addAugmentation(NetconfNode.class, netconfNode)
+                .addAugmentation(netconfNode)
                 .build();
         final InstanceIdentifier<Node> path = InstanceIdentifier.create(NetworkTopology.class)
                 .child(Topology.class, new TopologyKey(new TopologyId("topology-netconf")))

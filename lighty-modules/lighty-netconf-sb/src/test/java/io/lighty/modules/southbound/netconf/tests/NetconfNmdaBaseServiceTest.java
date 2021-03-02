@@ -69,7 +69,7 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
         ArgumentCaptor<SchemaPath> capturedSchemaPath = ArgumentCaptor.forClass(SchemaPath.class);
         ArgumentCaptor<NormalizedNode> capturedNN = ArgumentCaptor.forClass(NormalizedNode.class);
         Mockito.verify(domRpcService, times(1))
-                .invokeRpc(capturedSchemaPath.capture(), capturedNN.capture());
+                .invokeRpc(capturedSchemaPath.capture().getLastComponent(), capturedNN.capture());
         assertTrue(capturedNN.getValue() instanceof ContainerNode);
         Collection<DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>> children =
                 ((ContainerNode) capturedNN.getValue()).getValue();
@@ -83,7 +83,8 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
         assertTrue(filter.isPresent());
 
         NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true, baseSchema);
-        NetconfMessage netconfMessage = transformer.toRpcRequest(capturedSchemaPath.getValue(), capturedNN.getValue());
+        NetconfMessage netconfMessage = transformer.toRpcRequest(capturedSchemaPath.getValue().getLastComponent(),
+                capturedNN.getValue());
         Element getData = getSpecificElementSubtree(netconfMessage.getDocument().getDocumentElement(),
                 NETCONF_GET_DATA_QNAME, NETCONF_GET_DATA_QNAME.getLocalName());
         assertNotNull(getData);
@@ -116,7 +117,7 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
         ArgumentCaptor<SchemaPath> capturedSchemaPath = ArgumentCaptor.forClass(SchemaPath.class);
         ArgumentCaptor<NormalizedNode> capturedNN = ArgumentCaptor.forClass(NormalizedNode.class);
         Mockito.verify(domRpcService, times(1))
-                .invokeRpc(capturedSchemaPath.capture(), capturedNN.capture());
+                .invokeRpc(capturedSchemaPath.capture().getLastComponent(), capturedNN.capture());
         assertTrue(capturedNN.getValue() instanceof ContainerNode);
         Collection<DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>> children =
                 ((ContainerNode) capturedNN.getValue()).getValue();
@@ -130,7 +131,8 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
         assertTrue(hasSpecificChild(children, "config-filter"));
 
         NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true, baseSchema);
-        NetconfMessage netconfMessage = transformer.toRpcRequest(capturedSchemaPath.getValue(), capturedNN.getValue());
+        NetconfMessage netconfMessage = transformer.toRpcRequest(capturedSchemaPath.getValue().getLastComponent(),
+                capturedNN.getValue());
         Element getData = getSpecificElementSubtree(netconfMessage.getDocument().getDocumentElement(),
                 NETCONF_GET_DATA_QNAME, NETCONF_GET_DATA_QNAME.getLocalName());
         assertNotNull(getData);
@@ -169,7 +171,7 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
         ArgumentCaptor<SchemaPath> capturedSchemaPath = ArgumentCaptor.forClass(SchemaPath.class);
         ArgumentCaptor<NormalizedNode> capturedNN = ArgumentCaptor.forClass(NormalizedNode.class);
         Mockito.verify(domRpcService, times(1))
-                .invokeRpc(capturedSchemaPath.capture(), capturedNN.capture());
+                .invokeRpc(capturedSchemaPath.capture().getLastComponent(), capturedNN.capture());
         assertTrue(capturedNN.getValue() instanceof ContainerNode);
         Collection<DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>> children =
                 ((ContainerNode) capturedNN.getValue()).getValue();
@@ -180,7 +182,8 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
         assertTrue(hasSpecificChild(children, "edit-content"));
 
         NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true, baseSchema);
-        NetconfMessage netconfMessage = transformer.toRpcRequest(capturedSchemaPath.getValue(), capturedNN.getValue());
+        NetconfMessage netconfMessage = transformer.toRpcRequest(capturedSchemaPath.getValue().getLastComponent(),
+                capturedNN.getValue());
         Element editData = getSpecificElementSubtree(netconfMessage.getDocument().getDocumentElement(),
                 NETCONF_EDIT_DATA_QNAME, NETCONF_EDIT_DATA_QNAME.getLocalName());
         assertNotNull(editData);

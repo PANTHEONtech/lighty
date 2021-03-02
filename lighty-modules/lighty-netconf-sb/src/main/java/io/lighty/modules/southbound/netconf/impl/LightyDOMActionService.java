@@ -28,7 +28,7 @@ import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 public final class LightyDOMActionService implements DOMActionService {
 
@@ -42,12 +42,12 @@ public final class LightyDOMActionService implements DOMActionService {
     }
 
     @Override
-    public ListenableFuture<? extends DOMActionResult> invokeAction(final SchemaPath type,
+    public ListenableFuture<? extends DOMActionResult> invokeAction(final Absolute type,
             final DOMDataTreeIdentifier path, final ContainerNode input) {
         final NetconfMessage actionRequest = this.messageTransformer.toActionRequest(type, path, input);
         final SettableFuture<DOMActionResult> settableFuture = SettableFuture.create();
         final ListenableFuture<RpcResult<NetconfMessage>> responseFuture = this.communicator.sendRequest(actionRequest,
-                type.getLastComponent());
+                type.lastNodeIdentifier());
         Futures.addCallback(responseFuture, new FutureCallback<RpcResult<NetconfMessage>>() {
 
             @Override

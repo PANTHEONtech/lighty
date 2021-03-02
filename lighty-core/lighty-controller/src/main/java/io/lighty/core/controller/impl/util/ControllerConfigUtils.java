@@ -219,8 +219,7 @@ public final class ControllerConfigUtils {
 
     private static void injectActorSystemConfigToControllerConfig(final ControllerConfiguration controllerConfiguration)
             throws ConfigurationException {
-        Config akkaConfig = getAkkaConfigFromPath(
-                controllerConfiguration.getActorSystemConfig().getAkkaConfigPath());
+        Config akkaConfig = getAkkaConfigFromPath(controllerConfiguration.getActorSystemConfig().getAkkaConfigPath());
         Config factoryAkkaConfig = getAkkaConfigFromPath(
                 controllerConfiguration.getActorSystemConfig().getFactoryAkkaConfigPath());
         Config finalConfig = akkaConfig.withFallback(factoryAkkaConfig);

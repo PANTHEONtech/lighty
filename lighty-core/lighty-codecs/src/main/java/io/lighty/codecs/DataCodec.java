@@ -48,8 +48,8 @@ import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -134,14 +134,14 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public T convertToBindingAwareRpc(final SchemaPath schemaPath, final ContainerNode rpcData) {
-        return (T) this.codec.fromNormalizedNodeRpcData(schemaPath, rpcData);
+    public T convertToBindingAwareRpc(final Absolute absolute, final ContainerNode rpcData) {
+        return (T) this.codec.fromNormalizedNodeRpcData(absolute, rpcData);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public T convertToBindingAwareNotification(final SchemaPath schemaPath, final ContainerNode norificationData) {
-        return (T) this.codec.fromNormalizedNodeNotification(schemaPath, norificationData);
+    public T convertToBindingAwareNotification(final Absolute absolute, final ContainerNode norificationData) {
+        return (T) this.codec.fromNormalizedNodeNotification(absolute, norificationData);
     }
 
     @Override

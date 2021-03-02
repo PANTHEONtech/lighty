@@ -40,10 +40,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.opendaylight.binding.runtime.api.BindingRuntimeGenerator;
-import org.opendaylight.binding.runtime.api.BindingRuntimeTypes;
-import org.opendaylight.binding.runtime.api.DefaultBindingRuntimeContext;
-import org.opendaylight.binding.runtime.spi.ModuleInfoBackedContext;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.akka.impl.ActorSystemProviderImpl;
 import org.opendaylight.controller.cluster.common.actor.QuarantinedMonitorActor;
@@ -53,6 +49,8 @@ import org.opendaylight.controller.cluster.datastore.DatastoreContext;
 import org.opendaylight.controller.cluster.datastore.DatastoreContextIntrospector;
 import org.opendaylight.controller.cluster.datastore.DatastoreContextPropertiesUpdater;
 import org.opendaylight.controller.cluster.datastore.DatastoreSnapshotRestore;
+import org.opendaylight.controller.cluster.datastore.DefaultDatastoreContextIntrospectorFactory;
+import org.opendaylight.controller.cluster.datastore.DefaultDatastoreSnapshotRestore;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreFactory;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
@@ -94,6 +92,11 @@ import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSeriali
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
 import org.opendaylight.mdsal.binding.dom.codec.impl.DefaultBindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
+import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeGenerator;
+import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeTypes;
+import org.opendaylight.mdsal.binding.runtime.api.DefaultBindingRuntimeContext;
+import org.opendaylight.mdsal.binding.runtime.api.ModuleInfoSnapshot;
+import org.opendaylight.mdsal.binding.runtime.spi.ModuleInfoSnapshotResolver;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
@@ -118,13 +121,14 @@ import org.opendaylight.mdsal.eos.binding.dom.adapter.BindingDOMEntityOwnershipS
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.mdsal.singleton.dom.impl.DOMClusterSingletonServiceProviderImpl;
+import org.opendaylight.mdsal.singleton.dom.impl.di.DefaultClusterSingletonServiceProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
 import org.opendaylight.yangtools.yang.parser.impl.YangParserFactoryImpl;
 import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
@@ -180,7 +184,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private ThreadPool threadPool;
     private ScheduledThreadPool scheduledThreadPool;
     private Timer timer;
-    private ModuleInfoBackedContext moduleInfoBackedContext;
+    private ModuleInfoSnapshot moduleInfoSnapshot;
+    private ModuleInfoSnapshotResolver snapshotResolver;
     private DOMSchemaService schemaService;
     private AdapterContext codec;
     private BindingCodecTreeFactory bindingCodecTreeFactory;
@@ -209,11 +214,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.actorSystemConfig = actorSystemConfig;
         this.actorSystemClassLoader = actorSystemClassLoader;
         this.domMountPointService = new DOMMountPointServiceImpl();
-        this.domNotificationRouter = DOMNotificationRouter.create(
-                domNotificationRouterConfig.getQueueDepth(),
-                domNotificationRouterConfig.getSpinTime(),
-                domNotificationRouterConfig.getParkTime(),
-                domNotificationRouterConfig.getUnit());
+        this.domNotificationRouter = DOMNotificationRouter.create(domNotificationRouterConfig.getQueueDepth());
         this.restoreDirectoryPath = restoreDirectoryPath;
         this.maxDataBrokerFutureCallbackQueueSize = maxDataBrokerFutureCallbackQueueSize;
         this.maxDataBrokerFutureCallbackPoolSize = maxDataBrokerFutureCallbackPoolSize;
@@ -224,7 +225,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.moduleShardsConfig = moduleShardsConfig;
         this.configDatastoreContext = configDatastoreContext;
         this.operDatastoreContext = operDatastoreContext;
-        this.datastoreProperties = datastoreProperties;
+        this.datastoreProperties = new HashMap<>();
         this.modelSet = modelSet;
         this.systemReadyMonitor = new LightySystemReadyMonitorImpl();
         this.lightyDiagStatusService = new LightyDiagStatusServiceImpl(systemReadyMonitor);
@@ -261,25 +262,26 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             }
         });
 
-        this.datastoreSnapshotRestore = DatastoreSnapshotRestore.instance(this.restoreDirectoryPath);
-
-        //INIT schema context
-        this.moduleInfoBackedContext = ModuleInfoBackedContext.create();
-        this.modelsRegistration = this.moduleInfoBackedContext.registerModuleInfos(modelSet);
-        this.schemaService = FixedDOMSchemaService.of(this.moduleInfoBackedContext,
-                this.moduleInfoBackedContext);
+        this.datastoreSnapshotRestore = new DefaultDatastoreSnapshotRestore(this.restoreDirectoryPath);
 
         // INIT yang parser factory
         final YangXPathParserFactory xpathFactory = new AntlrXPathParserFactory();
         this.yangParserFactory = new YangParserFactoryImpl(xpathFactory);
 
+        //INIT schema context
+        this.snapshotResolver = new ModuleInfoSnapshotResolver("binding-dom-codec", yangParserFactory);
+        this.modelsRegistration = snapshotResolver.registerModuleInfos(modelSet);
+        this.moduleInfoSnapshot = snapshotResolver.takeSnapshot();
+        this.schemaService = FixedDOMSchemaService.of(this.moduleInfoSnapshot, this.moduleInfoSnapshot);
+
         // INIT CODEC FACTORY
 
         final BindingRuntimeGenerator bindingRuntimeGenerator = new DefaultBindingRuntimeGenerator();
         final BindingRuntimeTypes bindingRuntimeTypes = bindingRuntimeGenerator
-                .generateTypeMapping(moduleInfoBackedContext.tryToCreateModelContext().orElseThrow());
-        final DefaultBindingRuntimeContext bindingRuntimeContext =
-                DefaultBindingRuntimeContext.create(bindingRuntimeTypes, moduleInfoBackedContext);
+                .generateTypeMapping(moduleInfoSnapshot.getEffectiveModelContext());
+        final DefaultBindingRuntimeContext bindingRuntimeContext
+                = new DefaultBindingRuntimeContext(bindingRuntimeTypes, moduleInfoSnapshot);
+
         this.bindingCodecTreeFactory = new DefaultBindingCodecTreeFactory();
 
         final BindingCodecContext bindingCodecContext = new BindingCodecContext(bindingRuntimeContext);
@@ -315,7 +317,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                 new ClusterAdminRpcService(this.configDatastore, this.operDatastore, this.codec.currentSerializer());
 
         this.clusterSingletonServiceProvider =
-                new DOMClusterSingletonServiceProviderImpl(this.distributedEntityOwnershipService);
+                new DefaultClusterSingletonServiceProvider(this.distributedEntityOwnershipService);
         this.clusterSingletonServiceProvider.initializeProvider();
 
         this.rpcProviderService = new BindingDOMRpcProviderServiceAdapter(this.codec,
@@ -351,8 +353,10 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             final DatastoreSnapshotRestore newDatastoreSnapshotRestore,
             final ActorSystemProvider newActorSystemProvider) {
         final ConfigurationImpl configuration = new ConfigurationImpl(newModuleShardsConfig, newModulesConfig);
-        final DatastoreContextIntrospector introspector = new DatastoreContextIntrospector(datastoreContext,
-                this.codec.currentSerializer());
+        DefaultDatastoreContextIntrospectorFactory introspectorFactory
+                = new DefaultDatastoreContextIntrospectorFactory(this.codec.currentSerializer());
+        final DatastoreContextIntrospector introspector = introspectorFactory
+                .newInstance(datastoreContext.getLogicalStoreType(), datastoreProperties);
         final DatastoreContextPropertiesUpdater updater = new DatastoreContextPropertiesUpdater(introspector,
                 datastoreProperties);
         return DistributedDataStoreFactory.createInstance(domSchemaService, datastoreContext,
@@ -460,8 +464,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public SchemaContextProvider getSchemaContextProvider() {
-        return this.moduleInfoBackedContext;
+    public EffectiveModelContextProvider getEffectiveModelContextProvider() {
+        return this.moduleInfoSnapshot;
     }
 
     @Override
@@ -632,7 +636,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     public List<ObjectRegistration<YangModuleInfo>> registerModuleInfos(
             Iterable<? extends YangModuleInfo> yangModuleInfos) {
-        return moduleInfoBackedContext.registerModuleInfos(yangModuleInfos);
+        return this.snapshotResolver.registerModuleInfos(yangModuleInfos);
     }
 
     @Override
