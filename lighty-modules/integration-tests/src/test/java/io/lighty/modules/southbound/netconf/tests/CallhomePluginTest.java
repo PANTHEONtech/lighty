@@ -11,6 +11,8 @@ import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
+import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
+import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import io.lighty.modules.southbound.netconf.impl.NetconfCallhomePluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
@@ -42,7 +44,9 @@ public class CallhomePluginTest {
     @BeforeClass
     public void beforeClass() throws IOException, ConfigurationException {
         lightyController = LightyTestUtils.startController(NetconfConfigUtils.NETCONF_CALLHOME_MODELS);
-        restConf = LightyTestUtils.startRestconf(lightyController.getServices());
+        RestConfConfiguration restConfConfig =
+                RestConfConfigUtils.getDefaultRestConfConfiguration();
+        restConf = LightyTestUtils.startRestconf(restConfConfig, lightyController.getServices());
         final NetconfConfiguration configuration =
                 NetconfConfigUtils.createDefaultNetconfConfiguration();
         NetconfConfigUtils.injectServicesToTopologyConfig(configuration, lightyController.getServices());

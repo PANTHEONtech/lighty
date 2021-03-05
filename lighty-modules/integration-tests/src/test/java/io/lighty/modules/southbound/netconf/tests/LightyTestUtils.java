@@ -15,6 +15,7 @@ import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
+import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
 import java.util.Collection;
@@ -58,11 +59,13 @@ public final class LightyTestUtils {
         }
     }
 
-    public static CommunityRestConf startRestconf(final LightyServices services) {
+    public static CommunityRestConf startRestconf(RestConfConfiguration restConfConfiguration,
+            final LightyServices services) {
         LOG.info("Building CommunityRestConf");
         try {
             final CommunityRestConf communityRestConf = CommunityRestConfBuilder
-                    .from(RestConfConfigUtils.getDefaultRestConfConfiguration(services))
+                    .from(RestConfConfigUtils.getRestConfConfiguration(restConfConfiguration,
+                            services))
                     .build();
 
             LOG.info("Starting CommunityRestConf (waiting 10s after start)");

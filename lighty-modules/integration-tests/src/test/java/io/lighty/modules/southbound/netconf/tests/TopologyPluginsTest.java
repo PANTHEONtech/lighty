@@ -17,6 +17,8 @@ import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
+import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
+import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import io.lighty.modules.southbound.netconf.impl.NetconfTopologyPluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
@@ -84,8 +86,9 @@ public class TopologyPluginsTest {
         when(this.dispatcher.createReconnectingClient(any())).thenReturn(this.initFuture);
 
         this.lightyController = LightyTestUtils.startController();
-
-        this.restConf = LightyTestUtils.startRestconf(this.lightyController.getServices());
+        RestConfConfiguration restConfConfig =
+                RestConfConfigUtils.getDefaultRestConfConfiguration();
+        this.restConf = LightyTestUtils.startRestconf(restConfConfig, this.lightyController.getServices());
         this.netconfPlugin = startSingleNodeNetconf(this.lightyController.getServices(), this.dispatcher);
         this.netconfPlugin.start();
     }

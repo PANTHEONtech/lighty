@@ -13,9 +13,9 @@ import java.util.concurrent.ExecutionException;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -27,7 +27,7 @@ public class LightyControllerNotificationTest extends LightyControllerTestBase {
         final LightyController lightyController = getLightyController();
 
         // setup
-        final Absolute schemaPath = SchemaPath.ROOT.asAbsolute();
+        final Absolute schemaPath = Absolute.of(QName.create("namespace", "test"));
         final DOMNotification testNotification = new DOMNotification() {
             @Override
             public Absolute getType() {
