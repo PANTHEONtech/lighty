@@ -176,12 +176,14 @@ public final class ConverterUtils {
      * @return instance of {@link SchemaNode}
      */
     public static SchemaNode getSchemaNode(final SchemaContext schemaContext, final QName qname) {
-        return DataSchemaContextTree.from(schemaContext).getChild(YangInstanceIdentifier.of(qname)).getDataSchemaNode();
+        return DataSchemaContextTree.from(schemaContext)
+                .findChild(YangInstanceIdentifier.of(qname)).orElseThrow().getDataSchemaNode();
     }
 
     public static SchemaNode getSchemaNode(final SchemaContext schemaContext,
             final YangInstanceIdentifier yangInstanceIdentifier) {
-        return DataSchemaContextTree.from(schemaContext).getChild(yangInstanceIdentifier).getDataSchemaNode();
+        return DataSchemaContextTree.from(schemaContext)
+                .findChild(yangInstanceIdentifier).orElseThrow().getDataSchemaNode();
     }
 
     /**
@@ -199,7 +201,8 @@ public final class ConverterUtils {
     public static SchemaNode getSchemaNode(final SchemaContext schemaContext, final String namespace,
             final String revision, final String localName) {
         QName qname = QName.create(namespace, revision, localName);
-        return DataSchemaContextTree.from(schemaContext).getChild(YangInstanceIdentifier.of(qname)).getDataSchemaNode();
+        return DataSchemaContextTree.from(schemaContext)
+                .findChild(YangInstanceIdentifier.of(qname)).orElseThrow().getDataSchemaNode();
     }
 
     /**
@@ -241,6 +244,6 @@ public final class ConverterUtils {
     private static <T extends SchemaNode> Optional<T> findDefinition(final QName qname, final Collection<T> nodes) {
         List<T> foundNodes = nodes.stream().filter(node -> node.getQName().getLocalName().equals(qname.getLocalName()))
                 .collect(Collectors.toList());
-        return Optional.ofNullable(foundNodes.isEmpty() || foundNodes.size() > 1 ? null : foundNodes.get(0));
+        return Optional.ofNullable(foundNodes.size() != 1 ? null : foundNodes.get(0));
     }
 }

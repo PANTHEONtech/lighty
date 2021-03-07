@@ -22,18 +22,18 @@ public class ConverterUtilsTest extends AbstractCodecTest {
         XmlElement xmlElement = XmlElement.fromString(loadResourceAsString("make-toast-input_norev.xml"));
         Optional<QName> rpcQName = ConverterUtils.getRpcQName(xmlElement);
         Assert.assertTrue(rpcQName.isPresent());
-        Assert.assertTrue(MAKE_TOAST_RPC_QNAME.getLocalName().equals(rpcQName.get().getLocalName()));
-        Assert.assertTrue(MAKE_TOAST_RPC_QNAME.getNamespace().equals(rpcQName.get().getNamespace()));
-        Assert.assertFalse(MAKE_TOAST_RPC_QNAME.getRevision().equals(rpcQName.get().getRevision()));
+        Assert.assertEquals(MAKE_TOAST_RPC_QNAME.getLocalName(), rpcQName.get().getLocalName());
+        Assert.assertEquals(MAKE_TOAST_RPC_QNAME.getNamespace(), rpcQName.get().getNamespace());
+        Assert.assertNotEquals(MAKE_TOAST_RPC_QNAME.getRevision(), rpcQName.get().getRevision());
     }
 
     @Test
     public void testGetRpcQNameFromXML_norevision() {
         Optional<QName> rpcQName = ConverterUtils.getRpcQName(loadResourceAsString("make-toast-input_norev.xml"));
         Assert.assertTrue(rpcQName.isPresent());
-        Assert.assertTrue(MAKE_TOAST_RPC_QNAME.getLocalName().equals(rpcQName.get().getLocalName()));
-        Assert.assertTrue(MAKE_TOAST_RPC_QNAME.getNamespace().equals(rpcQName.get().getNamespace()));
-        Assert.assertFalse(MAKE_TOAST_RPC_QNAME.getRevision().equals(rpcQName.get().getRevision()));
+        Assert.assertEquals(MAKE_TOAST_RPC_QNAME.getLocalName(), rpcQName.get().getLocalName());
+        Assert.assertEquals(MAKE_TOAST_RPC_QNAME.getNamespace(), rpcQName.get().getNamespace());
+        Assert.assertNotEquals(MAKE_TOAST_RPC_QNAME.getRevision(), rpcQName.get().getRevision());
     }
 
     @Test
@@ -41,9 +41,9 @@ public class ConverterUtilsTest extends AbstractCodecTest {
         XmlElement xmlElement = XmlElement.fromString(loadResourceAsString("make-toast-input_rev.xml"));
         Optional<QName> rpcQName = ConverterUtils.getRpcQName(xmlElement);
         Assert.assertTrue(rpcQName.isPresent());
-        Assert.assertTrue(MAKE_TOAST_RPC_QNAME.getLocalName().equals(rpcQName.get().getLocalName()));
-        Assert.assertTrue(MAKE_TOAST_RPC_QNAME.getNamespace().equals(rpcQName.get().getNamespace()));
-        Assert.assertTrue(MAKE_TOAST_RPC_QNAME.getRevision().equals(rpcQName.get().getRevision()));
+        Assert.assertEquals(MAKE_TOAST_RPC_QNAME.getLocalName(), rpcQName.get().getLocalName());
+        Assert.assertEquals(MAKE_TOAST_RPC_QNAME.getNamespace(), rpcQName.get().getNamespace());
+        Assert.assertEquals(MAKE_TOAST_RPC_QNAME.getRevision(), rpcQName.get().getRevision());
     }
 
     @Test
@@ -52,10 +52,10 @@ public class ConverterUtilsTest extends AbstractCodecTest {
         XmlElement rpcAsInput =
                 ConverterUtils.rpcAsInput(makeToastRpc, "http://netconfcentral.org/ns/toaster?revision=2009-11-20");
         Assert.assertNotNull(rpcAsInput);
-        Assert.assertTrue(rpcAsInput.getName().equals("input"));
+        Assert.assertEquals("input", rpcAsInput.getName());
         rpcAsInput = ConverterUtils.rpcAsInput(makeToastRpc);
         Assert.assertNotNull(rpcAsInput);
-        Assert.assertTrue(rpcAsInput.getName().equals("input"));
+        Assert.assertEquals("input", rpcAsInput.getName());
     }
 
     @Test
@@ -64,19 +64,19 @@ public class ConverterUtilsTest extends AbstractCodecTest {
         XmlElement rpcAsOutput =
                 ConverterUtils.rpcAsOutput(makeToastRpc, "http://netconfcentral.org/ns/toaster?revision=2009-11-20");
         Assert.assertNotNull(rpcAsOutput);
-        Assert.assertTrue(rpcAsOutput.getName().equals("output"));
+        Assert.assertEquals("output", rpcAsOutput.getName());
         rpcAsOutput = ConverterUtils.rpcAsOutput(makeToastRpc);
         Assert.assertNotNull(rpcAsOutput);
-        Assert.assertTrue(rpcAsOutput.getName().equals("output"));
+        Assert.assertEquals("output", rpcAsOutput.getName());
     }
 
     @Test
     public void testGetSchemaNode() {
         SchemaNode node = ConverterUtils.getSchemaNode(this.effectiveModelContext, Toaster.QNAME);
         Assert.assertNotNull(node);
-        Assert.assertTrue(node.getQName().equals(Toaster.QNAME));
+        Assert.assertEquals(node.getQName(), Toaster.QNAME);
         node = ConverterUtils.getSchemaNode(this.effectiveModelContext, TOASTER_YANG_INSTANCE_IDENTIFIER);
         Assert.assertNotNull(node);
-        Assert.assertTrue(node.getQName().equals(Toaster.QNAME));
+        Assert.assertEquals(node.getQName(), Toaster.QNAME);
     }
 }

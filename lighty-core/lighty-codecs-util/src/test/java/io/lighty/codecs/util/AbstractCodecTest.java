@@ -34,7 +34,6 @@ import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
-import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -180,9 +179,8 @@ public abstract class AbstractCodecTest {
                 .withNodeIdentifier(getToasterNodeIdentifier("toasterStatus")).build();
         LeafNode<Uint32> darknessFactor = new ImmutableLeafNodeBuilder<Uint32>().withValue(COFFEE_VALUE)
                 .withNodeIdentifier(getToasterNodeIdentifier("darknessFactor")).build();
-        ContainerNode containerNode = ImmutableContainerNodeBuilder.create().withNodeIdentifier(toasterNodeIdentifier)
+        return ImmutableContainerNodeBuilder.create().withNodeIdentifier(toasterNodeIdentifier)
                 .withValue(ImmutableList.of(manufacturer, darknessFactor, toasterStatus)).build();
-        return containerNode;
     }
 
     private static NormalizedNode<?, ?> simpleRpcInputNormalizedNodes_in() {
@@ -191,9 +189,8 @@ public abstract class AbstractCodecTest {
         LeafNode<String> input = new ImmutableLeafNodeBuilder<String>()
                 .withNodeIdentifier(new NodeIdentifier(QName.create(SAMPLES_NAMESPACE, "2018-01-19", "input-obj")))
                 .withValue("a").build();
-        ContainerNode containerNode = ImmutableContainerNodeBuilder.create().withNodeIdentifier(toasterNodeIdentifier)
+        return ImmutableContainerNodeBuilder.create().withNodeIdentifier(toasterNodeIdentifier)
                 .withValue(ImmutableList.of(input)).build();
-        return containerNode;
     }
 
     private static NormalizedNode<?, ?> simpleRpcInputNormalizedNodes_out() {
@@ -202,9 +199,8 @@ public abstract class AbstractCodecTest {
         LeafNode<String> input = new ImmutableLeafNodeBuilder<String>()
                 .withNodeIdentifier(new NodeIdentifier(QName.create(SAMPLES_NAMESPACE, "2018-01-19", "output-obj")))
                 .withValue("a").build();
-        ContainerNode containerNode = ImmutableContainerNodeBuilder.create().withNodeIdentifier(toasterNodeIdentifier)
+        return ImmutableContainerNodeBuilder.create().withNodeIdentifier(toasterNodeIdentifier)
                 .withValue(ImmutableList.of(input)).build();
-        return containerNode;
     }
 
     private static NormalizedNode<?, ?> toasterNotificationNormalizedNodes() {
@@ -214,9 +210,8 @@ public abstract class AbstractCodecTest {
                 .withNodeIdentifier(
                         new NodeIdentifier(QName.create(TOASTER_NAMESPACE, TOASTER_REVISION, "amountOfBread")))
                 .withValue(1L).build();
-        ContainerNode containerNode = ImmutableContainerNodeBuilder.create().withNodeIdentifier(toasterNodeIdentifier)
+        return ImmutableContainerNodeBuilder.create().withNodeIdentifier(toasterNodeIdentifier)
                 .withValue(ImmutableList.of(value)).build();
-        return containerNode;
     }
 
     private static NormalizedNode<?, ?> sampleListNormalizedNodes() {
