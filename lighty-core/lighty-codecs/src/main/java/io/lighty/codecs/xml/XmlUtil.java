@@ -37,6 +37,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+@Deprecated(forRemoval = true)
 public final class XmlUtil {
 
     public static final String XMLNS_ATTRIBUTE_KEY = "xmlns";

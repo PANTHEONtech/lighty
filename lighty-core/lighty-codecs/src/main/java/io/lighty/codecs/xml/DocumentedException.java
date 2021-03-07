@@ -27,6 +27,7 @@ import org.w3c.dom.NodeList;
 /**
  * Checked exception to communicate an error that needs to be sent to the netconf client.
  */
+@Deprecated(forRemoval = true)
 public class DocumentedException extends Exception {
 
     public static final String RPC_ERROR = "rpc-error";
