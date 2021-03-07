@@ -29,6 +29,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
+@Deprecated(forRemoval = true)
 public final class XmlElement {
     public static final String DEFAULT_NAMESPACE_PREFIX = "";
 

@@ -21,7 +21,10 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
  * This interface may be useful when (de)serializing {@link NormalizedNode}s (from)into its XML or
  * JSON representation. Currently there are two implementations {@link XmlNodeConverter} and
  * {@link JsonNodeConverter}.
+ *
+ * @deprecated This interface is moved to lighty-codecs-util
  */
+@Deprecated(forRemoval = true)
 public interface NodeConverter {
     /**
      * This method will serialize the given {@link NormalizedNode} into its string representation.

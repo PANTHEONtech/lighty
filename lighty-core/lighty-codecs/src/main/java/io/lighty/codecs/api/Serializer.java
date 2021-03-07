@@ -20,6 +20,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
  *
  * @param <BA>  Binding Aware object type of data, RPC data or Notification data
  */
+@Deprecated(forRemoval = true)
 public interface Serializer<BA extends DataObject> {
 
     YangInstanceIdentifier convertIdentifier(String identifier);

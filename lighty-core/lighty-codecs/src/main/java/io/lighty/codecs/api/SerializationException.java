@@ -9,7 +9,10 @@ package io.lighty.codecs.api;
 
 /**
  * This exception should be thrown when serialization problem occurs.
+ *
+ * @deprecated This class is moved to lighty-codecs-util
  */
+@Deprecated(forRemoval = true)
 public class SerializationException extends Exception {
     private static final long serialVersionUID = 2053802415449540367L;
 

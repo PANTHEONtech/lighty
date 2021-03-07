@@ -7,6 +7,7 @@
  */
 package io.lighty.codecs.xml;
 
+@Deprecated(forRemoval = true)
 public final class XmlMappingConstants {
     public static final String RPC_REPLY_KEY = "rpc-reply";
     public static final String TYPE_KEY = "type";

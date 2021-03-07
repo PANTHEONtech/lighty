@@ -30,7 +30,10 @@ import org.xml.sax.SAXException;
 
 /**
  * A utility class which may be helpful while manipulating with binding independent nodes.
+ *
+ * @deprecated This class is moved to lighty-codecs-util
  */
+@Deprecated(forRemoval = true)
 public final class ConverterUtils {
     private ConverterUtils() {
         throw new UnsupportedOperationException("Do not create an instance of utility class");

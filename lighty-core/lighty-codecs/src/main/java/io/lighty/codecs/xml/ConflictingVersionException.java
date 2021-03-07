@@ -13,6 +13,7 @@ package io.lighty.codecs.xml;
  * transaction was committed after creating this transaction. Clients can create
  * new transaction and merge the changes.
  */
+@Deprecated(forRemoval = true)
 public class ConflictingVersionException extends Exception {
     private static final long serialVersionUID = 1L;
 
