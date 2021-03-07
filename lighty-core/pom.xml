@@ -29,6 +29,7 @@
 
         <module>lighty-clustering</module>
         <module>lighty-codecs</module>
+        <module>lighty-codecs-util</module>
         <module>lighty-common</module>
         <module>lighty-controller</module>
         <module>lighty-controller-spring-di</module>
