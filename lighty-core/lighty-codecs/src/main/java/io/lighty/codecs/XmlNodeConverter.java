@@ -46,8 +46,10 @@ import org.xml.sax.SAXException;
  * The implementation of {@link NodeConverter} which serializes and deserializes binding independent
  * representation into/from XML representation.
  *
+ * @deprecated This class is moved to lighty-codecs-util
  * @see JsonNodeConverter
  */
+@Deprecated(forRemoval = true)
 public class XmlNodeConverter implements NodeConverter {
 
     private static final Logger LOG = LoggerFactory.getLogger(XmlNodeConverter.class);

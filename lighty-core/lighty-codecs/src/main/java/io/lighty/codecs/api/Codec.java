@@ -17,6 +17,7 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
  *
  * @param <BA> - type of Binding Aware data, RPC data or Notification data
  */
+@Deprecated(forRemoval = true)
 public interface Codec<BA extends DataObject> extends Serializer<BA>, Deserializer<BA> {
 
     /**

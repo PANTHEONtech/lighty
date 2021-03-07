@@ -9,6 +9,7 @@ package io.lighty.codecs.xml;
 
 import org.opendaylight.yangtools.concepts.Identifier;
 
+@Deprecated(forRemoval = true)
 public class ModuleIdentifier implements Identifier {
     private static final long serialVersionUID = 1L;
     private final String factoryName;

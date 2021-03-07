@@ -54,6 +54,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+@Deprecated(forRemoval = true)
 public class DataCodec<T extends DataObject> implements Codec<T> {
 
     private static final XMLOutputFactory XML_FACTORY;

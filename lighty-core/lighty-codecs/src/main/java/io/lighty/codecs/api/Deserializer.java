@@ -21,6 +21,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  *
  * @param <BA> Binding Aware object type data, RPC data or Notification data
  */
+@Deprecated(forRemoval = true)
 public interface Deserializer<BA extends DataObject> {
 
     /**
