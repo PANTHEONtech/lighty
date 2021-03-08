@@ -77,14 +77,16 @@
             <dependency>
                 <groupId>org.opendaylight.openflowplugin</groupId>
                 <artifactId>openflowplugin-artifacts</artifactId>
-                <version>0.11.0</version>
+                <!--TODO change to release version when will be available -->
+                <version>0.12.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.serviceutils</groupId>
                 <artifactId>serviceutils-artifacts</artifactId>
-                <version>0.6.0</version>
+                <!--TODO change to release version when will be available -->
+                <version>0.7.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
