@@ -14,6 +14,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflow.provider.config.rev160510.OpenflowProviderConfigBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.openflowplugin.app.forwardingrules.manager.config.rev160511.ForwardingRulesManagerConfigBuilder;
 import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint32;
 
 public class OpenflowpluginConfiguration {
 
@@ -43,7 +44,6 @@ public class OpenflowpluginConfiguration {
     private boolean isFrmStaleMarkingEnabled = false;
     private int frmReconciliationRetryCount;
     private boolean isFrmBundleBasedReconciliationEnabled = false;
-    private long nonZeroUint32Type;
     private boolean enableForwardingRulesManager;
     private Uint16 deviceConnectionHoldTimeInSeconds;
 
@@ -55,22 +55,22 @@ public class OpenflowpluginConfiguration {
         if (this.defaultOpenflowProviderConfig == null) {
             this.defaultOpenflowProviderConfig = new OpenflowProviderConfigBuilder()
                     .setIsStatisticsPollingOn(this.isStatisticsPollingOn)
-                    .setBarrierCountLimit(new NonZeroUint16Type(this.barrierCountLimit))
-                    .setBarrierIntervalTimeoutLimit(new NonZeroUint32Type(this.barrierIntervalTimeoutLimit))
-                    .setEchoReplyTimeout(new NonZeroUint32Type(this.echoReplyTimeout))
+                    .setBarrierCountLimit(new NonZeroUint16Type(Uint16.valueOf(this.barrierCountLimit)))
+                    .setBarrierIntervalTimeoutLimit(
+                            new NonZeroUint32Type(Uint32.valueOf(this.barrierIntervalTimeoutLimit)))
+                    .setEchoReplyTimeout(new NonZeroUint32Type(Uint32.valueOf(this.echoReplyTimeout)))
                     .setEnableFlowRemovedNotification(this.enableFlowRemovedNotification)
                     .setSkipTableFeatures(this.skipTableFeatures)
-                    .setBasicTimerDelay(new NonZeroUint32Type(this.basicTimerDelay))
-                    .setMaximumTimerDelay(new NonZeroUint32Type(this.maximumTimerDelay))
+                    .setBasicTimerDelay(new NonZeroUint32Type(Uint32.valueOf(this.basicTimerDelay)))
+                    .setMaximumTimerDelay(new NonZeroUint32Type(Uint32.valueOf(this.maximumTimerDelay)))
                     .setSwitchFeaturesMandatory(this.switchFeaturesMandatory)
                     .setIsStatisticsRpcEnabled(this.isStatisticsRpcEnabled)
                     .setUseSingleLayerSerialization(this.useSingleLayerSerialization)
-                    .setRpcRequestsQuota(new NonZeroUint16Type(this.rpcRequestsQuota))
-                    .setGlobalNotificationQuota(this.globalNotificationQuota)
-                    .setThreadPoolMinThreads(this.threadPoolMinThreads)
-                    .setThreadPoolMaxThreads(new NonZeroUint16Type(this.threadPoolMaxThreads))
-                    .setThreadPoolTimeout(this.threadPoolTimeout)
-                    .setMaximumTimerDelay(new NonZeroUint32Type(this.nonZeroUint32Type))
+                    .setRpcRequestsQuota(new NonZeroUint16Type(Uint16.valueOf(this.rpcRequestsQuota)))
+                    .setGlobalNotificationQuota(Uint32.valueOf(this.globalNotificationQuota))
+                    .setThreadPoolMinThreads(Uint16.valueOf(this.threadPoolMinThreads))
+                    .setThreadPoolMaxThreads(new NonZeroUint16Type(Uint16.valueOf(this.threadPoolMaxThreads)))
+                    .setThreadPoolTimeout(Uint32.valueOf(this.threadPoolTimeout))
                     .setIsQueueStatisticsPollingOn(true)
                     .setIsFlowStatisticsPollingOn(true)
                     .setIsTableStatisticsPollingOn(true)
@@ -87,22 +87,21 @@ public class OpenflowpluginConfiguration {
     public OpenflowProviderConfig getOpenflowProviderConfig() {
         return new OpenflowProviderConfigBuilder()
                 .setIsStatisticsPollingOn(this.isStatisticsPollingOn)
-                .setBarrierCountLimit(new NonZeroUint16Type(this.barrierCountLimit))
-                .setBarrierIntervalTimeoutLimit(new NonZeroUint32Type(this.barrierIntervalTimeoutLimit))
-                .setEchoReplyTimeout(new NonZeroUint32Type(this.echoReplyTimeout))
+                .setBarrierCountLimit(new NonZeroUint16Type(Uint16.valueOf(this.barrierCountLimit)))
+                .setBarrierIntervalTimeoutLimit(new NonZeroUint32Type(Uint32.valueOf(this.barrierIntervalTimeoutLimit)))
+                .setEchoReplyTimeout(new NonZeroUint32Type(Uint32.valueOf(this.echoReplyTimeout)))
                 .setEnableFlowRemovedNotification(this.enableFlowRemovedNotification)
                 .setSkipTableFeatures(this.skipTableFeatures)
-                .setBasicTimerDelay(new NonZeroUint32Type(this.basicTimerDelay))
-                .setMaximumTimerDelay(new NonZeroUint32Type(this.maximumTimerDelay))
+                .setBasicTimerDelay(new NonZeroUint32Type(Uint32.valueOf(this.basicTimerDelay)))
+                .setMaximumTimerDelay(new NonZeroUint32Type(Uint32.valueOf(this.maximumTimerDelay)))
                 .setSwitchFeaturesMandatory(this.switchFeaturesMandatory)
                 .setIsStatisticsRpcEnabled(this.isStatisticsRpcEnabled)
                 .setUseSingleLayerSerialization(this.useSingleLayerSerialization)
-                .setRpcRequestsQuota(new NonZeroUint16Type(this.rpcRequestsQuota))
-                .setGlobalNotificationQuota(this.globalNotificationQuota)
-                .setThreadPoolMinThreads(this.threadPoolMinThreads)
-                .setThreadPoolMaxThreads(new NonZeroUint16Type(this.threadPoolMaxThreads))
-                .setThreadPoolTimeout(this.threadPoolTimeout)
-                .setMaximumTimerDelay(new NonZeroUint32Type(this.nonZeroUint32Type))
+                .setRpcRequestsQuota(new NonZeroUint16Type(Uint16.valueOf(this.rpcRequestsQuota)))
+                .setGlobalNotificationQuota(Uint32.valueOf(this.globalNotificationQuota))
+                .setThreadPoolMinThreads(Uint16.valueOf(this.threadPoolMinThreads))
+                .setThreadPoolMaxThreads(new NonZeroUint16Type(Uint16.valueOf(this.threadPoolMaxThreads)))
+                .setThreadPoolTimeout(Uint32.valueOf(this.threadPoolTimeout))
                 .setIsQueueStatisticsPollingOn(true)
                 .setIsFlowStatisticsPollingOn(true)
                 .setIsTableStatisticsPollingOn(true)
@@ -122,7 +121,7 @@ public class OpenflowpluginConfiguration {
         final ForwardingRulesManagerConfigBuilder frmConfigBuilder = new ForwardingRulesManagerConfigBuilder();
         frmConfigBuilder.setDisableReconciliation(this.isFrmDisableReconciliation);
         frmConfigBuilder.setStaleMarkingEnabled(this.isFrmStaleMarkingEnabled);
-        frmConfigBuilder.setReconciliationRetryCount(this.frmReconciliationRetryCount);
+        frmConfigBuilder.setReconciliationRetryCount(Uint16.valueOf(this.frmReconciliationRetryCount));
         frmConfigBuilder.setBundleBasedReconciliationEnabled(this.isFrmBundleBasedReconciliationEnabled);
         return frmConfigBuilder;
     }
@@ -309,14 +308,6 @@ public class OpenflowpluginConfiguration {
 
     public void setSwitchConfig(final SwitchConfig switchConfig) {
         this.switchConfig = switchConfig;
-    }
-
-    public void setNonZeroUint32Type(long nonZeroUint32Type) {
-        this.nonZeroUint32Type = nonZeroUint32Type;
-    }
-
-    public long getNonZeroUint32Type() {
-        return this.nonZeroUint32Type;
     }
 
     public Uint16 getDeviceConnectionHoldTimeInSeconds() {

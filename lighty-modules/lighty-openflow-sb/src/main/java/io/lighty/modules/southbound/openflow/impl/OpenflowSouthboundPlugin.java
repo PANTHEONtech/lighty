@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcServiceAdapter;
 import org.opendaylight.openflowjava.protocol.api.connection.OpenflowDiagStatusProvider;
-import org.opendaylight.openflowjava.protocol.impl.core.OpenflowDiagStatusProviderImpl;
+import org.opendaylight.openflowjava.protocol.impl.core.DefaultOpenflowDiagStatusProvider;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProviderList;
 import org.opendaylight.openflowplugin.api.openflow.OpenFlowPluginProvider;
@@ -28,6 +28,7 @@ import org.opendaylight.openflowplugin.api.openflow.configuration.ConfigurationS
 import org.opendaylight.openflowplugin.api.openflow.mastership.MastershipChangeException;
 import org.opendaylight.openflowplugin.applications.arbitratorreconciliation.impl.ArbitratorReconciliationManagerImpl;
 import org.opendaylight.openflowplugin.applications.frm.impl.ForwardingRulesManagerImpl;
+import org.opendaylight.openflowplugin.applications.frm.impl.ListenerRegistrationHelper;
 import org.opendaylight.openflowplugin.applications.frm.recovery.impl.OpenflowServiceRecoveryHandlerImpl;
 import org.opendaylight.openflowplugin.applications.reconciliation.impl.ReconciliationManagerImpl;
 import org.opendaylight.openflowplugin.applications.topology.manager.FlowCapableTopologyProvider;
@@ -58,6 +59,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
     private final LightyServices lightyServices;
     private OpenFlowPluginProvider openFlowPluginProvider;
     private final List<SwitchConnectionProvider> providers;
+    private ListenerRegistrationHelper listenerRegistrationHelper;
     private ForwardingRulesManagerImpl forwardingRulesManagerImpl;
     private OpenflowServiceRecoveryHandlerImpl openflowServiceRecoveryHandlerImpl;
     private ForwardingRulesManagerConfigBuilder frmConfigBuilder;
@@ -113,7 +115,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
         SwitchConnectionProviderList switchConnectionProviders = new SwitchConnectionProviderList(providers);
         if (this.openFlowPluginProvider == null) {
             this.mastershipChangeServiceManager = new MastershipChangeServiceManagerImpl();
-            final OpenflowDiagStatusProvider diagStat = new OpenflowDiagStatusProviderImpl(this.lightyServices
+            final OpenflowDiagStatusProvider diagStat = new DefaultOpenflowDiagStatusProvider(this.lightyServices
                     .getDiagStatusService());
             this.openFlowPluginProvider = new OpenFlowPluginProviderImpl(
                     this.configurationService,
@@ -158,6 +160,8 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
                 this.openflowServiceRecoveryHandlerImpl =
                         new OpenflowServiceRecoveryHandlerImpl(serviceRecoveryRegistryImpl);
 
+                this.listenerRegistrationHelper
+                        = new ListenerRegistrationHelper(this.lightyServices.getBindingDataBroker());
                 this.forwardingRulesManagerImpl
                         = new ForwardingRulesManagerImpl(this.lightyServices.getBindingDataBroker(),
                         rpcConsumerRegistry,
@@ -169,7 +173,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
                         reconciliationManagerImpl,
                         this.openflowServiceRecoveryHandlerImpl,
                         serviceRecoveryRegistryImpl,
-                        new FlowGroupCacheManagerImpl());
+                        new FlowGroupCacheManagerImpl(), this.listenerRegistrationHelper);
                 this.forwardingRulesManagerImpl.start();
 
                 LOG.info("OFP started with FRM & ARM");
@@ -215,6 +219,13 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
         destroy(this.packetListenerNotificationRegistration);
         destroy(this.flowCapableTopologyProvider);
         destroy(this.operationProcessor);
+        if (this.listenerRegistrationHelper != null) {
+            try {
+                listenerRegistrationHelper.close();
+            } catch (final Exception e) {
+                LOG.warn("Exception was thrown during closing listenerRegistrationHelper", e);
+            }
+        }
         destroy(this.forwardingRulesManagerImpl);
         destroy(this.arbitratorReconciliationManager);
         destroy(this.openFlowPluginProvider);
