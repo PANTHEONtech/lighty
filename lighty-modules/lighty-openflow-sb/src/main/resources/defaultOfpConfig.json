@@ -7,7 +7,7 @@
     "enableFlowRemovedNotification": true,
     "skipTableFeatures": true,
     "basicTimerDelay": 3000,
-    "maximumTimerDelay": 3679,
+    "maximumTimerDelay": 900000,
     "switchFeaturesMandatory": false,
     "isStatisticsRpcEnabled": false,
     "useSingleLayerSerialization": true,
@@ -17,7 +17,6 @@
     "threadPoolMaxThreads": 32000,
     "threadPoolTimeout": 60,
     "frmReconciliationRetryCount": 5,
-    "nonZeroUint32Type": 900000,
     "enableForwardingRulesManager": true,
     "deviceConnectionHoldTimeInSeconds": 60,
     "switchConfig": {
