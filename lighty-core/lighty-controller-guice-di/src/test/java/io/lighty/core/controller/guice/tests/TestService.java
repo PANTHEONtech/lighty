@@ -73,10 +73,10 @@ public class TestService {
     private DistributedDataStoreInterface distributedDataStoreInterfaceOperational;
 
     @Inject
-    private DOMDataTreeShardingService domDataTreeShardingService;
+    private DistributedShardFactory domDataTreeShardingService;
 
     @Inject
-    private DOMDataTreeService domDataTreeService;
+    private DistributedShardFactory domDataTreeService;
 
     @Inject
     private DistributedShardFactory distributedShardFactory;
@@ -192,11 +192,11 @@ public class TestService {
         return distributedDataStoreInterfaceOperational;
     }
 
-    public DOMDataTreeShardingService getDomDataTreeShardingService() {
+    public DistributedShardFactory getDomDataTreeShardingService() {
         return domDataTreeShardingService;
     }
 
-    public DOMDataTreeService getDomDataTreeService() {
+    public DistributedShardFactory getDomDataTreeService() {
         return domDataTreeService;
     }
 

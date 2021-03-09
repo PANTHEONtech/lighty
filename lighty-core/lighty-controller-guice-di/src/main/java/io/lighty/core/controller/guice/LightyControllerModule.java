@@ -81,9 +81,9 @@ public class LightyControllerModule extends AbstractModule {
         bind(DistributedDataStoreInterface.class)
                 .annotatedWith(Names.named("ControllerOperationalDatastore"))
                 .toInstance(lightyServices.getOperationalDatastore());
-        bind(DOMDataTreeShardingService.class)
+        bind(DistributedShardFactory.class)
                 .toInstance(lightyServices.getDOMDataTreeShardingService());
-        bind(DOMDataTreeService.class)
+        bind(DistributedShardFactory.class)
                 .toInstance(lightyServices.getDOMDataTreeService());
         bind(DistributedShardFactory.class)
                 .toInstance(lightyServices.getDistributedShardFactory());

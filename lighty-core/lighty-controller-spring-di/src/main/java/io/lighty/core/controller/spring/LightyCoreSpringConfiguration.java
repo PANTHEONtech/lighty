@@ -195,13 +195,13 @@ public abstract class LightyCoreSpringConfiguration {
     }
 
     @Bean(destroyMethod = "")
-    public DOMDataTreeShardingService domDataTreeShardingService() {
+    public DistributedShardFactory domDataTreeShardingService() {
         return this.lightyController.getServices().getDOMDataTreeShardingService();
     }
 
     @Bean(destroyMethod = "")
     @Primary
-    public DOMDataTreeService domDataTreeService() {
+    public DistributedShardFactory domDataTreeService() {
         return this.lightyController.getServices().getDOMDataTreeService();
     }
 

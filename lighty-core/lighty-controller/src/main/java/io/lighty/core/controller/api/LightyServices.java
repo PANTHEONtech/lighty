@@ -77,9 +77,9 @@ public interface LightyServices extends LightyModuleRegistryService {
 
     DistributedDataStoreInterface getOperationalDatastore();
 
-    DOMDataTreeShardingService getDOMDataTreeShardingService();
+    DistributedShardFactory getDOMDataTreeShardingService();
 
-    DOMDataTreeService getDOMDataTreeService();
+    DistributedShardFactory getDOMDataTreeService();
 
     DistributedShardFactory getDistributedShardFactory();
 
