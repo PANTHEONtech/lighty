@@ -223,7 +223,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.moduleShardsConfig = moduleShardsConfig;
         this.configDatastoreContext = configDatastoreContext;
         this.operDatastoreContext = operDatastoreContext;
-        this.datastoreProperties = new HashMap<>();
+        this.datastoreProperties = datastoreProperties;
         this.modelSet = modelSet;
         this.systemReadyMonitor = new LightySystemReadyMonitorImpl();
         this.lightyDiagStatusService = new LightyDiagStatusServiceImpl(systemReadyMonitor);
