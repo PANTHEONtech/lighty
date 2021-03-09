@@ -81,7 +81,7 @@ public class DataCodecTest extends AbstractCodecTest {
     /*
      * "Serialization" of {@link RpcInput} object
      */
-
+    @Test
     public void testConvertBiIntoBaRpc_rpcInput() {
         DataCodec<MakeToastInput> dataCodec = new DataCodec<>(this.bindingCodecContext);
         QName makeToastQName = QName.create(TOASTER_NAMESPACE, TOASTER_REVISION, "make-toast");
@@ -89,7 +89,7 @@ public class DataCodecTest extends AbstractCodecTest {
         if (!loadRpc.isPresent()) {
             throw new IllegalStateException("make-toast RPC was not found");
         }
-        MakeToastInput toastInput = dataCodec.convertToBindingAwareRpc(Absolute.of(loadRpc.get().getInput().getQName()),
+        MakeToastInput toastInput = dataCodec.convertToBindingAwareRpc(loadRpc.get().getInput().getPath().asAbsolute(),
                 (ContainerNode) this.testedMakeToasterNormalizedNodes);
         Assert.assertEquals(this.testedMakeToasterInput.getToasterDoneness(), toastInput.getToasterDoneness());
     }
