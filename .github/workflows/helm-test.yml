@@ -1,0 +1,127 @@
+name: Test lighty application
+on:
+  workflow_dispatch:
+    inputs:
+      app-name:
+        description: Name of the application in /lighty-applications
+        default: lighty-rnc-app
+        required: true
+      checkout-ref:
+        description: The branch, tag or SHA to checkout. (if "default" the selected branch will be used)
+        default: default
+        required: true
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    env:
+      app-aggregator-dir: lighty-applications/${{ github.event.inputs.app-name }}-aggregator
+    name: "Setup, Install and Test. App: ${{ github.event.inputs.app-name }}, Checkout-ref: ${{ github.event.inputs.checkout-ref }}"
+    steps:
+      - name: Clone Repository
+        if: ${{ github.event.inputs.checkout-ref == 'default' }}
+        uses: actions/checkout@v2
+      - name: "Clone Repository, Ref: ${{ github.event.inputs.checkout-ref }}"
+        if: ${{ github.event.inputs.checkout-ref != 'default' }}
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.checkout-ref }}
+      - name: Set up JDK 1.11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+      - name: Cache Maven packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Maven install + build docker image
+        run: mvn install -DskipTests -B -V -Psource-quality
+      - name: Start app in docker container
+        run: |
+          image_name=$(mvn help:evaluate -f ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-docker/pom.xml -Dexpression=image.name -q -DforceStdout)
+          echo $image_name
+          docker run -d --name ${{ github.event.inputs.app-name }} --network host --rm $image_name
+          sleep 35 # Wait for app to start
+      - name: Docker container restconf/operations healthcheck
+        run: |
+          curl --user admin:admin -H "Content-Type: application/json" --insecure http://localhost:8888/restconf/operations
+      - name: Stop docker container
+        run: |
+          docker kill ${{ github.event.inputs.app-name }}
+      - name: Setup Minikube
+        uses: manusa/actions-setup-minikube@v2.3.0
+        with:
+          minikube version: 'v1.17.1'
+          kubernetes version: 'v1.15.11'
+      - name: Start Minikube cluster
+        run: |
+          minikube start
+      - name: Install helm v2.17.0
+        uses: azure/setup-helm@v1
+        with:
+          version: '2.17.0'
+      - name: Install socat
+        run: |
+          sudo apt-get -y install socat
+      - name: Init helm
+        run: |
+          minikube kubectl -- create serviceaccount tiller --namespace kube-system
+          minikube kubectl -- create clusterrolebinding tiller-cluster-rule \
+          --clusterrole=cluster-admin \
+          --serviceaccount=kube-system:tiller
+          helm init --stable-repo-url https://charts.helm.sh/stable --service-account tiller --wait
+      - name: Helm version
+        run: |
+          helm version
+      - name: Kubernetes version
+        run: |
+          minikube kubectl -- version
+      - name: Load image to minikube
+        run: |
+          echo "Exporting Docker image to .tar ..."
+          image_name=$(mvn help:evaluate -f ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-docker/pom.xml -Dexpression=image.name -q -DforceStdout)
+          docker save --output="./${{ github.event.inputs.app-name }}.tar" $image_name
+          echo "Loading docker image to minikube"
+          docker load --input ./${{ github.event.inputs.app-name }}.tar
+          rm ./${{ github.event.inputs.app-name }}.tar
+      - name: Install app helm chart
+        run: |
+          helm install ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-helm/helm/${{ github.event.inputs.app-name }}-helm --name ${{ github.event.inputs.app-name }}
+          sleep 35 # Wait for app to start
+      - name: List pods
+        run: |
+          minikube kubectl -- get pods
+      - name: Cluster state (:8558/cluster/members)
+        run: |
+          pod_names=$(minikube kubectl -- get pods --no-headers -o custom-columns=":metadata.name")
+          for pod_name in $pod_names; \
+          do \
+            pod_ip=$(minikube kubectl -- get pod $pod_name --template={{.status.podIP}}) && \
+            curl --user admin:admin -H "Content-Type: application/json" --insecure http://$pod_ip:8558/cluster/members \
+          ;done
+      - name: Logs pods
+        run: |
+          pod_names=$(minikube kubectl -- get pods --no-headers -o custom-columns=":metadata.name")
+          for pod_name in $pod_names; \
+          do \
+            minikube kubectl -- logs $pod_name \
+          ;done
+      - name: Pods healthcheck (:8888/restconf/operations)
+        run: |
+          pod_names=$(minikube kubectl -- get pods --no-headers -o custom-columns=":metadata.name")
+          for pod_name in $pod_names; \
+          do \
+            pod_ip=$(minikube kubectl -- get pod $pod_name --template={{.status.podIP}}) && \
+            curl --user admin:admin -H "Content-Type: application/json" --insecure http://$pod_ip:8888/restconf/operations \
+          ;done
+      - name: List Services
+        run: |
+          minikube kubectl -- get services
+      - name: Service healthcheck (:30888/restconf/operations)
+        run: |
+          minikube_ip=$(minikube ip)
+          curl --user admin:admin -H "Content-Type: application/json" --insecure http://$minikube_ip:30888/restconf/operations

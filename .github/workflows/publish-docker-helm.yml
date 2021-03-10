@@ -1,0 +1,106 @@
+name: Publish docker image and helm chart
+on:
+  workflow_dispatch:
+    inputs:
+      app-name:
+        description: Name of the application in /lighty-applications
+        default: lighty-rnc-app
+        required: true
+      image-name:
+        description: Desired NAME of docker image
+        default: lighty-rnc
+        required: true
+      image-tag:
+        description: Desired TAG of docker image
+        default: latest
+        required: true
+      helm-chart-version:
+        description: Desired version of released helm chart, (if "default" the version from Chart.yaml will be used)
+        default: default
+        required: false
+      checkout-ref:
+        description: The branch, tag or SHA to checkout. (if "default" the selected branch will be used)
+        default: default
+        required: true
+jobs:
+  publish-docker-helm:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    env:
+      app-aggregator-dir: lighty-applications/${{ github.event.inputs.app-name }}-aggregator
+      PUBLISH_ACCESS_KEY: ${{ secrets.MM_PKG_WRITE}}
+    name: "Publish docker image and helm chart. App: ${{ github.event.inputs.app-name }}, Checkout-ref: ${{ github.event.inputs.checkout-ref }}"
+    steps:
+      - name: Clone Repository
+        if: ${{ github.event.inputs.checkout-ref == 'default' }}
+        uses: actions/checkout@v2
+      - name: "Clone Repository, Ref: ${{ github.event.inputs.checkout-ref }}"
+        if: ${{ github.event.inputs.checkout-ref != 'default' }}
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.checkout-ref }}
+      - name: Set up JDK 1.11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+      - name: Cache Maven packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Env docker image name
+        run: |
+          DOCKER_IMAGE_NAME=$(echo ghcr.io/pantheontech/${{ github.event.inputs.image-name }})
+          DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME:${{ github.event.inputs.image-tag }})
+          echo "DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME_TAG)" >> $GITHUB_ENV
+      - name: Build docker image
+        run: mvn install -B -pl :${{ github.event.inputs.app-name }},:${{ github.event.inputs.app-name }}-docker -am
+      - name: Rename image to desired
+        run: |
+          image_name=$(mvn help:evaluate -f ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-docker/pom.xml -Dexpression=image.name -q -DforceStdout)
+          docker tag $image_name $DOCKER_IMAGE_NAME_TAG
+          docker images
+      - name: List docker images
+        run: |
+          docker images
+      - name: Docker log in (ghcr.io)
+        run: |
+          echo ${{ env.PUBLISH_ACCESS_KEY}} | docker login  --username ${{ github.actor }} --password-stdin ghcr.io
+      - name: Publish docker image (ghcr.io)
+        run: |
+          docker push $DOCKER_IMAGE_NAME_TAG
+      - name: Check if docker image is pullable  (ghcr.io)
+        run: |
+          docker rmi $DOCKER_IMAGE_NAME_TAG
+          docker pull $DOCKER_IMAGE_NAME_TAG
+      - name: Install yq (yaml processor)
+        run: |
+          sudo snap install yq
+      - name: Set image.name, image.version in values.yaml of helm chart
+        run: |
+          yq eval '.image.name="ghcr.io/pantheontech/${{ github.event.inputs.image-name }}" | .image.version="${{ github.event.inputs.image-tag }}"' ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-helm/helm/${{ github.event.inputs.app-name }}-helm/values.yaml -i
+      - name: Print values.yaml
+        run: |
+          cat -A ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-helm/helm/${{ github.event.inputs.app-name }}-helm/values.yaml
+      - name: "Publish Helm chart to Helm repository (Version: ${{ github.event.inputs.helm-chart-version }} )"
+        if: ${{ github.event.inputs.helm-chart-version != 'default' }}
+        uses: stefanprodan/helm-gh-pages@master
+        with:
+          token: ${{ env.PUBLISH_ACCESS_KEY }}
+          charts_dir: ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-helm/helm/
+          charts_url: https://pantheontech.github.io/helm-charts/
+          repository: helm-charts
+          branch: main
+          chart_version: ${{ github.event.inputs.helm-chart-version }}
+      - name: "Publish Helm chart to Helm repository (Version: from Chart.yaml)"
+        if: ${{ github.event.inputs.helm-chart-version == 'default' }}
+        uses: stefanprodan/helm-gh-pages@master
+        with:
+          token: ${{ env.PUBLISH_ACCESS_KEY }}
+          charts_dir: ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-helm/helm/
+          charts_url: https://pantheontech.github.io/helm-charts/
+          repository: helm-charts
+          branch: main
