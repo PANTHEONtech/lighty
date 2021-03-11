@@ -15,6 +15,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * ValidationException.
+ *
+ * @deprecated No longer needed. Used in deprecated {@link DocumentedException}.
+ */
 @Deprecated(forRemoval = true)
 public class ValidationException extends Exception {
     private static final long serialVersionUID = -6072893219820274247L;

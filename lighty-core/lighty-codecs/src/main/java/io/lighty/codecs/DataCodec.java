@@ -54,6 +54,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+/**
+ * DataCodec.
+ *
+ * @deprecated DataCodec is marked as deprecated because it can be replaced by direct implementation of
+ * {@link BindingNormalizedNodeSerializer} and {@link NodeConverter}.
+ */
 @Deprecated(forRemoval = true)
 public class DataCodec<T extends DataObject> implements Codec<T> {
 

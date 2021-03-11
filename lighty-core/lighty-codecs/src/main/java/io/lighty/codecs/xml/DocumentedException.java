@@ -26,6 +26,8 @@ import org.w3c.dom.NodeList;
 
 /**
  * Checked exception to communicate an error that needs to be sent to the netconf client.
+ *
+ * @deprecated Replaced by OpenDayLight implementation {@link org.opendaylight.netconf.api.DocumentedException}.
  */
 @Deprecated(forRemoval = true)
 public class DocumentedException extends Exception {

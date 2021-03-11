@@ -31,7 +31,7 @@ import org.xml.sax.SAXException;
 /**
  * A utility class which may be helpful while manipulating with binding independent nodes.
  *
- * @deprecated This class is moved to lighty-codecs-util
+ * @deprecated This class is moved to lighty-codecs-util.
  */
 @Deprecated(forRemoval = true)
 public final class ConverterUtils {
