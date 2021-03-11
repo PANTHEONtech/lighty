@@ -39,7 +39,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Maven install + build docker image
-        run: mvn install -DskipTests -B -V -Psource-quality
+        run: mvn install -Pdocker -DskipTests -B -V -Psource-quality
       - name: Start app in docker container
         run: |
           image_name=$(mvn help:evaluate -f ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-docker/pom.xml -Dexpression=image.name -q -DforceStdout)
