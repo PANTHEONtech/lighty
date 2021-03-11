@@ -10,6 +10,11 @@ package io.lighty.codecs.xml;
 import java.util.Collections;
 import java.util.Map;
 
+/**
+ * MissingNameSpaceException.
+ *
+ * @deprecated No longer needed. Used in deprecated {@link XmlElement}.
+ */
 @Deprecated(forRemoval = true)
 public class MissingNameSpaceException extends DocumentedException {
     private static final long serialVersionUID = 1L;

@@ -29,7 +29,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
  * Serialize YangInstanceIdentifier.
  *
  * @deprecated This class can be replaced by the implementation of
- * {@link org.opendaylight.yangtools.yang.data.util.AbstractStringInstanceIdentifierCodec}
+ * {@link org.opendaylight.yangtools.yang.data.util.AbstractStringInstanceIdentifierCodec}.
  */
 @Deprecated(forRemoval = true)
 public class SerializeIdentifierCodec {

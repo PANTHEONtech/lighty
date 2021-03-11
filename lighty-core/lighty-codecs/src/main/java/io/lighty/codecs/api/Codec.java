@@ -12,10 +12,12 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 /**
- * Codec to serailize/deserialize Binding Independent data, RPC data, Notification data to/from
+ * Codec to serialize/deserialize Binding Independent data, RPC data, Notification data to/from
  * Binding Aware data, RPC data, Notification data.
  *
  * @param <BA> - type of Binding Aware data, RPC data or Notification data
+ * @deprecated Codec is marked as deprecated because it can be replaced by direct implementation
+ * {@link BindingNormalizedNodeSerializer} and {@link NodeConverter}.
  */
 @Deprecated(forRemoval = true)
 public interface Codec<BA extends DataObject> extends Serializer<BA>, Deserializer<BA> {

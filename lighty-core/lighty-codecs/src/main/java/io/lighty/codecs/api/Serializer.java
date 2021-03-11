@@ -8,6 +8,7 @@
 package io.lighty.codecs.api;
 
 import java.util.Collection;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -19,6 +20,8 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
  * This class serializes Binding Independent (DOM) objects TO Binding Aware (BA) objects.
  *
  * @param <BA>  Binding Aware object type of data, RPC data or Notification data
+ * @deprecated The interface is no longer needed. The most used methods are covered by
+ * {@link BindingNormalizedNodeSerializer}.
  */
 @Deprecated(forRemoval = true)
 public interface Serializer<BA extends DataObject> {

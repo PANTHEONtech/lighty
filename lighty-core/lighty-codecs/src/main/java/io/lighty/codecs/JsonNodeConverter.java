@@ -35,7 +35,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
  * The implementation of {@link NodeConverter} which serializes and deserializes binding independent
  * representation into/from JSON representation.
  *
- * @deprecated This class is moved to lighty-codecs-util
+ * @deprecated This class is moved to lighty-codecs-util.
  * @see XmlNodeConverter
  */
 @Deprecated(forRemoval = true)

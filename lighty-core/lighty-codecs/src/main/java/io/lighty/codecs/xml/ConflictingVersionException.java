@@ -12,6 +12,8 @@ package io.lighty.codecs.xml;
  * that the transaction cannot be committed due to the fact that another
  * transaction was committed after creating this transaction. Clients can create
  * new transaction and merge the changes.
+ *
+ * @deprecated No longer needed. Used in deprecated {@link DocumentedException}.
  */
 @Deprecated(forRemoval = true)
 public class ConflictingVersionException extends Exception {

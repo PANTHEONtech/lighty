@@ -9,6 +9,11 @@ package io.lighty.codecs.xml;
 
 import org.opendaylight.yangtools.concepts.Identifier;
 
+/**
+ * ModuleIdentifier.
+ *
+ * @deprecated No longer needed. Used in deprecated {@link ValidationException}.
+ */
 @Deprecated(forRemoval = true)
 public class ModuleIdentifier implements Identifier {
     private static final long serialVersionUID = 1L;

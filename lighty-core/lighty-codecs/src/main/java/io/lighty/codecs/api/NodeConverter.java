@@ -22,7 +22,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
  * JSON representation. Currently there are two implementations {@link XmlNodeConverter} and
  * {@link JsonNodeConverter}.
  *
- * @deprecated This interface is moved to lighty-codecs-util
+ * @deprecated This interface is moved to lighty-codecs-util.
  */
 @Deprecated(forRemoval = true)
 public interface NodeConverter {

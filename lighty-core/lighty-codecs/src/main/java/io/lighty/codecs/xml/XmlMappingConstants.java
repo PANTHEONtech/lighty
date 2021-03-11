@@ -7,6 +7,11 @@
  */
 package io.lighty.codecs.xml;
 
+/**
+ * XmlMappingConstants.
+ *
+ * @deprecated No longer needed. Used in deprecated {@link DocumentedException} and {@link XmlUtil} .
+ */
 @Deprecated(forRemoval = true)
 public final class XmlMappingConstants {
     public static final String RPC_REPLY_KEY = "rpc-reply";
