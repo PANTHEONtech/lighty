@@ -22,6 +22,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>io.lighty.core</groupId>
+            <artifactId>lighty-controller</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-netconf-sb</artifactId>
         </dependency>

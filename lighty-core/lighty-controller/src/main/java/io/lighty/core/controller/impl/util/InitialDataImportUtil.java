@@ -30,7 +30,6 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,11 +43,10 @@ public final class InitialDataImportUtil {
     }
 
     private static NormalizedNode<?, ?> inputStreamJSONtoNormalizedNodes(InputStream inputStream,
-                                                                         SchemaContext schemaContext,
                                                                          EffectiveModelContext effectiveModelContext)
             throws IOException, SerializationException {
         SchemaNode rootSchemaNode = DataSchemaContextTree.from(effectiveModelContext).getRoot().getDataSchemaNode();
-        JsonNodeConverter jsonNodeConverter = new JsonNodeConverter(schemaContext);
+        JsonNodeConverter jsonNodeConverter = new JsonNodeConverter(effectiveModelContext);
         try (Reader reader =
                      new InputStreamReader(inputStream, Charset.defaultCharset())) {
             NormalizedNode<?, ?> nodes = jsonNodeConverter.deserialize(rootSchemaNode, reader);
@@ -77,7 +75,6 @@ public final class InitialDataImportUtil {
 
     public static void importInitialConfigDataFile(@NonNull InputStream inputFileStream,
                                                    @NonNull ImportFileFormat fileFormat,
-                                                   @NonNull SchemaContext schemaContext,
                                                    @NonNull EffectiveModelContext effectiveModelContext,
                                                    @NonNull DOMDataBroker dataBroker)
             throws InterruptedException, ExecutionException, TimeoutException, IOException, SerializationException,
@@ -85,7 +82,7 @@ public final class InitialDataImportUtil {
         NormalizedNode<?, ?> nodes;
         if (fileFormat == ImportFileFormat.JSON) {
             LOG.info("Converting JSON initial config data file to nodes");
-            nodes = inputStreamJSONtoNormalizedNodes(inputFileStream, schemaContext, effectiveModelContext);
+            nodes = inputStreamJSONtoNormalizedNodes(inputFileStream, effectiveModelContext);
         } else if (fileFormat == ImportFileFormat.XML) {
             LOG.info("Converting XML initial config data file to nodes");
             nodes = inputStreamXMLtoNormalizedNodes(inputFileStream, effectiveModelContext);
