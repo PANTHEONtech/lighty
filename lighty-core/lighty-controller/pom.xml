@@ -304,31 +304,14 @@
             <groupId>org.scala-lang.modules</groupId>
             <artifactId>scala-java8-compat_2.13</artifactId>
         </dependency>
-        <!--odl-akka-system-2.4-->
+        <!--odl-akka-system-->
         <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-actor_2.13</artifactId>
+            <groupId>org.opendaylight.controller</groupId>
+            <artifactId>repackaged-akka</artifactId>
         </dependency>
         <dependency>
             <groupId>com.typesafe</groupId>
             <artifactId>config</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-slf4j_2.13</artifactId>
-        </dependency>
-        <!--odl-akka-clustering-2.4-->
-        <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-cluster_2.13</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-remote_2.13</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-stream_2.13</artifactId>
         </dependency>
         <dependency>
             <groupId>org.reactivestreams</groupId>
@@ -341,10 +324,6 @@
         <dependency>
             <groupId>org.scala-lang.modules</groupId>
             <artifactId>scala-parser-combinators_2.13</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-protobuf_2.13</artifactId>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
@@ -377,10 +356,6 @@
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>threadpool-config-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.uncommons.maths</groupId>
-            <artifactId>uncommons-maths</artifactId>
         </dependency>
         <dependency>
             <groupId>io.aeron</groupId>

@@ -29,13 +29,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>org.opendaylight.odlparent</groupId>
-                <artifactId>odl-akka-all</artifactId>
-                <version>7.0.8</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
 
             <!-- OpenDaylight projects -->
             <dependency>
@@ -47,7 +40,7 @@
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.controller</groupId>
-                <artifactId>controller-artifacts</artifactId>
+                <artifactId>bundle-parent</artifactId>
                 <version>3.0.7</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -105,6 +98,11 @@
 
             <!-- Other third-party stuff -->
             <dependency>
+                <groupId>javax.activation</groupId>
+                <artifactId>activation</artifactId>
+                <version>1.1.1</version>
+            </dependency>
+            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
                 <version>1.7.28</version>
@@ -136,58 +134,7 @@
                 <artifactId>leveldbjni-all</artifactId>
                 <version>1.8</version>
             </dependency>
-            <!--akka management and bootstrap-->
-            <dependency>
-                <groupId>com.typesafe.akka</groupId>
-                <artifactId>akka-discovery_2.13</artifactId>
-                <version>2.5.32</version>
-            </dependency>
-            <dependency>
-                <groupId>com.typesafe.akka</groupId>
-                <artifactId>akka-coordination_2.13</artifactId>
-                <version>2.5.32</version>
-            </dependency>
-            <dependency>
-                <groupId>com.typesafe.akka</groupId>
-                <artifactId>akka-distributed-data_2.13</artifactId>
-                <version>2.5.32</version>
-            </dependency>
-            <dependency>
-                <groupId>com.typesafe.akka</groupId>
-                <artifactId>akka-cluster-tools_2.13</artifactId>
-                <version>2.5.32</version>
-            </dependency>
-            <dependency>
-                <groupId>com.typesafe.akka</groupId>
-                <artifactId>akka-cluster-sharding_2.13</artifactId>
-                <version>2.5.32</version>
-            </dependency>
-            <dependency>
-                <groupId>com.typesafe.akka</groupId>
-                <artifactId>akka-actor_2.13</artifactId>
-                <version>2.5.32</version>
-            </dependency>
-            <dependency>
-                <groupId>com.typesafe.akka</groupId>
-                <artifactId>akka-stream_2.13</artifactId>
-                <version>2.5.32</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.lightbend.akka.discovery</groupId>
-                <artifactId>akka-discovery-kubernetes-api_2.13</artifactId>
-                <version>1.0.10</version>
-            </dependency>
-            <dependency>
-                <groupId>com.lightbend.akka.management</groupId>
-                <artifactId>akka-management_2.13</artifactId>
-                <version>1.0.10</version>
-            </dependency>
-            <dependency>
-                <groupId>com.lightbend.akka.management</groupId>
-                <artifactId>akka-management-cluster-http_2.13</artifactId>
-                <version>1.0.10</version>
-            </dependency>
+            <!--akka management-->
             <dependency>
                 <groupId>com.lightbend.akka.management</groupId>
                 <artifactId>akka-management-cluster-bootstrap_2.13</artifactId>
