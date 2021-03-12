@@ -105,12 +105,12 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
-                <version>1.7.28</version>
+                <version>1.7.30</version>
             </dependency>
             <dependency>
                 <groupId>com.google.inject</groupId>
                 <artifactId>guice</artifactId>
-                <version>4.2.2</version>
+                <version>4.2.3</version>
             </dependency>
             <dependency>
                 <groupId>org.testng</groupId>
@@ -143,6 +143,18 @@
         </dependencies>
     </dependencyManagement>
 
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>1.6</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
     <profiles>
         <profile>
             <id>release</id>
@@ -151,7 +163,6 @@
                       <plugin>
                           <groupId>org.apache.maven.plugins</groupId>
                           <artifactId>maven-gpg-plugin</artifactId>
-                          <version>1.6</version>
                           <executions>
                               <execution>
                                   <id>sign-artifacts</id>

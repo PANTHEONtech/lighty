@@ -11,6 +11,7 @@ import akka.actor.Terminated;
 import akka.management.javadsl.AkkaManagement;
 import com.google.common.base.Stopwatch;
 import com.typesafe.config.Config;
+import io.lighty.codecs.api.SerializationException;
 import io.lighty.core.cluster.ClusteringHandler;
 import io.lighty.core.cluster.ClusteringHandlerProvider;
 import io.lighty.core.common.SocketAnalyzer;
@@ -18,9 +19,11 @@ import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
+import io.lighty.core.controller.impl.config.ControllerConfiguration.InitialConfigData;
 import io.lighty.core.controller.impl.services.LightyDiagStatusServiceImpl;
 import io.lighty.core.controller.impl.services.LightySystemReadyMonitorImpl;
 import io.lighty.core.controller.impl.services.LightySystemReadyService;
+import io.lighty.core.controller.impl.util.InitialDataImportUtil;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.HashedWheelTimer;
@@ -28,6 +31,9 @@ import io.netty.util.Timer;
 import io.netty.util.concurrent.DefaultEventExecutor;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.EventExecutor;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +56,7 @@ import org.opendaylight.controller.cluster.datastore.DatastoreContextIntrospecto
 import org.opendaylight.controller.cluster.datastore.DatastoreContextPropertiesUpdater;
 import org.opendaylight.controller.cluster.datastore.DatastoreSnapshotRestore;
 import org.opendaylight.controller.cluster.datastore.DefaultDatastoreContextIntrospectorFactory;
+import org.opendaylight.controller.cluster.datastore.DefaultDatastoreSnapshotRestore;
 import org.opendaylight.controller.cluster.datastore.DefaultDatastoreSnapshotRestore;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreFactory;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
@@ -120,6 +127,7 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.mdsal.singleton.dom.impl.DOMClusterSingletonServiceProviderImpl;
 import org.opendaylight.mdsal.singleton.dom.impl.di.DefaultClusterSingletonServiceProvider;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.config.distributed.datastore.provider.rev140612.DataStorePropertiesContainer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
@@ -127,6 +135,9 @@ import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
+import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
 import org.opendaylight.yangtools.yang.parser.impl.YangParserFactoryImpl;
 import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
@@ -197,16 +208,21 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private List<ObjectRegistration<YangModuleInfo>> modelsRegistration = new ArrayList<>();
     private AkkaManagement akkaManagement;
     private Optional<ClusteringHandler> clusteringHandler;
+    private Optional<InitialConfigData> initialConfigData;
+
 
     public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
-            final ClassLoader actorSystemClassLoader,
-            final ControllerConfiguration.DOMNotificationRouterConfig domNotificationRouterConfig,
-            final String restoreDirectoryPath, final int maxDataBrokerFutureCallbackQueueSize,
-            final int maxDataBrokerFutureCallbackPoolSize, final boolean metricCaptureEnabled,
-            final int mailboxCapacity, final Properties distributedEosProperties, final String moduleShardsConfig,
-            final String modulesConfig, final DatastoreContext configDatastoreContext,
-            final DatastoreContext operDatastoreContext, final Map<String, Object> datastoreProperties,
-            final Set<YangModuleInfo> modelSet) {
+                                final ClassLoader actorSystemClassLoader,
+                                final ControllerConfiguration.DOMNotificationRouterConfig domNotificationRouterConfig,
+                                final String restoreDirectoryPath, final int maxDataBrokerFutureCallbackQueueSize,
+                                final int maxDataBrokerFutureCallbackPoolSize, final boolean metricCaptureEnabled,
+                                final int mailboxCapacity, final Properties distributedEosProperties,
+                                final String moduleShardsConfig,
+                                final String modulesConfig, final DatastoreContext configDatastoreContext,
+                                final DatastoreContext operDatastoreContext,
+                                final Map<String, Object> datastoreProperties,
+                                final Set<YangModuleInfo> modelSet,
+                                final Optional<InitialConfigData> initialConfigData) {
         super(executorService);
         initSunXMLWriterProperty();
         this.actorSystemConfig = actorSystemConfig;
@@ -230,6 +246,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.metricProvider = new MetricProviderImpl();
         this.jobCoordinator = new JobCoordinatorImpl(metricProvider);
         this.cacheProvider = new GuavaCacheProvider(new CacheManagersRegistryImpl());
+        this.initialConfigData = initialConfigData;
     }
 
     /**
@@ -342,6 +359,20 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                 new FixedThreadPoolWrapper(2, new DefaultThreadFactory("default-pool"));
         this.scheduledThreadPool =
                 new ScheduledThreadPoolWrapper(2, new DefaultThreadFactory("default-scheduled-pool"));
+
+        if (this.initialConfigData.isPresent()) {
+            InitialConfigData initialData = this.initialConfigData.get();
+            try (InputStream stream = new FileInputStream(initialData.getPathToInitDataFile())) {
+                InitialDataImportUtil
+                        .importInitialConfigDataFile(stream, initialData.getFormat(),
+                                getSchemaContextProvider().getSchemaContext(),
+                                this.schemaService.getGlobalContext(), this.getClusteredDOMDataBroker());
+            } catch (InterruptedException | TimeoutException | ExecutionException | IOException
+                    | SerializationException | IllegalStateException e) {
+                LOG.error("Exception occurred while importing config data from file", e);
+                return false;
+            }
+        }
         LOG.info("Lighty controller started in {}", stopwatch.stop());
         return true;
     }

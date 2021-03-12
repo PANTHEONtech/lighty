@@ -2,6 +2,7 @@
 **/target
 **/test-output
 **/journal
+**/segmented-journal
 **/snapshots
 **/*.db.mv.db
 
