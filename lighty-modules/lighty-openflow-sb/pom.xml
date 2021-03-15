@@ -11,6 +11,21 @@
     <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-openflow-sb</artifactId>
 
+    <repositories>
+        <!-- TODO: Remove when will be available OFP ans Serviceutils release  -->
+        <repository>
+            <id>opendaylight-snapshot</id>
+            <name>opendaylight-snapshot</name>
+            <url>https://nexus.opendaylight.org/content/repositories/opendaylight.snapshot/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>io.lighty.core</groupId>
