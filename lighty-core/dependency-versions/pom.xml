@@ -40,6 +40,15 @@
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.controller</groupId>
+                <artifactId>controller-artifacts</artifactId>
+                <version>3.0.7</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <!-- Bundle parent brings dependency management for artifacts used by Akka: (scala, typesafe, aeron.. ).
+                This artifact dependency management was removed from odl-parent in Aluminium release. -->
+                <groupId>org.opendaylight.controller</groupId>
                 <artifactId>bundle-parent</artifactId>
                 <version>3.0.7</version>
                 <type>pom</type>
