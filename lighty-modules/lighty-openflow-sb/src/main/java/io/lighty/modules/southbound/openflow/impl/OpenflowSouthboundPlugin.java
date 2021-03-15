@@ -215,6 +215,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:illegalCatch")
     protected boolean stopProcedure() {
         destroy(this.packetListenerNotificationRegistration);
         destroy(this.flowCapableTopologyProvider);
