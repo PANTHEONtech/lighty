@@ -12,6 +12,7 @@ import io.lighty.core.controller.api.LightyServices;
 import io.lighty.modules.southbound.openflow.impl.config.ConfigurationServiceFactory;
 import io.lighty.modules.southbound.openflow.impl.config.OpenflowpluginConfiguration;
 import io.lighty.modules.southbound.openflow.impl.util.OpenflowConfigUtils;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -217,23 +218,27 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
     @Override
     @SuppressWarnings("checkstyle:illegalCatch")
     protected boolean stopProcedure() {
-        destroy(this.packetListenerNotificationRegistration);
-        destroy(this.flowCapableTopologyProvider);
-        destroy(this.operationProcessor);
+        List<Boolean> destroyResult = new ArrayList<>();
+        destroyResult.add(destroy(this.packetListenerNotificationRegistration));
+        destroyResult.add(destroy(this.flowCapableTopologyProvider));
+        destroyResult.add(destroy(this.operationProcessor));
+        destroyResult.add(destroy(this.forwardingRulesManagerImpl));
         if (this.listenerRegistrationHelper != null) {
             try {
                 listenerRegistrationHelper.close();
+                destroyResult.add(true);
             } catch (final Exception e) {
                 LOG.warn("Exception was thrown during closing listenerRegistrationHelper", e);
+                destroyResult.add(false);
             }
         }
-        destroy(this.forwardingRulesManagerImpl);
-        destroy(this.arbitratorReconciliationManager);
-        destroy(this.openFlowPluginProvider);
-        destroy(this.mastershipChangeServiceManager);
-        destroy(this.terminationPointChangeListener);
-        destroy(this.nodeChangeListener);
-        return true;
+        destroyResult.add(destroy(this.arbitratorReconciliationManager));
+        destroyResult.add(destroy(this.openFlowPluginProvider));
+        destroyResult.add(destroy(this.mastershipChangeServiceManager));
+        destroyResult.add(destroy(this.terminationPointChangeListener));
+        destroyResult.add(destroy(this.nodeChangeListener));
+
+        return !destroyResult.contains(false);
     }
 
     /**
@@ -241,14 +246,16 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
      * @param instance instance of {@link AutoCloseable}.
      */
     @SuppressWarnings("checkstyle:illegalCatch")
-    private void destroy(final AutoCloseable instance) {
+    private boolean destroy(final AutoCloseable instance) {
         if (instance != null) {
             try {
                 instance.close();
             } catch (final Exception e) {
                 LOG.warn("Exception was thrown during closing {}", instance.getClass().getSimpleName(), e);
+                return false;
             }
         }
+        return true;
     }
 
 }
