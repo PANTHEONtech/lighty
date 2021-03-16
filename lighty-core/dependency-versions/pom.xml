@@ -21,7 +21,7 @@
     </description>
 
     <repositories>
-        <!-- TODO: Remove when will be available OFP ans Serviceutils release  -->
+        <!-- TODO: Remove when the release of OFP and Serviceutils will be available -->
         <repository>
             <id>opendaylight-snapshot</id>
             <name>opendaylight-snapshot</name>

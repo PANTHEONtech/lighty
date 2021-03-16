@@ -27,11 +27,11 @@ public class LightyControllerNotificationTest extends LightyControllerTestBase {
         final LightyController lightyController = getLightyController();
 
         // setup
-        final Absolute schemaPath = Absolute.of(QName.create("namespace", "test"));
+        final Absolute absolutePath = Absolute.of(QName.create("namespace", "test"));
         final DOMNotification testNotification = new DOMNotification() {
             @Override
             public Absolute getType() {
-                return schemaPath;
+                return absolutePath;
             }
 
             @Override
@@ -47,7 +47,7 @@ public class LightyControllerNotificationTest extends LightyControllerTestBase {
         domNotificationService.registerNotificationListener(notification -> {
             Assert.assertEquals(notification, testNotification);
             listenerMethodsCalled[0]++;
-        }, schemaPath);
+        }, absolutePath);
 
         // 2. put, offer notification
         final DOMNotificationPublishService domNotificationPublishService = lightyController.getServices()

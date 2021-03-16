@@ -24,7 +24,6 @@ import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.parser.impl.YangParserFactoryImpl;
-import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
 import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -55,15 +54,6 @@ public abstract class NetconfBaseServiceBaseTest {
         baseSchema = new DefaultBaseNetconfSchemas(new YangParserFactoryImpl()).getBaseSchema();
     }
 
-    static EffectiveModelContext getEffectiveModelContext(final List<YangModuleInfo> moduleInfos)
-            throws YangParserException {
-        final YangXPathParserFactory xpathFactory = new AntlrXPathParserFactory();
-        final YangParserFactoryImpl yangParserFactory = new YangParserFactoryImpl(xpathFactory);
-        ModuleInfoSnapshotBuilder moduleInfoSnapshotBuilder = new ModuleInfoSnapshotBuilder(yangParserFactory);
-        moduleInfoSnapshotBuilder.add(moduleInfos);
-        return moduleInfoSnapshotBuilder.build().getEffectiveModelContext();
-    }
-
     boolean hasSpecificChild(final Collection<DataContainerChild<? extends PathArgument, ?>> children,
                                      final String localName) {
         return children.stream()
@@ -88,4 +78,11 @@ public abstract class NetconfBaseServiceBaseTest {
         return getSpecificElementSubtree(doc, qname.getNamespace().toString(), localName);
     }
 
+    private static EffectiveModelContext getEffectiveModelContext(final List<YangModuleInfo> moduleInfos)
+            throws YangParserException {
+        final YangParserFactoryImpl yangParserFactory = new YangParserFactoryImpl(new AntlrXPathParserFactory());
+        ModuleInfoSnapshotBuilder moduleInfoSnapshotBuilder = new ModuleInfoSnapshotBuilder(yangParserFactory);
+        moduleInfoSnapshotBuilder.add(moduleInfos);
+        return moduleInfoSnapshotBuilder.build().getEffectiveModelContext();
+    }
 }

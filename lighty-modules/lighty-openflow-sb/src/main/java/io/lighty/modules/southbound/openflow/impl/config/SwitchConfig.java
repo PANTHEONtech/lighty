@@ -34,9 +34,9 @@ public class SwitchConfig {
     private final SwitchConnectionProviderFactoryImpl factory = new SwitchConnectionProviderFactoryImpl();
 
     @JsonIgnore
-    private SwitchConnectionConfig defaultSwitch;
+    private final SwitchConnectionConfig defaultSwitch;
     @JsonIgnore
-    private SwitchConnectionConfig legacySwitch;
+    private final SwitchConnectionConfig legacySwitch;
 
     private String instanceName = "openflow-switch-connection-provider-default-impl";
     private int port = 0;
@@ -174,10 +174,10 @@ public class SwitchConfig {
     }
 
     public String getInstanceName() {
-        return instanceName;
+        return this.instanceName;
     }
 
-    public void setInstanceName(String instanceName) {
+    public void setInstanceName(final String instanceName) {
         this.instanceName = instanceName;
     }
 
