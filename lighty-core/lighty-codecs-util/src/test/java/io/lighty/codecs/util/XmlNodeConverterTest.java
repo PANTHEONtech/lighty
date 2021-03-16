@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Pantheon Technologies s.r.o. All Rights Reserved.
+ * Copyright (c) 2021 Pantheon Technologies s.r.o. All Rights Reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -24,11 +24,8 @@ import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class XmlNodeConverterTest extends AbstractCodecTest {
-    private static final Logger LOG = LoggerFactory.getLogger(XmlNodeConverterTest.class);
 
     private final NodeConverter bindingSerializer;
 
@@ -43,7 +40,6 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
         Writer serializeRpc =
                 bindingSerializer.serializeRpc(loadRpc.orElseThrow().getInput(), testedSimpleRpcInputNormalizedNodes);
         Assert.assertFalse(Strings.isNullOrEmpty(serializeRpc.toString()));
-        LOG.info(serializeRpc.toString());
     }
 
     @Test
@@ -53,7 +49,6 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
         Writer serializeRpc =
                 bindingSerializer.serializeRpc(loadRpc.orElseThrow().getOutput(), testedSimpleRpcOutputNormalizedNodes);
         Assert.assertFalse(Strings.isNullOrEmpty(serializeRpc.toString()));
-        LOG.info(serializeRpc.toString());
     }
 
     @Test
@@ -61,7 +56,6 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
         Writer serializeData =
                 bindingSerializer.serializeData(this.effectiveModelContext, testedToasterNormalizedNodes);
         Assert.assertFalse(Strings.isNullOrEmpty(serializeData.toString()));
-        LOG.info(serializeData.toString());
     }
 
     @Test
@@ -72,7 +66,6 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
         NormalizedNode<?, ?> deserializeData =
                 bindingSerializer.deserialize(schemaNode, new StringReader(loadToasterXml()));
         Assert.assertNotNull(deserializeData);
-        LOG.info(deserializeData.toString());
     }
 
     @Test
@@ -83,7 +76,6 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
         NormalizedNode<?, ?> deserializeRpc = bindingSerializer
                 .deserialize(loadRpc.orElseThrow().getInput(), new StringReader(loadMakeToasterInputXml));
         Assert.assertNotNull(deserializeRpc);
-        LOG.info(deserializeRpc.toString());
     }
 
     @Test
@@ -94,7 +86,6 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
         NormalizedNode<?, ?> deserializeRpc = bindingSerializer
                 .deserialize(loadRpc.orElseThrow().getOutput(), new StringReader(loadMakeToasterInputXml));
         Assert.assertNotNull(deserializeRpc);
-        LOG.info(deserializeRpc.toString());
     }
 
     @Test
@@ -126,7 +117,6 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
         NormalizedNode<?, ?> deserializeData = bindingSerializer.deserialize(schemaNode,
                 new StringReader(loadResourceAsString("top-level-container.xml")));
         Assert.assertNotNull(deserializeData);
-        LOG.info(deserializeData.toString());
     }
 
     @Test
