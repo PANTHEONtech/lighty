@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright (c) 2018 Pantheon Technologies s.r.o. All Rights Reserved.
+  Copyright (c) 2021 Pantheon Technologies s.r.o. All Rights Reserved.
 
   This program and the accompanying materials are made available under the
   terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -12,7 +12,7 @@
     <parent>
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-parent</artifactId>
-        <version>13.2.1-SNAPSHOT</version>
+        <version>13.2.2-SNAPSHOT</version>
         <relativePath>../lighty-parent</relativePath>
     </parent>
 
@@ -56,8 +56,6 @@
             <groupId>org.opendaylight.netconf</groupId>
             <artifactId>restconf-common</artifactId>
         </dependency>
-
-        <!-- Test scoped dependencies -->
         <dependency>
             <groupId>io.lighty.models.test</groupId>
             <artifactId>lighty-test-models</artifactId>
@@ -66,7 +64,6 @@
             <groupId>io.lighty.models.test</groupId>
             <artifactId>lighty-toaster</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -76,6 +73,7 @@
             <artifactId>slf4j-log4j12</artifactId>
         </dependency>
 
+        <!-- Test scoped dependencies -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -92,24 +90,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <failOnError>false</failOnError>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>

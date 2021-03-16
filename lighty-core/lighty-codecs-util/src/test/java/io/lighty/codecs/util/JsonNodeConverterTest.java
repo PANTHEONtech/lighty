@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Pantheon Technologies s.r.o. All Rights Reserved.
+ * Copyright (c) 2021 Pantheon Technologies s.r.o. All Rights Reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -15,12 +15,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class JsonNodeConverterTest extends AbstractCodecTest {
-
-    private static final Logger LOG = LoggerFactory.getLogger(JsonNodeConverterTest.class);
 
     private final NodeConverter bindingSerializer;
 
@@ -35,7 +31,6 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
         Writer serializedRpc =
                 bindingSerializer.serializeRpc(loadedRpc.orElseThrow().getInput(), testedSimpleRpcInputNormalizedNodes);
         Assert.assertFalse(Strings.isNullOrEmpty(serializedRpc.toString()));
-        LOG.info(serializedRpc.toString());
     }
 
     @Test
@@ -45,7 +40,6 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
         Writer serializedRpc = bindingSerializer
                 .serializeRpc(loadedRpc.orElseThrow().getOutput(), testedSimpleRpcOutputNormalizedNodes);
         Assert.assertFalse(Strings.isNullOrEmpty(serializedRpc.toString()));
-        LOG.info(serializedRpc.toString());
     }
 
     @Test
@@ -53,7 +47,6 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
         Writer serializeData =
                 bindingSerializer.serializeData(this.effectiveModelContext, testedToasterNormalizedNodes);
         Assert.assertFalse(Strings.isNullOrEmpty(serializeData.toString()));
-        LOG.info(serializeData.toString());
     }
 
     @Test
@@ -61,7 +54,6 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
         NormalizedNode<?, ?> deserializeData = bindingSerializer.deserialize(this.effectiveModelContext,
                 new StringReader(loadResourceAsString("toaster.json")));
         Assert.assertNotNull(deserializeData);
-        LOG.info(deserializeData.toString());
     }
 
     @Test
@@ -72,7 +64,6 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
         NormalizedNode<?, ?> deserializeRpc =
                 bindingSerializer.deserialize(loadRpc.orElseThrow(), new StringReader(loadIoRpcIn));
         Assert.assertNotNull(deserializeRpc);
-        LOG.info(deserializeRpc.toString());
     }
 
     @Test
@@ -83,7 +74,6 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
         NormalizedNode<?, ?> deserializeRpc =
                 bindingSerializer.deserialize(loadRpc.orElseThrow(), new StringReader(loadIoRpcOut));
         Assert.assertNotNull(deserializeRpc);
-        LOG.info(deserializeRpc.toString());
     }
 
     @Test
@@ -91,7 +81,6 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
         NormalizedNode<?, ?> deserializeContainer = bindingSerializer.deserialize(this.effectiveModelContext,
                 new StringReader(loadResourceAsString("top-level-container.json")));
         Assert.assertNotNull(deserializeContainer);
-        LOG.info(deserializeContainer.toString());
     }
 
     @Test
