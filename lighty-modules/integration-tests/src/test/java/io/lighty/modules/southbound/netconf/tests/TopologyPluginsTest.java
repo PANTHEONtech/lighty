@@ -49,7 +49,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterClass;
@@ -73,7 +73,7 @@ public class TopologyPluginsTest {
 
     private static LightyModule startSingleNodeNetconf(final LightyServices services,
                                                        final NetconfClientDispatcher dispatcher)
-            throws ConfigurationException, YangParserException {
+            throws ConfigurationException {
         final NetconfConfiguration config = NetconfConfigUtils.createDefaultNetconfConfiguration();
         NetconfConfigUtils.injectServicesToConfig(config);
         config.setClientDispatcher(dispatcher);
@@ -81,7 +81,7 @@ public class TopologyPluginsTest {
     }
 
     @BeforeClass
-    public void beforeClass() throws ConfigurationException, YangParserException {
+    public void beforeClass() throws ConfigurationException {
         MockitoAnnotations.initMocks(this);
         when(this.dispatcher.createReconnectingClient(any())).thenReturn(this.initFuture);
 
@@ -137,7 +137,7 @@ public class TopologyPluginsTest {
                 .build();
         final NetconfNode netconfNode = new NetconfNodeBuilder()
                 .setHost(new Host(new IpAddress(new Ipv4Address("10.10.8.8"))))
-                .setPort(new PortNumber(17830))
+                .setPort(new PortNumber(Uint16.valueOf(17830)))
                 .setCredentials(loginPassword)
                 .setReconnectOnChangedSchema(true)
                 .setTcpOnly(false)

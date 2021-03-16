@@ -16,7 +16,6 @@ import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigU
 import io.lighty.modules.southbound.netconf.impl.NetconfCallhomePluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -42,7 +41,7 @@ public class CallhomePluginTest {
     private LightyModule netconfPlugin;
 
     @BeforeClass
-    public void beforeClass() throws IOException, ConfigurationException {
+    public void beforeClass() throws ConfigurationException {
         lightyController = LightyTestUtils.startController(NetconfConfigUtils.NETCONF_CALLHOME_MODELS);
         RestConfConfiguration restConfConfig =
                 RestConfConfigUtils.getDefaultRestConfConfiguration();
