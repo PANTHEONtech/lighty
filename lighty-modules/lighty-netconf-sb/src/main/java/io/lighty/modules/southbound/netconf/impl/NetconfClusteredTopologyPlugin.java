@@ -29,25 +29,47 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NetconfClusteredTopologyPlugin extends AbstractLightyModule implements NetconfSBPlugin {
 
-    private final NetconfTopologyManager topology;
+    private static final Logger LOG = LoggerFactory.getLogger(NetconfClusteredTopologyPlugin.class);
+
     private final DOMMountPointService domMountPointService;
+    private final LightyServices lightyServices;
+    private final String topologyId;
+    private final NetconfClientDispatcher clientDispatcher;
+    private final Integer writeTxIdleTimeout;
+    private final AAAEncryptionService encryptionService;
+    private NetconfTopologyManager topology;
 
     public NetconfClusteredTopologyPlugin(final LightyServices lightyServices, final String topologyId,
             final NetconfClientDispatcher clientDispatcher, final Integer writeTxIdleTimeout,
-            final ExecutorService executorService, final AAAEncryptionService encryptionService)
-            throws YangParserException {
+            final ExecutorService executorService, final AAAEncryptionService encryptionService) {
         super(executorService);
         this.domMountPointService = lightyServices.getDOMMountPointService();
+        this.lightyServices = lightyServices;
+        this.topologyId = topologyId;
+        this.clientDispatcher = clientDispatcher;
+        this.writeTxIdleTimeout = writeTxIdleTimeout;
+        this.encryptionService = encryptionService;
+    }
+
+    @Override
+    protected boolean initProcedure() {
         final Config config = new ConfigBuilder()
                 .setWriteTransactionIdleTimeout(Uint16.valueOf(writeTxIdleTimeout))
                 .build();
-        final DefaultBaseNetconfSchemas defaultBaseNetconfSchemas =
-                new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
-        final SchemaResourceManager schemaResourceManager =
-                new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
+        final DefaultBaseNetconfSchemas defaultBaseNetconfSchemas;
+        try {
+            defaultBaseNetconfSchemas = new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
+        } catch (YangParserException e) {
+            LOG.error("Failed to create DefaultBaseNetconfSchema, cause: ", e);
+            return false;
+        }
+        final SchemaResourceManager schemaResourceManager
+                = new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
         this.topology = new NetconfTopologyManager(defaultBaseNetconfSchemas, lightyServices.getBindingDataBroker(),
                 lightyServices.getDOMRpcProviderService(), lightyServices.getDOMActionProviderService(),
                 lightyServices.getClusterSingletonServiceProvider(), lightyServices.getScheduledThreadPool(),
@@ -55,10 +77,6 @@ public class NetconfClusteredTopologyPlugin extends AbstractLightyModule impleme
                 lightyServices.getEventExecutor(), clientDispatcher, topologyId, config,
                 lightyServices.getDOMMountPointService(), encryptionService, lightyServices.getRpcProviderService(),
                 new DeviceActionFactoryImpl(), schemaResourceManager);
-    }
-
-    @Override
-    protected boolean initProcedure() {
         this.topology.init();
         return true;
     }

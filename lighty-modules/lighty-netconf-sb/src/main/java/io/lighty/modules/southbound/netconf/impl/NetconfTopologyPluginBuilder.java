@@ -11,7 +11,6 @@ import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import java.util.concurrent.ExecutorService;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 
 /**
  * Builder for {@link NetconfTopologyPlugin}.
@@ -53,7 +52,7 @@ public class NetconfTopologyPluginBuilder {
      * Build new instance of {@link NetconfTopologyPlugin} from {@link NetconfTopologyPluginBuilder}.
      * @return instance of NetconfSouthboundPlugin.
      */
-    public NetconfSBPlugin build() throws YangParserException {
+    public NetconfSBPlugin build() {
         if (configuration.isClusterEnabled()) {
             return new NetconfClusteredTopologyPlugin(lightyServices, configuration.getTopologyId(),
                     configuration.getClientDispatcher(), configuration.getWriteTxTimeout(), executorService,

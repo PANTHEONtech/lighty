@@ -40,7 +40,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -144,7 +143,7 @@ public class Main {
     private void startLighty(ControllerConfiguration controllerConfiguration,
             RestConfConfiguration restConfConfiguration, NetconfConfiguration netconfSBPConfiguration,
             boolean registerShutdownHook)
-            throws ConfigurationException, ExecutionException, InterruptedException, YangParserException {
+            throws ConfigurationException, ExecutionException, InterruptedException {
 
         //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
         LOG.info("Trying to start LightyController ...");

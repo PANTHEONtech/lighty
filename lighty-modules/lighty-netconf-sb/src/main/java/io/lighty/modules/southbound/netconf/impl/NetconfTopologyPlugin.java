@@ -25,19 +25,40 @@ import org.opendaylight.netconf.topology.impl.NetconfTopologyImpl;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NetconfTopologyPlugin extends AbstractLightyModule implements NetconfSBPlugin {
 
-    private final NetconfTopologyImpl topology;
+    private static final Logger LOG = LoggerFactory.getLogger(NetconfTopologyPlugin.class);
+
     private final DOMMountPointService domMountPointService;
+    private final String topologyId;
+    private final NetconfClientDispatcher clientDispatcher;
+    private final AAAEncryptionService encryptionService;
+    private final LightyServices lightyServices;
+    private NetconfTopologyImpl topology;
 
     NetconfTopologyPlugin(final LightyServices lightyServices, final String topologyId,
             final NetconfClientDispatcher clientDispatcher, final ExecutorService executorService,
-            final AAAEncryptionService encryptionService) throws YangParserException {
+            final AAAEncryptionService encryptionService) {
         super(executorService);
         this.domMountPointService = lightyServices.getDOMMountPointService();
-        final DefaultBaseNetconfSchemas defaultBaseNetconfSchemas =
-                new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
+        this.lightyServices = lightyServices;
+        this.topologyId = topologyId;
+        this.clientDispatcher = clientDispatcher;
+        this.encryptionService = encryptionService;
+    }
+
+    @Override
+    protected boolean initProcedure() {
+        final DefaultBaseNetconfSchemas defaultBaseNetconfSchemas;
+        try {
+            defaultBaseNetconfSchemas = new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
+        } catch (YangParserException e) {
+            LOG.error("Failed to create DefaultBaseNetconfSchema, cause: ", e);
+            return false;
+        }
         final SchemaResourceManager schemaResourceManager =
                 new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
         this.topology = new NetconfTopologyImpl(topologyId, clientDispatcher,
@@ -46,10 +67,6 @@ public class NetconfTopologyPlugin extends AbstractLightyModule implements Netco
                 lightyServices.getBindingDataBroker(), lightyServices.getDOMMountPointService(),
                 encryptionService, lightyServices.getRpcProviderService(),
                 defaultBaseNetconfSchemas, new LightyDeviceActionFactory());
-    }
-
-    @Override
-    protected boolean initProcedure() {
         this.topology.init();
         return true;
     }

@@ -35,7 +35,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,8 +104,6 @@ public class RncLightyModule extends AbstractLightyModule {
             return NetconfTopologyPluginBuilder.from(configWithServices, services).build();
         } catch (ConfigurationException e) {
             throw new RncLightyAppStartException("Unable to initialize lighty.io NETCONF module!", e);
-        } catch (YangParserException e) {
-            throw new RncLightyAppStartException("Unable to read YANG model: ", e);
         }
     }
 
