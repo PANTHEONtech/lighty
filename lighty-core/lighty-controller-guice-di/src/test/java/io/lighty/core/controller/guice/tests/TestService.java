@@ -28,6 +28,8 @@ import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingService;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
@@ -69,6 +71,12 @@ public class TestService {
     @Inject
     @Named("ControllerOperationalDatastore")
     private DistributedDataStoreInterface distributedDataStoreInterfaceOperational;
+
+    @Inject
+    private DOMDataTreeShardingService domDataTreeShardingService;
+
+    @Inject
+    private DOMDataTreeService domDataTreeService;
 
     @Inject
     private DistributedShardFactory distributedShardFactory;
@@ -182,6 +190,14 @@ public class TestService {
 
     public DistributedDataStoreInterface getDistributedDataStoreInterfaceOperational() {
         return distributedDataStoreInterfaceOperational;
+    }
+
+    public DOMDataTreeShardingService getDomDataTreeShardingService() {
+        return domDataTreeShardingService;
+    }
+
+    public DOMDataTreeService getDomDataTreeService() {
+        return domDataTreeService;
     }
 
     public DistributedShardFactory getDistributedShardFactory() {

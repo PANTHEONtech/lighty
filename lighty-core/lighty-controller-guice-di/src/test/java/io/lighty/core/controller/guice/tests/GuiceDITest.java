@@ -98,6 +98,16 @@ public class GuiceDITest {
     }
 
     @Test
+    public void testDIDomDataTreeShardingService() {
+        assertNotNull(testService.getDomDataTreeShardingService());
+    }
+
+    @Test
+    public void testDIDomDataTreeService() {
+        assertNotNull(testService.getDomDataTreeService());
+    }
+
+    @Test
     public void testDIDistributedShardFactory() {
         assertNotNull(testService.getDistributedShardFactory());
     }
