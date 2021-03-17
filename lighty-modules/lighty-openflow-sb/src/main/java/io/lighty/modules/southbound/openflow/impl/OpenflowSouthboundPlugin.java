@@ -12,6 +12,7 @@ import io.lighty.core.controller.api.LightyServices;
 import io.lighty.modules.southbound.openflow.impl.config.ConfigurationServiceFactory;
 import io.lighty.modules.southbound.openflow.impl.config.OpenflowpluginConfiguration;
 import io.lighty.modules.southbound.openflow.impl.util.OpenflowConfigUtils;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -20,7 +21,7 @@ import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcServiceAdapter;
 import org.opendaylight.openflowjava.protocol.api.connection.OpenflowDiagStatusProvider;
-import org.opendaylight.openflowjava.protocol.impl.core.OpenflowDiagStatusProviderImpl;
+import org.opendaylight.openflowjava.protocol.impl.core.DefaultOpenflowDiagStatusProvider;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProvider;
 import org.opendaylight.openflowjava.protocol.spi.connection.SwitchConnectionProviderList;
 import org.opendaylight.openflowplugin.api.openflow.OpenFlowPluginProvider;
@@ -28,6 +29,7 @@ import org.opendaylight.openflowplugin.api.openflow.configuration.ConfigurationS
 import org.opendaylight.openflowplugin.api.openflow.mastership.MastershipChangeException;
 import org.opendaylight.openflowplugin.applications.arbitratorreconciliation.impl.ArbitratorReconciliationManagerImpl;
 import org.opendaylight.openflowplugin.applications.frm.impl.ForwardingRulesManagerImpl;
+import org.opendaylight.openflowplugin.applications.frm.impl.ListenerRegistrationHelper;
 import org.opendaylight.openflowplugin.applications.frm.recovery.impl.OpenflowServiceRecoveryHandlerImpl;
 import org.opendaylight.openflowplugin.applications.reconciliation.impl.ReconciliationManagerImpl;
 import org.opendaylight.openflowplugin.applications.topology.manager.FlowCapableTopologyProvider;
@@ -58,6 +60,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
     private final LightyServices lightyServices;
     private OpenFlowPluginProvider openFlowPluginProvider;
     private final List<SwitchConnectionProvider> providers;
+    private ListenerRegistrationHelper listenerRegistrationHelper;
     private ForwardingRulesManagerImpl forwardingRulesManagerImpl;
     private OpenflowServiceRecoveryHandlerImpl openflowServiceRecoveryHandlerImpl;
     private ForwardingRulesManagerConfigBuilder frmConfigBuilder;
@@ -113,7 +116,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
         SwitchConnectionProviderList switchConnectionProviders = new SwitchConnectionProviderList(providers);
         if (this.openFlowPluginProvider == null) {
             this.mastershipChangeServiceManager = new MastershipChangeServiceManagerImpl();
-            final OpenflowDiagStatusProvider diagStat = new OpenflowDiagStatusProviderImpl(this.lightyServices
+            final OpenflowDiagStatusProvider diagStat = new DefaultOpenflowDiagStatusProvider(this.lightyServices
                     .getDiagStatusService());
             this.openFlowPluginProvider = new OpenFlowPluginProviderImpl(
                     this.configurationService,
@@ -158,6 +161,8 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
                 this.openflowServiceRecoveryHandlerImpl =
                         new OpenflowServiceRecoveryHandlerImpl(serviceRecoveryRegistryImpl);
 
+                this.listenerRegistrationHelper
+                        = new ListenerRegistrationHelper(this.lightyServices.getBindingDataBroker());
                 this.forwardingRulesManagerImpl
                         = new ForwardingRulesManagerImpl(this.lightyServices.getBindingDataBroker(),
                         rpcConsumerRegistry,
@@ -169,7 +174,7 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
                         reconciliationManagerImpl,
                         this.openflowServiceRecoveryHandlerImpl,
                         serviceRecoveryRegistryImpl,
-                        new FlowGroupCacheManagerImpl());
+                        new FlowGroupCacheManagerImpl(), this.listenerRegistrationHelper);
                 this.forwardingRulesManagerImpl.start();
 
                 LOG.info("OFP started with FRM & ARM");
@@ -211,17 +216,29 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:illegalCatch")
     protected boolean stopProcedure() {
-        destroy(this.packetListenerNotificationRegistration);
-        destroy(this.flowCapableTopologyProvider);
-        destroy(this.operationProcessor);
-        destroy(this.forwardingRulesManagerImpl);
-        destroy(this.arbitratorReconciliationManager);
-        destroy(this.openFlowPluginProvider);
-        destroy(this.mastershipChangeServiceManager);
-        destroy(this.terminationPointChangeListener);
-        destroy(this.nodeChangeListener);
-        return true;
+        List<Boolean> destroyResult = new ArrayList<>();
+        destroyResult.add(destroy(this.packetListenerNotificationRegistration));
+        destroyResult.add(destroy(this.flowCapableTopologyProvider));
+        destroyResult.add(destroy(this.operationProcessor));
+        destroyResult.add(destroy(this.forwardingRulesManagerImpl));
+        if (this.listenerRegistrationHelper != null) {
+            try {
+                listenerRegistrationHelper.close();
+                destroyResult.add(true);
+            } catch (final Exception e) {
+                LOG.warn("Exception was thrown during closing listenerRegistrationHelper", e);
+                destroyResult.add(false);
+            }
+        }
+        destroyResult.add(destroy(this.arbitratorReconciliationManager));
+        destroyResult.add(destroy(this.openFlowPluginProvider));
+        destroyResult.add(destroy(this.mastershipChangeServiceManager));
+        destroyResult.add(destroy(this.terminationPointChangeListener));
+        destroyResult.add(destroy(this.nodeChangeListener));
+
+        return !destroyResult.contains(false);
     }
 
     /**
@@ -229,14 +246,16 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
      * @param instance instance of {@link AutoCloseable}.
      */
     @SuppressWarnings("checkstyle:illegalCatch")
-    private void destroy(final AutoCloseable instance) {
+    private boolean destroy(final AutoCloseable instance) {
         if (instance != null) {
             try {
                 instance.close();
             } catch (final Exception e) {
                 LOG.warn("Exception was thrown during closing {}", instance.getClass().getSimpleName(), e);
+                return false;
             }
         }
+        return true;
     }
 
 }

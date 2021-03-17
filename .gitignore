@@ -16,5 +16,6 @@ dist
 *.iml
 *.ipr
 *.iws
+*.log
 
 persistence

@@ -142,7 +142,8 @@ public class Main {
 
     private void startLighty(ControllerConfiguration controllerConfiguration,
             RestConfConfiguration restConfConfiguration, NetconfConfiguration netconfSBPConfiguration,
-            boolean registerShutdownHook) throws ConfigurationException, ExecutionException, InterruptedException {
+            boolean registerShutdownHook)
+            throws ConfigurationException, ExecutionException, InterruptedException {
 
         //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
         LOG.info("Trying to start LightyController ...");

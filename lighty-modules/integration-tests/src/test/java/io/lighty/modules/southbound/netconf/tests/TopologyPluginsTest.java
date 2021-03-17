@@ -17,6 +17,8 @@ import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
+import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
+import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import io.lighty.modules.southbound.netconf.impl.NetconfTopologyPluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
@@ -47,6 +49,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterClass;
@@ -83,8 +86,9 @@ public class TopologyPluginsTest {
         when(this.dispatcher.createReconnectingClient(any())).thenReturn(this.initFuture);
 
         this.lightyController = LightyTestUtils.startController();
-
-        this.restConf = LightyTestUtils.startRestconf(this.lightyController.getServices());
+        RestConfConfiguration restConfConfig =
+                RestConfConfigUtils.getDefaultRestConfConfiguration();
+        this.restConf = LightyTestUtils.startRestconf(restConfConfig, this.lightyController.getServices());
         this.netconfPlugin = startSingleNodeNetconf(this.lightyController.getServices(), this.dispatcher);
         this.netconfPlugin.start();
     }
@@ -133,7 +137,7 @@ public class TopologyPluginsTest {
                 .build();
         final NetconfNode netconfNode = new NetconfNodeBuilder()
                 .setHost(new Host(new IpAddress(new Ipv4Address("10.10.8.8"))))
-                .setPort(new PortNumber(17830))
+                .setPort(new PortNumber(Uint16.valueOf(17830)))
                 .setCredentials(loginPassword)
                 .setReconnectOnChangedSchema(true)
                 .setTcpOnly(false)
@@ -141,7 +145,7 @@ public class TopologyPluginsTest {
         final NodeKey nodeKey = new NodeKey(nodeId);
         final Node node = new NodeBuilder()
                 .setNodeId(nodeId)
-                .addAugmentation(NetconfNode.class, netconfNode)
+                .addAugmentation(netconfNode)
                 .build();
         final InstanceIdentifier<Node> path = InstanceIdentifier.create(NetworkTopology.class)
                 .child(Topology.class, new TopologyKey(new TopologyId("topology-netconf")))

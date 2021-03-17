@@ -16,6 +16,7 @@ import org.opendaylight.netconf.callhome.mount.IetfZeroTouchCallHomeServerProvid
 import org.opendaylight.netconf.sal.connect.api.SchemaResourceManager;
 import org.opendaylight.netconf.sal.connect.impl.DefaultSchemaResourceManager;
 import org.opendaylight.netconf.sal.connect.netconf.schema.mapping.DefaultBaseNetconfSchemas;
+import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.slf4j.LoggerFactory;
 
 public class NetconfCallhomePlugin extends AbstractLightyModule {
@@ -27,8 +28,12 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
     public NetconfCallhomePlugin(final LightyServices lightyServices, final String topologyId,
             final ExecutorService executorService, final AAAEncryptionService encryptionService) {
         super(executorService);
-        final DefaultBaseNetconfSchemas defaultBaseNetconfSchemas =
-                new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
+        final DefaultBaseNetconfSchemas defaultBaseNetconfSchemas;
+        try {
+            defaultBaseNetconfSchemas = new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
+        } catch (YangParserException e) {
+            throw new RuntimeException(e);
+        }
         final SchemaResourceManager schemaResourceManager =
                 new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
         final CallHomeMountDispatcher dispatcher =

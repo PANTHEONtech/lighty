@@ -20,12 +20,27 @@
         versions.
     </description>
 
+    <repositories>
+        <!-- FIXME: Remove when the release of OFP and Serviceutils will be available -->
+        <repository>
+            <id>opendaylight-snapshot</id>
+            <name>opendaylight-snapshot</name>
+            <url>https://nexus.opendaylight.org/content/repositories/opendaylight.snapshot/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.opendaylight.odlparent</groupId>
                 <artifactId>odlparent</artifactId>
-                <version>7.0.8</version>
+                <version>8.1.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -34,42 +49,58 @@
             <dependency>
                 <groupId>org.opendaylight.aaa</groupId>
                 <artifactId>aaa-artifacts</artifactId>
-                <version>0.12.2</version>
+                <version>0.13.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.controller</groupId>
                 <artifactId>controller-artifacts</artifactId>
-                <version>2.0.7</version>
+                <version>3.0.7</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <!-- Bundle parent brings dependency management for artifacts used by Akka: (scala, typesafe, aeron.. ).
+                This artifact dependency management was removed from odl-parent in Aluminium release. -->
+                <groupId>org.opendaylight.controller</groupId>
+                <artifactId>bundle-parent</artifactId>
+                <version>3.0.7</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.infrautils</groupId>
                 <artifactId>infrautils-artifacts</artifactId>
-                <version>1.8.3</version>
+                <version>1.9.6</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-artifacts</artifactId>
-                <version>6.0.8</version>
+                <version>7.0.6</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>mdsal-model-artifacts</artifactId>
+                <version>0.13.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.netconf</groupId>
                 <artifactId>netconf-artifacts</artifactId>
-                <version>1.9.2</version>
+                <version>1.13.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.yangtools</groupId>
                 <artifactId>yangtools-artifacts</artifactId>
-                <version>5.0.8</version>
+                <version>6.0.5</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -77,19 +108,26 @@
             <dependency>
                 <groupId>org.opendaylight.openflowplugin</groupId>
                 <artifactId>openflowplugin-artifacts</artifactId>
-                <version>0.11.2</version>
+                <!--FIXME: change to release version when will be available -->
+                <version>0.12.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.serviceutils</groupId>
                 <artifactId>serviceutils-artifacts</artifactId>
-                <version>0.6.2</version>
+                <!--FIXME: change to release version when will be available -->
+                <version>0.7.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
 
             <!-- Other third-party stuff -->
+            <dependency>
+                <groupId>javax.activation</groupId>
+                <artifactId>activation</artifactId>
+                <version>1.1.1</version>
+            </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
@@ -122,26 +160,11 @@
                 <artifactId>leveldbjni-all</artifactId>
                 <version>1.8</version>
             </dependency>
-            <!--akka management and bootstrap-->
-            <dependency>
-                <groupId>com.lightbend.akka.discovery</groupId>
-                <artifactId>akka-discovery-kubernetes-api_2.13</artifactId>
-                <version>1.0.9</version>
-            </dependency>
-            <dependency>
-                <groupId>com.lightbend.akka.management</groupId>
-                <artifactId>akka-management_2.13</artifactId>
-                <version>1.0.9</version>
-            </dependency>
-            <dependency>
-                <groupId>com.lightbend.akka.management</groupId>
-                <artifactId>akka-management-cluster-http_2.13</artifactId>
-                <version>1.0.9</version>
-            </dependency>
+            <!--akka management-->
             <dependency>
                 <groupId>com.lightbend.akka.management</groupId>
                 <artifactId>akka-management-cluster-bootstrap_2.13</artifactId>
-                <version>1.0.9</version>
+                <version>1.0.10</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

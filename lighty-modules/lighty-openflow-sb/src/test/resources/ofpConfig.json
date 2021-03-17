@@ -6,7 +6,7 @@
     "basicTimerDelay": 2690,
     "echoReplyTimeout": 4000,
     "globalNotificationQuota": 9000,
-    "maximumTimerDelay": 3679,
+    "maximumTimerDelay": 900000,
     "rpcRequestsQuota": 2500,
     "threadPoolMaxThreads": 1000,
     "threadPoolMinThreads": 3,
@@ -17,7 +17,6 @@
     "switchFeaturesMandatory": false,
     "useSingleLayerSerialization": true,
     "frmReconciliationRetryCount": 5,
-    "nonZeroUint32Type": 900000,
     "enableForwardingRulesManager": true,
     "switchConfig": {
       "instanceName": "openflow-switch-connection-provider-default-impl",

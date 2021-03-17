@@ -29,7 +29,7 @@ public abstract class LightyControllerTestBase {
 
     private LightyController lightyController;
 
-    @BeforeClass(timeOut = 120_000)
+    @BeforeClass()
     public void startLighty() throws Exception {
         LOG.info("startLighty from TestBase called");
         LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();

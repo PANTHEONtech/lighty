@@ -32,6 +32,8 @@ import org.testng.annotations.Test;
 
 public class CertificateManagerConfigTest {
 
+    private static final String BUNDLE_NAME = "opendaylight";
+
     @Mock
     DataBroker bindingDataBroker;
 
@@ -50,8 +52,9 @@ public class CertificateManagerConfigTest {
         when(readTransaction.read(LogicalDatastoreType.CONFIGURATION, InstanceIdentifier.create(KeyStores.class)))
                 .thenReturn(FluentFutures.immediateFluentFuture(Optional.of(keyStores)));
 
-        SslData sslData = new SslDataBuilder().build();
-        when(readTransaction.read(LogicalDatastoreType.CONFIGURATION, KeyStoresDataUtils.getSslDataIid("opendaylight")))
+        SslData sslData = new SslDataBuilder()
+                .setBundleName(BUNDLE_NAME).build();
+        when(readTransaction.read(LogicalDatastoreType.CONFIGURATION, KeyStoresDataUtils.getSslDataIid(BUNDLE_NAME)))
                 .thenReturn(FluentFutures.immediateFluentFuture(Optional.of(sslData)));
     }
 

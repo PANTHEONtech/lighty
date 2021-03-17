@@ -16,9 +16,11 @@ import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
+import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.netconf.client.NetconfClientDispatcher;
 import org.opendaylight.netconf.sal.connect.api.SchemaResourceManager;
 import org.opendaylight.netconf.sal.connect.impl.DefaultSchemaResourceManager;
+import org.opendaylight.netconf.sal.connect.netconf.DeviceActionFactoryImpl;
 import org.opendaylight.netconf.sal.connect.netconf.schema.mapping.DefaultBaseNetconfSchemas;
 import org.opendaylight.netconf.topology.singleton.impl.NetconfTopologyManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.topology.singleton.config.rev170419.Config;
@@ -26,35 +28,56 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.topology.singleton.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NetconfClusteredTopologyPlugin extends AbstractLightyModule implements NetconfSBPlugin {
 
-    private final NetconfTopologyManager topology;
+    private static final Logger LOG = LoggerFactory.getLogger(NetconfClusteredTopologyPlugin.class);
+
     private final DOMMountPointService domMountPointService;
+    private final LightyServices lightyServices;
+    private final String topologyId;
+    private final NetconfClientDispatcher clientDispatcher;
+    private final Integer writeTxIdleTimeout;
+    private final AAAEncryptionService encryptionService;
 
     public NetconfClusteredTopologyPlugin(final LightyServices lightyServices, final String topologyId,
             final NetconfClientDispatcher clientDispatcher, final Integer writeTxIdleTimeout,
             final ExecutorService executorService, final AAAEncryptionService encryptionService) {
         super(executorService);
         this.domMountPointService = lightyServices.getDOMMountPointService();
-        final Config config = new ConfigBuilder()
-                .setWriteTransactionIdleTimeout(Uint16.valueOf(writeTxIdleTimeout))
-                .build();
-        final DefaultBaseNetconfSchemas defaultBaseNetconfSchemas =
-                new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
-        final SchemaResourceManager schemaResourceManager =
-                new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
-        this.topology = new NetconfTopologyManager(defaultBaseNetconfSchemas, lightyServices.getBindingDataBroker(),
-            lightyServices.getDOMRpcProviderService(), null, lightyServices.getClusterSingletonServiceProvider(),
-            lightyServices.getScheduledThreadPool(), lightyServices.getThreadPool(),
-            lightyServices.getActorSystemProvider(), lightyServices.getEventExecutor(), clientDispatcher,
-            topologyId, config, lightyServices.getDOMMountPointService(), encryptionService, null,
-                schemaResourceManager);
+        this.lightyServices = lightyServices;
+        this.topologyId = topologyId;
+        this.clientDispatcher = clientDispatcher;
+        this.writeTxIdleTimeout = writeTxIdleTimeout;
+        this.encryptionService = encryptionService;
     }
 
     @Override
     protected boolean initProcedure() {
-        this.topology.init();
+        final Config config = new ConfigBuilder()
+                .setWriteTransactionIdleTimeout(Uint16.valueOf(writeTxIdleTimeout))
+                .build();
+        final DefaultBaseNetconfSchemas defaultBaseNetconfSchemas;
+        try {
+            defaultBaseNetconfSchemas = new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
+        } catch (YangParserException e) {
+            LOG.error("Failed to create DefaultBaseNetconfSchema, cause: ", e);
+            return false;
+        }
+        final SchemaResourceManager schemaResourceManager
+                = new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
+        NetconfTopologyManager topology = new NetconfTopologyManager(defaultBaseNetconfSchemas,
+                lightyServices.getBindingDataBroker(),
+                lightyServices.getDOMRpcProviderService(), lightyServices.getDOMActionProviderService(),
+                lightyServices.getClusterSingletonServiceProvider(), lightyServices.getScheduledThreadPool(),
+                lightyServices.getThreadPool(), lightyServices.getActorSystemProvider(),
+                lightyServices.getEventExecutor(), clientDispatcher, topologyId, config,
+                lightyServices.getDOMMountPointService(), encryptionService, lightyServices.getRpcProviderService(),
+                new DeviceActionFactoryImpl(), schemaResourceManager);
+        topology.init();
         return true;
     }
 
@@ -73,10 +96,11 @@ public class NetconfClusteredTopologyPlugin extends AbstractLightyModule impleme
         final Optional<DOMMountPoint> domMountPointOptional = getNetconfDOMMountPoint(nodeId);
         if (domMountPointOptional.isPresent()) {
             final DOMMountPoint domMountPoint = domMountPointOptional.get();
+            Optional<DOMSchemaService> service = domMountPoint.getService(DOMSchemaService.class);
             final Optional<DOMRpcService> domRpcServiceOptional = domMountPoint.getService(DOMRpcService.class);
             if (domRpcServiceOptional.isPresent()) {
                 return Optional.of(new NetconfBaseServiceImpl(nodeId, domRpcServiceOptional.get(),
-                    domMountPoint.getSchemaContext()));
+                        service.orElseThrow().getGlobalContext()));
             }
         }
         return Optional.empty();
@@ -87,10 +111,11 @@ public class NetconfClusteredTopologyPlugin extends AbstractLightyModule impleme
         final Optional<DOMMountPoint> domMountPointOptional = getNetconfDOMMountPoint(nodeId);
         if (domMountPointOptional.isPresent()) {
             final DOMMountPoint domMountPoint = domMountPointOptional.get();
+            Optional<DOMSchemaService> service = domMountPoint.getService(DOMSchemaService.class);
             final Optional<DOMRpcService> domRpcServiceOptional = domMountPoint.getService(DOMRpcService.class);
             if (domRpcServiceOptional.isPresent()) {
                 return Optional.of(new NetconfNmdaBaseServiceImpl(nodeId, domRpcServiceOptional.get(),
-                        domMountPoint.getSchemaContext()));
+                        service.orElseThrow().getGlobalContext()));
             }
         }
         return Optional.empty();

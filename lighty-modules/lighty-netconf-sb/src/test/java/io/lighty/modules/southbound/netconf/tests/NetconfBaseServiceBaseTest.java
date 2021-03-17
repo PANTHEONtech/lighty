@@ -12,7 +12,7 @@ import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.opendaylight.binding.runtime.spi.ModuleInfoBackedContext;
+import org.opendaylight.mdsal.binding.runtime.spi.ModuleInfoSnapshotBuilder;
 import org.opendaylight.netconf.sal.connect.netconf.schema.mapping.BaseSchema;
 import org.opendaylight.netconf.sal.connect.netconf.schema.mapping.DefaultBaseNetconfSchemas;
 import org.opendaylight.yangtools.rcf8528.data.util.EmptyMountPointContext;
@@ -22,7 +22,9 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.parser.impl.YangParserFactoryImpl;
+import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.w3c.dom.Element;
@@ -35,7 +37,7 @@ public abstract class NetconfBaseServiceBaseTest {
     protected BaseSchema baseSchema;
 
     @BeforeClass
-    public void beforeTest() {
+    public void beforeTest() throws YangParserException {
         @SuppressWarnings("checkstyle:LineLength")  /* Lines kept long for brevity. */
         final ImmutableSet<YangModuleInfo> yangModuleInfos = ImmutableSet.of(
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.$YangModuleInfoImpl.getInstance(),
@@ -50,12 +52,6 @@ public abstract class NetconfBaseServiceBaseTest {
         effectiveModelContext = getEffectiveModelContext(new ArrayList<>(yangModuleInfos));
         mountContext = new EmptyMountPointContext(effectiveModelContext);
         baseSchema = new DefaultBaseNetconfSchemas(new YangParserFactoryImpl()).getBaseSchema();
-    }
-
-    static EffectiveModelContext getEffectiveModelContext(final List<YangModuleInfo> moduleInfos) {
-        ModuleInfoBackedContext moduleInfoBackedCntxt = ModuleInfoBackedContext.create();
-        moduleInfoBackedCntxt.registerModuleInfos(moduleInfos);
-        return moduleInfoBackedCntxt.getEffectiveModelContext();
     }
 
     boolean hasSpecificChild(final Collection<DataContainerChild<? extends PathArgument, ?>> children,
@@ -82,4 +78,11 @@ public abstract class NetconfBaseServiceBaseTest {
         return getSpecificElementSubtree(doc, qname.getNamespace().toString(), localName);
     }
 
+    private static EffectiveModelContext getEffectiveModelContext(final List<YangModuleInfo> moduleInfos)
+            throws YangParserException {
+        final YangParserFactoryImpl yangParserFactory = new YangParserFactoryImpl(new AntlrXPathParserFactory());
+        ModuleInfoSnapshotBuilder moduleInfoSnapshotBuilder = new ModuleInfoSnapshotBuilder(yangParserFactory);
+        moduleInfoSnapshotBuilder.add(moduleInfos);
+        return moduleInfoSnapshotBuilder.build().getEffectiveModelContext();
+    }
 }

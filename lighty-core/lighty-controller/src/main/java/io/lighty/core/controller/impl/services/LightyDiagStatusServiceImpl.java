@@ -9,9 +9,10 @@ package io.lighty.core.controller.impl.services;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.infrautils.diagstatus.ServiceDescriptor;
@@ -51,14 +52,14 @@ public class LightyDiagStatusServiceImpl implements DiagStatusService {
     }
 
     @Override
-    public Collection<ServiceDescriptor> getAllServiceDescriptors() {
-        return new ArrayList<>(descriptors.values());
+    public Set<ServiceDescriptor> getAllServiceDescriptors() {
+        return new HashSet<>(descriptors.values());
     }
 
     @Override
     public ServiceStatusSummary getServiceStatusSummary() {
         SystemState systemState = systemReadyMonitor.getSystemState();
-        Collection<ServiceDescriptor> serviceDescriptors = getAllServiceDescriptors();
+        Set<ServiceDescriptor> serviceDescriptors = getAllServiceDescriptors();
         return new ServiceStatusSummary(isOperational(systemState, serviceDescriptors),
                 systemState, systemReadyMonitor.getFailureCause(), serviceDescriptors);
     }

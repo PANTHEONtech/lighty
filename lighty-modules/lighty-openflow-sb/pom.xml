@@ -11,11 +11,22 @@
     <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-openflow-sb</artifactId>
 
+    <repositories>
+        <!-- FIXME: Remove when the release of OFP and Serviceutils will be available  -->
+        <repository>
+            <id>opendaylight-snapshot</id>
+            <name>opendaylight-snapshot</name>
+            <url>https://nexus.opendaylight.org/content/repositories/opendaylight.snapshot/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <dependencies>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
         <dependency>
             <groupId>io.lighty.core</groupId>
             <artifactId>lighty-controller</artifactId>
@@ -35,12 +46,6 @@
         <dependency>
             <groupId>org.opendaylight.openflowplugin.openflowjava</groupId>
             <artifactId>openflow-protocol-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-            <version>3.0.2</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.openflowplugin</groupId>
@@ -73,10 +78,6 @@
         <dependency>
             <groupId>org.opendaylight.serviceutils</groupId>
             <artifactId>srm-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.netconf</groupId>
-            <artifactId>ietf-netconf-notifications</artifactId>
         </dependency>
         <!-- Tests -->
         <dependency>

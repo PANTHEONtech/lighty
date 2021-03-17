@@ -42,7 +42,7 @@ import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
-import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -143,8 +143,8 @@ public abstract class LightyCoreSpringConfiguration {
     }
 
     @Bean(destroyMethod = "")
-    public SchemaContextProvider schemaContextProvider() {
-        return this.lightyController.getServices().getSchemaContextProvider();
+    public EffectiveModelContextProvider effectiveModelContextProvider() {
+        return this.lightyController.getServices().getEffectiveModelContextProvider();
     }
 
     @Bean(destroyMethod = "")
@@ -194,11 +194,21 @@ public abstract class LightyCoreSpringConfiguration {
         return this.lightyController.getServices().getClusteredDOMDataBroker();
     }
 
+    /** Get DOMDataTreeService.
+     * @deprecated This interface is scheduled for removal in the next major release.
+     *             Use {@link #distributedShardFactory()} instead of this.
+     * @return {@link DOMDataTreeShardingService}
+     */
     @Bean(destroyMethod = "")
     public DOMDataTreeShardingService domDataTreeShardingService() {
         return this.lightyController.getServices().getDOMDataTreeShardingService();
     }
 
+    /** Get DOMDataTreeService.
+     * @deprecated This interface is scheduled for removal in the next major release.
+     *             Use {@link #distributedShardFactory()} instead of this.
+     * @return {@link DOMDataTreeService}
+     */
     @Bean(destroyMethod = "")
     @Primary
     public DOMDataTreeService domDataTreeService() {

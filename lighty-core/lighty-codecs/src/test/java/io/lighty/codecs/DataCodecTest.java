@@ -36,11 +36,15 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
+import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 
 /**
  * Basic tests for {@link DataCodec} class.
  */
 public class DataCodecTest extends AbstractCodecTest {
+
+    public DataCodecTest() throws YangParserException {
+    }
 
     /*
      * Deserialization of {@link Container} as top root element
@@ -84,7 +88,7 @@ public class DataCodecTest extends AbstractCodecTest {
         if (!loadRpc.isPresent()) {
             throw new IllegalStateException("make-toast RPC was not found");
         }
-        MakeToastInput toastInput = dataCodec.convertToBindingAwareRpc(loadRpc.get().getInput().getPath(),
+        MakeToastInput toastInput = dataCodec.convertToBindingAwareRpc(loadRpc.get().getInput().getPath().asAbsolute(),
                 (ContainerNode) this.testedMakeToasterNormalizedNodes);
         Assert.assertEquals(this.testedMakeToasterInput.getToasterDoneness(), toastInput.getToasterDoneness());
     }
@@ -129,7 +133,7 @@ public class DataCodecTest extends AbstractCodecTest {
     }
 
     @Test(expected = Exception.class)
-    public void testSerializeXMLError_invalidErrorXML() {
+    public void testSerializeXMLError_invalidErrorXML() throws YangParserException {
         List<YangModuleInfo> yangModuleInfos = Collections.singletonList(org.opendaylight.yang.gen.v1.urn.ietf.params
                 .xml.ns.yang.ietf.restconf.rev170126.$YangModuleInfoImpl.getInstance());
         BindingCodecContext codecContext = createCodecContext(yangModuleInfos);

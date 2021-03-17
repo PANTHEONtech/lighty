@@ -24,15 +24,12 @@ public class LightyControllerTest extends LightyControllerTestBase {
                 lightyController.getServices().getDiagStatusService().getAllServiceDescriptors());
         Assert.assertNotNull(lightyController.getServices().getActorSystemProvider());
         Assert.assertNotNull(lightyController.getServices().getActorSystemProvider().getActorSystem());
-        Assert.assertNotNull(lightyController.getServices().getSchemaContextProvider());
+        Assert.assertNotNull(lightyController.getServices().getEffectiveModelContextProvider());
         Assert.assertNotNull(lightyController.getServices().getDOMSchemaService());
         Assert.assertNotNull(lightyController.getServices().getDOMYangTextSourceProvider());
         Assert.assertNotNull(lightyController.getServices().getDOMNotificationSubscriptionListenerRegistry());
         Assert.assertNotNull(lightyController.getServices().getConfigDatastore());
         Assert.assertNotNull(lightyController.getServices().getOperationalDatastore());
-        Assert.assertNotNull(lightyController.getServices().getDOMDataTreeShardingService());
-        Assert.assertNotNull(lightyController.getServices().getDOMDataTreeService());
-        Assert.assertNotNull(lightyController.getServices().getDOMDataTreeService());
         Assert.assertNotNull(lightyController.getServices().getDistributedShardFactory());
         Assert.assertNotNull(lightyController.getServices().getDistributedShardFactory());
         Assert.assertNotNull(lightyController.getServices().getYangParserFactory());

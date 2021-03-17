@@ -171,30 +171,31 @@ public class XmlNodeConverter implements NodeConverter {
     /**
      * Utility method to obtain an instance of {@link NormalizedNodeWriter} by using the {@link Writer}.
      */
-    private static NormalizedNodeWriter createNormalizedNodeWriter(final SchemaContext schemaContext,
+    private static NormalizedNodeWriter createNormalizedNodeWriter(final EffectiveModelContext effectiveModelContext,
             final Writer backingWriter, final SchemaPath pathToParent) {
         XMLStreamWriter createXMLStreamWriter = createXmlStreamWriter(backingWriter);
-        return createNormalizedNodeWriter(schemaContext, createXMLStreamWriter, pathToParent);
+        return createNormalizedNodeWriter(effectiveModelContext, createXMLStreamWriter, pathToParent);
     }
 
     /**
      * Create a new {@link NormalizedNodeWriter}.
      *
-     * @see XMLStreamNormalizedNodeStreamWriter#create(XMLStreamWriter, SchemaContext)
-     * @see XMLStreamNormalizedNodeStreamWriter#create(XMLStreamWriter, SchemaContext, SchemaPath)
+     * @see XMLStreamNormalizedNodeStreamWriter#create(XMLStreamWriter, EffectiveModelContext)
+     * @see XMLStreamNormalizedNodeStreamWriter#create(XMLStreamWriter, EffectiveModelContext, SchemaPath)
      *
-     * @param schemaContext the root schema context
+     * @param effectiveModelContext the root schema context
      * @param backingWriter used backing writer
      * @param pathToParent path to parent, may be the same as {@link SchemaContext} param
      * @return a new instance of {@link NormalizedNodeWriter}
      */
-    private static NormalizedNodeWriter createNormalizedNodeWriter(final SchemaContext schemaContext,
+    private static NormalizedNodeWriter createNormalizedNodeWriter(final EffectiveModelContext effectiveModelContext,
             final XMLStreamWriter backingWriter, final SchemaPath pathToParent) {
         NormalizedNodeStreamWriter streamWriter;
         if (pathToParent == null) {
-            streamWriter = XMLStreamNormalizedNodeStreamWriter.create(backingWriter, schemaContext);
+            streamWriter = XMLStreamNormalizedNodeStreamWriter.create(backingWriter, effectiveModelContext);
         } else {
-            streamWriter = XMLStreamNormalizedNodeStreamWriter.create(backingWriter, schemaContext, pathToParent);
+            streamWriter = XMLStreamNormalizedNodeStreamWriter.create(backingWriter,
+                    effectiveModelContext, pathToParent);
         }
         return NormalizedNodeWriter.forStreamWriter(streamWriter);
     }
