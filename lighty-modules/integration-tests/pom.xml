@@ -40,10 +40,12 @@
         <dependency>
             <groupId>io.lighty.core</groupId>
             <artifactId>lighty-controller</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>singlenode-configuration</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.lighty.modules</groupId>

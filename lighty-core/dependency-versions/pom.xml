@@ -21,7 +21,7 @@
     </description>
 
     <repositories>
-        <!-- TODO: Remove when the release of OFP and Serviceutils will be available -->
+        <!-- FIXME: Remove when the release of OFP and Serviceutils will be available -->
         <repository>
             <id>opendaylight-snapshot</id>
             <name>opendaylight-snapshot</name>
@@ -108,7 +108,7 @@
             <dependency>
                 <groupId>org.opendaylight.openflowplugin</groupId>
                 <artifactId>openflowplugin-artifacts</artifactId>
-                <!--TODO change to release version when will be available -->
+                <!--FIXME: change to release version when will be available -->
                 <version>0.12.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -116,7 +116,7 @@
             <dependency>
                 <groupId>org.opendaylight.serviceutils</groupId>
                 <artifactId>serviceutils-artifacts</artifactId>
-                <!--TODO change to release version when will be available -->
+                <!--FIXME: change to release version when will be available -->
                 <version>0.7.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>

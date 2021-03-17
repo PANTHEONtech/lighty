@@ -107,6 +107,8 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingService;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
@@ -518,12 +520,12 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public DistributedShardFactory getDOMDataTreeShardingService() {
+    public DOMDataTreeShardingService getDOMDataTreeShardingService() {
         return this.distributedShardedDOMDataTree;
     }
 
     @Override
-    public DistributedShardFactory getDOMDataTreeService() {
+    public DOMDataTreeService getDOMDataTreeService() {
         return this.distributedShardedDOMDataTree;
     }
 

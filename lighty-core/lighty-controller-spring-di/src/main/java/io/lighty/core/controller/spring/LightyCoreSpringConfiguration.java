@@ -193,17 +193,6 @@ public abstract class LightyCoreSpringConfiguration {
     }
 
     @Bean(destroyMethod = "")
-    public DistributedShardFactory domDataTreeShardingService() {
-        return this.lightyController.getServices().getDOMDataTreeShardingService();
-    }
-
-    @Bean(destroyMethod = "")
-    @Primary
-    public DistributedShardFactory domDataTreeService() {
-        return this.lightyController.getServices().getDOMDataTreeService();
-    }
-
-    @Bean(destroyMethod = "")
     public DistributedShardFactory distributedShardFactory() {
         return this.lightyController.getServices().getDistributedShardFactory();
     }
