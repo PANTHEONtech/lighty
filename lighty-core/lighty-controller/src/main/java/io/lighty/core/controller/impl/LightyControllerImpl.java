@@ -422,7 +422,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             final CompletableFuture<Terminated> actorSystemTerminatedFuture = this.actorSystemProvider
                     .getActorSystem()
                     .getWhenTerminated().toCompletableFuture();
-            final int actorSystemPort = this.actorSystemConfig.getInt("akka.remote.netty.tcp.port");
+            final int actorSystemPort = this.actorSystemConfig.getInt("akka.remote.classic.netty.tcp.port");
 
             try {
                 this.actorSystemProvider.close();
