@@ -1,17 +1,14 @@
 /*
- * Copyright (c) 2018 Pantheon Technologies s.r.o. All Rights Reserved.
+ * Copyright (c) 2021 Pantheon Technologies s.r.o. All Rights Reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-package io.lighty.codecs;
+package io.lighty.codecs.util;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import io.lighty.codecs.api.ConverterUtils;
-import io.lighty.codecs.api.NodeConverter;
-import io.lighty.codecs.api.SerializationException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
@@ -35,18 +32,17 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
  * The implementation of {@link NodeConverter} which serializes and deserializes binding independent
  * representation into/from JSON representation.
  *
- * @deprecated This class is moved to lighty-codecs-util.
  * @see XmlNodeConverter
  */
-@Deprecated(forRemoval = true)
 public class JsonNodeConverter implements NodeConverter {
 
     private final SchemaContext schemaContext;
 
     /**
-     * The only available constructor.
+     * The only constructor will create an instance of {@link JsonNodeConverter} with the given
+     * {@link SchemaContext}. This schema context will be used for proper RPC and Node resolution
      *
-     * @param schemaContext to be used
+     * @param schemaContext initial schema context
      */
     public JsonNodeConverter(final SchemaContext schemaContext) {
         this.schemaContext = schemaContext;

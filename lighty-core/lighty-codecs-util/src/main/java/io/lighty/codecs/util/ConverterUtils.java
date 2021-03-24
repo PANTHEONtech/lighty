@@ -1,21 +1,21 @@
 /*
- * Copyright (c) 2018 Pantheon Technologies s.r.o. All Rights Reserved.
+ * Copyright (c) 2021 Pantheon Technologies s.r.o. All Rights Reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-package io.lighty.codecs.api;
+package io.lighty.codecs.util;
 
 import com.google.common.base.Strings;
-import io.lighty.codecs.xml.DocumentedException;
-import io.lighty.codecs.xml.XmlElement;
-import io.lighty.codecs.xml.XmlUtil;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.opendaylight.netconf.api.DocumentedException;
+import org.opendaylight.netconf.api.xml.XmlElement;
+import org.opendaylight.netconf.api.xml.XmlUtil;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
@@ -30,10 +30,7 @@ import org.xml.sax.SAXException;
 
 /**
  * A utility class which may be helpful while manipulating with binding independent nodes.
- *
- * @deprecated This class is moved to lighty-codecs-util.
  */
-@Deprecated(forRemoval = true)
 public final class ConverterUtils {
     private ConverterUtils() {
         throw new UnsupportedOperationException("Do not create an instance of utility class");
@@ -88,7 +85,7 @@ public final class ConverterUtils {
      * @return {@link QName} for input data or empty.
      */
     public static Optional<QName> getRpcQName(final XmlElement xmlElement) {
-        Optional<String> optionalNamespace = xmlElement.getNamespaceOptionally().toJavaUtil();
+        Optional<String> optionalNamespace = xmlElement.getNamespaceOptionally();
         String name = xmlElement.getName();
         if (Strings.isNullOrEmpty(name)) {
             return Optional.empty();
@@ -179,12 +176,14 @@ public final class ConverterUtils {
      * @return instance of {@link SchemaNode}
      */
     public static SchemaNode getSchemaNode(final SchemaContext schemaContext, final QName qname) {
-        return DataSchemaContextTree.from(schemaContext).getChild(YangInstanceIdentifier.of(qname)).getDataSchemaNode();
+        return DataSchemaContextTree.from(schemaContext)
+                .findChild(YangInstanceIdentifier.of(qname)).orElseThrow().getDataSchemaNode();
     }
 
     public static SchemaNode getSchemaNode(final SchemaContext schemaContext,
             final YangInstanceIdentifier yangInstanceIdentifier) {
-        return DataSchemaContextTree.from(schemaContext).getChild(yangInstanceIdentifier).getDataSchemaNode();
+        return DataSchemaContextTree.from(schemaContext)
+                .findChild(yangInstanceIdentifier).orElseThrow().getDataSchemaNode();
     }
 
     /**
@@ -202,7 +201,8 @@ public final class ConverterUtils {
     public static SchemaNode getSchemaNode(final SchemaContext schemaContext, final String namespace,
             final String revision, final String localName) {
         QName qname = QName.create(namespace, revision, localName);
-        return DataSchemaContextTree.from(schemaContext).getChild(YangInstanceIdentifier.of(qname)).getDataSchemaNode();
+        return DataSchemaContextTree.from(schemaContext)
+                .findChild(YangInstanceIdentifier.of(qname)).orElseThrow().getDataSchemaNode();
     }
 
     /**
@@ -244,6 +244,6 @@ public final class ConverterUtils {
     private static <T extends SchemaNode> Optional<T> findDefinition(final QName qname, final Collection<T> nodes) {
         List<T> foundNodes = nodes.stream().filter(node -> node.getQName().getLocalName().equals(qname.getLocalName()))
                 .collect(Collectors.toList());
-        return Optional.ofNullable(foundNodes.isEmpty() || foundNodes.size() > 1 ? null : foundNodes.get(0));
+        return Optional.ofNullable(foundNodes.size() != 1 ? null : foundNodes.get(0));
     }
 }

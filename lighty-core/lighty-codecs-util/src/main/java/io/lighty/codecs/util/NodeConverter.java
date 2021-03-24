@@ -1,17 +1,15 @@
 /*
- * Copyright (c) 2018 Pantheon Technologies s.r.o. All Rights Reserved.
+ * Copyright (c) 2021 Pantheon Technologies s.r.o. All Rights Reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-package io.lighty.codecs.api;
+package io.lighty.codecs.util;
 
-import io.lighty.codecs.JsonNodeConverter;
-import io.lighty.codecs.XmlNodeConverter;
-import io.lighty.codecs.xml.XmlElement;
 import java.io.Reader;
 import java.io.Writer;
+import org.opendaylight.netconf.api.xml.XmlElement;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
@@ -21,10 +19,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
  * This interface may be useful when (de)serializing {@link NormalizedNode}s (from)into its XML or
  * JSON representation. Currently there are two implementations {@link XmlNodeConverter} and
  * {@link JsonNodeConverter}.
- *
- * @deprecated This interface is moved to lighty-codecs-util.
  */
-@Deprecated(forRemoval = true)
 public interface NodeConverter {
     /**
      * This method will serialize the given {@link NormalizedNode} into its string representation.

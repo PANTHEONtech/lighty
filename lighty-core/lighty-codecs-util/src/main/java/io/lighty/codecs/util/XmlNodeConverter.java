@@ -1,16 +1,13 @@
 /*
- * Copyright (c) 2018 Pantheon Technologies s.r.o. All Rights Reserved.
+ * Copyright (c) 2021 Pantheon Technologies s.r.o. All Rights Reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-package io.lighty.codecs;
+package io.lighty.codecs.util;
 
 import com.google.common.io.Closeables;
-import io.lighty.codecs.api.ConverterUtils;
-import io.lighty.codecs.api.NodeConverter;
-import io.lighty.codecs.api.SerializationException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
@@ -46,10 +43,8 @@ import org.xml.sax.SAXException;
  * The implementation of {@link NodeConverter} which serializes and deserializes binding independent
  * representation into/from XML representation.
  *
- * @deprecated This class is moved to lighty-codecs-util.
  * @see JsonNodeConverter
  */
-@Deprecated(forRemoval = true)
 public class XmlNodeConverter implements NodeConverter {
 
     private static final Logger LOG = LoggerFactory.getLogger(XmlNodeConverter.class);
