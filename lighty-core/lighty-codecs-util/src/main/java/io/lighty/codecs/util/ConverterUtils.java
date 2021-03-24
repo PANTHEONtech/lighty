@@ -13,12 +13,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.netconf.api.DocumentedException;
 import org.opendaylight.netconf.api.xml.XmlElement;
 import org.opendaylight.netconf.api.xml.XmlUtil;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.util.DataSchemaContextNode;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
@@ -170,20 +173,19 @@ public final class ConverterUtils {
     /**
      * Creates an instance of {@link SchemaNode} for the given {@link QName} in the given {@link SchemaContext}.
      *
-     * @see ConverterUtils#getSchemaNode(SchemaContext, String, String, String)
-     * @param schemaContext the given schema context which contains the {@link QName}
+     * @see ConverterUtils#getSchemaNode(EffectiveModelContext, String, String, String)
+     * @param effectiveModelContext the given schema context which contains the {@link QName}
      * @param qname the given {@link QName}
-     * @return instance of {@link SchemaNode}
+     * @return instance of {@link DataSchemaContextNode}
      */
-    public static SchemaNode getSchemaNode(final SchemaContext schemaContext, final QName qname) {
-        return DataSchemaContextTree.from(schemaContext)
-                .findChild(YangInstanceIdentifier.of(qname)).orElseThrow().getDataSchemaNode();
+    public static Optional<@NonNull DataSchemaContextNode<?>> getSchemaNode(
+        final EffectiveModelContext effectiveModelContext, final QName qname) {
+        return DataSchemaContextTree.from(effectiveModelContext).findChild(YangInstanceIdentifier.of(qname));
     }
 
-    public static SchemaNode getSchemaNode(final SchemaContext schemaContext,
-            final YangInstanceIdentifier yangInstanceIdentifier) {
-        return DataSchemaContextTree.from(schemaContext)
-                .findChild(yangInstanceIdentifier).orElseThrow().getDataSchemaNode();
+    public static Optional<@NonNull DataSchemaContextNode<?>> getSchemaNode(
+        final EffectiveModelContext effectiveModelContext, final YangInstanceIdentifier yangInstanceIdentifier) {
+        return DataSchemaContextTree.from(effectiveModelContext).findChild(yangInstanceIdentifier);
     }
 
     /**
@@ -191,18 +193,18 @@ public final class ConverterUtils {
      * namespace, revision and localname are used to construct the {@link QName} which must exist in the
      * {@link SchemaContext}.
      *
-     * @see ConverterUtils#getSchemaNode(SchemaContext, QName)
-     * @param schemaContext given schema context
+     * @see ConverterUtils#getSchemaNode(EffectiveModelContext, QName)
+     * @param effectiveModelContext given schema context
      * @param namespace {@link QName} namespace
      * @param revision {@link QName} revision
      * @param localName {@link QName} localname
      * @return instance of {@link SchemaNode}
      */
-    public static SchemaNode getSchemaNode(final SchemaContext schemaContext, final String namespace,
-            final String revision, final String localName) {
+    public static Optional<@NonNull DataSchemaContextNode<?>> getSchemaNode(
+        final EffectiveModelContext effectiveModelContext, final String namespace, final String revision,
+        final String localName) {
         QName qname = QName.create(namespace, revision, localName);
-        return DataSchemaContextTree.from(schemaContext)
-                .findChild(YangInstanceIdentifier.of(qname)).orElseThrow().getDataSchemaNode();
+        return DataSchemaContextTree.from(effectiveModelContext).findChild(YangInstanceIdentifier.of(qname));
     }
 
     /**

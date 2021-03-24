@@ -24,7 +24,7 @@ public interface NodeConverter {
     /**
      * This method will serialize the given {@link NormalizedNode} into its string representation.
      *
-     * @see ConverterUtils#getSchemaNode(SchemaContext, QName)
+     * @see ConverterUtils#getSchemaNode(EffectiveModelContext, QName)
      * @param schemaNode parent schema node used during serialization
      * @param normalizedNode normalized nodes to be serialized
      * @return {@link Writer}
