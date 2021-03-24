@@ -37,6 +37,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+/**
+ * XmlUtil.
+ *
+ * @deprecated Replaced by OpenDayLight implementation {@link org.opendaylight.netconf.api.xml.XmlUtil}.
+ */
+@Deprecated(forRemoval = true)
 public final class XmlUtil {
 
     public static final String XMLNS_ATTRIBUTE_KEY = "xmlns";

@@ -1,16 +1,13 @@
 /*
- * Copyright (c) 2018 Pantheon Technologies s.r.o. All Rights Reserved.
+ * Copyright (c) 2021 Pantheon Technologies s.r.o. All Rights Reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-package io.lighty.codecs;
+package io.lighty.codecs.util;
 
 import com.google.common.io.Closeables;
-import io.lighty.codecs.api.ConverterUtils;
-import io.lighty.codecs.api.NodeConverter;
-import io.lighty.codecs.api.SerializationException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
@@ -46,10 +43,8 @@ import org.xml.sax.SAXException;
  * The implementation of {@link NodeConverter} which serializes and deserializes binding independent
  * representation into/from XML representation.
  *
- * @deprecated This class is moved to lighty-codecs-util.
  * @see JsonNodeConverter
  */
-@Deprecated(forRemoval = true)
 public class XmlNodeConverter implements NodeConverter {
 
     private static final Logger LOG = LoggerFactory.getLogger(XmlNodeConverter.class);
@@ -173,31 +168,30 @@ public class XmlNodeConverter implements NodeConverter {
     /**
      * Utility method to obtain an instance of {@link NormalizedNodeWriter} by using the {@link Writer}.
      */
-    private static NormalizedNodeWriter createNormalizedNodeWriter(final EffectiveModelContext effectiveModelContext,
+    private static NormalizedNodeWriter createNormalizedNodeWriter(final SchemaContext schemaContext,
             final Writer backingWriter, final SchemaPath pathToParent) {
         XMLStreamWriter createXMLStreamWriter = createXmlStreamWriter(backingWriter);
-        return createNormalizedNodeWriter(effectiveModelContext, createXMLStreamWriter, pathToParent);
+        return createNormalizedNodeWriter(schemaContext, createXMLStreamWriter, pathToParent);
     }
 
     /**
      * Create a new {@link NormalizedNodeWriter}.
      *
-     * @see XMLStreamNormalizedNodeStreamWriter#create(XMLStreamWriter, EffectiveModelContext)
-     * @see XMLStreamNormalizedNodeStreamWriter#create(XMLStreamWriter, EffectiveModelContext, SchemaPath)
+     * @see XMLStreamNormalizedNodeStreamWriter#create(XMLStreamWriter, SchemaContext)
+     * @see XMLStreamNormalizedNodeStreamWriter#create(XMLStreamWriter, SchemaContext, SchemaPath)
      *
-     * @param effectiveModelContext the root schema context
+     * @param schemaContext the root schema context
      * @param backingWriter used backing writer
      * @param pathToParent path to parent, may be the same as {@link SchemaContext} param
      * @return a new instance of {@link NormalizedNodeWriter}
      */
-    private static NormalizedNodeWriter createNormalizedNodeWriter(final EffectiveModelContext effectiveModelContext,
+    private static NormalizedNodeWriter createNormalizedNodeWriter(final SchemaContext schemaContext,
             final XMLStreamWriter backingWriter, final SchemaPath pathToParent) {
         NormalizedNodeStreamWriter streamWriter;
         if (pathToParent == null) {
-            streamWriter = XMLStreamNormalizedNodeStreamWriter.create(backingWriter, effectiveModelContext);
+            streamWriter = XMLStreamNormalizedNodeStreamWriter.create(backingWriter, schemaContext);
         } else {
-            streamWriter = XMLStreamNormalizedNodeStreamWriter.create(backingWriter,
-                    effectiveModelContext, pathToParent);
+            streamWriter = XMLStreamNormalizedNodeStreamWriter.create(backingWriter, schemaContext, pathToParent);
         }
         return NormalizedNodeWriter.forStreamWriter(streamWriter);
     }

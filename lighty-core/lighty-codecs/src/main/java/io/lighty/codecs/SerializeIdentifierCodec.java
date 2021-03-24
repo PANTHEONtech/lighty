@@ -25,6 +25,13 @@ import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 
+/**
+ * Serialize YangInstanceIdentifier.
+ *
+ * @deprecated This class can be replaced by the implementation of
+ * {@link org.opendaylight.yangtools.yang.data.util.AbstractStringInstanceIdentifierCodec}.
+ */
+@Deprecated(forRemoval = true)
 public class SerializeIdentifierCodec {
 
     private final EffectiveModelContext effectiveModelContext;

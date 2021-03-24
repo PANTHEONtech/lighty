@@ -1,17 +1,14 @@
 /*
- * Copyright (c) 2018 Pantheon Technologies s.r.o. All Rights Reserved.
+ * Copyright (c) 2021 Pantheon Technologies s.r.o. All Rights Reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-package io.lighty.codecs;
+package io.lighty.codecs.util;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import io.lighty.codecs.api.ConverterUtils;
-import io.lighty.codecs.api.NodeConverter;
-import io.lighty.codecs.api.SerializationException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
@@ -28,7 +25,6 @@ import org.opendaylight.yangtools.yang.data.codec.gson.JSONNormalizedNodeStreamW
 import org.opendaylight.yangtools.yang.data.codec.gson.JsonParserStream;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 
@@ -36,29 +32,28 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
  * The implementation of {@link NodeConverter} which serializes and deserializes binding independent
  * representation into/from JSON representation.
  *
- * @deprecated This class is moved to lighty-codecs-util.
  * @see XmlNodeConverter
  */
-@Deprecated(forRemoval = true)
 public class JsonNodeConverter implements NodeConverter {
 
-    private final EffectiveModelContext effectiveModelContext;
+    private final SchemaContext schemaContext;
 
     /**
-     * The only available constructor.
+     * The only constructor will create an instance of {@link JsonNodeConverter} with the given
+     * {@link SchemaContext}. This schema context will be used for proper RPC and Node resolution
      *
-     * @param effectiveModelContext to be used
+     * @param schemaContext initial schema context
      */
-    public JsonNodeConverter(final EffectiveModelContext effectiveModelContext) {
-        this.effectiveModelContext = effectiveModelContext;
+    public JsonNodeConverter(final SchemaContext schemaContext) {
+        this.schemaContext = schemaContext;
     }
 
     /**
      * This method serializes the provided {@link NormalizedNode} into its JSON representation.
      *
      * @param schemaNode {@link SchemaNode} may be obtained via
-     *        {@link ConverterUtils#getSchemaNode(EffectiveModelContext, QName)} or
-     *        {@link ConverterUtils#getSchemaNode(EffectiveModelContext, String, String, String)}
+     *        {@link ConverterUtils#getSchemaNode(SchemaContext, QName)} or
+     *        {@link ConverterUtils#getSchemaNode(SchemaContext, String, String, String)}
      * @param normalizedNode {@link NormalizedNode} to be serialized
      * @return string representation of JSON serialized data is returned via {@link StringWriter}
      * @throws SerializationException if there was a problem during writing JSON data
@@ -69,7 +64,7 @@ public class JsonNodeConverter implements NodeConverter {
         Writer writer = new StringWriter();
         JsonWriter jsonWriter = new JsonWriter(writer);
         JSONCodecFactory jsonCodecFactory =
-                JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02.createLazy(this.effectiveModelContext);
+                JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02.createLazy(this.schemaContext);
         URI namespace = schemaNode.getQName().getNamespace();
         NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter.createExclusiveWriter(jsonCodecFactory,
                 schemaNode.getPath(), namespace, jsonWriter);
@@ -96,7 +91,7 @@ public class JsonNodeConverter implements NodeConverter {
         Writer writer = new StringWriter();
         JsonWriter jsonWriter = new JsonWriter(writer);
         JSONCodecFactory jsonCodecFactory =
-                JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02.createLazy(this.effectiveModelContext);
+                JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02.createLazy(this.schemaContext);
         String localName = schemaNode.getQName().getLocalName();
         URI namespace = schemaNode.getQName().getNamespace();
         NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter.createExclusiveWriter(jsonCodecFactory,
@@ -122,8 +117,8 @@ public class JsonNodeConverter implements NodeConverter {
      * Deserializes the given JSON representation into {@link NormalizedNode}s.
      *
      * @param schemaNode a correct {@link SchemaNode} may be obtained via
-     *        {@link ConverterUtils#getSchemaNode(EffectiveModelContext, QName)} or
-     *        {@link ConverterUtils#getSchemaNode(EffectiveModelContext, String, String, String)} or
+     *        {@link ConverterUtils#getSchemaNode(SchemaContext, QName)} or
+     *        {@link ConverterUtils#getSchemaNode(SchemaContext, String, String, String)} or
      *        {@link ConverterUtils#loadRpc(SchemaContext, QName)} depending on the input/output
      * @param inputData reader containing input data.
      * @return {@link NormalizedNode} representation of input data
@@ -135,7 +130,7 @@ public class JsonNodeConverter implements NodeConverter {
             throws SerializationException {
         NormalizedNodeResult result = new NormalizedNodeResult();
         JSONCodecFactory jsonCodecFactory =
-                JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02.createLazy(effectiveModelContext);
+                JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02.createLazy(schemaContext);
         try (JsonReader reader = new JsonReader(inputData);
                 NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
 

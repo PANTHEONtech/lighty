@@ -1,0 +1,4 @@
+<data xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <sample-list xmlns="http://pantheon.tech/ns/test-models"><name>name1</name><value>1</value></sample-list>
+    <sample-list xmlns="http://pantheon.tech/ns/test-models"><name>name2</name><value>1</value></sample-list>
+</data>

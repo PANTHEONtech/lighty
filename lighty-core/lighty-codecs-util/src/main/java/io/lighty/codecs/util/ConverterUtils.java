@@ -1,27 +1,24 @@
 /*
- * Copyright (c) 2018 Pantheon Technologies s.r.o. All Rights Reserved.
+ * Copyright (c) 2021 Pantheon Technologies s.r.o. All Rights Reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-package io.lighty.codecs.api;
+package io.lighty.codecs.util;
 
 import com.google.common.base.Strings;
-import io.lighty.codecs.xml.DocumentedException;
-import io.lighty.codecs.xml.XmlElement;
-import io.lighty.codecs.xml.XmlUtil;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.netconf.api.DocumentedException;
+import org.opendaylight.netconf.api.xml.XmlElement;
+import org.opendaylight.netconf.api.xml.XmlUtil;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.util.DataSchemaContextNode;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
@@ -33,10 +30,7 @@ import org.xml.sax.SAXException;
 
 /**
  * A utility class which may be helpful while manipulating with binding independent nodes.
- *
- * @deprecated This class is moved to lighty-codecs-util.
  */
-@Deprecated(forRemoval = true)
 public final class ConverterUtils {
     private ConverterUtils() {
         throw new UnsupportedOperationException("Do not create an instance of utility class");
@@ -91,7 +85,7 @@ public final class ConverterUtils {
      * @return {@link QName} for input data or empty.
      */
     public static Optional<QName> getRpcQName(final XmlElement xmlElement) {
-        Optional<String> optionalNamespace = xmlElement.getNamespaceOptionally().toJavaUtil();
+        Optional<String> optionalNamespace = xmlElement.getNamespaceOptionally();
         String name = xmlElement.getName();
         if (Strings.isNullOrEmpty(name)) {
             return Optional.empty();
@@ -176,19 +170,20 @@ public final class ConverterUtils {
     /**
      * Creates an instance of {@link SchemaNode} for the given {@link QName} in the given {@link SchemaContext}.
      *
-     * @see ConverterUtils#getSchemaNode(EffectiveModelContext, String, String, String)
-     * @param effectiveModelContext the given schema context which contains the {@link QName}
+     * @see ConverterUtils#getSchemaNode(SchemaContext, String, String, String)
+     * @param schemaContext the given schema context which contains the {@link QName}
      * @param qname the given {@link QName}
-     * @return instance of {@link DataSchemaContextNode}
+     * @return instance of {@link SchemaNode}
      */
-    public static Optional<@NonNull DataSchemaContextNode<?>> getSchemaNode(
-            final EffectiveModelContext effectiveModelContext, final QName qname) {
-        return DataSchemaContextTree.from(effectiveModelContext).findChild(YangInstanceIdentifier.of(qname));
+    public static SchemaNode getSchemaNode(final SchemaContext schemaContext, final QName qname) {
+        return DataSchemaContextTree.from(schemaContext)
+                .findChild(YangInstanceIdentifier.of(qname)).orElseThrow().getDataSchemaNode();
     }
 
-    public static Optional<@NonNull DataSchemaContextNode<?>> getSchemaNode(
-            final EffectiveModelContext effectiveModelContext, final YangInstanceIdentifier yangInstanceIdentifier) {
-        return DataSchemaContextTree.from(effectiveModelContext).findChild(yangInstanceIdentifier);
+    public static SchemaNode getSchemaNode(final SchemaContext schemaContext,
+            final YangInstanceIdentifier yangInstanceIdentifier) {
+        return DataSchemaContextTree.from(schemaContext)
+                .findChild(yangInstanceIdentifier).orElseThrow().getDataSchemaNode();
     }
 
     /**
@@ -196,18 +191,18 @@ public final class ConverterUtils {
      * namespace, revision and localname are used to construct the {@link QName} which must exist in the
      * {@link SchemaContext}.
      *
-     * @see ConverterUtils#getSchemaNode(EffectiveModelContext, QName)
-     * @param effectiveModelContext given schema context
+     * @see ConverterUtils#getSchemaNode(SchemaContext, QName)
+     * @param schemaContext given schema context
      * @param namespace {@link QName} namespace
      * @param revision {@link QName} revision
      * @param localName {@link QName} localname
      * @return instance of {@link SchemaNode}
      */
-    public static Optional<@NonNull DataSchemaContextNode<?>> getSchemaNode(
-            final EffectiveModelContext effectiveModelContext, final String namespace, final String revision,
-            final String localName) {
+    public static SchemaNode getSchemaNode(final SchemaContext schemaContext, final String namespace,
+            final String revision, final String localName) {
         QName qname = QName.create(namespace, revision, localName);
-        return DataSchemaContextTree.from(effectiveModelContext).findChild(YangInstanceIdentifier.of(qname));
+        return DataSchemaContextTree.from(schemaContext)
+                .findChild(YangInstanceIdentifier.of(qname)).orElseThrow().getDataSchemaNode();
     }
 
     /**
@@ -249,6 +244,6 @@ public final class ConverterUtils {
     private static <T extends SchemaNode> Optional<T> findDefinition(final QName qname, final Collection<T> nodes) {
         List<T> foundNodes = nodes.stream().filter(node -> node.getQName().getLocalName().equals(qname.getLocalName()))
                 .collect(Collectors.toList());
-        return Optional.ofNullable(foundNodes.isEmpty() || foundNodes.size() > 1 ? null : foundNodes.get(0));
+        return Optional.ofNullable(foundNodes.size() != 1 ? null : foundNodes.get(0));
     }
 }
