@@ -26,7 +26,6 @@ import org.opendaylight.yangtools.yang.data.codec.gson.JsonParserStream;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 
 /**
@@ -41,9 +40,9 @@ public class JsonNodeConverter implements NodeConverter {
 
     /**
      * The only constructor will create an instance of {@link JsonNodeConverter} with the given
-     * {@link EffectiveModelContext}. This schema context will be used for proper RPC and Node resolution
+     * {@link EffectiveModelContext}. This effective model context will be used for proper RPC and Node resolution
      *
-     * @param effectiveModelContext initial schema context
+     * @param effectiveModelContext initial effective model context
      */
     public JsonNodeConverter(final EffectiveModelContext effectiveModelContext) {
         this.effectiveModelContext = effectiveModelContext;
@@ -120,7 +119,7 @@ public class JsonNodeConverter implements NodeConverter {
      * @param schemaNode a correct {@link SchemaNode} may be obtained via
      *        {@link ConverterUtils#getSchemaNode(EffectiveModelContext, QName)} or
      *        {@link ConverterUtils#getSchemaNode(EffectiveModelContext, String, String, String)} or
-     *        {@link ConverterUtils#loadRpc(SchemaContext, QName)} depending on the input/output
+     *        {@link ConverterUtils#loadRpc(EffectiveModelContext, QName)} depending on the input/output
      * @param inputData reader containing input data.
      * @return {@link NormalizedNode} representation of input data
      * @throws SerializationException if there was a problem during deserialization or reading the input

@@ -25,7 +25,6 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -40,7 +39,7 @@ public final class ConverterUtils {
     }
 
     /**
-     * Returns the {@link RpcDefinition} from the given {@link SchemaContext} and given {@link QName}.
+     * Returns the {@link RpcDefinition} from the given {@link EffectiveModelContext} and given {@link QName}.
      * The {@link QName} of a rpc can be constructed via
      *
      * <p>
@@ -49,15 +48,16 @@ public final class ConverterUtils {
      * } , where {@code "make-toast"} is the name of the RPC given in the yang model.
      *
      * <p>
-     * If the given RPC was found in the {@link SchemaContext} the {@link RpcDefinition} will be present
+     * If the given RPC was found in the {@link EffectiveModelContext} the {@link RpcDefinition} will be present
      *
      * @see QName
-     * @param schemaContext the schema context used for the RPC resolution
+     * @param effectiveModelContext the effective model context used for the RPC resolution
      * @param rpcQName {@link QName} of the RPC
      * @return {@link Optional} representation of the {@link RpcDefinition}
      */
-    public static Optional<? extends RpcDefinition> loadRpc(final SchemaContext schemaContext, final QName rpcQName) {
-        Optional<Module> findModule = findModule(schemaContext, rpcQName);
+    public static Optional<? extends RpcDefinition> loadRpc(final EffectiveModelContext effectiveModelContext,
+                                                            final QName rpcQName) {
+        Optional<Module> findModule = findModule(effectiveModelContext, rpcQName);
         if (!findModule.isPresent()) {
             return Optional.empty();
         }
@@ -67,13 +67,13 @@ public final class ConverterUtils {
     /**
      * Utility method to extract the {@link SchemaNode} for the given Notification.
      *
-     * @param schemaContext to be used
+     * @param effectiveModelContext to be used
      * @param notificationQname yang RPC name
      * @return {@link Optional} of {@link SchemaNode}
      */
-    public static Optional<? extends NotificationDefinition> loadNotification(final SchemaContext schemaContext,
-            final QName notificationQname) {
-        Optional<Module> findModule = findModule(schemaContext, notificationQname);
+    public static Optional<? extends NotificationDefinition> loadNotification(
+        final EffectiveModelContext effectiveModelContext, final QName notificationQname) {
+        Optional<Module> findModule = findModule(effectiveModelContext, notificationQname);
         if (!findModule.isPresent()) {
             return Optional.empty();
         }
@@ -171,10 +171,10 @@ public final class ConverterUtils {
     }
 
     /**
-     * Creates an instance of {@link SchemaNode} for the given {@link QName} in the given {@link SchemaContext}.
+     * Creates an instance of {@link SchemaNode} for the given {@link QName} in the given {@link EffectiveModelContext}.
      *
      * @see ConverterUtils#getSchemaNode(EffectiveModelContext, String, String, String)
-     * @param effectiveModelContext the given schema context which contains the {@link QName}
+     * @param effectiveModelContext the given effective model context which contains the {@link QName}
      * @param qname the given {@link QName}
      * @return instance of {@link DataSchemaContextNode}
      */
@@ -191,10 +191,10 @@ public final class ConverterUtils {
     /**
      * Creates an instance of {@link SchemaNode} for the given namespace, revision and localname. The
      * namespace, revision and localname are used to construct the {@link QName} which must exist in the
-     * {@link SchemaContext}.
+     * {@link EffectiveModelContext}.
      *
      * @see ConverterUtils#getSchemaNode(EffectiveModelContext, QName)
-     * @param effectiveModelContext given schema context
+     * @param effectiveModelContext given effective model context
      * @param namespace {@link QName} namespace
      * @param revision {@link QName} revision
      * @param localName {@link QName} localname
@@ -233,12 +233,12 @@ public final class ConverterUtils {
         return XmlElement.fromDomDocument(document);
     }
 
-    private static Optional<Module> findModule(final SchemaContext schemaContext, final QName qname) {
+    private static Optional<Module> findModule(final EffectiveModelContext effectiveModelContext, final QName qname) {
         if (qname.getRevision().isPresent()) {
-            return schemaContext.findModule(qname.getNamespace(), qname.getRevision());
+            return effectiveModelContext.findModule(qname.getNamespace(), qname.getRevision());
         }
 
-        Collection<? extends Module> moduleByNamespace = schemaContext.findModules(qname.getNamespace());
+        Collection<? extends Module> moduleByNamespace = effectiveModelContext.findModules(qname.getNamespace());
         return Optional.ofNullable(moduleByNamespace.isEmpty() || moduleByNamespace.size() > 1 ? null
                 : moduleByNamespace.iterator().next());
     }

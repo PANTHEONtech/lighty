@@ -32,7 +32,6 @@ import org.opendaylight.yangtools.yang.data.codec.xml.XmlParserStream;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.slf4j.Logger;
@@ -62,9 +61,9 @@ public class XmlNodeConverter implements NodeConverter {
 
     /**
      * The only constructor will create an instance of {@link XmlNodeConverter} with the given
-     * {@link SchemaContext}. This schema context will be used for proper RPC and Node resolution
+     * {@link EffectiveModelContext}. This effective model context will be used for proper RPC and Node resolution
      *
-     * @param effectiveModelContext initial schema context
+     * @param effectiveModelContext initial effective model context
      */
     public XmlNodeConverter(final EffectiveModelContext effectiveModelContext) {
         this.effectiveModelContext = effectiveModelContext;
@@ -99,7 +98,7 @@ public class XmlNodeConverter implements NodeConverter {
      * representation into XML string representation.
      *
      * <p>
-     * To obtain correct {@link SchemaNode} use {@link ConverterUtils#loadRpc(SchemaContext, QName)} method.
+     * To obtain correct {@link SchemaNode} use {@link ConverterUtils#loadRpc(EffectiveModelContext, QName)} method.
      *
      * @param schemaNode input or output {@link SchemaNode}
      * @param normalizedNode {@link NormalizedNode} representation of input or output
@@ -134,7 +133,7 @@ public class XmlNodeConverter implements NodeConverter {
      * This method deserializes the provided XML string representation (via {@link Reader}) interface
      * into {@link NormalizedNode}s. During deserialization of RPC input and output a proper
      * {@link SchemaNode} (given for input or output) must be passed. This may be obtained via
-     * {@link ConverterUtils#loadRpc(SchemaContext, QName)}.
+     * {@link ConverterUtils#loadRpc(EffectiveModelContext, QName)}.
      *
      * @param schemaNode parent schema node which contains information about the input data
      * @param inputData XML input
@@ -180,9 +179,9 @@ public class XmlNodeConverter implements NodeConverter {
      * @see XMLStreamNormalizedNodeStreamWriter#create(XMLStreamWriter, EffectiveModelContext)
      * @see XMLStreamNormalizedNodeStreamWriter#create(XMLStreamWriter, EffectiveModelContext, SchemaPath)
      *
-     * @param effectiveModelContext the root schema context
+     * @param effectiveModelContext the root effective model context
      * @param backingWriter used backing writer
-     * @param pathToParent path to parent, may be the same as {@link SchemaContext} param
+     * @param pathToParent path to parent, may be the same as {@link EffectiveModelContext} param
      * @return a new instance of {@link NormalizedNodeWriter}
      */
     private static NormalizedNodeWriter createNormalizedNodeWriter(final EffectiveModelContext effectiveModelContext,

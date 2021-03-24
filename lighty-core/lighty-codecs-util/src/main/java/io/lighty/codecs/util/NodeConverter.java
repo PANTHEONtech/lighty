@@ -12,7 +12,7 @@ import java.io.Writer;
 import org.opendaylight.netconf.api.xml.XmlElement;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 
 /**
@@ -34,14 +34,14 @@ public interface NodeConverter {
 
     /**
      * This method will serialize the input {@link NormalizedNode} RPC into its string representation. It
-     * is highly recommend to use {@link ConverterUtils#loadRpc(SchemaContext, QName)} and proper
+     * is highly recommend to use {@link ConverterUtils#loadRpc(EffectiveModelContext, QName)} and proper
      * input/output definition as the schemaNode parameter.
      *
      * @see ConverterUtils#rpcAsInput(XmlElement)
      * @see ConverterUtils#rpcAsOutput(XmlElement)
      * @see ConverterUtils#getRpcQName(XmlElement)
      * @param schemaNode parent schema node which may be obtained via
-     *        {@link ConverterUtils#loadRpc(SchemaContext, QName)} and input/output definition
+     *        {@link ConverterUtils#loadRpc(EffectiveModelContext, QName)} and input/output definition
      * @param normalizedNode normalized nodes to be serialized
      * @return string representation of the given nodes starting with input or output tag
      * @throws SerializationException thrown in case serialization fails.
@@ -51,9 +51,9 @@ public interface NodeConverter {
     /**
      * This method will deserialize the given input data into {@link NormalizedNode}s. In case of RPC
      * input/output use proper parent schema node obtained via
-     * {@link ConverterUtils#loadRpc(SchemaContext, QName)}.
+     * {@link ConverterUtils#loadRpc(EffectiveModelContext, QName)}.
      *
-     * @see ConverterUtils#loadRpc(SchemaContext, QName)
+     * @see ConverterUtils#loadRpc(EffectiveModelContext, QName)
      * @see ConverterUtils#rpcAsInput(XmlElement)
      * @see ConverterUtils#rpcAsOutput(XmlElement)
      * @param schemaNode parent schema node
