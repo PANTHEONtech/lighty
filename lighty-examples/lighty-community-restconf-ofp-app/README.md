@@ -12,7 +12,7 @@ Build the project using maven command: ```mvn clean install```.
 This will create *.zip* archive in target directory. Extract this archive
 and run *.jar* file using java with command:
 ```
-java -jar lighty-community-restconf-ofp-app-13.2.2-SNAPSHOT.jar
+java -jar lighty-community-restconf-ofp-app-13.3.0.jar
 ```
 
 ### Use custom config files
@@ -24,7 +24,7 @@ after build.
 
 When running application pass path to configuration file as argument:
 ```
-java -jar lighty-community-restconf-ofp-app-13.2.2-SNAPSHOT.jar sampleConfigSingleNode.json
+java -jar lighty-community-restconf-ofp-app-13.3.0.jar sampleConfigSingleNode.json
 ```
 
 ### Building and running Docker Image
