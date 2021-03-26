@@ -9,7 +9,6 @@
 package io.lighty.core.controller.springboot.config;
 
 import com.google.common.base.Stopwatch;
-import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
@@ -24,6 +23,8 @@ import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.$YangModuleInfoImpl;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
@@ -35,6 +36,9 @@ import org.springframework.context.annotation.Configuration;
 public class LightyConfiguration extends LightyCoreSpringConfiguration {
 
     private static final Logger LOG = LoggerFactory.getLogger(LightyConfiguration.class);
+    private static final int DEFAULT_TIMEOUT_SECONDS = 30;
+
+    private NetconfSBPlugin netconfSBPlugin;
 
     @Override
     protected LightyController initLightyController() throws LightyLaunchException, InterruptedException {
@@ -48,12 +52,16 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
                     .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(mavenModelPaths))
                     .build();
             LOG.info("Starting LightyController (waiting 10s after start)");
-            final ListenableFuture<Boolean> started = lightyController.start();
-            started.get();
+            final boolean controllerStartOk = lightyController
+                .start().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+            if (!controllerStartOk) {
+                shutdownLightyController(lightyController);
+                throw new LightyLaunchException("Could not init LightyController");
+            }
             LOG.info("LightyController Core started");
 
             return lightyController;
-        } catch (ConfigurationException | ExecutionException e) {
+        } catch (ConfigurationException | ExecutionException | TimeoutException e) {
             throw new LightyLaunchException("Could not init LightyController", e);
         }
     }
@@ -68,34 +76,37 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
         }
     }
 
-
     @Bean
     NetconfSBPlugin initNetconfSBP(LightyController lightyController)
-            throws ExecutionException, InterruptedException, ConfigurationException {
+        throws ExecutionException, InterruptedException, ConfigurationException, LightyLaunchException {
         final NetconfConfiguration netconfSBPConfiguration = NetconfConfigUtils.injectServicesToTopologyConfig(
             NetconfConfigUtils.createDefaultNetconfConfiguration(), lightyController.getServices());
-        final NetconfSBPlugin netconfSouthboundPlugin = NetconfTopologyPluginBuilder
+        this.netconfSBPlugin = NetconfTopologyPluginBuilder
             .from(netconfSBPConfiguration, lightyController.getServices())
             .build();
-        netconfSouthboundPlugin.start().get();
-
-        Runtime.getRuntime().addShutdownHook(new LightyModuleShutdownHook(netconfSouthboundPlugin));
-
-        return netconfSouthboundPlugin;
-    }
-
-    static class LightyModuleShutdownHook extends Thread {
-
-        private static final Logger LOG = LoggerFactory.getLogger(LightyModuleShutdownHook.class);
-
-        private final LightyModule lightyModule;
-
-        public LightyModuleShutdownHook(LightyModule lightyModule) {
-            this.lightyModule = lightyModule;
+        boolean netconfSBPStartOk;
+        try {
+            netconfSBPStartOk = this.netconfSBPlugin.start().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            netconfSBPStartOk = false;
+        }
+        if (!netconfSBPStartOk) {
+            shutdown();
+            throw new LightyLaunchException("Could not init NetconfSB Plugin");
         }
 
-        @Override
-        public void run() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> closeLightyModule(this.netconfSBPlugin)));
+
+        return this.netconfSBPlugin;
+    }
+
+    void shutdown() {
+        closeLightyModule(this.netconfSBPlugin);
+        closeLightyModule(lightyController());
+    }
+
+    void closeLightyModule(final LightyModule lightyModule) {
+        if (lightyModule != null) {
             final Stopwatch stopwatch = Stopwatch.createStarted();
             try {
                 LOG.info("Lighty module {} shutting down ...", lightyModule);
@@ -105,6 +116,6 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
             }
             LOG.info("Lighty module {} stopped in {}", lightyModule, stopwatch.stop());
         }
-
     }
+
 }
