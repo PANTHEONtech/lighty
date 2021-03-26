@@ -10,6 +10,7 @@ package io.lighty.examples.controllers.restconfapp;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.base.Stopwatch;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.lighty.core.common.exceptions.ModuleStartupException;
 import io.lighty.core.common.models.YangModuleUtils;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
@@ -33,6 +34,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
@@ -42,13 +45,23 @@ import org.slf4j.LoggerFactory;
 public class Main {
 
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
+    private static final long DEFAULT_TIMEOUT_SECONDS = 30;
 
-    private ShutdownHook shutdownHook;
+    private LightyController lightyController;
+    private SwaggerLighty swagger;
+    private CommunityRestConf restconf;
+    private LightyModule netconfSBPlugin;
+
+    public static void main(String[] args) {
+        Main app = new Main();
+        app.start(args, true);
+    }
 
     public void start() {
         start(new String[] {}, false);
     }
 
+    @SuppressWarnings("IllegalCatch")
     @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
     public void start(String[] args, boolean registerShutdownHook) {
         final Stopwatch stopwatch = Stopwatch.createStarted();
@@ -62,20 +75,19 @@ public class Main {
         LOG.info("https://lighty.io/");
         LOG.info("https://github.com/PANTHEONtech/lighty");
         try {
+            final ControllerConfiguration singleNodeConfiguration;
+            final RestConfConfiguration restconfConfiguration;
+            final NetconfConfiguration netconfSBPConfiguration;
             if (args.length > 0) {
                 Path configPath = Paths.get(args[0]);
                 LOG.info("using configuration from file {} ...", configPath);
                 //1. get controller configuration
-                ControllerConfiguration singleNodeConfiguration =
-                        ControllerConfigUtils.getConfiguration(Files.newInputStream(configPath));
+                singleNodeConfiguration = ControllerConfigUtils.getConfiguration(Files.newInputStream(configPath));
                 //2. get RESTCONF NBP configuration
-                RestConfConfiguration restConfConfiguration =
-                        RestConfConfigUtils.getRestConfConfiguration(Files.newInputStream(configPath));
+                restconfConfiguration = RestConfConfigUtils.getRestConfConfiguration(Files.newInputStream(configPath));
                 //3. NETCONF SBP configuration
-                NetconfConfiguration netconfSBPConfiguration =
-                        NetconfConfigUtils.createNetconfConfiguration(Files.newInputStream(configPath));
-                startLighty(singleNodeConfiguration, restConfConfiguration, netconfSBPConfiguration,
-                        registerShutdownHook);
+                netconfSBPConfiguration =
+                    NetconfConfigUtils.createNetconfConfiguration(Files.newInputStream(configPath));
             } else {
                 LOG.info("using default configuration ...");
                 Set<YangModuleInfo> modelPaths = Stream.concat(RestConfConfigUtils.YANG_MODELS.stream(),
@@ -88,120 +100,94 @@ public class Main {
                 //0. print the list of schema context models
                 LOG.info("JSON model config snippet: {}", arrayNode.toString());
                 //1. get controller configuration
-                ControllerConfiguration defaultSingleNodeConfiguration =
-                        ControllerConfigUtils.getDefaultSingleNodeConfiguration(modelPaths);
+                singleNodeConfiguration = ControllerConfigUtils.getDefaultSingleNodeConfiguration(modelPaths);
                 //2. get RESTCONF NBP configuration
-                RestConfConfiguration restConfConfig =
-                        RestConfConfigUtils.getDefaultRestConfConfiguration();
+                restconfConfiguration = RestConfConfigUtils.getDefaultRestConfConfiguration();
                 //3. NETCONF SBP configuration
-                NetconfConfiguration netconfSBPConfig = NetconfConfigUtils.createDefaultNetconfConfiguration();
-                startLighty(defaultSingleNodeConfiguration, restConfConfig, netconfSBPConfig, registerShutdownHook);
+                netconfSBPConfiguration = NetconfConfigUtils.createDefaultNetconfConfiguration();
             }
+            //Register shutdown hook for graceful shutdown.
+            if (registerShutdownHook) {
+                Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
+            }
+            startLighty(singleNodeConfiguration, restconfConfiguration, netconfSBPConfiguration);
             LOG.info("lighty.io and RESTCONF-NETCONF started in {}", stopwatch.stop());
-        } catch (IOException cause) {
-            LOG.error("Main RESTCONF-NETCONF application - error reading config file: ", cause);
-        } catch (ConfigurationException | ExecutionException | InterruptedException cause) {
-            LOG.error("Main RESTCONF-NETCONF application exception: ", cause);
+        } catch (IOException e) {
+            LOG.error("Main RESTCONF-NETCONF application - error reading config file: ", e);
+            shutdown();
+        } catch (Exception e) {
+            LOG.error("Main RESTCONF-NETCONF application exception: ", e);
+            shutdown();
         }
     }
 
-    private void startLighty(ControllerConfiguration controllerConfiguration,
-                             RestConfConfiguration restConfConfiguration,
-                             NetconfConfiguration netconfSBPConfiguration, boolean registerShutdownHook)
-            throws ConfigurationException, ExecutionException, InterruptedException {
+    private void startLighty(final ControllerConfiguration controllerConfiguration,
+                                final RestConfConfiguration restconfConfiguration,
+                                NetconfConfiguration netconfSBPConfiguration)
+        throws ConfigurationException, ExecutionException, InterruptedException, TimeoutException,
+               ModuleStartupException {
 
         //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
         LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
-        LightyController lightyController = lightyControllerBuilder.from(controllerConfiguration).build();
-        lightyController.start().get();
+        this.lightyController = lightyControllerBuilder.from(controllerConfiguration).build();
+        final boolean controllerStartOk = this.lightyController.start().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        if (!controllerStartOk) {
+            throw new ModuleStartupException("Lighty.io Controller startup failed!");
+        }
 
-        //2. start RestConf server
+        //2. build RestConf server
         LightyServerBuilder jettyServerBuilder = new LightyServerBuilder(new InetSocketAddress(
-                restConfConfiguration.getInetAddress(), restConfConfiguration.getHttpPort()));
-        CommunityRestConf communityRestConf = CommunityRestConfBuilder
-                .from(RestConfConfigUtils.getRestConfConfiguration(restConfConfiguration,
-                        lightyController.getServices()))
+                restconfConfiguration.getInetAddress(), restconfConfiguration.getHttpPort()));
+        this.restconf = CommunityRestConfBuilder
+                .from(RestConfConfigUtils.getRestConfConfiguration(restconfConfiguration,
+                    this.lightyController.getServices()))
                 .withLightyServer(jettyServerBuilder)
                 .build();
 
-        //3. start swagger
-        SwaggerLighty swagger =
-                new SwaggerLighty(restConfConfiguration, jettyServerBuilder, lightyController.getServices());
-        swagger.start().get();
-        communityRestConf.start().get();
-        communityRestConf.startServer();
+        //3. start swagger and RestConf server
+        this.swagger =
+            new SwaggerLighty(restconfConfiguration, jettyServerBuilder, this.lightyController.getServices());
+        final boolean swaggerStartOk = this.swagger.start().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        if (!swaggerStartOk) {
+            throw new ModuleStartupException("Lighty.io Swagger startup failed!");
+        }
+        final boolean restconfStartOk = this.restconf.start().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        if (!restconfStartOk) {
+            throw new ModuleStartupException("Community Restconf startup failed!");
+        }
+        this.restconf.startServer();
 
         //4. start NetConf SBP
-        LightyModule netconfSouthboundPlugin;
         netconfSBPConfiguration = NetconfConfigUtils.injectServicesToTopologyConfig(
-                netconfSBPConfiguration, lightyController.getServices());
-        netconfSouthboundPlugin = NetconfTopologyPluginBuilder
-                .from(netconfSBPConfiguration, lightyController.getServices())
+                netconfSBPConfiguration, this.lightyController.getServices());
+        this.netconfSBPlugin = NetconfTopologyPluginBuilder
+                .from(netconfSBPConfiguration, this.lightyController.getServices())
                 .build();
-        netconfSouthboundPlugin.start().get();
+        final boolean netconfSBPStartOk = this.netconfSBPlugin.start().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        if (!netconfSBPStartOk) {
+            throw new ModuleStartupException("NetconfSB plugin startup failed!");
+        }
+    }
 
-        //5. Register shutdown hook for graceful shutdown.
-        shutdownHook = new ShutdownHook(lightyController, communityRestConf, netconfSouthboundPlugin, swagger);
-        if (registerShutdownHook) {
-            Runtime.getRuntime().addShutdownHook(shutdownHook);
+    @SuppressWarnings("IllegalCatch")
+    private void closeLightyModule(LightyModule module) {
+        if (module != null) {
+            try {
+                module.shutdown().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+            } catch (final Exception e) {
+                LOG.error("Exception while shutting down {} module: ", module.getClass().getSimpleName(), e);
+            }
         }
     }
 
     public void shutdown() {
-        shutdownHook.execute();
+        LOG.info("Lighty.io and RESTCONF-NETCONF shutting down ...");
+        final Stopwatch stopwatch = Stopwatch.createStarted();
+        closeLightyModule(this.netconfSBPlugin);
+        closeLightyModule(this.restconf);
+        closeLightyModule(this.swagger);
+        closeLightyModule(this.lightyController);
+        LOG.info("Lighty.io and RESTCONF-NETCONF stopped in {}", stopwatch.stop());
     }
 
-    public static void main(String[] args) {
-        Main app = new Main();
-        app.start(args, true);
-    }
-
-    private static class ShutdownHook extends Thread {
-
-        private static final Logger LOG = LoggerFactory.getLogger(ShutdownHook.class);
-        private final LightyController lightyController;
-        private final CommunityRestConf communityRestConf;
-        private final LightyModule netconfSouthboundPlugin;
-        private final SwaggerLighty swagger;
-
-        ShutdownHook(LightyController lightyController, CommunityRestConf communityRestConf,
-                     LightyModule netconfSouthboundPlugin, SwaggerLighty swagger) {
-            this.lightyController = lightyController;
-            this.communityRestConf = communityRestConf;
-            this.netconfSouthboundPlugin = netconfSouthboundPlugin;
-            this.swagger = swagger;
-        }
-
-        @Override
-        public void run() {
-            this.execute();
-        }
-
-        @SuppressWarnings({"checkstyle:illegalCatch", "VariableDeclarationUsageDistance"})
-        public void execute() {
-            LOG.info("lighty.io and RESTCONF-NETCONF shutting down ...");
-            final Stopwatch stopwatch = Stopwatch.createStarted();
-            try {
-                swagger.shutdown().get();
-            } catch (Exception e) {
-                LOG.error("Exception while shutting down lighty.io swagger:", e);
-            }
-            try {
-                communityRestConf.shutdown().get();
-            } catch (Exception e) {
-                LOG.error("Exception while shutting down RESTCONF:", e);
-            }
-            try {
-                netconfSouthboundPlugin.shutdown().get();
-            } catch (Exception e) {
-                LOG.error("Exception while shutting down NETCONF:", e);
-            }
-            try {
-                lightyController.shutdown().get();
-            } catch (Exception e) {
-                LOG.error("Exception while shutting down lighty.io controller:", e);
-            }
-            LOG.info("Lighty and OFP stopped in {}", stopwatch.stop());
-        }
-    }
 }
