@@ -11,8 +11,12 @@ on:
         default: lighty-rnc
         required: true
       image-tag:
-        description: Desired TAG of docker image
+        description: Desired TAG of docker image. Please provide specific tag and also use `image-tag-latest` parameter if you want to also use `latest` tag.
         default: latest
+        required: true
+      image-tag-latest:
+        description: Should be this docker labeled with tag latest? Enter `true` if the tag `latest` should be added for image.
+        default: "false"
         required: true
       helm-chart-version:
         description: Desired version of released helm chart, (if "default" the version from Chart.yaml will be used)
@@ -55,14 +59,18 @@ jobs:
         run: |
           DOCKER_IMAGE_NAME=$(echo ghcr.io/pantheontech/${{ github.event.inputs.image-name }})
           DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME:${{ github.event.inputs.image-tag }})
+          echo "DOCKER_IMAGE_NAME=$(echo $DOCKER_IMAGE_NAME)" >> $GITHUB_ENV
           echo "DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME_TAG)" >> $GITHUB_ENV
       - name: Build docker image
         run: mvn install -B -pl :${{ github.event.inputs.app-name }},:${{ github.event.inputs.app-name }}-docker -P docker
-      - name: Rename image to desired
+      - name: Tag image
         run: |
           image_name=$(mvn help:evaluate -f ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-docker/pom.xml -Dexpression=image.name -q -DforceStdout)
           docker tag $image_name $DOCKER_IMAGE_NAME_TAG
-          docker images
+          if [ "${{ github.event.inputs.image-tag-latest }}" = 'true' ]; then
+            docker tag $image_name $DOCKER_IMAGE_NAME:latest
+          fi
+          docker images | grep $image_name
       - name: List docker images
         run: |
           docker images
@@ -72,6 +80,9 @@ jobs:
       - name: Publish docker image (ghcr.io)
         run: |
           docker push $DOCKER_IMAGE_NAME_TAG
+          if [ "${{ github.event.inputs.image-tag-latest }}" = 'true' ]; then
+            docker push $DOCKER_IMAGE_NAME:latest
+          fi
       - name: Check if docker image is pullable  (ghcr.io)
         run: |
           docker rmi $DOCKER_IMAGE_NAME_TAG
