@@ -34,7 +34,7 @@
             <dependency>
                 <groupId>org.opendaylight.aaa</groupId>
                 <artifactId>aaa-artifacts</artifactId>
-                <version>0.12.2</version>
+                <version>0.12.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -55,21 +55,21 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-artifacts</artifactId>
-                <version>6.0.8</version>
+                <version>6.0.9</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.netconf</groupId>
                 <artifactId>netconf-artifacts</artifactId>
-                <version>1.9.2</version>
+                <version>1.9.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.yangtools</groupId>
                 <artifactId>yangtools-artifacts</artifactId>
-                <version>5.0.8</version>
+                <version>5.0.9</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -77,14 +77,14 @@
             <dependency>
                 <groupId>org.opendaylight.openflowplugin</groupId>
                 <artifactId>openflowplugin-artifacts</artifactId>
-                <version>0.11.2</version>
+                <version>0.11.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.serviceutils</groupId>
                 <artifactId>serviceutils-artifacts</artifactId>
-                <version>0.6.2</version>
+                <version>0.6.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
