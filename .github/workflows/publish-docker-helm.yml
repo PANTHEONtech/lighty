@@ -4,20 +4,19 @@ on:
     inputs:
       app-name:
         description: Name of the application in /lighty-applications
-        default: lighty-rnc-app
+        default: lighty-rnc
         required: true
       image-name:
         description: Desired NAME of docker image
         default: lighty-rnc
         required: true
-      image-tag:
-        description: Desired TAG of docker image
-        default: latest
+      version:
+        description: Desired version of published docker image & helm charts
         required: true
-      helm-chart-version:
-        description: Desired version of released helm chart, (if "default" the version from Chart.yaml will be used)
-        default: default
-        required: false
+      image-tag-latest:
+        description: Should be this docker labeled with tag latest? Enter `true` if the tag `latest` should be added for image.
+        default: "false"
+        required: true
       checkout-ref:
         description: The branch, tag or SHA to checkout. (if "default" the selected branch will be used)
         default: default
@@ -29,8 +28,8 @@ jobs:
       run:
         shell: bash
     env:
-      app-aggregator-dir: lighty-applications/${{ github.event.inputs.app-name }}-aggregator
-      PUBLISH_ACCESS_KEY: ${{ secrets.MM_PKG_WRITE}}
+      app-aggregator-dir: lighty-applications/${{ github.event.inputs.app-name }}-app-aggregator
+      PUBLISH_ACCESS_KEY: ${{ secrets.MM_PKG_WRITE }}
     name: "Publish docker image and helm chart. App: ${{ github.event.inputs.app-name }}, Checkout-ref: ${{ github.event.inputs.checkout-ref }}"
     steps:
       - name: Clone Repository
@@ -54,15 +53,19 @@ jobs:
       - name: Env docker image name
         run: |
           DOCKER_IMAGE_NAME=$(echo ghcr.io/pantheontech/${{ github.event.inputs.image-name }})
-          DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME:${{ github.event.inputs.image-tag }})
+          DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME:${{ github.event.inputs.version }})
+          echo "DOCKER_IMAGE_NAME=$(echo $DOCKER_IMAGE_NAME)" >> $GITHUB_ENV
           echo "DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME_TAG)" >> $GITHUB_ENV
       - name: Build docker image
-        run: mvn install -B -pl :${{ github.event.inputs.app-name }},:${{ github.event.inputs.app-name }}-docker -am -P docker
-      - name: Rename image to desired
+        run: mvn install -B -pl :${{ github.event.inputs.app-name }}-module,:${{ github.event.inputs.app-name }}-app,:${{ github.event.inputs.app-name }}-app-docker -P docker
+      - name: Tag image
         run: |
-          image_name=$(mvn help:evaluate -f ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-docker/pom.xml -Dexpression=image.name -q -DforceStdout)
+          image_name=$(mvn help:evaluate -f ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-app-docker/pom.xml -Dexpression=image.name -q -DforceStdout)
           docker tag $image_name $DOCKER_IMAGE_NAME_TAG
-          docker images
+          if [ "${{ github.event.inputs.image-tag-latest }}" = 'true' ]; then
+            docker tag $image_name $DOCKER_IMAGE_NAME:latest
+          fi
+          docker images | grep $image_name
       - name: List docker images
         run: |
           docker images
@@ -72,6 +75,9 @@ jobs:
       - name: Publish docker image (ghcr.io)
         run: |
           docker push $DOCKER_IMAGE_NAME_TAG
+          if [ "${{ github.event.inputs.image-tag-latest }}" = 'true' ]; then
+            docker push $DOCKER_IMAGE_NAME:latest
+          fi
       - name: Check if docker image is pullable  (ghcr.io)
         run: |
           docker rmi $DOCKER_IMAGE_NAME_TAG
@@ -81,26 +87,17 @@ jobs:
           sudo snap install yq
       - name: Set image.name, image.version in values.yaml of helm chart
         run: |
-          yq eval '.image.name="ghcr.io/pantheontech/${{ github.event.inputs.image-name }}" | .image.version="${{ github.event.inputs.image-tag }}"' ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-helm/helm/${{ github.event.inputs.app-name }}-helm/values.yaml -i
+          yq eval '.image.name="ghcr.io/pantheontech/${{ github.event.inputs.image-name }}" | .image.version="${{ github.event.inputs.version }}"' ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-app-helm/helm/${{ github.event.inputs.app-name }}-app-helm/values.yaml -i
       - name: Print values.yaml
         run: |
-          cat -A ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-helm/helm/${{ github.event.inputs.app-name }}-helm/values.yaml
-      - name: "Publish Helm chart to Helm repository (Version: ${{ github.event.inputs.helm-chart-version }} )"
-        if: ${{ github.event.inputs.helm-chart-version != 'default' }}
+          cat -A ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-app-helm/helm/${{ github.event.inputs.app-name }}-app-helm/values.yaml
+      - name: "Publish Helm chart to Helm repository (Version: ${{ github.event.inputs.version }} )"
+        if: ${{ github.event.inputs.version != '' }}
         uses: stefanprodan/helm-gh-pages@master
         with:
           token: ${{ env.PUBLISH_ACCESS_KEY }}
-          charts_dir: ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-helm/helm/
+          charts_dir: ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-app-helm/helm/
           charts_url: https://pantheontech.github.io/helm-charts/
           repository: helm-charts
           branch: main
-          chart_version: ${{ github.event.inputs.helm-chart-version }}
-      - name: "Publish Helm chart to Helm repository (Version: from Chart.yaml)"
-        if: ${{ github.event.inputs.helm-chart-version == 'default' }}
-        uses: stefanprodan/helm-gh-pages@master
-        with:
-          token: ${{ env.PUBLISH_ACCESS_KEY }}
-          charts_dir: ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-helm/helm/
-          charts_url: https://pantheontech.github.io/helm-charts/
-          repository: helm-charts
-          branch: main
+          chart_version: ${{ github.event.inputs.version }}
