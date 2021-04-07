@@ -20,21 +20,6 @@
         versions.
     </description>
 
-    <repositories>
-        <!-- FIXME: Remove when the release of OFP and Serviceutils will be available -->
-        <repository>
-            <id>opendaylight-snapshot</id>
-            <name>opendaylight-snapshot</name>
-            <url>https://nexus.opendaylight.org/content/repositories/opendaylight.snapshot/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -93,7 +78,7 @@
             <dependency>
                 <groupId>org.opendaylight.netconf</groupId>
                 <artifactId>netconf-artifacts</artifactId>
-                <version>1.13.0</version>
+                <version>1.13.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -108,16 +93,14 @@
             <dependency>
                 <groupId>org.opendaylight.openflowplugin</groupId>
                 <artifactId>openflowplugin-artifacts</artifactId>
-                <!--FIXME: change to release version when will be available -->
-                <version>0.12.0-SNAPSHOT</version>
+                <version>0.12.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.serviceutils</groupId>
                 <artifactId>serviceutils-artifacts</artifactId>
-                <!--FIXME: change to release version when will be available -->
-                <version>0.7.0-SNAPSHOT</version>
+                <version>0.7.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
