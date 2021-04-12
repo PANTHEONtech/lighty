@@ -2,15 +2,15 @@
 Lighty Restconf Netconf application allows to easily initialize, start and use most used OpenDaylight services and optionally add custom business logic.
 
 Most important lighty.io components used are:
-- [lighty.io controller](https://github.com/PANTHEONtech/lighty/tree/13.2.x/lighty-core/lighty-controller)
+- [lighty.io controller](https://github.com/PANTHEONtech/lighty/tree/13.3.x/lighty-core/lighty-controller)
   provides core ODL services (like MDSAL, yangtools, global schema context,...) that are required
   for other services or plugins.
-- [RESTCONF northbound plugin](https://github.com/PANTHEONtech/lighty/tree/13.2.x/lighty-modules/lighty-restconf-nb-community)
+- [RESTCONF northbound plugin](https://github.com/PANTHEONtech/lighty/tree/13.3.x/lighty-modules/lighty-restconf-nb-community)
   provides the RESTCONF interface that is used to communicate with the application using the RESTCONF protocol over the HTTP.
-- [NETCONF southbound plugin](https://github.com/PANTHEONtech/lighty/tree/13.2.x/lighty-modules/lighty-netconf-sb)
+- [NETCONF southbound plugin](https://github.com/PANTHEONtech/lighty/tree/13.3.x/lighty-modules/lighty-netconf-sb)
   enables application to connect to the NETCONF devices using the NETCONF protocol and read/write configuration
   from them or execute RPCs.
-- [AAA module](https://github.com/PANTHEONtech/lighty/tree/13.2.x/lighty-modules/lighty-aaa) provides authorization,
+- [AAA module](https://github.com/PANTHEONtech/lighty/tree/13.3.x/lighty-modules/lighty-aaa) provides authorization,
   authentication and accounting which for example enables to use Basic Authentication for RESTCONF northbound interface.
   This module is optional and can be turned ON/OFF using application configuration.
 
@@ -104,7 +104,7 @@ To build and start the RNC lighty.io application using docker in the local envir
 
    If your configuration.json file specifies path to initial configuration data to load on start up
    (for more information, check 
-   [lighty-controller](https://github.com/PANTHEONtech/lighty/tree/13.2.x/lighty-core/lighty-controller))
+   [lighty-controller](https://github.com/PANTHEONtech/lighty/tree/13.3.x/lighty-core/lighty-controller))
    you need to mount the json/xml file as well:
    `-v /absolute/path/to/file/initData.xml:/lighty-rnc/initData.xml`
    , then your path to this file in configuration.json becomes just "./initData.xml":
@@ -134,7 +134,7 @@ To install, make sure that the docker image defined in `values.yaml` is accessib
 in `/lighty-rnc-app-helm/helm/` directory.
 ### Providing startup configuration
 By default, the deployed application is started with custom configuration.json 
-(for more information check [lighty-controller](https://github.com/PANTHEONtech/lighty/tree/13.2.x/lighty-core/lighty-controller)).
+(for more information check [lighty-controller](https://github.com/PANTHEONtech/lighty/tree/13.3.x/lighty-core/lighty-controller)).
 We supply this configuration file by passing kubernetes configmap (`configmaps.yaml`), which you can modify to your needs.
 To use the functionality of loading configuration data on startup, add new entry to configmaps.yaml:
 `initData: |
