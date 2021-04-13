@@ -32,7 +32,7 @@ public class LocalHttpServerTest {
 
     @Test
     public void initLocalHttpServerTest() throws Exception {
-        InetSocketAddress socketAddress = new InetSocketAddress(InetAddress.getLocalHost(), 8888);
+        InetSocketAddress socketAddress = new InetSocketAddress(InetAddress.getLoopbackAddress(), 8888);
         LightyServerBuilder serverBuilder = new LightyServerBuilder(socketAddress);
         Server server = serverBuilder.build();
         LocalHttpServer localHttpServer = new LocalHttpServer(serverBuilder);
