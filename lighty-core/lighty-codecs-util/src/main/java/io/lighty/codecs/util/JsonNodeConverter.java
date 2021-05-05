@@ -37,15 +37,30 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 public class JsonNodeConverter implements NodeConverter {
 
     private final EffectiveModelContext effectiveModelContext;
+    private final JSONCodecFactory jsonCodecFactory;
 
     /**
-     * The only constructor will create an instance of {@link JsonNodeConverter} with the given
+     * This constructor will create an instance of {@link JsonNodeConverter} with the given
      * {@link EffectiveModelContext}. This effective model context will be used for proper RPC and Node resolution
      *
      * @param effectiveModelContext initial effective model context
      */
     public JsonNodeConverter(final EffectiveModelContext effectiveModelContext) {
         this.effectiveModelContext = effectiveModelContext;
+        this.jsonCodecFactory = JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02.createLazy(effectiveModelContext);
+    }
+
+    /**
+     * This constructor will create an instance of {@link JsonNodeConverter} with the given
+     * {@link EffectiveModelContext} and customizable {@link JSONCodecFactorySupplier}.
+     * This effective model context will be used for proper RPC and Node resolution
+     *
+     * @param effectiveModelContext    initial effective model context
+     * @param jsonCodecFactorySupplier JSON codec factory supplier
+     */
+    public JsonNodeConverter(final EffectiveModelContext effectiveModelContext, final JSONCodecFactorySupplier jsonCodecFactorySupplier) {
+        this.effectiveModelContext = effectiveModelContext;
+        this.jsonCodecFactory = jsonCodecFactorySupplier.createLazy(effectiveModelContext);
     }
 
     /**
@@ -63,10 +78,8 @@ public class JsonNodeConverter implements NodeConverter {
             throws SerializationException {
         Writer writer = new StringWriter();
         JsonWriter jsonWriter = new JsonWriter(writer);
-        JSONCodecFactory jsonCodecFactory =
-                JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02.createLazy(this.effectiveModelContext);
         URI namespace = schemaNode.getQName().getNamespace();
-        NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter.createExclusiveWriter(jsonCodecFactory,
+        NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter.createExclusiveWriter(this.jsonCodecFactory,
                 schemaNode.getPath(), namespace, jsonWriter);
         try (NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(create)) {
             normalizedNodeWriter.write(normalizedNode);
@@ -90,11 +103,9 @@ public class JsonNodeConverter implements NodeConverter {
             throws SerializationException {
         Writer writer = new StringWriter();
         JsonWriter jsonWriter = new JsonWriter(writer);
-        JSONCodecFactory jsonCodecFactory =
-                JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02.createLazy(this.effectiveModelContext);
         String localName = schemaNode.getQName().getLocalName();
         URI namespace = schemaNode.getQName().getNamespace();
-        NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter.createExclusiveWriter(jsonCodecFactory,
+        NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter.createExclusiveWriter(this.jsonCodecFactory,
                 schemaNode.getPath(), namespace, jsonWriter);
         try (NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(create)) {
             jsonWriter.beginObject().name(localName);
@@ -129,12 +140,10 @@ public class JsonNodeConverter implements NodeConverter {
     public NormalizedNode<?, ?> deserialize(final SchemaNode schemaNode, final Reader inputData)
             throws SerializationException {
         NormalizedNodeResult result = new NormalizedNodeResult();
-        JSONCodecFactory jsonCodecFactory =
-                JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02.createLazy(effectiveModelContext);
         try (JsonReader reader = new JsonReader(inputData);
                 NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
 
-                JsonParserStream jsonParser = JsonParserStream.create(streamWriter, jsonCodecFactory, schemaNode)) {
+                JsonParserStream jsonParser = JsonParserStream.create(streamWriter, this.jsonCodecFactory, schemaNode)) {
             jsonParser.parse(reader);
         } catch (IOException e) {
             throw new SerializationException(e);
