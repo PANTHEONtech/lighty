@@ -61,7 +61,7 @@ public class JsonNodeConverter implements NodeConverter {
      * @param effectiveModelContext to be used
      * @param jsonCodecFactorySupplier
      */
-    public JsonNodeConverter(final EffectiveModelContext effectiveModelContext, JSONCodecFactorySupplier jsonCodecFactorySupplier) {
+    public JsonNodeConverter(final EffectiveModelContext effectiveModelContext, final JSONCodecFactorySupplier jsonCodecFactorySupplier) {
         this.effectiveModelContext = effectiveModelContext;
         this.jsonCodecFactory = jsonCodecFactorySupplier.createLazy(effectiveModelContext);
     }
