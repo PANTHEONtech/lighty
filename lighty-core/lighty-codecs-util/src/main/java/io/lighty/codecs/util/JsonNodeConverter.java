@@ -58,7 +58,8 @@ public class JsonNodeConverter implements NodeConverter {
      * @param schemaContext            initial schema context
      * @param jsonCodecFactorySupplier JSON codec factory supplier
      */
-    public JsonNodeConverter(final SchemaContext schemaContext, JSONCodecFactorySupplier jsonCodecFactorySupplier) {
+    public JsonNodeConverter(final SchemaContext schemaContext,
+        final JSONCodecFactorySupplier jsonCodecFactorySupplier) {
         this.schemaContext = schemaContext;
         this.jsonCodecFactory = jsonCodecFactorySupplier.createLazy(schemaContext);
     }
@@ -80,8 +81,8 @@ public class JsonNodeConverter implements NodeConverter {
         JsonWriter jsonWriter = new JsonWriter(writer);
         URI namespace = schemaNode.getQName().getNamespace();
         NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter
-                                                    .createExclusiveWriter(this.jsonCodecFactory, schemaNode.getPath(),
-                                                            namespace, jsonWriter);
+                                                .createExclusiveWriter(this.jsonCodecFactory, schemaNode.getPath(),
+                                                    namespace, jsonWriter);
         try (NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(create)) {
             normalizedNodeWriter.write(normalizedNode);
             jsonWriter.flush();
@@ -107,8 +108,8 @@ public class JsonNodeConverter implements NodeConverter {
         String localName = schemaNode.getQName().getLocalName();
         URI namespace = schemaNode.getQName().getNamespace();
         NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter
-                                                    .createExclusiveWriter(this.jsonCodecFactory, schemaNode.getPath(),
-                                                            namespace, jsonWriter);
+                                                .createExclusiveWriter(this.jsonCodecFactory, schemaNode.getPath(),
+                                                    namespace, jsonWriter);
         try (NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(create)) {
             jsonWriter.beginObject().name(localName);
             for (NormalizedNode<?, ?> child : ((ContainerNode) normalizedNode).getValue()) {
