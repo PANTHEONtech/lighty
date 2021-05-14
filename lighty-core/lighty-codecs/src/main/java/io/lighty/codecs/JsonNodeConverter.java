@@ -48,20 +48,26 @@ public class JsonNodeConverter implements NodeConverter {
     /**
      * The constructor with EffectiveModelContext parameter only.
      *
+     * <p>
+     * The {@code JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02} is used to serialize/deserialize
+     * data JSON representations.
+     *
      * @param effectiveModelContext to be used
      */
     public JsonNodeConverter(final EffectiveModelContext effectiveModelContext) {
         this.effectiveModelContext = effectiveModelContext;
-        this.jsonCodecFactory = JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02.createLazy(effectiveModelContext);
+        this.jsonCodecFactory = JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02
+                .createLazy(effectiveModelContext);
     }
 
     /**
      * The constructor with EffectiveModelContext and JSONCodecFactorySupplier.
      *
      * @param effectiveModelContext to be used
-     * @param jsonCodecFactorySupplier
+     * @param jsonCodecFactorySupplier {@code JSONCodecFactorySupplier} instance
      */
-    public JsonNodeConverter(final EffectiveModelContext effectiveModelContext, final JSONCodecFactorySupplier jsonCodecFactorySupplier) {
+    public JsonNodeConverter(final EffectiveModelContext effectiveModelContext,
+            final JSONCodecFactorySupplier jsonCodecFactorySupplier) {
         this.effectiveModelContext = effectiveModelContext;
         this.jsonCodecFactory = jsonCodecFactorySupplier.createLazy(effectiveModelContext);
     }
@@ -145,8 +151,8 @@ public class JsonNodeConverter implements NodeConverter {
         NormalizedNodeResult result = new NormalizedNodeResult();
         try (JsonReader reader = new JsonReader(inputData);
                 NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
-
-                JsonParserStream jsonParser = JsonParserStream.create(streamWriter, this.jsonCodecFactory, schemaNode)) {
+                JsonParserStream jsonParser = JsonParserStream.create(streamWriter,
+                        this.jsonCodecFactory, schemaNode)) {
             jsonParser.parse(reader);
         } catch (IOException e) {
             throw new SerializationException(e);
