@@ -52,14 +52,17 @@ public class JsonNodeConverter implements NodeConverter {
 
     /**
      * This constructor will create an instance of {@link JsonNodeConverter} with the given
-     * {@link SchemaContext}  and customizable {@link JSONCodecFactorySupplier}.
-     * This schema context will be used for proper RPC and Node resolution
+     * {@link SchemaContext} and customizable {@link JSONCodecFactorySupplier}.
+     *
+     * <p>
+     * The schema context will be used for proper RPC and Node resolution and JSON node factory supplier
+     * for JSON serialization/deserialization of data.
      *
      * @param schemaContext            initial schema context
      * @param jsonCodecFactorySupplier JSON codec factory supplier
      */
     public JsonNodeConverter(final SchemaContext schemaContext,
-        final JSONCodecFactorySupplier jsonCodecFactorySupplier) {
+            final JSONCodecFactorySupplier jsonCodecFactorySupplier) {
         this.schemaContext = schemaContext;
         this.jsonCodecFactory = jsonCodecFactorySupplier.createLazy(schemaContext);
     }
@@ -145,7 +148,6 @@ public class JsonNodeConverter implements NodeConverter {
         NormalizedNodeResult result = new NormalizedNodeResult();
         try (JsonReader reader = new JsonReader(inputData);
              NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
-
              JsonParserStream jsonParser = JsonParserStream.create(streamWriter, this.jsonCodecFactory, schemaNode)) {
             jsonParser.parse(reader);
         } catch (IOException e) {
