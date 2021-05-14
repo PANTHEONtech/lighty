@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 PANTHEON.tech s.r.o. All Rights Reserved.
+ * Copyright (c) 2021 PANTHEON.tech s.r.o. All Rights Reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -19,43 +19,34 @@ import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
 
-public class UnreachableListenerService implements ClusterSingletonService {
-    private static final String CLUSTER_SINGLETON_ID = "singletonUnreachableListener";
-    private static final String UNREACHABLE_LISTENER_ACTOR_NAME = "unreachableListener";
+public class MemberRemovedListenerService implements ClusterSingletonService {
+    private static final String CLUSTER_SINGLETON_ID = "singletonMemberRemovedListener";
+    private static final String ACTOR_NAME = "memberRemovedListener";
 
     private final Cluster cluster;
-    private final Long podRestartTimeout;
     private final ActorSystem actorSystem;
     private final DataBroker dataBroker;
     private final ClusterAdminService clusterAdminRPCService;
-    private ActorRef unreachableListener;
-    private String kubernetesPodsNamespace;
-    private String kubernetesPodsSelector;
+    private ActorRef memberRemovedListener;
 
-    public UnreachableListenerService(ActorSystem actorSystem, DataBroker dataBroker,
-                                      ClusterAdminService clusterAdminRPCService,
-                                      String kubernetesPodsNamespace, String kubernetesPodsSelector,
-                                      Long podRestartTimeout) {
+    public MemberRemovedListenerService(ActorSystem actorSystem, DataBroker dataBroker,
+            ClusterAdminService clusterAdminRPCService) {
         this.actorSystem = actorSystem;
         this.dataBroker = dataBroker;
         this.clusterAdminRPCService = clusterAdminRPCService;
         this.cluster = Cluster.get(actorSystem);
-        this.podRestartTimeout = podRestartTimeout;
-        this.kubernetesPodsNamespace = kubernetesPodsNamespace;
-        this.kubernetesPodsSelector = kubernetesPodsSelector;
     }
 
     @Override
     public void instantiateServiceInstance() {
-        this.unreachableListener = actorSystem.actorOf(UnreachableListener.props(actorSystem, dataBroker,
-                clusterAdminRPCService, kubernetesPodsNamespace, kubernetesPodsSelector, podRestartTimeout),
-                UNREACHABLE_LISTENER_ACTOR_NAME);
+        this.memberRemovedListener = actorSystem.actorOf(MemberRemovedListener.props(dataBroker,
+                clusterAdminRPCService), ACTOR_NAME);
     }
 
     @Override
     public ListenableFuture<? extends Object> closeServiceInstance() {
-        cluster.unsubscribe(this.unreachableListener);
-        this.unreachableListener.tell(PoisonPill.getInstance(), this.unreachableListener);
+        cluster.unsubscribe(this.memberRemovedListener);
+        this.memberRemovedListener.tell(PoisonPill.getInstance(), this.memberRemovedListener);
         return Futures.immediateFuture(Done.done());
     }
 
