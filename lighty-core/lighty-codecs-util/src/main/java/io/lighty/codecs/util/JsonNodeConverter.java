@@ -83,9 +83,8 @@ public class JsonNodeConverter implements NodeConverter {
         Writer writer = new StringWriter();
         JsonWriter jsonWriter = new JsonWriter(writer);
         URI namespace = schemaNode.getQName().getNamespace();
-        NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter
-                                                .createExclusiveWriter(this.jsonCodecFactory, schemaNode.getPath(),
-                                                    namespace, jsonWriter);
+        NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter.createExclusiveWriter(this.jsonCodecFactory,
+                schemaNode.getPath(), namespace, jsonWriter);
         try (NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(create)) {
             normalizedNodeWriter.write(normalizedNode);
             jsonWriter.flush();
@@ -110,9 +109,8 @@ public class JsonNodeConverter implements NodeConverter {
         JsonWriter jsonWriter = new JsonWriter(writer);
         String localName = schemaNode.getQName().getLocalName();
         URI namespace = schemaNode.getQName().getNamespace();
-        NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter
-                                                .createExclusiveWriter(this.jsonCodecFactory, schemaNode.getPath(),
-                                                    namespace, jsonWriter);
+        NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter.createExclusiveWriter(this.jsonCodecFactory,
+                schemaNode.getPath(), namespace, jsonWriter);
         try (NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(create)) {
             jsonWriter.beginObject().name(localName);
             for (NormalizedNode<?, ?> child : ((ContainerNode) normalizedNode).getValue()) {
