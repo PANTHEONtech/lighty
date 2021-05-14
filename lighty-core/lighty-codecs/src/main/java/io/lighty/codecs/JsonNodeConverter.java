@@ -47,6 +47,10 @@ public class JsonNodeConverter implements NodeConverter {
     /**
      * The constructor with SchemaContext parameter only.
      *
+     * <p>
+     * The {@code JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02} is used to serialize/deserialize
+     * data JSON representations.
+     *
      * @param schemaContext to be used
      */
     public JsonNodeConverter(final SchemaContext schemaContext) {
@@ -57,11 +61,11 @@ public class JsonNodeConverter implements NodeConverter {
     /**
      * The constructor with EffectiveModelContext and JSONCodecFactorySupplier.
      *
-     * @param schemaContext            to be used
-     * @param jsonCodecFactorySupplier
+     * @param schemaContext to be used
+     * @param jsonCodecFactorySupplier {@code JSONCodecFactorySupplier} instance
      */
     public JsonNodeConverter(final SchemaContext schemaContext,
-        final JSONCodecFactorySupplier jsonCodecFactorySupplier) {
+            final JSONCodecFactorySupplier jsonCodecFactorySupplier) {
         this.schemaContext = schemaContext;
         this.jsonCodecFactory = jsonCodecFactorySupplier.createLazy(schemaContext);
     }
@@ -82,9 +86,8 @@ public class JsonNodeConverter implements NodeConverter {
         Writer writer = new StringWriter();
         JsonWriter jsonWriter = new JsonWriter(writer);
         URI namespace = schemaNode.getQName().getNamespace();
-        NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter
-                                                .createExclusiveWriter(this.jsonCodecFactory, schemaNode.getPath(),
-                                                    namespace, jsonWriter);
+        NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter.createExclusiveWriter(this.jsonCodecFactory,
+                schemaNode.getPath(), namespace, jsonWriter);
         try (NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(create)) {
             normalizedNodeWriter.write(normalizedNode);
             jsonWriter.flush();
@@ -109,9 +112,8 @@ public class JsonNodeConverter implements NodeConverter {
         JsonWriter jsonWriter = new JsonWriter(writer);
         String localName = schemaNode.getQName().getLocalName();
         URI namespace = schemaNode.getQName().getNamespace();
-        NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter
-                                                .createExclusiveWriter(this.jsonCodecFactory, schemaNode.getPath(),
-                                                    namespace, jsonWriter);
+        NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter.createExclusiveWriter(this.jsonCodecFactory,
+                schemaNode.getPath(), namespace, jsonWriter);
         try (NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(create)) {
             jsonWriter.beginObject().name(localName);
             for (NormalizedNode<?, ?> child : ((ContainerNode) normalizedNode).getValue()) {
@@ -146,9 +148,9 @@ public class JsonNodeConverter implements NodeConverter {
             throws SerializationException {
         NormalizedNodeResult result = new NormalizedNodeResult();
         try (JsonReader reader = new JsonReader(inputData);
-             NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
-
-             JsonParserStream jsonParser = JsonParserStream.create(streamWriter, this.jsonCodecFactory, schemaNode)) {
+                NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
+                JsonParserStream jsonParser = JsonParserStream.create(streamWriter,
+                        this.jsonCodecFactory, schemaNode)) {
             jsonParser.parse(reader);
         } catch (IOException e) {
             throw new SerializationException(e);
