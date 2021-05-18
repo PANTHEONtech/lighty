@@ -42,8 +42,7 @@ public class MemberRemovedListener extends AbstractActor {
     @Override
     public void preStart() {
         LOG.info("Starting {}", this.getClass());
-        cluster.subscribe(getSelf(), ClusterEvent.initialStateAsEvents(), ClusterEvent.MemberEvent.class,
-                ClusterEvent.UnreachableMember.class);
+        cluster.subscribe(getSelf(), ClusterEvent.initialStateAsEvents(), ClusterEvent.MemberRemoved.class);
     }
 
     @Override
@@ -58,12 +57,12 @@ public class MemberRemovedListener extends AbstractActor {
                     LOG.info("Member detected as removed, processing: {}", removedMember.member().address());
                     processRemovedMember(removedMember.member());
                 })
-                .matchAny(message -> LOG.debug("Received {} message", message))
                 .build();
     }
 
     private void processRemovedMember(Member member) {
-        LOG.info("Removing member {}. May result in WARN messages if already removed by another member.", member.address());
+        LOG.info("Removing shard replicas for member {}. May result in WARN (DOES_NOT_EXIST) messages if already"
+                + "removed by another member.", member.address());
         List<String> removedMemberRoles = member.getRoles().stream()
                 .filter(role -> !role.contains("default")).collect(Collectors.toList());
 
@@ -80,9 +79,9 @@ public class MemberRemovedListener extends AbstractActor {
                             removeAllShardReplicasResult.getErrors());
                 }
             }
-            LOG.info("Delete-Candidates transaction finished");
+            LOG.info("Shard replicas removed for member {}", member.address());
         } catch (InterruptedException | ExecutionException e) {
-            LOG.error("Delete-Candidates transaction failed", e);
+            LOG.error("Unable to remove shard replicas for member {}", member.address(), e);
         }
     }
 
