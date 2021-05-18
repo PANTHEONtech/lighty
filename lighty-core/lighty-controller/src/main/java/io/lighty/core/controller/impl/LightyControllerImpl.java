@@ -345,8 +345,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         //create binding data broker
         this.domDataBroker = new BindingDOMDataBrokerAdapter(this.codec, this.concurrentDOMDataBroker);
 
-        this.clusteringHandler.ifPresent(handler ->
-                handler.start(clusterSingletonServiceProvider, clusterAdminRpcService, domDataBroker));
+        this.clusteringHandler.ifPresent(handler -> handler.start(clusterAdminRpcService));
 
         this.bossGroup = new NioEventLoopGroup();
         this.workerGroup = new NioEventLoopGroup();

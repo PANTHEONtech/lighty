@@ -28,8 +28,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
-import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.AddReplicasForAllShardsInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.AddReplicasForAllShardsOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
@@ -95,11 +93,9 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
     }
 
     @Override
-    public void start(@NonNull ClusterSingletonServiceProvider clusterSingletonServiceProvider,
-                      @NonNull ClusterAdminService clusterAdminRPCService, @NonNull DataBroker bindingDataBroker) {
-        clusterSingletonServiceProvider.registerClusterSingletonService(
-                new MemberRemovedListenerService(actorSystemProvider.getActorSystem(), bindingDataBroker,
-                        clusterAdminRPCService));
+    public void start(@NonNull ClusterAdminService clusterAdminRPCService) {
+        this.actorSystemProvider.getActorSystem().actorOf(
+                MemberRemovedListener.props(clusterAdminRPCService), "memberRemovedListener");
         this.askForShards(clusterAdminRPCService);
     }
 

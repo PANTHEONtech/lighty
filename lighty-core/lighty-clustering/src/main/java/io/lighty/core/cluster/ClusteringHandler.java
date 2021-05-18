@@ -9,16 +9,13 @@ package io.lighty.core.cluster;
 
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
 
 public interface ClusteringHandler {
 
     void initClustering();
 
-    void start(@NonNull ClusterSingletonServiceProvider clusterSingletonServiceProvider,
-            @NonNull ClusterAdminService clusterAdminRPCService, @NonNull DataBroker bindingDataBroker);
+    void start(@NonNull ClusterAdminService clusterAdminRPCService);
 
     Optional<String> getModuleConfig();
 }
