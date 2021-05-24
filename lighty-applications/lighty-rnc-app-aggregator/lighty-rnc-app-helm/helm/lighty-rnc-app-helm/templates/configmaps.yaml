@@ -140,6 +140,10 @@ data:
         roles = [
           "{{ .Values.lighty.akka.memberNamePrefix }}"${?HOSTNAME}
         ]
+        downing-provider-class = "akka.cluster.sbr.SplitBrainResolverProvider"
+        split-brain-resolver {
+          active-strategy = "{{ .Values.lighty.akka.sbrStrategy }}"
+        }
       }
 
       management.http.hostname = ${?HOSTNAME}

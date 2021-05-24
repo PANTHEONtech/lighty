@@ -143,10 +143,80 @@
                 <artifactId>leveldbjni-all</artifactId>
                 <version>1.8</version>
             </dependency>
-            <!--akka management-->
+            <!--akka management and bootstrap-->
+            <dependency>
+                <groupId>com.typesafe.akka</groupId>
+                <artifactId>akka-remote_2.13</artifactId>
+                <version>2.6.12</version>
+            </dependency>
+            <dependency>
+                <groupId>com.typesafe.akka</groupId>
+                <artifactId>akka-slf4j_2.13</artifactId>
+                <version>2.6.12</version>
+            </dependency>
+            <dependency>
+                <groupId>com.typesafe.akka</groupId>
+                <artifactId>akka-cluster_2.13</artifactId>
+                <version>2.6.12</version>
+            </dependency>
+            <dependency>
+                <groupId>com.typesafe.akka</groupId>
+                <artifactId>akka-discovery_2.13</artifactId>
+                <version>2.6.12</version>
+            </dependency>
+            <dependency>
+                <groupId>com.typesafe.akka</groupId>
+                <artifactId>akka-protobuf_2.13</artifactId>
+                <version>2.6.12</version>
+            </dependency>
+            <dependency>
+                <groupId>com.typesafe.akka</groupId>
+                <artifactId>akka-coordination_2.13</artifactId>
+                <version>2.6.12</version>
+            </dependency>
+            <dependency>
+                <groupId>com.typesafe.akka</groupId>
+                <artifactId>akka-distributed-data_2.13</artifactId>
+                <version>2.6.12</version>
+            </dependency>
+            <dependency>
+                <groupId>com.typesafe.akka</groupId>
+                <artifactId>akka-cluster-tools_2.13</artifactId>
+                <version>2.6.12</version>
+            </dependency>
+            <dependency>
+                <groupId>com.typesafe.akka</groupId>
+                <artifactId>akka-cluster-sharding_2.13</artifactId>
+                <version>2.6.12</version>
+            </dependency>
+            <dependency>
+                <groupId>com.typesafe.akka</groupId>
+                <artifactId>akka-actor_2.13</artifactId>
+                <version>2.6.12</version>
+            </dependency>
+            <dependency>
+                <groupId>com.typesafe.akka</groupId>
+                <artifactId>akka-stream_2.13</artifactId>
+                <version>2.6.12</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lightbend.akka.management</groupId>
+                <artifactId>akka-management_2.13</artifactId>
+                <version>1.0.10</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lightbend.akka.management</groupId>
+                <artifactId>akka-management-cluster-http_2.13</artifactId>
+                <version>1.0.10</version>
+            </dependency>
             <dependency>
                 <groupId>com.lightbend.akka.management</groupId>
                 <artifactId>akka-management-cluster-bootstrap_2.13</artifactId>
+                <version>1.0.10</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lightbend.akka.discovery</groupId>
+                <artifactId>akka-discovery-kubernetes-api_2.13</artifactId>
                 <version>1.0.10</version>
             </dependency>
         </dependencies>
