@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2021 PANTHEON.tech s.r.o. All Rights Reserved.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License v1.0 which accompanies this distribution,
+  ~ and is available at https://www.eclipse.org/legal/epl-v10.html
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.lighty.modules.gnmi</groupId>
+    <artifactId>lighty-gnmi</artifactId>
+    <version>14.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>lighty-gnmi-connector</module>
+        <module>lighty-gnmi-commons</module>
+        <module>lighty-gnmi-proto</module>
+        <module>lighty-gnmi-device-simulator</module>
+        <module>lighty-gnmi-test</module>
+        <module>lighty-gnmi-sb</module>
+        <module>lighty-rcgnmi-app-aggregator</module>
+    </modules>
+
+</project>
