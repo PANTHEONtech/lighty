@@ -16,7 +16,7 @@
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-app-parent</artifactId>
         <version>14.0.1-SNAPSHOT</version>
-        <!-- FIXME When moving to github, add relativePath clause -->
+        <relativePath>../../../lighty-core/lighty-app-parent/pom.xml</relativePath>
     </parent>
 
     <groupId>io.lighty.applications.rcgnmi</groupId>
