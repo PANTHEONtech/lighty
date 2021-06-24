@@ -13,7 +13,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.lighty.modules.southbound.gnmi</groupId>
+        <groupId>io.lighty.modules.gnmi.southbound</groupId>
         <artifactId>lighty-gnmi-parent</artifactId>
         <version>15.0.0-SNAPSHOT</version>
         <relativePath>../lighty-gnmi-parent</relativePath>
@@ -42,7 +42,7 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>io.lighty.modules.southbound.gnmi</groupId>
+            <groupId>io.lighty.modules.gnmi</groupId>
             <artifactId>lighty-gnmi-connector</artifactId>
             <!-- FIXME When moving to github, remove version. Declare it in lighty-bom instead. -->
             <version>15.0.0-SNAPSHOT</version>

@@ -19,7 +19,7 @@
         <relativePath>../../../lighty-core/lighty-parent/pom.xml</relativePath>
     </parent>
 
-    <groupId>io.lighty.modules.southbound.gnmi</groupId>
+    <groupId>io.lighty.modules.gnmi</groupId>
     <artifactId>lighty-gnmi-proto</artifactId>
     <version>15.0.0-SNAPSHOT</version>
 

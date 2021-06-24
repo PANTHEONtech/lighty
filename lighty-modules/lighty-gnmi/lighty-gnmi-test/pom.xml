@@ -19,20 +19,20 @@
         <relativePath>../../../lighty-core/lighty-parent/pom.xml</relativePath>
     </parent>
 
-    <groupId>io.lighty.modules.southbound.gnmi</groupId>
+    <groupId>io.lighty.modules.gnmi</groupId>
     <artifactId>lighty-gnmi-test</artifactId>
     <version>15.0.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
-            <groupId>io.lighty.modules.southbound.gnmi</groupId>
+            <groupId>io.lighty.modules.gnmi</groupId>
             <artifactId>lighty-gnmi-connector</artifactId>
             <!-- FIXME When moving to github, remove version. Declare it in lighty-bom instead. -->
             <version>15.0.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.lighty.modules.southbound.gnmi</groupId>
+            <groupId>io.lighty.modules.gnmi</groupId>
             <artifactId>lighty-gnmi-device-simulator</artifactId>
             <!-- FIXME When moving to github, remove version. Declare it in lighty-bom instead. -->
             <version>15.0.0-SNAPSHOT</version>

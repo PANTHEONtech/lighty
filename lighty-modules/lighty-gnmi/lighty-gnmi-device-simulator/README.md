@@ -6,8 +6,8 @@ This simulator provides gNMI device driven by gNMI proto files, with datastore d
 1. Add maven dependency to your pom.xml file.
 ```
    <dependency>
-      <groupId>io.lighty.modules</groupId>
-      <artifactId>lighty-gnmi-sb-device-simulator</artifactId>
+      <groupId>io.lighty.modules.gnmi</groupId>
+      <artifactId>lighty-gnmi-device-simulator</artifactId>
       <version>15.0.0-SNAPSHOT</version>
    </dependency>
 ```
