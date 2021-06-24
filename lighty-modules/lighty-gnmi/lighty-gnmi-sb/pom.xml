@@ -19,7 +19,6 @@
 
     <modules>
         <module>lighty-gnmi-parent</module>
-        <module>lighty-gnmi-models</module>
         <module>lighty-gnmi-module</module>
     </modules>
 
