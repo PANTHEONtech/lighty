@@ -33,7 +33,7 @@
         </dependency>
         <dependency>
             <groupId>io.lighty.modules.southbound.gnmi</groupId>
-            <artifactId>lighty-gnmi-device-simulator-impl</artifactId>
+            <artifactId>lighty-gnmi-device-simulator</artifactId>
             <!-- FIXME When moving to github, remove version. Declare it in lighty-bom instead. -->
             <version>14.0.1-SNAPSHOT</version>
             <scope>test</scope>
