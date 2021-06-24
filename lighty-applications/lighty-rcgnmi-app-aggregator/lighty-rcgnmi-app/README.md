@@ -216,11 +216,11 @@ PUT         | GnmiSet | path, payload | status
 DELETE      | GnmiSet  | path          | status
 
 ### RESTCONF GET method mapping
-- Reading data from the operational datastore invokes readOperationalData() in [GnmiGet](src/main/java/io/lighty/gnmi/southbound/mountpoint/ops/GnmiGet.java).
-- Reading data from the configuration datastore invokes readConfigurationData() in [GnmiGet](src/main/java/io/lighty/gnmi/southbound/mountpoint/ops/GnmiGet.java).
+- Reading data from the operational datastore invokes readOperationalData() in [GnmiGet](../../../lighty-modules/lighty-gnmi/lighty-gnmi-sb/lighty-gnmi-module/src/main/java/io/lighty/gnmi/southbound/mountpoint/ops/GnmiGet.java).
+- Reading data from the configuration datastore invokes readConfigurationData() in [GnmiGet](../../../lighty-modules/lighty-gnmi/lighty-gnmi-sb/lighty-gnmi-module/src/main/java/io/lighty/gnmi/southbound/mountpoint/ops/GnmiGet.java).
 
 ### RESTCONF PUT/POST/PATCH/DELETE method mapping
-- Sending data to operational/configuration datastore invokes method set() in [GnmiSet](src/main/java/io/lighty/gnmi/southbound/mountpoint/ops/GnmiSet.java).
+- Sending data to operational/configuration datastore invokes method set() in [GnmiSet](../../../lighty-modules/lighty-gnmi/lighty-gnmi-sb/lighty-gnmi-module/src/main/java/io/lighty/gnmi/southbound/mountpoint/ops/GnmiSet.java).
 - List of input parameters come from method request in the form of fields of update messages: update, replace and delete fields.
 
 **PUT/POST** request method sends update messages through two fields: **update** and **replace fields**.
