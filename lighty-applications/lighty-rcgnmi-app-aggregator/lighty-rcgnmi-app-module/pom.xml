@@ -16,9 +16,10 @@
         <groupId>io.lighty.modules.southbound.gnmi</groupId>
         <artifactId>lighty-gnmi-parent</artifactId>
         <version>14.0.1-SNAPSHOT</version>
-        <relativePath>../../lighty-gnmi-sb/lighty-gnmi-parent/pom.xml</relativePath>
+        <relativePath>../../../lighty-modules/lighty-gnmi/lighty-gnmi-sb/lighty-gnmi-parent/pom.xml</relativePath>
     </parent>
 
+    <groupId>io.lighty.applications.rcgnmi</groupId>
     <artifactId>lighty-rcgnmi-app-module</artifactId>
     <version>14.0.1-SNAPSHOT</version>
 

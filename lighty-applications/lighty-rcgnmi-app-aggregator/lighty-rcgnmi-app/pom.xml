@@ -19,7 +19,7 @@
         <!-- FIXME When moving to github, add relativePath clause -->
     </parent>
 
-    <groupId>io.lighty.modules.southbound.gnmi</groupId>
+    <groupId>io.lighty.applications.rcgnmi</groupId>
     <artifactId>lighty-rcgnmi-app</artifactId>
     <version>14.0.1-SNAPSHOT</version>
 
@@ -52,7 +52,7 @@
             <artifactId>lighty-restconf-nb-community</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.lighty.modules.southbound.gnmi</groupId>
+            <groupId>io.lighty.applications.rcgnmi</groupId>
             <artifactId>lighty-rcgnmi-app-module</artifactId>
             <!-- FIXME When moving to github, remove version. Declare it in lighty-bom instead. -->
             <version>14.0.1-SNAPSHOT</version>

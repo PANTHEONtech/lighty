@@ -43,7 +43,7 @@
                dependency-version artifact or remove it completely and use junit only.
          -->
         <dependency>
-            <groupId>io.lighty.modules.southbound.gnmi</groupId>
+            <groupId>io.lighty.applications.rcgnmi</groupId>
             <artifactId>lighty-rcgnmi-app</artifactId>
             <version>14.0.1-SNAPSHOT</version>
             <scope>test</scope>

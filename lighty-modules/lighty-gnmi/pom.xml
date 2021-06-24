@@ -24,7 +24,6 @@
         <module>lighty-gnmi-device-simulator</module>
         <module>lighty-gnmi-test</module>
         <module>lighty-gnmi-sb</module>
-        <module>lighty-rcgnmi-app-aggregator</module>
     </modules>
 
 </project>
