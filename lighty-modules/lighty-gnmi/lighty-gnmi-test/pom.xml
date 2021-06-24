@@ -27,15 +27,11 @@
         <dependency>
             <groupId>io.lighty.modules.gnmi</groupId>
             <artifactId>lighty-gnmi-connector</artifactId>
-            <!-- FIXME When moving to github, remove version. Declare it in lighty-bom instead. -->
-            <version>15.0.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.lighty.modules.gnmi</groupId>
             <artifactId>lighty-gnmi-device-simulator</artifactId>
-            <!-- FIXME When moving to github, remove version. Declare it in lighty-bom instead. -->
-            <version>15.0.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <!--
@@ -45,7 +41,6 @@
         <dependency>
             <groupId>io.lighty.applications.rcgnmi</groupId>
             <artifactId>lighty-rcgnmi-app</artifactId>
-            <version>15.0.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
