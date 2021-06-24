@@ -27,17 +27,17 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>io.lighty.modules.southbound.gnmi</groupId>
+                <groupId>io.lighty.models.gnmi</groupId>
                 <artifactId>lighty-gnmi-topology-model</artifactId>
                 <version>14.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>io.lighty.modules.southbound.gnmi</groupId>
+                <groupId>io.lighty.models.gnmi</groupId>
                 <artifactId>lighty-gnmi-yang-storage-model</artifactId>
                 <version>14.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>io.lighty.modules.southbound.gnmi</groupId>
+                <groupId>io.lighty.models.gnmi</groupId>
                 <artifactId>lighty-gnmi-certificates-storage-model</artifactId>
                 <version>14.0.1-SNAPSHOT</version>
             </dependency>
