@@ -46,25 +46,6 @@
                 <artifactId>lighty-gnmi-module</artifactId>
                 <version>15.0.0-SNAPSHOT</version>
             </dependency>
-            <!--
-                FIXME When moving to github, Remove annotations dependency, instead declare it in
-                   dependency-version artifact
-             -->
-            <dependency>
-                <groupId>com.google.code.findbugs</groupId>
-                <artifactId>annotations</artifactId>
-                <version>3.0.1</version>
-            </dependency>
-            <!--
-                FIXME When moving to github, Remove junit-jupiter-api dependency, instead declare it in
-                   dependency-version artifact
-             -->
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-api</artifactId>
-                <version>5.7.0</version>
-                <scope>test</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
