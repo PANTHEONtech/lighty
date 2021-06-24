@@ -15,13 +15,13 @@
     <parent>
         <groupId>io.lighty.modules.southbound.gnmi</groupId>
         <artifactId>lighty-gnmi-parent</artifactId>
-        <version>14.0.1-SNAPSHOT</version>
+        <version>15.0.0-SNAPSHOT</version>
         <relativePath>../../../lighty-modules/lighty-gnmi/lighty-gnmi-sb/lighty-gnmi-parent/pom.xml</relativePath>
     </parent>
 
     <groupId>io.lighty.applications.rcgnmi</groupId>
     <artifactId>lighty-rcgnmi-app-module</artifactId>
-    <version>14.0.1-SNAPSHOT</version>
+    <version>15.0.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>

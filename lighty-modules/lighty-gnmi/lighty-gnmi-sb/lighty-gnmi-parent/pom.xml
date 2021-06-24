@@ -15,13 +15,13 @@
     <parent>
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-parent</artifactId>
-        <version>14.0.1-SNAPSHOT</version>
+        <version>15.0.0-SNAPSHOT</version>
         <!-- FIXME When moving to github, add relativePath clause -->
     </parent>
 
     <groupId>io.lighty.modules.southbound.gnmi</groupId>
     <artifactId>lighty-gnmi-parent</artifactId>
-    <version>14.0.1-SNAPSHOT</version>
+    <version>15.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <dependencyManagement>
@@ -29,22 +29,22 @@
             <dependency>
                 <groupId>io.lighty.models.gnmi</groupId>
                 <artifactId>lighty-gnmi-topology-model</artifactId>
-                <version>14.0.1-SNAPSHOT</version>
+                <version>15.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.models.gnmi</groupId>
                 <artifactId>lighty-gnmi-yang-storage-model</artifactId>
-                <version>14.0.1-SNAPSHOT</version>
+                <version>15.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.models.gnmi</groupId>
                 <artifactId>lighty-gnmi-certificates-storage-model</artifactId>
-                <version>14.0.1-SNAPSHOT</version>
+                <version>15.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules.southbound.gnmi</groupId>
                 <artifactId>lighty-gnmi-module</artifactId>
-                <version>14.0.1-SNAPSHOT</version>
+                <version>15.0.0-SNAPSHOT</version>
             </dependency>
             <!--
                 FIXME When moving to github, Remove annotations dependency, instead declare it in

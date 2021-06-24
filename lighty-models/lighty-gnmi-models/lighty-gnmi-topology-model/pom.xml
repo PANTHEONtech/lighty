@@ -15,13 +15,13 @@
     <parent>
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-binding-parent</artifactId>
-        <version>14.0.1-SNAPSHOT</version>
+        <version>15.0.0-SNAPSHOT</version>
         <!-- FIXME When moving to github, add relativePath clause -->
     </parent>
 
     <groupId>io.lighty.models.gnmi</groupId>
     <artifactId>lighty-gnmi-topology-model</artifactId>
-    <version>14.0.1-SNAPSHOT</version>
+    <version>15.0.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>

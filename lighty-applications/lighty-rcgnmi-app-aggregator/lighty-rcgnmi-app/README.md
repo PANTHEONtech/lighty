@@ -54,8 +54,8 @@ curl --request POST 'http://127.0.0.1:8888/restconf/operations/gnmi-yang-storage
 ##How to start rcgnmi example app
 * build the project using ```mvn clean install```
 * go to target directory ```cd lighty-rcgnmi-app/target```
-* unzip example application bundle ```unzip  lighty-rcgnmi-app-14.0.1-SNAPSHOT-bin.zip```
-* go to unzipped application directory ```cd lighty-rcgnmi-app-14.0.1-SNAPSHOT```
+* unzip example application bundle ```unzip  lighty-rcgnmi-app-15.0.0-SNAPSHOT-bin.zip```
+* go to unzipped application directory ```cd lighty-rcgnmi-app-15.0.0-SNAPSHOT```
 * To start the application with custom lighty configuration, use arg -c and for custom initial log4j configuration use argument -l:
   `start-controller.sh -c /path/to/config-file -l /path/to/log4j-config-file`
 

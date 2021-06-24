@@ -14,7 +14,7 @@
     <parent>
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-parent</artifactId>
-        <version>14.0.1-SNAPSHOT</version>
+        <version>15.0.0-SNAPSHOT</version>
         <!-- FIXME When moving to github, add relativePath clause -->
     </parent>
 
@@ -26,13 +26,13 @@
             <groupId>io.lighty.modules.southbound.gnmi</groupId>
             <artifactId>lighty-gnmi-commons</artifactId>
             <!-- FIXME When moving to github, remove version. Declare it in lighty-bom instead. -->
-            <version>14.0.1-SNAPSHOT</version>
+            <version>15.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.modules.southbound.gnmi</groupId>
             <artifactId>lighty-gnmi-proto</artifactId>
             <!-- FIXME When moving to github, remove version. Declare it in lighty-bom instead. -->
-            <version>14.0.1-SNAPSHOT</version>
+            <version>15.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
