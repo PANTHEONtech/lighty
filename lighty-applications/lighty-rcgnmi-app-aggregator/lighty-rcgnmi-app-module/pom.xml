@@ -13,7 +13,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.lighty.modules.southbound.gnmi</groupId>
+        <groupId>io.lighty.modules.gnmi.southbound</groupId>
         <artifactId>lighty-gnmi-parent</artifactId>
         <version>14.0.1-SNAPSHOT</version>
         <relativePath>../../../lighty-modules/lighty-gnmi/lighty-gnmi-sb/lighty-gnmi-parent/pom.xml</relativePath>
@@ -38,7 +38,7 @@
             <artifactId>lighty-netconf-sb</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.lighty.modules.southbound.gnmi</groupId>
+            <groupId>io.lighty.modules.gnmi.southbound</groupId>
             <artifactId>lighty-gnmi-module</artifactId>
         </dependency>
         <dependency>

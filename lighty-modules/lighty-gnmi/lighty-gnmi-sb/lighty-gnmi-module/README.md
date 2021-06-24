@@ -7,7 +7,7 @@ This module implements functionality to make CRUD operations on gNMI target.
 
 ```
     <dependency>
-        <groupId>io.lighty.modules.southbound.gnmi</groupId>
+        <groupId>io.lighty.modules.gnmi.southbound</groupId>
         <artifactId>lighty-gnmi-module</artifactId>
     </dependency>
 ```
