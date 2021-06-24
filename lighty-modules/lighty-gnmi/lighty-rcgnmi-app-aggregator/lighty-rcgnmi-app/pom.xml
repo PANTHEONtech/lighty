@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2021 PANTHEON.tech s.r.o. All Rights Reserved.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License v1.0 which accompanies this distribution,
+  ~ and is available at https://www.eclipse.org/legal/epl-v10.html
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.lighty.core</groupId>
+        <artifactId>lighty-app-parent</artifactId>
+        <version>14.0.1-SNAPSHOT</version>
+        <!-- FIXME When moving to github, add relativePath clause -->
+    </parent>
+
+    <groupId>io.lighty.modules.southbound.gnmi</groupId>
+    <artifactId>lighty-rcgnmi-app</artifactId>
+    <version>14.0.1-SNAPSHOT</version>
+
+    <properties>
+        <application.main.class>io.lighty.applications.rcgnmi.app.RCgNMIApp</application.main.class>
+        <application.attach.zip>true</application.attach.zip>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.lighty.resources</groupId>
+            <artifactId>singlenode-configuration</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.resources</groupId>
+            <artifactId>start-script</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.resources</groupId>
+            <artifactId>controller-application-assembly</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.core</groupId>
+            <artifactId>lighty-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.modules</groupId>
+            <artifactId>lighty-restconf-nb-community</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.modules.southbound.gnmi</groupId>
+            <artifactId>lighty-rcgnmi-app-module</artifactId>
+            <!-- FIXME When moving to github, remove version. Declare it in lighty-bom instead. -->
+            <version>14.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!--
+            FIXME When moving to github, Remove version of junit-jupiter-api dependency, instead declare it in
+               dependency-version artifact
+         -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>
