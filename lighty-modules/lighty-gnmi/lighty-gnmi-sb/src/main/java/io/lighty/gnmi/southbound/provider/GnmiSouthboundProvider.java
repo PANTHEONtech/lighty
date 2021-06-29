@@ -148,11 +148,11 @@ public class GnmiSouthboundProvider implements AutoCloseable {
                         .build())
                 .build();
         @NonNull WriteTransaction configTx = dataBroker.newWriteOnlyTransaction();
-        configTx.put(LogicalDatastoreType.CONFIGURATION, IdentifierUtils.GNMI_TOPO_IID, topology);
+        configTx.merge(LogicalDatastoreType.CONFIGURATION, IdentifierUtils.GNMI_TOPO_IID, topology);
         configTx.commit().get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
 
         @NonNull WriteTransaction operTx = dataBroker.newWriteOnlyTransaction();
-        operTx.put(LogicalDatastoreType.OPERATIONAL, IdentifierUtils.GNMI_TOPO_IID, topology);
+        operTx.merge(LogicalDatastoreType.OPERATIONAL, IdentifierUtils.GNMI_TOPO_IID, topology);
         operTx.commit().get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
     }
 
