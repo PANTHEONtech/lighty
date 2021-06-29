@@ -31,7 +31,7 @@ _This branch maintains compatibility with __OpenDaylight Silicon,__ release._
 | Modules | Examples | Applications |
 | :---: | :---: | :---:|
 | [AAA Integration Tests](/lighty-modules/integration-tests-aaa/) | [Clustering](/lighty-examples/lighty-cluster-app) | [RESTCONF-NETCONF Application](/lighty-applications/lighty-rnc-app-aggregator/) | 
-| [Integration Tests](/lighty-modules/integration-tests/) |[NETCONF w/ Quarkus.io & GraalVM](/lighty-examples/lighty-community-netconf-quarkus-app) | | 
+| [Integration Tests](/lighty-modules/integration-tests/) |[NETCONF w/ Quarkus.io & GraalVM](/lighty-examples/lighty-community-netconf-quarkus-app) | [gNMI RESTCONF Plug-In](/lighty-applications/lighty-rcgnmi-app-aggregator/) | 
 | [AAA](/lighty-modules/lighty-aaa/) | [NETCONF/RESTCONF App](/lighty-examples/lighty-community-restconf-netconf-app)  | | 
 | [Jetty Server](/lighty-modules/lighty-jetty-server/) |[OpenFlow w/ RESTCONF](/lighty-examples/)  | | 
 | [NETCONF SouthBound](/lighty-modules/lighty-netconf-sb/) | [SpringBoot Integration](/lighty-examples/lighty-controller-springboot-netconf)  | | 
