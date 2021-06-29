@@ -82,7 +82,7 @@ public final class DataConverter {
     private static String toJson(final SchemaPath schemaPath, final NormalizedNode<?, ?> data,
                                  final EffectiveModelContext context) {
         final JSONCodecFactory jsonCodecFactory
-                = JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02.createSimple(context);
+                = JSONCodecFactorySupplier.RFC7951.createSimple(context);
         if (isListEntry(data)) {
             return createJsonWithNestedWriter(schemaPath, data, jsonCodecFactory);
         } else {
@@ -154,7 +154,7 @@ public final class DataConverter {
 
         final NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(resultBuilder);
         final JSONCodecFactory jsonCodecFactory =
-                JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02.createLazy(context);
+                JSONCodecFactorySupplier.RFC7951.createLazy(context);
 
         final JsonParserStream jsonParser =
                 (parentNode != null) ? JsonParserStream.create(streamWriter, jsonCodecFactory, parentNode)
