@@ -11,7 +11,7 @@ package io.lighty.gnmi.southbound.device.session.listener;
 import io.grpc.ConnectivityState;
 import io.lighty.gnmi.southbound.identifier.IdentifierUtils;
 import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
-import io.lighty.modules.southbound.session.api.SessionProvider;
+import io.lighty.modules.gnmi.connector.session.api.SessionProvider;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
