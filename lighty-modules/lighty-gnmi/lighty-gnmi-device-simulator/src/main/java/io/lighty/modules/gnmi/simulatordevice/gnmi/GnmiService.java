@@ -17,6 +17,7 @@ import gnmi.Gnmi;
 import gnmi.gNMIGrpc;
 import io.grpc.stub.StreamObserver;
 import io.lighty.modules.gnmi.simulatordevice.yang.YangDataService;
+import java.util.EnumSet;
 import java.util.Objects;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
@@ -33,8 +34,8 @@ public class GnmiService extends gNMIGrpc.gNMIImplBase {
     private final GnmiCrudService gnmiCrudService;
 
     public GnmiService(final EffectiveModelContext schemaContext, final YangDataService dataService,
-                       @Nullable final Gson gson) {
-        this.gnmiCapabilitiesService = new GnmiCapabilitiesService(schemaContext);
+                       @Nullable final Gson gson, @Nullable final EnumSet<Gnmi.Encoding> supportedEncodings) {
+        this.gnmiCapabilitiesService = new GnmiCapabilitiesService(schemaContext, supportedEncodings);
         final Gson nonNullGson = Objects.requireNonNullElse(gson, new Gson());
         this.gnmiCrudService = new GnmiCrudService(dataService, schemaContext,  nonNullGson);
     }

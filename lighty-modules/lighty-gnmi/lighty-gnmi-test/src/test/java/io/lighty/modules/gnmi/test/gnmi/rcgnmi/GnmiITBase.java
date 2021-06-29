@@ -14,6 +14,7 @@ import static io.lighty.modules.gnmi.test.gnmi.rcgnmi.GnmiITBase.GeneralConstant
 import static io.lighty.modules.gnmi.test.gnmi.rcgnmi.GnmiITBase.GeneralConstants.GNMI_TOPOLOGY_PATH;
 import static io.lighty.modules.gnmi.test.gnmi.rcgnmi.GnmiITBase.GeneralConstants.OPENCONFIG_INTERFACES;
 
+import gnmi.Gnmi;
 import io.lighty.applications.rcgnmi.app.RCgNMIApp;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
@@ -26,6 +27,7 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
+import java.util.EnumSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -108,6 +110,15 @@ public abstract class GnmiITBase {
             .setYangsPath(TEST_SCHEMA_PATH)
             .setUsernamePasswordAuth(username, password)
             .build();
+    }
+
+    protected static SimulatedGnmiDevice getNonCompliableEncodingDevice(final String host, final int port) {
+        return new SimulatedGnmiDeviceBuilder().setHost(host).setPort(port)
+                .setInitialConfigDataPath(INITIAL_JSON_DATA_PATH + "/config.json")
+                .setInitialStateDataPath(INITIAL_JSON_DATA_PATH + "/state.json")
+                .setYangsPath(TEST_SCHEMA_PATH)
+                .setSupportedEncodings(EnumSet.of(Gnmi.Encoding.JSON))
+                .build();
     }
 
     protected static SimulatedGnmiDevice getSecureGnmiDevice(final String host, final int port,
