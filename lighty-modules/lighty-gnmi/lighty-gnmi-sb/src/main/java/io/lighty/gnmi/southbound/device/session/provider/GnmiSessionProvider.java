@@ -8,7 +8,7 @@
 
 package io.lighty.gnmi.southbound.device.session.provider;
 
-import io.lighty.modules.southbound.gnmi.session.api.GnmiSession;
+import io.lighty.modules.gnmi.connector.gnmi.session.api.GnmiSession;
 
 public interface GnmiSessionProvider {
     GnmiSession getGnmiSession();
