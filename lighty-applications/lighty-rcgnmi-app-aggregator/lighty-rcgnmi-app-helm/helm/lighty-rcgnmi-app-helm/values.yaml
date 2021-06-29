@@ -1,0 +1,72 @@
+# Default values for lighty-rcgnmi-app-helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  name: lighty-rcgnmi
+  version: latest
+  pullPolicy: IfNotPresent
+
+lighty:
+  # Must be same as defined in Docker image
+  workdir: "/lighty-rcgnmi"
+  configDirectoryName: "k8s-config"
+  # Name of the config file must be same as property in configmap
+  configFilename: "lighty-config.json"
+  # Name of the config file for initial logger configuration, must be same as property in configmap
+  loggerConfigFilename: "log4j.properties"
+  # If using cluster (not single-node deployment), don't forget to increase replica count
+  replicaCount: 1
+  restconf:
+    restconfPort: 8888
+
+  jmx:
+    # Port on which JMX server in image is listening, should be same as defined in dockerfile
+    # If true, allow remote connections to JMX server running in container image, useful for debugging
+    enableJmxRemoting: true
+    jmxPort: 1099
+
+  akka:
+    # If true, overrides akka cluster configuration with default single-node
+    isSingleNode: true
+    # SplitBrainResolver strategy supported (out-of-the-box) by akka
+    sbrStrategy: keep-majority
+    # Name of the config file must be same as property in configmap
+    akkaNodeConfigFilename: "akka-node-k8s.conf"
+    # At least three nodes are required for akka voting
+    minimumClusterNodes: 3
+    # Prefix for akka member name; in configmap POD IP address will be appended to prefix
+    memberNamePrefix: "member-"
+    remotingPort: 2552
+    managementPort: 8558
+    discovery:
+      # Where should akka look for other members to form cluster
+      podSelectorName: "app"
+      podSelectorValue: "lighty-k8s-cluster"
+      portName: "management"
+      podNamespace: "default"
+
+nodePort:
+  # If switched to "true", NodePort service will be created; If switched to "false", ClusterIp service will be created
+  useNodePort: true
+  restconfNodePort: 30888
+  exposeManagement: false
+  managementNodePort: 30558
+
+ingress:
+  useIngress: true
+  restconfHost: "restconf.lighty.io"
+  exposeManagement: false
+  managementHost: "management.lighty.io"
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   memory: 512Mi
+  #   cpu: 1000m
+  # requests:
+  #   memory: 256Mi
+#   cpu: 500m

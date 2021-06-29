@@ -263,3 +263,92 @@ To build and start the RCgNMI lighty.io application using docker in the local en
    ` INFO [main] (RCgNMIApp.java:98) - RCgNMI lighty.io application started in 10.10 s`
 
 5. Test the RCgNMI lighty.io application. Default RESTCONF port is `8888`
+
+## Deployment via helm chart
+### Prerequisites
+* kubernetes cluster 1.15.11 (minikube / microk8s /..)
+* helm 2.17
+### Deploy
+To easily deploy Lighty RcGNMI application to kubernetes we provide custom helm chart located in /lighty-rcgnmi-app-helm/helm/.
+To install, make sure that the docker image defined in `values.yaml` is accessible, then run command:
+`microk8s helm install --name lighty-rcgnmi-app ./lighty-rcgnmi-app-helm/`
+in `/lighty-rnc-app-helm/helm/` directory.
+### Providing startup configuration
+By default, the deployed application is started with custom configuration.json
+(for more information check [lighty-controller](https://github.com/PANTHEONtech/lighty/tree/master/lighty-core/lighty-controller)).
+We supply this configuration file by passing kubernetes configmap (`configmaps.yaml`), which you can modify to your needs.
+To use the functionality of loading configuration data on startup, add new entry to configmaps.yaml:
+`initData: |
+     your initial yang modeled json/xml data
+`
+Then add:
+` "initialConfigData": {
+       "pathToInitDataFile": "{{ .Values.lighty.configDirectoryName }}/initData",
+       "format": "xml"/"json" depending on format
+      }`
+entry to controller json node in lighty-config.json in `configmaps.yaml`.
+If everything was set up corectly, then your data will be loaded to controller on startup and appropriate listeners should be triggered.
+For example, if your initial json data contains node in gnmi topology:
+ ```
+{
+  "network-topology:network-topology": {
+    "topology": [
+      {
+        "topology-id": "gnmi-topology",
+        "node": [
+          {
+            "node-id": "device1",
+            "connection-parameters": {
+              "host": "127.0.0.1",
+              "port": 9090,
+              "connection-type" : "INSECURE"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+and the gNMI device is running, the connection should be established upon startup.
+For testing purposes, you can use lighty-gnmi-device-simulator as a gNMI device.
+
+## JMX debugging
+Java Management Extensions is a tool enabled by default which makes it easy to change runtime
+configuration of the application.
+1. Start the application (see previous sections)
+2. Connect the JXM client
+  We recommend using `jconsole` because it is part of the standard java JRE.
+  The command for connecting jconsole to JMX server is:
+    `jconsole <ip-of-running-lighty>:<JMX-port>`, the default JMX-port is 1099.
+
+This approach works only if the application is running locally.
+
+If you want to connect the JMX client to application running remotely or in a container (k8s deployment or/and docker),
+you need to start the application using following JAVA_OPTS:
+```
+JAVA_OPTS = -Dcom.sun.management.jmxremote
+             -Dcom.sun.management.jmxremote.authenticate=false
+             -Dcom.sun.management.jmxremote.ssl=false
+             -Dcom.sun.management.jmxremote.local.only=false
+             -Dcom.sun.management.jmxremote.port=<JMX_PORT>
+             -Dcom.sun.management.jmxremote.rmi.port=<JMX_PORT>
+             -Djava.rmi.server.hostname=127.0.0.1
+```
+Then run `java $JAVA_OPTS -jar lighty-rcgnmi-app-<version> ...`
+## Connecting JMX client to application running in docker
+1. As we said, if we want to be able to connect the JMX, we need to start the app with JAVA_OPTS described in
+ previous chapter.
+ In docker the most convenient way to do this is to create env.file and run the docker run with `--env-file env.file` argument
+ The env.file must contain the definition of the described JAVA_OPTS environment variable.
+ We also need to publish the container JMX_PORT to host, this is done via `-p <JMX_PORT>:<JMX_PORT>` argument.
+ So the docker run command becomes:
+  `docker run -it --name lighty-rcgnmi --env-file env.file -p <JMX_PORT>:<JMX_PORT> ...`
+ The rest of the command stays the same as explained in previous chapters.
+ 2. Connect the JMX client via command `jconsole <ip-of-container>:<JMX_PORT>`.
+ ## Connecting JMX client to application deployed in kubernetes
+Once you have deployed the application via our provided helm chart in which you enabled jmxRemoting,
+you just need to forward the JMX port of the pod in which the instance of the application you want to debug is running.
+In kubernetes this is done via `kubectl port-forward` command.
+1. Forward the pod's JMX port, run `kubectl port-forward <name-of-the-pod> <JMX_PORT>`
+2. Connect JMX client, run `jconsole <pod-ip>:<JMX-port>`
