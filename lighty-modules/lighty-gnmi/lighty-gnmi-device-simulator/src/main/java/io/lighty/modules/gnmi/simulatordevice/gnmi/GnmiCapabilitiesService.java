@@ -12,6 +12,8 @@ import gnmi.Gnmi;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.slf4j.Logger;
@@ -21,13 +23,15 @@ public class GnmiCapabilitiesService {
 
     private static final Logger LOG = LoggerFactory.getLogger(GnmiCapabilitiesService.class);
     private static final String GNMI_VERSION = "0.7.0";
-    private static final EnumSet<Gnmi.Encoding> GNMI_ENCODINGS = EnumSet.of(Gnmi.Encoding.JSON,
-        Gnmi.Encoding.JSON_IETF);
 
     private final EffectiveModelContext schemaContext;
+    private final EnumSet<Gnmi.Encoding> supportedEncodings;
 
-    public GnmiCapabilitiesService(final EffectiveModelContext schemaContext) {
+    public GnmiCapabilitiesService(final EffectiveModelContext schemaContext,
+                                   @Nullable final EnumSet<Gnmi.Encoding> supportedEncodings) {
         this.schemaContext = schemaContext;
+        this.supportedEncodings = Objects.requireNonNullElse(supportedEncodings,EnumSet.of(Gnmi.Encoding.JSON,
+                Gnmi.Encoding.JSON_IETF));
     }
 
     @SuppressWarnings("UnstableApiUsage")
@@ -49,7 +53,7 @@ public class GnmiCapabilitiesService {
 
         return Gnmi.CapabilityResponse.newBuilder()
             .addAllSupportedModels(modelDataList)
-            .addAllSupportedEncodings(GNMI_ENCODINGS)
+            .addAllSupportedEncodings(supportedEncodings)
             .setGNMIVersion(GNMI_VERSION)
             .build();
     }
