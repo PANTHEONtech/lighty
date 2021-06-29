@@ -1,0 +1,19 @@
+{
+  "network-topology:network-topology": {
+    "topology": [
+      {
+        "topology-id": "gnmi-topology",
+        "node": [
+          {
+            "node-id": "device1",
+            "connection-parameters": {
+              "host": "127.0.0.1",
+              "port": 9090,
+              "connection-type" : "INSECURE"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
