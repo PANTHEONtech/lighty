@@ -20,7 +20,7 @@
     </parent>
 
     <groupId>io.lighty.modules.gnmi.southbound</groupId>
-    <artifactId>lighty-gnmi-module</artifactId>
+    <artifactId>lighty-gnmi-sb</artifactId>
     <version>14.0.1-SNAPSHOT</version>
 
     <dependencies>
