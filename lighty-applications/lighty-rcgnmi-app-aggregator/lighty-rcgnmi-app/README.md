@@ -24,7 +24,7 @@ The way of providing content of the yang file, so lighty gNMI can correctly crea
 the ligthy gNMI reads the model based on it's name and version obtained in gNMI Capability response.
 
 1) Provide yang model configuration as a parameter to example app
-    1. Open custom configuration example [here](src/main/resources/example_config.json).
+    1. Open custom configuration example [here](src/main/resources/example-config/example_config.json).
 
     2. Add custom gNMI configuration (into root, next to controller or restconf configuration):
     ```
@@ -216,13 +216,50 @@ PUT         | GnmiSet | path, payload | status
 DELETE      | GnmiSet  | path          | status
 
 ### RESTCONF GET method mapping
-- Reading data from the operational datastore invokes readOperationalData() in [GnmiGet](../../../lighty-modules/lighty-gnmi/lighty-gnmi-sb/src/main/java/io/lighty/gnmi/southbound/mountpoint/ops/GnmiGet.java).
-- Reading data from the configuration datastore invokes readConfigurationData() in [GnmiGet](../../../lighty-modules/lighty-gnmi/lighty-gnmi-sb/src/main/java/io/lighty/gnmi/southbound/mountpoint/ops/GnmiGet.java).
+- Reading data from the operational datastore invokes readOperationalData() in [GnmiGet](src/main/java/io/lighty/gnmi/southbound/mountpoint/ops/GnmiGet.java).
+- Reading data from the configuration datastore invokes readConfigurationData() in [GnmiGet](src/main/java/io/lighty/gnmi/southbound/mountpoint/ops/GnmiGet.java).
 
 ### RESTCONF PUT/POST/PATCH/DELETE method mapping
-- Sending data to operational/configuration datastore invokes method set() in [GnmiSet](../../../lighty-modules/lighty-gnmi/lighty-gnmi-sb/src/main/java/io/lighty/gnmi/southbound/mountpoint/ops/GnmiSet.java).
+- Sending data to operational/configuration datastore invokes method set() in [GnmiSet](src/main/java/io/lighty/gnmi/southbound/mountpoint/ops/GnmiSet.java).
 - List of input parameters come from method request in the form of fields of update messages: update, replace and delete fields.
 
 **PUT/POST** request method sends update messages through two fields: **update** and **replace fields**.
 **PATCH** request method sends update messages through the **update field**.
 **DELETE** request method sends update messages through the **delete field**.
+
+## Build and start with the docker
+To build and start the RCgNMI lighty.io application using docker in the local environment follow these steps:
+
+1. Build the application using this maven command:
+   `mvn clean install -P docker`
+
+2. Start the application using following docker command.
+   `docker run -it --name lighty-rcgnmi --network host --rm lighty-rcgnmi`
+
+3. To start the application with custom lighty configuration( -c ) and custom initial log4j config file( -l ) use command:
+  ```
+   docker run -it --name lighty-rcgnmi --network host
+   -v /absolute_path/to/config-file/configuration.json:/lighty-rcgnmi/configuration.json
+   --rm lighty-rcgnmi -c configuration.json
+  ```
+
+   If your configuration.json file specifies path to initial configuration data to load on start up
+   (for more information, check
+   [lighty-controller](https://github.com/PANTHEONtech/lighty/tree/master/lighty-core/lighty-controller))
+   you need to mount the json/xml file as well:
+   `-v /absolute/path/to/file/initData.xml:/lighty-rcgnmi/initData.xml`
+   , then your path to this file in configuration.json becomes just "./initData.xml":
+   ```
+    "initialConfigData": {
+          "pathToInitDataFile": "./initData.xml",
+          "format": "xml"
+    }
+   ```
+   Example configuration files are located on following path:
+   `lighty-rcgnmi-app/src/resources/example-config/*`
+   For additional configurable parameters and their explanation see previous chapters.
+
+4. If the application was started successfully, then a log similar should be present in the console:
+   ` INFO [main] (RCgNMIApp.java:98) - RCgNMI lighty.io application started in 10.10 s`
+
+5. Test the RCgNMI lighty.io application. Default RESTCONF port is `8888`
