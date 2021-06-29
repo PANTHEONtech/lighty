@@ -1,0 +1,332 @@
+{
+	"info": {
+		"_postman_id": "e114f256-ea5a-4f1a-a64d-b526d9bb64f7",
+		"name": "lighty-rcgnmi-app",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Mountpoint",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"node\": [\n        {\n            \"node-id\": \"node-id-1\",\n            \"connection-parameters\": {\n                \"host\": \"127.0.0.1\",\n                \"port\": 9090,\n                \"keystore-id\" : \"test-id\",\n                \"credentials\": {\n                    \"username\": \"Admin\",\n                    \"password\": \"Admin\"\n                }\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=gnmi-topology",
+						"node=node-id-1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Mountpoint with extensions-parameters",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"node\": [\n        {\n            \"node-id\": \"node-id-1\",\n            \"connection-parameters\": {\n                \"host\": \"127.0.0.1\",\n                \"port\": 9090,\n                \"keystore-id\" : \"test-id\",\n                \"credentials\": {\n                    \"username\": \"Admin\",\n                    \"password\": \"Admin\"\n                }\n            },\n            \"extensions-parameters\": {\n            \t\"gnmi-parameters\": {\n            \t\t\"overwrite-data-type\": \"CONFIG\",\n            \t\t\"use-model-name-prefix\": false,\n            \t\t\"path-target\": \"TEST\"\n            \t}\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=gnmi-topology",
+						"node=node-id-1"
+					]
+				},
+				"description": "Create mountpoint with extensions-parameters"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Mountpoint with INSECURE connection-type for DEBUG reason",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"node\": [\n        {\n            \"node-id\": \"node-id-1\",\n            \"connection-parameters\": {\n                \"host\": \"127.0.0.1\",\n                \"port\": 9090,\n                \"connection-type\": \"INSECURE\",\n                \"credentials\": {\n                    \"username\": \"Admin\",\n                    \"password\": \"Admin\"\n                }\n            }\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=gnmi-topology",
+						"node=node-id-1"
+					]
+				},
+				"description": "Connection-type INSECURE should be used only for DEBUG reasons."
+			},
+			"response": []
+		},
+		{
+			"name": "Add Keystore",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"input\": {\n        \"keystore-id\": \"test-id\",\n        \"ca-certificate\": \"-----BEGIN CERTIFICATE-----\nMIIFjTCCA3WgAwIBAgIUH8tYuqWajf3wqDz3lsCLq+yMezIwDQYJKoZIhvcNAQEL\nBQAwVjELMAkGA1UEBhMCTloxDTALBgNVBAgMBFRlc3QxDTALBgNVBAcMBFRlc3Qx\nDTALBgNVBAoMBFRlc3QxDTALBgNVBAsMBFRlc3QxCzAJBgNVBAMMAmNhMB4XDTIx\nMDUyMTEyMTgxNloXDTIyMDUyMTEyMTgxNlowVjELMAkGA1UEBhMCTloxDTALBgNV\nBAgMBFRlc3QxDTALBgNVBAcMBFRlc3QxDTALBgNVBAoMBFRlc3QxDTALBgNVBAsM\nBFRlc3QxCzAJBgNVBAMMAmNhMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKC\nAgEA0BkAuc8yt9ET65phUGikUQIe7vgYsgL5wMqmq5WA/Arrn+KsFEWK7bKOQ6ZZ\nBWH8LLRZGpZwJplTRimdZHkSi5mYJNPJaKykJGR0/eHF7k12aa6BO7u/Qv8kRtV+\nbd6qwuL/XhbVOaSov7fGUtSc7GexC/QVqknzqI8M+MKPtioxwZo8EnLdfS930XEq\nQGC/1O7elE7lh5Cq0ceLCaYFpNnF+8woUU5jzIZOxHef/0KNJpydexE8G1CaV7gs\nsOQ/Qo2lY9X/0xKVtysjPuxA6oPGvE3O+vjNBtyuMCVi+f4UFJNT9L1CLvIS+qRU\nVEKiFzktxWXfeyG4NqcuOenga34ffr+hwEXHW8mCMjiqIStFdS+rzm05zY1Lw1uE\nlak3Q4oMKcvNWiDQmq2HN24JoL1231/5rXL5GsqbodwWJPQENUPBWcr3qcHeppEE\nHHBZ0nz8zzxsuk9o5vUY+3/28qHUwAHFdRdlHUSo3+Pv7XIuN7p7bPv4fTzOG0wY\nxxkyebAXuE5TjW0zg7FD/wEM/NRyyUnIyraNGwvUtrpyrklLFTf4LnIehIJA5y3s\nbhwA9AUVyijj4s1FZarnZZvcKOc7KF0C0XkwMDCT/fdocU+C+pEB11zWDDWdWKRK\necAgYGnSwq1/MDRzyzHBweX8yhbp7WajCMlRP2vGCYO6tz0CAwEAAaNTMFEwHQYD\nVR0OBBYEFOj6/N5zHxJmKwvIkJ0q5XQEAhu3MB8GA1UdIwQYMBaAFOj6/N5zHxJm\nKwvIkJ0q5XQEAhu3MA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggIB\nACO3OCjnOq3W/TByejEV1qodZY+sK++rOk0y069eyW/dutETycoBBWJs8tqceBsM\nOe9dBHCZTpdDCDjDPy6P8kDZrkEwy1ZXq/CxyRL0KgHeuwWf+5FKcbvFBzGiEq6c\nqB2/qHaHrE1ow+67ElfhSClkqc/wt+p6SKzHkNFzhdfzU7jdeEuvBfZvH+B3Dpxd\nwIwpxHuZdS0TaKC+S0cOaNEol/6yQ4XPNPG6FXND5uzHL+lylLkoXTKQzTp+zrox\ns/cMNpnRIWDCsnNZVQFvwHOEhVcYhJBlYKXi7kAkmvNSbaa3l1T+rSnTZKKPD038\nwMFNbwnQIolBqIMLKvkZOVVfV3QBa5XHxwxS/popi8SzDzOYS6OW8/LOa+C6JCEY\nIisUcbiCNRWFKZBbcCk5CYSdTp3qAIgZR3+e02Fl8B1VZiJplAmhupDxb2hN9oDP\na7HJN2E2b8+LWuQCA2k0PkyMbEz7CGXFCnQxP1h1AejkUgBmRnZzardF46uXFgRQ\ng25tmTlDCgWlXF+Y7PLDT0921ra30z9X4228S5YnqPENO9vgfgdsN8dSXDAoAFLc\nEw+38ezIGKcV5E2/MIMHjtwcfBdRxAe+SYd3rb9F9csFCjlqP1AeWqIPtgAGqmty\nc+uJD++Y1nlxE9S63uBv5rt1gSrDFzai6Jz0xPCkC4LY\n-----END CERTIFICATE-----\",\n        \"client-key\": \"-----BEGIN RSA PRIVATE KEY-----\n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\n-----END RSA PRIVATE KEY-----\",\n        \"client-cert\": \"-----BEGIN CERTIFICATE-----\nMIIGCDCCA/CgAwIBAgIUcT51S5Bj9szUxqg8PJcZ5hzbuzEwDQYJKoZIhvcNAQEL\nBQAwVjELMAkGA1UEBhMCTloxDTALBgNVBAgMBFRlc3QxDTALBgNVBAcMBFRlc3Qx\nDTALBgNVBAoMBFRlc3QxDTALBgNVBAsMBFRlc3QxCzAJBgNVBAMMAmNhMB4XDTIx\nMDUyMTEyMTgxN1oXDTIyMDUyMTEyMTgxN1owXjELMAkGA1UEBhMCTloxDTALBgNV\nBAgMBFRlc3QxDTALBgNVBAcMBFRlc3QxDTALBgNVBAoMBFRlc3QxDTALBgNVBAsM\nBFRlc3QxEzARBgNVBAMMCmNsaWVudC5jb20wggIiMA0GCSqGSIb3DQEBAQUAA4IC\nDwAwggIKAoICAQDWWB3vhRDVM0n19VGSFcfLbKgSmsoY3HmD4D76/VPL7raVENHz\nctURfDO8M0zo2QY+122wZvSqLy2ugaE9kDMAgirIrBb9yX/dcXgkeVGt3ijfNzOw\nLmgQWVgsJNsz/tuqhc/2Xd3BewLC4JVR/JfF0cUtXpB06OAuHEqE1amARDBM4qur\n6kmbD6OSNI9h+9fsxJ0C683IE7CoJUwCSu/D4c9JFviVf6Hpnra0ihSUmgrwv2WJ\n5cvRt9HDWhCQSfDk1frSDWrNOlRxDtt5eN7qs+f9VrVidrCs3LsrF8F0B3zxzc7i\nGCDEpX/C1JIhA3uBdYmIWJwEcZjWzSrM5wxkh11ExUPYpsdMWclTfj+a9GJS5E/t\nPJX5F8nHfdhNhpOp4epK5xUlYIEjPGov0DOYF+zf3QuS9k5xJZdvNdtqGYBUIo4V\nLiYMkc4X98kDZz3qCUxJvBPZ7q9ETNiTU4NJOPeIdyRYEXYBhh7MGSax/T2ll5rA\n8YJkr4KNpAUXCEUFuw8Ir7z42P600XjJEElW6sGn01L869u5jkeinevhMfDkFjmt\n19I2Z4M/LKYJUDR5o/179jmFQm+1rCnMo6mZYkbFVIXzxPJHQnOjZ0/cUmnosjeM\nHPUYP0sW+10BoEiEYtKUO/hcCo/cjFBWJYPexc+AheJlLnURrTF/AiD8PQIDAQAB\no4HFMIHCMAkGA1UdEwQCMAAwEQYJYIZIAYb4QgEBBAQDAgWgMDMGCWCGSAGG+EIB\nDQQmFiRPcGVuU1NMIEdlbmVyYXRlZCBDbGllbnQgQ2VydGlmaWNhdGUwHQYDVR0O\nBBYEFIG+NbZYaUFQX446EDc2wRUa+OJAMB8GA1UdIwQYMBaAFOj6/N5zHxJmKwvI\nkJ0q5XQEAhu3MA4GA1UdDwEB/wQEAwIF4DAdBgNVHSUEFjAUBggrBgEFBQcDAgYI\nKwYBBQUHAwQwDQYJKoZIhvcNAQELBQADggIBAMZllUC0MKYwpJlybImVls53QAt4\nfvq+cE4/IEZKQtwrHchPE8wFyZYoP4J/szjLM0vqyniUk3IvX53GBfsHtWjvLkc1\ncTGaBd0GxrIOB+LGaTKzd3hpmhOVDFn/qo2OQlOXTgqEwrWisBqULS7MsmeXeL4q\ned1rNo+nLQusfqesm0C5WMXcL8UI8YACSsKAU4QgFO6kxLWVZrAnEF8CISIW6BMz\nCryxNg5JF/Ge+xtVxSfVTp79Xgmn0iBlyGFlUPcFBEnV8UyTpTBUip04Kx6zDa+y\nc60OsM4v1UhdLiI8tNd3jy7mKnBHHq5iC8goSZkTVakTzQPiIexAT/9VmNnUTiuP\nzAz6V1FocRARy0qD4IvPP/RU8scaG6oX62M5GtZNVpkPc+m/EanHA40q9LARXLMf\nrAOjRTPzjHj8QXEc/m7N5m0P5FEah1owczMOUbJ7NJYLW9K8n1Yv7vkQbchBTR64\nF8VLT3DIk9bQ1rT/jLa8OXyFoKjp+Ei4CChxK0AJc9gPlZgIOIl7X4vwzN93JWa0\nMfrXj7SNIGlc2avuQy4vYfNmlEEVW/GjcypgttX5TesWuf8RkdQPdeA/wbPLBn4G\nHT8DrPY7muhTmmlSTVyGr2ifoWaKJcFUEUp4p0f5FG2wVcnQpKL6Ywxlm6UTySY0\nDsIglI9RlmbY9fyW\n-----END CERTIFICATE-----\"\n    }\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8888/restconf/operations/gnmi-certificate-storage:add-keystore-certificate",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"operations",
+						"gnmi-certificate-storage:add-keystore-certificate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add YANG module",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"input\": {\n        \"name\": \"openconfig-interfaces\",\n        \"version\": \"2.4.3\",\n        \"body\": \"module openconfig-interfaces {\n\n  yang-version \\\"1\\\";\n\n  // namespace\n  namespace \\\"http://openconfig.net/yang/interfaces\\\";\n\n  prefix \\\"oc-if\\\";\n\n  // import some basic types\n  //import ietf-interfaces { prefix ietf-if; }\n  import openconfig-if-types { prefix oc-ift ; }\n  import openconfig-yang-types { prefix oc-yang; }\n  import openconfig-types { prefix oc-types; }\n  import openconfig-extensions { prefix oc-ext; }\n\n  // meta\n  organization \\\"OpenConfig working group\\\";\n\n  contact\n    \\\"OpenConfig working group\n    netopenconfig@googlegroups.com\\\";\n\n  description\n    \\\"Model for managing network interfaces and subinterfaces.  This\n    module also defines convenience types / groupings for other\n    models to create references to interfaces:\n\n      base-interface-ref (type) -  reference to a base interface\n      interface-ref (grouping) -  container for reference to a\n        interface + subinterface\n      interface-ref-state (grouping) - container for read-only\n        (opstate) reference to interface + subinterface\n\n    This model reuses data items defined in the IETF YANG model for\n    interfaces described by RFC 7223 with an alternate structure\n    (particularly for operational state data) and with\n    additional configuration items.\n\n    Portions of this code were derived from IETF RFC 7223.\n    Please reproduce this note if possible.\n\n    IETF code is subject to the following copyright and license:\n    Copyright (c) IETF Trust and the persons identified as authors of\n    the code.\n    All rights reserved.\n\n    Redistribution and use in source and binary forms, with or without\n    modification, is permitted pursuant to, and subject to the license\n    terms contained in, the Simplified BSD License set forth in\n    Section 4.c of the IETF Trust's Legal Provisions Relating\n    to IETF Documents (http://trustee.ietf.org/license-info).\\\";\n\n  oc-ext:openconfig-version \\\"2.4.3\\\";\n\n  revision \\\"2019-11-19\\\" {\n    description\n      \\\"Update description of interface name.\\\";\n    reference \\\"2.4.3\\\";\n  }\n\n  revision \\\"2019-07-10\\\" {\n    description\n      \\\"Remove redundant nanosecond units statements to reflect\n      universal definition of timeticks64 type.\\\";\n    reference \\\"2.4.2\\\";\n  }\n\n  revision \\\"2018-11-21\\\" {\n    description\n      \\\"Add OpenConfig module metadata extensions.\\\";\n    reference \\\"2.4.1\\\";\n  }\n\n  revision \\\"2018-08-07\\\" {\n    description\n      \\\"Add leaf to indicate whether an interface is physical or\n      logical.\\\";\n    reference \\\"2.4.0\\\";\n  }\n\n  revision \\\"2018-07-02\\\" {\n    description\n      \\\"Add in-pkts and out-pkts in counters\\\";\n    reference \\\"2.3.2\\\";\n  }\n\n  revision \\\"2018-04-24\\\" {\n    description\n      \\\"Clarified behavior of last-change state leaf\\\";\n    reference \\\"2.3.1\\\";\n  }\n\n  revision \\\"2018-01-05\\\" {\n    description\n      \\\"Add logical loopback to interface.\\\";\n    reference \\\"2.3.0\\\";\n  }\n\n  revision \\\"2017-12-22\\\" {\n    description\n      \\\"Add IPv4 proxy ARP configuration.\\\";\n    reference \\\"2.2.0\\\";\n  }\n\n  revision \\\"2017-12-21\\\" {\n    description\n      \\\"Added IPv6 router advertisement configuration.\\\";\n    reference \\\"2.1.0\\\";\n  }\n\n  revision \\\"2017-07-14\\\" {\n    description\n      \\\"Added Ethernet/IP state data; Add dhcp-client;\n      migrate to OpenConfig types modules; Removed or\n      renamed opstate values\\\";\n    reference \\\"2.0.0\\\";\n  }\n\n  revision \\\"2017-04-03\\\" {\n    description\n      \\\"Update copyright notice.\\\";\n    reference \\\"1.1.1\\\";\n  }\n\n  revision \\\"2016-12-22\\\" {\n    description\n      \\\"Fixes to Ethernet interfaces model\\\";\n    reference \\\"1.1.0\\\";\n  }\n\n  // OpenConfig specific extensions for module metadata.\n  oc-ext:regexp-posix;\n  oc-ext:catalog-organization \\\"openconfig\\\";\n  oc-ext:origin \\\"openconfig\\\";\n\n  // typedef statements\n\n  typedef base-interface-ref {\n    type leafref {\n      path \\\"/oc-if:interfaces/oc-if:interface/oc-if:name\\\";\n    }\n    description\n      \\\"Reusable type for by-name reference to a base interface.\n      This type may be used in cases where ability to reference\n      a subinterface is not required.\\\";\n  }\n\n  typedef interface-id {\n    type string;\n    description\n      \\\"User-defined identifier for an interface, generally used to\n      name a interface reference.  The id can be arbitrary but a\n      useful convention is to use a combination of base interface\n      name and subinterface index.\\\";\n  }\n\n  // grouping statements\n\n  grouping interface-ref-common {\n    description\n      \\\"Reference leafrefs to interface / subinterface\\\";\n\n    leaf interface {\n      type leafref {\n        path \\\"/oc-if:interfaces/oc-if:interface/oc-if:name\\\";\n      }\n      description\n        \\\"Reference to a base interface.  If a reference to a\n        subinterface is required, this leaf must be specified\n        to indicate the base interface.\\\";\n    }\n\n    leaf subinterface {\n      type leafref {\n        path \\\"/oc-if:interfaces/\\\" +\n          \\\"oc-if:interface[oc-if:name=current()/../interface]/\\\" +\n          \\\"oc-if:subinterfaces/oc-if:subinterface/oc-if:index\\\";\n      }\n      description\n        \\\"Reference to a subinterface -- this requires the base\n        interface to be specified using the interface leaf in\n        this container.  If only a reference to a base interface\n        is requuired, this leaf should not be set.\\\";\n    }\n  }\n\n  grouping interface-ref-state-container {\n    description\n      \\\"Reusable opstate w/container for a reference to an\n      interface or subinterface\\\";\n\n    container state {\n      config false;\n      description\n        \\\"Operational state for interface-ref\\\";\n\n      uses interface-ref-common;\n    }\n  }\n\n  grouping interface-ref {\n    description\n      \\\"Reusable definition for a reference to an interface or\n      subinterface\\\";\n\n    container interface-ref {\n      description\n        \\\"Reference to an interface or subinterface\\\";\n\n      container config {\n        description\n          \\\"Configured reference to interface / subinterface\\\";\n        oc-ext:telemetry-on-change;\n\n        uses interface-ref-common;\n      }\n\n      uses interface-ref-state-container;\n    }\n  }\n\n  grouping interface-ref-state {\n    description\n      \\\"Reusable opstate w/container for a reference to an\n      interface or subinterface\\\";\n\n    container interface-ref {\n      description\n        \\\"Reference to an interface or subinterface\\\";\n\n      uses interface-ref-state-container;\n    }\n  }\n\n  grouping base-interface-ref-state {\n    description\n      \\\"Reusable opstate w/container for a reference to a\n      base interface (no subinterface).\\\";\n\n      container state {\n        config false;\n        description\n          \\\"Operational state for base interface reference\\\";\n\n        leaf interface {\n          type base-interface-ref;\n          description\n            \\\"Reference to a base interface.\\\";\n        }\n      }\n  }\n\n\n  grouping interface-common-config {\n    description\n      \\\"Configuration data data nodes common to physical interfaces\n      and subinterfaces\\\";\n\n    leaf description {\n      type string;\n      description\n        \\\"A textual description of the interface.\n\n        A server implementation MAY map this leaf to the ifAlias\n        MIB object.  Such an implementation needs to use some\n        mechanism to handle the differences in size and characters\n        allowed between this leaf and ifAlias.  The definition of\n        such a mechanism is outside the scope of this document.\n\n        Since ifAlias is defined to be stored in non-volatile\n        storage, the MIB implementation MUST map ifAlias to the\n        value of 'description' in the persistently stored\n        datastore.\n\n        Specifically, if the device supports ':startup', when\n        ifAlias is read the device MUST return the value of\n        'description' in the 'startup' datastore, and when it is\n        written, it MUST be written to the 'running' and 'startup'\n        datastores.  Note that it is up to the implementation to\n\n        decide whether to modify this single leaf in 'startup' or\n        perform an implicit copy-config from 'running' to\n        'startup'.\n\n        If the device does not support ':startup', ifAlias MUST\n        be mapped to the 'description' leaf in the 'running'\n        datastore.\\\";\n      reference\n        \\\"RFC 2863: The Interfaces Group MIB - ifAlias\\\";\n    }\n\n    leaf enabled {\n      type boolean;\n      default \\\"true\\\";\n      description\n        \\\"This leaf contains the configured, desired state of the\n        interface.\n\n        Systems that implement the IF-MIB use the value of this\n        leaf in the 'running' datastore to set\n        IF-MIB.ifAdminStatus to 'up' or 'down' after an ifEntry\n        has been initialized, as described in RFC 2863.\n\n        Changes in this leaf in the 'running' datastore are\n        reflected in ifAdminStatus, but if ifAdminStatus is\n        changed over SNMP, this leaf is not affected.\\\";\n      reference\n        \\\"RFC 2863: The Interfaces Group MIB - ifAdminStatus\\\";\n    }\n\n  }\n\n  grouping interface-phys-config {\n    description\n      \\\"Configuration data for physical interfaces\\\";\n\n    leaf name {\n      type string;\n      description\n        \\\"The name of the interface.\n\n        A device MAY restrict the allowed values for this leaf,\n        possibly depending on the type of the interface.\n        For system-controlled interfaces, this leaf is the\n        device-specific name of the interface.  The 'config false'\n        list interfaces/interface[name]/state contains the currently\n        existing interfaces on the device.\n\n        If a client tries to create configuration for a\n        system-controlled interface that is not present in the\n        corresponding state list, the server MAY reject\n        the request if the implementation does not support\n        pre-provisioning of interfaces or if the name refers to\n        an interface that can never exist in the system.  A\n        NETCONF server MUST reply with an rpc-error with the\n        error-tag 'invalid-value' in this case.\n\n        The IETF model in RFC 7223 provides YANG features for the\n        following (i.e., pre-provisioning and arbitrary-names),\n        however they are omitted here:\n\n          If the device supports pre-provisioning of interface\n          configuration, the 'pre-provisioning' feature is\n          advertised.\n\n          If the device allows arbitrarily named user-controlled\n          interfaces, the 'arbitrary-names' feature is advertised.\n\n        When a configured user-controlled interface is created by\n        the system, it is instantiated with the same name in the\n        /interfaces/interface[name]/state list.\\\";\n    }\n\n    leaf type {\n      type identityref {\n        base oc-ift:INTERFACE_TYPE;\n      }\n      mandatory true;\n      description\n        \\\"The type of the interface.\n\n        When an interface entry is created, a server MAY\n        initialize the type leaf with a valid value, e.g., if it\n        is possible to derive the type from the name of the\n        interface.\n\n        If a client tries to set the type of an interface to a\n        value that can never be used by the system, e.g., if the\n        type is not supported or if the type does not match the\n        name of the interface, the server MUST reject the request.\n        A NETCONF server MUST reply with an rpc-error with the\n        error-tag 'invalid-value' in this case.\\\";\n      reference\n        \\\"RFC 2863: The Interfaces Group MIB - ifType\\\";\n    }\n\n    leaf mtu {\n      type uint16;\n      description\n        \\\"Set the max transmission unit size in octets\n        for the physical interface.  If this is not set, the mtu is\n        set to the operational default -- e.g., 1514 bytes on an\n        Ethernet interface.\\\";\n    }\n\n    leaf loopback-mode {\n      type boolean;\n      default false;\n      description\n        \\\"When set to true, the interface is logically looped back,\n        such that packets that are forwarded via the interface\n        are received on the same interface.\\\";\n    }\n\n    uses interface-common-config;\n  }\n\n  grouping interface-phys-holdtime-config {\n    description\n      \\\"Configuration data for interface hold-time settings --\n      applies to physical interfaces.\\\";\n\n    leaf up {\n      type uint32;\n      units milliseconds;\n      default 0;\n      description\n        \\\"Dampens advertisement when the interface\n        transitions from down to up.  A zero value means dampening\n        is turned off, i.e., immediate notification.\\\";\n    }\n\n    leaf down {\n      type uint32;\n      units milliseconds;\n      default 0;\n      description\n        \\\"Dampens advertisement when the interface transitions from\n        up to down.  A zero value means dampening is turned off,\n        i.e., immediate notification.\\\";\n    }\n  }\n\n  grouping interface-phys-holdtime-state {\n    description\n      \\\"Operational state data for interface hold-time.\\\";\n  }\n\n  grouping interface-phys-holdtime-top {\n    description\n      \\\"Top-level grouping for setting link transition\n      dampening on physical and other types of interfaces.\\\";\n\n    container hold-time {\n      description\n        \\\"Top-level container for hold-time settings to enable\n        dampening advertisements of interface transitions.\\\";\n\n      container config {\n        description\n          \\\"Configuration data for interface hold-time settings.\\\";\n        oc-ext:telemetry-on-change;\n\n        uses interface-phys-holdtime-config;\n      }\n\n      container state {\n\n        config false;\n\n        description\n          \\\"Operational state data for interface hold-time.\\\";\n\n        uses interface-phys-holdtime-config;\n        uses interface-phys-holdtime-state;\n      }\n    }\n  }\n\n  grouping interface-common-state {\n    description\n      \\\"Operational state data (in addition to intended configuration)\n      at the global level for this interface\\\";\n\n    oc-ext:operational;\n\n    leaf ifindex {\n      type uint32;\n      description\n        \\\"System assigned number for each interface.  Corresponds to\n        ifIndex object in SNMP Interface MIB\\\";\n      reference\n        \\\"RFC 2863 - The Interfaces Group MIB\\\";\n      oc-ext:telemetry-on-change;\n    }\n\n    leaf admin-status {\n      type enumeration {\n        enum UP {\n          description\n            \\\"Ready to pass packets.\\\";\n        }\n        enum DOWN {\n          description\n            \\\"Not ready to pass packets and not in some test mode.\\\";\n        }\n        enum TESTING {\n          //TODO: This is generally not supported as a configured\n          //admin state, though it's in the standard interfaces MIB.\n          //Consider removing it.\n          description\n            \\\"In some test mode.\\\";\n        }\n      }\n      //TODO:consider converting to an identity to have the\n      //flexibility to remove some values defined by RFC 7223 that\n      //are not used or not implemented consistently.\n      mandatory true;\n      description\n        \\\"The desired state of the interface.  In RFC 7223 this leaf\n        has the same read semantics as ifAdminStatus.  Here, it\n        reflects the administrative state as set by enabling or\n        disabling the interface.\\\";\n      reference\n        \\\"RFC 2863: The Interfaces Group MIB - ifAdminStatus\\\";\n      oc-ext:telemetry-on-change;\n    }\n\n    leaf oper-status {\n      type enumeration {\n        enum UP {\n          value 1;\n          description\n            \\\"Ready to pass packets.\\\";\n        }\n        enum DOWN {\n          value 2;\n          description\n            \\\"The interface does not pass any packets.\\\";\n        }\n        enum TESTING {\n          value 3;\n          description\n            \\\"In some test mode.  No operational packets can\n             be passed.\\\";\n        }\n        enum UNKNOWN {\n          value 4;\n          description\n            \\\"Status cannot be determined for some reason.\\\";\n        }\n        enum DORMANT {\n          value 5;\n          description\n            \\\"Waiting for some external event.\\\";\n        }\n        enum NOT_PRESENT {\n          value 6;\n          description\n            \\\"Some component (typically hardware) is missing.\\\";\n        }\n        enum LOWER_LAYER_DOWN {\n          value 7;\n          description\n            \\\"Down due to state of lower-layer interface(s).\\\";\n        }\n      }\n      //TODO:consider converting to an identity to have the\n      //flexibility to remove some values defined by RFC 7223 that\n      //are not used or not implemented consistently.\n      mandatory true;\n      description\n        \\\"The current operational state of the interface.\n\n         This leaf has the same semantics as ifOperStatus.\\\";\n      reference\n        \\\"RFC 2863: The Interfaces Group MIB - ifOperStatus\\\";\n      oc-ext:telemetry-on-change;\n    }\n\n    leaf last-change {\n      type oc-types:timeticks64;\n      description\n        \\\"This timestamp indicates the absolute time of the last\n        state change of the interface (e.g., up-to-down transition).\n        This is different than the SNMP ifLastChange object in the\n        standard interface MIB in that it is not relative to the\n        system boot time (i.e,. sysUpTime).\n\n        The value is the timestamp in nanoseconds relative to\n        the Unix Epoch (Jan 1, 1970 00:00:00 UTC).\\\";\n      oc-ext:telemetry-on-change;\n    }\n\n    leaf logical {\n      type boolean;\n      description\n        \\\"When set to true, the interface is a logical interface\n        which does not have an associated physical port or\n        channel on the system.\\\";\n      oc-ext:telemetry-on-change;\n    }\n  }\n\n\n  grouping interface-counters-state {\n    description\n      \\\"Operational state representing interface counters\n      and statistics.\\\";\n\n      //TODO: we may need to break this list of counters into those\n      //that would appear for physical vs. subinterface or logical\n      //interfaces.  For now, just replicating the full stats\n      //grouping to both interface and subinterface.\n\n    oc-ext:operational;\n\n    container counters {\n      description\n        \\\"A collection of interface-related statistics objects.\\\";\n\n      leaf in-octets {\n        type oc-yang:counter64;\n        description\n          \\\"The total number of octets received on the interface,\n          including framing characters.\n\n          Discontinuities in the value of this counter can occur\n          at re-initialization of the management system, and at\n          other times as indicated by the value of\n          'last-clear'.\\\";\n        reference\n          \\\"RFC 2863: The Interfaces Group MIB - ifHCInOctets\\\";\n      }\n\n      leaf in-pkts {\n        type oc-yang:counter64;\n        description\n          \\\"The total number of packets received on the interface,\n          including all unicast, multicast, broadcast and bad packets\n          etc.\\\";\n        reference\n          \\\"RFC 2819: Remote Network Monitoring Management Information\n          Base\\\";\n      }\n\n      leaf in-unicast-pkts {\n        type oc-yang:counter64;\n        description\n          \\\"The number of packets, delivered by this sub-layer to a\n          higher (sub-)layer, that were not addressed to a\n          multicast or broadcast address at this sub-layer.\n\n          Discontinuities in the value of this counter can occur\n          at re-initialization of the management system, and at\n          other times as indicated by the value of\n          'last-clear'.\\\";\n        reference\n          \\\"RFC 2863: The Interfaces Group MIB - ifHCInUcastPkts\\\";\n      }\n\n      leaf in-broadcast-pkts {\n        type oc-yang:counter64;\n        description\n          \\\"The number of packets, delivered by this sub-layer to a\n          higher (sub-)layer, that were addressed to a broadcast\n          address at this sub-layer.\n\n          Discontinuities in the value of this counter can occur\n          at re-initialization of the management system, and at\n          other times as indicated by the value of\n          'last-clear'.\\\";\n        reference\n          \\\"RFC 2863: The Interfaces Group MIB -\n                     ifHCInBroadcastPkts\\\";\n      }\n\n      leaf in-multicast-pkts {\n        type oc-yang:counter64;\n        description\n          \\\"The number of packets, delivered by this sub-layer to a\n          higher (sub-)layer, that were addressed to a multicast\n          address at this sub-layer.  For a MAC-layer protocol,\n          this includes both Group and Functional addresses.\n\n          Discontinuities in the value of this counter can occur\n          at re-initialization of the management system, and at\n          other times as indicated by the value of\n          'last-clear'.\\\";\n        reference\n          \\\"RFC 2863: The Interfaces Group MIB -\n                     ifHCInMulticastPkts\\\";\n      }\n\n      leaf in-discards {\n        type oc-yang:counter64;\n        description\n          \\\"The number of inbound packets that were chosen to be\n          discarded even though no errors had been detected to\n          prevent their being deliverable to a higher-layer\n          protocol.  One possible reason for discarding such a\n          packet could be to free up buffer space.\n\n          Discontinuities in the value of this counter can occur\n          at re-initialization of the management system, and at\n          other times as indicated by the value of\n          'last-clear'.\\\";\n\n\n        reference\n          \\\"RFC 2863: The Interfaces Group MIB - ifInDiscards\\\";\n      }\n\n      leaf in-errors {\n        type oc-yang:counter64;\n        description\n          \\\"For packet-oriented interfaces, the number of inbound\n          packets that contained errors preventing them from being\n          deliverable to a higher-layer protocol.  For character-\n          oriented or fixed-length interfaces, the number of\n          inbound transmission units that contained errors\n          preventing them from being deliverable to a higher-layer\n          protocol.\n\n          Discontinuities in the value of this counter can occur\n          at re-initialization of the management system, and at\n          other times as indicated by the value of\n          'last-clear'.\\\";\n        reference\n          \\\"RFC 2863: The Interfaces Group MIB - ifInErrors\\\";\n      }\n\n      leaf in-unknown-protos {\n        type oc-yang:counter64;\n        description\n          \\\"For packet-oriented interfaces, the number of packets\n          received via the interface that were discarded because\n          of an unknown or unsupported protocol.  For\n          character-oriented or fixed-length interfaces that\n          support protocol multiplexing, the number of\n          transmission units received via the interface that were\n          discarded because of an unknown or unsupported protocol.\n          For any interface that does not support protocol\n          multiplexing, this counter is not present.\n\n          Discontinuities in the value of this counter can occur\n          at re-initialization of the management system, and at\n          other times as indicated by the value of\n          'last-clear'.\\\";\n        reference\n          \\\"RFC 2863: The Interfaces Group MIB - ifInUnknownProtos\\\";\n      }\n\n      leaf in-fcs-errors {\n        type oc-yang:counter64;\n        description\n          \\\"Number of received packets which had errors in the\n          frame check sequence (FCS), i.e., framing errors.\n\n          Discontinuities in the value of this counter can occur\n          when the device is re-initialization as indicated by the\n          value of 'last-clear'.\\\";\n      }\n\n      leaf out-octets {\n        type oc-yang:counter64;\n        description\n          \\\"The total number of octets transmitted out of the\n          interface, including framing characters.\n\n          Discontinuities in the value of this counter can occur\n          at re-initialization of the management system, and at\n          other times as indicated by the value of\n          'last-clear'.\\\";\n        reference\n          \\\"RFC 2863: The Interfaces Group MIB - ifHCOutOctets\\\";\n      }\n\n      leaf out-pkts {\n        type oc-yang:counter64;\n        description\n          \\\"The total number of packets transmitted out of the\n          interface, including all unicast, multicast, broadcast,\n          and bad packets etc.\\\";\n        reference\n          \\\"RFC 2819: Remote Network Monitoring Management Information\n          Base\\\";\n      }\n\n      leaf out-unicast-pkts {\n        type oc-yang:counter64;\n        description\n          \\\"The total number of packets that higher-level protocols\n          requested be transmitted, and that were not addressed\n          to a multicast or broadcast address at this sub-layer,\n          including those that were discarded or not sent.\n\n          Discontinuities in the value of this counter can occur\n          at re-initialization of the management system, and at\n          other times as indicated by the value of\n          'last-clear'.\\\";\n        reference\n          \\\"RFC 2863: The Interfaces Group MIB - ifHCOutUcastPkts\\\";\n      }\n\n      leaf out-broadcast-pkts {\n        type oc-yang:counter64;\n        description\n          \\\"The total number of packets that higher-level protocols\n          requested be transmitted, and that were addressed to a\n          broadcast address at this sub-layer, including those\n          that were discarded or not sent.\n\n          Discontinuities in the value of this counter can occur\n          at re-initialization of the management system, and at\n          other times as indicated by the value of\n          'last-clear'.\\\";\n        reference\n          \\\"RFC 2863: The Interfaces Group MIB -\n                     ifHCOutBroadcastPkts\\\";\n      }\n\n\n      leaf out-multicast-pkts {\n        type oc-yang:counter64;\n        description\n          \\\"The total number of packets that higher-level protocols\n          requested be transmitted, and that were addressed to a\n          multicast address at this sub-layer, including those\n          that were discarded or not sent.  For a MAC-layer\n          protocol, this includes both Group and Functional\n          addresses.\n\n          Discontinuities in the value of this counter can occur\n          at re-initialization of the management system, and at\n          other times as indicated by the value of\n          'last-clear'.\\\";\n        reference\n          \\\"RFC 2863: The Interfaces Group MIB -\n                     ifHCOutMulticastPkts\\\";\n      }\n\n      leaf out-discards {\n        type oc-yang:counter64;\n        description\n          \\\"The number of outbound packets that were chosen to be\n          discarded even though no errors had been detected to\n          prevent their being transmitted.  One possible reason\n          for discarding such a packet could be to free up buffer\n          space.\n\n          Discontinuities in the value of this counter can occur\n          at re-initialization of the management system, and at\n          other times as indicated by the value of\n          'last-clear'.\\\";\n        reference\n          \\\"RFC 2863: The Interfaces Group MIB - ifOutDiscards\\\";\n      }\n\n      leaf out-errors {\n        type oc-yang:counter64;\n        description\n          \\\"For packet-oriented interfaces, the number of outbound\n          packets that could not be transmitted because of errors.\n          For character-oriented or fixed-length interfaces, the\n          number of outbound transmission units that could not be\n          transmitted because of errors.\n\n          Discontinuities in the value of this counter can occur\n          at re-initialization of the management system, and at\n          other times as indicated by the value of\n          'last-clear'.\\\";\n        reference\n          \\\"RFC 2863: The Interfaces Group MIB - ifOutErrors\\\";\n      }\n\n      leaf carrier-transitions {\n        type oc-yang:counter64;\n        description\n          \\\"Number of times the interface state has transitioned\n          between up and down since the time the device restarted\n          or the last-clear time, whichever is most recent.\\\";\n        oc-ext:telemetry-on-change;\n      }\n\n      leaf last-clear {\n        type oc-types:timeticks64;\n        description\n          \\\"Timestamp of the last time the interface counters were\n          cleared.\n\n          The value is the timestamp in nanoseconds relative to\n          the Unix Epoch (Jan 1, 1970 00:00:00 UTC).\\\";\n        oc-ext:telemetry-on-change;\n      }\n    }\n  }\n\n  // data definition statements\n\n  grouping sub-unnumbered-config {\n    description\n      \\\"Configuration data for unnumbered subinterfaces\\\";\n\n    leaf enabled {\n      type boolean;\n      default false;\n      description\n        \\\"Indicates that the subinterface is unnumbered.  By default\n        the subinterface is numbered, i.e., expected to have an\n        IP address configuration.\\\";\n    }\n  }\n\n  grouping sub-unnumbered-state {\n    description\n      \\\"Operational state data unnumbered subinterfaces\\\";\n  }\n\n  grouping sub-unnumbered-top {\n    description\n      \\\"Top-level grouping unnumbered subinterfaces\\\";\n\n    container unnumbered {\n      description\n        \\\"Top-level container for setting unnumbered interfaces.\n        Includes reference the interface that provides the\n        address information\\\";\n\n      container config {\n        description\n          \\\"Configuration data for unnumbered interface\\\";\n        oc-ext:telemetry-on-change;\n\n        uses sub-unnumbered-config;\n      }\n\n      container state {\n\n        config false;\n\n        description\n          \\\"Operational state data for unnumbered interfaces\\\";\n\n        uses sub-unnumbered-config;\n        uses sub-unnumbered-state;\n      }\n\n      uses oc-if:interface-ref;\n    }\n  }\n\n  grouping subinterfaces-config {\n    description\n      \\\"Configuration data for subinterfaces\\\";\n\n    leaf index {\n      type uint32;\n      default 0;\n      description\n        \\\"The index of the subinterface, or logical interface number.\n        On systems with no support for subinterfaces, or not using\n        subinterfaces, this value should default to 0, i.e., the\n        default subinterface.\\\";\n    }\n\n    uses interface-common-config;\n\n  }\n\n  grouping subinterfaces-state {\n    description\n      \\\"Operational state data for subinterfaces\\\";\n\n    oc-ext:operational;\n\n    leaf name {\n      type string;\n      description\n        \\\"The system-assigned name for the sub-interface.  This MAY\n        be a combination of the base interface name and the\n        subinterface index, or some other convention used by the\n        system.\\\";\n      oc-ext:telemetry-on-change;\n    }\n\n    uses interface-common-state;\n    uses interface-counters-state;\n  }\n\n  grouping subinterfaces-top {\n    description\n      \\\"Subinterface data for logical interfaces associated with a\n      given interface\\\";\n\n    container subinterfaces {\n      description\n        \\\"Enclosing container for the list of subinterfaces associated\n        with a physical interface\\\";\n\n      list subinterface {\n        key \\\"index\\\";\n\n        description\n          \\\"The list of subinterfaces (logical interfaces) associated\n          with a physical interface\\\";\n\n        leaf index {\n          type leafref {\n            path \\\"../config/index\\\";\n          }\n          description\n            \\\"The index number of the subinterface -- used to address\n            the logical interface\\\";\n        }\n\n        container config {\n          description\n            \\\"Configurable items at the subinterface level\\\";\n          oc-ext:telemetry-on-change;\n\n          uses subinterfaces-config;\n        }\n\n        container state {\n\n          config false;\n          description\n            \\\"Operational state data for logical interfaces\\\";\n\n          uses subinterfaces-config;\n          uses subinterfaces-state;\n        }\n      }\n    }\n  }\n\n  grouping interfaces-top {\n    description\n      \\\"Top-level grouping for interface configuration and\n      operational state data\\\";\n\n    container interfaces {\n      description\n        \\\"Top level container for interfaces, including configuration\n        and state data.\\\";\n\n\n      list interface {\n        key \\\"name\\\";\n\n        description\n          \\\"The list of named interfaces on the device.\\\";\n\n        leaf name {\n          type leafref {\n            path \\\"../config/name\\\";\n          }\n          description\n            \\\"References the name of the interface\\\";\n            //TODO: need to consider whether this should actually\n            //reference the name in the state subtree, which\n            //presumably would be the system-assigned name, or the\n            //configured name.  Points to the config/name now\n            //because of YANG 1.0 limitation that the list\n            //key must have the same \\\"config\\\" as the list, and\n            //also can't point to a non-config node.\n        }\n\n        container config {\n          description\n            \\\"Configurable items at the global, physical interface\n            level\\\";\n          oc-ext:telemetry-on-change;\n\n          uses interface-phys-config;\n        }\n\n        container state {\n\n          config false;\n          description\n            \\\"Operational state data at the global interface level\\\";\n\n          uses interface-phys-config;\n          uses interface-common-state;\n          uses interface-counters-state;\n        }\n\n        uses interface-phys-holdtime-top;\n        uses subinterfaces-top;\n      }\n    }\n  }\n\n  uses interfaces-top;\n\n}\"\n    }\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8888/restconf/operations/gnmi-yang-storage:upload-yang-model",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"operations",
+						"gnmi-yang-storage:upload-yang-model"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get node",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=gnmi-topology",
+						"node=node-id-1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get interfaces",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1/yang-ext:mount/openconfig-interfaces:interfaces",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=gnmi-topology",
+						"node=node-id-1",
+						"yang-ext:mount",
+						"openconfig-interfaces:interfaces"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set ethernet config",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"openconfig-if-ethernet:config\": {\n        \"enable-flow-control\": false,\n        \"openconfig-if-aggregate:aggregate-id\": \"admin\",\n        \"auto-negotiate\": true,\n        \"port-speed\": \"openconfig-if-ethernet:SPEED_10MB\"\n    }\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1/yang-ext:mount/interfaces/interface=br0/ethernet/config",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=gnmi-topology",
+						"node=node-id-1",
+						"yang-ext:mount",
+						"interfaces",
+						"interface=br0",
+						"ethernet",
+						"config"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove node",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8888",
+					"path": [
+						"restconf",
+						"data",
+						"network-topology:network-topology",
+						"topology=gnmi-topology",
+						"node=node-id-1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
