@@ -24,6 +24,7 @@ import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -38,6 +39,8 @@ import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.node
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.node.state.node.state.AvailableCapabilitiesBuilder;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.node.state.node.state.available.capabilities.AvailableCapability;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.node.state.node.state.available.capabilities.AvailableCapabilityBuilder;
+import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.additional.yang.models.AdditionalCapability;
+import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.additional.yang.models.AdditionalCapabilityKey;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeBuilder;
@@ -108,6 +111,8 @@ public class DeviceConnectionManager implements AutoCloseable {
                 LOG.debug("Received gNMI Capabiltiies response from {} : {}",node.getNodeId(), capabilityResponse);
                 final List<GnmiDeviceCapability> capabilitiesList =
                     GnmiRequestUtils.fromCapabilitiesResponse(capabilityResponse);
+                capabilitiesList
+                    .addAll(GnmiRequestUtils.fromCapabilitiesResponse(getExtensionYangModelsList(deviceConnection)));
                 try {
                     final EffectiveSchemaContext schemaContext = schemaContextHolder.getSchemaContext(capabilitiesList);
                     deviceConnection.setSchemaContext(schemaContext);
@@ -123,6 +128,22 @@ public class DeviceConnectionManager implements AutoCloseable {
                 }
             },
             executorService);
+    }
+
+    private Gnmi.CapabilityResponse getExtensionYangModelsList(final DeviceConnection deviceConnection) {
+        Optional<Map<AdditionalCapabilityKey, AdditionalCapability>> models =
+            deviceConnection.getConfigurableParameters().getAdditionalCapabilities();
+        Gnmi.CapabilityResponse.Builder capabilitiesResponseBuilder = Gnmi.CapabilityResponse.newBuilder();
+        if (models.isPresent()) {
+            models.get().entrySet()
+                .stream()
+                .map(model -> model.getValue())
+                .forEach(model -> capabilitiesResponseBuilder
+                    .addSupportedModels(Gnmi.ModelData.newBuilder()
+                        .setName(model.getName())
+                        .setVersion(model.getVersion().getValue())));
+        }
+        return capabilitiesResponseBuilder.build();
     }
 
     private void saveCapabilitiesList(final NodeId nodeId, final List<GnmiDeviceCapability> gnmiDeviceCapabilities)

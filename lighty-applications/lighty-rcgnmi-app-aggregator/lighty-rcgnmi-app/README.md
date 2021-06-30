@@ -51,6 +51,48 @@ curl --request POST 'http://127.0.0.1:8888/restconf/operations/gnmi-yang-storage
 }'
 ```
 
+The obtained list of capabilities is not always complete, which means that schema context isn't created correctly. Some 
+devices send a list of capabilities without yang models which `augment` other models. For this reason, it's possible 
+to add missing capabilities to the device capability list using the optional `additional-capabilitity` parameter.
+
+```
+curl -X PUT \
+  http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1 \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "node": [
+        {
+            "node-id": "node-id-1",
+            "connection-parameters": {
+                "host": "172.0.0.1",
+                "port": 9090,
+                "connection-type": "INSECURE"
+            },
+            "extensions-parameters": {
+                "additional-capability": [
+                    {
+                        "name": "openconfig-if-ethernet",
+                        "version": "2.6.2"
+                    },
+                    {
+                        "name": "openconfig-if-ip",
+                        "version": "2.3.1"
+                    }
+                ]
+            }
+        }
+    ]
+}'
+```
+In case the obtained list of capabilities is not complete, the missing capabilities will be shown in the error response.
+```
+{
+    "gnmi-topology:failure-details": "Errors: Missing models: \topenconfig-if-ethernet semver: 2.6.2\n"
+}
+```
+If an error is present, the node must be removed and the node must be added with the `additional capability` 
+parameter. The node must be removed because the schema context is already created and cannot be updated.
+
 ##How to start rcgnmi example app
 * build the project using ```mvn clean install```
 * go to target directory ```cd lighty-rcgnmi-app/target```

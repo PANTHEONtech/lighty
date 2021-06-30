@@ -16,6 +16,10 @@ module gnmi-yang-storage {
         description "Initial revision of gNMI yang storage model";
     }
 
+    import network-topology { prefix nt; revision-date 2013-10-21; }
+    import yang-ext { prefix ext; revision-date "2013-07-09";}
+    import gnmi-topology { prefix gnmi; revision-date "2021-03-16";}
+
     typedef module-version-type {
         type string;
         description
@@ -31,18 +35,41 @@ module gnmi-yang-storage {
             "gNMI Specification Section 2.6.1 The ModelData message";
     }
 
+    grouping yang-model-name-version {
+            leaf name {
+                description "Name of the yang model";
+                type string;
+            }
+            leaf version {
+                description "Version of the yang model";
+                type module-version-type;
+            }
+    }
+
     grouping yang-model {
-        leaf name {
-            description "Name of the yang model";
-            type string;
-        }
-        leaf version {
-            description "Version of the yang model";
-            type module-version-type;
-        }
+        uses yang-model-name-version;
         leaf body {
             description "Body of the yang model";
             type string;
+        }
+    }
+
+    grouping additional-yang-models {
+        list additional-capability {
+            description "List of additional capabilities not provided
+                         in the device list of capabilities. Some devices
+                         don't provide a complete list of supported
+                         yang models. If yang models are not provided
+                         from the device, they must be added to
+                         SchemaContext using this additional-capability
+                         list. For example: Some device augmented
+                         openconfig-interfaces by openconfig-if-ethernet.
+                         The openconfig-if-ethernet yang model is not sent
+                         in the list of capabilities and the schemaContext
+                         is incorrect, which means that data obtained
+                         from the device cannot be manipulated.";
+            key "name version";
+            uses yang-model-name-version;
         }
     }
 
@@ -60,4 +87,9 @@ module gnmi-yang-storage {
         }
     }
 
+    augment "/nt:network-topology/nt:topology/nt:node/gnmi:extensions-parameters" {
+        ext:augment-identifier "additional-capabilities";
+
+        uses additional-yang-models;
+    }
 }

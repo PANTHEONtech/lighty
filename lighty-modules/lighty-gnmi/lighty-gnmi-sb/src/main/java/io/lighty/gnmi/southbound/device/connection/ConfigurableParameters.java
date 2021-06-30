@@ -8,16 +8,23 @@
 
 package io.lighty.gnmi.southbound.device.connection;
 
+import java.util.Map;
 import java.util.Optional;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.connection.parameters.ExtensionsParameters;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.connection.parameters.extensions.parameters.GnmiParameters;
+import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.AdditionalCapabilities;
+import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.additional.yang.models.AdditionalCapability;
+import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.additional.yang.models.AdditionalCapabilityKey;
 
 public class ConfigurableParameters {
 
     private final GnmiParameters gnmiParameters;
+    private final AdditionalCapabilities additionalCapabilities;
 
     public ConfigurableParameters(final ExtensionsParameters extensionsParameters) {
         gnmiParameters = extensionsParameters == null ? null : extensionsParameters.getGnmiParameters();
+        additionalCapabilities = extensionsParameters == null ? null :
+            extensionsParameters.augmentation(AdditionalCapabilities.class);
     }
 
     public Optional<Boolean> getUseModelNamePrefix() {
@@ -37,6 +44,13 @@ public class ConfigurableParameters {
     public Optional<String> getPathTarget() {
         if (gnmiParameters != null) {
             return Optional.ofNullable(gnmiParameters.getPathTarget());
+        }
+        return Optional.empty();
+    }
+
+    public Optional<Map<AdditionalCapabilityKey, AdditionalCapability>> getAdditionalCapabilities() {
+        if (additionalCapabilities != null) {
+            return Optional.ofNullable(additionalCapabilities.getAdditionalCapability());
         }
         return Optional.empty();
     }
