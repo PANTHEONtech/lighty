@@ -23,4 +23,22 @@
     <artifactId>lighty-gnmi-yang-storage-model</artifactId>
     <version>14.0.1-SNAPSHOT</version>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>ietf-topology</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <artifactId>rfc6991-ietf-inet-types</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>yang-ext</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.models.gnmi</groupId>
+            <artifactId>lighty-gnmi-topology-model</artifactId>
+        </dependency>
+    </dependencies>
 </project>
