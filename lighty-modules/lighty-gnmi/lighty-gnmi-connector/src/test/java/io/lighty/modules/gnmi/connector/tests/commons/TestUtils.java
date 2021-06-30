@@ -6,7 +6,7 @@
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
 
-package io.lighty.modules.gnmi.connector.commons;
+package io.lighty.modules.gnmi.connector.tests.commons;
 
 import io.lighty.modules.gnmi.connector.configuration.SecurityFactory;
 import io.lighty.modules.gnmi.connector.gnmi.session.impl.GnmiSessionFactoryImpl;

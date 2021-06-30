@@ -6,7 +6,7 @@
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
 
-package io.lighty.modules.gnmi.connector.gnoi;
+package io.lighty.modules.gnmi.connector.tests.gnoi;
 
 import com.google.protobuf.ByteString;
 import gnoi.file.FileGrpc;
@@ -14,15 +14,15 @@ import gnoi.file.FileOuterClass;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
-import io.lighty.modules.gnmi.connector.commons.TestUtils;
-import io.lighty.modules.gnmi.connector.commons.TimeoutUtil;
 import io.lighty.modules.gnmi.connector.configuration.SessionConfiguration;
 import io.lighty.modules.gnmi.connector.gnmi.util.AddressUtil;
 import io.lighty.modules.gnmi.connector.gnoi.invokers.api.GnoiFileInvoker;
 import io.lighty.modules.gnmi.connector.gnoi.session.api.GnoiSession;
 import io.lighty.modules.gnmi.connector.session.api.SessionManager;
 import io.lighty.modules.gnmi.connector.session.api.SessionProvider;
-import io.lighty.modules.gnmi.connector.tests.GnmiTest;
+import io.lighty.modules.gnmi.connector.tests.commons.TestUtils;
+import io.lighty.modules.gnmi.connector.tests.commons.TimeoutUtil;
+import io.lighty.modules.gnmi.connector.tests.gnmi.GnmiTest;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URISyntaxException;
