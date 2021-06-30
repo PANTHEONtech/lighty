@@ -4,14 +4,14 @@ This module provides tools to manage and communicate with gNMI devices.
 Details about gNMI can be found in [official specification](https://github.com/openconfig/reference/blob/master/rpc/gnmi/gnmi-specification.md).
 
 Notable classes are:
-* [GnmiSessionManager](src/main/java/io/lighty/modules/southbound/session/api/SessionManager.java) - creates and manages
+* [GnmiSessionManager](src/main/java/io/lighty/modules/gnmi/connector/session/api/SessionManager.java) - creates and manages
   sessions to gNMI devices. Instance can be created by
-  [GnmiSessionManagerFactory](src/main/java/io/lighty/modules/southbound/session/SessionManagerFactory.java)
+  [GnmiSessionManagerFactory](src/main/java/io/lighty/modules/gnmi/connector/session/SessionManagerFactory.java)
 
-* [GnmiSession](src/main/java/io/lighty/modules/southbound/gnmi/session/api/GnmiSession.java) - provides
+* [GnmiSession](src/main/java/io/lighty/modules/gnmi/connector/gnmi/session/api/GnmiSession.java) - provides
   get/set/capabilities/subscribe operations to communicate with gNMI devices.
   Instance can be created by
-  [GnmiSessionFactory](src/main/java/io/lighty/modules/southbound/gnmi/session/impl/GnmiSessionFactory.java)
+  [GnmiSessionFactory](src/main/java/io/lighty/modules/gnmi/connector/gnmi/session/impl/GnmiSessionFactory.java)
 
 ### gNMI certificates
 For proper gNMI functionality, the valid SSl certificates are necessary. The certificates used for testing purposes are

@@ -10,8 +10,8 @@ package io.lighty.gnmi.southbound.device.session.security;
 
 import io.lighty.gnmi.southbound.schema.certstore.service.CertificationStorageService;
 import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
-import io.lighty.modules.southbound.configuration.SecurityFactory;
-import io.lighty.modules.southbound.security.Security;
+import io.lighty.modules.gnmi.connector.configuration.SecurityFactory;
+import io.lighty.modules.gnmi.connector.security.Security;
 import java.io.IOException;
 import java.io.StringReader;
 import java.security.KeyPair;
