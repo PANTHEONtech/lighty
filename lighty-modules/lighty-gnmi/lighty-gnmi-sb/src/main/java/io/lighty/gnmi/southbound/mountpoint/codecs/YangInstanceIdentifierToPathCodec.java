@@ -65,10 +65,13 @@ public class YangInstanceIdentifierToPathCodec implements Codec<YangInstanceIden
 
         // Add prefix to first path element, if requested
         if (pathBuilder.getElemCount() > 0 && prefixFirstElement) {
-            final String firstElemName = pathBuilder.getElem(0).getName();
-            final Optional<String> modulePrefixOfElement = getModulePrefixOfElement(firstElemName);
-            modulePrefixOfElement.ifPresent(s -> pathBuilder.setElem(0, pathBuilder.getElem(0).toBuilder()
-                    .setName(String.format("%s:%s", s, firstElemName))));
+            final Gnmi.PathElem firstElement = pathBuilder.getElem(0);
+            final QName nodeType = path.getPathArguments().get(0).getNodeType();
+
+            final Optional<Module> firstElemModule = schemaContextProvider
+                    .getSchemaContext().findModule(nodeType.getNamespace(), nodeType.getRevision());
+            firstElemModule.ifPresent(module -> pathBuilder.setElem(0, firstElement.toBuilder()
+                    .setName(String.format("%s:%s", module.getName(), firstElement.getName()))));
         }
         final Gnmi.Path resultingPath = pathBuilder.build();
         LOG.debug("Resulting gNMI Path of identifier {} is {}", path, resultingPath);
@@ -102,15 +105,4 @@ public class YangInstanceIdentifierToPathCodec implements Codec<YangInstanceIden
     private static boolean doesDefineAugment(final YangInstanceIdentifier.PathArgument pathArgument) {
         return pathArgument instanceof YangInstanceIdentifier.AugmentationIdentifier;
     }
-
-    private Optional<String> getModulePrefixOfElement(final String element) {
-        return schemaContextProvider.getSchemaContext().getModules()
-                .stream()
-                .filter(m -> m.getChildNodes()
-                        .stream()
-                        .anyMatch(n -> n.getQName().getLocalName().contains(element)))
-                .map(Module::getName)
-                .findFirst();
-    }
-
 }
