@@ -109,7 +109,7 @@ public class SimulatorCrudTest {
     public void crudSimpleValueTest() throws ExecutionException, InterruptedException, IOException {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
-                        .setName("interfaces")
+                        .setName("openconfig-interfaces:interfaces")
                         .build())
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName("interface")

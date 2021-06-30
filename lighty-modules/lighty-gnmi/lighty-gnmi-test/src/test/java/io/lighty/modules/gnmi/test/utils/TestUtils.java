@@ -38,6 +38,8 @@ public final class TestUtils {
     private static final SessionManagerFactory SESSION_MANAGER_FACTORY
             = new SessionManagerFactoryImpl(new GnmiSessionFactoryImpl());
 
+    private static final JsonParser JSON_PARSER = new JsonParser();
+
     public static SessionManager createSessionManagerWithCerts()
             throws URISyntaxException, InvalidKeySpecException, CertificateException, NoSuchAlgorithmException,
             IOException {
@@ -51,9 +53,8 @@ public final class TestUtils {
     }
 
     public static boolean jsonMatch(final String first, final String second) {
-        final JsonParser parser = new JsonParser();
-        final JsonElement jsonA = parser.parse(first);
-        final JsonElement jsonB = parser.parse(second);
+        final JsonElement jsonA = JSON_PARSER.parse(first);
+        final JsonElement jsonB = JSON_PARSER.parse(second);
         return jsonA.equals(jsonB);
     }
 
