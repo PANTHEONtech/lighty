@@ -16,7 +16,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.protobuf.ByteString;
 import gnmi.Gnmi;
 import io.lighty.gnmi.southbound.schema.provider.SchemaContextProvider;
-import io.lighty.modules.southbound.gnmi.commons.util.DataConverter;
+import io.lighty.modules.gnmi.commons.util.DataConverter;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
