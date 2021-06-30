@@ -6,7 +6,7 @@
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
 
-package io.lighty.modules.gnmi.connector.tests;
+package io.lighty.modules.gnmi.connector.tests.gnmi;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import gnmi.Gnmi;
@@ -16,13 +16,13 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
-import io.lighty.modules.gnmi.connector.commons.TestUtils;
-import io.lighty.modules.gnmi.connector.commons.TimeoutUtil;
 import io.lighty.modules.gnmi.connector.configuration.SessionConfiguration;
 import io.lighty.modules.gnmi.connector.gnmi.session.api.GnmiSession;
 import io.lighty.modules.gnmi.connector.gnmi.util.AddressUtil;
 import io.lighty.modules.gnmi.connector.session.api.SessionManager;
 import io.lighty.modules.gnmi.connector.session.api.SessionProvider;
+import io.lighty.modules.gnmi.connector.tests.commons.TestUtils;
+import io.lighty.modules.gnmi.connector.tests.commons.TimeoutUtil;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URISyntaxException;
