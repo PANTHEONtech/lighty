@@ -138,6 +138,9 @@ public class DeviceConnectionManager implements AutoCloseable {
             models.get().entrySet()
                 .stream()
                 .map(model -> model.getValue())
+                .peek(additionalCapability ->
+                    LOG.debug("Adding additional gNMI capability: name {} version {}",
+                        additionalCapability.getName(), additionalCapability.getVersion().getValue()))
                 .forEach(model -> capabilitiesResponseBuilder
                     .addSupportedModels(Gnmi.ModelData.newBuilder()
                         .setName(model.getName())
