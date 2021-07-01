@@ -22,7 +22,7 @@ To build and start the RCgNMI application in your local environment, follow thes
 1. Build the application using maven  
     `mvn clean install -pl light-rcgnmi-app -am`
 
-2. Unpack the application ZIP distribution created in the _lighty-rnc-app/target_ called  
+2. Unpack the application ZIP distribution created in the _lighty-rcgnmi-app/target_ called  
    `lighty-rcgnmi-app-<version>-bin.zip`
 
 3. Start the application by running it's _.jar_ file:    
@@ -37,7 +37,7 @@ To build and start the RCgNMI application in your local environment, follow thes
 5. If the application was started successfully, then a log similar should be present in the console:  
   ` INFO [main] (RCgNMIApp.java:98) - RCgNMI lighty.io application started in 10.10 s`
 
-6. Test the RNC lighty.io application. Default RESTCONF port is `8888`  
+6. Test the RCgNMI lighty.io application. Default RESTCONF port is `8888`  
    The default credential for http requests is login:`admin`, password: `admin`. 
 
 ## How to use RCgNMI example app
@@ -332,7 +332,7 @@ To easily deploy Lighty RcGNMI application to kubernetes we provide custom helm 
 To install, make sure that the docker image defined in `values.yaml` is accessible in your kubernetes (for microk8s you can use
  [docker-microk8s-script](lighty-rcgnmi-app-helm/helm/microk8s-uploadDocker.sh)), then run command:
 `microk8s helm install --name lighty-rcgnmi-app ./lighty-rcgnmi-app-helm/`
-in `/lighty-rnc-app-helm/helm/` directory.  
+in `/lighty-rcgnmi-app-helm/helm/` directory.  
 Once the deployment is started and all pods and services are ready, [save-logs-script](lighty-rcgnmi-app-helm/helm/microk8s-saveLightyLogs.sh)
 can be used to save logs from pods.
 To uninstall the deployment, run command:  
