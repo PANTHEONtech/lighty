@@ -13,6 +13,8 @@ lighty:
   configDirectoryName: "k8s-config"
   # Name of the config file must be same as property in configmap
   configFilename: "lighty-config.json"
+  # Name of the config file for initial logger configuration, must be same as property in configmap
+  loggerConfigFilename: "log4j.properties"
   # If using cluster (not single-node deployment), don't forget to increase replica count
   replicaCount: 1
   restconf:
