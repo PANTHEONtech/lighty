@@ -30,8 +30,8 @@ public class GnmiCapabilitiesService {
     public GnmiCapabilitiesService(final EffectiveModelContext schemaContext,
                                    @Nullable final EnumSet<Gnmi.Encoding> supportedEncodings) {
         this.schemaContext = schemaContext;
-        this.supportedEncodings = Objects.requireNonNullElse(supportedEncodings,EnumSet.of(Gnmi.Encoding.JSON,
-                Gnmi.Encoding.JSON_IETF));
+        this.supportedEncodings = Objects.requireNonNullElse(supportedEncodings,
+                EnumSet.of(Gnmi.Encoding.JSON, Gnmi.Encoding.JSON_IETF));
     }
 
     @SuppressWarnings("UnstableApiUsage")
