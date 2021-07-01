@@ -44,7 +44,7 @@ This module implements functionality to make CRUD operations on gNMI target.
 
 5. **withConfig(GnmiConfiguration)** - (Default empty) Configuration of gNMI south-bound.
 
-## Supported encodingsGnmiCapabilitiesService.java
+## Supported encodings
 Since we are operating solely with yang modeled data, which, as stated in [gNMI spec](https://github.com/openconfig/reference/blob/master/rpc/gnmi/gnmi-specification.md#231-json-and-json_ietf),
  should be encoded in RFC7951 JSON format, only JSON_IETF encoding is supported for structured data types. That means each gNMI SetRequest sent by gNMI-module targeted to structured data
  (yang container,list ...) is encoded in JSON_IETF and each gNMI GetRequest has encoding set to JSON_IETF.
