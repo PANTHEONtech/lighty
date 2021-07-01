@@ -198,14 +198,65 @@ public final class DataConverter {
         return SchemaPath.create(schemaArgs, true);
     }
 
-    public static Optional<? extends Module> findModule(@NonNull final String element,
-                                                        @NonNull final EffectiveModelContext context) {
+    /**
+     * Find module by the element-name in current converter's schema-context.
+     * <p></p>
+     * <p>It is necessary to specify module name as prefix, if there are multiple modules with same elements - the
+     * element has to be specified uniquely.</p>
+     * <p></p>
+     * <ul>
+     *      <li>Looking for module end correctly and return the module found, when:
+     *      <ul>
+     *           <li>exactly one module was found for element-name when module-name (as element-prefix) was NOT provided
+     *           - there are no modules with same elements
+     *           <dl>
+     *                <dt>Example:</dt>
+     *                <dd>schema-context contains single module: openconfig-interfaces</dd>
+     *                <dd>entered element: interfaces</dd>
+     *                <dd>found and returned: openconfig-interfaces:interfaces</dd>
+     *           </dl></li>
+     *           <li>exactly one module was found for element-name, there are modules with same elements, but the
+     *           specific module-name was entered in form of element-prefix
+     *           <dl>
+     *                <dt>Example:</dt>
+     *                <dd>schema-context contains two modules: openconfig-interfaces, ietf-interfaces</dd>
+     *                <dd>entered element: openconfig-interfaces:interfaces</dd>
+     *               <dd>found and returned: openconfig-interfaces:interfaces (skipped: ietf-interfaces:interfaces)</dd>
+     *           </dl></li>
+     *      </ul></li>
+     * </ul>
+     * <ul>
+     *      <li>Looking for module ends with empty result in cases, when:
+     *      <ul>
+     *           <li>no module found for element-name</li>
+     *           <li>multiple modules found for element-name but module-name in form of element-prefix was not provided
+     *           <dl>
+     *                <dt>Example:</dt>
+     *                <dd>schema-context contains two modules: openconfig-interfaces, ietf-interfaces</dd>
+     *                <dd>entered element: interfaces</dd>
+     *                <dd>found and returned: openconfig-interfaces:interfaces, ietf-interfaces:interfaces</dd>
+     *           </dl></li>
+     *      </ul></li>
+     * </ul>
+     * @param element the element-name (with or without module prefix)
+     * @return YANG module containing the specific element
+     */
+    public static Optional<? extends Module> findModuleByElement(@NonNull final String element,
+                                                                 @NonNull final EffectiveModelContext context) {
+        final ElementNameWithModuleName elementWithModule = ElementNameWithModuleName.parseFromString(element);
         return context.getModules()
                 .stream()
-                .filter(m -> m.getChildNodes()
+                .filter(module -> module.getChildNodes()
                         .stream()
-                        .anyMatch(n -> n.getQName().getLocalName().contains(element)))
-                .findFirst();
+                        .anyMatch(node -> elementWithModule.equals(node.getQName(), module)))
+                .collect(Collectors.collectingAndThen(Collectors.toList(), modules -> {
+                    if (modules.size() == 1) {
+                        return Optional.of(modules.get(0));
+                    } else {
+                        LOG.warn("Found multiple modules for element {}: {}", element, modules);
+                        return Optional.empty();
+                    }
+                }));
     }
 
     public static Optional<? extends Module> findModuleByQName(@NonNull final QName element,
