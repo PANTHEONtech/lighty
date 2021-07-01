@@ -21,7 +21,11 @@ data:
           "unit":"MILLISECONDS"
         },
         "actorSystemConfig":{
+          {{- if .Values.lighty.akka.isSingleNode }}
           "akkaConfigPath":"singlenode/akka-default.conf",
+          {{- else }}
+          "akkaConfigPath":"{{ .Values.lighty.configDirectoryName }}/{{ .Values.lighty.akka.akkaNodeConfigFilename }}",
+          {{- end }}
           "factoryAkkaConfigPath":"singlenode/factory-akka-default.conf"
         },
         "schemaServiceConfig":{
