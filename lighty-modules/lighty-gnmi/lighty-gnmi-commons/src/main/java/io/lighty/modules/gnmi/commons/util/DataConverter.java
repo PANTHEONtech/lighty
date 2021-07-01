@@ -43,10 +43,6 @@ import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/*
-    TODO: Examine if this class can be removed and we can use lighty-codecs instead
-           or move these methods to lighty-codecs and use that.
- */
 public final class DataConverter {
 
     private static final Logger LOG = LoggerFactory.getLogger(DataConverter.class);
