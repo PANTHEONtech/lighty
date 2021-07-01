@@ -45,6 +45,7 @@ public class DeviceCreationTest {
         Assert.assertNotNull(target.getGnoiFileService());
         Assert.assertNotNull(target.getGnoiOSService());
         Assert.assertNotNull(target.getGnoiSystemService());
+        Assert.assertNotNull(target.getGnoiSonicService());
         target.stop();
         //Case with one top elements
         target = new SimulatedGnmiDeviceBuilder().setHost(TARGET_HOST)
@@ -61,6 +62,7 @@ public class DeviceCreationTest {
         Assert.assertNotNull(target.getGnoiFileService());
         Assert.assertNotNull(target.getGnoiOSService());
         Assert.assertNotNull(target.getGnoiSystemService());
+        Assert.assertNotNull(target.getGnoiSonicService());
         target.stop();
     }
 
@@ -78,6 +80,7 @@ public class DeviceCreationTest {
         Assert.assertNotNull(target.getGnoiFileService());
         Assert.assertNotNull(target.getGnoiOSService());
         Assert.assertNotNull(target.getGnoiSystemService());
+        Assert.assertNotNull(target.getGnoiSonicService());
         target.stop();
     }
 
@@ -97,6 +100,7 @@ public class DeviceCreationTest {
         Assert.assertNotNull(target.getGnoiFileService());
         Assert.assertNotNull(target.getGnoiOSService());
         Assert.assertNotNull(target.getGnoiSystemService());
+        Assert.assertNotNull(target.getGnoiSonicService());
         target.stop();
     }
 
