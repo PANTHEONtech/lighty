@@ -159,7 +159,8 @@ class SessionInitializeTest {
         final List<Node> gnmiNodes = prepareGnmiNodes(NUMBER_OF_NODES);
 
         when(gnmiSessionMock.capabilities(any()))
-                .thenAnswer(invocation -> Futures.immediateFuture(CapabilityResponse.getDefaultInstance()));
+                .thenAnswer(invocation -> Futures.immediateFuture(CapabilityResponse.newBuilder()
+                        .addSupportedEncodings(Gnmi.Encoding.JSON_IETF).build()));
 
         // Connect devices
         final List<ListenableFuture<Void>> futureResults = new ArrayList<>();
@@ -189,7 +190,8 @@ class SessionInitializeTest {
 
         when(gnmiSessionMock.capabilities(any()))
                 .thenAnswer(invocation -> Futures.scheduleAsync(
-                    () -> Futures.immediateFuture(Gnmi.CapabilityResponse.getDefaultInstance()),
+                    () -> Futures.immediateFuture(CapabilityResponse.newBuilder()
+                            .addSupportedEncodings(Gnmi.Encoding.JSON_IETF).build()),
                         ThreadLocalRandom.current().nextLong(500),
                         TimeUnit.MILLISECONDS, scheduledService));
 

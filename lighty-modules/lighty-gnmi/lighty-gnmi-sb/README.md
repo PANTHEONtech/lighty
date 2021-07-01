@@ -44,3 +44,14 @@ This module implements functionality to make CRUD operations on gNMI target.
 
 5. **withConfig(GnmiConfiguration)** - (Default empty) Configuration of gNMI south-bound.
 
+## Supported encodings
+Since we are operating solely with yang modeled data, which, as stated in [gNMI spec](https://github.com/openconfig/reference/blob/master/rpc/gnmi/gnmi-specification.md#231-json-and-json_ietf),
+ should be encoded in RFC7951 JSON format, only JSON_IETF encoding is supported for structured data types. That means each gNMI SetRequest sent by gNMI-module targeted to structured data
+ (yang container,list ...) is encoded in JSON_IETF and each gNMI GetRequest has encoding set to JSON_IETF.
+This encoding is also expected encoding for gNMI GetResponse of structured data.
+This encoding enforcement does not apply to SetRequest/GetResponse targeting scalar types (single yang leaf), in this case,
+ [gNMI specification](https://github.com/openconfig/reference/blob/master/rpc/gnmi/gnmi-specification.md#223-node-values) applies.
+### Encodings in gNMI CapabilityResponse
+As stated above, only JSON_IETF is supported for encoding structured data types. This means that device MUST declare it's
+ support of JSON_IETF encoding in [CapabilityResponse](https://github.com/openconfig/reference/blob/master/rpc/gnmi/gnmi-specification.md#322-the-capabilityresponse-message)
+  supported_encodings field. If JSON_IETF is not present in supported_encoding field, connection of gNMI device is closed.

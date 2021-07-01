@@ -62,6 +62,9 @@ SimulatedGnmiDeviceBuilder.
 
 11. **usePlaintext()** - (default: turned off) This will Disable TLS validation. If this is enabled, then there is no need
    to specify TLS related options.
+   
+12. **setSupportedEncodings(EnumSet<Gnmi.Encoding>)** - overwrites default encoding set {JSON_IETF, JSON} 
+    returned in CapabilityResponse.
 
 12. **setGsonInstance(Gson)** - (default: default instance of Gson)  Provides an option to customize Gson parser instance
    used in device.

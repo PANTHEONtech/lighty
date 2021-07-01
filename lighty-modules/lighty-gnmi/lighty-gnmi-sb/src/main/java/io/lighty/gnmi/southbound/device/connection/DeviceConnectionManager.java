@@ -13,6 +13,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import gnmi.Gnmi;
 import io.lighty.gnmi.southbound.capabilities.GnmiDeviceCapability;
+import io.lighty.gnmi.southbound.capabilities.MissingEncodingException;
 import io.lighty.gnmi.southbound.device.session.security.SessionSecurityException;
 import io.lighty.gnmi.southbound.identifier.IdentifierUtils;
 import io.lighty.gnmi.southbound.mountpoint.GnmiMountPointRegistrator;
@@ -63,7 +64,7 @@ public class DeviceConnectionManager implements AutoCloseable {
     public DeviceConnectionManager(final GnmiMountPointRegistrator mountPointRegistrator,
             final SchemaContextHolder schemaContextHolder, final GnmiDataBrokerFactory gnmiDataBrokerFactory,
             final DeviceConnectionInitializer connectionInitializer, final DataBroker dataBroker,
-                                   final ExecutorService executors) {
+            final ExecutorService executors) {
         this.mountPointRegistrator = mountPointRegistrator;
         this.schemaContextHolder = schemaContextHolder;
         this.gnmiDataBrokerFactory = gnmiDataBrokerFactory;
@@ -97,8 +98,7 @@ public class DeviceConnectionManager implements AutoCloseable {
         }
     }
 
-    private ListenableFuture<Void> createMountPoint(final Node node,
-            final DeviceConnection deviceConnection) {
+    private ListenableFuture<Void> createMountPoint(final Node node, final DeviceConnection deviceConnection) {
 
         final ListenableFuture<Gnmi.CapabilityResponse> readCapabilitiesFuture =
                 deviceConnection.getGnmiSession().capabilities(GnmiRequestUtils.makeDefaultCapabilityRequest());
@@ -106,6 +106,12 @@ public class DeviceConnectionManager implements AutoCloseable {
         return Futures.transformAsync(readCapabilitiesFuture,
             capabilityResponse -> {
                 LOG.debug("Received gNMI Capabiltiies response from {} : {}",node.getNodeId(), capabilityResponse);
+
+                if (!capabilityResponse.getSupportedEncodingsList().contains(Gnmi.Encoding.JSON_IETF)) {
+                    return Futures.immediateFailedFuture(
+                            new MissingEncodingException("gNMI Device must support JSON_IETF encoding"));
+                }
+
                 final List<GnmiDeviceCapability> capabilitiesList =
                     GnmiRequestUtils.fromCapabilitiesResponse(capabilityResponse);
                 try {
@@ -135,12 +141,12 @@ public class DeviceConnectionManager implements AutoCloseable {
         final Node operationalNode = new NodeBuilder()
                 .setNodeId(nodeId)
                 .addAugmentation(new GnmiNodeBuilder()
-                .setNodeState(new NodeStateBuilder()
-                        .setAvailableCapabilities(new AvailableCapabilitiesBuilder()
-                                .setAvailableCapability(capabilityList)
+                        .setNodeState(new NodeStateBuilder()
+                                .setAvailableCapabilities(new AvailableCapabilitiesBuilder()
+                                        .setAvailableCapability(capabilityList)
+                                        .build())
                                 .build())
                         .build())
-                .build())
                 .build();
 
         final WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
