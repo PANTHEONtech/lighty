@@ -10,8 +10,10 @@ package io.lighty.modules.gnmi.simulatordevice.impl;
 
 
 import com.google.gson.Gson;
+import gnmi.Gnmi;
 import io.lighty.modules.gnmi.simulatordevice.utils.UsernamePasswordAuth;
 import io.netty.channel.EventLoopGroup;
+import java.util.EnumSet;
 
 public class SimulatedGnmiDeviceBuilder {
     private EventLoopGroup bossGroup;
@@ -27,6 +29,7 @@ public class SimulatedGnmiDeviceBuilder {
     private UsernamePasswordAuth usernamePasswordAuth;
     private boolean plaintext = false;
     private Gson gson;
+    private EnumSet<Gnmi.Encoding> supportedEncodings;
 
     public SimulatedGnmiDeviceBuilder setInitialConfigDataPath(final String initialConfigDataPath) {
         this.initialConfigDataPath = initialConfigDataPath;
@@ -93,9 +96,15 @@ public class SimulatedGnmiDeviceBuilder {
         return this;
     }
 
+    public SimulatedGnmiDeviceBuilder setSupportedEncodings(final EnumSet<Gnmi.Encoding> encodings) {
+        this.supportedEncodings = encodings;
+        return this;
+    }
+
 
     public SimulatedGnmiDevice build() {
         return new SimulatedGnmiDevice(bossGroup, workerGroup, host, port, maxConnections, certificatePath, keyPath,
-                yangsPath, initialConfigDataPath, initialStateDataPath, usernamePasswordAuth, plaintext, gson);
+                yangsPath, initialConfigDataPath, initialStateDataPath, usernamePasswordAuth, plaintext, gson,
+                supportedEncodings);
     }
 }

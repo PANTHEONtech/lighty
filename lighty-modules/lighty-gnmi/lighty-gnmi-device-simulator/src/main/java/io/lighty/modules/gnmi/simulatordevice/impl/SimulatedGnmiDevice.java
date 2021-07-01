@@ -9,6 +9,7 @@
 package io.lighty.modules.gnmi.simulatordevice.impl;
 
 import com.google.gson.Gson;
+import gnmi.Gnmi;
 import io.grpc.Server;
 import io.grpc.netty.InternalProtocolNegotiators;
 import io.grpc.netty.NettyServerBuilder;
@@ -29,6 +30,7 @@ import io.netty.util.internal.StringUtil;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.EnumSet;
 import java.util.Objects;
 import org.opendaylight.yangtools.yang.parser.stmt.reactor.EffectiveSchemaContext;
 import org.slf4j.Logger;
@@ -55,6 +57,7 @@ public class SimulatedGnmiDevice {
     private final int maxConnections;
     private final boolean plaintext;
     private final Gson gson;
+    private final EnumSet<Gnmi.Encoding> supportedEncodings;
     private Server server;
 
     private GnoiSystemService gnoiSystemService;
@@ -74,7 +77,7 @@ public class SimulatedGnmiDevice {
                                final String certificatePath, final String keyPath, final String yangsPath,
                                final String initialConfigDataPath, final String initialStateDataPath,
                                final UsernamePasswordAuth usernamePasswordAuth, final boolean plaintext,
-                               final Gson gson) {
+                               final Gson gson, final EnumSet<Gnmi.Encoding> supportedEncodings) {
         this.bossGroup = Objects.requireNonNullElseGet(bossGroup, () -> new NioEventLoopGroup(1));
         this.workerGroup = Objects.requireNonNullElseGet(workerGroup, NioEventLoopGroup::new);
         this.yangsPath = Objects.requireNonNull(yangsPath, "Path to directory of yang files form which schema"
@@ -89,6 +92,7 @@ public class SimulatedGnmiDevice {
         this.usernamePasswordAuth = usernamePasswordAuth;
         this.plaintext = plaintext;
         this.gson = gson;
+        this.supportedEncodings = supportedEncodings;
     }
 
     public void start() throws IOException {
@@ -125,7 +129,7 @@ public class SimulatedGnmiDevice {
         dataService = new YangDataService(schemaContext, initialConfigDataPath, initialStateDataPath);
 
         // Route gNMI calls towards gNMI service facade
-        gnmiService = new GnmiService(schemaContext, dataService, gson);
+        gnmiService = new GnmiService(schemaContext, dataService, gson, supportedEncodings);
         serverBuilder.addService(gnmiService);
 
         gnoiSystemService = new GnoiSystemService();

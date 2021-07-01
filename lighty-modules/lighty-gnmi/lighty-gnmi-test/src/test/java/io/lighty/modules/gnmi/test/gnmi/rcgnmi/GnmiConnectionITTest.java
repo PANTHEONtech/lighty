@@ -56,6 +56,8 @@ public class GnmiConnectionITTest extends GnmiITBase {
 
     private static final String GNMI_NODE_WITH_WRONG_PASSWD_ID = "gnmi-credentials-test-node";
     private static final int DEVICE_WITH_CREDENTIALS_PORT = ANOTHER_DEVICE_PORT + 1;
+    private static final String GNMI_NODE_MISSING_ENCODING_ID = "gnmi-missing-encoding-node";
+    private static final int DEVICE_WITH_MISSING_ENCODING_PORT = DEVICE_WITH_CREDENTIALS_PORT + 1;
     private static final String DEVICE_USERNAME = "admin";
     private static final String DEVICE_PASSWORD = "admin";
 
@@ -101,6 +103,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
     private static SimulatedGnmiDevice anotherDevice;
     private static SimulatedGnmiDevice device;
     private static SimulatedGnmiDevice deviceWithCredentials;
+    private static SimulatedGnmiDevice deviceWithMissingEncoding;
 
     @BeforeAll
     public static void setupDevice() {
@@ -108,10 +111,12 @@ public class GnmiConnectionITTest extends GnmiITBase {
         anotherDevice = getUnsecureGnmiDevice(DEVICE_IP, ANOTHER_DEVICE_PORT);
         deviceWithCredentials = getUnsecureGnmiDevice(DEVICE_IP, DEVICE_WITH_CREDENTIALS_PORT,
                                                       DEVICE_USERNAME, DEVICE_PASSWORD);
+        deviceWithMissingEncoding = getNonCompliableEncodingDevice(DEVICE_IP, DEVICE_WITH_MISSING_ENCODING_PORT);
         try {
             device.start();
             anotherDevice.start();
             deviceWithCredentials.start();
+            deviceWithMissingEncoding.start();
         } catch (IOException e) {
             LOG.info("Exception during device startup: ", e);
         }
@@ -122,6 +127,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
         device.stop();
         anotherDevice.stop();
         deviceWithCredentials.stop();
+        deviceWithMissingEncoding.stop();
     }
 
     @AfterEach
@@ -143,9 +149,14 @@ public class GnmiConnectionITTest extends GnmiITBase {
                     LOG.info("Problem when disconnecting device {}", GNMI_NODE_WITH_WRONG_PASSWD_ID);
                 }
             }
+            if (getGnmiTopologyResponse.body().contains(GNMI_NODE_MISSING_ENCODING_ID)) {
+                if (!disconnectDevice(GNMI_NODE_MISSING_ENCODING_ID)) {
+                    LOG.info("Problem when disconnecting device {}", GNMI_NODE_MISSING_ENCODING_ID);
+                }
+            }
         } catch (ExecutionException | InterruptedException | TimeoutException | IOException e) {
-            LOG.info("Problem when disconnecting devices {}, {}: ",
-                     ANOTHER_GNMI_NODE_ID, GNMI_NODE_WITH_WRONG_PASSWD_ID, e);
+            LOG.info("Problem when disconnecting devices {}, {}, {}: ",
+                    ANOTHER_GNMI_NODE_ID, GNMI_NODE_WITH_WRONG_PASSWD_ID, GNMI_NODE_MISSING_ENCODING_ID, e);
         }
     }
 
@@ -511,6 +522,65 @@ public class GnmiConnectionITTest extends GnmiITBase {
                         + "/gnmi-topology:node-state");
                 assertEquals(HttpURLConnection.HTTP_CONFLICT, getConnectionStatusResponse.statusCode());
             });
+    }
+
+    @Test
+    public void connectDeviceWithMissingEncodingTest()
+            throws IOException, InterruptedException, ExecutionException, TimeoutException {
+        //assert existing and empty gnmi topology
+        final HttpResponse<String> getGnmiTopologyResponse = sendGetRequestJSON(GNMI_TOPOLOGY_PATH);
+        assertEquals(HttpURLConnection.HTTP_OK, getGnmiTopologyResponse.statusCode());
+        final JSONArray topologies =
+                new JSONObject(getGnmiTopologyResponse.body()).getJSONArray("network-topology:topology");
+        assertEquals(1, topologies.length());
+        final JSONObject gnmiTopologyJSON = topologies.getJSONObject(0);
+        LOG.info("Empty gnmi-topology check response: {}", gnmiTopologyJSON);
+        assertEquals("gnmi-topology", gnmiTopologyJSON.getString("topology-id"));
+        assertThrows(JSONException.class, () -> gnmiTopologyJSON.getJSONArray("node"));
+
+        // add gNMI node with missing encoding to topology
+        LOG.info("Adding gnmi device with ID {}", GNMI_NODE_MISSING_ENCODING_ID);
+        final HttpResponse<String> addGnmiDeviceResponse =
+                sendPutRequestJSON(GNMI_TOPOLOGY_PATH + "/node=" + GNMI_NODE_MISSING_ENCODING_ID,
+                        createDevicePayload(
+                                GNMI_NODE_MISSING_ENCODING_ID, DEVICE_IP, DEVICE_WITH_MISSING_ENCODING_PORT));
+        LOG.info("adding device with missing JSON_IETF encoding: {}", addGnmiDeviceResponse.body());
+        assertEquals(HttpURLConnection.HTTP_CREATED, addGnmiDeviceResponse.statusCode());
+
+        // assert gNMI node is not connected correctly due to missing JSON_IETF_ENCODING
+        Awaitility.waitAtMost(WAIT_TIME_DURATION)
+                .pollInterval(POLL_INTERVAL_DURATION)
+                .untilAsserted(() -> {
+                    final HttpResponse<String> getConnectionStatusResponse =
+                            sendGetRequestJSON(GNMI_TOPOLOGY_PATH + "/node=" + GNMI_NODE_MISSING_ENCODING_ID
+                                    + GNMI_NODE_STATUS);
+                    assertEquals(HttpURLConnection.HTTP_OK, getConnectionStatusResponse.statusCode());
+                    final String gnmiDeviceConnectStatus =
+                            new JSONObject(getConnectionStatusResponse.body())
+                                    .getString("gnmi-topology:node-status");
+                    LOG.info("Response: {}", gnmiDeviceConnectStatus);
+                    assertNotEquals(GNMI_NODE_STATUS_READY, gnmiDeviceConnectStatus);
+                    final HttpResponse<String> getDeviceFailureDetailsResponse =
+                            sendGetRequestJSON(GNMI_TOPOLOGY_PATH + "/node=" + GNMI_NODE_MISSING_ENCODING_ID
+                                    + "/gnmi-topology:node-state/failure-details");
+                    final String gnmiDeviceFailureDetails =
+                            new JSONObject(getDeviceFailureDetailsResponse.body())
+                                    .getString("gnmi-topology:failure-details");
+                    LOG.info("Response: {}", gnmiDeviceFailureDetails);
+                    assertTrue(gnmiDeviceFailureDetails.contains("JSON_IETF encoding"));
+                });
+
+        assertTrue(disconnectDevice(GNMI_NODE_MISSING_ENCODING_ID));
+
+        // assert gNMI node's node-state is also deleted
+        Awaitility.waitAtMost(WAIT_TIME_DURATION)
+                .pollInterval(POLL_INTERVAL_DURATION)
+                .untilAsserted(() -> {
+                    final HttpResponse<String> getConnectionStatusResponse =
+                            sendGetRequestJSON(GNMI_TOPOLOGY_PATH + "/node=" + GNMI_NODE_MISSING_ENCODING_ID
+                                    + "/gnmi-topology:node-state");
+                    assertEquals(HttpURLConnection.HTTP_CONFLICT, getConnectionStatusResponse.statusCode());
+                });
     }
 
 }
