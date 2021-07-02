@@ -9,6 +9,7 @@
 package io.lighty.gnmi.southbound.mountpoint.requests;
 
 import gnmi.Gnmi;
+import gnmi.Gnmi.Encoding;
 import gnmi.Gnmi.GetRequest;
 import gnmi.Gnmi.GetRequest.Builder;
 import gnmi.Gnmi.Path;
@@ -56,7 +57,7 @@ public class GnmiGetRequestFactoryImpl implements GnmiGetRequestFactory {
             }
             final Gnmi.Path gnmiPath = instanceIdentifierToPathCodec.apply(path);
             return requestBuilder
-                    .setEncoding(RequestConstants.ENCODING)
+                    .setEncoding(Encoding.JSON_IETF)
                     .addPath(gnmiPath).build();
         } catch (GnmiCodecException e) {
             throw new GnmiRequestException(String.format("Cannot convert YangInstanceIdentifier %s to gNMI.Path", path),
