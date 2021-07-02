@@ -79,54 +79,36 @@ public final class DataConverter {
                                  final EffectiveModelContext context) {
         final JSONCodecFactory jsonCodecFactory
                 = JSONCodecFactorySupplier.RFC7951.createSimple(context);
+        final Writer writer = new StringWriter();
+        final NormalizedNodeStreamWriter nodeWriter = getNodeWriterForJson(schemaPath, data, jsonCodecFactory, writer);
+        final NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(nodeWriter);
+        try {
+            normalizedNodeWriter.write(data);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        } finally {
+            closeAutoCloseableResource(normalizedNodeWriter);
+            closeAutoCloseableResource(writer);
+        }
+        return writer.toString();
+    }
+
+    private static NormalizedNodeStreamWriter getNodeWriterForJson(final SchemaPath schemaPath,
+                                                                   final NormalizedNode<?, ?> data,
+                                                                   final JSONCodecFactory jsonCodecFactory,
+                                                                   final Writer writer) {
+        final JsonWriter jsonWriter = new JsonWriter(writer);
         if (isListEntry(data)) {
-            return createJsonWithNestedWriter(schemaPath, data, jsonCodecFactory);
+            return JSONNormalizedNodeStreamWriter
+                    .createNestedWriter(jsonCodecFactory, schemaPath, schemaPath.getLastComponent().getNamespace(),
+                            jsonWriter);
         } else {
-            return createJsonWithExclusiveWriter(schemaPath, data, jsonCodecFactory);
+            return JSONNormalizedNodeStreamWriter
+                    .createExclusiveWriter(jsonCodecFactory, schemaPath.getParent(),
+                            schemaPath.getParent() == SchemaPath.ROOT
+                                    ? null
+                                    : schemaPath.getParent().getLastComponent().getNamespace(), jsonWriter);
         }
-    }
-
-    private static String createJsonWithExclusiveWriter(final SchemaPath schemaPath, final NormalizedNode<?, ?> data,
-                                                        final JSONCodecFactory jsonCodecFactory) {
-        final Writer writer = new StringWriter();
-        final JsonWriter jsonWriter = new JsonWriter(writer);
-        final NormalizedNodeStreamWriter nodeWriter = JSONNormalizedNodeStreamWriter
-                .createExclusiveWriter(jsonCodecFactory, schemaPath.getParent(),
-                        schemaPath.getParent() == SchemaPath.ROOT
-                                ? null
-                                : schemaPath.getParent().getLastComponent().getNamespace(), jsonWriter);
-        final NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(nodeWriter);
-        try {
-            normalizedNodeWriter.write(data);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        } finally {
-            closeAutoCloseableResource(normalizedNodeWriter);
-            closeAutoCloseableResource(nodeWriter);
-            closeAutoCloseableResource(writer);
-        }
-        return writer.toString();
-    }
-
-    private static String createJsonWithNestedWriter(final SchemaPath schemaPath, NormalizedNode<?, ?> data,
-                                                     final JSONCodecFactory jsonCodecFactory) {
-        final Writer writer = new StringWriter();
-        final JsonWriter jsonWriter = new JsonWriter(writer);
-        final NormalizedNodeStreamWriter nodeWriter = JSONNormalizedNodeStreamWriter
-                .createNestedWriter(jsonCodecFactory, schemaPath, schemaPath.getLastComponent().getNamespace(),
-                        jsonWriter);
-        final NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(nodeWriter);
-        try {
-            normalizedNodeWriter.write(data);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        } finally {
-            closeAutoCloseableResource(normalizedNodeWriter);
-            closeAutoCloseableResource(nodeWriter);
-            closeAutoCloseableResource(jsonWriter);
-            closeAutoCloseableResource(writer);
-        }
-        return writer.toString();
     }
 
     @SuppressWarnings("IllegalCatch")
