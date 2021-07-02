@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableSet;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.core.controller.impl.config.ConfigurationException;
-import io.lighty.modules.southbound.netconf.impl.AAAEncryptionServiceImpl;
+import io.lighty.modules.encrypt.service.aaa.impl.AAAEncryptionServiceImpl;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import java.io.IOException;
 import java.io.InputStream;
