@@ -4,8 +4,9 @@ CRUD operations on multiple gNMI targets. Which make it easy to read and manipul
 
 Lighty gNMI augment ODL network-topology model with [gnmi-topology](../../../lighty-models/lighty-gnmi-models/lighty-gnmi-topology-model/src/main/yang/gnmi-topology.yang)
 model. This allows to configure and register a specific gNMI device as a NETCONF node.
-When is device successfully registered, Lighty gNMI create specific [DataBroker](src/main/java/io/lighty/gnmi/southbound/mountpoint/broker/GnmiDataBroker.java)
-for each device. This DataBroker will hold schemaContext created from capabilities received from the device.
+When device is successfully registered, Lighty gNMI creates specific [DataBroker](src/main/java/io/lighty/gnmi/southbound/mountpoint/broker/GnmiDataBroker.java)
+for each device. DataBroker provides functionality for writing and reading from gNMI device.
+GnmiDataBroker also contains schemaContext created from capabilities received from the device.
 All YANG models which gNMI device will use, should be provided in [GnmiConfiguration](src/main/java/io/lighty/gnmi/southbound/lightymodule/config/GnmiConfiguration.java)
 as path to folder with required YANG models.
 
@@ -76,12 +77,11 @@ without using RESTCONF. Full example can be found inside test [GnmiWithoutRestco
                 .build();
         lightyController.start().get();
 
-        final AAAEncryptionService encryptionService = createEncryptionServiceWithErrorHandling();
         gnmiSouthboundModule = new GnmiSouthboundModuleBuilder()
                 .withConfig(GnmiConfigUtils.getGnmiConfiguration(Files.newInputStream(CONFIGURATION_PATH)))
                 .withLightyServices(lightyController.getServices())
                 .withExecutorService(Executors.newCachedThreadPool())
-                .withEncryptionService(encryptionService)
+                .withEncryptionService(createEncryptionService())
                 .build();
         gnmiSouthboundModule.start().get();
 ```
