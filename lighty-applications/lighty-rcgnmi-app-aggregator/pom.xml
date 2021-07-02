@@ -17,6 +17,11 @@
     <version>14.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.install.skip>true</maven.install.skip>
+    </properties>
+
     <modules>
         <module>lighty-rcgnmi-app</module>
         <module>lighty-rcgnmi-app-module</module>

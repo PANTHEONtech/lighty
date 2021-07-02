@@ -23,6 +23,10 @@
     <artifactId>lighty-gnmi-test</artifactId>
     <version>14.0.1-SNAPSHOT</version>
 
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>io.lighty.modules.gnmi</groupId>
