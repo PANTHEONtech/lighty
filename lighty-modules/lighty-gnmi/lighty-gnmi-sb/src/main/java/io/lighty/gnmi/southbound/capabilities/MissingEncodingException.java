@@ -6,16 +6,12 @@
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
 
-package io.lighty.gnmi.southbound.mountpoint.requests;
+package io.lighty.gnmi.southbound.capabilities;
 
-import gnmi.Gnmi;
+public class MissingEncodingException extends Exception {
 
-public final class RequestConstants {
-
-    private RequestConstants() {
-        //Utility class
+    public MissingEncodingException(final String message) {
+        super(message);
     }
 
-    public static final Gnmi.Encoding ENCODING = Gnmi.Encoding.JSON_IETF;
-    public static final String DEFAULT_SONIC_DB = "OC_YANG";
 }

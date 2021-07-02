@@ -21,7 +21,7 @@ import gnmi.Gnmi.CapabilityResponse;
 import io.grpc.ConnectivityState;
 import io.lighty.gnmi.southbound.device.connection.DeviceConnectionInitializer;
 import io.lighty.gnmi.southbound.device.connection.DeviceConnectionManager;
-import io.lighty.gnmi.southbound.device.session.security.StaticGnmiSecurityProviderImpl;
+import io.lighty.gnmi.southbound.device.session.security.KeystoreGnmiSecurityProvider;
 import io.lighty.gnmi.southbound.mountpoint.GnmiMountPointRegistrator;
 import io.lighty.gnmi.southbound.mountpoint.broker.GnmiDataBrokerFactory;
 import io.lighty.gnmi.southbound.schema.impl.SchemaContextHolderImpl;
@@ -87,7 +87,7 @@ class SessionInitializeTest {
 
         final BindingDOMDataBrokerAdapter dataBrokerMock
                 = Mockito.mock(BindingDOMDataBrokerAdapter.class, Answers.RETURNS_DEEP_STUBS);
-        final StaticGnmiSecurityProviderImpl securityProviderMock = Mockito.mock(StaticGnmiSecurityProviderImpl.class);
+        final KeystoreGnmiSecurityProvider securityProviderMock = Mockito.mock(KeystoreGnmiSecurityProvider.class);
         final SessionManager sessionManagerMock = Mockito.mock(SessionManager.class);
         final SessionManagerFactory sessionManagerFactoryMock = Mockito.mock(SessionManagerFactory.class);
         final SchemaContextHolderImpl schemaContextHolderMock = Mockito.mock(SchemaContextHolderImpl.class);
@@ -159,7 +159,8 @@ class SessionInitializeTest {
         final List<Node> gnmiNodes = prepareGnmiNodes(NUMBER_OF_NODES);
 
         when(gnmiSessionMock.capabilities(any()))
-                .thenAnswer(invocation -> Futures.immediateFuture(CapabilityResponse.getDefaultInstance()));
+                .thenAnswer(invocation -> Futures.immediateFuture(CapabilityResponse.newBuilder()
+                        .addSupportedEncodings(Gnmi.Encoding.JSON_IETF).build()));
 
         // Connect devices
         final List<ListenableFuture<Void>> futureResults = new ArrayList<>();
@@ -189,7 +190,8 @@ class SessionInitializeTest {
 
         when(gnmiSessionMock.capabilities(any()))
                 .thenAnswer(invocation -> Futures.scheduleAsync(
-                    () -> Futures.immediateFuture(Gnmi.CapabilityResponse.getDefaultInstance()),
+                    () -> Futures.immediateFuture(CapabilityResponse.newBuilder()
+                            .addSupportedEncodings(Gnmi.Encoding.JSON_IETF).build()),
                         ThreadLocalRandom.current().nextLong(500),
                         TimeUnit.MILLISECONDS, scheduledService));
 

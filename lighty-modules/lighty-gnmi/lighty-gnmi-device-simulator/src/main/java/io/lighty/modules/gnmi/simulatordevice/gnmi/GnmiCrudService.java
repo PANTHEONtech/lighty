@@ -16,6 +16,7 @@ import io.grpc.Metadata;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.lighty.modules.gnmi.commons.util.DataConverter;
+import io.lighty.modules.gnmi.commons.util.ElementNameWithModuleName;
 import io.lighty.modules.gnmi.commons.util.JsonUtils;
 import io.lighty.modules.gnmi.simulatordevice.yang.DatastoreType;
 import io.lighty.modules.gnmi.simulatordevice.yang.YangDataService;
@@ -283,7 +284,7 @@ public class GnmiCrudService {
         // Assumption: we always have path with at least one element
         final String pathFirstElem = pathList.get(0).getElem(0).getName();
 
-        final Optional<? extends Module> rootModule = DataConverter.findModule(pathFirstElem, context);
+        final Optional<? extends Module> rootModule = DataConverter.findModuleByElement(pathFirstElem, context);
         if (rootModule.isEmpty()) {
             LOG.error("Unable to guess correct module for provided path (first elem: {})", pathFirstElem);
             return Collections.emptyMap();
@@ -303,16 +304,17 @@ public class GnmiCrudService {
         QName qname = null;
         YangInstanceIdentifier identifier = null;
         for (final Gnmi.PathElem pathElem : path.getElemList()) {
+            final String pathElemName = ElementNameWithModuleName.parseFromString(pathElem.getName()).getElementName();
             if (qname == null) {
-                qname = QName.create(rootModule, pathElem.getName());
+                qname = QName.create(rootModule, pathElemName);
                 identifier = YangInstanceIdentifier.of(qname);
             } else {
                 final Optional<? extends DataSchemaNode> augmentationDataNode
-                        = DataConverter.findAugmentationDataNode(pathElem.getName(), context);
+                        = DataConverter.findAugmentationDataNode(pathElemName, context);
                 if (augmentationDataNode.isPresent()) {
                     identifier = addAugmentationNodeToIdentifier(identifier, augmentationDataNode.get());
                 } else {
-                    qname = QName.create(identifier.getLastPathArgument().getNodeType(), pathElem.getName());
+                    qname = QName.create(identifier.getLastPathArgument().getNodeType(), pathElemName);
                     identifier = identifier.node(qname);
                 }
             }
