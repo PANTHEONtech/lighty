@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--Created by yFiles for HTML 2.4-EAP8-->
+<graphml xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://www.yworks.com/xml/schema/graphml.html/2.0/ygraphml.xsd " xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:demostyle="http://www.yworks.com/yFilesHTML/demos/FlatDemoStyle/1.0" xmlns:icon-style="http://www.yworks.com/yed-live/icon-style/1.0" xmlns:bpmn="http://www.yworks.com/xml/yfiles-bpmn/2.0" xmlns:demotablestyle="http://www.yworks.com/yFilesHTML/demos/FlatDemoTableStyle/1.0" xmlns:uml="http://www.yworks.com/yFilesHTML/demos/UMLDemoStyle/1.0" xmlns:GraphvizNodeStyle="http://www.yworks.com/yFilesHTML/graphviz-node-style/1.0" xmlns:VuejsNodeStyle="http://www.yworks.com/demos/yfiles-vuejs-node-style/1.0" xmlns:explorer-style="http://www.yworks.com/data-explorer/1.0" xmlns:y="http://www.yworks.com/xml/yfiles-common/3.0" xmlns:x="http://www.yworks.com/xml/yfiles-common/markup/3.0" xmlns:yjs="http://www.yworks.com/xml/yfiles-for-html/2.0/xaml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<key id="d0" for="node" attr.type="int" attr.name="zOrder" y:attr.uri="http://www.yworks.com/xml/yfiles-z-order/1.0/zOrder"/>
+	<key id="d1" for="node" attr.type="boolean" attr.name="Expanded" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/folding/Expanded">
+		<default>true</default>
+	</key>
+	<key id="d2" for="node" attr.type="string" attr.name="url"/>
+	<key id="d3" for="node" attr.type="string" attr.name="description"/>
+	<key id="d4" for="node" attr.name="NodeLabels" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/NodeLabels"/>
+	<key id="d5" for="node" attr.name="NodeGeometry" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/NodeGeometry"/>
+	<key id="d6" for="all" attr.name="UserTags" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/UserTags"/>
+	<key id="d7" for="node" attr.name="NodeStyle" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/NodeStyle"/>
+	<key id="d8" for="node" attr.name="NodeViewState" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/folding/1.1/NodeViewState"/>
+	<key id="d9" for="edge" attr.type="string" attr.name="url"/>
+	<key id="d10" for="edge" attr.type="string" attr.name="description"/>
+	<key id="d11" for="edge" attr.name="EdgeLabels" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/EdgeLabels"/>
+	<key id="d12" for="edge" attr.name="EdgeGeometry" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/EdgeGeometry"/>
+	<key id="d13" for="edge" attr.name="EdgeStyle" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/EdgeStyle"/>
+	<key id="d14" for="edge" attr.name="EdgeViewState" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/folding/1.1/EdgeViewState"/>
+	<key id="d15" for="port" attr.name="PortLabels" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/PortLabels"/>
+	<key id="d16" for="port" attr.name="PortLocationParameter" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/PortLocationParameter">
+		<default>
+			<x:Static Member="y:FreeNodePortLocationModel.NodeCenterAnchored"/>
+		</default>
+	</key>
+	<key id="d17" for="port" attr.name="PortStyle" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/PortStyle">
+		<default>
+			<x:Static Member="y:VoidPortStyle.Instance"/>
+		</default>
+	</key>
+	<key id="d18" for="port" attr.name="PortViewState" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/folding/1.1/PortViewState"/>
+	<key id="d19" attr.name="SharedData" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/SharedData"/>
+	<data key="d19">
+		<y:SharedData>
+			<sys:String x:Key="1" xmlns:sys="http://www.yworks.com/xml/yfiles-common/markup/primitives/2.0">data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22utf-8%22%3F%3E%0A%3Csvg%20version%3D%221.1%22%0A%09%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%0A%09%20x%3D%220px%22%20y%3D%220px%22%20width%3D%2268px%22%20height%3D%2260px%22%20viewBox%3D%22-0.435%20-0.869%2068%2060%22%20enable-background%3D%22new%20-0.435%20-0.869%2068%2060%22%0A%09%20xml%3Aspace%3D%22preserve%22%3E%0A%3Cdefs%3E%0A%3C%2Fdefs%3E%0A%3Cpath%20fill%3D%22%23666666%22%20d%3D%22M52.462%2C30.881c-0.021%2C0-0.037%2C0.01-0.059%2C0.012c-0.021-0.002-0.037-0.012-0.059-0.012h-18.5v-7.555%0A%09c0-0.414-0.335-0.75-0.75-0.75c-0.414%2C0-0.75%2C0.336-0.75%2C0.75v7.555h-18.5c-0.02%2C0-0.037%2C0.01-0.057%2C0.012%0A%09c-0.02-0.002-0.037-0.012-0.057-0.012c-0.414%2C0-0.75%2C0.336-0.75%2C0.75v3.834c0%2C0.414%2C0.336%2C0.75%2C0.75%2C0.75s0.75-0.336%2C0.75-0.75%0A%09v-3.084H51.71v3.084c0%2C0.414%2C0.336%2C0.75%2C0.75%2C0.75s0.75-0.336%2C0.75-0.75v-3.834C53.212%2C31.217%2C52.876%2C30.881%2C52.462%2C30.881z%22%2F%3E%0A%3ClinearGradient%20id%3D%22SVGID_1_%22%20gradientUnits%3D%22userSpaceOnUse%22%20x1%3D%22130.7236%22%20y1%3D%22-184.1631%22%20x2%3D%22130.7236%22%20y2%3D%22-191.9565%22%20gradientTransform%3D%22matrix(1%200%200%20-1%20-97.6001%20-158.6377)%22%3E%0A%09%3Cstop%20%20offset%3D%220%22%20style%3D%22stop-color%3A%239CD7FF%22%2F%3E%0A%09%3Cstop%20%20offset%3D%221%22%20style%3D%22stop-color%3A%233C89C9%22%2F%3E%0A%3C%2FlinearGradient%3E%0A%3Cpath%20fill%3D%22url(%23SVGID_1_)%22%20d%3D%22M36.296%2C29.976c-0.832%2C0-1.513-0.681-1.513-1.513v-1.424c0-0.832-0.681-1.513-1.513-1.513h-0.214%0A%09c-0.832%2C0-1.513%2C0.681-1.513%2C1.513v1.424c0%2C0.832-0.681%2C1.513-1.513%2C1.513h-2.499c-0.832%2C0-1.513%2C0.681-1.513%2C1.513v0.317%0A%09c0%2C0.832%2C0.681%2C1.513%2C1.513%2C1.513h11.187c0.832%2C0%2C1.513-0.681%2C1.513-1.513v-0.317c0-0.833-0.681-1.513-1.513-1.513H36.296z%22%2F%3E%0A%3ClinearGradient%20id%3D%22SVGID_2_%22%20gradientUnits%3D%22userSpaceOnUse%22%20x1%3D%22605.8877%22%20y1%3D%222040.6665%22%20x2%3D%22593.1709%22%20y2%3D%222040.6665%22%20gradientTransform%3D%22matrix(1%200%200%201%20-585.5996%20-1982.4023)%22%3E%0A%09%3Cstop%20%20offset%3D%220%22%20style%3D%22stop-color%3A%234D4D4D%22%2F%3E%0A%09%3Cstop%20%20offset%3D%221%22%20style%3D%22stop-color%3A%23999999%22%2F%3E%0A%3C%2FlinearGradient%3E%0A%3Cpath%20fill%3D%22url(%23SVGID_2_)%22%20d%3D%22M20.205%2C57.452c0%2C0.519-3.619%2C0.752-6.627%2C0.752c-2.083%2C0-5.846-0.186-6.089-0.678%0A%09c0%2C0.238%2C0%2C0.806%2C0%2C0.89c0%2C0.389%2C2.573%2C0.661%2C6.084%2C0.661c3.511%2C0%2C6.632-0.344%2C6.632-0.729C20.205%2C58.264%2C20.205%2C57.7%2C20.205%2C57.452%0A%09z%22%2F%3E%0A%3Cpath%20fill%3D%22%23808080%22%20d%3D%22M13.846%2C56.806c3.512%2C0%2C6.358%2C0.313%2C6.358%2C0.699s-2.846%2C0.763-6.358%2C0.763c-3.59%2C0-6.358-0.375-6.358-0.763%0A%09S10.335%2C56.806%2C13.846%2C56.806z%22%2F%3E%0A%3ClinearGradient%20id%3D%22SVGID_3_%22%20gradientUnits%3D%22userSpaceOnUse%22%20x1%3D%22600.833%22%20y1%3D%222037.4702%22%20x2%3D%22598.1563%22%20y2%3D%222037.4702%22%20gradientTransform%3D%22matrix(1%200%200%201%20-585.5996%20-1982.4023)%22%3E%0A%09%3Cstop%20%20offset%3D%220%22%20style%3D%22stop-color%3A%23999999%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.0417%22%20style%3D%22stop-color%3A%238D8D8D%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.1617%22%20style%3D%22stop-color%3A%23717171%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.2821%22%20style%3D%22stop-color%3A%235D5D5D%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.4021%22%20style%3D%22stop-color%3A%23515151%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.5212%22%20style%3D%22stop-color%3A%234D4D4D%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.6202%22%20style%3D%22stop-color%3A%23565656%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.7817%22%20style%3D%22stop-color%3A%236E6E6E%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.9844%22%20style%3D%22stop-color%3A%23969696%22%2F%3E%0A%09%3Cstop%20%20offset%3D%221%22%20style%3D%22stop-color%3A%23999999%22%2F%3E%0A%3C%2FlinearGradient%3E%0A%3Cpath%20fill%3D%22url(%23SVGID_3_)%22%20d%3D%22M15.215%2C57.657c0%2C0-0.792%2C0.053-1.339%2C0.053s-1.338-0.053-1.338-0.053v-5.231h2.677V57.657z%22%2F%3E%0A%3CradialGradient%20id%3D%22SVGID_4_%22%20cx%3D%22465.1113%22%20cy%3D%222023.4497%22%20r%3D%2212.8975%22%20gradientTransform%3D%22matrix(1.15%200%200%201%20-526.6041%20-1982.4023)%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%0A%09%3Cstop%20%20offset%3D%220%22%20style%3D%22stop-color%3A%23F2F2F2%22%2F%3E%0A%09%3Cstop%20%20offset%3D%221%22%20style%3D%22stop-color%3A%23666666%22%2F%3E%0A%3C%2FradialGradient%3E%0A%3Cpath%20fill%3D%22url(%23SVGID_4_)%22%20d%3D%22M0.065%2C36.888c0-0.59%2C0.482-1.071%2C1.072-1.071H26.98c0.589%2C0%2C1.071%2C0.481%2C1.071%2C1.071v16.108%0A%09c0%2C0.589-0.482%2C1.07-1.071%2C1.07H1.137c-0.59%2C0.002-1.072-0.481-1.072-1.07V36.888z%22%2F%3E%0A%3Cpath%20fill%3D%22none%22%20stroke%3D%22%23666666%22%20stroke-width%3D%220.1305%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-miterlimit%3D%2210%22%20d%3D%22%0A%09M0.065%2C36.888c0-0.59%2C0.482-1.071%2C1.072-1.071H26.98c0.589%2C0%2C1.071%2C0.481%2C1.071%2C1.071v16.108c0%2C0.589-0.482%2C1.07-1.071%2C1.07H1.137%0A%09c-0.59%2C0.002-1.072-0.481-1.072-1.07V36.888z%22%2F%3E%0A%3CradialGradient%20id%3D%22SVGID_5_%22%20cx%3D%22439.1309%22%20cy%3D%222019.0845%22%20r%3D%2228.5715%22%20fx%3D%22461.6079%22%20fy%3D%222015.234%22%20gradientTransform%3D%22matrix(1.1935%200%200%201%20-509.6013%20-1982.4023)%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%0A%09%3Cstop%20%20offset%3D%220%22%20style%3D%22stop-color%3A%234D4D4D%22%2F%3E%0A%09%3Cstop%20%20offset%3D%221%22%20style%3D%22stop-color%3A%23999999%22%2F%3E%0A%3C%2FradialGradient%3E%0A%3Cpath%20fill%3D%22url(%23SVGID_5_)%22%20d%3D%22M0.613%2C37.436c0-0.591%2C0.482-1.072%2C1.071-1.072h24.871c0.589%2C0%2C1.071%2C0.481%2C1.071%2C1.072v14.893%0A%09c0%2C0.59-0.482%2C1.072-1.071%2C1.072H1.685c-0.589%2C0-1.071-0.482-1.071-1.072V37.436z%22%2F%3E%0A%3CradialGradient%20id%3D%22SVGID_6_%22%20cx%3D%22440.0439%22%20cy%3D%222019.1304%22%20r%3D%2218.3134%22%20gradientTransform%3D%22matrix(1.1923%200%200%201%20-510.0601%20-1982.4023)%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%0A%09%3Cstop%20%20offset%3D%220%22%20style%3D%22stop-color%3A%239CD7FF%22%2F%3E%0A%09%3Cstop%20%20offset%3D%221%22%20style%3D%22stop-color%3A%233C89C9%22%2F%3E%0A%3C%2FradialGradient%3E%0A%3Cpath%20fill%3D%22url(%23SVGID_6_)%22%20d%3D%22M0.917%2C37.679c0-0.59%2C0.482-1.071%2C1.072-1.071h24.262c0.589%2C0%2C1.071%2C0.481%2C1.071%2C1.071v14.406%0A%09c0%2C0.588-0.482%2C1.069-1.071%2C1.069H1.989c-0.59%2C0-1.072-0.481-1.072-1.069V37.679z%22%2F%3E%0A%3Cpath%20opacity%3D%220.24%22%20fill%3D%22%23F2F2F2%22%20d%3D%22M0.917%2C49.11V37.679c0-0.59%2C0.482-1.071%2C1.072-1.071h24.262c0.589%2C0%2C1.071%2C0.481%2C1.071%2C1.071%0A%09v7.252l-12.407%2C2.646c-0.57%2C0.146-1.52%2C0.293-2.107%2C0.326L0.917%2C49.11z%22%2F%3E%0A%3ClinearGradient%20id%3D%22SVGID_7_%22%20gradientUnits%3D%22userSpaceOnUse%22%20x1%3D%22644.3887%22%20y1%3D%222040.6665%22%20x2%3D%22631.6719%22%20y2%3D%222040.6665%22%20gradientTransform%3D%22matrix(1%200%200%201%20-585.5996%20-1982.4023)%22%3E%0A%09%3Cstop%20%20offset%3D%220%22%20style%3D%22stop-color%3A%234D4D4D%22%2F%3E%0A%09%3Cstop%20%20offset%3D%221%22%20style%3D%22stop-color%3A%23999999%22%2F%3E%0A%3C%2FlinearGradient%3E%0A%3Cpath%20fill%3D%22url(%23SVGID_7_)%22%20d%3D%22M58.706%2C57.452c0%2C0.518-3.621%2C0.752-6.627%2C0.752c-2.084%2C0-5.848-0.186-6.09-0.678%0A%09c0%2C0.237%2C0%2C0.805%2C0%2C0.889c0%2C0.389%2C2.572%2C0.662%2C6.084%2C0.662s6.633-0.344%2C6.633-0.729C58.706%2C58.263%2C58.706%2C57.7%2C58.706%2C57.452z%22%2F%3E%0A%3Cpath%20fill%3D%22%23808080%22%20d%3D%22M52.347%2C56.805c3.512%2C0%2C6.357%2C0.313%2C6.357%2C0.699s-2.847%2C0.762-6.357%2C0.762c-3.59%2C0-6.357-0.373-6.357-0.762%0A%09C45.989%2C57.118%2C48.837%2C56.805%2C52.347%2C56.805z%22%2F%3E%0A%3ClinearGradient%20id%3D%22SVGID_8_%22%20gradientUnits%3D%22userSpaceOnUse%22%20x1%3D%22639.333%22%20y1%3D%222037.4683%22%20x2%3D%22636.6553%22%20y2%3D%222037.4683%22%20gradientTransform%3D%22matrix(1%200%200%201%20-585.5996%20-1982.4023)%22%3E%0A%09%3Cstop%20%20offset%3D%220%22%20style%3D%22stop-color%3A%23999999%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.0417%22%20style%3D%22stop-color%3A%238D8D8D%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.1617%22%20style%3D%22stop-color%3A%23717171%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.2821%22%20style%3D%22stop-color%3A%235D5D5D%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.4021%22%20style%3D%22stop-color%3A%23515151%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.5212%22%20style%3D%22stop-color%3A%234D4D4D%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.6202%22%20style%3D%22stop-color%3A%23565656%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.7817%22%20style%3D%22stop-color%3A%236E6E6E%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.9844%22%20style%3D%22stop-color%3A%23969696%22%2F%3E%0A%09%3Cstop%20%20offset%3D%221%22%20style%3D%22stop-color%3A%23999999%22%2F%3E%0A%3C%2FlinearGradient%3E%0A%3Cpath%20fill%3D%22url(%23SVGID_8_)%22%20d%3D%22M53.716%2C57.657c0%2C0-0.791%2C0.052-1.34%2C0.052c-0.547%2C0-1.338-0.052-1.338-0.052v-5.232h2.678V57.657z%22%0A%09%2F%3E%0A%3CradialGradient%20id%3D%22SVGID_9_%22%20cx%3D%22498.5898%22%20cy%3D%222023.4487%22%20r%3D%2212.8975%22%20gradientTransform%3D%22matrix(1.15%200%200%201%20-526.6041%20-1982.4023)%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%0A%09%3Cstop%20%20offset%3D%220%22%20style%3D%22stop-color%3A%23F2F2F2%22%2F%3E%0A%09%3Cstop%20%20offset%3D%221%22%20style%3D%22stop-color%3A%23666666%22%2F%3E%0A%3C%2FradialGradient%3E%0A%3Cpath%20fill%3D%22url(%23SVGID_9_)%22%20d%3D%22M38.566%2C36.887c0-0.59%2C0.481-1.072%2C1.071-1.072h25.844c0.589%2C0%2C1.07%2C0.482%2C1.07%2C1.072v16.107%0A%09c0%2C0.59-0.481%2C1.072-1.07%2C1.072H39.638c-0.59%2C0-1.071-0.482-1.071-1.072V36.887z%22%2F%3E%0A%3Cpath%20fill%3D%22none%22%20stroke%3D%22%23666666%22%20stroke-width%3D%220.1305%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-miterlimit%3D%2210%22%20d%3D%22%0A%09M38.566%2C36.887c0-0.59%2C0.481-1.072%2C1.071-1.072h25.844c0.589%2C0%2C1.07%2C0.482%2C1.07%2C1.072v16.107c0%2C0.59-0.481%2C1.072-1.07%2C1.072H39.638%0A%09c-0.59%2C0-1.071-0.482-1.071-1.072V36.887z%22%2F%3E%0A%3CradialGradient%20id%3D%22SVGID_10_%22%20cx%3D%22471.3896%22%20cy%3D%222019.0845%22%20r%3D%2228.5697%22%20fx%3D%22493.8652%22%20fy%3D%222015.2343%22%20gradientTransform%3D%22matrix(1.1935%200%200%201%20-509.6013%20-1982.4023)%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%0A%09%3Cstop%20%20offset%3D%220%22%20style%3D%22stop-color%3A%234D4D4D%22%2F%3E%0A%09%3Cstop%20%20offset%3D%221%22%20style%3D%22stop-color%3A%23999999%22%2F%3E%0A%3C%2FradialGradient%3E%0A%3Cpath%20fill%3D%22url(%23SVGID_10_)%22%20d%3D%22M39.114%2C37.434c0-0.59%2C0.482-1.072%2C1.071-1.072h24.87c0.589%2C0%2C1.07%2C0.482%2C1.07%2C1.072v14.895%0A%09c0%2C0.589-0.481%2C1.07-1.07%2C1.07h-24.87c-0.589%2C0-1.071-0.481-1.071-1.07V37.434z%22%2F%3E%0A%3CradialGradient%20id%3D%22SVGID_11_%22%20cx%3D%22472.334%22%20cy%3D%222019.1294%22%20r%3D%2218.3139%22%20gradientTransform%3D%22matrix(1.1923%200%200%201%20-510.0601%20-1982.4023)%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%0A%09%3Cstop%20%20offset%3D%220%22%20style%3D%22stop-color%3A%239CD7FF%22%2F%3E%0A%09%3Cstop%20%20offset%3D%221%22%20style%3D%22stop-color%3A%233C89C9%22%2F%3E%0A%3C%2FradialGradient%3E%0A%3Cpath%20fill%3D%22url(%23SVGID_11_)%22%20d%3D%22M39.419%2C37.678c0-0.59%2C0.481-1.072%2C1.07-1.072h24.264c0.588%2C0%2C1.07%2C0.482%2C1.07%2C1.072v14.406%0A%09c0%2C0.588-0.482%2C1.07-1.07%2C1.07H40.489c-0.589%2C0-1.07-0.482-1.07-1.07V37.678z%22%2F%3E%0A%3Cpath%20opacity%3D%220.24%22%20fill%3D%22%23F2F2F2%22%20d%3D%22M39.419%2C49.108v-11.43c0-0.59%2C0.481-1.072%2C1.07-1.072h24.264c0.588%2C0%2C1.07%2C0.482%2C1.07%2C1.072%0A%09v7.252l-12.408%2C2.645c-0.57%2C0.146-1.52%2C0.295-2.106%2C0.326L39.419%2C49.108z%22%2F%3E%0A%3ClinearGradient%20id%3D%22SVGID_12_%22%20gradientUnits%3D%22userSpaceOnUse%22%20x1%3D%22624.8936%22%20y1%3D%222004.9155%22%20x2%3D%22612.1787%22%20y2%3D%222004.9155%22%20gradientTransform%3D%22matrix(1%200%200%201%20-585.5996%20-1982.4023)%22%3E%0A%09%3Cstop%20%20offset%3D%220%22%20style%3D%22stop-color%3A%234D4D4D%22%2F%3E%0A%09%3Cstop%20%20offset%3D%221%22%20style%3D%22stop-color%3A%23999999%22%2F%3E%0A%3C%2FlinearGradient%3E%0A%3Cpath%20fill%3D%22url(%23SVGID_12_)%22%20d%3D%22M39.212%2C21.701c0%2C0.518-3.621%2C0.752-6.626%2C0.752c-2.083%2C0-5.847-0.186-6.089-0.678%0A%09c0%2C0.238%2C0%2C0.805%2C0%2C0.889c0%2C0.389%2C2.573%2C0.662%2C6.084%2C0.662c3.51%2C0%2C6.631-0.344%2C6.631-0.729%0A%09C39.212%2C22.513%2C39.212%2C21.949%2C39.212%2C21.701z%22%2F%3E%0A%3Cpath%20fill%3D%22%23808080%22%20d%3D%22M32.854%2C21.055c3.511%2C0%2C6.358%2C0.313%2C6.358%2C0.699c0%2C0.386-2.848%2C0.762-6.358%2C0.762%0A%09c-3.589%2C0-6.358-0.374-6.358-0.762C26.496%2C21.367%2C29.342%2C21.055%2C32.854%2C21.055z%22%2F%3E%0A%3ClinearGradient%20id%3D%22SVGID_13_%22%20gradientUnits%3D%22userSpaceOnUse%22%20x1%3D%22619.8379%22%20y1%3D%222001.7183%22%20x2%3D%22617.1611%22%20y2%3D%222001.7183%22%20gradientTransform%3D%22matrix(1%200%200%201%20-585.5996%20-1982.4023)%22%3E%0A%09%3Cstop%20%20offset%3D%220%22%20style%3D%22stop-color%3A%23999999%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.0417%22%20style%3D%22stop-color%3A%238D8D8D%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.1617%22%20style%3D%22stop-color%3A%23717171%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.2821%22%20style%3D%22stop-color%3A%235D5D5D%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.4021%22%20style%3D%22stop-color%3A%23515151%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.5212%22%20style%3D%22stop-color%3A%234D4D4D%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.6202%22%20style%3D%22stop-color%3A%23565656%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.7817%22%20style%3D%22stop-color%3A%236E6E6E%22%2F%3E%0A%09%3Cstop%20%20offset%3D%220.9844%22%20style%3D%22stop-color%3A%23969696%22%2F%3E%0A%09%3Cstop%20%20offset%3D%221%22%20style%3D%22stop-color%3A%23999999%22%2F%3E%0A%3C%2FlinearGradient%3E%0A%3Cpath%20fill%3D%22url(%23SVGID_13_)%22%20d%3D%22M34.222%2C21.906c0%2C0-0.791%2C0.052-1.338%2C0.052c-0.547%2C0-1.338-0.052-1.338-0.052v-5.232h2.677%0A%09L34.222%2C21.906L34.222%2C21.906z%22%2F%3E%0A%3CradialGradient%20id%3D%22SVGID_14_%22%20cx%3D%22481.6387%22%20cy%3D%221987.6978%22%20r%3D%2212.8975%22%20gradientTransform%3D%22matrix(1.15%200%200%201%20-526.6041%20-1982.4023)%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%0A%09%3Cstop%20%20offset%3D%220%22%20style%3D%22stop-color%3A%23F2F2F2%22%2F%3E%0A%09%3Cstop%20%20offset%3D%221%22%20style%3D%22stop-color%3A%23666666%22%2F%3E%0A%3C%2FradialGradient%3E%0A%3Cpath%20fill%3D%22url(%23SVGID_14_)%22%20d%3D%22M19.072%2C1.137c0-0.59%2C0.482-1.072%2C1.071-1.072h25.843c0.589%2C0%2C1.071%2C0.482%2C1.071%2C1.072v16.108%0A%09c0%2C0.589-0.482%2C1.071-1.071%2C1.071H20.145c-0.589%2C0-1.071-0.482-1.071-1.071L19.072%2C1.137L19.072%2C1.137z%22%2F%3E%0A%3Cpath%20fill%3D%22none%22%20stroke%3D%22%23666666%22%20stroke-width%3D%220.1305%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-miterlimit%3D%2210%22%20d%3D%22%0A%09M19.072%2C1.137c0-0.59%2C0.482-1.072%2C1.071-1.072h25.843c0.589%2C0%2C1.071%2C0.482%2C1.071%2C1.072v16.108c0%2C0.589-0.482%2C1.071-1.071%2C1.071%0A%09H20.145c-0.589%2C0-1.071-0.482-1.071-1.071L19.072%2C1.137L19.072%2C1.137z%22%2F%3E%0A%3CradialGradient%20id%3D%22SVGID_15_%22%20cx%3D%22455.0566%22%20cy%3D%221983.3345%22%20r%3D%2228.5689%22%20fx%3D%22477.5316%22%20fy%3D%221979.4844%22%20gradientTransform%3D%22matrix(1.1935%200%200%201%20-509.6013%20-1982.4023)%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%0A%09%3Cstop%20%20offset%3D%220%22%20style%3D%22stop-color%3A%234D4D4D%22%2F%3E%0A%09%3Cstop%20%20offset%3D%221%22%20style%3D%22stop-color%3A%23999999%22%2F%3E%0A%3C%2FradialGradient%3E%0A%3Cpath%20fill%3D%22url(%23SVGID_15_)%22%20d%3D%22M19.621%2C1.685c0-0.59%2C0.482-1.072%2C1.072-1.072h24.87c0.589%2C0%2C1.071%2C0.482%2C1.071%2C1.072v14.894%0A%09c0%2C0.589-0.482%2C1.071-1.071%2C1.071h-24.87c-0.589%2C0-1.072-0.482-1.072-1.071V1.685z%22%2F%3E%0A%3CradialGradient%20id%3D%22SVGID_16_%22%20cx%3D%22455.9854%22%20cy%3D%221983.3784%22%20r%3D%2218.3134%22%20gradientTransform%3D%22matrix(1.1923%200%200%201%20-510.0601%20-1982.4023)%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%0A%09%3Cstop%20%20offset%3D%220%22%20style%3D%22stop-color%3A%239CD7FF%22%2F%3E%0A%09%3Cstop%20%20offset%3D%221%22%20style%3D%22stop-color%3A%233C89C9%22%2F%3E%0A%3C%2FradialGradient%3E%0A%3Cpath%20fill%3D%22url(%23SVGID_16_)%22%20d%3D%22M19.924%2C1.928c0-0.59%2C0.482-1.072%2C1.072-1.072h24.262c0.589%2C0%2C1.07%2C0.482%2C1.07%2C1.072v14.406%0A%09c0%2C0.588-0.481%2C1.07-1.07%2C1.07H20.997c-0.589%2C0-1.072-0.482-1.072-1.07V1.928z%22%2F%3E%0A%3Cpath%20opacity%3D%220.24%22%20fill%3D%22%23F2F2F2%22%20d%3D%22M19.924%2C13.358V1.928c0-0.59%2C0.482-1.072%2C1.072-1.072h24.262c0.589%2C0%2C1.07%2C0.482%2C1.07%2C1.072%0A%09V9.18l-12.408%2C2.646c-0.569%2C0.146-1.519%2C0.294-2.106%2C0.326L19.924%2C13.358z%22%2F%3E%0A%3C%2Fsvg%3E%0A</sys:String>
+			<yjs:Arrow x:Key="2" type="NONE"/>
+		</y:SharedData>
+	</data>
+	<graph id="G" edgedefault="directed">
+		<data key="d6">
+			<y:Json>{"version":"2.0.0","theme":{"name":"light","version":"1.0.0"}}</y:Json>
+		</data>
+		<node id="n0">
+			<data key="d0">0</data>
+			<data key="d4">
+				<x:List>
+					<y:Label>
+						<y:Label.Text><![CDATA[lighty.io SDN controller]]></y:Label.Text>
+						<y:Label.LayoutParameter>
+							<y:RatioAnchoredLabelModelParameter LayoutOffset="6,6"/>
+						</y:Label.LayoutParameter>
+						<y:Label.Style>
+							<yjs:DefaultLabelStyle horizontalTextAlignment="CENTER" autoFlip="false" textFill="#FF000000">
+								<yjs:DefaultLabelStyle.font>
+									<yjs:Font fontSize="12" fontFamily="'Arial'"/>
+								</yjs:DefaultLabelStyle.font>
+							</yjs:DefaultLabelStyle>
+						</y:Label.Style>
+					</y:Label>
+				</x:List>
+			</data>
+			<data key="d5">
+				<y:RectD X="58.59999999999897" Y="343.5333333333326" Width="306.7000000000009" Height="382.8000000000001"/>
+			</data>
+			<data key="d7">
+				<yjs:ShapeNodeStyle fill="#FFFF9900">
+					<yjs:ShapeNodeStyle.stroke>
+						<yjs:Stroke fill="#FF000000" miterLimit="1.45"/>
+					</yjs:ShapeNodeStyle.stroke>
+				</yjs:ShapeNodeStyle>
+			</data>
+			<port name="p0">
+				<data key="d16">
+					<y:FreeNodePortLocationModelParameter Ratio="0.5,0" Offset="0,-5.684341886080802e-14"/>
+				</data>
+			</port>
+			<port name="p1">
+				<data key="d16">
+					<y:FreeNodePortLocationModelParameter Ratio="0.23573272153713765,1" Offset="0,1.964196123147019"/>
+				</data>
+			</port>
+			<port name="p2">
+				<data key="d16">
+					<y:FreeNodePortLocationModelParameter Ratio="0.7681688689935475,1" Offset="0,0.03410062713766138"/>
+				</data>
+			</port>
+		</node>
+		<node id="n1">
+			<data key="d0">1</data>
+			<data key="d4">
+				<x:List>
+					<y:Label>
+						<y:Label.Text><![CDATA[Managed Network]]></y:Label.Text>
+						<y:Label.LayoutParameter>
+							<y:RatioAnchoredLabelModelParameter LayoutOffset="104.65859375000039,6"/>
+						</y:Label.LayoutParameter>
+						<y:Label.Style>
+							<yjs:DefaultLabelStyle horizontalTextAlignment="CENTER" autoFlip="false" textFill="#FF000000">
+								<yjs:DefaultLabelStyle.font>
+									<yjs:Font fontSize="12" fontFamily="'Arial'"/>
+								</yjs:DefaultLabelStyle.font>
+							</yjs:DefaultLabelStyle>
+						</y:Label.Style>
+					</y:Label>
+				</x:List>
+			</data>
+			<data key="d5">
+				<y:RectD X="58.59999999999897" Y="759.0999999999985" Width="306.70000000000084" Height="100.39999999999998"/>
+			</data>
+			<data key="d7">
+				<yjs:ShapeNodeStyle fill="#FF99CCFF">
+					<yjs:ShapeNodeStyle.stroke>
+						<yjs:Stroke fill="#FF000000" miterLimit="1.45"/>
+					</yjs:ShapeNodeStyle.stroke>
+				</yjs:ShapeNodeStyle>
+			</data>
+		</node>
+		<node id="n2">
+			<data key="d0">2</data>
+			<data key="d4">
+				<x:List>
+					<y:Label>
+						<y:Label.Text><![CDATA[South-Bound plugins
+]]></y:Label.Text>
+						<y:Label.LayoutParameter>
+							<y:RatioAnchoredLabelModelParameter LayoutOffset="6,6"/>
+						</y:Label.LayoutParameter>
+						<y:Label.Style>
+							<yjs:DefaultLabelStyle horizontalTextAlignment="CENTER" autoFlip="false" textFill="#FF000000">
+								<yjs:DefaultLabelStyle.font>
+									<yjs:Font fontSize="12" fontFamily="'Arial'"/>
+								</yjs:DefaultLabelStyle.font>
+							</yjs:DefaultLabelStyle>
+						</y:Label.Style>
+					</y:Label>
+				</x:List>
+			</data>
+			<data key="d5">
+				<y:RectD X="67.79999999999995" Y="621.5499999999975" Width="288.00000000000006" Height="92.59999999999991"/>
+			</data>
+			<data key="d7">
+				<yjs:ShapeNodeStyle fill="#FFFFFF99">
+					<yjs:ShapeNodeStyle.stroke>
+						<yjs:Stroke fill="#FF000000" miterLimit="1.45"/>
+					</yjs:ShapeNodeStyle.stroke>
+				</yjs:ShapeNodeStyle>
+			</data>
+		</node>
+		<node id="n3">
+			<data key="d0">3</data>
+			<data key="d4">
+				<x:List>
+					<y:Label>
+						<y:Label.Text><![CDATA[Core
+]]></y:Label.Text>
+						<y:Label.LayoutParameter>
+							<y:RatioAnchoredLabelModelParameter LayoutOffset="6,6"/>
+						</y:Label.LayoutParameter>
+						<y:Label.Style>
+							<yjs:DefaultLabelStyle horizontalTextAlignment="CENTER" autoFlip="false" textFill="#FF000000">
+								<yjs:DefaultLabelStyle.font>
+									<yjs:Font fontSize="12" fontFamily="'Arial'"/>
+								</yjs:DefaultLabelStyle.font>
+							</yjs:DefaultLabelStyle>
+						</y:Label.Style>
+					</y:Label>
+				</x:List>
+			</data>
+			<data key="d5">
+				<y:RectD X="67.79999999999995" Y="501.5999999999992" Width="288.00000000000006" Height="117.80000000000001"/>
+			</data>
+			<data key="d7">
+				<yjs:ShapeNodeStyle fill="#FFFFFF99">
+					<yjs:ShapeNodeStyle.stroke>
+						<yjs:Stroke fill="#FF000000" miterLimit="1.45"/>
+					</yjs:ShapeNodeStyle.stroke>
+				</yjs:ShapeNodeStyle>
+			</data>
+		</node>
+		<node id="n4">
+			<data key="d0">4</data>
+			<data key="d4">
+				<x:List>
+					<y:Label>
+						<y:Label.Text><![CDATA[North-Bound plugins]]></y:Label.Text>
+						<y:Label.LayoutParameter>
+							<y:RatioAnchoredLabelModelParameter LayoutOffset="6,6"/>
+						</y:Label.LayoutParameter>
+						<y:Label.Style>
+							<yjs:DefaultLabelStyle horizontalTextAlignment="CENTER" autoFlip="false" textFill="#FF000000">
+								<yjs:DefaultLabelStyle.font>
+									<yjs:Font fontSize="12" fontFamily="'Arial'"/>
+								</yjs:DefaultLabelStyle.font>
+							</yjs:DefaultLabelStyle>
+						</y:Label.Style>
+					</y:Label>
+				</x:List>
+			</data>
+			<data key="d5">
+				<y:RectD X="67.79999999999995" Y="375.650000000001" Width="288.00000000000006" Height="123.80000000000001"/>
+			</data>
+			<data key="d7">
+				<yjs:ShapeNodeStyle fill="#FFFFFF99">
+					<yjs:ShapeNodeStyle.stroke>
+						<yjs:Stroke fill="#FF000000" miterLimit="1.45"/>
+					</yjs:ShapeNodeStyle.stroke>
+				</yjs:ShapeNodeStyle>
+			</data>
+		</node>
+		<node id="n5">
+			<data key="d0">5</data>
+			<data key="d4">
+				<x:List>
+					<y:Label>
+						<y:Label.Text><![CDATA[Client Application]]></y:Label.Text>
+						<y:Label.LayoutParameter>
+							<y:RatioAnchoredLabelModelParameter LayoutOffset="14.640625,19.1494140625"/>
+						</y:Label.LayoutParameter>
+						<y:Label.Style>
+							<yjs:DefaultLabelStyle horizontalTextAlignment="CENTER" autoFlip="false" textFill="#FF000000">
+								<yjs:DefaultLabelStyle.font>
+									<yjs:Font fontSize="12" fontFamily="'Arial'"/>
+								</yjs:DefaultLabelStyle.font>
+							</yjs:DefaultLabelStyle>
+						</y:Label.Style>
+					</y:Label>
+				</x:List>
+			</data>
+			<data key="d5">
+				<y:RectD X="150.79999999999998" Y="231.90529047648067" Width="122" Height="53"/>
+			</data>
+			<data key="d7">
+				<yjs:ShapeNodeStyle fill="#FFCCCCCC">
+					<yjs:ShapeNodeStyle.stroke>
+						<yjs:Stroke fill="#FF000000" miterLimit="1.45"/>
+					</yjs:ShapeNodeStyle.stroke>
+				</yjs:ShapeNodeStyle>
+			</data>
+			<port name="p0"/>
+		</node>
+		<node id="n6">
+			<data key="d0">6</data>
+			<data key="d4">
+				<x:List>
+					<y:Label>
+						<y:Label.Text><![CDATA[RESTCONF
+North-Bound Plugin]]></y:Label.Text>
+						<y:Label.LayoutParameter>
+							<y:RatioAnchoredLabelModelParameter LayoutOffset="32.599999999999966,19.5"/>
+						</y:Label.LayoutParameter>
+						<y:Label.Style>
+							<yjs:DefaultLabelStyle horizontalTextAlignment="CENTER" autoFlip="false" textFill="#FF000000" textSize="14">
+								<yjs:DefaultLabelStyle.font>
+									<yjs:Font fontSize="14" fontFamily="'Arial'"/>
+								</yjs:DefaultLabelStyle.font>
+							</yjs:DefaultLabelStyle>
+						</y:Label.Style>
+					</y:Label>
+				</x:List>
+			</data>
+			<data key="d5">
+				<y:RectD X="117.69999999999999" Y="402.050000000001" Width="188.2" Height="71"/>
+			</data>
+			<data key="d7">
+				<yjs:ShapeNodeStyle fill="#FFFFCC00">
+					<yjs:ShapeNodeStyle.stroke>
+						<yjs:Stroke fill="#FF000000" miterLimit="1.45"/>
+					</yjs:ShapeNodeStyle.stroke>
+				</yjs:ShapeNodeStyle>
+			</data>
+		</node>
+		<node id="n7">
+			<data key="d0">7</data>
+			<data key="d4">
+				<x:List>
+					<y:Label>
+						<y:Label.Text>MD-SAL</y:Label.Text>
+						<y:Label.LayoutParameter>
+							<y:RatioAnchoredLabelModelParameter LayoutOffset="74.03007812499999,6"/>
+						</y:Label.LayoutParameter>
+						<y:Label.Style>
+							<yjs:DefaultLabelStyle horizontalTextAlignment="CENTER" autoFlip="false" textFill="#FF000000">
+								<yjs:DefaultLabelStyle.font>
+									<yjs:Font fontSize="12" fontFamily="'Arial'"/>
+								</yjs:DefaultLabelStyle.font>
+							</yjs:DefaultLabelStyle>
+						</y:Label.Style>
+					</y:Label>
+				</x:List>
+			</data>
+			<data key="d5">
+				<y:RectD X="152.90000000000003" Y="529.450000000001" Width="193.40000000000003" Height="78.79999999999995"/>
+			</data>
+			<data key="d7">
+				<yjs:ShapeNodeStyle fill="#FFFFCC00">
+					<yjs:ShapeNodeStyle.stroke>
+						<yjs:Stroke fill="#FF000000" miterLimit="1.45"/>
+					</yjs:ShapeNodeStyle.stroke>
+				</yjs:ShapeNodeStyle>
+			</data>
+		</node>
+		<node id="n8">
+			<data key="d0">8</data>
+			<data key="d4">
+				<x:List>
+					<y:Label>
+						<y:Label.Text>Controller</y:Label.Text>
+						<y:Label.LayoutParameter>
+							<y:RatioAnchoredLabelModelParameter LayoutOffset="11.190234375000031,12.349414062500045"/>
+						</y:Label.LayoutParameter>
+						<y:Label.Style>
+							<yjs:DefaultLabelStyle horizontalTextAlignment="CENTER" autoFlip="false" textFill="#FF000000">
+								<yjs:DefaultLabelStyle.font>
+									<yjs:Font fontSize="12" fontFamily="'Arial'"/>
+								</yjs:DefaultLabelStyle.font>
+							</yjs:DefaultLabelStyle>
+						</y:Label.Style>
+					</y:Label>
+				</x:List>
+			</data>
+			<data key="d5">
+				<y:RectD X="78.49999999999997" Y="529.450000000001" Width="74.40000000000003" Height="39.39999999999998"/>
+			</data>
+			<data key="d7">
+				<yjs:ShapeNodeStyle fill="#FFFFCC00">
+					<yjs:ShapeNodeStyle.stroke>
+						<yjs:Stroke fill="#FF000000" miterLimit="1.45"/>
+					</yjs:ShapeNodeStyle.stroke>
+				</yjs:ShapeNodeStyle>
+			</data>
+		</node>
+		<node id="n9">
+			<data key="d0">9</data>
+			<data key="d4">
+				<x:List>
+					<y:Label>
+						<y:Label.Text>Yangtools</y:Label.Text>
+						<y:Label.LayoutParameter>
+							<y:RatioAnchoredLabelModelParameter LayoutOffset="10.513476562500031,12.349414062500045"/>
+						</y:Label.LayoutParameter>
+						<y:Label.Style>
+							<yjs:DefaultLabelStyle horizontalTextAlignment="CENTER" autoFlip="false" textFill="#FF000000">
+								<yjs:DefaultLabelStyle.font>
+									<yjs:Font fontSize="12" fontFamily="'Arial'"/>
+								</yjs:DefaultLabelStyle.font>
+							</yjs:DefaultLabelStyle>
+						</y:Label.Style>
+					</y:Label>
+				</x:List>
+			</data>
+			<data key="d5">
+				<y:RectD X="78.49999999999997" Y="568.8500000000008" Width="74.40000000000003" Height="39.39999999999998"/>
+			</data>
+			<data key="d7">
+				<yjs:ShapeNodeStyle fill="#FFFFCC00">
+					<yjs:ShapeNodeStyle.stroke>
+						<yjs:Stroke fill="#FF000000" miterLimit="1.45"/>
+					</yjs:ShapeNodeStyle.stroke>
+				</yjs:ShapeNodeStyle>
+			</data>
+		</node>
+		<node id="n10">
+			<data key="d0">10</data>
+			<data key="d4">
+				<x:List>
+					<y:Label>
+						<y:Label.Text><![CDATA[Configurational
+Datastore]]></y:Label.Text>
+						<y:Label.LayoutParameter>
+							<y:RatioAnchoredLabelModelParameter LayoutOffset="3.840625000000017,4.998828124999932"/>
+						</y:Label.LayoutParameter>
+						<y:Label.Style>
+							<yjs:DefaultLabelStyle horizontalTextAlignment="CENTER" autoFlip="false" textFill="#FF000000">
+								<yjs:DefaultLabelStyle.font>
+									<yjs:Font fontSize="12" fontFamily="'Arial'"/>
+								</yjs:DefaultLabelStyle.font>
+							</yjs:DefaultLabelStyle>
+						</y:Label.Style>
+					</y:Label>
+				</x:List>
+			</data>
+			<data key="d5">
+				<y:RectD X="158.09999999999994" Y="563.8500000000009" Width="88.40000000000003" Height="39.39999999999998"/>
+			</data>
+			<data key="d7">
+				<yjs:ShapeNodeStyle fill="#FFCCFF99">
+					<yjs:ShapeNodeStyle.stroke>
+						<yjs:Stroke fill="#FF000000" miterLimit="1.45"/>
+					</yjs:ShapeNodeStyle.stroke>
+				</yjs:ShapeNodeStyle>
+			</data>
+		</node>
+		<node id="n11">
+			<data key="d0">11</data>
+			<data key="d4">
+				<x:List>
+					<y:Label>
+						<y:Label.Text><![CDATA[Operational
+Datastore]]></y:Label.Text>
+						<y:Label.LayoutParameter>
+							<y:RatioAnchoredLabelModelParameter LayoutOffset="13.180468750000045,4.998828124999932"/>
+						</y:Label.LayoutParameter>
+						<y:Label.Style>
+							<yjs:DefaultLabelStyle horizontalTextAlignment="CENTER" autoFlip="false" textFill="#FF000000">
+								<yjs:DefaultLabelStyle.font>
+									<yjs:Font fontSize="12" fontFamily="'Arial'"/>
+								</yjs:DefaultLabelStyle.font>
+							</yjs:DefaultLabelStyle>
+						</y:Label.Style>
+					</y:Label>
+				</x:List>
+			</data>
+			<data key="d5">
+				<y:RectD X="251.69999999999993" Y="563.8500000000009" Width="88.40000000000003" Height="39.39999999999998"/>
+			</data>
+			<data key="d7">
+				<yjs:ShapeNodeStyle fill="#FFCCFF99">
+					<yjs:ShapeNodeStyle.stroke>
+						<yjs:Stroke fill="#FF000000" miterLimit="1.45"/>
+					</yjs:ShapeNodeStyle.stroke>
+				</yjs:ShapeNodeStyle>
+			</data>
+		</node>
+		<node id="n12">
+			<data key="d0">12</data>
+			<data key="d4">
+				<x:List>
+					<y:Label>
+						<y:Label.Text><![CDATA[gNMI
+South-Bound]]></y:Label.Text>
+						<y:Label.LayoutParameter>
+							<y:RatioAnchoredLabelModelParameter LayoutOffset="34.099999999999966,9.038623809814453"/>
+						</y:Label.LayoutParameter>
+						<y:Label.Style>
+							<yjs:DefaultLabelStyle horizontalTextAlignment="CENTER" autoFlip="false" textFill="#FF000000" textSize="15">
+								<yjs:DefaultLabelStyle.font>
+									<yjs:Font fontSize="15" fontFamily="'Arial'"/>
+								</yjs:DefaultLabelStyle.font>
+							</yjs:DefaultLabelStyle>
+						</y:Label.Style>
+					</y:Label>
+				</x:List>
+			</data>
+			<data key="d5">
+				<y:RectD X="140.2" Y="649.2227523803697" Width="156.2" Height="59.077247619628906"/>
+			</data>
+			<data key="d7">
+				<yjs:ShapeNodeStyle fill="#FFFFCC00">
+					<yjs:ShapeNodeStyle.stroke>
+						<yjs:Stroke fill="#FF000000" miterLimit="1.45"/>
+					</yjs:ShapeNodeStyle.stroke>
+				</yjs:ShapeNodeStyle>
+			</data>
+		</node>
+		<node id="n13">
+			<data key="d0">13</data>
+			<data key="d4">
+				<x:List>
+					<y:Label>
+						<y:Label.LayoutParameter>
+							<y:RatioAnchoredLabelModelParameter LayoutOffset="33.308250427246094,65.0772476196289"/>
+						</y:Label.LayoutParameter>
+						<y:Label.Style>
+							<yjs:DefaultLabelStyle horizontalTextAlignment="CENTER" autoFlip="false" textFill="BLACK">
+								<yjs:DefaultLabelStyle.font>
+									<yjs:Font fontSize="12" fontFamily="'Arial'"/>
+								</yjs:DefaultLabelStyle.font>
+							</yjs:DefaultLabelStyle>
+						</y:Label.Style>
+					</y:Label>
+				</x:List>
+			</data>
+			<data key="d5">
+				<y:RectD X="178.6417495727533" Y="786.9613761901848" Width="66.61650085449219" Height="59.077247619628906"/>
+			</data>
+			<data key="d7">
+				<yjs:ImageNodeStyle image="{y:GraphMLReference 1}"/>
+			</data>
+			<port name="p0"/>
+			<port name="p1"/>
+		</node>
+		<edge id="e0" source="n5" target="n0" sourceport="p0" targetport="p0">
+			<data key="d11">
+				<x:List>
+					<y:Label>
+						<y:Label.Text><![CDATA[HTTP
+/ RESTCONF]]></y:Label.Text>
+						<y:Label.LayoutParameter>
+							<y:FreeEdgeLabelModelParameter Ratio="0.7270652673756551" Distance="-45.199999443578804"/>
+						</y:Label.LayoutParameter>
+						<y:Label.Style>
+							<yjs:DefaultLabelStyle horizontalTextAlignment="CENTER" textFill="BLACK">
+								<yjs:DefaultLabelStyle.font>
+									<yjs:Font fontSize="12" fontFamily="'Arial'"/>
+								</yjs:DefaultLabelStyle.font>
+							</yjs:DefaultLabelStyle>
+						</y:Label.Style>
+					</y:Label>
+				</x:List>
+			</data>
+			<data key="d13">
+				<yjs:PolylineEdgeStyle>
+					<yjs:PolylineEdgeStyle.stroke>
+						<yjs:Stroke fill="BLACK" miterLimit="1.45"/>
+					</yjs:PolylineEdgeStyle.stroke>
+					<yjs:PolylineEdgeStyle.targetArrow>
+						<yjs:Arrow stroke="#FF000000" fill="BLACK"/>
+					</yjs:PolylineEdgeStyle.targetArrow>
+					<yjs:PolylineEdgeStyle.sourceArrow>
+						<yjs:Arrow stroke="#FF000000" fill="BLACK"/>
+					</yjs:PolylineEdgeStyle.sourceArrow>
+				</yjs:PolylineEdgeStyle>
+			</data>
+		</edge>
+		<edge id="e1" source="n13" target="n0" sourceport="p0" targetport="p1">
+			<data key="d12">
+				<x:List>
+					<y:Bend Location="130.8992256954393,816.4999999999992"/>
+				</x:List>
+			</data>
+			<data key="d13">
+				<yjs:PolylineEdgeStyle sourceArrow="{y:GraphMLReference 2}">
+					<yjs:PolylineEdgeStyle.stroke>
+						<yjs:Stroke fill="BLACK" miterLimit="1.45"/>
+					</yjs:PolylineEdgeStyle.stroke>
+					<yjs:PolylineEdgeStyle.targetArrow>
+						<yjs:Arrow stroke="#FF000000" fill="BLACK"/>
+					</yjs:PolylineEdgeStyle.targetArrow>
+				</yjs:PolylineEdgeStyle>
+			</data>
+		</edge>
+		<edge id="e2" source="n13" target="n0" sourceport="p1" targetport="p2">
+			<data key="d12">
+				<x:List>
+					<y:Bend Location="294.19739212032067,816.4999999999992"/>
+				</x:List>
+			</data>
+			<data key="d13">
+				<yjs:PolylineEdgeStyle sourceArrow="{y:GraphMLReference 2}">
+					<yjs:PolylineEdgeStyle.stroke>
+						<yjs:Stroke fill="BLACK" miterLimit="1.45"/>
+					</yjs:PolylineEdgeStyle.stroke>
+					<yjs:PolylineEdgeStyle.targetArrow>
+						<yjs:Arrow stroke="#FF000000" fill="BLACK"/>
+					</yjs:PolylineEdgeStyle.targetArrow>
+				</yjs:PolylineEdgeStyle>
+			</data>
+		</edge>
+	</graph>
+</graphml>

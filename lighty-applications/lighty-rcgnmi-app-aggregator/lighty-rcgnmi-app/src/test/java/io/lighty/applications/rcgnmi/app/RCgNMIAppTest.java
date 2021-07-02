@@ -37,7 +37,7 @@ public class RCgNMIAppTest {
         doReturn(Futures.immediateFuture(true)).when(appModule).start();
         doReturn(Futures.immediateFuture(true)).when(appModule).shutdown();
         doReturn(appModule).when(app).createRgnmiAppModule(any(), any(), any());
-        app.start(new String[]{"-c", "src/main/resources/example_config.json"});
+        app.start(new String[]{"-c", "src/main/resources/example-config/example_config.json"});
         verify(app, Mockito.times(1)).createRgnmiAppModule(any(), any(), any());
     }
 

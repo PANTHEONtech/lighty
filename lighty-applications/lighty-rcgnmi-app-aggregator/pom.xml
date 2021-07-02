@@ -27,4 +27,13 @@
         <module>lighty-rcgnmi-app-module</module>
     </modules>
 
+    <profiles>
+        <profile>
+            <id>docker</id>
+            <modules>
+                <module>lighty-rcgnmi-app-docker</module>
+            </modules>
+        </profile>
+    </profiles>
+
 </project>
