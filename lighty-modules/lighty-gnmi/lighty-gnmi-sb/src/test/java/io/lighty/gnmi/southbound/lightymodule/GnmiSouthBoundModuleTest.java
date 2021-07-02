@@ -15,7 +15,7 @@ import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
 import io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils;
-import io.lighty.modules.southbound.netconf.impl.AAAEncryptionServiceImpl;
+import io.lighty.modules.encrypt.service.aaa.impl.AAAEncryptionServiceImpl;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;

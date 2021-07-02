@@ -87,6 +87,11 @@
                 <artifactId>lighty-openflow-sb</artifactId>
                 <version>14.0.1-SNAPSHOT</version>
             </dependency>
+            <dependency>
+                <groupId>io.lighty.modules</groupId>
+                <artifactId>lighty-aaa-encryption-service</artifactId>
+                <version>14.0.1-SNAPSHOT</version>
+            </dependency>
 
             <!-- gNMI -->
             <dependency>
