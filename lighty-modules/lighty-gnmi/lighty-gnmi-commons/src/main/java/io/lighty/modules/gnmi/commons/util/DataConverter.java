@@ -80,7 +80,8 @@ public final class DataConverter {
         final JSONCodecFactory jsonCodecFactory
                 = JSONCodecFactorySupplier.RFC7951.createSimple(context);
         final Writer writer = new StringWriter();
-        final NormalizedNodeStreamWriter nodeWriter = getNodeWriterForJson(schemaPath, data, jsonCodecFactory, writer);
+        final NormalizedNodeStreamWriter nodeWriter
+                = createNodeWriterForJson(schemaPath, data, jsonCodecFactory, writer);
         final NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(nodeWriter);
         try {
             normalizedNodeWriter.write(data);
@@ -93,10 +94,10 @@ public final class DataConverter {
         return writer.toString();
     }
 
-    private static NormalizedNodeStreamWriter getNodeWriterForJson(final SchemaPath schemaPath,
-                                                                   final NormalizedNode<?, ?> data,
-                                                                   final JSONCodecFactory jsonCodecFactory,
-                                                                   final Writer writer) {
+    private static NormalizedNodeStreamWriter createNodeWriterForJson(final SchemaPath schemaPath,
+                                                                      final NormalizedNode<?, ?> data,
+                                                                      final JSONCodecFactory jsonCodecFactory,
+                                                                      final Writer writer) {
         final JsonWriter jsonWriter = new JsonWriter(writer);
         if (isListEntry(data)) {
             return JSONNormalizedNodeStreamWriter
