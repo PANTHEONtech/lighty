@@ -105,7 +105,6 @@ public final class DataConverter {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         } finally {
-            closeAutoCloseableResource(normalizedNodeWriter);
             closeAutoCloseableResource(nodeWriter);
             closeAutoCloseableResource(writer);
         }
@@ -125,7 +124,6 @@ public final class DataConverter {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         } finally {
-            closeAutoCloseableResource(normalizedNodeWriter);
             closeAutoCloseableResource(nodeWriter);
             closeAutoCloseableResource(jsonWriter);
             closeAutoCloseableResource(writer);
