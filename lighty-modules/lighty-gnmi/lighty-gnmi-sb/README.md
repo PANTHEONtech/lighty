@@ -88,9 +88,9 @@ without using RESTCONF. Full example can be found inside test [GnmiWithoutRestco
 
 2. Connect gNMI device
 ```java
-        Node testGnmiNode = createNode(GNMI_NODE_ID, DEVICE_ADDRESS, DEVICE_PORT, getInsecureSecurityChoice());
-        WriteTransaction writeTransaction = bindingDataBroker.newWriteOnlyTransaction();
-        InstanceIdentifier<Node> nodeInstanceIdentifier = IdentifierUtils.gnmiNodeIID(testGnmiNode.getNodeId());
+        final Node testGnmiNode = createNode(GNMI_NODE_ID, DEVICE_ADDRESS, DEVICE_PORT, getInsecureSecurityChoice());
+        final WriteTransaction writeTransaction = bindingDataBroker.newWriteOnlyTransaction();
+        final InstanceIdentifier<Node> nodeInstanceIdentifier = IdentifierUtils.gnmiNodeIID(testGnmiNode.getNodeId());
         writeTransaction.put(LogicalDatastoreType.CONFIGURATION, nodeInstanceIdentifier, testGnmiNode);
         writeTransaction.commit().get();
 ```
@@ -100,14 +100,14 @@ without using RESTCONF. Full example can be found inside test [GnmiWithoutRestco
         Awaitility.waitAtMost(WAIT_TIME_DURATION)
                 .pollInterval(POLL_INTERVAL_DURATION)
                 .untilAsserted(() -> {
-                    Optional<Node> node = readOperData(bindingDataBroker, nodeInstanceIdentifier);
+                    final Optional<Node> node = readOperData(bindingDataBroker, nodeInstanceIdentifier);
                     assertTrue(node.isPresent());
-                    Node foundNode = node.get();
-                    GnmiNode gnmiNode = foundNode.augmentation(GnmiNode.class);
+                    final Node foundNode = node.get();
+                    final GnmiNode gnmiNode = foundNode.augmentation(GnmiNode.class);
                     assertNotNull(gnmiNode);
-                    NodeState nodeState = gnmiNode.getNodeState();
+                    final NodeState nodeState = gnmiNode.getNodeState();
                     assertNotNull(nodeState);
-                    NodeState.NodeStatus nodeStatus = nodeState.getNodeStatus();
+                    final NodeState.NodeStatus nodeStatus = nodeState.getNodeStatus();
                     assertEquals(NodeState.NodeStatus.READY, nodeStatus);
                 });
 ```
@@ -115,21 +115,21 @@ without using RESTCONF. Full example can be found inside test [GnmiWithoutRestco
 4. Get DOM GnmiDataBroker registered for specific gNMI device. For each successfully registered gNMI device 
    is created a new GnmiDataBroker with device specific schema context.
 ```java
-        DOMMountPointService domMountPointService = lightyController.getServices().getDOMMountPointService();
-        Optional<DOMMountPoint> mountPoint
+        final DOMMountPointService domMountPointService = lightyController.getServices().getDOMMountPointService();
+        final Optional<DOMMountPoint> mountPoint
                 = domMountPointService.getMountPoint(IdentifierUtils.nodeidToYii(testGnmiNode.getNodeId()));
         assertTrue(mountPoint.isPresent());
-        DOMMountPoint domMountPoint = mountPoint.get();
-        Optional<DOMDataBroker> service = domMountPoint.getService(DOMDataBroker.class);
+        final DOMMountPoint domMountPoint = mountPoint.get();
+        final Optional<DOMDataBroker> service = domMountPoint.getService(DOMDataBroker.class);
         assertTrue(service.isPresent());
-        DOMDataBroker domDataBroker = service.get();
+        final DOMDataBroker domDataBroker = service.get();
 ```
 
 5. Get openconfig interfaces data from gNMI device.
 ```java
-        YangInstanceIdentifier interfacesYIID = YangInstanceIdentifier.builder().node(INTERFACES_QNAME).build();
-        Optional<NormalizedNode<?, ?>> normalizedNode
-        try(DOMDataTreeReadTransaction domDataTreeReadTransaction = domDataBroker.newReadOnlyTransaction()) {
+        final YangInstanceIdentifier interfacesYIID = YangInstanceIdentifier.builder().node(INTERFACES_QNAME).build();
+        final Optional<NormalizedNode<?, ?>> normalizedNode;
+        try (DOMDataTreeReadTransaction domDataTreeReadTransaction = domDataBroker.newReadOnlyTransaction()) {
             normalizedNode = domDataTreeReadTransaction.read(LogicalDatastoreType.CONFIGURATION, interfacesYIID).get();
         }
         assertTrue(normalizedNode.isPresent());
