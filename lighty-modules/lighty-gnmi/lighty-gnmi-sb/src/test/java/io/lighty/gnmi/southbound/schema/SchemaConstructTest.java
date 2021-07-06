@@ -44,7 +44,7 @@ public class SchemaConstructTest {
     private static final List<String> REVISION_MODELS = Arrays.asList("iana-if-type",
             "openconfig-extensions");
     private static final List<String> NO_VERSION_MODELS = Arrays.asList("no-version", "test-dependency",
-            "test-dependency2");
+            "test-dependency2", "test-interfaces");
     private TestYangDataStoreService dataStoreService;
     private List<GnmiDeviceCapability> completeCapabilities;
 
