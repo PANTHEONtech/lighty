@@ -98,8 +98,11 @@ public class ByPathYangLoaderService implements YangLoaderService {
                 LOG.info("Loaded yang model {} with version {}", modelName, versionToStore);
             }
             return loadedModels;
-        } catch (IOException | YangParserException | InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (IOException | YangParserException | ExecutionException | TimeoutException e) {
             throw new YangLoadException("Loading yang files failed!", e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new YangLoadException("Interrupted while loading yang files!", e);
         }
     }
 

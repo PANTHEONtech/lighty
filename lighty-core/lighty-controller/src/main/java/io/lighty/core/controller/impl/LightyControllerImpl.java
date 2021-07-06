@@ -363,9 +363,13 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                         .importInitialConfigDataFile(stream, initialData.getFormat(),
                                 getEffectiveModelContextProvider().getEffectiveModelContext(),
                                 this.getClusteredDOMDataBroker());
-            } catch (InterruptedException | TimeoutException | ExecutionException | IOException
+            } catch (TimeoutException | ExecutionException | IOException
                     | SerializationException | IllegalStateException e) {
                 LOG.error("Exception occurred while importing config data from file", e);
+                return false;
+            } catch (InterruptedException e) {
+                LOG.error("Interrupted while importing config data from file", e);
+                Thread.currentThread().interrupt();
                 return false;
             }
         }

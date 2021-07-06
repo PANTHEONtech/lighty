@@ -8,15 +8,13 @@
 
 package io.lighty.gnmi.southbound.schema.yangstore.impl;
 
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.gnmi.southbound.schema.yangstore.service.YangDataStoreService;
-import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
@@ -36,9 +34,11 @@ public class YangDataStoreServiceImpl implements YangDataStoreService {
     private static final Logger LOG = LoggerFactory.getLogger(YangDataStoreServiceImpl.class);
 
     private final DataBroker dataBroker;
+    private final ExecutorService executorService;
 
-    public YangDataStoreServiceImpl(final DataBroker dataBroker) {
+    public YangDataStoreServiceImpl(final DataBroker dataBroker, final ExecutorService executorService) {
         this.dataBroker = dataBroker;
+        this.executorService = executorService;
     }
 
     @Override
@@ -60,48 +60,44 @@ public class YangDataStoreServiceImpl implements YangDataStoreService {
     }
 
     @Override
-    public Optional<GnmiYangModel> readYangModel(final String modelName, final String modelVersion) {
+    public ListenableFuture<Optional<GnmiYangModel>> readYangModel(final String modelName, final String modelVersion) {
         final InstanceIdentifier<GnmiYangModel> instanceIdentifier = InstanceIdentifier.builder(GnmiYangModels.class)
                 .child(GnmiYangModel.class, new GnmiYangModelKey(modelName, new ModuleVersionType(modelVersion)))
                 .build();
         try (ReadTransaction readOnlyTransaction = this.dataBroker.newReadOnlyTransaction()) {
-            return readOnlyTransaction.read(
-                    LogicalDatastoreType.OPERATIONAL, instanceIdentifier)
-                    .get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-        } catch (ExecutionException | InterruptedException | TimeoutException e) {
-            LOG.error("Unable to read yang model body from operational datastore", e);
+            return readOnlyTransaction.read(LogicalDatastoreType.OPERATIONAL, instanceIdentifier);
         }
-        return Optional.empty();
     }
 
     @Override
-    public Optional<GnmiYangModel> readYangModel(final String modelName) {
+    public ListenableFuture<Optional<GnmiYangModel>> readYangModel(final String modelName) {
         // In case we only know the modelName, return found module if only one is present in datastore
         final InstanceIdentifier<GnmiYangModels> instanceIdentifier = InstanceIdentifier.builder(GnmiYangModels.class)
                 .build();
 
         try (ReadTransaction readOnlyTransaction = this.dataBroker.newReadOnlyTransaction()) {
-            final Optional<GnmiYangModels> yangModelOptional = readOnlyTransaction.read(
-                    LogicalDatastoreType.OPERATIONAL, instanceIdentifier)
-                    .get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-            if (yangModelOptional.isPresent()) {
-                // Keep only models with requested name
-                final List<Map.Entry<GnmiYangModelKey, GnmiYangModel>> modelsWithRequestedName =
-                        yangModelOptional.get().nonnullGnmiYangModel().entrySet().stream()
-                                .filter(m -> m.getKey().getName().equals(modelName))
-                                .collect(Collectors.toList());
+            final ListenableFuture<Optional<GnmiYangModels>> yangModelOptionalFuture = readOnlyTransaction.read(
+                    LogicalDatastoreType.OPERATIONAL, instanceIdentifier);
+            return Futures.transform(yangModelOptionalFuture, yangModelOptional -> {
+                if (yangModelOptional.isPresent()) {
+                    // Keep only models with requested name
+                    final List<Map.Entry<GnmiYangModelKey, GnmiYangModel>> modelsWithRequestedName =
+                            yangModelOptional.get().nonnullGnmiYangModel().entrySet().stream()
+                                    .filter(m -> m.getKey().getName().equals(modelName))
+                                    .collect(Collectors.toList());
 
-                if (modelsWithRequestedName.size() == 1) {
-                    return Optional.of(modelsWithRequestedName.stream().findFirst().get().getValue());
-                } else if (modelsWithRequestedName.size() > 1) {
-                    LOG.warn("There are multiple version of model {} in datastore, unable to safely determine which one"
-                            + "to use, since only the model name is known", modelName);
+                    if (modelsWithRequestedName.size() == 1) {
+                        return Optional.of(modelsWithRequestedName.stream().findFirst().get().getValue());
+                    } else if (modelsWithRequestedName.size() > 1) {
+                        LOG.warn("There are multiple version of model {} in datastore, unable to safely determine"
+                                + " which one to use, since only the model name is known", modelName);
+                    }
+
                 }
-            }
-        } catch (ExecutionException | InterruptedException | TimeoutException e) {
-            LOG.error("Unable to read yang model body from operational datastore", e);
+                return Optional.empty();
+
+            }, executorService);
         }
-        return Optional.empty();
     }
 
 }

@@ -92,8 +92,12 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
         writeTransaction.delete(LogicalDatastoreType.OPERATIONAL, IdentifierUtils.gnmiNodeIID(nodeId));
         try {
             writeTransaction.commit().get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (ExecutionException | TimeoutException e) {
             LOG.warn("Failed deleting node state of node {} from operational datastore", nodeId.getValue(), e);
+        } catch (InterruptedException e) {
+            LOG.error("Interrupted while deleting node state of node {} from operational datastore",
+                    nodeId.getValue(), e);
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -113,9 +117,16 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
                     try {
                         LOG.error("Connection of node {} failed", node.getNodeId(), throwable);
                         writeConnectionFailureReasonToDatastore(node.getNodeId(), throwable.toString());
-                    } catch (InterruptedException | TimeoutException | ExecutionException e) {
-                        LOG.warn("Failed writing reason of connection failure of node {} to datastore",
-                                node.getNodeId().getValue(), e);
+                    } catch (TimeoutException | ExecutionException e) {
+                        throw new RuntimeException(
+                                String.format("Failed writing reason of connection failure of node %s to datastore",
+                                        node.getNodeId().getValue()), e);
+
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new RuntimeException(
+                                String.format("Interrupted while writing connection failure of node %s to datastore",
+                                        node.getNodeId().getValue()), e);
                     }
                 } else {
                     LOG.info("Connection initialization to node {} was cancelled", node.getNodeId());
