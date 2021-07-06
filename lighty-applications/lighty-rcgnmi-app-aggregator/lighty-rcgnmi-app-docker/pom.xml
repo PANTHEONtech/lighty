@@ -25,7 +25,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.lighty.modules.southbound.gnmi</groupId>
+            <groupId>io.lighty.applications.rcgnmi</groupId>
             <artifactId>lighty-rcgnmi-app</artifactId>
             <version>${project.version}</version>
         </dependency>
