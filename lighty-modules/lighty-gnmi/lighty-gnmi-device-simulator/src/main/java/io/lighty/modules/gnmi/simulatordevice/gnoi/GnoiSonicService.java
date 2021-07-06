@@ -12,6 +12,7 @@ import gnoi.sonic.SonicGnoi;
 import gnoi.sonic.SonicServiceGrpc;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,8 +23,8 @@ public class GnoiSonicService extends SonicServiceGrpc.SonicServiceImplBase {
 
     @Override
     public void showTechsupport(
-            gnoi.sonic.SonicGnoi.TechsupportRequest request,
-            io.grpc.stub.StreamObserver<gnoi.sonic.SonicGnoi.TechsupportResponse> responseObserver) {
+            SonicGnoi.TechsupportRequest request,
+            StreamObserver<SonicGnoi.TechsupportResponse> responseObserver) {
         LOG.info("Received showTechsupport rpc request {}", request);
         final SonicGnoi.TechsupportResponse response = SonicGnoi.TechsupportResponse.newBuilder().setOutput(
                 SonicGnoi.TechsupportResponse.Output.newBuilder()
@@ -34,8 +35,8 @@ public class GnoiSonicService extends SonicServiceGrpc.SonicServiceImplBase {
     }
 
     @Override
-    public void copyConfig(gnoi.sonic.SonicGnoi.CopyConfigRequest request,
-                           io.grpc.stub.StreamObserver<gnoi.sonic.SonicGnoi.CopyConfigResponse> responseObserver) {
+    public void copyConfig(SonicGnoi.CopyConfigRequest request,
+                           StreamObserver<SonicGnoi.CopyConfigResponse> responseObserver) {
         LOG.info("Received copyConfig rpc request {}", request);
         final SonicGnoi.CopyConfigResponse response = SonicGnoi.CopyConfigResponse.newBuilder()
                 .setOutput(buildSimulatedSonicOutput("copyConfig"))
@@ -45,8 +46,8 @@ public class GnoiSonicService extends SonicServiceGrpc.SonicServiceImplBase {
     }
 
     @Override
-    public void imageInstall(gnoi.sonic.SonicGnoi.ImageInstallRequest request,
-                             io.grpc.stub.StreamObserver<gnoi.sonic.SonicGnoi.ImageInstallResponse> responseObserver) {
+    public void imageInstall(SonicGnoi.ImageInstallRequest request,
+                             StreamObserver<SonicGnoi.ImageInstallResponse> responseObserver) {
         LOG.info("Received imageInstall rpc request {}", request);
         final SonicGnoi.ImageInstallResponse response = SonicGnoi.ImageInstallResponse.newBuilder()
                 .setOutput(buildSimulatedSonicOutput("imageInstall"))
@@ -59,15 +60,15 @@ public class GnoiSonicService extends SonicServiceGrpc.SonicServiceImplBase {
         Returns StatusRuntimeException, so one can test error handling on client's side.
      */
     @Override
-    public void imageRemove(gnoi.sonic.SonicGnoi.ImageRemoveRequest request,
-                            io.grpc.stub.StreamObserver<gnoi.sonic.SonicGnoi.ImageRemoveResponse> responseObserver) {
+    public void imageRemove(SonicGnoi.ImageRemoveRequest request,
+                            StreamObserver<SonicGnoi.ImageRemoveResponse> responseObserver) {
         LOG.info("Received imageRemove rpc request {}", request);
         responseObserver.onError(new StatusRuntimeException(Status.UNKNOWN));
     }
 
     @Override
-    public void imageDefault(gnoi.sonic.SonicGnoi.ImageDefaultRequest request,
-                             io.grpc.stub.StreamObserver<gnoi.sonic.SonicGnoi.ImageDefaultResponse> responseObserver) {
+    public void imageDefault(SonicGnoi.ImageDefaultRequest request,
+                             StreamObserver<SonicGnoi.ImageDefaultResponse> responseObserver) {
         LOG.info("Received imageDefault rpc request {}", request);
         final SonicGnoi.ImageDefaultResponse response = SonicGnoi.ImageDefaultResponse.newBuilder()
                 .setOutput(buildSimulatedSonicOutput("imageDefault"))
@@ -78,8 +79,8 @@ public class GnoiSonicService extends SonicServiceGrpc.SonicServiceImplBase {
 
     @Override
     public void clearNeighbors(
-            gnoi.sonic.SonicGnoi.ClearNeighborsRequest request,
-            io.grpc.stub.StreamObserver<gnoi.sonic.SonicGnoi.ClearNeighborsResponse> responseObserver) {
+            SonicGnoi.ClearNeighborsRequest request,
+            StreamObserver<SonicGnoi.ClearNeighborsResponse> responseObserver) {
         LOG.info("Received clearNeighbors rpc request {}", request);
         final SonicGnoi.ClearNeighborsResponse response = SonicGnoi.ClearNeighborsResponse.newBuilder()
                 .setOutput(SonicGnoi.ClearNeighborsResponse.Output.newBuilder()
