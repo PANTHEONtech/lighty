@@ -8,6 +8,7 @@
 
 package io.lighty.applications.rcgnmi.module;
 
+import com.typesafe.config.Config;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
@@ -52,6 +53,8 @@ public final class RcGnmiAppModuleConfigUtils {
         LOG.debug("Loading lighty.io controller module configuration...");
         final ControllerConfiguration controllerConfig = ControllerConfigUtils
                 .getConfiguration(Files.newInputStream(path));
+        final Config akkaConfig = controllerConfig.getActorSystemConfig().getConfig().resolve();
+        controllerConfig.getActorSystemConfig().setConfig(akkaConfig);
         LOG.debug("Loading lighty.io RESTCONF module configuration...");
         final RestConfConfiguration restconfConfig = RestConfConfigUtils
                 .getRestConfConfiguration(Files.newInputStream(path));
