@@ -58,8 +58,7 @@ public class SessionManagerImpl implements SessionCloseDelegate, SessionManager 
                 try {
                     builder.sslContext(this.security.getSslContext());
                 } catch (final SSLException e) {
-                    LOG.error("Failed to create SSL Context!", e);
-                    throw new RuntimeException(e);
+                    throw new RuntimeException("Failed to create SSL Context!", e);
                 }
             }
             channel = builder.build();
