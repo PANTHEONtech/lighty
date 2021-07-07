@@ -177,12 +177,20 @@ public class InstanceIdentifierNodeStreamWriter implements NormalizedNodeStreamW
         LOG.warn(NOT_IMPLEMENTED);
     }
 
+    /*
+     *Not implemented
+     */
     @Override
     public void close() throws IOException {
+        LOG.warn(NOT_IMPLEMENTED);
     }
 
+    /*
+     *Not implemented
+     */
     @Override
     public void flush() throws IOException {
+        LOG.warn(NOT_IMPLEMENTED);
     }
 
     public String getUrl() {
