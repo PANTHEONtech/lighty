@@ -2,6 +2,7 @@ package io.lighty.modules.gnmi.test.gnmi;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -57,6 +58,8 @@ import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev1
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Host;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
+import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.Keystore;
+import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.KeystoreKey;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.GnmiNode;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.GnmiNodeBuilder;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.connection.parameters.ConnectionParametersBuilder;
@@ -64,6 +67,10 @@ import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.node
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.security.SecurityChoice;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.security.security.choice.InsecureDebugOnly;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.security.security.choice.InsecureDebugOnlyBuilder;
+import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.GnmiYangModels;
+import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.ModuleVersionType;
+import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.gnmi.yang.models.GnmiYangModel;
+import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.gnmi.yang.models.GnmiYangModelKey;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeBuilder;
@@ -79,6 +86,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.LeafSetEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafSetNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
+import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLeafNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLeafSetEntryNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLeafSetNodeBuilder;
 
@@ -94,12 +102,41 @@ public class GnmiWithoutRestconfTest {
     private static final String FIRST_VALUE = "first";
     private static final String SECOND_VALUE = "second";
     private static final String THIRD_VALUE = "third";
+    private static final String CERT_ID = "cert_id";
+    private static final String CA_VALUE = "CA_VALUE";
+    private static final String CLIENT_CERT = "CLIENT_CERT";
+    private static final String CLIENT_KEY = "CLIENT_KEY";
+    private static final String PASSPHRASE = "PASSPHRASE";
+    private static final String YANG_BODY = "YANG_BODY";
+    private static final String YANG_NAME = "YANG_NAME";
+    private static final String YANG_VERSION = "YANG_VERSION";
     private static final QNameModule INERFACE_QNAME_MODULE
             = QNameModule.create(URI.create("http://openconfig.net/yang/interfaces"), Revision.of("2019-11-19"));
     private static final QName INTERFACES_QNAME = QName.create(INERFACE_QNAME_MODULE, "interfaces");
     private static final QNameModule TEST_MODULE_QN_MODULE = QNameModule.create(URI.create("test:model"));
     private static final QName TEST_DATA_CONTAINER_QN = QName.create(TEST_MODULE_QN_MODULE, "test-data");
     private static final QName TEST_LEAF_LIST_QN = QName.create(TEST_DATA_CONTAINER_QN, "test-leaf-list");
+
+    private static final QNameModule CERT_STORAGE_QN_MODULE
+            = QNameModule.create(URI.create("urn:lighty:gnmi:certificate:storage"), Revision.of("2021-05-04"));
+    private static final QName ADD_KEYSTORE_RPC_QN = QName.create(CERT_STORAGE_QN_MODULE, "add-keystore-certificate");
+    private static final QName ADD_KEYSTORE_INPUT_QN = QName.create(ADD_KEYSTORE_RPC_QN, "input");
+    private static final QName KEYSTORE_ID_QN = QName.create(CERT_STORAGE_QN_MODULE, "keystore-id");
+    private static final QName CA_CERT_QN = QName.create(CERT_STORAGE_QN_MODULE, "ca-certificate");
+    private static final QName CLIENT_KEY_QN = QName.create(CERT_STORAGE_QN_MODULE, "client-key");
+    private static final QName PASSPHRASE_QN = QName.create(CERT_STORAGE_QN_MODULE, "passphrase");
+    private static final QName CLIENT_CERT_QN = QName.create(CERT_STORAGE_QN_MODULE, "client-cert");
+
+    private static final QNameModule YANG_STORAGE_QN_MODULE
+            = QNameModule.create(URI.create("urn:lighty:gnmi:yang:storage"), Revision.of("2021-03-31"));
+    private static final QName UPLOAD_YANG_RPC_QN = QName.create(YANG_STORAGE_QN_MODULE, "upload-yang-model");
+    private static final QName UPLOAD_YANG_INPUT_QN = QName.create(UPLOAD_YANG_RPC_QN, "input");
+    private static final QName GNMI_YANG_MODELS_QN = QName.create(YANG_STORAGE_QN_MODULE, "gnmi-yang-models");
+    private static final QName GNMI_YANG_MODEL_QN = QName.create(GNMI_YANG_MODELS_QN, "gnmi-yang-model");
+    private static final QName YANG_NAME_QN = QName.create(GNMI_YANG_MODEL_QN, "name");
+    private static final QName YANG_VERSION_QN = QName.create(GNMI_YANG_MODEL_QN, "version");
+    private static final QName YANG_BODY_QN = QName.create(GNMI_YANG_MODEL_QN, "body");
+
 
     private static LightyController lightyController;
     private static GnmiSouthboundModule gnmiSouthboundModule;
@@ -213,6 +250,91 @@ public class GnmiWithoutRestconfTest {
         //GET deleted data
         final Optional<NormalizedNode<?, ?>> removedLeafListNN = readDOMConfigData(domDataBroker, testLeafListYIID);
         assertFalse(removedLeafListNN.isPresent());
+    }
+
+    @Test
+    public void testRegisterCertificateToKeystore() throws ExecutionException, InterruptedException {
+        // Invoke RPC for registering certificates
+        final NormalizedNode<?, ?> certificateInput
+                = getCertificateInput(CERT_ID, CA_VALUE, CLIENT_CERT, CLIENT_KEY, PASSPHRASE);
+        lightyController.getServices().getDOMRpcService().invokeRpc(ADD_KEYSTORE_RPC_QN, certificateInput);
+
+        //Test if certificates was added
+        final DataBroker bindingDataBroker = lightyController.getServices().getBindingDataBroker();
+        final InstanceIdentifier<Keystore> cert_id = InstanceIdentifier
+                .builder(Keystore.class, new KeystoreKey(CERT_ID))
+                .build();
+        final Optional<Keystore> keystore = readOperData(bindingDataBroker, cert_id);
+        assertTrue(keystore.isPresent());
+        assertEquals(CA_VALUE, keystore.get().getCaCertificate());
+        assertEquals(CLIENT_CERT, keystore.get().getClientCert());
+        //Passphrase and client_key are encrypted before storing in data-store. So it shouldn't be same as provided
+        assertNotEquals(PASSPHRASE, keystore.get().getPassphrase());
+        assertNotEquals(CLIENT_KEY, keystore.get().getClientKey());
+    }
+
+    @Test
+    public void testUpdatingYangModels() throws ExecutionException, InterruptedException {
+        // Invoke RPC for uploading yang models
+        final NormalizedNode<?, ?> yangModelInput = getYangModelInput(YANG_NAME, YANG_BODY, YANG_VERSION);
+        lightyController.getServices().getDOMRpcService().invokeRpc(UPLOAD_YANG_RPC_QN, yangModelInput);
+
+        // Test if yang models was uploaded
+        final DataBroker bindingDataBroker = lightyController.getServices().getBindingDataBroker();
+        final InstanceIdentifier<GnmiYangModel> yangModelII = InstanceIdentifier.builder(GnmiYangModels.class)
+                .child(GnmiYangModel.class, new GnmiYangModelKey(YANG_NAME, new ModuleVersionType(YANG_VERSION)))
+                .build();
+        final Optional<GnmiYangModel> gnmiYangModel = readOperData(bindingDataBroker, yangModelII);
+        assertTrue(gnmiYangModel.isPresent());
+        assertEquals(YANG_BODY, gnmiYangModel.get().getBody());
+        assertEquals(YANG_NAME, gnmiYangModel.get().getName());
+        assertEquals(YANG_VERSION, gnmiYangModel.get().getVersion().getValue());
+    }
+
+    private NormalizedNode<?,?> getYangModelInput(final String yangName, final String yangBody,
+                                                  final String yangVersion) {
+        return ImmutableContainerNodeBuilder.create()
+                .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(UPLOAD_YANG_INPUT_QN))
+                .withChild(new ImmutableLeafNodeBuilder<String>()
+                        .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(YANG_NAME_QN))
+                        .withValue(yangName)
+                        .build())
+                .withChild(new ImmutableLeafNodeBuilder<String>()
+                        .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(YANG_BODY_QN))
+                        .withValue(yangBody)
+                        .build())
+                .withChild(new ImmutableLeafNodeBuilder<String>()
+                        .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(YANG_VERSION_QN))
+                        .withValue(yangVersion)
+                        .build())
+                .build();
+    }
+
+    private NormalizedNode<?,?> getCertificateInput(final String certId, final String ca, final String clientCert,
+                                                    final String certKey, final String passphrase) {
+       return ImmutableContainerNodeBuilder.create()
+                .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(ADD_KEYSTORE_INPUT_QN))
+                .withChild(new ImmutableLeafNodeBuilder<String>()
+                        .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(KEYSTORE_ID_QN))
+                        .withValue(certId)
+                        .build())
+                .withChild(new ImmutableLeafNodeBuilder<String>()
+                        .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(CA_CERT_QN))
+                        .withValue(ca)
+                        .build())
+                .withChild(new ImmutableLeafNodeBuilder<String>()
+                        .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(CLIENT_CERT_QN))
+                        .withValue(clientCert)
+                        .build())
+                .withChild(new ImmutableLeafNodeBuilder<String>()
+                        .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(CLIENT_KEY_QN))
+                        .withValue(certKey)
+                        .build())
+                .withChild(new ImmutableLeafNodeBuilder<String>()
+                        .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(PASSPHRASE_QN))
+                        .withValue(passphrase)
+                        .build())
+                .build();
     }
 
     private <T extends DataObject> Optional<T> readOperData(final DataBroker dataBroker,
