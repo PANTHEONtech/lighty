@@ -214,7 +214,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
         final String nodeIdFromTopology = new JSONObject(getGnmiTopologyUpdatedResponse.body())
             .getJSONArray("network-topology:topology").getJSONObject(0)
             .getJSONArray("node").getJSONObject(0).getString("node-id");
-        assertEquals(nodeIdFromTopology, GNMI_NODE_ID);
+        assertEquals(GNMI_NODE_ID, nodeIdFromTopology);
 
         //assert disconnected device
         assertTrue(disconnectDevice(GNMI_NODE_ID));
