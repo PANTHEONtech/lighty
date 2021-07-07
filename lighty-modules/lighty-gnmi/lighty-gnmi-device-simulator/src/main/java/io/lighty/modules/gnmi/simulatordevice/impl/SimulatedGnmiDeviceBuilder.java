@@ -11,6 +11,9 @@ package io.lighty.modules.gnmi.simulatordevice.impl;
 
 import com.google.gson.Gson;
 import gnmi.Gnmi;
+import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice.SimulatedGnmiDeviceConnectionInfoHolder;
+import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice.SimulatedGnmiDeviceGroupHolder;
+import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice.SimulatedGnmiDevicePathsHolder;
 import io.lighty.modules.gnmi.simulatordevice.utils.UsernamePasswordAuth;
 import io.netty.channel.EventLoopGroup;
 import java.util.EnumSet;
@@ -103,8 +106,12 @@ public class SimulatedGnmiDeviceBuilder {
 
 
     public SimulatedGnmiDevice build() {
-        return new SimulatedGnmiDevice(bossGroup, workerGroup, host, port, maxConnections, certificatePath, keyPath,
-                yangsPath, initialConfigDataPath, initialStateDataPath, usernamePasswordAuth, plaintext, gson,
-                supportedEncodings);
+        return new SimulatedGnmiDevice(
+            new SimulatedGnmiDeviceGroupHolder(bossGroup, workerGroup),
+            new SimulatedGnmiDevicePathsHolder(certificatePath, keyPath, yangsPath, initialConfigDataPath,
+                                               initialStateDataPath),
+            new SimulatedGnmiDeviceConnectionInfoHolder(host, port, maxConnections),
+            usernamePasswordAuth, plaintext, gson, supportedEncodings
+        );
     }
 }

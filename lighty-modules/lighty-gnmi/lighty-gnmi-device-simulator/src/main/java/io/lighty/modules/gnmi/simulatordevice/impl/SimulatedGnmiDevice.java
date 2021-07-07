@@ -73,23 +73,21 @@ public class SimulatedGnmiDevice {
     private YangDataService dataService;
 
 
-    public SimulatedGnmiDevice(final EventLoopGroup bossGroup, final EventLoopGroup workerGroup, final String host,
-                               final int port, final int maxConnections,
-                               final String certificatePath, final String keyPath, final String yangsPath,
-                               final String initialConfigDataPath, final String initialStateDataPath,
+    public SimulatedGnmiDevice(final SimulatedGnmiDeviceGroupHolder groups, final SimulatedGnmiDevicePathsHolder paths,
+                               final SimulatedGnmiDeviceConnectionInfoHolder connectionInfo,
                                final UsernamePasswordAuth usernamePasswordAuth, final boolean plaintext,
                                final Gson gson, final EnumSet<Gnmi.Encoding> supportedEncodings) {
-        this.bossGroup = Objects.requireNonNullElseGet(bossGroup, () -> new NioEventLoopGroup(1));
-        this.workerGroup = Objects.requireNonNullElseGet(workerGroup, NioEventLoopGroup::new);
-        this.yangsPath = Objects.requireNonNull(yangsPath, "Path to directory of yang files form which schema"
+        this.bossGroup = Objects.requireNonNullElseGet(groups.bossGroup, () -> new NioEventLoopGroup(1));
+        this.workerGroup = Objects.requireNonNullElseGet(groups.workerGroup, NioEventLoopGroup::new);
+        this.yangsPath = Objects.requireNonNull(paths.yangsPath, "Path to directory of yang files form which schema"
                 + " will be created is needed!");
-        this.host = host;
-        this.port = port;
-        this.maxConnections = maxConnections;
-        this.certificatePath = certificatePath;
-        this.keyPath = keyPath;
-        this.initialConfigDataPath = initialConfigDataPath;
-        this.initialStateDataPath = initialStateDataPath;
+        this.host = connectionInfo.host;
+        this.port = connectionInfo.port;
+        this.maxConnections = connectionInfo.maxConnections;
+        this.certificatePath = paths.certificatePath;
+        this.keyPath = paths.keyPath;
+        this.initialConfigDataPath = paths.initialConfigDataPath;
+        this.initialStateDataPath = paths.initialStateDataPath;
         this.usernamePasswordAuth = usernamePasswordAuth;
         this.plaintext = plaintext;
         this.gson = gson;
@@ -207,4 +205,51 @@ public class SimulatedGnmiDevice {
     public EffectiveSchemaContext getSchemaContext() {
         return schemaContext;
     }
+
+    protected static final class SimulatedGnmiDeviceGroupHolder {
+
+        private final EventLoopGroup bossGroup;
+        private final EventLoopGroup workerGroup;
+
+        public SimulatedGnmiDeviceGroupHolder(final EventLoopGroup bossGroup, final EventLoopGroup workerGroup) {
+            this.bossGroup = bossGroup;
+            this.workerGroup = workerGroup;
+        }
+
+    }
+
+    protected static final class SimulatedGnmiDeviceConnectionInfoHolder {
+
+        private final String host;
+        private final int port;
+        private final int maxConnections;
+
+        public SimulatedGnmiDeviceConnectionInfoHolder(final String host, final int port, final int maxConnections) {
+            this.host = host;
+            this.port = port;
+            this.maxConnections = maxConnections;
+        }
+
+    }
+
+    protected static final class SimulatedGnmiDevicePathsHolder {
+
+        private final String certificatePath;
+        private final String keyPath;
+        private final String yangsPath;
+        private final String initialConfigDataPath;
+        private final String initialStateDataPath;
+
+        public SimulatedGnmiDevicePathsHolder(final String certificatePath, final String keyPath,
+                                              final String yangsPath, final String initialConfigDataPath,
+                                              final String initialStateDataPath) {
+            this.yangsPath = yangsPath;
+            this.certificatePath = certificatePath;
+            this.keyPath = keyPath;
+            this.initialConfigDataPath = initialConfigDataPath;
+            this.initialStateDataPath = initialStateDataPath;
+        }
+
+    }
+
 }
