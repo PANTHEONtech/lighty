@@ -22,6 +22,7 @@ public class InstanceIdentifierNodeStreamWriter implements NormalizedNodeStreamW
 
     private final StringBuilder urlBuilder;
     private static final Logger LOG = LoggerFactory.getLogger(InstanceIdentifierNodeStreamWriter.class);
+    private static final String NOT_IMPLEMENTED = "Method not implemented";
 
     public InstanceIdentifierNodeStreamWriter(String prefix) {
         this.urlBuilder = new StringBuilder(prefix + ":");
@@ -32,7 +33,7 @@ public class InstanceIdentifierNodeStreamWriter implements NormalizedNodeStreamW
      */
     @Override
     public void startLeafNode(YangInstanceIdentifier.NodeIdentifier name) throws IOException {
-        LOG.warn("Method not implemented");
+        LOG.warn(NOT_IMPLEMENTED);
     }
 
     /*
@@ -40,7 +41,7 @@ public class InstanceIdentifierNodeStreamWriter implements NormalizedNodeStreamW
      */
     @Override
     public void startLeafSet(YangInstanceIdentifier.NodeIdentifier name, int childSizeHint) throws IOException {
-        LOG.warn("Method not implemented");
+        LOG.warn(NOT_IMPLEMENTED);
     }
 
     /*
@@ -48,7 +49,7 @@ public class InstanceIdentifierNodeStreamWriter implements NormalizedNodeStreamW
      */
     @Override
     public void startOrderedLeafSet(YangInstanceIdentifier.NodeIdentifier name, int childSizeHint) throws IOException {
-        LOG.warn("Method not implemented");
+        LOG.warn(NOT_IMPLEMENTED);
     }
 
     /*
@@ -56,7 +57,7 @@ public class InstanceIdentifierNodeStreamWriter implements NormalizedNodeStreamW
      */
     @Override
     public void startLeafSetEntryNode(YangInstanceIdentifier.NodeWithValue<?> name) throws IOException {
-        LOG.warn("Method not implemented");
+        LOG.warn(NOT_IMPLEMENTED);
     }
 
     @Override
@@ -69,7 +70,7 @@ public class InstanceIdentifierNodeStreamWriter implements NormalizedNodeStreamW
      */
     @Override
     public void startUnkeyedList(YangInstanceIdentifier.NodeIdentifier name, int childSizeHint) throws IOException {
-        LOG.warn("Method not implemented");
+        LOG.warn(NOT_IMPLEMENTED);
     }
 
     /*
@@ -77,7 +78,7 @@ public class InstanceIdentifierNodeStreamWriter implements NormalizedNodeStreamW
      */
     @Override
     public void startUnkeyedListItem(YangInstanceIdentifier.NodeIdentifier name, int childSizeHint) throws IOException {
-        LOG.warn("Method not implemented");
+        LOG.warn(NOT_IMPLEMENTED);
     }
 
     @Override
@@ -105,7 +106,7 @@ public class InstanceIdentifierNodeStreamWriter implements NormalizedNodeStreamW
      */
     @Override
     public void startOrderedMapNode(YangInstanceIdentifier.NodeIdentifier name, int childSizeHint) throws IOException {
-        LOG.warn("Method not implemented");
+        LOG.warn(NOT_IMPLEMENTED);
     }
 
     /*
@@ -113,7 +114,7 @@ public class InstanceIdentifierNodeStreamWriter implements NormalizedNodeStreamW
      */
     @Override
     public void startChoiceNode(YangInstanceIdentifier.NodeIdentifier name, int childSizeHint) throws IOException {
-        LOG.warn("Method not implemented");
+        LOG.warn(NOT_IMPLEMENTED);
     }
 
     /*
@@ -122,7 +123,7 @@ public class InstanceIdentifierNodeStreamWriter implements NormalizedNodeStreamW
     @Override
     public void startAugmentationNode(YangInstanceIdentifier.AugmentationIdentifier identifier)
         throws IOException {
-        LOG.warn("Method not implemented");
+        LOG.warn(NOT_IMPLEMENTED);
     }
 
     /*
@@ -148,7 +149,7 @@ public class InstanceIdentifierNodeStreamWriter implements NormalizedNodeStreamW
      */
     @Override
     public void domSourceValue(DOMSource value) throws IOException {
-        LOG.warn("Method not implemented");
+        LOG.warn(NOT_IMPLEMENTED);
     }
 
     /*
@@ -157,7 +158,7 @@ public class InstanceIdentifierNodeStreamWriter implements NormalizedNodeStreamW
     @Override
     public void startYangModeledAnyXmlNode(YangInstanceIdentifier.NodeIdentifier name, int childSizeHint)
         throws IOException {
-        LOG.warn("Method not implemented");
+        LOG.warn(NOT_IMPLEMENTED);
     }
 
     /*
@@ -165,7 +166,7 @@ public class InstanceIdentifierNodeStreamWriter implements NormalizedNodeStreamW
      */
     @Override
     public void endNode() throws IOException {
-        LOG.warn("Method not implemented");
+        LOG.warn(NOT_IMPLEMENTED);
     }
 
     /*
@@ -173,7 +174,7 @@ public class InstanceIdentifierNodeStreamWriter implements NormalizedNodeStreamW
      */
     @Override
     public void scalarValue(@NonNull Object value) throws IOException {
-        LOG.warn("Method not implemented");
+        LOG.warn(NOT_IMPLEMENTED);
     }
 
     @Override
