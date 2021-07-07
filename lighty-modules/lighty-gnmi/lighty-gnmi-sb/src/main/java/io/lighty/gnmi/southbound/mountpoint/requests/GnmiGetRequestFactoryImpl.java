@@ -55,6 +55,10 @@ public class GnmiGetRequestFactoryImpl implements GnmiGetRequestFactory {
                 requestBuilder.setPrefix(Gnmi.Path.newBuilder()
                     .setTarget(parameters.getPathTarget().get()));
             }
+            if (parameters.getModelDataList().isPresent()) {
+                requestBuilder.addAllUseModels(parameters.getModelDataList().get());
+            }
+
             final Gnmi.Path gnmiPath = instanceIdentifierToPathCodec.apply(path);
             return requestBuilder
                     .setEncoding(Encoding.JSON_IETF)

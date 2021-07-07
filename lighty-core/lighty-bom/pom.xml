@@ -142,7 +142,7 @@
             <dependency>
                 <groupId>io.lighty.models.gnmi</groupId>
                 <artifactId>lighty-gnmi-force-capabilities</artifactId>
-                <version>15.0.0-SNAPSHOT</version>
+                <version>14.0.1-SNAPSHOT</version>
             </dependency>
 
             <!-- Utility resources -->
