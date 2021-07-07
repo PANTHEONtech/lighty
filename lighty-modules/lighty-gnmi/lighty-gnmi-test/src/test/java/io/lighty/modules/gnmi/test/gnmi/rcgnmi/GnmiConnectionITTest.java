@@ -250,7 +250,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
                 assertEquals(HttpURLConnection.HTTP_OK, capabilitiesResponse.statusCode());
                 final JSONArray gnmiDeviceCapabilities = new JSONObject(capabilitiesResponse.body())
                     .getJSONObject("gnmi-topology:available-capabilities").getJSONArray("available-capability");
-                assertTrue(gnmiDeviceCapabilities.toString().equals(EXPECTED_CAPABILITY));
+                assertEquals(EXPECTED_CAPABILITY, gnmiDeviceCapabilities.toString());
             });
 
         //assert disconnected device
@@ -293,7 +293,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
                 final String gnmiDeviceFailureDetails =
                     new JSONObject(capabilitiesResponse.body()).getJSONObject(nodeState).getString(
                         "failure-details");
-                assertTrue(gnmiDeviceConnectStatus.equals("FAILURE"));
+                assertEquals("FAILURE", gnmiDeviceConnectStatus);
                 assertTrue(gnmiDeviceFailureDetails.contains(modelName));
             });
 
