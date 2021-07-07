@@ -23,8 +23,13 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 import org.opendaylight.mdsal.dom.spi.PingPongMergingDOMDataBroker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GnmiDataBroker implements PingPongMergingDOMDataBroker {
+
+    private static final Logger LOG = LoggerFactory.getLogger(GnmiDataBroker.class);
+    private static final String NOT_IMPLEMENTED = "Method not implemented";
 
     private final GnmiGet gnmiGet;
     private final GnmiSet gnmiSet;
@@ -54,7 +59,7 @@ public class GnmiDataBroker implements PingPongMergingDOMDataBroker {
 
             @Override
             public void close() {
-
+                LOG.warn(NOT_IMPLEMENTED);
             }
         };
     }
