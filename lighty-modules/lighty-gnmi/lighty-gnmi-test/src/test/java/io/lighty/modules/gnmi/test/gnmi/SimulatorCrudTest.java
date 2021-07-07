@@ -275,8 +275,8 @@ public class SimulatorCrudTest {
         LOG.info("Sending delete request:\n{}", setRequest);
         setResponse = sessionProvider.getGnmiSession().set(setRequest).get();
         LOG.info("Received delete response:\n{}", setResponse);
-        Assert.assertEquals(setResponse.getResponseCount(), 1);
-        Assert.assertEquals(setResponse.getResponse(0).getOp(), Gnmi.UpdateResult.Operation.DELETE);
+        Assert.assertEquals(1, setResponse.getResponseCount());
+        Assert.assertEquals(Gnmi.UpdateResult.Operation.DELETE, setResponse.getResponse(0).getOp());
 
         //Get interfaces, should throw exception
         LOG.info("Sending get request:\n{}", getRequest);
@@ -372,8 +372,8 @@ public class SimulatorCrudTest {
         LOG.info("Sending delete request:\n{}", setRequest);
         setResponse = sessionProvider.getGnmiSession().set(setRequest).get();
         LOG.info("Received delete response:\n{}", setResponse);
-        Assert.assertEquals(setResponse.getResponseCount(), 1);
-        Assert.assertEquals(setResponse.getResponse(0).getOp(), Gnmi.UpdateResult.Operation.DELETE);
+        Assert.assertEquals(1, setResponse.getResponseCount());
+        Assert.assertEquals(Gnmi.UpdateResult.Operation.DELETE, setResponse.getResponse(0).getOp());
 
         //Get interfaces, should throw exception
         LOG.info("Sending get request:\n{}", getRequest);
@@ -471,8 +471,8 @@ public class SimulatorCrudTest {
         LOG.info("Sending delete request:\n{}", setRequest);
         setResponse = sessionProvider.getGnmiSession().set(setRequest).get();
         LOG.info("Received delete response:\n{}", setResponse);
-        Assert.assertEquals(setResponse.getResponseCount(), 1);
-        Assert.assertEquals(setResponse.getResponse(0).getOp(), Gnmi.UpdateResult.Operation.DELETE);
+        Assert.assertEquals(1, setResponse.getResponseCount());
+        Assert.assertEquals(Gnmi.UpdateResult.Operation.DELETE, setResponse.getResponse(0).getOp());
 
         //Get interfaces, should throw exception
         LOG.info("Sending get request:\n{}", getRequest);
