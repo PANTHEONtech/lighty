@@ -62,6 +62,11 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>io.lighty.models.gnmi</groupId>
+            <artifactId>lighty-gnmi-force-capabilities</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>annotations</artifactId>
         </dependency>
