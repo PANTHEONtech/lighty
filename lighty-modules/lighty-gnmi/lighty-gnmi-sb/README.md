@@ -3,11 +3,12 @@ is south-bound lighty module which manages connection with gNMI targets. This mo
 CRUD operations on multiple gNMI targets. Which make it easy to read and manipulate with data in gNMI devices.
 
 Lighty gNMI augment ODL network-topology model with [gnmi-topology](../../../lighty-models/lighty-gnmi-models/lighty-gnmi-topology-model/src/main/yang/gnmi-topology.yang)
-model. This allows to configure and register a specific gNMI device as a NETCONF node.
+model. This allows to configure and register a specific gNMI device as a [NETCONF node](https://docs.opendaylight.org/projects/netconf/en/latest/user-guide.html#spawning-new-netconf-connectors).
 When device is successfully registered, Lighty gNMI creates specific [DataBroker](src/main/java/io/lighty/gnmi/southbound/mountpoint/broker/GnmiDataBroker.java)
 for each device. DataBroker provides functionality for writing and reading from gNMI device.
-GnmiDataBroker also contains schemaContext created from capabilities received from the device.
-All YANG models which gNMI device will use, should be provided in [GnmiConfiguration](src/main/java/io/lighty/gnmi/southbound/lightymodule/config/GnmiConfiguration.java)
+GnmiDataBroker also contains [schemaContext](https://javadocs.opendaylight.org/org.opendaylight.yangtools/master/org/opendaylight/yangtools/yang/model/api/SchemaContext.html)
+created from capabilities received from the device. All YANG models which gNMI device will use, should be provided in
+[GnmiConfiguration](src/main/java/io/lighty/gnmi/southbound/lightymodule/config/GnmiConfiguration.java)
 as path to folder with required YANG models.
 
 ## How to use it
@@ -64,10 +65,10 @@ As stated above, only JSON_IETF is supported for encoding structured data types.
  support of JSON_IETF encoding in [CapabilityResponse](https://github.com/openconfig/reference/blob/master/rpc/gnmi/gnmi-specification.md#322-the-capabilityresponse-message)
   supported_encodings field. If JSON_IETF is not present in supported_encoding field, connection of gNMI device is closed.
 
-##lighty.io gNMI south-bound with lighty.io Controller example
-This example will show how to programmatically connect lighty gNMI-sb with gNMI device. First we start lighty gGNMI,
-lighty controller and gNMI device. For device in this example will be used gNMI device simulator. Creating device 
-connection and All CRUD operation will be performed with writing data directly to MD-SAL data store
+## lighty.io gNMI south-bound with lighty.io Controller CRUD example
+This example will show how to programmatically connect lighty gNMI-sb with gNMI device. First we start lighty gNMI,
+lighty controller and gNMI device. For device in this example will be used [gNMI device simulator](../lighty-gnmi-device-simulator/README.md).
+Creating device connection and All CRUD operation will be performed with writing data directly to MD-SAL data store
 without using RESTCONF. Full example can be found inside test [GnmiWithoutRestconfTest](../lighty-gnmi-test/src/test/java/io/lighty/modules/gnmi/test/gnmi/GnmiWithoutRestconfTest.java).
 
 1. Initialize lighty Controller lighty gNMI.
@@ -112,7 +113,7 @@ without using RESTCONF. Full example can be found inside test [GnmiWithoutRestco
                 });
 ```
 
-4. Get DOM GnmiDataBroker registered for specific gNMI device. For each successfully registered gNMI device 
+4. Get DOM GnmiDataBroker registered for specific gNMI device. For each successfully registered gNMI device
    is created a new GnmiDataBroker with device specific schema context.
 ```java
         final DOMMountPointService domMountPointService = lightyController.getServices().getDOMMountPointService();
@@ -161,4 +162,62 @@ without using RESTCONF. Full example can be found inside test [GnmiWithoutRestco
         final DOMDataTreeWriteTransaction writeTransaction = domDataBroker.newWriteOnlyTransaction();
         writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, testLeafListYIID);
         writeTransaction.commit().get();
+```
+
+## lighty.io gNMI south-bound with lighty.io Controller register certificates
+This example will show how to programmatically add certificates for lighty gNMI. Full example can be found inside test
+[GnmiWithoutRestconfTest](../lighty-gnmi-test/src/test/java/io/lighty/modules/gnmi/test/gnmi/GnmiWithoutRestconfTest.java).
+
+1. Adding certificates to keystore doesn't require device. So is initialized only lighty Controller and lighty gNMI.
+    Certificates could be assigned to device when is creating device mountpoint in data store.
+```java
+        lightyController = new LightyControllerBuilder()
+                .from(ControllerConfigUtils.getConfiguration(Files.newInputStream(CONFIGURATION_PATH)))
+                .build();
+        lightyController.start().get();
+
+        gnmiSouthboundModule = new GnmiSouthboundModuleBuilder()
+                .withConfig(GnmiConfigUtils.getGnmiConfiguration(Files.newInputStream(CONFIGURATION_PATH)))
+                .withLightyServices(lightyController.getServices())
+                .withExecutorService(Executors.newCachedThreadPool())
+                .withEncryptionService(createEncryptionService())
+                .build();
+        gnmiSouthboundModule.start().get();
+```
+
+2. Invoke RPC for adding certificates to lighty gNMI. YANG RPC and certificates keystore is modeled by
+   [gnmi-certificate-storage.yang](../../../lighty-models/lighty-gnmi-models/lighty-gnmi-certificates-storage-model/src/main/yang/gnmi-certificate-storage.yang)
+```java
+        final NormalizedNode<?, ?> certificateInput
+                = getCertificateInput(CERT_ID, CA_VALUE, CLIENT_CERT, CLIENT_KEY, PASSPHRASE);
+        lightyController.getServices().getDOMRpcService().invokeRpc(ADD_KEYSTORE_RPC_QN, certificateInput);
+```
+
+## lighty.io gNMI south-bound with lighty.io Controller updating YANG models in runtime
+This example will show how to programmatically add YANG models to lighty gNMI. When device will require some yang models
+which are not included in provided [GnmiConfiguration](src/main/java/io/lighty/gnmi/southbound/lightymodule/config/GnmiConfiguration.java)
+, than it could be added by RPC in runtime. Full example can be found inside test
+[GnmiWithoutRestconfTest](../lighty-gnmi-test/src/test/java/io/lighty/modules/gnmi/test/gnmi/GnmiWithoutRestconfTest.java).
+
+1. Updating YANG models doesn't require started device. So is initialized only lighty Controller and lighty gNMI.
+```java
+        lightyController = new LightyControllerBuilder()
+                .from(ControllerConfigUtils.getConfiguration(Files.newInputStream(CONFIGURATION_PATH)))
+                .build();
+        lightyController.start().get();
+
+        gnmiSouthboundModule = new GnmiSouthboundModuleBuilder()
+                .withConfig(GnmiConfigUtils.getGnmiConfiguration(Files.newInputStream(CONFIGURATION_PATH)))
+                .withLightyServices(lightyController.getServices())
+                .withExecutorService(Executors.newCachedThreadPool())
+                .withEncryptionService(createEncryptionService())
+                .build();
+        gnmiSouthboundModule.start().get();
+```
+
+2. Invoke RPC for Updating YANG models to lighty gNMI. Yang storage and RPC for updating YANG models is modeled by
+   [gnmi-yang-storage.yang](../../../lighty-models/lighty-gnmi-models/lighty-gnmi-yang-storage-model/src/main/yang/gnmi-yang-storage.yang).
+```java
+        final NormalizedNode<?, ?> yangModelInput = getYangModelInput(YANG_NAME, YANG_BODY, YANG_VERSION);
+        lightyController.getServices().getDOMRpcService().invokeRpc(UPLOAD_YANG_RPC_QN, yangModelInput);
 ```
