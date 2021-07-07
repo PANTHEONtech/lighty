@@ -33,7 +33,7 @@ public abstract class AbstractWriteTx implements DOMDataTreeWriteTransaction {
     protected NodeId nodeId;
     private boolean finished;
 
-    public AbstractWriteTx(final NodeId nodeId) {
+    protected AbstractWriteTx(final NodeId nodeId) {
         this.nodeId = nodeId;
         putList = new ArrayList<>();
         mergeList = new ArrayList<>();
