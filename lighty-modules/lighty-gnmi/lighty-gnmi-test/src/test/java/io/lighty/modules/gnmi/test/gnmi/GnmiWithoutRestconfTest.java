@@ -251,7 +251,7 @@ public class GnmiWithoutRestconfTest {
         assertEquals(1, containerNode.getValue().toArray().length);
         assertTrue(containerNode.getValue().toArray()[0] instanceof LeafSetNode);
         LeafSetNode<?> leafSetNode = (LeafSetNode) containerNode.getValue().toArray()[0];
-        assertTrue(leafSetNode.getValue().size() == 3);
+        assertEquals(3, leafSetNode.getValue().size());
         List<String> list = Arrays.asList(FIRST_VALUE, SECOND_VALUE, THIRD_VALUE);
         for (Object object : leafSetNode.getValue()) {
             assertTrue(object instanceof LeafSetEntryNode);
