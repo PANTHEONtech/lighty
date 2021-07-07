@@ -312,7 +312,7 @@ public class GnmiWithoutRestconfTest {
 
     private NormalizedNode<?,?> getCertificateInput(final String certId, final String ca, final String clientCert,
                                                     final String certKey, final String passphrase) {
-       return ImmutableContainerNodeBuilder.create()
+        return ImmutableContainerNodeBuilder.create()
                 .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(ADD_KEYSTORE_INPUT_QN))
                 .withChild(new ImmutableLeafNodeBuilder<String>()
                         .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(KEYSTORE_ID_QN))
