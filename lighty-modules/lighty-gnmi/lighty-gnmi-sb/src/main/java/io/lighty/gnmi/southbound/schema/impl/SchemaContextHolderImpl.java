@@ -133,7 +133,7 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
     private Optional<GnmiYangModel> tryToReadModel(final GnmiDeviceCapability capability)
             throws InterruptedException, ExecutionException, TimeoutException {
         // Try to find the model stored with version
-        Optional<GnmiYangModel> readImport = Optional.empty();
+        Optional<GnmiYangModel> readImport;
         if (capability.getVersionString().isPresent()) {
             readImport = yangDataStoreService.readYangModel(capability.getName(),
                     capability.getVersionString().get())
