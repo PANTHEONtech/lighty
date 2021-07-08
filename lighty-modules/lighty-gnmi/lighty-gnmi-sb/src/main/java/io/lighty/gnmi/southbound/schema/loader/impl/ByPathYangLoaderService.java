@@ -16,6 +16,7 @@ import io.lighty.gnmi.southbound.schema.yangstore.service.YangDataStoreService;
 import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,6 +28,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.concepts.SemVer;
@@ -61,41 +63,42 @@ public class ByPathYangLoaderService implements YangLoaderService {
 
     @Override
     public List<GnmiDeviceCapability> load(final YangDataStoreService storeService) throws YangLoadException {
-        try {
+        try (Stream<Path> pathStream = Files.walk(yangsPath)) {
             final List<GnmiDeviceCapability> loadedModels = new ArrayList<>();
-            final List<File> filesInFolder = Files.walk(yangsPath)
+            final List<File> filesInFolder = pathStream
                     .filter(Files::isRegularFile)
                     .map(Path::toFile)
                     .filter(file -> file.getName().endsWith(YangConstants.RFC6020_YANG_FILE_EXTENSION))
                     .collect(Collectors.toList());
 
             for (File file : filesInFolder) {
-                final String modelBody = IOUtils.toString(
-                        Files.newInputStream(file.toPath()), Charset.defaultCharset());
-                final YangTextSchemaSource yangTextSchemaSource = YangTextSchemaSource
-                        .forFile(file);
-                final YangModelDependencyInfo yangModelDependencyInfo =
-                        YangModelDependencyInfo.forYangText(yangTextSchemaSource);
-                final String modelName = yangModelDependencyInfo.getName();
-                // If revision is present in fileName, prefer that
-                final Optional<Revision> modelRevision = yangTextSchemaSource.getIdentifier().getRevision()
-                        .or(yangModelDependencyInfo::getRevision);
-                final Optional<SemVer> modelSemVer = yangModelDependencyInfo.getSemanticVersion();
-                final String versionToStore;
-                if (modelSemVer.isPresent()) {
-                    versionToStore = modelSemVer.get().toString();
-                } else if (modelRevision.isPresent()) {
-                    versionToStore = modelRevision.get().toString();
-                } else {
-                    versionToStore = "";
+                try (InputStream bodyInputStream = Files.newInputStream(file.toPath())) {
+                    final String modelBody = IOUtils.toString(bodyInputStream, Charset.defaultCharset());
+                    final YangTextSchemaSource yangTextSchemaSource = YangTextSchemaSource
+                            .forFile(file);
+                    final YangModelDependencyInfo yangModelDependencyInfo =
+                            YangModelDependencyInfo.forYangText(yangTextSchemaSource);
+                    final String modelName = yangModelDependencyInfo.getName();
+                    // If revision is present in fileName, prefer that
+                    final Optional<Revision> modelRevision = yangTextSchemaSource.getIdentifier().getRevision()
+                            .or(yangModelDependencyInfo::getRevision);
+                    final Optional<SemVer> modelSemVer = yangModelDependencyInfo.getSemanticVersion();
+                    final String versionToStore;
+                    if (modelSemVer.isPresent()) {
+                        versionToStore = modelSemVer.get().toString();
+                    } else if (modelRevision.isPresent()) {
+                        versionToStore = modelRevision.get().toString();
+                    } else {
+                        versionToStore = "";
+                    }
+                    // This validates the yang
+                    this.yangParser.addSource(yangTextSchemaSource);
+                    storeService.addYangModel(modelName, versionToStore, modelBody)
+                            .get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+                    loadedModels.add(new GnmiDeviceCapability(modelName, modelSemVer.orElse(null),
+                            modelRevision.orElse(null)));
+                    LOG.info("Loaded yang model {} with version {}", modelName, versionToStore);
                 }
-                // This validates the yang
-                this.yangParser.addSource(yangTextSchemaSource);
-                storeService.addYangModel(modelName, versionToStore, modelBody)
-                        .get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-                loadedModels.add(new GnmiDeviceCapability(modelName, modelSemVer.orElse(null),
-                        modelRevision.orElse(null)));
-                LOG.info("Loaded yang model {} with version {}", modelName, versionToStore);
             }
             return loadedModels;
         } catch (IOException | YangParserException | ExecutionException | TimeoutException e) {

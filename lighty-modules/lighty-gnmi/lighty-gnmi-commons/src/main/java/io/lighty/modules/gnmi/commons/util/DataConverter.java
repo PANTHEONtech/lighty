@@ -152,20 +152,24 @@ public final class DataConverter {
         final JSONCodecFactory jsonCodecFactory =
                 JSONCodecFactorySupplier.RFC7951.createLazy(context);
 
-        final JsonParserStream jsonParser =
-                (parentNode != null) ? JsonParserStream.create(streamWriter, jsonCodecFactory, parentNode)
-                        : JsonParserStream.create(streamWriter, jsonCodecFactory);
-        final JsonReader reader = new JsonReader(new StringReader(inputJson));
-        jsonParser.parse(reader);
+        try (JsonParserStream jsonParser =
+                     (parentNode != null) ? JsonParserStream.create(streamWriter, jsonCodecFactory, parentNode)
+                             : JsonParserStream.create(streamWriter, jsonCodecFactory);) {
+
+            final JsonReader reader = new JsonReader(new StringReader(inputJson));
+            jsonParser.parse(reader);
         /*
          In a case when multiple values are present in result container that means we parsed multiple top elements,
           in that case return the container holding them.
          Otherwise (1 value) return that value only
          */
-        final ContainerNode resultContainer = (ContainerNode) resultBuilder.build();
-        final Collection<DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>> values =
-                resultContainer.getValue();
-        return values.size() == 1 ? values.iterator().next() : resultContainer;
+            final ContainerNode resultContainer = (ContainerNode) resultBuilder.build();
+            final Collection<DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>> values =
+                    resultContainer.getValue();
+            return values.size() == 1 ? values.iterator().next() : resultContainer;
+        } catch (IOException e) {
+            throw new RuntimeException("IO error while closing JsonParserStream", e);
+        }
     }
 
     private static SchemaPath getParentPath(final YangInstanceIdentifier identifier) {
