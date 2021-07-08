@@ -32,7 +32,7 @@ public class TestYangDataStoreService implements YangDataStoreService {
     }
 
     @Override
-    public ListenableFuture<? extends CommitInfo> addYangModel(final String modelName, final String modelVersion,
+    public ListenableFuture<CommitInfo> addYangModel(final String modelName, final String modelVersion,
                                                                final String modelBody) {
         yangs.put(ImmutablePair.of(modelName, modelVersion), modelBody);
         return Futures.immediateFuture(CommitInfo.empty());

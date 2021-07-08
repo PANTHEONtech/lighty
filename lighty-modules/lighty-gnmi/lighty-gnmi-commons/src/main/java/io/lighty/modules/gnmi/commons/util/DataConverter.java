@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
@@ -145,8 +146,9 @@ public final class DataConverter {
          Write result into container builder with identifier (netconf:base)data. Makes possible to write multiple
           top level elements.
          */
-        final DataContainerNodeBuilder resultBuilder = ImmutableContainerNodeBuilder.create()
-                .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifier.create(SchemaContext.NAME));
+        final DataContainerNodeBuilder<NodeIdentifier, ContainerNode> resultBuilder = ImmutableContainerNodeBuilder
+            .create()
+            .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifier.create(SchemaContext.NAME));
 
         final NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(resultBuilder);
         final JSONCodecFactory jsonCodecFactory =
@@ -237,8 +239,8 @@ public final class DataConverter {
      * @param element the element-name (with or without module prefix)
      * @return YANG module containing the specific element
      */
-    public static Optional<? extends Module> findModuleByElement(@NonNull final String element,
-                                                                 @NonNull final EffectiveModelContext context) {
+    public static Optional<Module> findModuleByElement(@NonNull final String element,
+                                                       @NonNull final EffectiveModelContext context) {
         final ElementNameWithModuleName elementWithModule = ElementNameWithModuleName.parseFromString(element);
         return context.getModules()
                 .stream()
@@ -255,19 +257,19 @@ public final class DataConverter {
                 }));
     }
 
-    public static Optional<? extends Module> findModuleByQName(@NonNull final QName element,
-                                                               @NonNull final EffectiveModelContext context) {
+    public static Optional<Module> findModuleByQName(@NonNull final QName element,
+                                                     @NonNull final EffectiveModelContext context) {
         return context.findModule(element.getModule());
     }
 
-    public static Optional<? extends DataSchemaNode> findAugmentationDataNode(
-            @NonNull final String element,
-            @NonNull final EffectiveModelContext context) {
+    public static Optional<DataSchemaNode> findAugmentationDataNode(@NonNull final String element,
+                                                                    @NonNull final EffectiveModelContext context) {
         return context.getModules()
                 .stream()
                 .flatMap(module -> module.getAugmentations().stream())
                 .flatMap(augmentation -> augmentation.getChildNodes().stream())
                 .filter(childNode -> childNode.getQName().getLocalName().equals(element))
+                .map(DataSchemaNode.class::cast)
                 .findFirst();
     }
 
