@@ -71,7 +71,7 @@ public final class XmlUtil {
         BUILDER_FACTORY = factory;
     }
 
-    private static final ThreadLocal<DocumentBuilder> DEFAULT_DOM_BUILDER = new ThreadLocal<>() {
+    public static final ThreadLocal<DocumentBuilder> DEFAULT_DOM_BUILDER = new ThreadLocal<>() {
         @Override
         protected DocumentBuilder initialValue() {
             try {
