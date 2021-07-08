@@ -137,11 +137,15 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
     }
 
     private boolean nodeParamsUpdated(final DataObjectModification<Node> rootNode) {
-        if (rootNode.getDataBefore() == null || rootNode.getDataAfter() == null) {
+        final Node nodeBefore = rootNode.getDataBefore();
+        final Node nodeAfter = rootNode.getDataAfter();
+        if (nodeBefore == null || nodeAfter == null) {
             return true;
         } else {
-            final GnmiNode before = requireNonNull(rootNode.getDataBefore().augmentation(GnmiNode.class));
-            final GnmiNode after = requireNonNull(rootNode.getDataAfter().augmentation(GnmiNode.class));
+            final GnmiNode before = requireNonNull(nodeBefore.augmentation(GnmiNode.class),
+                    "Node must be augmented by gNMI");
+            final GnmiNode after = requireNonNull(nodeAfter.augmentation(GnmiNode.class),
+                    "Node must be augmented by gNMI");
             return !before.getConnectionParameters().equals(after.getConnectionParameters())
                 || !before.getExtensionsParameters().equals(after.getExtensionsParameters());
         }
