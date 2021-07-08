@@ -108,7 +108,7 @@ public class YangInstanceNormToGnmiUpdateCodec implements
         }
         Set<Entry<String, JsonElement>> jsonEntry = jsonElement.getAsJsonObject().entrySet();
         if (jsonEntry.size() == 1) {
-            final JsonElement elem = jsonEntry.stream().findFirst().get().getValue();
+            final JsonElement elem = jsonEntry.iterator().next().getValue();
             return gson.toJson(elem);
         } else if (jsonEntry.size() == 0) {
             return json;
@@ -124,7 +124,7 @@ public class YangInstanceNormToGnmiUpdateCodec implements
         }
         final JsonObject jsonObject = jsonElement.getAsJsonObject();
         if (jsonObject.entrySet().size() == 1) {
-            final JsonElement value = jsonObject.entrySet().stream().findFirst().get().getValue();
+            final JsonElement value = jsonObject.entrySet().iterator().next().getValue();
             if (value.isJsonPrimitive()) {
                 return value.getAsJsonPrimitive();
             } else {
