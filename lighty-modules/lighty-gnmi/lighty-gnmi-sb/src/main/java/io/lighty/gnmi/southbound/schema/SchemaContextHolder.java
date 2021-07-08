@@ -11,11 +11,11 @@ package io.lighty.gnmi.southbound.schema;
 import io.lighty.gnmi.southbound.capabilities.GnmiDeviceCapability;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import java.util.List;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.EffectiveSchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 
 public interface SchemaContextHolder {
 
-    EffectiveSchemaContext getSchemaContext(List<GnmiDeviceCapability> capabilities) throws SchemaException;
+    EffectiveModelContext getSchemaContext(List<GnmiDeviceCapability> capabilities) throws SchemaException;
 
 }

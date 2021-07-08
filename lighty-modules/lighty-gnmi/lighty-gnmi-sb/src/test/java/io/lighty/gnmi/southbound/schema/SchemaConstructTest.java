@@ -29,8 +29,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.gnmi.yang.models.GnmiYangModel;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.EffectiveSchemaContext;
 
 public class SchemaConstructTest {
 
@@ -96,7 +96,7 @@ public class SchemaConstructTest {
     @Test
     public void schemaConstructSemVerTest() throws SchemaException {
         final SchemaContextHolder schemaContextHolder = new SchemaContextHolderImpl(dataStoreService, null);
-        final EffectiveSchemaContext schemaContext = schemaContextHolder.getSchemaContext(completeCapabilities);
+        final EffectiveModelContext schemaContext = schemaContextHolder.getSchemaContext(completeCapabilities);
         // Check that every module in requested capabilities is contained in resulting schema
         assertSchemaContainsModels(schemaContext, completeCapabilities);
     }
@@ -117,7 +117,7 @@ public class SchemaConstructTest {
         Assertions.assertEquals(completeCapabilities.size() - CAPABILITIES_TO_MISS.size(),
                 requestedCapabilities.size());
 
-        final EffectiveSchemaContext schemaContext = schemaContextHolder.getSchemaContext(
+        final EffectiveModelContext schemaContext = schemaContextHolder.getSchemaContext(
                 requestedCapabilities);
         // Check that every module in full set of capabilities are contained in schema
         assertSchemaContainsModels(schemaContext, completeCapabilities);
@@ -254,13 +254,13 @@ public class SchemaConstructTest {
 
     }
 
-    private static void assertSchemaContainsModels(final EffectiveSchemaContext schema,
+    private static void assertSchemaContainsModels(final EffectiveModelContext schema,
                                                    final List<GnmiDeviceCapability> capsToCheck) {
         for (GnmiDeviceCapability capability : capsToCheck) {
             final Optional<Module> match =
-                    schema.getModules().stream()
-                            .filter(module -> module.getName().equals(capability.getName()))
-                            .findAny();
+                (Optional<Module>) schema.getModules().stream()
+                        .filter(module -> module.getName().equals(capability.getName()))
+                        .findAny();
             Assertions.assertTrue(match.isPresent());
         }
     }

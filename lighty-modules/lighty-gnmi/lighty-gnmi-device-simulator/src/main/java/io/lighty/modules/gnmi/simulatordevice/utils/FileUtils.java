@@ -15,13 +15,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.opendaylight.yangtools.yang.parser.rfc7950.reactor.RFC7950Reactors;
 import org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangStatementStreamSource;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.EffectiveSchemaContext;
 
 public final class FileUtils {
 
@@ -33,7 +33,7 @@ public final class FileUtils {
         return FileUtils.class.getClassLoader().getResourceAsStream(resource);
     }
 
-    public static EffectiveSchemaContext buildSchemaFromYangsDir(final String path) {
+    public static EffectiveModelContext buildSchemaFromYangsDir(final String path) {
         final CrossSourceStatementReactor.BuildAction buildAction = RFC7950Reactors.defaultReactorBuilder()
                 .build().newBuild();
         try {

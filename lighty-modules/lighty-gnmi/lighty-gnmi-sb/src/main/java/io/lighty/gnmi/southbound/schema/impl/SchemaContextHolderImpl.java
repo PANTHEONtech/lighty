@@ -29,6 +29,7 @@ import javax.annotation.Nullable;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.gnmi.yang.models.GnmiYangModel;
 import org.opendaylight.yangtools.concepts.SemVer;
 import org.opendaylight.yangtools.yang.common.Revision;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.ModuleImport;
 import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
 import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
@@ -38,7 +39,6 @@ import org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangModelDependencyIn
 import org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangStatementStreamSource;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.EffectiveSchemaContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +47,7 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
     private static final Logger LOG = LoggerFactory.getLogger(SchemaContextHolderImpl.class);
 
     private final YangDataStoreService yangDataStoreService;
-    private final Map<CapabilitiesKey, EffectiveSchemaContext> contextCache;
+    private final Map<CapabilitiesKey, EffectiveModelContext> contextCache;
     private final CrossSourceStatementReactor yangReactor;
 
     public SchemaContextHolderImpl(final YangDataStoreService yangDataStoreService,
@@ -59,12 +59,12 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
 
     /**
      * Based on imports/includes statements of yang models reported by gNMI CapabilityResponse, tries to deduce and
-     * read all necessary models so that EffectiveSchemaContext creation does not fail on missing module dependencies.
+     * read all necessary models so that EffectiveModelContext creation does not fail on missing module dependencies.
      * This step is necessary for cases when device reports non complete set of models, for example, module
      * in Capability response imports/includes another module which is not present in Capability response.
      *
      * @param baseCaps capabilities on which to perform the resolution
-     * @return set containing all models for building EffectiveSchemaContext
+     * @return set containing all models for building EffectiveModelContext
      */
     private Set<GnmiYangModel> prepareModelsForSchema(
             final List<GnmiDeviceCapability> baseCaps) throws SchemaException {
@@ -173,7 +173,7 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
     }
 
     @Override
-    public EffectiveSchemaContext getSchemaContext(final List<GnmiDeviceCapability> capabilities)
+    public EffectiveModelContext getSchemaContext(final List<GnmiDeviceCapability> capabilities)
             throws SchemaException {
         final CapabilitiesKey key = new CapabilitiesKey(capabilities);
         if (contextCache.containsKey(key)) {
@@ -196,7 +196,7 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
         }
         if (success) {
             try {
-                final EffectiveSchemaContext context = buildAction.buildEffective();
+                final EffectiveModelContext context = buildAction.buildEffective();
                 LOG.debug("Schema context created {}", context.getModules());
                 contextCache.put(key, context);
                 return context;

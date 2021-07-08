@@ -17,7 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.GnmiNode;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.connection.parameters.ExtensionsParameters;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.EffectiveSchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 /**
  * Holds gNMI session of one connected gNMI device.
@@ -28,7 +28,7 @@ public class DeviceConnection implements GnmiSessionProvider, SchemaContextProvi
     private final GnmiConnectionStatusListener connectionStatusListener;
     private final Node node;
     private final ConfigurableParameters configurableParameters;
-    private EffectiveSchemaContext schemaContext;
+    private EffectiveModelContext schemaContext;
 
     public DeviceConnection(final SessionProvider sessionProvider,
                             final GnmiConnectionStatusListener connectionStatusListener, final Node node) {
@@ -49,11 +49,11 @@ public class DeviceConnection implements GnmiSessionProvider, SchemaContextProvi
         return configurableParameters;
     }
 
-    public EffectiveSchemaContext getSchemaContext() {
+    public EffectiveModelContext getSchemaContext() {
         return schemaContext;
     }
 
-    public void setSchemaContext(final EffectiveSchemaContext schemaContext) {
+    public void setSchemaContext(final EffectiveModelContext schemaContext) {
         this.schemaContext = schemaContext;
     }
 
