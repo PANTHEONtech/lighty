@@ -165,7 +165,7 @@ public final class DataConverter {
         final ContainerNode resultContainer = (ContainerNode) resultBuilder.build();
         final Collection<DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>> values =
                 resultContainer.getValue();
-        return values.size() == 1 ? values.stream().findFirst().get() : resultContainer;
+        return values.size() == 1 ? values.iterator().next() : resultContainer;
     }
 
     private static SchemaPath getParentPath(final YangInstanceIdentifier identifier) {
