@@ -168,8 +168,8 @@ public class GnmiWithoutRestconfTest {
     @AfterAll
     public static void tearDown() throws Exception {
         gnmiDevice.stop();
-        gnmiSouthboundModule.shutdown();
-        lightyController.shutdown();
+        gnmiSouthboundModule.shutdown().get();
+        lightyController.shutdown().get();
     }
 
     @Test
@@ -250,6 +250,10 @@ public class GnmiWithoutRestconfTest {
         //GET deleted data
         final Optional<NormalizedNode<?, ?>> removedLeafListNN = readDOMConfigData(domDataBroker, testLeafListYIID);
         assertFalse(removedLeafListNN.isPresent());
+
+        //Remove device after test
+        deleteConfigData(bindingDataBroker, nodeInstanceIdentifier);
+        deleteOperData(bindingDataBroker, nodeInstanceIdentifier);
     }
 
     @Test
@@ -261,16 +265,19 @@ public class GnmiWithoutRestconfTest {
 
         //Test if certificates was added
         final DataBroker bindingDataBroker = lightyController.getServices().getBindingDataBroker();
-        final InstanceIdentifier<Keystore> cert_id = InstanceIdentifier
+        final InstanceIdentifier<Keystore> keystoreII = InstanceIdentifier
                 .builder(Keystore.class, new KeystoreKey(CERT_ID))
                 .build();
-        final Optional<Keystore> keystore = readOperData(bindingDataBroker, cert_id);
+        final Optional<Keystore> keystore = readOperData(bindingDataBroker, keystoreII);
         assertTrue(keystore.isPresent());
         assertEquals(CA_VALUE, keystore.get().getCaCertificate());
         assertEquals(CLIENT_CERT, keystore.get().getClientCert());
         //Passphrase and client_key are encrypted before storing in data-store. So it shouldn't be same as provided
         assertNotEquals(PASSPHRASE, keystore.get().getPassphrase());
         assertNotEquals(CLIENT_KEY, keystore.get().getClientKey());
+
+        //Remove created keystore after test
+        deleteOperData(bindingDataBroker, keystoreII);
     }
 
     @Test
@@ -289,6 +296,9 @@ public class GnmiWithoutRestconfTest {
         assertEquals(YANG_BODY, gnmiYangModel.get().getBody());
         assertEquals(YANG_NAME, gnmiYangModel.get().getName());
         assertEquals(YANG_VERSION, gnmiYangModel.get().getVersion().getValue());
+
+        //Remove created YANG model after test
+        deleteOperData(bindingDataBroker, yangModelII);
     }
 
     private NormalizedNode<?,?> getYangModelInput(final String yangName, final String yangBody,
@@ -343,6 +353,20 @@ public class GnmiWithoutRestconfTest {
         try (ReadTransaction readTransaction = dataBroker.newReadOnlyTransaction();) {
             return readTransaction.read(LogicalDatastoreType.OPERATIONAL, path).get();
         }
+    }
+
+    private void deleteOperData(final DataBroker dataBroker, final InstanceIdentifier<?> path)
+            throws ExecutionException, InterruptedException {
+        final WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+        writeTransaction.delete(LogicalDatastoreType.OPERATIONAL, path);
+        writeTransaction.commit().get();
+    }
+
+    private void deleteConfigData(final DataBroker dataBroker, final InstanceIdentifier<?> path)
+            throws ExecutionException, InterruptedException {
+        final WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+        writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, path);
+        writeTransaction.commit().get();
     }
 
     private Optional<NormalizedNode<?, ?>> readDOMConfigData(final DOMDataBroker domDataBroker,
