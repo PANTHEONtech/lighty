@@ -23,7 +23,7 @@ public class WriteOnlyTx extends AbstractWriteTx {
 
 
     @Override
-    public synchronized FluentFuture<? extends CommitInfo> performCommit() {
+    public synchronized FluentFuture<CommitInfo> performCommit() {
         return FluentFuture.from(setProvider.set(putList, mergeList, deleteList));
     }
 }

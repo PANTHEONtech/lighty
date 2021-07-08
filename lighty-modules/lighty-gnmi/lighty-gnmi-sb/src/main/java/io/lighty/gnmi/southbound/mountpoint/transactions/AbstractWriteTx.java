@@ -42,7 +42,7 @@ public abstract class AbstractWriteTx implements DOMDataTreeWriteTransaction {
     }
 
     @Override
-    public final synchronized FluentFuture<? extends CommitInfo> commit() {
+    public final synchronized FluentFuture<CommitInfo> commit() {
         checkNotFinished();
         finished = true;
         return performCommit();
@@ -52,7 +52,7 @@ public abstract class AbstractWriteTx implements DOMDataTreeWriteTransaction {
         return finished;
     }
 
-    protected abstract FluentFuture<? extends CommitInfo>  performCommit();
+    protected abstract FluentFuture<CommitInfo> performCommit();
 
     @Override
     public synchronized boolean cancel() {
