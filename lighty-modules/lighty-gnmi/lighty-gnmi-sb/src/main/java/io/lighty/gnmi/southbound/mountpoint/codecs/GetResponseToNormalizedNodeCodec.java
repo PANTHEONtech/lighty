@@ -125,7 +125,6 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
                 } else {
                     return Optional.of(codecResult);
                 }
-                return Optional.empty();
             }
         }
         return Optional.empty();
