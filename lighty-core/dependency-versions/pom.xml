@@ -131,7 +131,6 @@
                 <groupId>com.beust</groupId>
                 <artifactId>jcommander</artifactId>
                 <version>1.78</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>io.kubernetes</groupId>
