@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import gnmi.Gnmi;
+import gnmi.Gnmi.Update;
 import io.lighty.gnmi.southbound.schema.provider.SchemaContextProvider;
 import io.lighty.modules.gnmi.commons.util.DataConverter;
 import io.lighty.modules.gnmi.commons.util.JsonUtils;
@@ -54,62 +55,8 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
             throws GnmiCodecException {
         for (Gnmi.Notification notification : response.getNotificationList()) {
             for (Gnmi.Update update : notification.getUpdateList()) {
-                final NormalizedNode<?, ?> codecResult;
                 // Json to NormalizedNode
-                switch (update.getVal().getValueCase()) {
-                    case JSON_VAL:
-                    case JSON_IETF_VAL:
-                        String responseJson =
-                                update.getVal().getValueCase() == Gnmi.TypedValue.ValueCase.JSON_VAL
-                                        ? update.getVal().getJsonVal().toStringUtf8()
-                                        : update.getVal().getJsonIetfVal().toStringUtf8();
-
-                        /*
-                         Check if response is rooted deeper than requested, if yes, wrap it so it is rooted at
-                          the same level as identifier last path arg points to.
-                         */
-                        if (!identifier.isEmpty() && isResponseJsonDeeperThanRequested(identifier, responseJson)) {
-                            responseJson = isMapEntryPath(identifier)
-                                    ? JsonUtils.wrapJsonWithArray(responseJson,
-                                    identifier.getLastPathArgument().getNodeType().getLocalName(), gson)
-                                    : JsonUtils.wrapJsonWithObject(responseJson,
-                                    identifier.getLastPathArgument().getNodeType().getLocalName(), gson);
-                        }
-                        codecResult = resolveJsonResponse(identifier, responseJson);
-                        break;
-                    /*
-                     In the case of primitive values, only the value is present in response.
-                     Since json parser works only with object, always wrap the value (wrapPrimitive()).
-                     */
-                    case STRING_VAL:
-                        codecResult = resolveJsonResponse(identifier, JsonUtils.wrapPrimitive(
-                                identifier.getLastPathArgument().getNodeType().getLocalName(),
-                                update.getVal().getStringVal(), gson));
-                        break;
-                    case UINT_VAL:
-                        codecResult = resolveJsonResponse(identifier, JsonUtils.wrapPrimitive(
-                                identifier.getLastPathArgument().getNodeType().getLocalName(),
-                                update.getVal().getUintVal(), gson));
-                        break;
-                    case INT_VAL:
-                        codecResult = resolveJsonResponse(identifier, JsonUtils.wrapPrimitive(
-                                identifier.getLastPathArgument().getNodeType().getLocalName(),
-                                update.getVal().getIntVal(), gson));
-                        break;
-                    case FLOAT_VAL:
-                        codecResult = resolveJsonResponse(identifier, JsonUtils.wrapPrimitive(
-                                identifier.getLastPathArgument().getNodeType().getLocalName(),
-                                update.getVal().getFloatVal(), gson));
-                        break;
-                    case BOOL_VAL:
-                        codecResult = resolveJsonResponse(identifier, JsonUtils.wrapPrimitive(
-                                identifier.getLastPathArgument().getNodeType().getLocalName(),
-                                update.getVal().getBoolVal(), gson));
-                        break;
-                    default:
-                        throw new GnmiCodecException(String.format("Unsupported response type %s of response %s",
-                                update.getVal().getValueCase(), update));
-                }
+                final NormalizedNode<?, ?> codecResult = updateToNormalizedNode(update, identifier);
                 /*
                 If the serialized normalized node is of type AugmentationNode we need to return the child
                  because the AugmentationNode has no QName so later post processing (for example restconf)
@@ -129,6 +76,57 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
             }
         }
         return Optional.empty();
+    }
+
+    private NormalizedNode<?, ?> updateToNormalizedNode(final Update update, final YangInstanceIdentifier identifier)
+        throws GnmiCodecException {
+        switch (update.getVal().getValueCase()) {
+            case JSON_VAL:
+            case JSON_IETF_VAL:
+                String responseJson = update.getVal().getValueCase() == Gnmi.TypedValue.ValueCase.JSON_VAL
+                    ? update.getVal().getJsonVal().toStringUtf8()
+                    : update.getVal().getJsonIetfVal().toStringUtf8();
+
+                /*
+                 Check if response is rooted deeper than requested, if yes, wrap it so it is rooted at
+                 the same level as identifier last path arg points to.
+                */
+                if (!identifier.isEmpty() && isResponseJsonDeeperThanRequested(identifier, responseJson)) {
+                    responseJson = isMapEntryPath(identifier)
+                        ? JsonUtils.wrapJsonWithArray(responseJson,
+                        identifier.getLastPathArgument().getNodeType().getLocalName(), gson)
+                        : JsonUtils.wrapJsonWithObject(responseJson,
+                            identifier.getLastPathArgument().getNodeType().getLocalName(), gson);
+                }
+                return resolveJsonResponse(identifier, responseJson);
+                /*
+                 In the case of primitive values, only the value is present in response.
+                 Since json parser works only with object, always wrap the value (wrapPrimitive()).
+                */
+            case STRING_VAL:
+                return resolveJsonResponse(identifier, JsonUtils.wrapPrimitive(
+                    identifier.getLastPathArgument().getNodeType().getLocalName(),
+                    update.getVal().getStringVal(), gson));
+            case UINT_VAL:
+                return resolveJsonResponse(identifier, JsonUtils.wrapPrimitive(
+                    identifier.getLastPathArgument().getNodeType().getLocalName(),
+                    update.getVal().getUintVal(), gson));
+            case INT_VAL:
+                return resolveJsonResponse(identifier, JsonUtils.wrapPrimitive(
+                    identifier.getLastPathArgument().getNodeType().getLocalName(),
+                    update.getVal().getIntVal(), gson));
+            case FLOAT_VAL:
+                return resolveJsonResponse(identifier, JsonUtils.wrapPrimitive(
+                    identifier.getLastPathArgument().getNodeType().getLocalName(),
+                    update.getVal().getFloatVal(), gson));
+            case BOOL_VAL:
+                return resolveJsonResponse(identifier, JsonUtils.wrapPrimitive(
+                    identifier.getLastPathArgument().getNodeType().getLocalName(),
+                    update.getVal().getBoolVal(), gson));
+            default:
+                throw new GnmiCodecException(String.format("Unsupported response type %s of response %s",
+                    update.getVal().getValueCase(), update));
+        }
     }
 
     private static boolean isResponseJsonDeeperThanRequested(final YangInstanceIdentifier identifier,
