@@ -261,7 +261,7 @@ public class GnmiWithoutRestconfTest {
         // Invoke RPC for registering certificates
         final NormalizedNode<?, ?> certificateInput
                 = getCertificateInput(CERT_ID, CA_VALUE, CLIENT_CERT, CLIENT_KEY, PASSPHRASE);
-        lightyController.getServices().getDOMRpcService().invokeRpc(ADD_KEYSTORE_RPC_QN, certificateInput);
+        lightyController.getServices().getDOMRpcService().invokeRpc(ADD_KEYSTORE_RPC_QN, certificateInput).get();
 
         //Test if certificates was added
         final DataBroker bindingDataBroker = lightyController.getServices().getBindingDataBroker();
@@ -284,7 +284,7 @@ public class GnmiWithoutRestconfTest {
     public void testUpdatingYangModels() throws ExecutionException, InterruptedException {
         // Invoke RPC for uploading yang models
         final NormalizedNode<?, ?> yangModelInput = getYangModelInput(YANG_NAME, YANG_BODY, YANG_VERSION);
-        lightyController.getServices().getDOMRpcService().invokeRpc(UPLOAD_YANG_RPC_QN, yangModelInput);
+        lightyController.getServices().getDOMRpcService().invokeRpc(UPLOAD_YANG_RPC_QN, yangModelInput).get();
 
         // Test if yang models was uploaded
         final DataBroker bindingDataBroker = lightyController.getServices().getBindingDataBroker();
