@@ -87,7 +87,10 @@ without using RESTCONF. Full example can be found inside test [GnmiWithoutRestco
         gnmiSouthboundModule.start().get();
 ```
 
-2. Connect gNMI device
+2. Connect gNMI device. More about configuring security or extension parameter on gNMI device can be found in
+[RCgNMI Documentation](https://github.com/PANTHEONtech/lighty/blob/master/lighty-applications/lighty-rcgnmi-app-aggregator/README.md#how-to-use-rcgnmi-example-app)
+and in [gnmi-topology.yang](https://github.com/PANTHEONtech/lighty/blob/master/lighty-models/lighty-gnmi-models/lighty-gnmi-topology-model/src/main/yang/gnmi-topology.yang)
+YANG model.
 ```java
         final Node testGnmiNode = createNode(GNMI_NODE_ID, DEVICE_ADDRESS, DEVICE_PORT, getInsecureSecurityChoice());
         final WriteTransaction writeTransaction = bindingDataBroker.newWriteOnlyTransaction();
@@ -168,8 +171,9 @@ without using RESTCONF. Full example can be found inside test [GnmiWithoutRestco
 This example will show how to programmatically add certificates for lighty gNMI. Full example can be found inside test
 [GnmiWithoutRestconfTest](../lighty-gnmi-test/src/test/java/io/lighty/modules/gnmi/test/gnmi/GnmiWithoutRestconfTest.java).
 
-1. Adding certificates to keystore doesn't require device. So is initialized only lighty Controller and lighty gNMI.
-    Certificates could be assigned to device when is creating device mountpoint in data store.
+1. Adding certificates to keystore doesn't require device. So this example use only lighty Controller and lighty gNMI modules.
+    Certificates could be assigned to device, with [keystore-id](https://github.com/PANTHEONtech/lighty/blob/master/lighty-models/lighty-gnmi-models/lighty-gnmi-topology-model/src/main/yang/gnmi-topology.yang#L45)
+    parameter when is creating device mountpoint.
 ```java
         lightyController = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getConfiguration(Files.newInputStream(CONFIGURATION_PATH)))
@@ -199,7 +203,7 @@ which are not included in provided [GnmiConfiguration](src/main/java/io/lighty/g
 , than it could be added by RPC in runtime. Full example can be found inside test
 [GnmiWithoutRestconfTest](../lighty-gnmi-test/src/test/java/io/lighty/modules/gnmi/test/gnmi/GnmiWithoutRestconfTest.java).
 
-1. Updating YANG models doesn't require started device. So is initialized only lighty Controller and lighty gNMI.
+1. Updating YANG models doesn't require started device. So this example use only lighty Controller and lighty gNMI modules.
 ```java
         lightyController = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getConfiguration(Files.newInputStream(CONFIGURATION_PATH)))
