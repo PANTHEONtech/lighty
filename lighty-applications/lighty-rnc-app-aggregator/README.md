@@ -122,7 +122,9 @@ To build and start the RNC lighty.io application using docker in the local envir
 
 5. Test the RNC lighty.io application. Default RESTCONF port is `8888`
 
-
+## Example Postman collection
+For convenience, we provide [postman-collection](lighty-rnc-app/Lighty-RNC.postman_collection.json) which contains
+ example http requests (RESTCONF and Akka) for communicating with Lighty RNC application.
 ## Deployment via helm chart
 ### Prerequisites
 * kubernetes cluster 1.15.11 (minikube / microk8s /..)
