@@ -3,13 +3,14 @@ is south-bound lighty module which manages connection with gNMI targets. This mo
 CRUD operations on multiple gNMI targets. Which make it easy to read and manipulate with data in gNMI devices.
 
 Lighty gNMI augment ODL network-topology model with [gnmi-topology](../../../lighty-models/lighty-gnmi-models/lighty-gnmi-topology-model/src/main/yang/gnmi-topology.yang)
-model. This allows to configure and register a specific gNMI device as a [NETCONF node](https://docs.opendaylight.org/projects/netconf/en/latest/user-guide.html#spawning-new-netconf-connectors).
-When device is successfully registered, Lighty gNMI creates specific [DataBroker](src/main/java/io/lighty/gnmi/southbound/mountpoint/broker/GnmiDataBroker.java)
-for each device. DataBroker provides functionality for writing and reading from gNMI device.
-GnmiDataBroker also contains [schemaContext](https://javadocs.opendaylight.org/org.opendaylight.yangtools/master/org/opendaylight/yangtools/yang/model/api/SchemaContext.html)
-created from capabilities received from the device. All YANG models which gNMI device will use, should be provided in
-[GnmiConfiguration](src/main/java/io/lighty/gnmi/southbound/lightymodule/config/GnmiConfiguration.java)
-as path to folder with required YANG models.
+model. This allows us to connect the gNMI device by adding new node with desired [parameters](https://github.com/PANTHEONtech/lighty/blob/master/lighty-models/lighty-gnmi-models/lighty-gnmi-topology-model/src/main/yang/gnmi-topology.yang#L67) to gnmi-topology
+in datastore (as ODL NETCONF SBP does). Once new node is added, gNMI-south-bound established connection to the gNMI
+device and creates mount point containing [GnmiDataBroker](src/main/java/io/lighty/gnmi/southbound/mountpoint/broker/GnmiDataBroker.java)
+which is used for communicating with gNMI device via transactions. GnmiDataBroker also contains [schemaContext](https://javadocs.opendaylight.org/org.opendaylight.yangtools/master/org/opendaylight/yangtools/yang/model/api/SchemaContext.html)
+created from capabilities received from the device. All YANG models which gNMI device will use, should be provided
+in [GnmiConfiguration](src/main/java/io/lighty/gnmi/southbound/lightymodule/config/GnmiConfiguration.java)
+as path to folder with required YANG models or added via [upload-yang-model](https://github.com/PANTHEONtech/lighty/blob/master/lighty-models/lighty-gnmi-models/lighty-gnmi-yang-storage-model/src/main/yang/gnmi-yang-storage.yang#L57)
+RPC.
 
 ## How to use it
 1. Add dependency to your pom.xml file.
