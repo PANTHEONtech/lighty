@@ -2,6 +2,7 @@ package io.lighty.examples.controllers.gnmi;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -73,9 +74,18 @@ public class GnmiRestconfExampleTest {
     }
 
     @AfterAll
-    public static void teardown() throws IOException, InterruptedException {
-        sendDeleteRequest(MOUNTPOINT_PATH);
-        httpClientExecutor.shutdownNow();
+    public static void teardown() {
+        StringBuilder exceptionInfo = new StringBuilder();
+        boolean successfullyClosedResources = true;
+        try {
+            sendDeleteRequest(MOUNTPOINT_PATH);
+        } catch (InterruptedException | IOException e) {
+            exceptionInfo.append(e.getMessage());
+            successfullyClosedResources = false;
+        } finally {
+            httpClientExecutor.shutdownNow();
+        }
+        assertTrue(successfullyClosedResources, exceptionInfo.toString());
     }
 
     @Test
@@ -126,9 +136,9 @@ public class GnmiRestconfExampleTest {
         HttpResponse<String> putAuthResponse = sendPutRequest(GET_AUTHENTICATION, getNewAuthenticationData());
         assertEquals(HttpURLConnection.HTTP_NO_CONTENT, putAuthResponse.statusCode());
 
-        HttpResponse<String> replacedAuthentication = sendGetRequest(GET_CONFIG_AUTHENTICATION);
+        HttpResponse<String> replacedAuthenticationResponse = sendGetRequest(GET_CONFIG_AUTHENTICATION);
         assertEquals(HttpURLConnection.HTTP_OK, authenticationResponse.statusCode());
-        assertEquals(new JSONObject(replacedAuthentication.body()).toString(),
+        assertEquals(new JSONObject(replacedAuthenticationResponse.body()).toString(),
                 new JSONObject(getNewAuthenticationData()).toString());
 
         // Update config authentication.
@@ -137,9 +147,9 @@ public class GnmiRestconfExampleTest {
         assertEquals(HttpURLConnection.HTTP_OK, updateAuthResponse.statusCode());
 
         // Verify that authentication data are updated.
-        HttpResponse<String> updatedAuthentication = sendGetRequest(GET_CONFIG_AUTHENTICATION);
+        HttpResponse<String> updatedAuthenticationResponse = sendGetRequest(GET_CONFIG_AUTHENTICATION);
         JSONObject actualAuthenticationJson
-                = new JSONObject(updatedAuthentication.body()).getJSONObject(SYSTEM_AUTHENTICATION);
+                = new JSONObject(updatedAuthenticationResponse.body()).getJSONObject(SYSTEM_AUTHENTICATION);
         JSONObject expectedAuthenticationJson
                 = new JSONObject(updatedAuthentication()).getJSONObject(SYSTEM_AUTHENTICATION);
         assertEquals(expectedAuthenticationJson.getJSONObject(STATE).toString(),
@@ -151,16 +161,16 @@ public class GnmiRestconfExampleTest {
         assertEquals(getSortedJsonArray(expectedAuthArray), getSortedJsonArray(actualAuthArray));
 
         // Verify that config authentication data are present.
-        HttpResponse<String> existingAuthConfig = sendGetRequest(GET_CONFIG_AUTHENTICATION_CONFIG);
-        assertEquals(HttpURLConnection.HTTP_OK, existingAuthConfig.statusCode());
+        HttpResponse<String> existingAuthConfigResponse = sendGetRequest(GET_CONFIG_AUTHENTICATION_CONFIG);
+        assertEquals(HttpURLConnection.HTTP_OK, existingAuthConfigResponse.statusCode());
 
         // Delete config authentication.
-        HttpResponse<String> deleteAuthentication = sendDeleteRequest(GET_AUTHENTICATION_CONFIG);
-        assertEquals(HttpURLConnection.HTTP_NO_CONTENT, deleteAuthentication.statusCode());
+        HttpResponse<String> deleteAuthenticationResponse = sendDeleteRequest(GET_AUTHENTICATION_CONFIG);
+        assertEquals(HttpURLConnection.HTTP_NO_CONTENT, deleteAuthenticationResponse.statusCode());
 
         // Verify that config authentication was deleted.
-        HttpResponse<String> deletedAuthentication = sendGetRequest(GET_CONFIG_AUTHENTICATION_CONFIG);
-        assertEquals(HttpURLConnection.HTTP_CONFLICT, deletedAuthentication.statusCode());
+        HttpResponse<String> getDeletedAuthenticationResponse = sendGetRequest(GET_CONFIG_AUTHENTICATION_CONFIG);
+        assertEquals(HttpURLConnection.HTTP_CONFLICT, getDeletedAuthenticationResponse.statusCode());
     }
 
     private static String getResources(final String path) throws IOException {
