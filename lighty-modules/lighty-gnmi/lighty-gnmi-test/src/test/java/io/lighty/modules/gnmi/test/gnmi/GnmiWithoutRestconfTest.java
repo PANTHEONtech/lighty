@@ -166,10 +166,24 @@ public class GnmiWithoutRestconfTest {
     }
 
     @AfterAll
-    public static void tearDown() throws Exception {
+    @SuppressWarnings("checkstyle:illegalCatch")
+    public static void tearDown() {
+        StringBuilder exceptionMessage = new StringBuilder();
+        boolean successfullyClosedResources = true;
         gnmiDevice.stop();
-        gnmiSouthboundModule.shutdown().get();
-        lightyController.shutdown().get();
+        try {
+            gnmiSouthboundModule.shutdown().get();
+        } catch (InterruptedException | ExecutionException e) {
+            successfullyClosedResources = false;
+            exceptionMessage.append(e.getMessage()).append("\n");
+        }
+        try {
+            lightyController.shutdown().get();
+        } catch (Exception e) {
+            successfullyClosedResources = false;
+            exceptionMessage.append(e.getMessage()).append("\n");
+        }
+        assertTrue(successfullyClosedResources, exceptionMessage.toString());
     }
 
     @Test
