@@ -79,7 +79,7 @@
 			"response": []
 		},
 		{
-			"name": "Connet device",
+			"name": "Connect device",
 			"request": {
 				"method": "PUT",
 				"header": [],

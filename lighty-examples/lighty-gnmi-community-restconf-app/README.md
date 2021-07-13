@@ -1,13 +1,13 @@
 # lighty.io gNMI/RESTCONF application
 This application provides gNMI south-bound utilized with RESTCONF interface to manage gNMI devices on the network.
 Application works as standalone SDN controller. It is capable to connect to gNMI devices and expose connected devices
-over RESTCONF north-bound APIs. In this application will be started gNMI simulator as gNMI target and all operation will
+over RESTCONF north-bound APIs. In this application gNMI simulator will be started as gNMI target and all operations will
 be performed on this device.
 
 Application lighty.io gNMI/RESTCONF is pre-prepared with [Openconfig YANG models](src/main/assembly/resources/yangs).
-These models are used by both gNMI application and gNMI device simulator. Device have already prepared state/config data
+These models are used by both gNMI application and gNMI device simulator. Device has already prepared state/config data
 configured by [this](src/main/assembly/resources/simulator/initialJsonData.json) json file.
-For communication with gNMI device is required to use TLS communication with certificates and authorized
+For communication with gNMI device there is required to use TLS communication with certificates and authorized
 by username and password.
 
 This application starts:
@@ -35,16 +35,16 @@ To build and start the lighty.io gNMI/RESTCONF application in your local environ
    - Or with provided script `./start-controller.sh`
 
 ## Example of using lighty.io gNMI/RESTCONF application
-This example show how to connect gNMI device and perform basic CRUD operation on the device. All RESTCONF request
+This example shows how to connect gNMI device and perform basic CRUD operations on the device. All RESTCONF requests
 used in this example are provided in [postman-collection](lighty.io gNMI-RESTCONF application.postman_collection.json).
 
  - ### Add client certificates to lighty.io gNMI keystore
-Used certificates can be found [here](src/main/assembly/resources/certificates). To keystore is added only client
-certificates. Adding required certificates for gNMI device to lighty.io gNMI application is performed by
+Used certificates can be found [here](src/main/assembly/resources/certificates). Only client certificates are added
+to keystore. Adding required certificates for gNMI device to lighty.io gNMI application is performed by
 postman request `'Add Keystore'`.
 
  - ### Connect gNMI device
-Device connection is performed by request `'Connet device'`. In the body of this request is contained identifier
+Device connection is performed by request `'Connect device'`. In the body of this request is contained identifier
 for keystore, device information, extension parameters and basic authorization required by device. When device
 is successfully connected to application, then these logs should be visible:
 ```
@@ -52,9 +52,9 @@ is successfully connected to application, then these logs should be visible:
  INFO [gnmi_executor-0] (GnmiNodeListener.java:105) - Connection with node Uri{_value=gnmi-simulator} established successfully
 ```
 
-Device state can be also checked by request `'Get gnmi-simulator node'`. Inside this request can be found information about
-created device. In section `gnmi-topology:node-state` can be found current state of device or information about error
-if some occurs. If device is connected, then `node-status` in this response should have value `READY`.
+Device state can be also checked by request `'Get gnmi-simulator node'`. Information about created device can be found
+inside this request. In section `gnmi-topology:node-state`, current state of device or information about occured errors
+can be found. If device is connected, then `node-status` in this response should have value `READY`.
 
  - ### Get data from gNMI device
 In provided postman-collection few examples of getting data from gNMI device `'Get interfaces'`,`'Get system'` and
@@ -77,5 +77,5 @@ For deleting `config` container send request `'Delete authentication config'`. T
 request `'Get Authentication from CONFIG'`.
 
  - ### Remove gNMI device from lighty.io gNMI/RESTCONF application
-When is required to restart connection or just remove device send request `'Remove device'`.
+When restart of connection or removal of device is required, just send request `'Remove device'`.
 This will remove connected device. For restarting connection it will be required to send request `'Connet device'`

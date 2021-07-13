@@ -22,30 +22,52 @@ public final class Main {
     private static final String USER_DIR = "user.dir";
 
     public static void main(String[] args) throws IOException {
-        String currentFolder = System.getProperty(USER_DIR);
-        // Find current location of resources
-        final String gnmiConfig;
-        if (currentFolder.length() > 6 && currentFolder.endsWith(LIGHTY)) {
-            // Example stared by IDEA
-            currentFolder += ASSEMBLY_RESOURCES;
-            // Specific gNMI configuration for IDEA run
-            gnmiConfig = currentFolder + GNMI_CONFIGURATION;
-        } else if (currentFolder.endsWith(MODULE_NAME)) {
-            // Example run by tests
-            // Specific gNMI config for tests
-            gnmiConfig = currentFolder + TEST_CONFIG;
-            currentFolder += PATH_TO_ASSEMBLY_RESOURCE;
-        }
-        else {
-            // Example stared from jar file
-            gnmiConfig = currentFolder + GNMI_CONFIGURATION;
-        }
-
-        GnmiSimulatorApp.main(new String[]{currentFolder});
-        RCgNMIApp.main(new String[]{"-c", gnmiConfig});
+        final GnmiRestconfAppResources exampleResources = getGnmiRestconfAppResources();
+        GnmiSimulatorApp.main(new String[]{exampleResources.pathToExampleResources});
+        RCgNMIApp.main(new String[]{"-c", exampleResources.gnmiConfigPath});
     }
 
     private Main() {
         throw new UnsupportedOperationException();
+    }
+
+    private static GnmiRestconfAppResources getGnmiRestconfAppResources() {
+        String currentFolder = System.getProperty(USER_DIR);
+        // Find current location of resources
+        final String gnmiConfig;
+        if (currentFolder.length() > 6 && currentFolder.endsWith(LIGHTY)) {
+            // Application stared by IDEA
+            currentFolder += ASSEMBLY_RESOURCES;
+            // Specific gNMI configuration for IDEA
+            gnmiConfig = currentFolder + GNMI_CONFIGURATION;
+        } else if (currentFolder.endsWith(MODULE_NAME)) {
+            // Application run by tests
+            // Specific gNMI configuration for tests
+            gnmiConfig = currentFolder + TEST_CONFIG;
+            currentFolder += PATH_TO_ASSEMBLY_RESOURCE;
+        }
+        else {
+            // Application stared from jar file
+            gnmiConfig = currentFolder + GNMI_CONFIGURATION;
+        }
+        return new GnmiRestconfAppResources(gnmiConfig, currentFolder);
+    }
+
+    private static final class GnmiRestconfAppResources {
+        private final String gnmiConfigPath;
+        private final String pathToExampleResources;
+
+        GnmiRestconfAppResources(final String gnmiConfigPath, final String pathToExampleResources) {
+            this.gnmiConfigPath = gnmiConfigPath;
+            this.pathToExampleResources = pathToExampleResources;
+        }
+
+        String getGnmiConfigPath() {
+            return gnmiConfigPath;
+        }
+
+        String getPathToExampleResources() {
+            return pathToExampleResources;
+        }
     }
 }

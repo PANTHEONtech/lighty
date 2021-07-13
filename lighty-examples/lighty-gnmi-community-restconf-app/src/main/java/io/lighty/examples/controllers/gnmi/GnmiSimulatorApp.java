@@ -23,16 +23,16 @@ public class GnmiSimulatorApp {
     private static final String USERNAME = "Admin";
     private static final String PASSWORD = "Admin";
 
-    private final String currentFolder;
+    private final String folderWithResources;
     private SimulatedGnmiDevice device;
 
-    public GnmiSimulatorApp(final String currentFolder) {
-        this.currentFolder = currentFolder;
+    public GnmiSimulatorApp(final String folderWithResources) {
+        this.folderWithResources = folderWithResources;
     }
 
     public static void main(String[] args) throws IOException {
-        final String currentFolder = Arrays.stream(args).findFirst().orElse("");
-        final GnmiSimulatorApp gnmiSimulatorApp = new GnmiSimulatorApp(currentFolder);
+        final String folderWithResources = Arrays.stream(args).findFirst().orElse("");
+        final GnmiSimulatorApp gnmiSimulatorApp = new GnmiSimulatorApp(folderWithResources);
         gnmiSimulatorApp.start(true);
     }
 
@@ -40,12 +40,12 @@ public class GnmiSimulatorApp {
         device = new SimulatedGnmiDeviceBuilder()
                 .setHost(DEVICE_ADDRESS)
                 .setPort(DEVICE_PORT)
-                .setInitialConfigDataPath(currentFolder + INITIAL_DATA)
-                .setInitialStateDataPath(currentFolder + INITIAL_DATA)
-                .setYangsPath(currentFolder + YANG_FOLDER)
+                .setInitialConfigDataPath(folderWithResources + INITIAL_DATA)
+                .setInitialStateDataPath(folderWithResources + INITIAL_DATA)
+                .setYangsPath(folderWithResources + YANG_FOLDER)
                 .setUsernamePasswordAuth(USERNAME, PASSWORD)
-                .setCertificatePath(currentFolder + CERT_PATH)
-                .setKeyPath(currentFolder + CERT_KEY)
+                .setCertificatePath(folderWithResources + CERT_PATH)
+                .setKeyPath(folderWithResources + CERT_KEY)
                 .build();
         device.start();
         if (registerShutdownHook) {

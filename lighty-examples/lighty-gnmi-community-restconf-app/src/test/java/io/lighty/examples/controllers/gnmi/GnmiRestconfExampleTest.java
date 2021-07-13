@@ -83,21 +83,22 @@ public class GnmiRestconfExampleTest {
         // Register keystore.
         final String certificatesRequestBody = getCertificatesRequestBody(getResources(CA_CERTIFICATE_PATH),
                 getResources(CLIENT_KEY_PATH), getResources(CLIENT_CERTIFICATE_PATH));
-        final HttpResponse<String> response = sendPostRequest(ADD_CERTIFICATE_PATH, certificatesRequestBody);
-        assertEquals(response.statusCode(), HttpURLConnection.HTTP_NO_CONTENT);
+        final HttpResponse<String> addCertificatesResponse
+                = sendPostRequest(ADD_CERTIFICATE_PATH, certificatesRequestBody);
+        assertEquals(addCertificatesResponse.statusCode(), HttpURLConnection.HTTP_NO_CONTENT);
 
         // Check if device was not created before.
-        HttpResponse<String> notCreatedDevice = sendGetRequest(MOUNTPOINT_STATUS_PATH);
-        if (notCreatedDevice.statusCode() == HttpURLConnection.HTTP_OK) {
+        HttpResponse<String> notCreatedDeviceResponse = sendGetRequest(MOUNTPOINT_STATUS_PATH);
+        if (notCreatedDeviceResponse.statusCode() == HttpURLConnection.HTTP_OK) {
             // Delete device if was created before test.
             sendDeleteRequest(MOUNTPOINT_PATH);
         }
 
         // Register device.
-        final String mRegBody = getMountpointRegistrationBody();
-        final HttpResponse<String> mRegResponse
-                = sendPutRequest(String.format(MOUNTPOINT_PATH, DEVICE_ID), mRegBody);
-        assertEquals(mRegResponse.statusCode(), HttpURLConnection.HTTP_CREATED);
+        final String mountpointRegistrationBody = getMountpointRegistrationBody();
+        final HttpResponse<String> mountpointRegistrationResponse
+                = sendPutRequest(MOUNTPOINT_PATH, mountpointRegistrationBody);
+        assertEquals(mountpointRegistrationResponse.statusCode(), HttpURLConnection.HTTP_CREATED);
 
         //Verify that mountpoint is created
         Awaitility.waitAtMost(WAIT_TIME_DURATION)
