@@ -137,15 +137,15 @@ public class YangInstanceNormToGnmiUpdateCodec implements
         }
     }
 
-    private static boolean isListEntry(final NormalizedNode node) {
+    private static boolean isListEntry(final NormalizedNode<?, ?> node) {
         return node instanceof MapEntryNode;
     }
 
-    private static boolean isLeaf(final NormalizedNode node) {
+    private static boolean isLeaf(final NormalizedNode<?, ?> node) {
         return node instanceof LeafNode;
     }
 
-    private static boolean isContainer(final NormalizedNode node) {
+    private static boolean isContainer(final NormalizedNode<?, ?> node) {
         return node instanceof ContainerNode;
     }
 

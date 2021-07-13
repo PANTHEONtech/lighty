@@ -160,7 +160,7 @@ public class SimulatedGnmiDevice {
                 server.shutdown();
                 server.awaitTermination();
             } catch (final InterruptedException e) {
-                throw new RuntimeException("Shutdown interrupted", e);
+                throw new SimulatedGnmiDeviceException("Shutdown interrupted", e);
             }
         }
     }
@@ -248,7 +248,11 @@ public class SimulatedGnmiDevice {
             this.initialConfigDataPath = initialConfigDataPath;
             this.initialStateDataPath = initialStateDataPath;
         }
-
     }
 
+    static final class SimulatedGnmiDeviceException extends RuntimeException {
+        SimulatedGnmiDeviceException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
 }

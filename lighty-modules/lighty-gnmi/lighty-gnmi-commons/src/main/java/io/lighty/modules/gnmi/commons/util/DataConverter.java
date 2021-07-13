@@ -273,7 +273,7 @@ public final class DataConverter {
                 .findFirst();
     }
 
-    private static boolean isListEntry(final NormalizedNode node) {
+    private static boolean isListEntry(final NormalizedNode<?, ?> node) {
         return node instanceof MapEntryNode;
     }
 
