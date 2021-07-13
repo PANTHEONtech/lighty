@@ -81,8 +81,8 @@ public final class NetconfConfigUtils {
      * @throws ConfigurationException In case JSON configuration cannot be deserializable to JSON
      *                                tree nodes or cannot bind JSON tree node to type.
      */
-    public static NetconfConfiguration createNetconfConfiguration(
-            final InputStream jsonConfigInputStream) throws ConfigurationException {
+    public static NetconfConfiguration createNetconfConfiguration(final InputStream jsonConfigInputStream)
+            throws ConfigurationException {
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode configNode;
         try {
@@ -110,6 +110,62 @@ public final class NetconfConfigUtils {
     }
 
     /**
+     * Load netconf southbound configuration from InputStream containing JSON data.
+     *
+     * @param jsonConfigInputStream InputStream containing Netconf config. data in JSON format.
+     * @param encryptionService custom AAAEncryptionService provided by user to be injected.
+     * @param clientDispatcher dispatcher from running lighty services.
+     * @return Object representation of configuration data.
+     * @throws ConfigurationException In case JSON configuration cannot be deserializable to JSON
+     *                                tree nodes or cannot bind JSON tree node to type.
+     */
+    public static NetconfConfiguration getNetconfConfiguration(final InputStream jsonConfigInputStream,
+                                                               final NetconfClientDispatcher clientDispatcher,
+                                                               final AAAEncryptionService encryptionService)
+            throws ConfigurationException {
+        final NetconfConfiguration configuration = createNetconfConfiguration(jsonConfigInputStream);
+        configuration.setClientDispatcher(clientDispatcher);
+        configuration.setAaaService(encryptionService);
+        return configuration;
+    }
+
+    /**
+     * Create default Netconf Southbound configuration, with custom dispatcher and encryptionService.
+     *
+     * @param configurationFrom other NetconfConfiguration to be created from.
+     * @param encryptionService custom AAAEncryptionService provided by user to be injected.
+     * @param clientDispatcher dispatcher from running lighty services.
+     * @return Object representation of configuration data.
+     */
+    public static NetconfConfiguration getNetconfConfiguration(final NetconfConfiguration configurationFrom,
+                                                               final NetconfClientDispatcher clientDispatcher,
+                                                               final AAAEncryptionService encryptionService) {
+        final NetconfConfiguration configuration = new NetconfConfiguration();
+        configuration.setClusterEnabled(configurationFrom.isClusterEnabled());
+        configuration.setTopologyId(configurationFrom.getTopologyId());
+        configuration.setWriteTxTimeout(configurationFrom.getWriteTxTimeout());
+        configurationFrom.setClientDispatcher(clientDispatcher);
+        configurationFrom.setAaaService(encryptionService);
+        return configuration;
+    }
+
+    /**
+     * Create default Netconf Southbound configuration from other NetconfConfiguration.
+     *
+     * @param configurationFrom other NetconfConfiguration to be created from.
+     * @return Object representation of configuration data.
+     */
+    public static NetconfConfiguration getNetconfConfiguration(final NetconfConfiguration configurationFrom) {
+        final NetconfConfiguration configuration = new NetconfConfiguration();
+        configuration.setClusterEnabled(configurationFrom.isClusterEnabled());
+        configuration.setTopologyId(configurationFrom.getTopologyId());
+        configuration.setWriteTxTimeout(configurationFrom.getWriteTxTimeout());
+        configurationFrom.setClientDispatcher(configurationFrom.getClientDispatcher());
+        configurationFrom.setAaaService(configurationFrom.getAaaService());
+        return configuration;
+    }
+
+    /**
      * Create default Netconf Southbound configuration, Lighty services are not populated.
      *
      * @return Object representation of configuration data.
@@ -119,19 +175,49 @@ public final class NetconfConfigUtils {
     }
 
     /**
+     * Create default Netconf Southbound configuration, with custom dispatcher and encryptionService.
+     *
+     * @param encryptionService custom AAAEncryptionService provided by user to be injected.
+     * @param clientDispatcher dispatcher from running lighty services.
+     * @return Object representation of configuration data.
+     */
+    public static NetconfConfiguration getDefaultNetconfConfiguration(final NetconfClientDispatcher clientDispatcher,
+                                                                      final AAAEncryptionService encryptionService) {
+        final NetconfConfiguration configuration = new NetconfConfiguration();
+        configuration.setAaaService(encryptionService);
+        configuration.setClientDispatcher(clientDispatcher);
+        return configuration;
+    }
+
+    /**
      * Inject services from LightyServices to Netconf southbound configuration.
      *
      * @param configuration Netconf southbound configuration where should be services injected.
      * @return Netconf southbound configuration with injected services from Lighty core.
      * @throws ConfigurationException in case provided configuration is not valid.
      */
-    public static NetconfConfiguration injectServicesToConfig(
-            final NetconfConfiguration configuration) throws ConfigurationException {
+    @Deprecated
+    public static NetconfConfiguration injectServicesToConfig(final NetconfConfiguration configuration)
+            throws ConfigurationException {
         final AAAEncryptionService aaa = NetconfConfigUtils.createAAAEncryptionService(
                 getDefaultAaaEncryptServiceConfig());
         configuration.setAaaService(aaa);
         return configuration;
     }
+
+    /**
+     * Inject services from LightyServices to Netconf southbound configuration.
+     *
+     * @param configuration Netconf southbound configuration where should be services injected.
+     * @param encryptionService custom AAAEncryptionService provided by user to be injected.
+     * @return Netconf southbound configuration with injected services from Lighty core.
+     */
+    public static NetconfConfiguration injectServicesToConfig(final NetconfConfiguration configuration,
+                                                              final AAAEncryptionService encryptionService) {
+        configuration.setAaaService(encryptionService);
+        return configuration;
+    }
+
 
     /**
      * Inject services from LightyServices and netconf client dispatcher to Netconf southbound topology configuration.
@@ -141,11 +227,28 @@ public final class NetconfConfigUtils {
      * @return Netconf southbound topology configuration with injected services from Lighty core.
      * @throws ConfigurationException in case provided configuration is not valid.
      */
-    public static NetconfConfiguration injectServicesToTopologyConfig(
-            final NetconfConfiguration configuration, final LightyServices lightyServices) throws
-            ConfigurationException {
+    @Deprecated
+    public static NetconfConfiguration injectServicesToTopologyConfig(final NetconfConfiguration configuration,
+                                                                      final LightyServices lightyServices)
+            throws ConfigurationException {
         injectServicesToConfig(configuration);
-        injectClient(lightyServices, configuration);
+        injectClient(configuration, lightyServices);
+        return configuration;
+    }
+
+    /**
+     * Inject services from LightyServices and netconf client dispatcher to Netconf southbound topology configuration.
+     *
+     * @param configuration  Netconf southbound topology configuration where should be services injected.
+     * @param encryptionService custom AAAEncryptionService provided by user to be injected.
+     * @param clientDispatcher dispatcher from running lighty services.
+     * @return Netconf southbound topology configuration with injected services from Lighty core.
+     */
+    public static NetconfConfiguration injectServicesToTopologyConfig(final NetconfConfiguration configuration,
+                                                                      final AAAEncryptionService encryptionService,
+                                                                      final NetconfClientDispatcher clientDispatcher) {
+        injectServicesToConfig(configuration, encryptionService);
+        injectClient(configuration, clientDispatcher);
         return configuration;
     }
 
@@ -169,8 +272,8 @@ public final class NetconfConfigUtils {
      * @return configured instance of {@link AAAEncryptionService}
      * @throws ConfigurationException in case provided configuration is not valid.
      */
-    public static AAAEncryptionService createAAAEncryptionService(AaaEncryptServiceConfig encrySrvConfig) throws
-            ConfigurationException {
+    public static AAAEncryptionService createAAAEncryptionService(AaaEncryptServiceConfig encrySrvConfig)
+            throws ConfigurationException {
         final byte[] encryptionKeySalt = Base64.getDecoder().decode(encrySrvConfig.getEncryptSalt());
         try {
             final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(encrySrvConfig.getEncryptMethod());
@@ -201,12 +304,26 @@ public final class NetconfConfigUtils {
      * @param configuration Netconf southbound configuration where should be services injected.
      * @return Netconf southbound configuration with injected services from Lighty core.
      */
-    private static NetconfConfiguration injectClient(final LightyServices services,
-                                                     final NetconfConfiguration configuration) {
+    @Deprecated
+    private static NetconfConfiguration injectClient(final NetconfConfiguration configuration,
+                                                     final LightyServices services) {
         final NetconfClientDispatcher client =
                 new NetconfClientDispatcherImpl(services.getBossGroup(), services.getWorkerGroup(),
                         services.getTimer());
         configuration.setClientDispatcher(client);
+        return configuration;
+    }
+
+    /**
+     * Inject netconf client dispatcher to Netconf southbound configuration, it uses {@link LightyServices}.
+     *
+     * @param clientDispatcher dispatcher from running lighty services.
+     * @param configuration Netconf southbound configuration where should be services injected.
+     * @return Netconf southbound configuration with injected services from Lighty core.
+     */
+    private static NetconfConfiguration injectClient(final NetconfConfiguration configuration,
+                                                     final NetconfClientDispatcher clientDispatcher) {
+        configuration.setClientDispatcher(clientDispatcher);
         return configuration;
     }
 
