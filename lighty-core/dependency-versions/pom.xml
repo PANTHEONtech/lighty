@@ -25,7 +25,7 @@
             <dependency>
                 <groupId>org.opendaylight.odlparent</groupId>
                 <artifactId>odlparent</artifactId>
-                <version>8.1.1</version>
+                <version>8.1.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -34,14 +34,14 @@
             <dependency>
                 <groupId>org.opendaylight.aaa</groupId>
                 <artifactId>aaa-artifacts</artifactId>
-                <version>0.13.2</version>
+                <version>0.13.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.controller</groupId>
                 <artifactId>controller-artifacts</artifactId>
-                <version>3.0.7</version>
+                <version>3.0.8</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -50,21 +50,21 @@
                 This artifact dependency management was removed from odl-parent in Aluminium release. -->
                 <groupId>org.opendaylight.controller</groupId>
                 <artifactId>bundle-parent</artifactId>
-                <version>3.0.7</version>
+                <version>3.0.8</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.infrautils</groupId>
                 <artifactId>infrautils-artifacts</artifactId>
-                <version>1.9.6</version>
+                <version>1.9.8</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-artifacts</artifactId>
-                <version>7.0.6</version>
+                <version>7.0.7</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -78,14 +78,14 @@
             <dependency>
                 <groupId>org.opendaylight.netconf</groupId>
                 <artifactId>netconf-artifacts</artifactId>
-                <version>1.13.1</version>
+                <version>1.13.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.yangtools</groupId>
                 <artifactId>yangtools-artifacts</artifactId>
-                <version>6.0.5</version>
+                <version>6.0.6</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -93,14 +93,14 @@
             <dependency>
                 <groupId>org.opendaylight.openflowplugin</groupId>
                 <artifactId>openflowplugin-artifacts</artifactId>
-                <version>0.12.0</version>
+                <version>0.12.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.serviceutils</groupId>
                 <artifactId>serviceutils-artifacts</artifactId>
-                <version>0.7.0</version>
+                <version>0.7.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -288,7 +288,7 @@
         <connection>scm:git:https://github.com/PANTHEONtech/lighty.git</connection>
         <developerConnection>scm:git:https://github.com/PANTHEONtech/lighty.git</developerConnection>
         <url>https://github.com/PANTHEONtech/lighty</url>
-      <tag>HEAD</tag>
+        <tag>HEAD</tag>
   </scm>
     <developers>
         <developer>
