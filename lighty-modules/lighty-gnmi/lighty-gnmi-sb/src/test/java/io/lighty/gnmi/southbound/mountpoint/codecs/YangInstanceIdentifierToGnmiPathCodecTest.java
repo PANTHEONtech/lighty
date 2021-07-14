@@ -22,7 +22,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 public class YangInstanceIdentifierToGnmiPathCodecTest {
 
-    private static final Path TEST_PATH = Paths.get("src/test/resources/not/unique/model/elements");
+    private static final Path TEST_PATH = Paths.get("not/unique/model/elements");
     private static final String NAMESPACE_ROOT1 = "tag:lighty.io.2021:yang:test:v1:gnmi:converter:root1";
     private static final String NAMESPACE_ROOT2 = "tag:lighty.io,2021:yang:test:v1:gnmi:converter:root2";
     private static final String ROOT_MODULE_NAME_1 = "root-model-1";
@@ -67,7 +67,8 @@ public class YangInstanceIdentifierToGnmiPathCodecTest {
     public void yangInstanceIdentifierToPathCodecWithNotUniqueNameForRootElement()
             throws SchemaException, YangLoadException {
         //Init YangInstanceIdentifierToPathCodec with test schema context
-        final TestSchemaContextProvider contextProvider = TestSchemaContextProvider.createFromPath(TEST_PATH);
+        final TestSchemaContextProvider contextProvider = TestSchemaContextProvider.createFromPath(
+                Path.of(this.getClass().getClassLoader().getResource(TEST_PATH.toString()).getPath()));
         final YangInstanceIdentifierToPathCodec pathCodec
                 = new YangInstanceIdentifierToPathCodec(contextProvider, true);
         // Test parse YIID path and choosing correct module for not unique name for root element
