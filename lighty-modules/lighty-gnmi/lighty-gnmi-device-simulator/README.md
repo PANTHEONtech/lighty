@@ -165,3 +165,13 @@ This example will show how to execute basic operations on lighty.io gNMI device 
      ]
    }
    ```
+   
+   ## gNOI - gRPC Network Operations Interface
+   Simulator implements the following [gNOI](https://github.com/openconfig/gnoi) gRPCs:
+   - file.proto:
+     - get - downloads dummy file
+     - stat - returns stats of file on path
+   - system.proto:
+     - time - returns current time
+   
+   [Other](src/main/java/io/lighty/modules/gnmi/simulatordevice/gnoi) gNOI grRPCs are also supported, but they have no logic behind them. They just returns some predefined response.
