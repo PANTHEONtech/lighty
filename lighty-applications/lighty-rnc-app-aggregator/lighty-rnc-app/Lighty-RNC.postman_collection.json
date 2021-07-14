@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "c2101915-caa3-4044-a6c4-e32fe21db062",
+		"_postman_id": "60682dc5-db7f-4d21-87ac-0c54ae8f4012",
 		"name": "Lighty-RNC",
 		"description": "Example requests viable in RNC application.\nChange target of the request according to your deployment.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -12,21 +12,6 @@
 				{
 					"name": "Connect NETCONF device",
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "admin",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "admin",
-									"type": "string"
-								}
-							]
-						},
 						"method": "PUT",
 						"header": [],
 						"body": {
@@ -181,30 +166,6 @@
 						"description": "Example request for setting configuration data on NETCONF device. This request is valid if the device does implement toaster yang."
 					},
 					"response": []
-				},
-				{
-					"name": "GET restconf operations",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://127.0.0.1:8888/restconf/operations/",
-							"protocol": "http",
-							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
-							],
-							"port": "8888",
-							"path": [
-								"restconf",
-								"operations",
-								""
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
@@ -325,6 +286,94 @@
 							]
 						},
 						"description": "May require akka http managment read only routes set to false."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Helm deployment",
+			"item": [
+				{
+					"name": "GET restconf data via NodePort",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://10.0.2.4:30888/restconf/data/",
+							"protocol": "http",
+							"host": [
+								"10",
+								"0",
+								"2",
+								"4"
+							],
+							"port": "30888",
+							"path": [
+								"restconf",
+								"data",
+								""
+							]
+						},
+						"description": "The IP is the node IP on which the cluster runs."
+					},
+					"response": []
+				},
+				{
+					"name": "GET restconf data via Ingress",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"host": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Host",
+								"value": "restconf.lighty.io",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1/restconf/data",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"path": [
+								"restconf",
+								"data"
+							]
+						},
+						"description": "The IP is Address obtained via `kubectl get ingress`. The host header `restconf.lighty.io` can be removed if `etc/hosts` contains this entry."
+					},
+					"response": []
+				},
+				{
+					"name": "GET restconf data via ClusterIP",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://10.152.183.92:8888/restconf/data",
+							"protocol": "http",
+							"host": [
+								"10",
+								"152",
+								"183",
+								"92"
+							],
+							"port": "8888",
+							"path": [
+								"restconf",
+								"data"
+							]
+						},
+						"description": "Requires deployment with `nodePort.useNodePort = false`. The IP is ClusterIP obtained via `kubectl get services`."
 					},
 					"response": []
 				}
