@@ -30,6 +30,7 @@ import io.netty.util.internal.StringUtil;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.URL;
 import java.util.EnumSet;
 import java.util.Objects;
 import org.opendaylight.yangtools.yang.parser.stmt.reactor.EffectiveSchemaContext;
@@ -80,8 +81,8 @@ public class SimulatedGnmiDevice {
                                final Gson gson, final EnumSet<Gnmi.Encoding> supportedEncodings) {
         this.bossGroup = Objects.requireNonNullElseGet(bossGroup, () -> new NioEventLoopGroup(1));
         this.workerGroup = Objects.requireNonNullElseGet(workerGroup, NioEventLoopGroup::new);
-        this.yangsPath = Objects.requireNonNull(yangsPath, "Path to directory of yang files form which schema"
-                + " will be created is needed!");
+        this.yangsPath = Objects.requireNonNull(yangsPath,
+                "Path to directory of yang files form which schema will be created is needed!");
         this.host = host;
         this.port = port;
         this.maxConnections = maxConnections;
@@ -119,11 +120,14 @@ public class SimulatedGnmiDevice {
             );
             LOG.info("Combination of server certificate and key not provided, using default ones.");
         } else {
-            serverBuilder.useTransportSecurity(new File(certificatePath), new File(keyPath));
+            serverBuilder.useTransportSecurity(
+                    new File(this.getClass().getClassLoader().getResource(certificatePath).getPath()),
+                    new File(this.getClass().getClassLoader().getResource(keyPath).getPath()));
         }
 
         // Initialize schema context from yang models
-        schemaContext = FileUtils.buildSchemaFromYangsDir(yangsPath);
+        final URL path = this.getClass().getClassLoader().getResource(yangsPath);
+        schemaContext = FileUtils.buildSchemaFromYangsDir(path != null ? path.getPath() : null);
 
         // Initialize data service
         dataService = new YangDataService(schemaContext, initialConfigDataPath, initialStateDataPath);

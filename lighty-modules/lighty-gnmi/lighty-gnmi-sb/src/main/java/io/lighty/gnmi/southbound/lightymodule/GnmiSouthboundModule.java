@@ -15,14 +15,14 @@ import io.lighty.gnmi.southbound.provider.GnmiSouthboundProvider;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoaderService;
 import io.lighty.gnmi.southbound.schema.loader.impl.ByPathYangLoaderService;
+import java.net.URL;
 import java.nio.file.Path;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
@@ -54,8 +54,8 @@ public final class GnmiSouthboundModule extends AbstractLightyModule {
     @Override
     protected boolean initProcedure() throws InterruptedException {
         LOG.info("Starting lighty gNMI Southbound Module");
-        final List<YangLoaderService> initialLoaders = prepareByPathLoaders(gnmiConfiguration, customReactor);
         try {
+            final List<YangLoaderService> initialLoaders = prepareByPathLoaders(gnmiConfiguration, customReactor);
             gnmiProvider = new GnmiSouthboundProvider(lightyServices.getDOMMountPointService(),
                     lightyServices.getBindingDataBroker(), lightyServices.getRpcProviderService(), gnmiExecutorService,
                     initialLoaders, encryptionService, customReactor);
@@ -83,12 +83,20 @@ public final class GnmiSouthboundModule extends AbstractLightyModule {
     }
 
     private List<YangLoaderService> prepareByPathLoaders(final GnmiConfiguration config,
-                                                         final CrossSourceStatementReactor reactor) {
-        return config != null
-                ? config.getInitialYangsPaths().stream()
-                .map(path -> new ByPathYangLoaderService(Path.of(path), reactor))
-                .collect(Collectors.toList())
-                : Collections.emptyList();
+                                                         final CrossSourceStatementReactor reactor)
+            throws YangLoadException {
+        final List<YangLoaderService> loaders = new ArrayList<>();
+        for (final String yangPath : config.getInitialYangsPaths()) {
+            final URL path = this.getClass().getClassLoader().getResource(yangPath);
+            if (path != null) {
+                loaders.add(new ByPathYangLoaderService(Path.of(path.getPath()), reactor));
+            } else {
+                throw new YangLoadException(
+                        String.format("Yang path %s, provided in config, was not resolved", yangPath));
+            }
+        }
+
+        return loaders;
     }
 
 }

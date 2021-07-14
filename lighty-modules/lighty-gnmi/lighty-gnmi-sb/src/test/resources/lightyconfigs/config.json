@@ -1,11 +1,11 @@
 {
     "gnmi": {
         "initialYangsPaths" : [
-            "src/test/resources/initialYangs",
-            "src/test/resources/initialYangs1",
-            "src/test/resources/initialYangs2",
-            "src/test/resources/initialYangs3",
-            "src/test/resources/initialYangs4"
+            "initialYangs",
+            "initialYangs1",
+            "initialYangs2",
+            "initialYangs3",
+            "initialYangs4"
         ]
     }
 

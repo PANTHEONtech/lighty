@@ -39,7 +39,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
  */
 public class CodecTestCasesBase {
 
-    protected static final String BASE_YANGS_PATH = "src/test/resources/test_schema";
+    protected static final String BASE_YANGS_PATH = "test_schema";
     protected static final String IT_ID = "openconfig-interfaces";
     protected static final String IT_AGGR_ID = "openconfig-if-aggregate";
     protected static final String IT_TYPES_ID = "openconfig-if-types";
@@ -50,7 +50,8 @@ public class CodecTestCasesBase {
     private final SchemaContextProvider schemaContextProvider;
 
     public CodecTestCasesBase() throws YangLoadException, SchemaException {
-        this.schemaContextProvider = TestSchemaContextProvider.createFromPath(Paths.get(BASE_YANGS_PATH));
+        this.schemaContextProvider = TestSchemaContextProvider.createFromPath(
+                Paths.get(this.getClass().getClassLoader().getResource(BASE_YANGS_PATH).getPath()));
     }
 
     /**
