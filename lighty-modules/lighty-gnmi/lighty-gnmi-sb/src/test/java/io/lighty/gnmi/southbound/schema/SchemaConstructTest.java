@@ -34,8 +34,8 @@ import org.opendaylight.yangtools.yang.parser.stmt.reactor.EffectiveSchemaContex
 
 public class SchemaConstructTest {
 
-    private static final String SCHEMA_PATH = "test_schema";
-    private static final String SYNTAX_ERROR_YANGS_PATH = "syntax_error_yangs";
+    private static final String SCHEMA_PATH = "src/test/resources/test_schema";
+    private static final String SYNTAX_ERROR_YANGS_PATH = "src/test/resources/syntax_error_yangs";
     private static final List<String> MODELS_TO_MISS = Arrays.asList("openconfig-alarms",
             "openconfig-platform");
     private static final List<String> CAPABILITIES_TO_MISS = Arrays.asList("openconfig-alarm-types",
@@ -54,8 +54,7 @@ public class SchemaConstructTest {
     @BeforeEach
     public void setup() throws YangLoadException {
         dataStoreService = new TestYangDataStoreService();
-        completeCapabilities = new ByPathYangLoaderService(
-                Path.of(this.getClass().getClassLoader().getResource(SCHEMA_PATH).getPath()), null)
+        completeCapabilities = new ByPathYangLoaderService(Path.of(SCHEMA_PATH), null)
                 .load(dataStoreService);
         Assertions.assertFalse(completeCapabilities.isEmpty());
     }
@@ -186,8 +185,7 @@ public class SchemaConstructTest {
     @Test
     public void schemaConstructWrongSyntaxTest() throws IOException {
         // Delete models with correct syntax and add them back with wrong syntax
-        final List<File> filesInFolder = Files.walk(
-                Path.of(this.getClass().getClassLoader().getResource(SYNTAX_ERROR_YANGS_PATH).getPath()))
+        final List<File> filesInFolder = Files.walk(Path.of(SYNTAX_ERROR_YANGS_PATH))
                 .filter(Files::isRegularFile)
                 .map(Path::toFile)
                 .collect(Collectors.toList());
@@ -218,8 +216,7 @@ public class SchemaConstructTest {
     @Test
     public void schemaConstructWrongSyntaxAndMissingModelsTest() throws IOException {
         // Delete models with correct syntax and add them back with wrong syntax
-        final List<File> filesInFolder = Files.walk(
-                Path.of(this.getClass().getClassLoader().getResource(SYNTAX_ERROR_YANGS_PATH).getPath())        )
+        final List<File> filesInFolder = Files.walk(Path.of(SYNTAX_ERROR_YANGS_PATH))
                 .filter(Files::isRegularFile)
                 .map(Path::toFile)
                 .collect(Collectors.toList());

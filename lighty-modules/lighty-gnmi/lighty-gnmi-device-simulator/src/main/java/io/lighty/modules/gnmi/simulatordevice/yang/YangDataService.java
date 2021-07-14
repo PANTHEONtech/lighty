@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.EnumMap;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -95,13 +97,11 @@ public class YangDataService {
                                      final EffectiveModelContext schemaContext) throws IOException {
         // Init config data
         if (StringUtils.isNotEmpty(initialConfigDataPath)) {
-            final InputStream configFile =
-                    this.getClass().getClassLoader().getResourceAsStream(initialConfigDataPath);
+            final InputStream configFile = Files.newInputStream(Path.of(initialConfigDataPath));
             initDataTree(configFile, DatastoreType.CONFIGURATION, schemaContext);
         }
         if (StringUtils.isNotEmpty(initialStateDataPath)) {
-            final InputStream configFile =
-                    this.getClass().getClassLoader().getResourceAsStream(initialStateDataPath);
+            final InputStream configFile = Files.newInputStream(Path.of(initialStateDataPath));
             initDataTree(configFile, DatastoreType.STATE, schemaContext);
         }
     }

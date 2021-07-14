@@ -64,7 +64,7 @@
   },
   "gnmi": {
     "initialYangsPaths" : [
-      "models/plugin_models"
+      "src/test/resources/models/plugin_models"
     ]
   }
 }
