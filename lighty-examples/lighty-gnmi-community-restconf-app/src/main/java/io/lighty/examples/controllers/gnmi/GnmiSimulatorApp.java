@@ -11,11 +11,12 @@ package io.lighty.examples.controllers.gnmi;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class GnmiSimulatorApp {
     private static final String DEVICE_ADDRESS = "127.0.0.1";
     private static final int DEVICE_PORT = 3333;
-    private static final String INITIAL_DATA = "/initialJsonData.json";
+    private static final String INITIAL_DATA = "/simulator/initialJsonData.json";
     private static final String CERT_PATH = "/certificates/server.crt";
     private static final String CERT_KEY = "/certificates/server-pkcs8.key";
     private static final String YANG_FOLDER = "/yangs";
@@ -27,6 +28,12 @@ public class GnmiSimulatorApp {
 
     public GnmiSimulatorApp(final String folderWithResources) {
         this.folderWithResources = folderWithResources;
+    }
+
+    public static void main(String[] args) throws IOException {
+        final String folderWithResources = Arrays.stream(args).findFirst().orElse("");
+        final GnmiSimulatorApp gnmiSimulatorApp = new GnmiSimulatorApp(folderWithResources);
+        gnmiSimulatorApp.start(true);
     }
 
     public void start(final boolean registerShutdownHook) throws IOException {

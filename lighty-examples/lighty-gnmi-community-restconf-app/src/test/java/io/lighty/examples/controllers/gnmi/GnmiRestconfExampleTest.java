@@ -4,8 +4,9 @@ package io.lighty.examples.controllers.gnmi;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -31,9 +32,9 @@ public class GnmiRestconfExampleTest {
     private static final Duration REQUEST_TIMEOUT_DURATION = Duration.ofMillis(10_000L);
     private static final Duration POLL_INTERVAL_DURATION = Duration.ofMillis(1_000L);
     private static final Duration WAIT_TIME_DURATION = Duration.ofMillis(10_000L);
-    private static final String CA_CERTIFICATE_PATH = "simulator/certificates/ca.crt";
-    private static final String CLIENT_CERTIFICATE_PATH = "simulator/certificates/client.crt";
-    private static final String CLIENT_KEY_PATH = "simulator/certificates/client.key";
+    private static final String CA_CERTIFICATE_PATH = "src/main/assembly/resources/certificates/ca.crt";
+    private static final String CLIENT_CERTIFICATE_PATH = "src/main/assembly/resources/certificates/client.crt";
+    private static final String CLIENT_KEY_PATH = "src/main/assembly/resources/certificates/client.key";
 
     private static final String DEVICE_ID = "gnmi-simulator";
     private static final int DEVICE_PORT = 3333;
@@ -173,8 +174,9 @@ public class GnmiRestconfExampleTest {
     }
 
     private static String getResources(final String path) throws IOException {
-        final InputStream resourceAsStream = GnmiRestconfExampleTest.class.getClassLoader().getResourceAsStream(path);
-        return IOUtils.toString(resourceAsStream, Charset.defaultCharset());
+        FileInputStream fileInputStream = new FileInputStream(path);
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+        return IOUtils.toString(bufferedInputStream, Charset.defaultCharset());
     }
 
     private static List<String> getSortedJsonArray(final JSONArray jsonArray) {
