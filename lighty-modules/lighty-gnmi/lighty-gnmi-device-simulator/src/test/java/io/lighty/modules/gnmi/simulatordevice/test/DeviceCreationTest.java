@@ -21,7 +21,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 public class DeviceCreationTest {
 
-    private static final String SCHEMA_PATH = "src/test/resources/test_schema";
+    private static final String SCHEMA_PATH = "test_schema";
     private static final String INIT_DATA_PATH = "src/test/resources/initData";
     private static final int TARGET_PORT = 10161;
     private static final String TARGET_HOST = "127.0.0.1";

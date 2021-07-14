@@ -52,7 +52,7 @@ public abstract class GnmiITBase {
     protected static final Duration WAIT_TIME_DURATION = Duration.ofMillis(10_000L);
 
     protected static final String INITIAL_JSON_DATA_PATH = "src/test/resources/json/initData";
-    protected static final String TEST_SCHEMA_PATH = "src/test/resources/simulator_models";
+    protected static final String TEST_SCHEMA_PATH = "simulator_models";
 
     protected static ExecutorService httpClientExecutor;
     protected static RCgNMIApp application;
