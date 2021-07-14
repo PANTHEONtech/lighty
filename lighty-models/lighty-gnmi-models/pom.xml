@@ -21,6 +21,7 @@
         <module>lighty-gnmi-topology-model</module>
         <module>lighty-gnmi-yang-storage-model</module>
         <module>lighty-gnmi-certificates-storage-model</module>
+        <module>lighty-gnoi-sonic-yang-model</module>
     </modules>
 
 </project>
