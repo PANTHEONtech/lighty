@@ -22,6 +22,7 @@
         <module>lighty-gnmi-yang-storage-model</module>
         <module>lighty-gnmi-certificates-storage-model</module>
         <module>lighty-gnmi-force-capabilities</module>
+        <module>lighty-gnoi-sonic-yang-model</module>
     </modules>
 
 </project>
