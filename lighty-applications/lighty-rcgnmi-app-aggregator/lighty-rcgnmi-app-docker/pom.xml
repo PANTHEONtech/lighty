@@ -14,7 +14,7 @@
 
     <groupId>io.lighty.applications.rcgnmi</groupId>
     <artifactId>lighty-rcgnmi-app-docker</artifactId>
-    <version>14.0.1-SNAPSHOT</version>
+    <version>14.1.0</version>
 
     <properties>
         <image.name>lighty-rcgnmi</image.name>
