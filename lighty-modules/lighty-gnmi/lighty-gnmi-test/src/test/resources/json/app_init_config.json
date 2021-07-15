@@ -51,7 +51,8 @@
         { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:legacy-entity-ownership-service-provider", "name": "opendaylight-legacy-entity-ownership-service-provider", "revision": "2016-02-26" },
         { "nameSpace": "urn:lighty:gnmi:topology", "name": "gnmi-topology", "revision": "2021-03-16"},
         { "nameSpace": "urn:lighty:gnmi:yang:storage", "name": "gnmi-yang-storage", "revision": "2021-03-31"},
-        { "nameSpace": "urn:lighty:gnmi:certificate:storage", "name": "gnmi-certificate-storage", "revision": "2021-05-04"}
+        { "nameSpace": "urn:lighty:gnmi:certificate:storage", "name": "gnmi-certificate-storage", "revision": "2021-05-04"},
+        { "nameSpace": "urn:lighty:gnmi:force:capabilities", "name": "gnmi-force-capabilities", "revision": "2021-07-02"}
       ]
     }
   },
