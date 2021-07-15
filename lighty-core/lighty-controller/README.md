@@ -108,16 +108,13 @@ or completely override it if required.
 ```
         "schemaServiceConfig":{
             "topLevelModels":[
-                { "nameSpace": "urn:TBD:params:xml:ns:yang:network:isis-topology", "name": "isis-topology", "revision": "2013-07-12" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:core:general-entity", "name": "general-entity", "revision": "2015-08-20" },
                 { "nameSpace": "subscribe:to:notification", "name": "subscribe-to-notification", "revision": "2016-10-28" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:cluster:admin", "name": "cluster-admin", "revision": "2015-10-13" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:aaa", "name": "aaa", "revision": "2016-12-14" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:actor-system-provider:impl", "name": "actor-system-provider-impl", "revision": "2015-10-05" },
-                { "nameSpace": "urn:ietf:params:xml:ns:yang:ospf-topology", "name": "ospf-topology", "revision": "2013-07-12" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:distributed-datastore-provider", "name": "distributed-datastore-provider", "revision": "2014-06-12" },
                 { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-library", "name": "ietf-yang-library", "revision": "2016-06-21" },
-                { "nameSpace": "urn:TBD:params:xml:ns:yang:network:isis-topology", "name": "isis-topology", "revision": "2013-10-21" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:inmemory-datastore-provider", "name": "opendaylight-inmemory-datastore-provider", "revision": "2014-06-17" },
                 { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-restconf", "name": "ietf-restconf", "revision": "2013-10-19" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:concurrent-data-broker", "name": "odl-concurrent-data-broker-cfg", "revision": "2014-11-24" },
@@ -131,7 +128,6 @@ or completely override it if required.
                 { "nameSpace": "urn:opendaylight:yang:extension:yang-ext", "name": "yang-ext", "revision": "2013-07-09" },
                 { "nameSpace": "urn:opendaylight:l2:types", "name": "opendaylight-l2-types", "revision": "2013-08-27" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:md:sal:config:impl:cluster-singleton-service", "name": "cluster-singleton-service-impl", "revision": "2016-07-18" },
-                { "nameSpace": "urn:TBD:params:xml:ns:yang:ospf-topology", "name": "ospf-topology", "revision": "2013-10-21" },
                 { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-restconf-monitoring", "name": "ietf-restconf-monitoring", "revision": "2017-01-26" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:clustering:prefix-shard-configuration", "name": "prefix-shard-configuration", "revision": "2017-01-10" },
                 { "nameSpace": "urn:opendaylight:aaa:app:config", "name": "aaa-app-config", "revision": "2017-06-19" },
