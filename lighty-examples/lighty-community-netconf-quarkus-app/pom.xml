@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.lighty.quarkus</groupId>
   <artifactId>lighty-quarkus-netconf-app</artifactId>
-  <version>14.0.1-SNAPSHOT</version>
+  <version>14.1.0</version>
   <packaging>jar</packaging>
 
   <properties>
@@ -15,7 +15,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>1.8</maven.compiler.target>
     <application.attach.zip>true</application.attach.zip>
-    <lighty.version>14.0.1-SNAPSHOT</lighty.version>
+    <lighty.version>14.1.0</lighty.version>
   </properties>
 
   <dependencyManagement>
