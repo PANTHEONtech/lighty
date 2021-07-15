@@ -21,6 +21,8 @@ import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.infrautils.ready.SystemReadyMonitor;
+import org.opendaylight.mdsal.binding.api.ActionProviderService;
+import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
@@ -154,5 +156,9 @@ public interface LightyServices extends LightyModuleRegistryService {
     CacheProvider getCacheProvider();
 
     AdapterContext getAdapterContext();
+
+    ActionProviderService getActionProviderService();
+
+    ActionService getActionService();
 
 }
