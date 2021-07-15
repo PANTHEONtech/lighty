@@ -7,6 +7,7 @@
  */
 package io.lighty.modules.southbound.netconf.tests;
 
+import static io.lighty.modules.southbound.netconf.tests.LightyTestUtils.MAX_START_TIME_MILLIS;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
@@ -81,7 +82,8 @@ public class TopologyPluginsTest {
     }
 
     @BeforeClass
-    public void beforeClass() throws ConfigurationException {
+    public void beforeClass()
+            throws ConfigurationException, ExecutionException, InterruptedException, TimeoutException {
         MockitoAnnotations.initMocks(this);
         when(this.dispatcher.createReconnectingClient(any())).thenReturn(this.initFuture);
 
@@ -90,7 +92,7 @@ public class TopologyPluginsTest {
                 RestConfConfigUtils.getDefaultRestConfConfiguration();
         this.restConf = LightyTestUtils.startRestconf(restConfConfig, this.lightyController.getServices());
         this.netconfPlugin = startSingleNodeNetconf(this.lightyController.getServices(), this.dispatcher);
-        this.netconfPlugin.start();
+        this.netconfPlugin.start().get(MAX_START_TIME_MILLIS, TimeUnit.MILLISECONDS);
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
