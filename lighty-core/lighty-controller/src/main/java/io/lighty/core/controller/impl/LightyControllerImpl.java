@@ -81,12 +81,15 @@ import org.opendaylight.infrautils.jobcoordinator.internal.JobCoordinatorImpl;
 import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.infrautils.metrics.internal.MetricProviderImpl;
 import org.opendaylight.infrautils.ready.SystemReadyMonitor;
+import org.opendaylight.mdsal.binding.api.ActionProviderService;
+import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
+import org.opendaylight.mdsal.binding.dom.adapter.BindingAdapterFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMDataBrokerAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMMountPointServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationPublishServiceAdapter;
@@ -196,8 +199,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private AdapterContext codec;
     private BindingCodecTreeFactory bindingCodecTreeFactory;
     private YangParserFactory yangParserFactory;
+    private BindingAdapterFactory bindingAdapterFactory;
     private RpcProviderService rpcProviderService;
     private MountPointService mountPointService;
+    private ActionService actionService;
+    private ActionProviderService actionProviderService;
     private final LightySystemReadyMonitorImpl systemReadyMonitor;
     private final JobCoordinator jobCoordinator;
     private final MetricProvider metricProvider;
@@ -317,6 +323,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.domActionProviderService = domRpcRouter.getActionProviderService();
         this.domActionService = domRpcRouter.getActionService();
         createRemoteOpsProvider();
+
+        this.bindingAdapterFactory = new BindingAdapterFactory(getAdapterContext());
+        this.actionProviderService = this.bindingAdapterFactory.createActionProviderService(
+                this.domActionProviderService);
+        this.actionService = bindingAdapterFactory.createActionService(this.domActionService);
 
         // ENTITY OWNERSHIP
         this.distributedEntityOwnershipService = DistributedEntityOwnershipService.start(this.operDatastore
@@ -656,6 +667,16 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     public AdapterContext getAdapterContext() {
         return codec;
+    }
+
+    @Override
+    public ActionProviderService getActionProviderService() {
+        return actionProviderService;
+    }
+
+    @Override
+    public ActionService getActionService() {
+        return actionService;
     }
 
     @Override
