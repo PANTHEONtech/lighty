@@ -67,7 +67,7 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
             switch (rootNode.getModificationType()) {
                 case WRITE:
                 case SUBTREE_MODIFIED:
-                    if (connectionParamsUpdated(rootNode)) {
+                    if (nodeParamsUpdated(rootNode)) {
                         LOG.info("Received change in gNMI node connection configuration. Node ID: {}", nodeId);
                         disconnectNode(nodeId);
                         connectNode(rootNode.getDataAfter());
@@ -125,13 +125,14 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
         }, executorService);
     }
 
-    private boolean connectionParamsUpdated(final DataObjectModification<Node> rootNode) {
+    private boolean nodeParamsUpdated(final DataObjectModification<Node> rootNode) {
         if (rootNode.getDataBefore() == null || rootNode.getDataAfter() == null) {
             return true;
         } else {
             final GnmiNode before = requireNonNull(rootNode.getDataBefore().augmentation(GnmiNode.class));
             final GnmiNode after = requireNonNull(rootNode.getDataAfter().augmentation(GnmiNode.class));
-            return !before.getConnectionParameters().equals(after.getConnectionParameters());
+            return !before.getConnectionParameters().equals(after.getConnectionParameters())
+                || !before.getExtensionsParameters().equals(after.getExtensionsParameters());
         }
     }
 

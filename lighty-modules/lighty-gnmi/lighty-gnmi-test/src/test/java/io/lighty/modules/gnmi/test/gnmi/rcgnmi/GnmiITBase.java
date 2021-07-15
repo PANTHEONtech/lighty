@@ -237,6 +237,36 @@ public abstract class GnmiITBase {
             + "}";
     }
 
+    protected String createDevicePayloadWithAdditionalCapabilities(final String nodeId, final String ipAddr,
+                                                                   final int port, final String modelName,
+                                                                   final String modelVersion) {
+        return "{\n"
+            + "    \"node\": [\n"
+            + "        {\n"
+            + "            \"node-id\": \"" + nodeId + "\",\n"
+            + "            \"connection-parameters\": {\n"
+            + "                \"host\": \"" + ipAddr + "\",\n"
+            + "                \"port\": " + port + ",\n"
+            + "                \"connection-type\": \"INSECURE\"\n"
+            + "            },\n"
+            + "            \"extensions-parameters\": {\n"
+            + "                \"gnmi-parameters\": {\n"
+            + "                    \"overwrite-data-type\": \"NONE\",\n"
+            + "                    \"use-model-name-prefix\": true,\n"
+            + "                    \"path-target\": \"OC_YANG\"\n"
+            + "                },\n"
+            + "                \"force-capability\": [\n"
+            + "                    {\n"
+            + "                        \"name\": \"" + modelName + "\",\n"
+            + "                        \"version\": \"" + modelVersion + "\"\n"
+            + "                    }\n"
+            + "                ]\n"
+            + "            }\n"
+            + "        }\n"
+            + "    ]\n"
+            + "}";
+    }
+
     protected HttpResponse<String> sendDeleteRequestJSON(final String path) throws InterruptedException, IOException {
         LOG.info("Sending DELETE request to path: {}", path);
         final HttpRequest deleteRequest = HttpRequest.newBuilder()
