@@ -12,7 +12,7 @@ To use RESTCONF in your project:
   <dependency>
     <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-restconf-nb-community</artifactId>
-    <version>14.0.1-SNAPSHOT</version>
+    <version>14.1.0</version>
   </dependency>
 ```
 
