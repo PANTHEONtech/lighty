@@ -203,7 +203,9 @@ public final class XmlUtil {
         }
 
         try {
-            return SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(sources);
+            final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            schemaFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            return schemaFactory.newSchema(sources);
         } catch (final SAXException e) {
             throw new IllegalStateException("Failed to instantiate XML schema", e);
         }
