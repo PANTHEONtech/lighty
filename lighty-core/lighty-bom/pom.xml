@@ -96,6 +96,11 @@
             </dependency>
             <dependency>
                 <groupId>io.lighty.applications.rcgnmi</groupId>
+                <artifactId>lighty-rcgnmi-simulator</artifactId>
+                <version>14.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.lighty.applications.rcgnmi</groupId>
                 <artifactId>lighty-rcgnmi-app-module</artifactId>
                 <version>14.0.1-SNAPSHOT</version>
             </dependency>

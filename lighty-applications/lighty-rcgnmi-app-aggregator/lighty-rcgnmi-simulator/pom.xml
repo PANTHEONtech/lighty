@@ -12,30 +12,27 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>io.lighty.core</groupId>
+        <artifactId>lighty-app-parent</artifactId>
+        <version>14.0.1-SNAPSHOT</version>
+        <relativePath>../../../lighty-core/lighty-app-parent/pom.xml</relativePath>
+    </parent>
+
     <groupId>io.lighty.applications.rcgnmi</groupId>
-    <artifactId>lighty-rcgnmi-app-aggregator</artifactId>
+    <artifactId>lighty-rcgnmi-simulator</artifactId>
     <version>14.0.1-SNAPSHOT</version>
-    <packaging>pom</packaging>
 
     <properties>
+        <application.main.class>io.lighty.applications.rcgnmi.simulator.GnmiSimulatorApp</application.main.class>
+        <application.attach.zip>true</application.attach.zip>
         <maven.deploy.skip>true</maven.deploy.skip>
-        <maven.install.skip>true</maven.install.skip>
     </properties>
 
-    <modules>
-        <module>lighty-rcgnmi-app</module>
-        <module>lighty-rcgnmi-app-module</module>
-        <module>lighty-rcgnmi-simulator</module>
-    </modules>
-
-    <profiles>
-        <profile>
-            <id>docker</id>
-            <modules>
-                <module>lighty-rcgnmi-app-docker</module>
-                <module>lighty-rcgnmi-simulator-docker</module>
-            </modules>
-        </profile>
-    </profiles>
-
+    <dependencies>
+        <dependency>
+            <groupId>io.lighty.modules.gnmi</groupId>
+            <artifactId>lighty-gnmi-device-simulator</artifactId>
+        </dependency>
+    </dependencies>
 </project>
