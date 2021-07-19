@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.lighty.simulator.name }}
+  labels:
+    {{- include "lighty-rcgnmi-app-simulator-helm.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.lighty.simulator.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "lighty-rcgnmi-app-simulator-helm.labels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "lighty-rcgnmi-app-simulator-helm.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Values.lighty.simulator.name }}
+          image: "{{ .Values.lighty.simulator.name }}:{{ .Values.image.version }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            # simulator port
+            - name: simulator
+              containerPort: {{ .Values.lighty.simulator.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}

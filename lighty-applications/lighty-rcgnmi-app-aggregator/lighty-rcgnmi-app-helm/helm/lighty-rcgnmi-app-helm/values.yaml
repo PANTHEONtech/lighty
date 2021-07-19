@@ -19,6 +19,10 @@ lighty:
   replicaCount: 1
   restconf:
     restconfPort: 8888
+  simulator:
+    name: lighty-rcgnmi-simulator
+    replicaCount: 1
+    port: 3333
 
   jmx:
     # Port on which JMX server in image is listening, should be same as defined in dockerfile
@@ -50,6 +54,7 @@ nodePort:
   # If switched to "true", NodePort service will be created; If switched to "false", ClusterIp service will be created
   useNodePort: true
   restconfNodePort: 30888
+  simulatorNodePort: 30333
   exposeManagement: false
   managementNodePort: 30558
 

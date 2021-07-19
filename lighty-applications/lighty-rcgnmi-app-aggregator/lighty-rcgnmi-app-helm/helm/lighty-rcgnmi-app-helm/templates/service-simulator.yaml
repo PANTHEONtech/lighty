@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.lighty.simulator.name }}
+spec:
+  {{- if .Values.nodePort.useNodePort }}
+  type: NodePort
+  {{- end }}
+  ports:
+    - protocol: TCP
+      name: simulator
+      port: {{ .Values.lighty.simulator.port }}
+      {{- if .Values.nodePort.useNodePort }}
+      targetPort: {{ .Values.lighty.simulator.port }}
+      nodePort: {{ .Values.nodePort.simulatorNodePort }}
+      {{- end }}
+  selector:
+    {{- include "lighty-rcgnmi-app-simulator-helm.labels" . | nindent 4 }}

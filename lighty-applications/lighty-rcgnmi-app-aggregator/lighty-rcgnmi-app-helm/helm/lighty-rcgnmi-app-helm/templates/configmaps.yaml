@@ -72,6 +72,11 @@ data:
         "webSocketPort": 8181,
         "restconfServletContextPath":"/restconf",
         "jsonRestconfServiceType": "DRAFT_18"
+      },
+      "gnmi": {
+          "initialYangsPaths" : [
+              "./yangs"
+          ]
       }
     }
 
