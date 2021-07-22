@@ -25,6 +25,10 @@ lighty:
     keyStoreType: "JKS"
     keyStoreDirectory: "keystore"
     keyStoreFileName: "lightyio.jks"
+  simulator:
+    name: lighty-rnc-simulator
+    replicaCount: 1
+    port: 17830
 
   jmx:
     # Port on which JMX server in image is listening, should be same as defined in dockerfile
@@ -60,6 +64,7 @@ nodePort:
   # If switched to "true", NodePort service will be created; If switched to "false", ClusterIp service will be created
   useNodePort: true
   restconfNodePort: 30888
+  simulatorNodePort: 31783
   exposeManagement: false
   managementNodePort: 30558
 
