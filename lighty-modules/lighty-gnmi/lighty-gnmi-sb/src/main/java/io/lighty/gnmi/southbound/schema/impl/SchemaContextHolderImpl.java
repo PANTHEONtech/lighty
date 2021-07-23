@@ -71,28 +71,38 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
      * @return set containing all models for building EffectiveSchemaContext
      */
     private Set<GnmiYangModel> prepareModelsForSchema(
-            final List<GnmiDeviceCapability> baseCaps) throws SchemaException,
-            InterruptedException, ExecutionException, TimeoutException {
+            final List<GnmiDeviceCapability> baseCaps) throws SchemaException {
         final Set<String> processedModuleNames = new HashSet<>();
         final SchemaException schemaException = new SchemaException();
-        // Read models reported in capabilities
-        final Set<GnmiYangModel> fullModelSet = readCapabilities(baseCaps, processedModuleNames, schemaException);
-        // Get dependencies of models reported in capabilities
-        Set<YangModelDependencyInfo> dependencyInfos = getDependenciesOfModels(fullModelSet, schemaException);
 
-        boolean nonComplete = true;
-        while (nonComplete) {
-            // Read dependency models
-            Set<GnmiYangModel> dependencyModels = new HashSet<>();
-            for (YangModelDependencyInfo dependencyInfo : dependencyInfos) {
-                final Set<GnmiYangModel> gnmiYangModels =
-                        readDependencyModels(dependencyInfo, processedModuleNames, schemaException);
-                dependencyModels.addAll(gnmiYangModels);
+        Set<GnmiYangModel> fullModelSet = new HashSet<>();
+        try {
+            // Read models reported in capabilities
+            fullModelSet = readCapabilities(baseCaps, processedModuleNames, schemaException);
+            // Get dependencies of models reported in capabilities
+            Set<YangModelDependencyInfo> dependencyInfos = getDependenciesOfModels(fullModelSet, schemaException);
+
+            boolean nonComplete = true;
+            while (nonComplete) {
+                // Read dependency models
+                Set<GnmiYangModel> dependencyModels = new HashSet<>();
+                for (YangModelDependencyInfo dependencyInfo : dependencyInfos) {
+                    final Set<GnmiYangModel> gnmiYangModels =
+                            readDependencyModels(dependencyInfo, processedModuleNames, schemaException);
+                    dependencyModels.addAll(gnmiYangModels);
+                }
+                // See which models are new, if any, do it again
+                final Sets.SetView<GnmiYangModel> newModels = Sets.difference(dependencyModels, fullModelSet);
+                dependencyInfos = getDependenciesOfModels(newModels.immutableCopy(), schemaException);
+                nonComplete = fullModelSet.addAll(newModels);
             }
-            // See which models are new, if any, do it again
-            final Sets.SetView<GnmiYangModel> newModels = Sets.difference(dependencyModels, fullModelSet);
-            dependencyInfos = getDependenciesOfModels(newModels.immutableCopy(), schemaException);
-            nonComplete = fullModelSet.addAll(newModels);
+        } catch (ExecutionException | TimeoutException e) {
+            LOG.error("Error reading yang model from datastore", e);
+            schemaException.addErrorMessage(e.getMessage());
+        } catch (InterruptedException e) {
+            LOG.error("Interrupted while reading model from datastore", e);
+            Thread.currentThread().interrupt();
+            schemaException.addErrorMessage(e.getMessage());
         }
 
         if (schemaException.getMissingModels().isEmpty() && schemaException.getErrorMessages().isEmpty()) {
@@ -194,37 +204,27 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
         // Compute schema and add to cache
         final CrossSourceStatementReactor.BuildAction buildAction = yangReactor.newBuild();
         final SchemaException schemaException = new SchemaException();
-        try {
-            boolean success = true;
-            final Set<GnmiYangModel> completeCapabilities = prepareModelsForSchema(capabilities);
-            for (GnmiYangModel model : completeCapabilities) {
-                try {
-                    buildAction.addSource(YangStatementStreamSource.create(makeTextSchemaSource(model)));
-                } catch (IOException | YangSyntaxErrorException e) {
-                    LOG.error("Adding YANG {} to reactor failed!", model, e);
-                    schemaException.addErrorMessage(e.getMessage());
-                    success = false;
-                }
+        boolean success = true;
+        final Set<GnmiYangModel> completeCapabilities = prepareModelsForSchema(capabilities);
+        for (GnmiYangModel model : completeCapabilities) {
+            try {
+                buildAction.addSource(YangStatementStreamSource.create(makeTextSchemaSource(model)));
+            } catch (IOException | YangSyntaxErrorException e) {
+                LOG.error("Adding YANG {} to reactor failed!", model, e);
+                schemaException.addErrorMessage(e.getMessage());
+                success = false;
             }
-            if (success) {
-                try {
-                    final EffectiveSchemaContext context = buildAction.buildEffective();
-                    LOG.debug("Schema context created {}", context.getModules());
-                    contextCache.put(key, context);
-                    return context;
-                } catch (ReactorException e) {
-                    LOG.error("Reactor failed processing schema context", e);
-                    schemaException.addErrorMessage(e.getMessage());
-                }
+        }
+        if (success) {
+            try {
+                final EffectiveSchemaContext context = buildAction.buildEffective();
+                LOG.debug("Schema context created {}", context.getModules());
+                contextCache.put(key, context);
+                return context;
+            } catch (ReactorException e) {
+                LOG.error("Reactor failed processing schema context", e);
+                schemaException.addErrorMessage(e.getMessage());
             }
-            throw schemaException;
-        } catch (ExecutionException | TimeoutException e) {
-            LOG.error("Error reading yang model from datastore", e);
-            schemaException.addErrorMessage(e.getMessage());
-        } catch (InterruptedException e) {
-            LOG.error("Interrupted while reading model from datastore", e);
-            Thread.currentThread().interrupt();
-            schemaException.addErrorMessage(e.getMessage());
         }
         throw schemaException;
     }
