@@ -18,8 +18,7 @@ import gnmi.Gnmi;
 import io.lighty.modules.gnmi.connector.configuration.SessionConfiguration;
 import io.lighty.modules.gnmi.connector.session.api.SessionManager;
 import io.lighty.modules.gnmi.connector.session.api.SessionProvider;
-import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
-import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
+import io.lighty.modules.gnmi.simulatordevice.main.GnmiSimulatorApp;
 import io.lighty.modules.gnmi.test.utils.TestUtils;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -41,8 +40,9 @@ public class SimulatorCrudTest {
 
     private static final int TARGET_PORT = 10161;
     private static final String TARGET_HOST = "127.0.0.1";
+    private static final String USERNAME = "admin";
+    private static final String PASSWORD = "admin";
     private static final String INITIAL_DATA_PATH = "src/test/resources/json/initData";
-    private static final String TEST_SCHEMA_PATH = "src/test/resources/simulator_models";
     private static final String INTERFACES_PREFIX = "openconfig-interfaces";
     private static final String OPENCONFIG_INTERFACES = INTERFACES_PREFIX + ":" + "interfaces";
     private static final String ETHRERNET_PREFIX = "openconfig-if-ethernet";
@@ -51,29 +51,25 @@ public class SimulatorCrudTest {
     private static final int UPDATE_MTU_VAL = 500;
 
     private static SessionProvider sessionProvider;
-    private static SimulatedGnmiDevice target;
+    private static GnmiSimulatorApp target;
 
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, CertificateException, InvalidKeySpecException, IOException,
             URISyntaxException {
-
-        target = new SimulatedGnmiDeviceBuilder().setHost(TARGET_HOST).setPort(TARGET_PORT)
-                .setInitialConfigDataPath(INITIAL_DATA_PATH + "/config.json")
-                .setInitialStateDataPath(INITIAL_DATA_PATH + "/state.json")
-                .setYangsPath(TEST_SCHEMA_PATH)
-                .build();
-        target.start();
+        target = new GnmiSimulatorApp();
+        target.start(true,
+            new String[]{"-c","src/test/resources/json/example_config.json"});
         final SessionManager sessionManager = TestUtils.createSessionManagerWithCerts();
         final InetSocketAddress targetAddress = new InetSocketAddress(TARGET_HOST, TARGET_PORT);
-        sessionProvider = sessionManager.createSession(
-                new SessionConfiguration(targetAddress, false));
+        sessionProvider =
+            sessionManager.createSession(new SessionConfiguration(targetAddress, false, USERNAME, PASSWORD));
     }
 
     @After
     public void after() throws Exception {
         sessionProvider.close();
-        target.stop();
+        target.shutdown();
     }
 
     @Test
