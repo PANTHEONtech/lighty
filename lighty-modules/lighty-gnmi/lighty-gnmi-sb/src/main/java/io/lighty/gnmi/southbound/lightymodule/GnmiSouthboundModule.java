@@ -52,7 +52,7 @@ public final class GnmiSouthboundModule extends AbstractLightyModule {
     }
 
     @Override
-    protected boolean initProcedure() throws InterruptedException {
+    protected boolean initProcedure() {
         LOG.info("Starting lighty gNMI Southbound Module");
         final List<YangLoaderService> initialLoaders = prepareByPathLoaders(gnmiConfiguration, customReactor);
         try {
@@ -64,9 +64,11 @@ public final class GnmiSouthboundModule extends AbstractLightyModule {
             return true;
         } catch (ExecutionException | TimeoutException | YangLoadException e) {
             LOG.error("Unable to initialize gNMI Provider", e);
-            return false;
+        } catch (InterruptedException e) {
+            LOG.error("Interrupted while initializing gNMI Provider", e);
+            Thread.currentThread().interrupt();
         }
-
+        return false;
     }
 
     @SuppressWarnings({"checkstyle:illegalCatch"})

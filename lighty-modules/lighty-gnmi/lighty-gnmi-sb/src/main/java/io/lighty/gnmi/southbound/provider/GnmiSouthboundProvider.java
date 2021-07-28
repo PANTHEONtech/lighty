@@ -95,7 +95,7 @@ public class GnmiSouthboundProvider implements AutoCloseable {
     public void init() throws ExecutionException, InterruptedException, TimeoutException, YangLoadException {
         LOG.info("gNMI init started");
         //----Load initial yang models to datastore and register yang load rpc----
-        final YangDataStoreService yangDataStoreService = new YangDataStoreServiceImpl(dataBroker);
+        final YangDataStoreService yangDataStoreService = new YangDataStoreServiceImpl(dataBroker, gnmiExecutorService);
         final YangStorageServiceRpcImpl yangStorageServiceRpc = new YangStorageServiceRpcImpl(yangDataStoreService);
         closeables.add(rpcProvider.registerRpcImplementation(GnmiYangStorageService.class, yangStorageServiceRpc));
 
@@ -148,11 +148,11 @@ public class GnmiSouthboundProvider implements AutoCloseable {
                         .build())
                 .build();
         @NonNull WriteTransaction configTx = dataBroker.newWriteOnlyTransaction();
-        configTx.put(LogicalDatastoreType.CONFIGURATION, IdentifierUtils.GNMI_TOPO_IID, topology);
+        configTx.merge(LogicalDatastoreType.CONFIGURATION, IdentifierUtils.GNMI_TOPO_IID, topology);
         configTx.commit().get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
 
         @NonNull WriteTransaction operTx = dataBroker.newWriteOnlyTransaction();
-        operTx.put(LogicalDatastoreType.OPERATIONAL, IdentifierUtils.GNMI_TOPO_IID, topology);
+        operTx.merge(LogicalDatastoreType.OPERATIONAL, IdentifierUtils.GNMI_TOPO_IID, topology);
         operTx.commit().get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
     }
 
