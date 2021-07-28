@@ -127,13 +127,12 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
                     final AugmentationNode node = (AugmentationNode) codecResult;
                     if (node.getIdentifier().getPossibleChildNames().size() == 1
                             && node.getValue().size() == 1) {
-                        return Optional.of(node.getValue().stream().findFirst().get());
+                        return Optional.of(node.getValue().iterator().next());
 
                     }
                 } else {
                     return Optional.of(codecResult);
                 }
-                return Optional.empty();
             }
         }
         return Optional.empty();

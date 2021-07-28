@@ -134,7 +134,10 @@ public class DeviceConnectionManager implements AutoCloseable {
 
                     return Futures.immediateFuture(null);
 
-                } catch (SchemaException | InterruptedException | ExecutionException | TimeoutException e) {
+                } catch (SchemaException | ExecutionException | TimeoutException e) {
+                    return Futures.immediateFailedFuture(e);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                     return Futures.immediateFailedFuture(e);
                 }
             },
