@@ -22,7 +22,7 @@ import org.opendaylight.mdsal.dom.spi.FixedDOMSchemaService;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.EffectiveSchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +39,7 @@ public class GnmiMountPointRegistrator implements AutoCloseable {
     }
 
 
-    public void registerMountPoint(final Node node, final EffectiveSchemaContext schemaContext,
+    public void registerMountPoint(final Node node, final EffectiveModelContext schemaContext,
                                    final DOMDataBroker dataBroker) {
         Preconditions.checkState(!registeredMountPoints.containsKey(node.getNodeId()),
                 "Mount point for node %s already exists!", node.getNodeId().getValue());

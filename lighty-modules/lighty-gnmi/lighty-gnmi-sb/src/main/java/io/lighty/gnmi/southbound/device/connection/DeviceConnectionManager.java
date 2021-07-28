@@ -44,7 +44,7 @@ import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.node
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeBuilder;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.EffectiveSchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,7 +125,7 @@ public class DeviceConnectionManager implements AutoCloseable {
                     capabilitiesList.addAll(GnmiRequestUtils.fromCapabilitiesResponse(capabilityResponse));
                 }
                 try {
-                    final EffectiveSchemaContext schemaContext = schemaContextHolder.getSchemaContext(capabilitiesList);
+                    final EffectiveModelContext schemaContext = schemaContextHolder.getSchemaContext(capabilitiesList);
                     deviceConnection.setSchemaContext(schemaContext);
                     final GnmiDataBroker gnmiDataBroker = gnmiDataBrokerFactory.create(deviceConnection);
                     mountPointRegistrator.registerMountPoint(node, schemaContext, gnmiDataBroker);
