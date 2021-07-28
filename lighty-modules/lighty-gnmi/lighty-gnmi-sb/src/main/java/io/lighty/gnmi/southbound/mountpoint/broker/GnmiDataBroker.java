@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 public class GnmiDataBroker implements PingPongMergingDOMDataBroker {
 
     private static final Logger LOG = LoggerFactory.getLogger(GnmiDataBroker.class);
-    private static final String NOT_IMPLEMENTED = "Method not implemented";
+    private static final String NOT_IMPLEMENTED = "Method not implemented inside ";
 
     private final GnmiGet gnmiGet;
     private final GnmiSet gnmiSet;
@@ -59,7 +59,7 @@ public class GnmiDataBroker implements PingPongMergingDOMDataBroker {
 
             @Override
             public void close() {
-                LOG.warn(NOT_IMPLEMENTED);
+                LOG.debug("Closing {} resources", this.getClass().getSimpleName());
             }
         };
     }

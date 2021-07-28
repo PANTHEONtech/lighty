@@ -33,7 +33,7 @@ public class ReadOnlyTx implements DOMDataTreeReadTransaction {
 
     @Override
     public void close() {
-        LOG.info("Method not implemented!");
+        LOG.debug("Closing ReadOnlyTx resources for node: [{}]", nodeId.getValue());
     }
 
     @Override
