@@ -92,8 +92,12 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
         writeTransaction.delete(LogicalDatastoreType.OPERATIONAL, IdentifierUtils.gnmiNodeIID(nodeId));
         try {
             writeTransaction.commit().get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (ExecutionException | TimeoutException e) {
             LOG.warn("Failed deleting node state of node {} from operational datastore", nodeId.getValue(), e);
+        } catch (InterruptedException e) {
+            LOG.error("Interrupted while deleting node state of node {} from operational datastore",
+                    nodeId.getValue(), e);
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -113,9 +117,16 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
                     try {
                         LOG.error("Connection of node {} failed", node.getNodeId(), throwable);
                         writeConnectionFailureReasonToDatastore(node.getNodeId(), throwable.toString());
-                    } catch (InterruptedException | TimeoutException | ExecutionException e) {
-                        LOG.warn("Failed writing reason of connection failure of node {} to datastore",
-                                node.getNodeId().getValue(), e);
+                    } catch (TimeoutException | ExecutionException e) {
+                        throw new RuntimeException(
+                                String.format("Failed writing reason of connection failure of node %s to datastore",
+                                        node.getNodeId().getValue()), e);
+
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new RuntimeException(
+                                String.format("Interrupted while writing connection failure of node %s to datastore",
+                                        node.getNodeId().getValue()), e);
                     }
                 } else {
                     LOG.info("Connection initialization to node {} was cancelled", node.getNodeId());
@@ -126,11 +137,15 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
     }
 
     private boolean nodeParamsUpdated(final DataObjectModification<Node> rootNode) {
-        if (rootNode.getDataBefore() == null || rootNode.getDataAfter() == null) {
+        final Node nodeBefore = rootNode.getDataBefore();
+        final Node nodeAfter = rootNode.getDataAfter();
+        if (nodeBefore == null || nodeAfter == null) {
             return true;
         } else {
-            final GnmiNode before = requireNonNull(rootNode.getDataBefore().augmentation(GnmiNode.class));
-            final GnmiNode after = requireNonNull(rootNode.getDataAfter().augmentation(GnmiNode.class));
+            final GnmiNode before = requireNonNull(nodeBefore.augmentation(GnmiNode.class),
+                    "Node must be augmented by gNMI");
+            final GnmiNode after = requireNonNull(nodeAfter.augmentation(GnmiNode.class),
+                    "Node must be augmented by gNMI");
             return !before.getConnectionParameters().equals(after.getConnectionParameters())
                 || !before.getExtensionsParameters().equals(after.getExtensionsParameters());
         }

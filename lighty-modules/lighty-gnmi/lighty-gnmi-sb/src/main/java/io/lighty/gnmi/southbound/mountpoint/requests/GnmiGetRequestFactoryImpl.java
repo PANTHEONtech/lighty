@@ -17,6 +17,7 @@ import io.lighty.gnmi.southbound.device.connection.ConfigurableParameters;
 import io.lighty.gnmi.southbound.device.connection.DeviceConnection;
 import io.lighty.gnmi.southbound.mountpoint.codecs.Codec;
 import io.lighty.gnmi.southbound.mountpoint.codecs.GnmiCodecException;
+import java.util.List;
 import java.util.Optional;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.connection.parameters.extensions.parameters.GnmiParameters;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -51,13 +52,11 @@ public class GnmiGetRequestFactoryImpl implements GnmiGetRequestFactory {
                 requestBuilder.setType(Gnmi.GetRequest.DataType
                     .valueOf(overwriteDataType.get().getName()));
             }
-            if (parameters.getPathTarget().isPresent()) {
-                requestBuilder.setPrefix(Gnmi.Path.newBuilder()
-                    .setTarget(parameters.getPathTarget().get()));
-            }
-            if (parameters.getModelDataList().isPresent()) {
-                requestBuilder.addAllUseModels(parameters.getModelDataList().get());
-            }
+            final Optional<String> optPathTarget = parameters.getPathTarget();
+            optPathTarget.ifPresent(pathTarget -> requestBuilder.setPrefix(Path.newBuilder().setTarget(pathTarget)));
+
+            final Optional<List<Gnmi.ModelData>> optModelDataList = parameters.getModelDataList();
+            optModelDataList.ifPresent(requestBuilder::addAllUseModels);
 
             final Gnmi.Path gnmiPath = instanceIdentifierToPathCodec.apply(path);
             return requestBuilder
