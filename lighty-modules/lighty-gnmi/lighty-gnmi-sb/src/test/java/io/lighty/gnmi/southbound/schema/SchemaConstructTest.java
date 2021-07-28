@@ -13,6 +13,7 @@ import io.lighty.gnmi.southbound.schema.impl.SchemaContextHolderImpl;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
 import io.lighty.gnmi.southbound.schema.loader.impl.ByPathYangLoaderService;
+import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -22,6 +23,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -44,7 +48,7 @@ public class SchemaConstructTest {
     private static final List<String> REVISION_MODELS = Arrays.asList("iana-if-type",
             "openconfig-extensions");
     private static final List<String> NO_VERSION_MODELS = Arrays.asList("no-version", "test-dependency",
-            "test-dependency2");
+            "test-dependency2", "test-interfaces");
     private TestYangDataStoreService dataStoreService;
     private List<GnmiDeviceCapability> completeCapabilities;
 
@@ -63,16 +67,20 @@ public class SchemaConstructTest {
         Test that all loaded models have expected version types (semver, revision, empty).
      */
     @Test
-    public void schemaConstructRevisionTest() {
+    public void schemaConstructRevisionTest() throws InterruptedException, ExecutionException, TimeoutException {
         // Get and assert that all models are read
-        final List<GnmiYangModel> storedModels =
-                completeCapabilities.stream().map(cap -> cap.getVersionString().isPresent()
-                        ? dataStoreService.readYangModel(cap.getName(), cap.getVersionString().get())
-                        : dataStoreService.readYangModel(cap.getName()))
-                        .peek(model -> Assertions.assertTrue(model.isPresent()))
-                        .map(Optional::get)
-                        .collect(Collectors.toList());
-
+        final List<GnmiYangModel> storedModels = new ArrayList<>();
+        for (GnmiDeviceCapability capability : completeCapabilities) {
+            if (capability.getVersionString().isPresent()) {
+                storedModels.add(dataStoreService
+                        .readYangModel(capability.getName(), capability.getVersionString().get())
+                        .get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS).orElseThrow());
+            } else {
+                storedModels.add(dataStoreService
+                        .readYangModel(capability.getName())
+                        .get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS).orElseThrow());
+            }
+        }
         for (GnmiYangModel model : storedModels) {
             if (NO_VERSION_MODELS.contains(model.getName())) {
                 Assertions.assertTrue(model.getVersion().getValue().isEmpty());
@@ -127,7 +135,8 @@ public class SchemaConstructTest {
         Test that SchemaContextHolderImpl correctly reports missing models if they are not found in datastore.
     */
     @Test
-    public void schemaConstructionModelsMissingTest() {
+    public void schemaConstructionModelsMissingTest()
+            throws InterruptedException, ExecutionException, TimeoutException {
         final SchemaContextHolder schemaContextHolder = new SchemaContextHolderImpl(
                 dataStoreService, null);
         //Delete models so they should be reported as missing
@@ -154,7 +163,8 @@ public class SchemaConstructTest {
         reports missing models which are imports of models provided in capabilities.
     */
     @Test
-    public void schemaConstructionModelsImportsMissingTest() {
+    public void schemaConstructionModelsImportsMissingTest()
+            throws InterruptedException, ExecutionException, TimeoutException {
         final SchemaContextHolder schemaContextHolder = new SchemaContextHolderImpl(
                 dataStoreService, null);
         //Delete models so they should be reported as missing
@@ -183,7 +193,8 @@ public class SchemaConstructTest {
         Test behaviour of schema context creation if some requested modules contains yang syntax errors.
      */
     @Test
-    public void schemaConstructWrongSyntaxTest() throws IOException {
+    public void schemaConstructWrongSyntaxTest()
+            throws IOException, InterruptedException, ExecutionException, TimeoutException {
         // Delete models with correct syntax and add them back with wrong syntax
         final List<File> filesInFolder = Files.walk(Path.of(SYNTAX_ERROR_YANGS_PATH))
                 .filter(Files::isRegularFile)
@@ -193,7 +204,9 @@ public class SchemaConstructTest {
         for (File file : filesInFolder) {
             final String body = IOUtils.toString(Files.newInputStream(file.toPath()), StandardCharsets.UTF_8);
             final GnmiYangModel model = dataStoreService.readYangModel(
-                    FilenameUtils.removeExtension(file.getName())).orElseThrow();
+                    FilenameUtils.removeExtension(file.getName()))
+                    .get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
+                    .orElseThrow();
             dataStoreService.deleteYangModel(model.getName(), null);
             dataStoreService.addYangModel(model.getName(), model.getVersion().getValue(), body);
         }
@@ -214,7 +227,8 @@ public class SchemaConstructTest {
          modules are also missing.
      */
     @Test
-    public void schemaConstructWrongSyntaxAndMissingModelsTest() throws IOException {
+    public void schemaConstructWrongSyntaxAndMissingModelsTest()
+            throws IOException, InterruptedException, ExecutionException, TimeoutException {
         // Delete models with correct syntax and add them back with wrong syntax
         final List<File> filesInFolder = Files.walk(Path.of(SYNTAX_ERROR_YANGS_PATH))
                 .filter(Files::isRegularFile)
@@ -224,7 +238,9 @@ public class SchemaConstructTest {
         for (File file : filesInFolder) {
             final String body = IOUtils.toString(Files.newInputStream(file.toPath()), StandardCharsets.UTF_8);
             final GnmiYangModel model = dataStoreService.readYangModel(
-                    FilenameUtils.removeExtension(file.getName())).orElseThrow();
+                    FilenameUtils.removeExtension(file.getName()))
+                    .get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
+                    .orElseThrow();
             dataStoreService.deleteYangModel(model.getName(), null);
             dataStoreService.addYangModel(model.getName(), model.getVersion().getValue(), body);
         }

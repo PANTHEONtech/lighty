@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -45,7 +46,9 @@ public final class InitialDataImportUtil {
     private static NormalizedNode<?, ?> inputStreamJSONtoNormalizedNodes(InputStream inputStream,
                                                                          EffectiveModelContext effectiveModelContext)
             throws IOException, SerializationException {
-        SchemaNode rootSchemaNode = DataSchemaContextTree.from(effectiveModelContext).getRoot().getDataSchemaNode();
+        final SchemaNode rootSchemaNode = Objects.requireNonNull(
+                DataSchemaContextTree.from(effectiveModelContext).getRoot().getDataSchemaNode(),
+                "Root Data node is null");
         JsonNodeConverter jsonNodeConverter = new JsonNodeConverter(effectiveModelContext);
         try (Reader reader =
                      new InputStreamReader(inputStream, Charset.defaultCharset())) {

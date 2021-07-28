@@ -63,7 +63,7 @@ public class GnmiConnectionStatusListener implements AutoCloseable {
             ConnectivityState newState = sessionProvider.getChannelState();
 
             LOG.info("Channel state of node {} changed from {} to {}. Updating operational datastore...",
-                    currentState == null ? "UNKNOWN" : currentState, nodeId, newState);
+                    nodeId.getValue(), currentState == null ? "UNKNOWN" : currentState, newState);
 
             this.currentState = newState;
             // Trigger registered callback on status change, if exists
@@ -76,7 +76,7 @@ public class GnmiConnectionStatusListener implements AutoCloseable {
 
     private void triggerCallbackIfPresent() {
         if (onStatusCallback != null && callbackDesiredState == currentState) {
-            LOG.debug("Triggering registered callback on node {} connectivity status change {}", nodeId,
+            LOG.debug("Triggering registered callback on node {} connectivity status change {}", nodeId.getValue(),
                     callbackDesiredState);
             executorService.execute(onStatusCallback);
             onStatusCallback = null;
@@ -97,14 +97,18 @@ public class GnmiConnectionStatusListener implements AutoCloseable {
                     .build();
             tx.merge(LogicalDatastoreType.OPERATIONAL, IdentifierUtils.gnmiNodeIID(nodeId), operationalNode);
             tx.commit().get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            LOG.error("Unable to write connection state of gRPC channel of node {} to datastore", nodeId, e);
+        } catch (ExecutionException | TimeoutException e) {
+            LOG.warn("Unable to write connection state of gRPC channel of node {} to datastore", nodeId.getValue(), e);
+        } catch (InterruptedException e) {
+            LOG.error("Interrupted while writing connection state of gRPC channel of node {} to datastore",
+                    nodeId.getValue(), e);
+            Thread.currentThread().interrupt();
         }
     }
 
     @Override
     public synchronized void close() throws ExecutionException, InterruptedException, TimeoutException {
-        LOG.info("Stopping listening on gRPC channel state for node {}", nodeId);
+        LOG.info("Stopping listening on gRPC channel state for node {}", nodeId.getValue());
         listenerActive = false;
         currentState = ConnectivityState.SHUTDOWN;
         // Delete connection state data from operational datastore
@@ -134,7 +138,7 @@ public class GnmiConnectionStatusListener implements AutoCloseable {
      * @param state desired state
      */
     public void registerOnStatusCallback(final Runnable callback, final ConnectivityState state) {
-        LOG.debug("Registering callback on node {} connectivity status change {}", nodeId,
+        LOG.debug("Registering callback on node {} connectivity status change {}", nodeId.getValue(),
                 state);
         onStatusCallback = callback;
         callbackDesiredState = state;

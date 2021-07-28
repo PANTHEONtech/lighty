@@ -35,17 +35,17 @@ public interface YangDataStoreService {
      * Tries to read yang model with specified version from datastore.
      * @param modelName name of the module
      * @param modelVersion version of module (revision date format/semantic format)
-     * @return optional yang model
+     * @return future optional yang model
      */
-    Optional<GnmiYangModel> readYangModel(String modelName, String modelVersion);
+    ListenableFuture<Optional<GnmiYangModel>> readYangModel(String modelName, String modelVersion);
 
     /**
      * Tries to read yang model from datastore without independent of it's version.
      * Model is returned only if one version is present in the datastore.
      * @param modelName name of the module
-     * @return optional yang model
+     * @return future optional yang model
      */
-    Optional<GnmiYangModel> readYangModel(String modelName);
+    ListenableFuture<Optional<GnmiYangModel>> readYangModel(String modelName);
 
 
 }

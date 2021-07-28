@@ -31,15 +31,19 @@ module gnmi-yang-storage {
             "gNMI Specification Section 2.6.1 The ModelData message";
     }
 
+    grouping yang-model-name-version {
+            leaf name {
+                description "Name of the yang model";
+                type string;
+            }
+            leaf version {
+                description "Version of the yang model";
+                type module-version-type;
+            }
+    }
+
     grouping yang-model {
-        leaf name {
-            description "Name of the yang model";
-            type string;
-        }
-        leaf version {
-            description "Version of the yang model";
-            type module-version-type;
-        }
+        uses yang-model-name-version;
         leaf body {
             description "Body of the yang model";
             type string;

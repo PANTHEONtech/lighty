@@ -20,6 +20,7 @@ import io.lighty.modules.gnmi.connector.session.api.SessionManager;
 import io.lighty.modules.gnmi.connector.session.api.SessionProvider;
 import java.net.InetSocketAddress;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -59,7 +60,8 @@ public class DeviceConnectionInitializer implements AutoCloseable {
     }
 
     public ListenableFuture<DeviceConnection> initConnection(final Node node) throws SessionSecurityException {
-        final GnmiNode gnmiNode = node.augmentation(GnmiNode.class);
+        final GnmiNode gnmiNode = Objects.requireNonNull(node.augmentation(GnmiNode.class),
+                "Node must be augmented by gNMI");
         final SessionManager sessionManager =
                 sessionManagerFactory.createSessionManager(securityProvider.getSecurity(gnmiNode));
         ConnectionParameters connectionParameters = gnmiNode.getConnectionParameters();

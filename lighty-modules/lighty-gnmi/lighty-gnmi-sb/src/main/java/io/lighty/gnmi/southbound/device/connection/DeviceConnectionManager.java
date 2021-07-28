@@ -23,8 +23,10 @@ import io.lighty.gnmi.southbound.requests.utils.GnmiRequestUtils;
 import io.lighty.gnmi.southbound.schema.SchemaContextHolder;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -112,8 +114,16 @@ public class DeviceConnectionManager implements AutoCloseable {
                             new MissingEncodingException("gNMI Device must support JSON_IETF encoding"));
                 }
 
-                final List<GnmiDeviceCapability> capabilitiesList =
-                    GnmiRequestUtils.fromCapabilitiesResponse(capabilityResponse);
+                final List<GnmiDeviceCapability> capabilitiesList = new ArrayList<>();
+                final Optional<List<Gnmi.ModelData>> forceCapabilities =
+                    deviceConnection.getConfigurableParameters().getModelDataList();
+                if (forceCapabilities.isPresent()) {
+                    final Gnmi.CapabilityResponse capabilitiesResponseBuilder =
+                        Gnmi.CapabilityResponse.newBuilder().addAllSupportedModels(forceCapabilities.get()).build();
+                    capabilitiesList.addAll(GnmiRequestUtils.fromCapabilitiesResponse(capabilitiesResponseBuilder));
+                } else {
+                    capabilitiesList.addAll(GnmiRequestUtils.fromCapabilitiesResponse(capabilityResponse));
+                }
                 try {
                     final EffectiveSchemaContext schemaContext = schemaContextHolder.getSchemaContext(capabilitiesList);
                     deviceConnection.setSchemaContext(schemaContext);
@@ -124,7 +134,10 @@ public class DeviceConnectionManager implements AutoCloseable {
 
                     return Futures.immediateFuture(null);
 
-                } catch (SchemaException | InterruptedException | ExecutionException | TimeoutException e) {
+                } catch (SchemaException | ExecutionException | TimeoutException e) {
+                    return Futures.immediateFailedFuture(e);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                     return Futures.immediateFailedFuture(e);
                 }
             },
