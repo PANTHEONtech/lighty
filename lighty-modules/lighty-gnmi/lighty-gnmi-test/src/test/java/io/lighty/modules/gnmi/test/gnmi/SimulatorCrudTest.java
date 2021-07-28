@@ -58,7 +58,7 @@ public class SimulatorCrudTest {
     public void setUp() throws NoSuchAlgorithmException, CertificateException, InvalidKeySpecException, IOException,
             URISyntaxException {
         target = new GnmiSimulatorApp();
-        target.start(true,
+        target.start(false,
             new String[]{"-c","src/test/resources/json/example_config.json"});
         final SessionManager sessionManager = TestUtils.createSessionManagerWithCerts();
         final InetSocketAddress targetAddress = new InetSocketAddress(TARGET_HOST, TARGET_PORT);
