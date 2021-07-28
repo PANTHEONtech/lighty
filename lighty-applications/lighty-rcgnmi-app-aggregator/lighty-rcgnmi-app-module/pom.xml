@@ -34,7 +34,7 @@
         </dependency>
         <dependency>
             <groupId>io.lighty.modules</groupId>
-            <artifactId>lighty-netconf-sb</artifactId>
+            <artifactId>lighty-aaa-encryption-service</artifactId>
         </dependency>
         <dependency>
             <groupId>io.lighty.modules.gnmi.southbound</groupId>
