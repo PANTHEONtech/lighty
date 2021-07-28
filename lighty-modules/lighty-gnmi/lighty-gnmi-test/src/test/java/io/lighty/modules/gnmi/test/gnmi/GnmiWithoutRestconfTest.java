@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import io.lighty.aaa.encrypt.service.impl.AAAEncryptionServiceImpl;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.config.ConfigurationException;
@@ -16,7 +17,6 @@ import io.lighty.gnmi.southbound.lightymodule.GnmiSouthboundModuleBuilder;
 import io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
-import io.lighty.modules.southbound.netconf.impl.AAAEncryptionServiceImpl;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
