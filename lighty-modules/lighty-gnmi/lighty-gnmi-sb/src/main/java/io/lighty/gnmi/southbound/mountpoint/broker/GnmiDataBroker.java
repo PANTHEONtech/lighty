@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 public class GnmiDataBroker implements PingPongMergingDOMDataBroker {
 
     private static final Logger LOG = LoggerFactory.getLogger(GnmiDataBroker.class);
-    private static final String NOT_IMPLEMENTED = "Method not implemented inside ";
 
     private final GnmiGet gnmiGet;
     private final GnmiSet gnmiSet;
