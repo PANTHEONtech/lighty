@@ -160,6 +160,7 @@ public class SimulatedGnmiDevice {
                 server.shutdown();
                 server.awaitTermination();
             } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
                 throw new SimulatedGnmiDeviceException("Shutdown interrupted", e);
             }
         }

@@ -80,8 +80,11 @@ public class MemberRemovedListener extends AbstractActor {
                 }
             }
             LOG.info("Shard replicas removed for member {}", member.address());
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (ExecutionException e) {
             LOG.error("Unable to remove shard replicas for member {}", member.address(), e);
+        } catch (InterruptedException e) {
+            LOG.error("Interrupted while removing shard replicas for member {}", member.address(), e);
+            Thread.currentThread().interrupt();
         }
     }
 
