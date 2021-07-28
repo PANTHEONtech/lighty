@@ -8,6 +8,7 @@
 
 package io.lighty.applications.rcgnmi.module;
 
+import io.lighty.aaa.encrypt.service.impl.AAAEncryptionServiceImpl;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
@@ -18,7 +19,6 @@ import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.gnmi.southbound.lightymodule.GnmiSouthboundModule;
 import io.lighty.gnmi.southbound.lightymodule.GnmiSouthboundModuleBuilder;
 import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
-import io.lighty.modules.encrypt.service.aaa.impl.AAAEncryptionServiceImpl;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
