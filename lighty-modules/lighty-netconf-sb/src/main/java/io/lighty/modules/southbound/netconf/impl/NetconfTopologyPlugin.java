@@ -35,6 +35,7 @@ public class NetconfTopologyPlugin extends AbstractLightyModule implements Netco
     private final DOMMountPointService domMountPointService;
     private final String topologyId;
     private final NetconfClientDispatcher clientDispatcher;
+    private NetconfTopologyImpl netconfTopologyImpl;
     private final AAAEncryptionService encryptionService;
     private final LightyServices lightyServices;
 
@@ -60,18 +61,21 @@ public class NetconfTopologyPlugin extends AbstractLightyModule implements Netco
         }
         final SchemaResourceManager schemaResourceManager =
                 new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
-        NetconfTopologyImpl topology = new NetconfTopologyImpl(topologyId, clientDispatcher,
+        netconfTopologyImpl = new NetconfTopologyImpl(topologyId, clientDispatcher,
                 lightyServices.getEventExecutor(), lightyServices.getScheduledThreadPool(),
                 lightyServices.getThreadPool(), schemaResourceManager,
                 lightyServices.getBindingDataBroker(), lightyServices.getDOMMountPointService(),
                 encryptionService, lightyServices.getRpcProviderService(),
                 defaultBaseNetconfSchemas, new LightyDeviceActionFactory());
-        topology.init();
+        netconfTopologyImpl.init();
         return true;
     }
 
     @Override
     protected boolean stopProcedure() {
+        if (netconfTopologyImpl != null) {
+            netconfTopologyImpl.close();
+        }
         return true;
     }
 

@@ -18,6 +18,7 @@ import io.lighty.modules.gnmi.simulatordevice.gnmi.GnmiService;
 import io.lighty.modules.gnmi.simulatordevice.gnoi.GnoiCertService;
 import io.lighty.modules.gnmi.simulatordevice.gnoi.GnoiFileService;
 import io.lighty.modules.gnmi.simulatordevice.gnoi.GnoiOSService;
+import io.lighty.modules.gnmi.simulatordevice.gnoi.GnoiSonicService;
 import io.lighty.modules.gnmi.simulatordevice.gnoi.GnoiSystemService;
 import io.lighty.modules.gnmi.simulatordevice.utils.FileUtils;
 import io.lighty.modules.gnmi.simulatordevice.utils.UsernamePasswordAuth;
@@ -62,9 +63,9 @@ public class SimulatedGnmiDevice {
 
     private GnoiSystemService gnoiSystemService;
     private GnoiCertService gnoiCertService;
-
     private GnoiFileService gnoiFileService;
     private GnoiOSService gnoiOSService;
+    private GnoiSonicService gnoiSonicService;
 
     private GnmiService gnmiService;
 
@@ -144,6 +145,9 @@ public class SimulatedGnmiDevice {
         gnoiOSService = new GnoiOSService();
         serverBuilder.addService(gnoiOSService);
 
+        gnoiSonicService = new GnoiSonicService();
+        serverBuilder.addService(gnoiSonicService);
+
         // build & start
         LOG.info("Starting gNMI device simulator on {}:{} ...", host, port);
         this.server = serverBuilder.build();
@@ -159,6 +163,7 @@ public class SimulatedGnmiDevice {
                 server.awaitTermination();
             } catch (final InterruptedException e) {
                 LOG.error("Shutdown interrupted", e);
+                Thread.currentThread().interrupt();
                 throw new RuntimeException(e);
             }
         }
@@ -186,6 +191,10 @@ public class SimulatedGnmiDevice {
 
     public GnoiOSService getGnoiOSService() {
         return gnoiOSService;
+    }
+
+    public GnoiSonicService getGnoiSonicService() {
+        return gnoiSonicService;
     }
 
     public GnmiService getGnmiService() {
