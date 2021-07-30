@@ -53,7 +53,9 @@ public final class GnmiSimulatorConfUtils {
 
 
     public static GnmiSimulatorConfiguration loadDefaultGnmiSimulatorConfiguration() {
-        return new GnmiSimulatorConfiguration();
+        GnmiSimulatorConfiguration gnmiSimulatorConfiguration = new GnmiSimulatorConfiguration();
+        gnmiSimulatorConfiguration.setYangsPath(GnmiSimulatorConfUtils.class.getResource("/yangs").getPath());
+        return gnmiSimulatorConfiguration;
     }
 
 
