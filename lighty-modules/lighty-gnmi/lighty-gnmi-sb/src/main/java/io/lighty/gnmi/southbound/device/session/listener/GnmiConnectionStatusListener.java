@@ -58,6 +58,10 @@ public class GnmiConnectionStatusListener implements AutoCloseable {
         updateStateStatus();
     }
 
+    public synchronized void updateNodeStatusToDataStore() {
+        writeStateToDataStore(this.currentState);
+    }
+
     private synchronized void updateStateStatus() {
         if (listenerActive) {
             ConnectivityState newState = sessionProvider.getChannelState();
@@ -70,7 +74,11 @@ public class GnmiConnectionStatusListener implements AutoCloseable {
             triggerCallbackIfPresent();
 
             sessionProvider.notifyOnStateChangedOneOff(currentState, this::updateStateStatus);
-            writeStateToDataStore(newState);
+            if (this.currentState != ConnectivityState.READY) {
+                // Ready status should be updated after creating device mountpoint
+                updateNodeStatusToDataStore();
+            }
+            LOG.debug("Current session status {}", currentState);
         }
     }
 
