@@ -344,7 +344,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
                 LOG.info("Attempt {}, response: {}", attempt, deviceConnectStatus);
                 assertTrue(deviceConnectStatus.equals(GNMI_NODE_STATUS_CONNECTING)
                            || deviceConnectStatus.equals(GNMI_NODE_STATUS_TRANSIENT_FAIL));
-                assertTrue(attempt.get() >= MAX_DEVICE_CONNECTION_ATTEMPTS);
+                assertTrue(attempt.get() <= MAX_DEVICE_CONNECTION_ATTEMPTS);
             });
 
         //assert disconnected device
@@ -520,7 +520,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
                 LOG.info("Attempt {}, response: {}", attempt, deviceConnectStatus);
                 assertTrue(deviceConnectStatus.equals(GNMI_NODE_STATUS_CONNECTING)
                     || deviceConnectStatus.equals(GNMI_NODE_STATUS_TRANSIENT_FAIL));
-                assertTrue(attempt.get() >= MAX_DEVICE_CONNECTION_ATTEMPTS);
+                assertTrue(attempt.get() <= MAX_DEVICE_CONNECTION_ATTEMPTS);
             });
 
         //update incorrect gnmi node in gnmi topology
