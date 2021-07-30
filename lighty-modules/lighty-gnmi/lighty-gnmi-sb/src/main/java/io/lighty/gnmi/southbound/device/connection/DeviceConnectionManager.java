@@ -131,7 +131,8 @@ public class DeviceConnectionManager implements AutoCloseable {
                     mountPointRegistrator.registerMountPoint(node, schemaContext, gnmiDataBroker);
                     activeDevices.put(node.getNodeId(), deviceConnection);
                     saveCapabilitiesList(node.getNodeId(), capabilitiesList);
-
+                    LOG.debug("### Update READY status for node {}", node.getNodeId());
+                    deviceConnection.updateCurrentNodeStatusToDataStore();
                     return Futures.immediateFuture(null);
 
                 } catch (SchemaException | ExecutionException | TimeoutException e) {

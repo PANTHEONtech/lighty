@@ -45,6 +45,10 @@ public class DeviceConnection implements GnmiSessionProvider, SchemaContextProvi
         return gnmiNode == null ? null : gnmiNode.getExtensionsParameters();
     }
 
+    public void updateCurrentNodeStatusToDataStore() {
+        connectionStatusListener.updateNodeStatusToDataStore();
+    }
+
     public ConfigurableParameters getConfigurableParameters() {
         return configurableParameters;
     }
