@@ -42,6 +42,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.binding.api.DataBroker;
@@ -93,7 +94,7 @@ import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLe
 public class GnmiWithoutRestconfTest {
     private static final String INITIAL_JSON_DATA_PATH = "src/test/resources/json/initData";
     private static final String TEST_SCHEMA_PATH = "src/test/resources/simulator_models";
-    private static final Path CONFIGURATION_PATH =  Path.of("src/test/resources/json/app_init_config.json");
+    private static final Path CONFIGURATION_PATH = Path.of("src/test/resources/json/app_init_config.json");
     private static final Duration POLL_INTERVAL_DURATION = Duration.ofMillis(1_000L);
     private static final Duration WAIT_TIME_DURATION = Duration.ofMillis(10_000L);
     private static final String GNMI_NODE_ID = "gnmiNodeId";
@@ -151,7 +152,8 @@ public class GnmiWithoutRestconfTest {
         lightyController = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getConfiguration(Files.newInputStream(CONFIGURATION_PATH)))
                 .build();
-        lightyController.start().get();
+        Boolean controllerStartSuccessfully = lightyController.start().get();
+        assertTrue(controllerStartSuccessfully);
 
         gnmiSouthboundModule = new GnmiSouthboundModuleBuilder()
                 .withConfig(GnmiConfigUtils.getGnmiConfiguration(Files.newInputStream(CONFIGURATION_PATH)))
@@ -159,7 +161,8 @@ public class GnmiWithoutRestconfTest {
                 .withExecutorService(Executors.newCachedThreadPool())
                 .withEncryptionService(createEncryptionService())
                 .build();
-        gnmiSouthboundModule.start().get();
+        Boolean gnmiStartSuccessfully = gnmiSouthboundModule.start().get();
+        assertTrue(gnmiStartSuccessfully);
 
         gnmiDevice = getUnsecureGnmiDevice(DEVICE_ADDRESS, DEVICE_PORT);
         gnmiDevice.start();
@@ -172,13 +175,21 @@ public class GnmiWithoutRestconfTest {
         boolean successfullyClosedResources = true;
         gnmiDevice.stop();
         try {
-            gnmiSouthboundModule.shutdown().get();
+            Boolean closedSbMod = gnmiSouthboundModule.shutdown().get();
+            if (!closedSbMod) {
+                successfullyClosedResources = false;
+                exceptionMessage.append("GnmSouthbound failed at closing");
+            }
         } catch (InterruptedException | ExecutionException e) {
             successfullyClosedResources = false;
             exceptionMessage.append(e.getMessage()).append("\n");
         }
         try {
-            lightyController.shutdown().get();
+            Boolean closedController = lightyController.shutdown().get();
+            if (!closedController) {
+                successfullyClosedResources = false;
+                exceptionMessage.append("Lighty controller failed at closing");
+            }
         } catch (Exception e) {
             successfullyClosedResources = false;
             exceptionMessage.append(e.getMessage()).append("\n");
@@ -266,8 +277,12 @@ public class GnmiWithoutRestconfTest {
         assertFalse(removedLeafListNN.isPresent());
 
         //Remove device after test
-        deleteConfigData(bindingDataBroker, nodeInstanceIdentifier);
-        deleteOperData(bindingDataBroker, nodeInstanceIdentifier);
+        try {
+            deleteConfigData(bindingDataBroker, nodeInstanceIdentifier);
+            deleteOperData(bindingDataBroker, nodeInstanceIdentifier);
+        } catch (ExecutionException | InterruptedException e) {
+            Assertions.fail("Failed to remove device data from gNMI", e);
+        }
     }
 
     @Test
@@ -392,14 +407,14 @@ public class GnmiWithoutRestconfTest {
     }
 
     private void writeDOMConfigData(final DOMDataBroker domDataBroker, final YangInstanceIdentifier path,
-                                     final NormalizedNode<?,?> data) throws ExecutionException, InterruptedException {
+                                    final NormalizedNode<?,?> data) throws ExecutionException, InterruptedException {
         final DOMDataTreeWriteTransaction writeTransaction = domDataBroker.newWriteOnlyTransaction();
         writeTransaction.put(LogicalDatastoreType.CONFIGURATION, path, data);
         writeTransaction.commit().get();
     }
 
     private void updateDOMConfigData(final DOMDataBroker domDataBroker, final YangInstanceIdentifier path,
-                                    final NormalizedNode<?,?> data) throws ExecutionException, InterruptedException {
+                                     final NormalizedNode<?,?> data) throws ExecutionException, InterruptedException {
         final DOMDataTreeWriteTransaction writeTransaction = domDataBroker.newWriteOnlyTransaction();
         writeTransaction.merge(LogicalDatastoreType.CONFIGURATION, path, data);
         writeTransaction.commit().get();
