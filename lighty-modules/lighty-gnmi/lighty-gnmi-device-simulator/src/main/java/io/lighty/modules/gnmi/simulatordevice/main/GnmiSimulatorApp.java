@@ -9,6 +9,7 @@
 package io.lighty.modules.gnmi.simulatordevice.main;
 
 import com.beust.jcommander.JCommander;
+import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
@@ -25,16 +26,16 @@ public class GnmiSimulatorApp {
 
     private static final Logger LOG = LoggerFactory.getLogger(GnmiSimulatorApp.class);
 
-    private GnmiSimulatorConfiguration gnmiSimulatorConfiguration;
     private SimulatedGnmiDevice device;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ConfigurationException {
         BasicConfigurator.configure();
         final GnmiSimulatorApp gnmiSimulatorApp = new GnmiSimulatorApp();
         gnmiSimulatorApp.start(true, args);
     }
 
-    public void start(final boolean registerShutdownHook, final String[] args) throws IOException {
+    public void start(final boolean registerShutdownHook, final String[] args)
+            throws IOException, ConfigurationException {
 
         // Parse args
         final Arguments arguments = new Arguments();
@@ -49,6 +50,8 @@ public class GnmiSimulatorApp {
             LOG.info("Custom logger properties loaded successfully");
         }
 
+        GnmiSimulatorConfiguration gnmiSimulatorConfiguration;
+
         if (arguments.getConfigPath() == null) {
             gnmiSimulatorConfiguration = GnmiSimulatorConfUtils.loadDefaultGnmiSimulatorConfiguration();
         } else {
@@ -56,16 +59,7 @@ public class GnmiSimulatorApp {
                 .loadGnmiSimulatorConfiguration(Files.newInputStream(Path.of(arguments.getConfigPath())));
         }
 
-        device = new SimulatedGnmiDeviceBuilder()
-            .setHost(gnmiSimulatorConfiguration.getDeviceAddress())
-            .setPort(gnmiSimulatorConfiguration.getDevicePort())
-            .setInitialConfigDataPath(gnmiSimulatorConfiguration.getInitialDataConfig())
-            .setInitialStateDataPath(gnmiSimulatorConfiguration.getInitialDataState())
-            .setYangsPath(gnmiSimulatorConfiguration.getYangFolder())
-            .setUsernamePasswordAuth(gnmiSimulatorConfiguration.getUsername(),gnmiSimulatorConfiguration.getPassword())
-            .setCertificatePath(gnmiSimulatorConfiguration.getCertPath())
-            .setKeyPath(gnmiSimulatorConfiguration.getCertKey())
-            .build();
+        device = new SimulatedGnmiDeviceBuilder().from(gnmiSimulatorConfiguration).build();
         device.start();
         if (registerShutdownHook) {
             Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));

@@ -9,46 +9,48 @@
 package io.lighty.modules.gnmi.simulatordevice.config;
 
 public final class GnmiSimulatorConfiguration {
-    private String deviceAddress = "0.0.0.0";
-    private int devicePort = 3333;
-    private String initialDataConfig;
-    private String initialDataState;
+    private String targetAddress = "0.0.0.0";
+    private int targetPort = 10161;
+    private String initialConfigDataPath;
+    private String initialStateDataPath;
+    private int maxConnections = 50;
     private String certPath;
-    private String certKey;
-    private String yangFolder = getClass().getResource("/yangs").getPath();
-    private String username = "admin";
-    private String password = "admin";
+    private String certKeyPath;
+    private String yangsPath;
+    private String username;
+    private String password;
+    private boolean usePlaintext = false;
 
-    public String getDeviceAddress() {
-        return deviceAddress;
+    public String getTargetAddress() {
+        return targetAddress;
     }
 
-    public void setDeviceAddress(String deviceAddress) {
-        this.deviceAddress = deviceAddress;
+    public void setTargetAddress(String targetAddress) {
+        this.targetAddress = targetAddress;
     }
 
-    public int getDevicePort() {
-        return devicePort;
+    public int getTargetPort() {
+        return targetPort;
     }
 
-    public void setDevicePort(int devicePort) {
-        this.devicePort = devicePort;
+    public void setTargetPort(int targetPort) {
+        this.targetPort = targetPort;
     }
 
-    public String getInitialDataConfig() {
-        return initialDataConfig;
+    public String getInitialConfigDataPath() {
+        return initialConfigDataPath;
     }
 
-    public void setInitialDataConfig(String initialDataConfig) {
-        this.initialDataConfig = initialDataConfig;
+    public void setInitialConfigDataPath(String initialConfigDataPath) {
+        this.initialConfigDataPath = initialConfigDataPath;
     }
 
-    public String getInitialDataState() {
-        return initialDataState;
+    public String getInitialStateDataPath() {
+        return initialStateDataPath;
     }
 
-    public void setInitialDataState(String initialDataState) {
-        this.initialDataState = initialDataState;
+    public void setInitialStateDataPath(String initialStateDataPath) {
+        this.initialStateDataPath = initialStateDataPath;
     }
 
     public String getCertPath() {
@@ -59,20 +61,20 @@ public final class GnmiSimulatorConfiguration {
         this.certPath = certPath;
     }
 
-    public String getCertKey() {
-        return certKey;
+    public String getCertKeyPath() {
+        return certKeyPath;
     }
 
-    public void setCertKey(String certKey) {
-        this.certKey = certKey;
+    public void setCertKeyPath(String certKeyPath) {
+        this.certKeyPath = certKeyPath;
     }
 
-    public String getYangFolder() {
-        return yangFolder;
+    public String getYangsPath() {
+        return yangsPath;
     }
 
-    public void setYangFolder(String yangFolder) {
-        this.yangFolder = yangFolder;
+    public void setYangsPath(String yangsPath) {
+        this.yangsPath = yangsPath;
     }
 
     public String getUsername() {
@@ -89,5 +91,21 @@ public final class GnmiSimulatorConfiguration {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getMaxConnections() {
+        return maxConnections;
+    }
+
+    public void setMaxConnections(int maxConnections) {
+        this.maxConnections = maxConnections;
+    }
+
+    public boolean isUsePlaintext() {
+        return usePlaintext;
+    }
+
+    public void setUsePlaintext(boolean usePlaintext) {
+        this.usePlaintext = usePlaintext;
     }
 }
