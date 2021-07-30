@@ -18,6 +18,7 @@ import io.lighty.gnmi.southbound.device.connection.DeviceConnectionManager;
 import io.lighty.gnmi.southbound.identifier.IdentifierUtils;
 import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -146,8 +147,8 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
                     "Node must be augmented by gNMI");
             final GnmiNode after = requireNonNull(nodeAfter.augmentation(GnmiNode.class),
                     "Node must be augmented by gNMI");
-            return !before.getConnectionParameters().equals(after.getConnectionParameters())
-                || !before.getExtensionsParameters().equals(after.getExtensionsParameters());
+            return !Objects.equals(before.getConnectionParameters(), after.getConnectionParameters())
+                || !Objects.equals(before.getExtensionsParameters(), after.getExtensionsParameters());
         }
     }
 
