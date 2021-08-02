@@ -49,7 +49,7 @@ public class DeviceConnection implements GnmiSessionProvider, SchemaContextProvi
     }
 
     public FluentFuture<CommitInfo> setDeviceStatusReady() throws GnmiConnectionStatusException {
-        return connectionStatusListener.setDeviceStatusReady();
+        return connectionStatusListener.copyDeviceStatusReadyToDatastore();
     }
 
     public ConfigurableParameters getConfigurableParameters() {
