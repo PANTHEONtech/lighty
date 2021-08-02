@@ -8,6 +8,7 @@
 
 package io.lighty.gnmi.southbound.device.session.listener;
 
+import com.google.common.util.concurrent.FluentFuture;
 import io.grpc.ConnectivityState;
 import io.lighty.gnmi.southbound.identifier.IdentifierUtils;
 import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
@@ -19,6 +20,7 @@ import java.util.concurrent.TimeoutException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.GnmiNodeBuilder;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.node.state.NodeState;
@@ -58,8 +60,14 @@ public class GnmiConnectionStatusListener implements AutoCloseable {
         updateStateStatus();
     }
 
-    public synchronized void updateNodeStatusToDataStore() {
-        writeStateToDataStore(this.currentState);
+    public synchronized FluentFuture<CommitInfo> setDeviceStatusReady() throws GnmiConnectionStatusException {
+        if (ConnectivityState.READY.equals(currentState)) {
+            return writeStateToDataStoreAsync(this.currentState);
+        } else {
+            throw new GnmiConnectionStatusException(
+                    String.format("Last observed status was %s, while READY was expected", currentState),
+                    currentState);
+        }
     }
 
     private synchronized void updateStateStatus() {
@@ -76,7 +84,7 @@ public class GnmiConnectionStatusListener implements AutoCloseable {
             sessionProvider.notifyOnStateChangedOneOff(currentState, this::updateStateStatus);
             if (this.currentState != ConnectivityState.READY) {
                 // Ready status should be updated after creating device mountpoint
-                updateNodeStatusToDataStore();
+                writeStateToDataStore(this.currentState);
             }
             LOG.debug("Current session status {}", currentState);
         }
@@ -94,17 +102,8 @@ public class GnmiConnectionStatusListener implements AutoCloseable {
 
     private synchronized void writeStateToDataStore(final ConnectivityState state) {
         try {
-            @NonNull WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-
-            Node operationalNode = new NodeBuilder()
-                    .setNodeId(nodeId)
-                    .addAugmentation(new GnmiNodeBuilder()
-                            .setNodeState(new NodeStateBuilder().setNodeStatus(convertToNodeState(state))
-                                    .build())
-                            .build())
-                    .build();
-            tx.merge(LogicalDatastoreType.OPERATIONAL, IdentifierUtils.gnmiNodeIID(nodeId), operationalNode);
-            tx.commit().get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+            final FluentFuture<CommitInfo> commitFuture = writeStateToDataStoreAsync(state);
+            commitFuture.get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         } catch (ExecutionException | TimeoutException e) {
             LOG.warn("Unable to write connection state of gRPC channel of node {} to datastore", nodeId.getValue(), e);
         } catch (InterruptedException e) {
@@ -112,6 +111,20 @@ public class GnmiConnectionStatusListener implements AutoCloseable {
                     nodeId.getValue(), e);
             Thread.currentThread().interrupt();
         }
+    }
+
+    private synchronized FluentFuture<CommitInfo> writeStateToDataStoreAsync(final ConnectivityState state) {
+        final @NonNull WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+
+        final Node operationalNode = new NodeBuilder()
+                .setNodeId(nodeId)
+                .addAugmentation(new GnmiNodeBuilder()
+                        .setNodeState(new NodeStateBuilder().setNodeStatus(convertToNodeState(state))
+                                .build())
+                        .build())
+                .build();
+        tx.merge(LogicalDatastoreType.OPERATIONAL, IdentifierUtils.gnmiNodeIID(nodeId), operationalNode);
+        return (FluentFuture<CommitInfo>) tx.commit();
     }
 
     @Override
