@@ -60,7 +60,15 @@ public class GnmiConnectionStatusListener implements AutoCloseable {
         updateStateStatus();
     }
 
-    public synchronized FluentFuture<CommitInfo> setDeviceStatusReady() throws GnmiConnectionStatusException {
+    /**
+     * Update device connection state in md-sal datastore to READY.
+     * <p>As far as the state may change in time based on actual underlying connection, this method will perform the
+     * write transaction into md-sal only if last observed state of underlying connection is still READY.</p>
+     *
+     * @throws GnmiConnectionStatusException when current state of underlying connection is different from READY.
+     */
+    public synchronized FluentFuture<CommitInfo> copyDeviceStatusReadyToDatastore()
+            throws GnmiConnectionStatusException {
         if (ConnectivityState.READY.equals(currentState)) {
             return writeStateToDataStoreAsync(this.currentState);
         } else {
