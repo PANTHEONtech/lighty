@@ -31,6 +31,7 @@ import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.GnmiNode;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.GnmiNodeBuilder;
@@ -103,10 +104,10 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
     }
 
     private void connectNode(final Node node) {
-        final ListenableFuture<Void> connectionResult = deviceConnectionManager.connectDevice(node);
+        final ListenableFuture<CommitInfo> connectionResult = deviceConnectionManager.connectDevice(node);
         Futures.addCallback(connectionResult, new FutureCallback<>() {
             @Override
-            public void onSuccess(@Nullable Void val) {
+            public void onSuccess(@Nullable final CommitInfo result) {
                 LOG.info("Connection with node {} established successfully", node.getNodeId());
             }
 
