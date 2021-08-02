@@ -87,11 +87,11 @@ public class DeviceConnectionManager implements AutoCloseable {
                  state of the gRPC channel is READY
                  */
                 final ListenableFuture<DeviceConnection> deviceConnectionFuture =
-                        connectionInitializer.initConnection(node);
+                    connectionInitializer.initConnection(node);
 
                 return Futures.transformAsync(deviceConnectionFuture,
-                        deviceConnection -> prepareDeviceConnection(node, deviceConnection),
-                        executorService);
+                    deviceConnection -> prepareDeviceConnection(node, deviceConnection),
+                    executorService);
 
             } catch (SessionSecurityException e) {
                 return Futures.immediateFailedFuture(e);
@@ -108,19 +108,19 @@ public class DeviceConnectionManager implements AutoCloseable {
         final ListenableFuture<Void> mountPointCreatedFuture = createMountPoint(node, deviceConnection);
 
         return Futures.transformAsync(mountPointCreatedFuture,
-                voidResult -> {
-                    final FluentFuture<CommitInfo> statusReadyFuture = deviceConnection.setDeviceStatusReady();
+            voidResult -> {
+                final FluentFuture<CommitInfo> statusReadyFuture = deviceConnection.setDeviceStatusReady();
 
-                    // handle GnmiConnectionStatusException in `statusReadyFuture`
-                    return Futures.catchingAsync(statusReadyFuture, GnmiConnectionStatusException.class,
-                            statusException -> {
-                                LOG.error("Connection status unexpectedly changed from READY to {} while creating"
-                                        + " Mountpoint", statusException.getCurrentState());
-                                throw statusException;
-                            },
-                            executorService);
-                },
-                executorService);
+                // handle GnmiConnectionStatusException in `statusReadyFuture`
+                return Futures.catchingAsync(statusReadyFuture, GnmiConnectionStatusException.class,
+                    statusException -> {
+                        LOG.error("Connection status unexpectedly changed from READY to {} while creating"
+                                + " Mountpoint", statusException.getCurrentState());
+                        throw statusException;
+                    },
+                    executorService);
+            },
+            executorService);
     }
 
     private ListenableFuture<Void> createMountPoint(final Node node, final DeviceConnection deviceConnection) {
