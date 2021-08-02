@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
@@ -97,6 +99,7 @@ public class GnmiWithoutRestconfTest {
     private static final Path CONFIGURATION_PATH = Path.of("src/test/resources/json/app_init_config.json");
     private static final Duration POLL_INTERVAL_DURATION = Duration.ofMillis(1_000L);
     private static final Duration WAIT_TIME_DURATION = Duration.ofMillis(10_000L);
+    public static final long TIMEOUT_MILLIS = 20_000;
     private static final String GNMI_NODE_ID = "gnmiNodeId";
     private static final String DEVICE_ADDRESS = "127.0.0.1";
     private static final int DEVICE_PORT = 3333;
@@ -147,12 +150,12 @@ public class GnmiWithoutRestconfTest {
     @BeforeAll
     public static void startUp() throws ConfigurationException, ExecutionException, InterruptedException, IOException,
             InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchAlgorithmException,
-            InvalidKeySpecException, InvalidKeyException {
+            InvalidKeySpecException, InvalidKeyException, TimeoutException {
 
         lightyController = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getConfiguration(Files.newInputStream(CONFIGURATION_PATH)))
                 .build();
-        Boolean controllerStartSuccessfully = lightyController.start().get();
+        Boolean controllerStartSuccessfully = lightyController.start().get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
         assertTrue(controllerStartSuccessfully);
 
         gnmiSouthboundModule = new GnmiSouthboundModuleBuilder()
@@ -161,7 +164,7 @@ public class GnmiWithoutRestconfTest {
                 .withExecutorService(Executors.newCachedThreadPool())
                 .withEncryptionService(createEncryptionService())
                 .build();
-        Boolean gnmiStartSuccessfully = gnmiSouthboundModule.start().get();
+        Boolean gnmiStartSuccessfully = gnmiSouthboundModule.start().get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
         assertTrue(gnmiStartSuccessfully);
 
         gnmiDevice = getUnsecureGnmiDevice(DEVICE_ADDRESS, DEVICE_PORT);
@@ -175,17 +178,17 @@ public class GnmiWithoutRestconfTest {
         boolean successfullyClosedResources = true;
         gnmiDevice.stop();
         try {
-            Boolean closedSbMod = gnmiSouthboundModule.shutdown().get();
+            Boolean closedSbMod = gnmiSouthboundModule.shutdown().get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
             if (!closedSbMod) {
                 successfullyClosedResources = false;
                 exceptionMessage.append("GnmSouthbound failed at closing");
             }
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (Exception e) {
             successfullyClosedResources = false;
             exceptionMessage.append(e.getMessage()).append("\n");
         }
         try {
-            Boolean closedController = lightyController.shutdown().get();
+            Boolean closedController = lightyController.shutdown().get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
             if (!closedController) {
                 successfullyClosedResources = false;
                 exceptionMessage.append("Lighty controller failed at closing");
@@ -198,14 +201,14 @@ public class GnmiWithoutRestconfTest {
     }
 
     @Test
-    public void testCrudOperation() throws ExecutionException, InterruptedException {
+    public void testCrudOperation() throws ExecutionException, InterruptedException, TimeoutException {
         final DataBroker bindingDataBroker = lightyController.getServices().getBindingDataBroker();
         //Write device to data-store
         final Node testGnmiNode = createNode(GNMI_NODE_ID, DEVICE_ADDRESS, DEVICE_PORT, getInsecureSecurityChoice());
         final WriteTransaction writeTransaction = bindingDataBroker.newWriteOnlyTransaction();
         final InstanceIdentifier<Node> nodeInstanceIdentifier = IdentifierUtils.gnmiNodeIID(testGnmiNode.getNodeId());
         writeTransaction.put(LogicalDatastoreType.CONFIGURATION, nodeInstanceIdentifier, testGnmiNode);
-        writeTransaction.commit().get();
+        writeTransaction.commit().get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
 
         //Verify that device is connected
         Awaitility.waitAtMost(WAIT_TIME_DURATION)
@@ -286,11 +289,12 @@ public class GnmiWithoutRestconfTest {
     }
 
     @Test
-    public void testRegisterCertificateToKeystore() throws ExecutionException, InterruptedException {
+    public void testRegisterCertificateToKeystore() throws ExecutionException, InterruptedException, TimeoutException {
         // Invoke RPC for registering certificates
         final NormalizedNode<?, ?> certificateInput
                 = getCertificateInput(CERT_ID, CA_VALUE, CLIENT_CERT, CLIENT_KEY, PASSPHRASE);
-        lightyController.getServices().getDOMRpcService().invokeRpc(ADD_KEYSTORE_RPC_QN, certificateInput).get();
+        lightyController.getServices().getDOMRpcService().invokeRpc(ADD_KEYSTORE_RPC_QN, certificateInput)
+                .get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
 
         //Test if certificates was added
         final DataBroker bindingDataBroker = lightyController.getServices().getBindingDataBroker();
@@ -310,10 +314,11 @@ public class GnmiWithoutRestconfTest {
     }
 
     @Test
-    public void testUpdatingYangModels() throws ExecutionException, InterruptedException {
+    public void testUpdatingYangModels() throws ExecutionException, InterruptedException, TimeoutException {
         // Invoke RPC for uploading yang models
         final NormalizedNode<?, ?> yangModelInput = getYangModelInput(YANG_NAME, YANG_BODY, YANG_VERSION);
-        lightyController.getServices().getDOMRpcService().invokeRpc(UPLOAD_YANG_RPC_QN, yangModelInput).get();
+        lightyController.getServices().getDOMRpcService().invokeRpc(UPLOAD_YANG_RPC_QN, yangModelInput)
+                .get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
 
         // Test if yang models was uploaded
         final DataBroker bindingDataBroker = lightyController.getServices().getBindingDataBroker();
@@ -378,53 +383,57 @@ public class GnmiWithoutRestconfTest {
 
     private <T extends DataObject> Optional<T> readOperData(final DataBroker dataBroker,
                                                             final InstanceIdentifier<T> path)
-            throws ExecutionException, InterruptedException {
+            throws ExecutionException, InterruptedException, TimeoutException {
         try (ReadTransaction readTransaction = dataBroker.newReadOnlyTransaction();) {
-            return readTransaction.read(LogicalDatastoreType.OPERATIONAL, path).get();
+            return readTransaction.read(LogicalDatastoreType.OPERATIONAL, path)
+                    .get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
         }
     }
 
     private void deleteOperData(final DataBroker dataBroker, final InstanceIdentifier<?> path)
-            throws ExecutionException, InterruptedException {
+            throws ExecutionException, InterruptedException, TimeoutException {
         final WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         writeTransaction.delete(LogicalDatastoreType.OPERATIONAL, path);
-        writeTransaction.commit().get();
+        writeTransaction.commit().get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
     }
 
     private void deleteConfigData(final DataBroker dataBroker, final InstanceIdentifier<?> path)
-            throws ExecutionException, InterruptedException {
+            throws ExecutionException, InterruptedException, TimeoutException {
         final WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, path);
-        writeTransaction.commit().get();
+        writeTransaction.commit().get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
     }
 
     private Optional<NormalizedNode<?, ?>> readDOMConfigData(final DOMDataBroker domDataBroker,
                                                              final YangInstanceIdentifier path)
-            throws ExecutionException, InterruptedException {
+            throws ExecutionException, InterruptedException, TimeoutException {
         try (DOMDataTreeReadTransaction readTransaction = domDataBroker.newReadOnlyTransaction();) {
-            return readTransaction.read(LogicalDatastoreType.CONFIGURATION, path).get();
+            return readTransaction.read(LogicalDatastoreType.CONFIGURATION, path)
+                    .get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
         }
     }
 
     private void writeDOMConfigData(final DOMDataBroker domDataBroker, final YangInstanceIdentifier path,
-                                    final NormalizedNode<?,?> data) throws ExecutionException, InterruptedException {
+                                    final NormalizedNode<?,?> data)
+            throws ExecutionException, InterruptedException,TimeoutException {
         final DOMDataTreeWriteTransaction writeTransaction = domDataBroker.newWriteOnlyTransaction();
         writeTransaction.put(LogicalDatastoreType.CONFIGURATION, path, data);
-        writeTransaction.commit().get();
+        writeTransaction.commit().get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
     }
 
     private void updateDOMConfigData(final DOMDataBroker domDataBroker, final YangInstanceIdentifier path,
-                                     final NormalizedNode<?,?> data) throws ExecutionException, InterruptedException {
+                                     final NormalizedNode<?,?> data)
+            throws ExecutionException, InterruptedException, TimeoutException {
         final DOMDataTreeWriteTransaction writeTransaction = domDataBroker.newWriteOnlyTransaction();
         writeTransaction.merge(LogicalDatastoreType.CONFIGURATION, path, data);
-        writeTransaction.commit().get();
+        writeTransaction.commit().get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
     }
 
     private void deleteDOMConfigData(final DOMDataBroker domDataBroker, final YangInstanceIdentifier path)
-            throws ExecutionException, InterruptedException {
+            throws ExecutionException, InterruptedException, TimeoutException {
         final DOMDataTreeWriteTransaction writeTransaction = domDataBroker.newWriteOnlyTransaction();
         writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, path);
-        writeTransaction.commit().get();
+        writeTransaction.commit().get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
     }
 
     private static Node createNode(final String nameOfNode, final String address, final int port,
