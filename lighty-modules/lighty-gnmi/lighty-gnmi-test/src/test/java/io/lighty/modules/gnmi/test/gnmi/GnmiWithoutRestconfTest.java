@@ -99,7 +99,7 @@ public class GnmiWithoutRestconfTest {
     private static final Path CONFIGURATION_PATH = Path.of("src/test/resources/json/app_init_config.json");
     private static final Duration POLL_INTERVAL_DURATION = Duration.ofMillis(1_000L);
     private static final Duration WAIT_TIME_DURATION = Duration.ofMillis(10_000L);
-    public static final long TIMEOUT_MILLIS = 20_000;
+    public static final long TIMEOUT_MILLIS = 30_000;
     private static final String GNMI_NODE_ID = "gnmiNodeId";
     private static final String DEVICE_ADDRESS = "127.0.0.1";
     private static final int DEVICE_PORT = 3333;
