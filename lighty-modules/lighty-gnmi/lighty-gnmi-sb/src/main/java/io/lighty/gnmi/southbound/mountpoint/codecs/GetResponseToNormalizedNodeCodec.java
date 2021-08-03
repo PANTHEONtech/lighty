@@ -17,9 +17,11 @@ import io.lighty.modules.gnmi.commons.util.DataConverter;
 import io.lighty.modules.gnmi.commons.util.JsonUtils;
 import java.util.Map;
 import java.util.Optional;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.AugmentationNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.model.api.Module;
 
 /**
  * Default codec which transforms (Gnmi.GetResponse, YangInstanceIdentifier) to NormalizedNode.
@@ -69,11 +71,17 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
                           the same level as identifier last path arg points to.
                          */
                         if (!identifier.isEmpty() && isResponseJsonDeeperThanRequested(identifier, responseJson)) {
+                            final QName lastName = identifier.getLastPathArgument().getNodeType();
+                            final Module moduleByQName =
+                                    DataConverter.findModuleByQName(lastName, schemaContextProvider.getSchemaContext())
+                                            .orElseThrow(() -> new GnmiCodecException(
+                                                    String.format("Unable to find module of node %s", lastName)));
+
+                            final String wrapWith = String.format("%s:%s", moduleByQName.getName(),
+                                    lastName.getLocalName());
                             responseJson = isMapEntryPath(identifier)
-                                    ? JsonUtils.wrapJsonWithArray(responseJson,
-                                    identifier.getLastPathArgument().getNodeType().getLocalName(), gson)
-                                    : JsonUtils.wrapJsonWithObject(responseJson,
-                                    identifier.getLastPathArgument().getNodeType().getLocalName(), gson);
+                                    ? JsonUtils.wrapJsonWithArray(responseJson, wrapWith, gson)
+                                    : JsonUtils.wrapJsonWithObject(responseJson, wrapWith, gson);
                         }
                         codecResult = resolveJsonResponse(identifier, responseJson);
                         break;
@@ -119,13 +127,12 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
                     final AugmentationNode node = (AugmentationNode) codecResult;
                     if (node.getIdentifier().getPossibleChildNames().size() == 1
                             && node.getValue().size() == 1) {
-                        return Optional.of(node.getValue().stream().findFirst().get());
+                        return Optional.of(node.getValue().iterator().next());
 
                     }
                 } else {
                     return Optional.of(codecResult);
                 }
-                return Optional.empty();
             }
         }
         return Optional.empty();
