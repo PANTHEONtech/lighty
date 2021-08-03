@@ -25,7 +25,7 @@ This simulator provides gNMI device driven by gNMI proto files, with datastore d
    GnmiSimulatorConfiguration gnmiSimulatorConfiguration = GnmiSimulatorConfUtils
         .loadGnmiSimulatorConfiguration(Files.newInputStream(Path.of(CONFIG_PATH)));
 ```
-   Configuration file:
+   Example configuration file:
 ```
    {
        "gnmi_simulator":{

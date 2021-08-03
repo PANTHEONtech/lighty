@@ -50,7 +50,7 @@ public class GnmiSimulatorApp {
             LOG.info("Custom logger properties loaded successfully");
         }
 
-        GnmiSimulatorConfiguration gnmiSimulatorConfiguration;
+        final GnmiSimulatorConfiguration gnmiSimulatorConfiguration;
 
         if (arguments.getConfigPath() == null) {
             gnmiSimulatorConfiguration = GnmiSimulatorConfUtils.loadDefaultGnmiSimulatorConfiguration();
