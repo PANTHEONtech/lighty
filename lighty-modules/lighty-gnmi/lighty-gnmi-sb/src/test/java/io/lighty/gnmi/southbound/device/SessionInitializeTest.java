@@ -127,7 +127,7 @@ class SessionInitializeTest {
         // Connect devices
         when(sessionProviderMock.getChannelState())
                 .thenAnswer(invocation -> ConnectivityState.CONNECTING);
-        final List<ListenableFuture<Void>> futureResults = new ArrayList<>();
+        final List<ListenableFuture<CommitInfo>> futureResults = new ArrayList<>();
         for (Node node : gnmiNodes) {
             futureResults.add(connectionManager.connectDevice(node));
         }
@@ -163,7 +163,7 @@ class SessionInitializeTest {
                         .addSupportedEncodings(Gnmi.Encoding.JSON_IETF).build()));
 
         // Connect devices
-        final List<ListenableFuture<Void>> futureResults = new ArrayList<>();
+        final List<ListenableFuture<CommitInfo>> futureResults = new ArrayList<>();
         for (Node node : gnmiNodes) {
             futureResults.add(connectionManager.connectDevice(node));
         }
@@ -201,7 +201,7 @@ class SessionInitializeTest {
         // Connect devices
         when(sessionProviderMock.getChannelState())
             .thenAnswer(invocation -> ConnectivityState.CONNECTING);
-        final List<ListenableFuture<Void>> futureResults = new ArrayList<>();
+        final List<ListenableFuture<CommitInfo>> futureResults = new ArrayList<>();
         for (Node node : gnmiNodes) {
             futureResults.add(connectionManager.connectDevice(node));
         }

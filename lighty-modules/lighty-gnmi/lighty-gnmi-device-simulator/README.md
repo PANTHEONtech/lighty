@@ -12,13 +12,41 @@ This simulator provides gNMI device driven by gNMI proto files, with datastore d
    </dependency>
 ```
 
-2. Initialize and start an instance of gNMI device simulator. Setting path to folder with yang models used by this
-   simulator is required.
-
+2. Initialize and start an instance of gNMI device simulator. Setting configuration for gNMI device simulator 
+   is required. Use ```GnmiSimulatorConfUtils``` for loading configuration. There are two options: load configuration
+   from file or load default configuration. The path to folder with the yang models is required, so the default
+   configuration points to the ```resources/yangs``` folder. 
+   Load default configuration:
+```
+    GnmiSimulatorConfiguration gnmiSimulatorConfiguration = GnmiSimulatorConfUtils.loadDefaultGnmiSimulatorConfiguration();
+```
+   Load configuration from file:
+```
+   GnmiSimulatorConfiguration gnmiSimulatorConfiguration = GnmiSimulatorConfUtils
+        .loadGnmiSimulatorConfiguration(Files.newInputStream(Path.of(CONFIG_PATH)));
+```
+   Example configuration file:
+```
+   {
+       "gnmi_simulator":{
+           "targetAddress": "0.0.0.0",
+           "targetPort": 3333,
+           "initialStateDataPath": "./simulator/initialJsonData.json",
+           "initialConfigDataPath": "./simulator/initialJsonData.json",
+           "certPath": "./simulator/certs/server.crt",
+           "certKeyPath": "./simulator/certs/server.key",
+           "yangsPath": "./yangs",
+           "username": "admin",
+           "password": "admin",
+           "maxConnections": 50
+       }
+   }
+```
+   Build and start gNMI simulator device:
 ```
    final SimulatedGnmiDevice simulatedGnmiDevice
          = new SimulatedGnmiDeviceBuilder()
-               .setYangsPath(SCHEMA_PATH)
+               .from(gnmiSimulatorConfiguration)
                .build();
    simulatedGnmiDevice.start();
 ```

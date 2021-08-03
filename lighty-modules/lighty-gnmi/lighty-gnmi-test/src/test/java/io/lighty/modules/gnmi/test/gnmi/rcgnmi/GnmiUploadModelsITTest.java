@@ -13,6 +13,7 @@ import static io.lighty.modules.gnmi.test.gnmi.rcgnmi.GnmiITBase.GeneralConstant
 import static io.lighty.modules.gnmi.test.gnmi.rcgnmi.GnmiITBase.GeneralConstants.RESTCONF_DATA_PATH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
 import io.lighty.modules.gnmi.test.utils.TestUtils;
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class GnmiUploadModelsITTest extends GnmiITBase {
     private static SimulatedGnmiDevice device;
 
     @BeforeAll
-    public static void setupDevice() {
+    public static void setupDevice() throws ConfigurationException {
         device = getUnsecureGnmiDevice(DEVICE_IP, DEVICE_PORT);
         try {
             device.start();
