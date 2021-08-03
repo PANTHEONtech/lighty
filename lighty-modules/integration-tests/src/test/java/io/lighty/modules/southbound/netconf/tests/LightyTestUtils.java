@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +32,7 @@ import org.slf4j.LoggerFactory;
 public final class LightyTestUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(LightyTestUtils.class);
+    public static final long MAX_START_TIME_MILLIS = 30_000;
 
     private LightyTestUtils() {
     }
@@ -49,12 +52,12 @@ public final class LightyTestUtils {
         try {
             lightyController = lightyControllerBuilder.from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(
                     mavenModelPaths)).build();
-            LOG.info("Starting LightyController (waiting 10s after start)");
+            LOG.info("Starting LightyController");
             final ListenableFuture<Boolean> started = lightyController.start();
-            started.get();
+            started.get(MAX_START_TIME_MILLIS, TimeUnit.MILLISECONDS);
             LOG.info("LightyController started");
             return lightyController;
-        } catch (ConfigurationException | InterruptedException | ExecutionException e) {
+        } catch (ConfigurationException | InterruptedException | ExecutionException | TimeoutException e) {
             throw new RuntimeException(e);
         }
     }
@@ -68,13 +71,12 @@ public final class LightyTestUtils {
                             services))
                     .build();
 
-            LOG.info("Starting CommunityRestConf (waiting 10s after start)");
+            LOG.info("Starting CommunityRestConf");
             final ListenableFuture<Boolean> restconfStart = communityRestConf.start();
-            restconfStart.get();
-            Thread.sleep(3_000);
+            restconfStart.get(MAX_START_TIME_MILLIS, TimeUnit.MILLISECONDS);
             LOG.info("CommunityRestConf started");
             return communityRestConf;
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
             throw new RuntimeException(e);
         }
     }

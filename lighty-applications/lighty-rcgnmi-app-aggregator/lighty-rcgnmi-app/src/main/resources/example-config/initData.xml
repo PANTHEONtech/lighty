@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<data xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <network-topology xmlns="urn:TBD:params:xml:ns:yang:network-topology">
+        <topology>
+            <topology-id>gnmi-topology</topology-id>
+            <node>
+                <node-id>device1</node-id>
+                <connection-parameters xmlns="urn:lighty:gnmi:topology">
+                    <host>127.0.0.1</host>
+                    <port>9090</port>
+                    <connection-type>INSECURE</connection-type>
+                </connection-parameters>
+            </node>
+        </topology>
+    </network-topology>
+</data>

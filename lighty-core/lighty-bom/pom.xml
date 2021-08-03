@@ -87,6 +87,68 @@
                 <artifactId>lighty-openflow-sb</artifactId>
                 <version>14.0.1-SNAPSHOT</version>
             </dependency>
+            <dependency>
+                <groupId>io.lighty.modules</groupId>
+                <artifactId>lighty-aaa-encryption-service</artifactId>
+                <version>14.0.1-SNAPSHOT</version>
+            </dependency>
+
+            <!-- gNMI -->
+            <dependency>
+                <groupId>io.lighty.modules.gnmi</groupId>
+                <artifactId>lighty-gnmi-connector</artifactId>
+                <version>14.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.lighty.applications.rcgnmi</groupId>
+                <artifactId>lighty-rcgnmi-app-module</artifactId>
+                <version>14.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.lighty.modules.gnmi</groupId>
+                <artifactId>lighty-gnmi-commons</artifactId>
+                <version>14.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.lighty.modules.gnmi</groupId>
+                <artifactId>lighty-gnmi-proto</artifactId>
+                <version>14.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.lighty.modules.gnmi</groupId>
+                <artifactId>lighty-gnmi-device-simulator</artifactId>
+                <version>14.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.lighty.applications.rcgnmi</groupId>
+                <artifactId>lighty-rcgnmi-app</artifactId>
+                <version>14.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.lighty.modules.gnmi.southbound</groupId>
+                <artifactId>lighty-gnmi-sb</artifactId>
+                <version>14.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.lighty.models.gnmi</groupId>
+                <artifactId>lighty-gnmi-topology-model</artifactId>
+                <version>14.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.lighty.models.gnmi</groupId>
+                <artifactId>lighty-gnmi-yang-storage-model</artifactId>
+                <version>14.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.lighty.models.gnmi</groupId>
+                <artifactId>lighty-gnmi-certificates-storage-model</artifactId>
+                <version>14.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.lighty.models.gnmi</groupId>
+                <artifactId>lighty-gnmi-force-capabilities</artifactId>
+                <version>14.0.1-SNAPSHOT</version>
+            </dependency>
 
             <!-- Utility resources -->
             <dependency>

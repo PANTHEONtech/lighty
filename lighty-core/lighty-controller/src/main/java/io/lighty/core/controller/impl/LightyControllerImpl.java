@@ -363,9 +363,13 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                         .importInitialConfigDataFile(stream, initialData.getFormat(),
                                 getEffectiveModelContextProvider().getEffectiveModelContext(),
                                 this.getClusteredDOMDataBroker());
-            } catch (InterruptedException | TimeoutException | ExecutionException | IOException
+            } catch (TimeoutException | ExecutionException | IOException
                     | SerializationException | IllegalStateException e) {
                 LOG.error("Exception occurred while importing config data from file", e);
+                return false;
+            } catch (InterruptedException e) {
+                LOG.error("Interrupted while importing config data from file", e);
+                Thread.currentThread().interrupt();
                 return false;
             }
         }
@@ -392,6 +396,9 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     protected boolean stopProcedure() throws InterruptedException {
         LOG.debug("Lighty Controller stopProcedure");
         boolean stopSuccessful = true;
+        if (this.timer != null) {
+            this.timer.stop();
+        }
         if (this.bindingDOMEntityOwnershipServiceAdapter != null) {
             this.bindingDOMEntityOwnershipServiceAdapter.close();
         }
@@ -421,7 +428,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             final CompletableFuture<Terminated> actorSystemTerminatedFuture = this.actorSystemProvider
                     .getActorSystem()
                     .getWhenTerminated().toCompletableFuture();
-            final int actorSystemPort = this.actorSystemConfig.getInt("akka.remote.classic.netty.tcp.port");
+            final int actorSystemPort = this.actorSystemConfig.getInt("akka.remote.artery.canonical.port");
 
             try {
                 this.actorSystemProvider.close();

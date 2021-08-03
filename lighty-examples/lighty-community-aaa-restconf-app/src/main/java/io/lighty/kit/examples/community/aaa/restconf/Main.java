@@ -83,6 +83,9 @@ public final class Main {
             LOG.info("Lighty.io, Restconf and AAA module started in {}", stopwatch.stop());
         } catch (final Throwable cause) {
             LOG.error("Lighty.io, Restconf and AAA module main application exception: ", cause);
+            if (cause instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
             shutdown();
         }
     }
@@ -135,6 +138,9 @@ public final class Main {
                 module.shutdown().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
             } catch (final Exception e) {
                 LOG.error("Exception while shutting down {} module: ", module.getClass().getSimpleName(), e);
+                if (e instanceof InterruptedException) {
+                    Thread.currentThread().interrupt();
+                }
             }
         }
     }

@@ -202,6 +202,9 @@ public class RncLightyModule extends AbstractLightyModule {
             }
         } catch (Exception e) {
             LOG.error("Exception was thrown while stopping the lighty.io module ({})!", lightyModule.getClass(), e);
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
             return false;
         }
     }

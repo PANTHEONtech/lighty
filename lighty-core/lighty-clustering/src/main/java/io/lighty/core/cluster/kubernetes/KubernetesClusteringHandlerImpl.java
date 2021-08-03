@@ -70,6 +70,7 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
             clusterLeaderElectionFuture.cancel(true);
         } catch (InterruptedException e) {
             LOG.error("Error occurred while waiting for the Cluster to form", e);
+            Thread.currentThread().interrupt();
             return;
         }
 
@@ -116,8 +117,11 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
                 RpcResult<AddReplicasForAllShardsOutput> rpcResult = clusterAdminRPCService.addReplicasForAllShards(
                         new AddReplicasForAllShardsInputBuilder().build()).get();
                 LOG.debug("RPC call - Asking for Shard Snapshots result: {}", rpcResult.getResult());
-            } catch (InterruptedException | ExecutionException e) {
+            } catch (ExecutionException e) {
                 LOG.error("RPC call - Asking for Shard Snapshots failed", e);
+            } catch (InterruptedException e) {
+                LOG.error("RPC call - Asking for Shard Snapshots interrupted", e);
+                Thread.currentThread().interrupt();
             }
         }
     }
