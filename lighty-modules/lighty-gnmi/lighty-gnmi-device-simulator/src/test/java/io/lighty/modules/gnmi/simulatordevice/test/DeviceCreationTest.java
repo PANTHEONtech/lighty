@@ -8,6 +8,8 @@
 
 package io.lighty.modules.gnmi.simulatordevice.test;
 
+import io.lighty.core.controller.impl.config.ConfigurationException;
+import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
 import io.lighty.modules.gnmi.simulatordevice.yang.DatastoreType;
@@ -23,19 +25,24 @@ public class DeviceCreationTest {
 
     private static final String SCHEMA_PATH = "src/test/resources/test_schema";
     private static final String INIT_DATA_PATH = "src/test/resources/initData";
-    private static final int TARGET_PORT = 10161;
+    private static final int TARGET_PORT = 3333;
     private static final String TARGET_HOST = "127.0.0.1";
     public static final String USERNAME_TEST = "Test";
     public static final String PASSWORD_TEST = "Test";
 
     @Test
-    public void deviceInitiatedWithDataTest() throws IOException {
+    public void deviceInitiatedWithDataTest() throws IOException, ConfigurationException {
+
+        final GnmiSimulatorConfiguration simulatorConfigurationMultipleTopElement = new GnmiSimulatorConfiguration();
+        simulatorConfigurationMultipleTopElement.setTargetAddress(TARGET_HOST);
+        simulatorConfigurationMultipleTopElement.setTargetPort(TARGET_PORT);
+        simulatorConfigurationMultipleTopElement.setYangsPath(SCHEMA_PATH);
+        simulatorConfigurationMultipleTopElement.setInitialConfigDataPath(INIT_DATA_PATH + "/config.json");
+        simulatorConfigurationMultipleTopElement.setInitialStateDataPath(INIT_DATA_PATH + "/state.json");
+
         //Case with multiple top elements
-        SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().setHost(TARGET_HOST)
-                .setYangsPath(SCHEMA_PATH)
-                .setInitialConfigDataPath(INIT_DATA_PATH + "/config.json")
-                .setInitialStateDataPath(INIT_DATA_PATH + "/state.json")
-                .setPort(TARGET_PORT).build();
+        SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder()
+                .from(simulatorConfigurationMultipleTopElement).build();
         target.start();
         Assert.assertNotNull(target);
         Assert.assertNotNull(target.getSchemaContext());
@@ -47,12 +54,16 @@ public class DeviceCreationTest {
         Assert.assertNotNull(target.getGnoiSystemService());
         Assert.assertNotNull(target.getGnoiSonicService());
         target.stop();
+
+        final GnmiSimulatorConfiguration simulatorConfigurationOneTopElement = new GnmiSimulatorConfiguration();
+        simulatorConfigurationOneTopElement.setTargetAddress(TARGET_HOST);
+        simulatorConfigurationOneTopElement.setTargetPort(TARGET_PORT);
+        simulatorConfigurationOneTopElement.setYangsPath(SCHEMA_PATH);
+        simulatorConfigurationOneTopElement.setInitialConfigDataPath(INIT_DATA_PATH + "/config_one_top.json");
+        simulatorConfigurationOneTopElement.setInitialStateDataPath(INIT_DATA_PATH + "/state_one_top.json");
+
         //Case with one top elements
-        target = new SimulatedGnmiDeviceBuilder().setHost(TARGET_HOST)
-                .setYangsPath(SCHEMA_PATH)
-                .setInitialConfigDataPath(INIT_DATA_PATH + "/config_one_top.json")
-                .setInitialStateDataPath(INIT_DATA_PATH + "/state_one_top.json")
-                .setPort(TARGET_PORT).build();
+        target = new SimulatedGnmiDeviceBuilder().from(simulatorConfigurationOneTopElement).build();
         target.start();
         Assert.assertNotNull(target);
         Assert.assertNotNull(target.getSchemaContext());
@@ -67,10 +78,14 @@ public class DeviceCreationTest {
     }
 
     @Test
-    public void deviceInitiatedWithNoDataTest() throws IOException {
-        final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().setHost(TARGET_HOST)
-                .setYangsPath(SCHEMA_PATH)
-                .setPort(TARGET_PORT).build();
+    public void deviceInitiatedWithNoDataTest() throws IOException, ConfigurationException {
+
+        final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
+        simulatorConfiguration.setTargetAddress(TARGET_HOST);
+        simulatorConfiguration.setTargetPort(TARGET_PORT);
+        simulatorConfiguration.setYangsPath(SCHEMA_PATH);
+
+        final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
         target.start();
         Assert.assertNotNull(target);
         Assert.assertNotNull(target.getSchemaContext());
@@ -85,12 +100,16 @@ public class DeviceCreationTest {
     }
 
     @Test
-    public void deviceInitiatedWithAuthTest() throws IOException {
-        final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().setHost(TARGET_HOST)
-                .setYangsPath(SCHEMA_PATH)
-                .setPort(TARGET_PORT)
-                .setUsernamePasswordAuth(USERNAME_TEST, PASSWORD_TEST)
-                .build();
+    public void deviceInitiatedWithAuthTest() throws IOException, ConfigurationException {
+
+        final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
+        simulatorConfiguration.setTargetAddress(TARGET_HOST);
+        simulatorConfiguration.setTargetPort(TARGET_PORT);
+        simulatorConfiguration.setYangsPath(SCHEMA_PATH);
+        simulatorConfiguration.setUsername(USERNAME_TEST);
+        simulatorConfiguration.setPassword(PASSWORD_TEST);
+
+        final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
         target.start();
         Assert.assertNotNull(target);
         Assert.assertNotNull(target.getSchemaContext());
@@ -106,12 +125,16 @@ public class DeviceCreationTest {
 
 
     @Test
-    public void initialDataPresentMultipleTopElemsTest() throws IOException {
-        final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().setHost(TARGET_HOST)
-                .setYangsPath(SCHEMA_PATH)
-                .setInitialConfigDataPath(INIT_DATA_PATH + "/config.json")
-                .setInitialStateDataPath(INIT_DATA_PATH + "/state.json")
-                .setPort(TARGET_PORT).build();
+    public void initialDataPresentMultipleTopElemsTest() throws IOException, ConfigurationException {
+
+        final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
+        simulatorConfiguration.setTargetAddress(TARGET_HOST);
+        simulatorConfiguration.setTargetPort(TARGET_PORT);
+        simulatorConfiguration.setYangsPath(SCHEMA_PATH);
+        simulatorConfiguration.setInitialConfigDataPath(INIT_DATA_PATH + "/config.json");
+        simulatorConfiguration.setInitialStateDataPath(INIT_DATA_PATH + "/state.json");
+
+        final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
         target.start();
 
         Optional<NormalizedNode<?, ?>> optNormalizedNode = target.getDataService()
@@ -151,12 +174,16 @@ public class DeviceCreationTest {
     }
 
     @Test
-    public void initialDataPresentOneTopElemTest() throws IOException {
-        final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().setHost(TARGET_HOST)
-                .setYangsPath(SCHEMA_PATH)
-                .setInitialConfigDataPath(INIT_DATA_PATH + "/config_one_top.json")
-                .setInitialStateDataPath(INIT_DATA_PATH + "/state_one_top.json")
-                .setPort(TARGET_PORT).build();
+    public void initialDataPresentOneTopElemTest() throws IOException, ConfigurationException {
+
+        final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
+        simulatorConfiguration.setTargetAddress(TARGET_HOST);
+        simulatorConfiguration.setTargetPort(TARGET_PORT);
+        simulatorConfiguration.setYangsPath(SCHEMA_PATH);
+        simulatorConfiguration.setInitialConfigDataPath(INIT_DATA_PATH + "/config_one_top.json");
+        simulatorConfiguration.setInitialStateDataPath(INIT_DATA_PATH + "/state_one_top.json");
+
+        final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
         target.start();
 
         Optional<NormalizedNode<?, ?>> optNormalizedNode = target.getDataService()
@@ -196,14 +223,17 @@ public class DeviceCreationTest {
     }
 
     @Test
-    public void initialDataPresentOneTopElemWithNoTLSTest() throws IOException {
-        final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().setHost(TARGET_HOST)
-                .setYangsPath(SCHEMA_PATH)
-                .setInitialConfigDataPath(INIT_DATA_PATH + "/config_one_top.json")
-                .setInitialStateDataPath(INIT_DATA_PATH + "/state_one_top.json")
-                .setPort(TARGET_PORT)
-                .usePlaintext()
-                .build();
+    public void initialDataPresentOneTopElemWithNoTLSTest() throws IOException, ConfigurationException {
+
+        final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
+        simulatorConfiguration.setTargetAddress(TARGET_HOST);
+        simulatorConfiguration.setTargetPort(TARGET_PORT);
+        simulatorConfiguration.setYangsPath(SCHEMA_PATH);
+        simulatorConfiguration.setInitialConfigDataPath(INIT_DATA_PATH + "/config_one_top.json");
+        simulatorConfiguration.setInitialStateDataPath(INIT_DATA_PATH + "/state_one_top.json");
+        simulatorConfiguration.setUsePlaintext(true);
+
+        final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
         target.start();
         Optional<NormalizedNode<?, ?>> optNormalizedNode = target.getDataService()
                 .readDataByPath(DatastoreType.CONFIGURATION,
@@ -217,14 +247,18 @@ public class DeviceCreationTest {
     }
 
     @Test
-    public void initialDataPresentOneTopElemWithAuthorizationTest() throws IOException {
-        final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().setHost(TARGET_HOST)
-                .setYangsPath(SCHEMA_PATH)
-                .setInitialConfigDataPath(INIT_DATA_PATH + "/config_one_top.json")
-                .setInitialStateDataPath(INIT_DATA_PATH + "/state_one_top.json")
-                .setPort(TARGET_PORT)
-                .setUsernamePasswordAuth(USERNAME_TEST, PASSWORD_TEST)
-                .build();
+    public void initialDataPresentOneTopElemWithAuthorizationTest() throws IOException, ConfigurationException {
+
+        final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
+        simulatorConfiguration.setTargetAddress(TARGET_HOST);
+        simulatorConfiguration.setTargetPort(TARGET_PORT);
+        simulatorConfiguration.setYangsPath(SCHEMA_PATH);
+        simulatorConfiguration.setUsername(USERNAME_TEST);
+        simulatorConfiguration.setPassword(PASSWORD_TEST);
+        simulatorConfiguration.setInitialConfigDataPath(INIT_DATA_PATH + "/config_one_top.json");
+        simulatorConfiguration.setInitialStateDataPath(INIT_DATA_PATH + "/state_one_top.json");
+
+        final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
         target.start();
         Optional<NormalizedNode<?, ?>> optNormalizedNode = target.getDataService()
                 .readDataByPath(DatastoreType.CONFIGURATION,
