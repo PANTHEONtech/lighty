@@ -8,6 +8,11 @@
 
 package io.lighty.modules.gnmi.simulatordevice.config;
 
+import com.google.gson.Gson;
+import gnmi.Gnmi;
+import io.netty.channel.EventLoopGroup;
+import java.util.EnumSet;
+
 public final class GnmiSimulatorConfiguration {
     private String targetAddress = "0.0.0.0";
     private int targetPort = 10161;
@@ -20,6 +25,10 @@ public final class GnmiSimulatorConfiguration {
     private String username;
     private String password;
     private boolean usePlaintext = false;
+    private EventLoopGroup bossGroup;
+    private EventLoopGroup workerGroup;
+    private Gson gson;
+    private EnumSet<Gnmi.Encoding> supportedEncodings;
 
     public String getTargetAddress() {
         return targetAddress;
@@ -107,5 +116,37 @@ public final class GnmiSimulatorConfiguration {
 
     public void setUsePlaintext(boolean usePlaintext) {
         this.usePlaintext = usePlaintext;
+    }
+
+    public EventLoopGroup getBossGroup() {
+        return bossGroup;
+    }
+
+    public void setBossGroup(EventLoopGroup bossGroup) {
+        this.bossGroup = bossGroup;
+    }
+
+    public EventLoopGroup getWorkerGroup() {
+        return workerGroup;
+    }
+
+    public void setWorkerGroup(EventLoopGroup workerGroup) {
+        this.workerGroup = workerGroup;
+    }
+
+    public Gson getGson() {
+        return gson;
+    }
+
+    public void setGson(Gson gson) {
+        this.gson = gson;
+    }
+
+    public EnumSet<Gnmi.Encoding> getSupportedEncodings() {
+        return supportedEncodings;
+    }
+
+    public void setSupportedEncodings(EnumSet<Gnmi.Encoding> supportedEncodings) {
+        this.supportedEncodings = supportedEncodings;
     }
 }

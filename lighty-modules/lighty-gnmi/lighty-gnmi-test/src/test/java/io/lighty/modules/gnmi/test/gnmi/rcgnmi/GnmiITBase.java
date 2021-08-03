@@ -132,10 +132,9 @@ public abstract class GnmiITBase {
         simulatorConfiguration.setYangsPath(TEST_SCHEMA_PATH);
         simulatorConfiguration.setInitialConfigDataPath(INITIAL_JSON_DATA_PATH + "/config.json");
         simulatorConfiguration.setInitialStateDataPath(INITIAL_JSON_DATA_PATH + "/state.json");
+        simulatorConfiguration.setSupportedEncodings(EnumSet.of(Gnmi.Encoding.JSON));
 
-        return new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration)
-                .setSupportedEncodings(EnumSet.of(Gnmi.Encoding.JSON))
-                .build();
+        return new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
     }
 
     protected static SimulatedGnmiDevice getSecureGnmiDevice(final String host, final int port,

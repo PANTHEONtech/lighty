@@ -9,40 +9,12 @@
 package io.lighty.modules.gnmi.simulatordevice.impl;
 
 
-import com.google.gson.Gson;
-import gnmi.Gnmi;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.utils.UsernamePasswordAuth;
-import io.netty.channel.EventLoopGroup;
-import java.util.EnumSet;
 
 public class SimulatedGnmiDeviceBuilder {
     private GnmiSimulatorConfiguration gnmiSimulatorConfiguration = null;
-    private EventLoopGroup bossGroup;
-    private EventLoopGroup workerGroup;
-    private Gson gson;
-    private EnumSet<Gnmi.Encoding> supportedEncodings;
-
-    public SimulatedGnmiDeviceBuilder setBossGroup(final EventLoopGroup bossGroup) {
-        this.bossGroup = bossGroup;
-        return this;
-    }
-
-    public SimulatedGnmiDeviceBuilder setWorkerGroup(final EventLoopGroup workerGroup) {
-        this.workerGroup = workerGroup;
-        return this;
-    }
-
-    public SimulatedGnmiDeviceBuilder setGsonInstance(final Gson customGson) {
-        this.gson = customGson;
-        return this;
-    }
-
-    public SimulatedGnmiDeviceBuilder setSupportedEncodings(final EnumSet<Gnmi.Encoding> encodings) {
-        this.supportedEncodings = encodings;
-        return this;
-    }
 
     public SimulatedGnmiDeviceBuilder from(final GnmiSimulatorConfiguration simulatorConfiguration) {
         this.gnmiSimulatorConfiguration = simulatorConfiguration;
@@ -52,7 +24,9 @@ public class SimulatedGnmiDeviceBuilder {
     @SuppressWarnings("checkstyle:illegalCatch")
     public SimulatedGnmiDevice build() throws ConfigurationException {
         try {
-            return new SimulatedGnmiDevice(bossGroup, workerGroup,
+            return new SimulatedGnmiDevice(
+                    gnmiSimulatorConfiguration.getBossGroup(),
+                    gnmiSimulatorConfiguration.getWorkerGroup(),
                     gnmiSimulatorConfiguration.getTargetAddress(),
                     gnmiSimulatorConfiguration.getTargetPort(),
                     gnmiSimulatorConfiguration.getMaxConnections(),
@@ -64,7 +38,8 @@ public class SimulatedGnmiDeviceBuilder {
                     new UsernamePasswordAuth(gnmiSimulatorConfiguration.getUsername(),
                             gnmiSimulatorConfiguration.getPassword()),
                     gnmiSimulatorConfiguration.isUsePlaintext(),
-                    gson, supportedEncodings);
+                    gnmiSimulatorConfiguration.getGson(),
+                    gnmiSimulatorConfiguration.getSupportedEncodings());
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }
