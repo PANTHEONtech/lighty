@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -112,7 +113,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
     private static SimulatedGnmiDevice deviceWithMissingEncoding;
 
     @BeforeAll
-    public static void setupDevice() {
+    public static void setupDevice() throws ConfigurationException {
         device = getUnsecureGnmiDevice(DEVICE_IP, DEVICE_PORT);
         anotherDevice = getUnsecureGnmiDevice(DEVICE_IP, ANOTHER_DEVICE_PORT);
         deviceWithCredentials = getUnsecureGnmiDevice(DEVICE_IP, DEVICE_WITH_CREDENTIALS_PORT,
@@ -344,7 +345,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
                 LOG.info("Attempt {}, response: {}", attempt, deviceConnectStatus);
                 assertTrue(deviceConnectStatus.equals(GNMI_NODE_STATUS_CONNECTING)
                            || deviceConnectStatus.equals(GNMI_NODE_STATUS_TRANSIENT_FAIL));
-                assertTrue(attempt.get() >= MAX_DEVICE_CONNECTION_ATTEMPTS);
+                assertTrue(attempt.get() <= MAX_DEVICE_CONNECTION_ATTEMPTS);
             });
 
         //assert disconnected device
@@ -520,7 +521,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
                 LOG.info("Attempt {}, response: {}", attempt, deviceConnectStatus);
                 assertTrue(deviceConnectStatus.equals(GNMI_NODE_STATUS_CONNECTING)
                     || deviceConnectStatus.equals(GNMI_NODE_STATUS_TRANSIENT_FAIL));
-                assertTrue(attempt.get() >= MAX_DEVICE_CONNECTION_ATTEMPTS);
+                assertTrue(attempt.get() <= MAX_DEVICE_CONNECTION_ATTEMPTS);
             });
 
         //update incorrect gnmi node in gnmi topology
