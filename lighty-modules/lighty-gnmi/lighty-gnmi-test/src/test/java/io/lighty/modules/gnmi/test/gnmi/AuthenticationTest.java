@@ -20,9 +20,11 @@ import gnmi.Gnmi.SetResponse;
 import gnmi.Gnmi.TypedValue;
 import gnmi.Gnmi.Update;
 import gnmi.Gnmi.UpdateResult;
+import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.gnmi.connector.configuration.SessionConfiguration;
 import io.lighty.modules.gnmi.connector.session.api.SessionManager;
 import io.lighty.modules.gnmi.connector.session.api.SessionProvider;
+import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
 import io.lighty.modules.gnmi.test.utils.TestUtils;
@@ -231,26 +233,35 @@ public class AuthenticationTest {
     }
 
     private SimulatedGnmiDevice startDeviceWithAuthentication(final String username, final String password)
-            throws IOException {
-        final SimulatedGnmiDevice authenticateDevice
-                = new SimulatedGnmiDeviceBuilder().setHost(TARGET_HOST).setPort(TARGET_PORT)
-                .setInitialConfigDataPath(INITIAL_DATA_PATH + "/config.json")
-                .setInitialStateDataPath(INITIAL_DATA_PATH + "/state.json")
-                .setYangsPath(TEST_SCHEMA_PATH)
-                .setUsernamePasswordAuth(username, password)
-                .build();
+            throws IOException, ConfigurationException {
+
+        final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
+        simulatorConfiguration.setTargetAddress(TARGET_HOST);
+        simulatorConfiguration.setTargetPort(TARGET_PORT);
+        simulatorConfiguration.setYangsPath(TEST_SCHEMA_PATH);
+        simulatorConfiguration.setInitialConfigDataPath(INITIAL_DATA_PATH + "/config.json");
+        simulatorConfiguration.setInitialStateDataPath(INITIAL_DATA_PATH + "/state.json");
+        simulatorConfiguration.setUsername(username);
+        simulatorConfiguration.setPassword(password);
+
+        final SimulatedGnmiDevice authenticateDevice =
+                new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
         authenticateDevice.start();
         return authenticateDevice;
     }
 
-    private SimulatedGnmiDevice startDeviceInNotTlsMode() throws IOException {
+    private SimulatedGnmiDevice startDeviceInNotTlsMode() throws IOException, ConfigurationException {
+
+        final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
+        simulatorConfiguration.setTargetAddress(TARGET_HOST);
+        simulatorConfiguration.setTargetPort(TARGET_PORT);
+        simulatorConfiguration.setYangsPath(TEST_SCHEMA_PATH);
+        simulatorConfiguration.setInitialConfigDataPath(INITIAL_DATA_PATH + "/config.json");
+        simulatorConfiguration.setInitialStateDataPath(INITIAL_DATA_PATH + "/state.json");
+        simulatorConfiguration.setUsePlaintext(true);
+
         final SimulatedGnmiDevice authenticateDevice
-                = new SimulatedGnmiDeviceBuilder().setHost(TARGET_HOST).setPort(TARGET_PORT)
-                .setInitialConfigDataPath(INITIAL_DATA_PATH + "/config.json")
-                .setInitialStateDataPath(INITIAL_DATA_PATH + "/state.json")
-                .setYangsPath(TEST_SCHEMA_PATH)
-                .usePlaintext()
-                .build();
+                = new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
         authenticateDevice.start();
         return authenticateDevice;
     }

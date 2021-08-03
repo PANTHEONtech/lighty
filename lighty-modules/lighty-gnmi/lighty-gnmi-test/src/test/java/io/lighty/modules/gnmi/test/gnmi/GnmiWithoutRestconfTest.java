@@ -15,6 +15,7 @@ import io.lighty.gnmi.southbound.identifier.IdentifierUtils;
 import io.lighty.gnmi.southbound.lightymodule.GnmiSouthboundModule;
 import io.lighty.gnmi.southbound.lightymodule.GnmiSouthboundModuleBuilder;
 import io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils;
+import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
 import java.io.IOException;
@@ -525,11 +526,16 @@ public class GnmiWithoutRestconfTest {
                 .setCipherTransforms("AES/CBC/PKCS5Padding").build();
     }
 
-    private static SimulatedGnmiDevice getUnsecureGnmiDevice(final String host, final int port) {
-        return new SimulatedGnmiDeviceBuilder().setHost(host).setPort(port)
-                .setInitialConfigDataPath(INITIAL_JSON_DATA_PATH + "/config.json")
-                .setInitialStateDataPath(INITIAL_JSON_DATA_PATH + "/state.json")
-                .setYangsPath(TEST_SCHEMA_PATH)
-                .build();
+    private static SimulatedGnmiDevice getUnsecureGnmiDevice(final String host, final int port)
+            throws ConfigurationException {
+
+        final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
+        simulatorConfiguration.setTargetAddress(host);
+        simulatorConfiguration.setTargetPort(port);
+        simulatorConfiguration.setYangsPath(TEST_SCHEMA_PATH);
+        simulatorConfiguration.setInitialConfigDataPath(INITIAL_JSON_DATA_PATH + "/config.json");
+        simulatorConfiguration.setInitialStateDataPath(INITIAL_JSON_DATA_PATH + "/state.json");
+
+        return new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
     }
 }
