@@ -8,110 +8,42 @@
 
 package io.lighty.modules.gnmi.simulatordevice.impl;
 
-
-import com.google.gson.Gson;
-import gnmi.Gnmi;
+import io.lighty.core.controller.impl.config.ConfigurationException;
+import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice.SimulatedGnmiDeviceConnectionInfoHolder;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice.SimulatedGnmiDeviceGroupHolder;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice.SimulatedGnmiDevicePathsHolder;
 import io.lighty.modules.gnmi.simulatordevice.utils.UsernamePasswordAuth;
-import io.netty.channel.EventLoopGroup;
-import java.util.EnumSet;
 
 public class SimulatedGnmiDeviceBuilder {
-    private EventLoopGroup bossGroup;
-    private EventLoopGroup workerGroup;
-    private String host = "0.0.0.0";
-    private int port = 10161;
-    private int maxConnections = 50;
-    private String certificatePath;
-    private String keyPath;
-    private String yangsPath;
-    private String initialConfigDataPath;
-    private String initialStateDataPath;
-    private UsernamePasswordAuth usernamePasswordAuth;
-    private boolean plaintext = false;
-    private Gson gson;
-    private EnumSet<Gnmi.Encoding> supportedEncodings;
+    private GnmiSimulatorConfiguration gnmiSimulatorConfiguration = null;
 
-    public SimulatedGnmiDeviceBuilder setInitialConfigDataPath(final String initialConfigDataPath) {
-        this.initialConfigDataPath = initialConfigDataPath;
+    public SimulatedGnmiDeviceBuilder from(final GnmiSimulatorConfiguration simulatorConfiguration) {
+        this.gnmiSimulatorConfiguration = simulatorConfiguration;
         return this;
     }
 
-    public SimulatedGnmiDeviceBuilder setInitialStateDataPath(final String initialStateDataPath) {
-        this.initialStateDataPath = initialStateDataPath;
-        return this;
-    }
-
-    public SimulatedGnmiDeviceBuilder setBossGroup(final EventLoopGroup bossGroup) {
-        this.bossGroup = bossGroup;
-        return this;
-    }
-
-    public SimulatedGnmiDeviceBuilder setWorkerGroup(final EventLoopGroup workerGroup) {
-        this.workerGroup = workerGroup;
-        return this;
-    }
-
-    public SimulatedGnmiDeviceBuilder setYangsPath(final String pathToYangs) {
-        this.yangsPath = pathToYangs;
-        return this;
-    }
-
-    public SimulatedGnmiDeviceBuilder setHost(final String host) {
-        this.host = host;
-        return this;
-    }
-
-    public SimulatedGnmiDeviceBuilder setPort(final int port) {
-        this.port = port;
-        return this;
-    }
-
-    public SimulatedGnmiDeviceBuilder setMaxConnections(final int maxConnections) {
-        this.maxConnections = maxConnections;
-        return this;
-    }
-
-    public SimulatedGnmiDeviceBuilder setCertificatePath(final String certificatePath) {
-        this.certificatePath = certificatePath;
-        return this;
-    }
-
-    public SimulatedGnmiDeviceBuilder setKeyPath(final String keyPath) {
-        this.keyPath = keyPath;
-        return this;
-    }
-
-    public SimulatedGnmiDeviceBuilder setUsernamePasswordAuth(final String username, final String password) {
-        this.usernamePasswordAuth = new UsernamePasswordAuth(username, password);
-        return this;
-    }
-
-    public SimulatedGnmiDeviceBuilder usePlaintext() {
-        this.plaintext = true;
-        return this;
-    }
-
-    public SimulatedGnmiDeviceBuilder setGsonInstance(final Gson customGson) {
-        this.gson = customGson;
-        return this;
-    }
-
-    public SimulatedGnmiDeviceBuilder setSupportedEncodings(final EnumSet<Gnmi.Encoding> encodings) {
-        this.supportedEncodings = encodings;
-        return this;
-    }
-
-
-    public SimulatedGnmiDevice build() {
-        return new SimulatedGnmiDevice(
-            new SimulatedGnmiDeviceGroupHolder(bossGroup, workerGroup),
-            new SimulatedGnmiDevicePathsHolder(certificatePath, keyPath, yangsPath, initialConfigDataPath,
-                                               initialStateDataPath),
-            new SimulatedGnmiDeviceConnectionInfoHolder(host, port, maxConnections),
-            usernamePasswordAuth, plaintext, gson, supportedEncodings
-        );
+    @SuppressWarnings("checkstyle:illegalCatch")
+    public SimulatedGnmiDevice build() throws ConfigurationException {
+        try {
+            return new SimulatedGnmiDevice(
+                    new SimulatedGnmiDeviceGroupHolder(gnmiSimulatorConfiguration.getBossGroup(),
+                            gnmiSimulatorConfiguration.getWorkerGroup()),
+                    new SimulatedGnmiDevicePathsHolder(gnmiSimulatorConfiguration.getCertPath(),
+                            gnmiSimulatorConfiguration.getCertKeyPath(),
+                            gnmiSimulatorConfiguration.getYangsPath(),
+                            gnmiSimulatorConfiguration.getInitialConfigDataPath(),
+                            gnmiSimulatorConfiguration.getInitialStateDataPath()),
+                    new SimulatedGnmiDeviceConnectionInfoHolder(gnmiSimulatorConfiguration.getTargetAddress(),
+                            gnmiSimulatorConfiguration.getTargetPort(),
+                            gnmiSimulatorConfiguration.getMaxConnections()),
+                    new UsernamePasswordAuth(gnmiSimulatorConfiguration.getUsername(),
+                            gnmiSimulatorConfiguration.getPassword()),
+                    gnmiSimulatorConfiguration.isUsePlaintext(),
+                    gnmiSimulatorConfiguration.getGson(),
+                    gnmiSimulatorConfiguration.getSupportedEncodings());
+        } catch (Exception e) {
+            throw new ConfigurationException(e);
+        }
     }
 }

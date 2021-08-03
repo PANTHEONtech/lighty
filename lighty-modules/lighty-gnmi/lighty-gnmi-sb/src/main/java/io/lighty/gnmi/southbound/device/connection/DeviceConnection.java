@@ -8,11 +8,14 @@
 
 package io.lighty.gnmi.southbound.device.connection;
 
+import com.google.common.util.concurrent.FluentFuture;
+import io.lighty.gnmi.southbound.device.session.listener.GnmiConnectionStatusException;
 import io.lighty.gnmi.southbound.device.session.listener.GnmiConnectionStatusListener;
 import io.lighty.gnmi.southbound.device.session.provider.GnmiSessionProvider;
 import io.lighty.gnmi.southbound.schema.provider.SchemaContextProvider;
 import io.lighty.modules.gnmi.connector.gnmi.session.api.GnmiSession;
 import io.lighty.modules.gnmi.connector.session.api.SessionProvider;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.GnmiNode;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.connection.parameters.ExtensionsParameters;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
@@ -43,6 +46,10 @@ public class DeviceConnection implements GnmiSessionProvider, SchemaContextProvi
         final GnmiNode gnmiNode = node.augmentation(GnmiNode.class);
 
         return gnmiNode == null ? null : gnmiNode.getExtensionsParameters();
+    }
+
+    public FluentFuture<CommitInfo> setDeviceStatusReady() throws GnmiConnectionStatusException {
+        return connectionStatusListener.copyDeviceStatusReadyToDatastore();
     }
 
     public ConfigurableParameters getConfigurableParameters() {

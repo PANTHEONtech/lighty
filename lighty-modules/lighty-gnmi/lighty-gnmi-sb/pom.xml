@@ -75,9 +75,8 @@
             <artifactId>aaa-encrypt-service</artifactId>
         </dependency>
         <dependency>
-            <!--FIXME move encryption service from netconf-sb - we do not need whole netconf here-->
             <groupId>io.lighty.modules</groupId>
-            <artifactId>lighty-netconf-sb</artifactId>
+            <artifactId>lighty-aaa-encryption-service</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
