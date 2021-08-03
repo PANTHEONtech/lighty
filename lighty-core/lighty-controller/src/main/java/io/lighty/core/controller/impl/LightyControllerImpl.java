@@ -396,6 +396,9 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     protected boolean stopProcedure() throws InterruptedException {
         LOG.debug("Lighty Controller stopProcedure");
         boolean stopSuccessful = true;
+        if (this.timer != null) {
+            this.timer.stop();
+        }
         if (this.bindingDOMEntityOwnershipServiceAdapter != null) {
             this.bindingDOMEntityOwnershipServiceAdapter.close();
         }
