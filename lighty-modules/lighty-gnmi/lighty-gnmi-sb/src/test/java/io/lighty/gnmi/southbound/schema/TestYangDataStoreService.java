@@ -11,10 +11,14 @@ package io.lighty.gnmi.southbound.schema;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.gnmi.southbound.schema.yangstore.service.YangDataStoreService;
+import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.eclipse.jdt.annotation.Nullable;
@@ -39,32 +43,35 @@ public class TestYangDataStoreService implements YangDataStoreService {
     }
 
 
-    public boolean deleteYangModel(final String modelName, @Nullable String modelVersion) {
+    public boolean deleteYangModel(final String modelName, @Nullable String modelVersion)
+            throws InterruptedException, ExecutionException, TimeoutException {
         final Optional<GnmiYangModel> model;
         if (modelVersion != null) {
-            model = readYangModel(modelName, modelVersion);
+            model = readYangModel(modelName, modelVersion)
+                    .get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         } else {
-            model = readYangModel(modelName);
+            model = readYangModel(modelName)
+                    .get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         }
         return model.filter(gnmiYangModel -> yangs.remove(ImmutablePair.of(gnmiYangModel.getName(),
                 gnmiYangModel.getVersion().getValue())) != null).isPresent();
     }
 
     @Override
-    public Optional<GnmiYangModel> readYangModel(final String modelName, final String modelVersion) {
+    public ListenableFuture<Optional<GnmiYangModel>> readYangModel(final String modelName, final String modelVersion) {
         for (Map.Entry<ImmutablePair<String, String>, String> entry : yangs.entrySet()) {
             if (entry.getKey().left.equals(modelName) && entry.getKey().right.equals(modelVersion)) {
-                return Optional.of(new GnmiYangModelBuilder()
+                return Futures.immediateFuture(Optional.of(new GnmiYangModelBuilder()
                         .setVersion(new ModuleVersionType(modelVersion))
                         .setName(modelName)
-                        .setBody(entry.getValue()).build());
+                        .setBody(entry.getValue()).build()));
             }
         }
-        return Optional.empty();
+        return Futures.immediateFuture(Optional.empty());
     }
 
     @Override
-    public Optional<GnmiYangModel> readYangModel(final String modelName) {
+    public ListenableFuture<Optional<GnmiYangModel>> readYangModel(final String modelName) {
         final List<Map.Entry<ImmutablePair<String, String>, String>> entriesWithRequestedName =
                 yangs.entrySet().stream()
                         .filter(e -> e.getKey().left.equals(modelName))
@@ -73,13 +80,13 @@ public class TestYangDataStoreService implements YangDataStoreService {
         if (entriesWithRequestedName.size() == 1) {
             final Map.Entry<ImmutablePair<String, String>, String> matchedEntry =
                     entriesWithRequestedName.stream().findFirst().get();
-            return Optional.of(new GnmiYangModelBuilder()
+            return Futures.immediateFuture(Optional.of(new GnmiYangModelBuilder()
                     .setVersion(new ModuleVersionType(matchedEntry.getKey().right))
                     .setName(modelName)
-                    .setBody(matchedEntry.getValue()).build());
+                    .setBody(matchedEntry.getValue()).build()));
         }
 
-        return Optional.empty();
+        return Futures.immediateFuture(Optional.empty());
     }
 
 }

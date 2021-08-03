@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.opendaylight.yangtools.yang.parser.rfc7950.reactor.RFC7950Reactors;
@@ -36,8 +37,8 @@ public final class FileUtils {
     public static EffectiveSchemaContext buildSchemaFromYangsDir(final String path) {
         final CrossSourceStatementReactor.BuildAction buildAction = RFC7950Reactors.defaultReactorBuilder()
                 .build().newBuild();
-        try {
-            final List<File> filesInFolder = Files.walk(Path.of(path))
+        try (Stream<Path> pathStream = Files.walk(Path.of(path))) {
+            final List<File> filesInFolder = pathStream
                     .filter(Files::isRegularFile)
                     .map(Path::toFile)
                     .collect(Collectors.toList());

@@ -53,14 +53,20 @@ public class KeystoreGnmiSecurityProvider implements GnmiSecurityProvider {
         }
     }
 
-    private Security getSecurityFromKeystoreId(final String keystoreId) throws SessionSecurityException {
+    private Security getSecurityFromKeystoreId(final String keystoreId)
+            throws SessionSecurityException {
         final Optional<Keystore> optionalKeystore;
         try {
             optionalKeystore = this.certService.readCertificate(keystoreId)
                     .get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (ExecutionException | TimeoutException e) {
             throw new SessionSecurityException(
                     String.format("Unable to read keystore [%s] certificates from operational datastore",
+                            keystoreId), e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new SessionSecurityException(
+                    String.format("Interrupted while reading keystore [%s] certificates from operational datastore",
                             keystoreId), e);
         }
         if (optionalKeystore.isPresent()) {

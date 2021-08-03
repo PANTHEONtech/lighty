@@ -8,6 +8,7 @@
 
 package io.lighty.applications.rcgnmi.module;
 
+import io.lighty.aaa.encrypt.service.impl.AAAEncryptionServiceImpl;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
@@ -22,7 +23,6 @@ import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
-import io.lighty.modules.southbound.netconf.impl.AAAEncryptionServiceImpl;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -190,6 +190,9 @@ public class RcGnmiAppModule extends AbstractLightyModule {
             }
         } catch (Exception e) {
             LOG.error("Exception was thrown while stopping the lighty.io module ({})!", lightyModule.getClass(), e);
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
             return false;
         }
     }

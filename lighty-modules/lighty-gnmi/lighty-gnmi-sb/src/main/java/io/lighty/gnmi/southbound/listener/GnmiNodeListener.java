@@ -18,6 +18,7 @@ import io.lighty.gnmi.southbound.device.connection.DeviceConnectionManager;
 import io.lighty.gnmi.southbound.identifier.IdentifierUtils;
 import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -30,6 +31,7 @@ import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.GnmiNode;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.GnmiNodeBuilder;
@@ -92,16 +94,20 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
         writeTransaction.delete(LogicalDatastoreType.OPERATIONAL, IdentifierUtils.gnmiNodeIID(nodeId));
         try {
             writeTransaction.commit().get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (ExecutionException | TimeoutException e) {
             LOG.warn("Failed deleting node state of node {} from operational datastore", nodeId.getValue(), e);
+        } catch (InterruptedException e) {
+            LOG.error("Interrupted while deleting node state of node {} from operational datastore",
+                    nodeId.getValue(), e);
+            Thread.currentThread().interrupt();
         }
     }
 
     private void connectNode(final Node node) {
-        final ListenableFuture<Void> connectionResult = deviceConnectionManager.connectDevice(node);
+        final ListenableFuture<CommitInfo> connectionResult = deviceConnectionManager.connectDevice(node);
         Futures.addCallback(connectionResult, new FutureCallback<>() {
             @Override
-            public void onSuccess(@Nullable Void val) {
+            public void onSuccess(@Nullable final CommitInfo result) {
                 LOG.info("Connection with node {} established successfully", node.getNodeId());
             }
 
@@ -113,9 +119,16 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
                     try {
                         LOG.error("Connection of node {} failed", node.getNodeId(), throwable);
                         writeConnectionFailureReasonToDatastore(node.getNodeId(), throwable.toString());
-                    } catch (InterruptedException | TimeoutException | ExecutionException e) {
-                        LOG.warn("Failed writing reason of connection failure of node {} to datastore",
-                                node.getNodeId().getValue(), e);
+                    } catch (TimeoutException | ExecutionException e) {
+                        throw new RuntimeException(
+                                String.format("Failed writing reason of connection failure of node %s to datastore",
+                                        node.getNodeId().getValue()), e);
+
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new RuntimeException(
+                                String.format("Interrupted while writing connection failure of node %s to datastore",
+                                        node.getNodeId().getValue()), e);
                     }
                 } else {
                     LOG.info("Connection initialization to node {} was cancelled", node.getNodeId());
@@ -126,13 +139,17 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
     }
 
     private boolean nodeParamsUpdated(final DataObjectModification<Node> rootNode) {
-        if (rootNode.getDataBefore() == null || rootNode.getDataAfter() == null) {
+        final Node nodeBefore = rootNode.getDataBefore();
+        final Node nodeAfter = rootNode.getDataAfter();
+        if (nodeBefore == null || nodeAfter == null) {
             return true;
         } else {
-            final GnmiNode before = requireNonNull(rootNode.getDataBefore().augmentation(GnmiNode.class));
-            final GnmiNode after = requireNonNull(rootNode.getDataAfter().augmentation(GnmiNode.class));
-            return !before.getConnectionParameters().equals(after.getConnectionParameters())
-                || !before.getExtensionsParameters().equals(after.getExtensionsParameters());
+            final GnmiNode before = requireNonNull(nodeBefore.augmentation(GnmiNode.class),
+                    "Node must be augmented by gNMI");
+            final GnmiNode after = requireNonNull(nodeAfter.augmentation(GnmiNode.class),
+                    "Node must be augmented by gNMI");
+            return !Objects.equals(before.getConnectionParameters(), after.getConnectionParameters())
+                || !Objects.equals(before.getExtensionsParameters(), after.getExtensionsParameters());
         }
     }
 
