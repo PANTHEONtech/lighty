@@ -54,8 +54,11 @@ public class YangDataService {
                                                          final YangInstanceIdentifier path) {
         try (DOMStoreReadTransaction tx = datastoreMap.get(datastoreType).newReadOnlyTransaction()) {
             return tx.read(path).get();
-        } catch (final InterruptedException | ExecutionException e) {
+        } catch (final ExecutionException e) {
             LOG.error("Unable to fetch data from DataStore", e);
+        } catch (InterruptedException e) {
+            LOG.error("Interrupted while fetching data from DataStore", e);
+            Thread.currentThread().interrupt();
         }
         return Optional.empty();
     }
@@ -87,14 +90,19 @@ public class YangDataService {
             final DOMStoreThreePhaseCommitCohort tpcc = tx.ready();
             tpcc.preCommit().get();
             tpcc.commit().get();
-        } catch (final InterruptedException | ExecutionException exception) {
-            LOG.error("Unable to commit changes to datastore");
+        } catch (final ExecutionException exception) {
+            LOG.error("Unable to commit changes to datastore", exception);
             throw new RuntimeException("Unable to commit changes to datastore", exception);
+        } catch (InterruptedException e) {
+            LOG.error("Interrupted while committing changes to datastore", e);
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Interrupted while committing changes to datastore", e);
         }
     }
 
     private void initializeDataStore(final String initialConfigDataPath, final String initialStateDataPath,
-                                     final EffectiveModelContext schemaContext) throws IOException {
+                                     final EffectiveModelContext schemaContext)
+            throws IOException {
         // Init config data
         if (StringUtils.isNotEmpty(initialConfigDataPath)) {
             final InputStream configFile = Files.newInputStream(Path.of(initialConfigDataPath));
