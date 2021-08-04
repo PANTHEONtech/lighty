@@ -72,7 +72,7 @@ printLine() {
 }
 
 printLine
-echo "Lighty-rcgnmi-app curl tests"
+echo "-- Lighty-rcgnmi-app curl tests --"
 
 # Cluster state (:8558/cluster/members)
 for pod_controller_ip in $POD_CONTROLLER_IPS; \

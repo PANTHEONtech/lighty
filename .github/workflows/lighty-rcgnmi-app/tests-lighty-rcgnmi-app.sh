@@ -42,6 +42,8 @@ echo -e "Downloaded YANG models:\n"
 ls -1 yangs
 
 #Run simulator for testing purpose
+printLine
+echo -e "-- Starting gNMI simulator device --\n"
 java -jar ${GITHUB_WORKSPACE}/lighty-modules/lighty-gnmi/lighty-gnmi-device-simulator/target/lighty-gnmi-device-simulator-14.0.1-SNAPSHOT.jar -c ./simulator/example_config.json > /dev/null 2>&1 &
 
 #Add yangs into controller through REST rpc
@@ -79,7 +81,7 @@ assertNodeConnected() {
 }
 
 printLine
-echo -e "Lighty-rcgnmi-app curl tests\n"
+echo -e "-- Lighty-rcgnmi-app curl tests --\n"
 
 # Cluster state (:8558/cluster/members)
 for pod_controller_ip in $POD_CONTROLLER_IPS; \
@@ -126,7 +128,7 @@ connection_status="FAILURE"
 for i in {1..10} ; do
   connection_status=$(assertNodeConnected $(curl -X GET -s \
   'http://'"$MINIKUBE_IP"':'"$CONTROLLER_PORT"'/restconf/data/network-topology:network-topology/topology=gnmi-topology/node='node-"${MINIKUBE_IP//.}"'/gnmi-topology:node-state/node-status'))
-  echo -e "Connection status: $connection_status"
+  echo -e "Connection status check $i: $connection_status"
   if [[ $connection_status == "READY" ]]
   then
     echo -e "Test passed"

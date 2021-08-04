@@ -14,6 +14,9 @@ printLine() {
   echo "";printf '%.0s-' {1..100}; echo ""
 }
 
+printLine
+echo -e "-- Loading YANG models to gNMI lighty.io app --\n"
+
 for yangFile in `ls -A1 $YANG_PATHS`
 do \
   printLine
