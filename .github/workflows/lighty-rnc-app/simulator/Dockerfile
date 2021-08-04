@@ -5,7 +5,7 @@ RUN git clone https://github.com/PANTHEONtech/lighty-netconf-simulator.git
 FROM maven:3.8-jdk-11-slim as build
 WORKDIR /lighty-netconf-simulator
 COPY --from=clone /netconf-simulator/lighty-netconf-simulator /lighty-netconf-simulator
-RUN mvn install -DskipTests
+RUN mvn -B install -DskipTests
 
 FROM openjdk:11-jre-slim
 WORKDIR /lighty-netconf-simulator
