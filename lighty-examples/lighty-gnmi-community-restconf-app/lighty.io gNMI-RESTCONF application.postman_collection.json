@@ -85,7 +85,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"node\": [\n        {\n            \"node-id\": \"gnmi-simulator\",\n            \"connection-parameters\": {\n                \"host\": \"127.0.0.1\",\n                \"port\": 3333,\n                \"keystore-id\": \"keystore-id-1\",\n                \"credentials\": {\n                    \"username\": \"Admin\",\n                    \"password\": \"Admin\"\n                }\n            },\n            \"extensions-parameters\": {\n                \"gnmi-parameters\": {\n                    \"overwrite-data-type\": \"ALL\",\n                    \"use-model-name-prefix\": true\n                }\n            }\n        }\n    ]\n}",
+					"raw": "{\n    \"node\": [\n        {\n            \"node-id\": \"gnmi-simulator\",\n            \"connection-parameters\": {\n                \"host\": \"127.0.0.1\",\n                \"port\": 10161,\n                \"keystore-id\": \"keystore-id-1\",\n                \"credentials\": {\n                    \"username\": \"admin\",\n                    \"password\": \"admin\"\n                }\n            },\n            \"extensions-parameters\": {\n                \"gnmi-parameters\": {\n                    \"overwrite-data-type\": \"ALL\",\n                    \"use-model-name-prefix\": true\n                }\n            }\n        }\n    ]\n}",
 					"options": {
 						"raw": {
 							"language": "json"

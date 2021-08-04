@@ -64,7 +64,7 @@
     },
     "gnmi": {
         "initialYangsPaths" : [
-            "src/main/resources/yangs"
+            "../../../../../lighty-examples/lighty-gnmi-community-restconf-app/src/main/resources/yangs"
         ]
     }
 }
