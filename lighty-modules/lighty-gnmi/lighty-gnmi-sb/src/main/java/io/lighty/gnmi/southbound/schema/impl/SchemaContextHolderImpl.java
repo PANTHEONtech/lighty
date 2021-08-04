@@ -14,6 +14,7 @@ import io.lighty.gnmi.southbound.capabilities.GnmiDeviceCapability;
 import io.lighty.gnmi.southbound.schema.SchemaConstants;
 import io.lighty.gnmi.southbound.schema.SchemaContextHolder;
 import io.lighty.gnmi.southbound.schema.yangstore.service.YangDataStoreService;
+import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +26,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import javax.annotation.Nullable;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.gnmi.yang.models.GnmiYangModel;
 import org.opendaylight.yangtools.concepts.SemVer;
@@ -70,24 +74,35 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
             final List<GnmiDeviceCapability> baseCaps) throws SchemaException {
         final Set<String> processedModuleNames = new HashSet<>();
         final SchemaException schemaException = new SchemaException();
-        // Read models reported in capabilities
-        final Set<GnmiYangModel> fullModelSet = readCapabilities(baseCaps, processedModuleNames, schemaException);
-        // Get dependencies of models reported in capabilities
-        Set<YangModelDependencyInfo> dependencyInfos = getDependenciesOfModels(fullModelSet, schemaException);
 
-        boolean nonComplete = true;
-        while (nonComplete) {
-            // Read dependency models
-            Set<GnmiYangModel> dependencyModels = new HashSet<>();
-            for (YangModelDependencyInfo dependencyInfo : dependencyInfos) {
-                final Set<GnmiYangModel> gnmiYangModels =
-                        readDependencyModels(dependencyInfo, processedModuleNames, schemaException);
-                dependencyModels.addAll(gnmiYangModels);
+        Set<GnmiYangModel> fullModelSet = new HashSet<>();
+        try {
+            // Read models reported in capabilities
+            fullModelSet = readCapabilities(baseCaps, processedModuleNames, schemaException);
+            // Get dependencies of models reported in capabilities
+            Set<YangModelDependencyInfo> dependencyInfos = getDependenciesOfModels(fullModelSet, schemaException);
+
+            boolean nonComplete = true;
+            while (nonComplete) {
+                // Read dependency models
+                Set<GnmiYangModel> dependencyModels = new HashSet<>();
+                for (YangModelDependencyInfo dependencyInfo : dependencyInfos) {
+                    final Set<GnmiYangModel> gnmiYangModels =
+                            readDependencyModels(dependencyInfo, processedModuleNames, schemaException);
+                    dependencyModels.addAll(gnmiYangModels);
+                }
+                // See which models are new, if any, do it again
+                final Sets.SetView<GnmiYangModel> newModels = Sets.difference(dependencyModels, fullModelSet);
+                dependencyInfos = getDependenciesOfModels(newModels.immutableCopy(), schemaException);
+                nonComplete = fullModelSet.addAll(newModels);
             }
-            // See which models are new, if any, do it again
-            final Sets.SetView<GnmiYangModel> newModels = Sets.difference(dependencyModels, fullModelSet);
-            dependencyInfos = getDependenciesOfModels(newModels.immutableCopy(), schemaException);
-            nonComplete = fullModelSet.addAll(newModels);
+        } catch (ExecutionException | TimeoutException e) {
+            LOG.error("Error reading yang model from datastore", e);
+            schemaException.addErrorMessage(e.getMessage());
+        } catch (InterruptedException e) {
+            LOG.error("Interrupted while reading model from datastore", e);
+            Thread.currentThread().interrupt();
+            schemaException.addErrorMessage(e.getMessage());
         }
 
         if (schemaException.getMissingModels().isEmpty() && schemaException.getErrorMessages().isEmpty()) {
@@ -98,7 +113,8 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
 
     private Set<GnmiYangModel> readCapabilities(final List<GnmiDeviceCapability> baseCaps,
                                                 final Set<String> processedModuleNames,
-                                                final SchemaException schemaException) {
+                                                final SchemaException schemaException)
+            throws InterruptedException, ExecutionException, TimeoutException {
         Set<GnmiYangModel> readModels = new HashSet<>();
         for (GnmiDeviceCapability capability : baseCaps) {
             if (!processedModuleNames.contains(capability.getName())) {
@@ -114,23 +130,27 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
         return readModels;
     }
 
-    private Optional<GnmiYangModel> tryToReadModel(final GnmiDeviceCapability capability) {
+    private Optional<GnmiYangModel> tryToReadModel(final GnmiDeviceCapability capability)
+            throws InterruptedException, ExecutionException, TimeoutException {
         // Try to find the model stored with version
         Optional<GnmiYangModel> readImport = Optional.empty();
         if (capability.getVersionString().isPresent()) {
             readImport = yangDataStoreService.readYangModel(capability.getName(),
-                    capability.getVersionString().get());
+                    capability.getVersionString().get())
+                    .get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
             if (readImport.isEmpty()) {
                 LOG.warn("Requested gNMI (capability/dependency of capability) {} was not found with requested version"
                         + " {}.", capability.getName(), capability.getVersionString().get());
-                readImport = yangDataStoreService.readYangModel(capability.getName());
+                readImport = yangDataStoreService.readYangModel(capability.getName())
+                        .get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
                 readImport.ifPresent(gnmiYangModel ->
                         LOG.warn("Model {} was found, but with version {}, since it is the only one"
                                         + " present, using it for schema.", capability.getName(),
                                 gnmiYangModel.getVersion().getValue()));
             }
         } else {
-            readImport = yangDataStoreService.readYangModel(capability.getName());
+            readImport = yangDataStoreService.readYangModel(capability.getName())
+                    .get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         }
 
         return readImport;
@@ -153,7 +173,8 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
 
     private Set<GnmiYangModel> readDependencyModels(final YangModelDependencyInfo dependencyInfo,
                                                     final Set<String> processedModuleNames,
-                                                    final SchemaException schemaException) {
+                                                    final SchemaException schemaException)
+            throws InterruptedException, ExecutionException, TimeoutException {
         Set<GnmiYangModel> models = new HashSet<>();
         for (ModuleImport moduleImport : dependencyInfo.getDependencies()) {
             if (!processedModuleNames.contains(moduleImport.getModuleName())) {

@@ -9,11 +9,13 @@
 package io.lighty.gnmi.southbound.device.connection;
 
 import com.google.common.collect.Sets;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import gnmi.Gnmi;
 import io.lighty.gnmi.southbound.capabilities.GnmiDeviceCapability;
 import io.lighty.gnmi.southbound.capabilities.MissingEncodingException;
+import io.lighty.gnmi.southbound.device.session.listener.GnmiConnectionStatusException;
 import io.lighty.gnmi.southbound.device.session.security.SessionSecurityException;
 import io.lighty.gnmi.southbound.identifier.IdentifierUtils;
 import io.lighty.gnmi.southbound.mountpoint.GnmiMountPointRegistrator;
@@ -23,8 +25,10 @@ import io.lighty.gnmi.southbound.requests.utils.GnmiRequestUtils;
 import io.lighty.gnmi.southbound.schema.SchemaContextHolder;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -33,6 +37,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.GnmiNodeBuilder;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.node.state.NodeStateBuilder;
@@ -74,7 +79,7 @@ public class DeviceConnectionManager implements AutoCloseable {
         this.activeDevices = new ConcurrentHashMap<>();
     }
 
-    public ListenableFuture<Void> connectDevice(final Node node) {
+    public ListenableFuture<CommitInfo> connectDevice(final Node node) {
         if (!activeDevices.containsKey(node.getNodeId())) {
             try {
                 /*
@@ -82,10 +87,10 @@ public class DeviceConnectionManager implements AutoCloseable {
                  state of the gRPC channel is READY
                  */
                 final ListenableFuture<DeviceConnection> deviceConnectionFuture =
-                        connectionInitializer.initConnection(node);
+                    connectionInitializer.initConnection(node);
 
                 return Futures.transformAsync(deviceConnectionFuture,
-                    deviceConnection -> createMountPoint(node, deviceConnection),
+                    deviceConnection -> prepareDeviceConnection(node, deviceConnection),
                     executorService);
 
             } catch (SessionSecurityException e) {
@@ -96,6 +101,26 @@ public class DeviceConnectionManager implements AutoCloseable {
             LOG.debug("Node {} is already active", node.getNodeId());
             return Futures.immediateFuture(null);
         }
+    }
+
+    private ListenableFuture<CommitInfo> prepareDeviceConnection(final Node node,
+            final DeviceConnection deviceConnection) {
+        final ListenableFuture<Void> mountPointCreatedFuture = createMountPoint(node, deviceConnection);
+
+        return Futures.transformAsync(mountPointCreatedFuture,
+            voidResult -> {
+                final FluentFuture<CommitInfo> statusReadyFuture = deviceConnection.setDeviceStatusReady();
+
+                // handle GnmiConnectionStatusException in `statusReadyFuture`
+                return Futures.catchingAsync(statusReadyFuture, GnmiConnectionStatusException.class,
+                    statusException -> {
+                        LOG.error("Connection status unexpectedly changed from READY to {} while creating"
+                                + " Mountpoint", statusException.getCurrentState());
+                        throw statusException;
+                    },
+                    executorService);
+            },
+            executorService);
     }
 
     private ListenableFuture<Void> createMountPoint(final Node node, final DeviceConnection deviceConnection) {
@@ -112,8 +137,16 @@ public class DeviceConnectionManager implements AutoCloseable {
                             new MissingEncodingException("gNMI Device must support JSON_IETF encoding"));
                 }
 
-                final List<GnmiDeviceCapability> capabilitiesList =
-                    GnmiRequestUtils.fromCapabilitiesResponse(capabilityResponse);
+                final List<GnmiDeviceCapability> capabilitiesList = new ArrayList<>();
+                final Optional<List<Gnmi.ModelData>> forceCapabilities =
+                    deviceConnection.getConfigurableParameters().getModelDataList();
+                if (forceCapabilities.isPresent()) {
+                    final Gnmi.CapabilityResponse capabilitiesResponseBuilder =
+                        Gnmi.CapabilityResponse.newBuilder().addAllSupportedModels(forceCapabilities.get()).build();
+                    capabilitiesList.addAll(GnmiRequestUtils.fromCapabilitiesResponse(capabilitiesResponseBuilder));
+                } else {
+                    capabilitiesList.addAll(GnmiRequestUtils.fromCapabilitiesResponse(capabilityResponse));
+                }
                 try {
                     final EffectiveSchemaContext schemaContext = schemaContextHolder.getSchemaContext(capabilitiesList);
                     deviceConnection.setSchemaContext(schemaContext);
@@ -121,10 +154,12 @@ public class DeviceConnectionManager implements AutoCloseable {
                     mountPointRegistrator.registerMountPoint(node, schemaContext, gnmiDataBroker);
                     activeDevices.put(node.getNodeId(), deviceConnection);
                     saveCapabilitiesList(node.getNodeId(), capabilitiesList);
-
                     return Futures.immediateFuture(null);
 
-                } catch (SchemaException | InterruptedException | ExecutionException | TimeoutException e) {
+                } catch (SchemaException | ExecutionException | TimeoutException e) {
+                    return Futures.immediateFailedFuture(e);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                     return Futures.immediateFailedFuture(e);
                 }
             },

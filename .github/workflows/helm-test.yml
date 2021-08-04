@@ -80,6 +80,9 @@ jobs:
       - name: Kubernetes version
         run: |
           minikube kubectl -- version
+      - name: List kube-system pods
+        run: |
+          minikube kubectl -- get pods -n kube-system
       - name: Load image to minikube
         run: |
           echo "Exporting Docker image to .tar ..."
@@ -88,10 +91,51 @@ jobs:
           echo "Loading docker image to minikube"
           docker load --input ./${{ github.event.inputs.app-name }}.tar
           rm ./${{ github.event.inputs.app-name }}.tar
-      - name: Install app helm chart
+      - name: Install app helm chart, SINGLENODE
         run: |
           helm install ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-helm/helm/${{ github.event.inputs.app-name }}-helm --name ${{ github.event.inputs.app-name }}
           sleep 35 # Wait for app to start
+      - name: List pods
+        run: |
+          minikube kubectl -- get pods
+      - name: Cluster state (:8558/cluster/members)
+        run: |
+          pod_names=$(minikube kubectl -- get pods --no-headers -o custom-columns=":metadata.name")
+          for pod_name in $pod_names; \
+          do \
+            pod_ip=$(minikube kubectl -- get pod $pod_name --template={{.status.podIP}}) && \
+            curl --user admin:admin -H "Content-Type: application/json" --insecure http://$pod_ip:8558/cluster/members \
+          ;done
+      - name: Logs pods
+        run: |
+          pod_names=$(minikube kubectl -- get pods --no-headers -o custom-columns=":metadata.name")
+          for pod_name in $pod_names; \
+          do \
+            minikube kubectl -- logs $pod_name \
+          ;done
+      - name: Pods healthcheck (:8888/restconf/operations)
+        run: |
+          pod_names=$(minikube kubectl -- get pods --no-headers -o custom-columns=":metadata.name")
+          for pod_name in $pod_names; \
+          do \
+            pod_ip=$(minikube kubectl -- get pod $pod_name --template={{.status.podIP}}) && \
+            curl --user admin:admin -H "Content-Type: application/json" --insecure http://$pod_ip:8888/restconf/operations \
+          ;done
+      - name: List Services
+        run: |
+          minikube kubectl -- get services
+      - name: Service healthcheck (:30888/restconf/operations)
+        run: |
+          minikube_ip=$(minikube ip)
+          curl --user admin:admin -H "Content-Type: application/json" --insecure http://$minikube_ip:30888/restconf/operations
+      - name: Uninstall deployment
+        run: |
+          helm del ${{ github.event.inputs.app-name }} --purge
+          sleep 25 # Wait for helm to del deployment
+      - name: Install app helm chart, CLUSTER
+        run: |
+          helm install ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-helm/helm/${{ github.event.inputs.app-name }}-helm --name ${{ github.event.inputs.app-name }} --set lighty.replicaCount=3 --set lighty.akka.isSingleNode=false
+          sleep 120 # Wait for app to start and form cluster
       - name: List pods
         run: |
           minikube kubectl -- get pods

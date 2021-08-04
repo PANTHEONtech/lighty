@@ -8,6 +8,7 @@
 
 package io.lighty.applications.rcgnmi.module;
 
+import io.lighty.aaa.encrypt.service.impl.AAAEncryptionServiceImpl;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
@@ -22,10 +23,11 @@ import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
-import io.lighty.modules.southbound.netconf.impl.AAAEncryptionServiceImpl;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Base64;
@@ -188,6 +190,9 @@ public class RcGnmiAppModule extends AbstractLightyModule {
             }
         } catch (Exception e) {
             LOG.error("Exception was thrown while stopping the lighty.io module ({})!", lightyModule.getClass(), e);
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
             return false;
         }
     }
@@ -222,8 +227,12 @@ public class RcGnmiAppModule extends AbstractLightyModule {
     }
 
     private AaaEncryptServiceConfig getDefaultAaaEncryptServiceConfig() {
+        final SecureRandom random = new SecureRandom();
+        final byte[] bytes = new byte[16];
+        random.nextBytes(bytes);
+        final String salt = new String(Base64.getEncoder().encode(bytes), StandardCharsets.UTF_8);
         return new AaaEncryptServiceConfigBuilder().setEncryptKey("V1S1ED4OMeEh")
-                .setPasswordLength(12).setEncryptSalt("TdtWeHbch/7xP52/rp3Usw==")
+                .setPasswordLength(12).setEncryptSalt(salt)
                 .setEncryptMethod("PBKDF2WithHmacSHA1").setEncryptType("AES")
                 .setEncryptIterationCount(32768).setEncryptKeyLength(128)
                 .setCipherTransforms("AES/CBC/PKCS5Padding").build();

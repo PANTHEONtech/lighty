@@ -82,6 +82,45 @@ curl --request POST 'http://127.0.0.1:8888/restconf/operations/gnmi-yang-storage
 }'
 ```
 
+In the case when device does not report all of its capabilities, for example: the device sends a list of
+capabilities without yang models that ```augment``` other models reported in the capabilities, use the
+```force-capability``` parameter, which replaces the list of capabilities received in the gNMI Capabilities response
+with the custom capabilities defined in this parameter.
+If the ```force-capability``` is specified, each ```GetRequest``` request contains ```use_models``` field.
+The ```use_models``` field specifying the list of capabilities that the target should use when creating a
+response to the Get RPC call. When specified, the target MUST only consider data elements within the defined set of
+schema models.
+
+```
+curl -X PUT \
+  http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1 \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "node": [
+        {
+            "node-id": "node-id-1",
+            "connection-parameters": {
+                "host": "172.0.0.1",
+                "port": 9090,
+                "connection-type": "INSECURE"
+            },
+            "extensions-parameters": {
+                "force-capability": [
+                    {
+                        "name": "openconfig-if-ethernet",
+                        "version": "2.6.2"
+                    },
+                    {
+                        "name": "openconfig-if-ip",
+                        "version": "2.3.1"
+                    }
+                ]
+            }
+        }
+    ]
+}'
+```
+
 ### gNMI southbound Authentication
 In this section we explore different options of client's (gNMI southbound) authentication with examples on how to use them.
 
