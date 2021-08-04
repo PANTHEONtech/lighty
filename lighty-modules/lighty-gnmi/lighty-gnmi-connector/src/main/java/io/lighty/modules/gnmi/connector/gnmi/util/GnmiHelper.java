@@ -18,6 +18,7 @@ import gnmi.Gnmi.PathElem;
 import gnmi.Gnmi.SetRequest;
 import gnmi.Gnmi.TypedValue;
 import gnmi.Gnmi.Update;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -87,35 +88,38 @@ public final class GnmiHelper {
 
     public static Builder pathBuilder(final String xpath) {
         final Builder pathBuilder = Path.newBuilder();
-        if (!Strings.isNullOrEmpty(xpath)) {
-            String[] tokens = xpath.split(REGEX_SLASH);
-            for (String token : tokens) {
-                if (!StringUtils.isBlank(token)) {
-                    String elem;
-                    Map<String, String> keys = new HashMap<>();
-                    final int beginKey = token.indexOf(REGEX_BEGIN_KEY);
-                    final int endKey = token.indexOf(REGEX_END_KEY);
-                    if (beginKey > 0) {
-                        elem = token.substring(0, beginKey);
-                        String keyPeers = token.substring(beginKey + 1, endKey);
-                        for (String keyValPair : keyPeers.split(REGEX_SEMICOLON)) {
-                            final Matcher matcher = KEY_VAL_PAIR.matcher(keyValPair);
-                            if (matcher.matches()) {
-                                keys.put(matcher.group("key"), matcher.group("val"));
-                            }
-                        }
-                    } else {
-                        elem = token;
-                    }
-                    gnmi.Gnmi.PathElem.Builder elemBuilder = PathElem.newBuilder().setName(elem);
-                    if (!keys.isEmpty()) {
-                        elemBuilder.putAllKey(keys);
-                    }
-                    pathBuilder.addElem(elemBuilder.build());
+        if (Strings.isNullOrEmpty(xpath)) {
+            return pathBuilder;
+        }
+        String[] tokens = xpath.split(REGEX_SLASH);
+        Arrays.stream(tokens)
+            .filter(token -> !StringUtils.isBlank(token))
+            .forEach(token -> processToken(token, pathBuilder));
+        return pathBuilder;
+    }
+
+    private static void processToken(final String token, final Builder pathBuilder) {
+        String elem;
+        Map<String, String> keys = new HashMap<>();
+        final int beginKey = token.indexOf(REGEX_BEGIN_KEY);
+        final int endKey = token.indexOf(REGEX_END_KEY);
+        if (beginKey > 0) {
+            elem = token.substring(0, beginKey);
+            String keyPeers = token.substring(beginKey + 1, endKey);
+            for (String keyValPair : keyPeers.split(REGEX_SEMICOLON)) {
+                final Matcher matcher = KEY_VAL_PAIR.matcher(keyValPair);
+                if (matcher.matches()) {
+                    keys.put(matcher.group("key"), matcher.group("val"));
                 }
             }
+        } else {
+            elem = token;
         }
-        return pathBuilder;
+        gnmi.Gnmi.PathElem.Builder elemBuilder = PathElem.newBuilder().setName(elem);
+        if (!keys.isEmpty()) {
+            elemBuilder.putAllKey(keys);
+        }
+        pathBuilder.addElem(elemBuilder.build());
     }
 
     public enum Type { UPDATE, REPLACE, DELETE }

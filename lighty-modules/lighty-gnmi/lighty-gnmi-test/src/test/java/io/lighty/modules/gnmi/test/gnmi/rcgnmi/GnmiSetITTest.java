@@ -283,10 +283,10 @@ public class GnmiSetITTest extends GnmiITBase {
         final JSONArray updatedJsonArray = new JSONObject(getAllListData.body())
                 .getJSONObject(GNMI_TEST_DATA).getJSONArray(TEST_LIST);
         final List<String> sortedJsonArray = getSortedJsonArray(updatedJsonArray);
-        assertEquals(sortedJsonArray.size(), 2);
+        assertEquals(2, sortedJsonArray.size());
         sortedJsonArray.remove(String.format("{\"key\":\"%s\"}", LIST_ID_10));
         sortedJsonArray.remove(String.format("{\"key\":\"%s\"}", LIST_ID_20));
-        assertEquals(sortedJsonArray.size(), 0);
+        assertEquals(0, sortedJsonArray.size());
 
         removeGnmiTestDataContainer();
     }

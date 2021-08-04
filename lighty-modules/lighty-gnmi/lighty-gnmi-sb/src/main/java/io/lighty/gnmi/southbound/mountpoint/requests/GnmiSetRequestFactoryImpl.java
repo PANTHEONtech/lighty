@@ -19,6 +19,9 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 public class GnmiSetRequestFactoryImpl implements SetRequestFactory {
 
+    private static final String FAILED_TO_CONVERT =
+        "Failed to convert YangInstanceIdentifier %s and NormalizedNode %s to Gnmi.Update";
+
     private final Codec<YangInstanceIdentifier, Gnmi.Path> instanceIdentifierToPathCodec;
     private final BiCodec<YangInstanceIdentifier, NormalizedNode<?, ?>, Gnmi.Update> updateCodec;
 
@@ -42,8 +45,7 @@ public class GnmiSetRequestFactoryImpl implements SetRequestFactory {
             try {
                 setRequestBuilder.addReplace(updateCodec.apply(toConvert.left, toConvert.right));
             } catch (GnmiCodecException e) {
-                throw new GnmiRequestException(String.format("Failed to convert YangInstanceIdentifier %s and"
-                        + " NormalizedNode %s to Gnmi.Update", toConvert.left, toConvert.right), e);
+                throw new GnmiRequestException(String.format(FAILED_TO_CONVERT, toConvert.left, toConvert.right), e);
             }
         }
 
@@ -52,8 +54,7 @@ public class GnmiSetRequestFactoryImpl implements SetRequestFactory {
             try {
                 setRequestBuilder.addUpdate(updateCodec.apply(toConvert.left, toConvert.right));
             } catch (GnmiCodecException e) {
-                throw new GnmiRequestException(String.format("Failed to convert YangInstanceIdentifier %s and"
-                        + " NormalizedNode %s to Gnmi.Update", toConvert.left, toConvert.right), e);
+                throw new GnmiRequestException(String.format(FAILED_TO_CONVERT, toConvert.left, toConvert.right), e);
             }
         }
         // DELETE

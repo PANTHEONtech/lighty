@@ -39,6 +39,7 @@ public class SchemaException extends Exception {
         missingModels.add(missingModel);
     }
 
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("Errors: ");
         for (String error : errorMessages) {

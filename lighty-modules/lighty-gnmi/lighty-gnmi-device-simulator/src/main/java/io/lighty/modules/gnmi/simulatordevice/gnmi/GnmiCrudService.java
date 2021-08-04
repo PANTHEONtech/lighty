@@ -164,7 +164,7 @@ public class GnmiCrudService {
             final Optional<? extends Module> optModule = DataConverter.findModuleByQName(identifier
                     .getLastPathArgument().getNodeType(), context);
             if (optModule.isEmpty()) {
-                LOG.error("Unable to find a module for the path {}, ignored...", update.getPath().toString());
+                LOG.error("Unable to find a module for the path {}, ignored...", update.getPath());
             } else {
                 Gnmi.UpdateResult updateResult;
                 if (!update.getVal().getJsonIetfVal().isEmpty()) {
