@@ -4,9 +4,9 @@ Application works as standalone SDN controller. It is capable to connect to gNMI
 over RESTCONF north-bound APIs. In this application gNMI simulator starts as gNMI target and all operations performs
 on this device.
 
-Application lighty.io gNMI/RESTCONF is pre-prepared with [Openconfig YANG models](src/main/assembly/resources/yangs).
+Application lighty.io gNMI/RESTCONF is pre-prepared with [Openconfig YANG models](src/main/resources/yangs).
 These models are used by both gNMI application and gNMI device simulator. Device has already prepared state/config data
-configured by [this](src/main/assembly/resources/simulator/initialJsonData.json) json file.
+configured by [this](src/main/resources/simulator/initialJsonData.json) json file.
 For communication with gNMI device there is required to use TLS communication with certificates and authorized
 by username and password.
 
@@ -39,7 +39,7 @@ This example shows how to connect gNMI device and perform basic CRUD operations 
 used in this example are provided in [postman-collection](lighty.io gNMI-RESTCONF application.postman_collection.json).
 
  - ### Add client certificates to lighty.io gNMI keystore
-Used certificates can be found [here](src/main/assembly/resources/certificates). Only client certificates are added
+Used certificates can be found [here](src/main/resources/certificates). Only client certificates are added
 to keystore with RPC. This RPC store certificates in configuration data-store and encrypt private key and passphrase.
 Adding required certificates for gNMI device to lighty.io gNMI application performs by
 postman request `'Add Keystore'`.
