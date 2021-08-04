@@ -41,7 +41,7 @@ public class RcGnmiAppModuleConfigUtilsTest {
         assertEquals(restconfConfig.getJsonRestconfServiceType(), JsonRestConfServiceType.DRAFT_02);
         // Assert gnmi config
         final GnmiConfiguration gnmiConfiguration = rcGnmiAppConfiguration.getGnmiConfiguration();
-        Assertions.assertEquals(gnmiConfiguration.getInitialYangsPaths().size(), 5);
+        Assertions.assertEquals(5, gnmiConfiguration.getInitialYangsPaths().size());
         // Assert controller config
         final ControllerConfiguration controllerConfig = rcGnmiAppConfiguration.getControllerConfig();
         assertEquals(controllerConfig.getRestoreDirectoryPath(), "./clustered-datastore-restore-test");

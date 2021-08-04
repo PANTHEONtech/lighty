@@ -46,7 +46,7 @@ public class GnmiSet {
 
     }
 
-    public ListenableFuture<? extends CommitInfo> set(
+    public ListenableFuture<CommitInfo> set(
             final List<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>>> replaceList,
             final List<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>>> updateList,
             final List<YangInstanceIdentifier> deleteList) {

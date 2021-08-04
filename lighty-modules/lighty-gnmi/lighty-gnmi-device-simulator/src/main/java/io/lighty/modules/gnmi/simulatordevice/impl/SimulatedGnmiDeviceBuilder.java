@@ -8,9 +8,11 @@
 
 package io.lighty.modules.gnmi.simulatordevice.impl;
 
-
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
+import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice.SimulatedGnmiDeviceConnectionInfoHolder;
+import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice.SimulatedGnmiDeviceGroupHolder;
+import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice.SimulatedGnmiDevicePathsHolder;
 import io.lighty.modules.gnmi.simulatordevice.utils.UsernamePasswordAuth;
 
 public class SimulatedGnmiDeviceBuilder {
@@ -25,16 +27,16 @@ public class SimulatedGnmiDeviceBuilder {
     public SimulatedGnmiDevice build() throws ConfigurationException {
         try {
             return new SimulatedGnmiDevice(
-                    gnmiSimulatorConfiguration.getBossGroup(),
-                    gnmiSimulatorConfiguration.getWorkerGroup(),
-                    gnmiSimulatorConfiguration.getTargetAddress(),
-                    gnmiSimulatorConfiguration.getTargetPort(),
-                    gnmiSimulatorConfiguration.getMaxConnections(),
-                    gnmiSimulatorConfiguration.getCertPath(),
-                    gnmiSimulatorConfiguration.getCertKeyPath(),
-                    gnmiSimulatorConfiguration.getYangsPath(),
-                    gnmiSimulatorConfiguration.getInitialConfigDataPath(),
-                    gnmiSimulatorConfiguration.getInitialStateDataPath(),
+                    new SimulatedGnmiDeviceGroupHolder(gnmiSimulatorConfiguration.getBossGroup(),
+                            gnmiSimulatorConfiguration.getWorkerGroup()),
+                    new SimulatedGnmiDevicePathsHolder(gnmiSimulatorConfiguration.getCertPath(),
+                            gnmiSimulatorConfiguration.getCertKeyPath(),
+                            gnmiSimulatorConfiguration.getYangsPath(),
+                            gnmiSimulatorConfiguration.getInitialConfigDataPath(),
+                            gnmiSimulatorConfiguration.getInitialStateDataPath()),
+                    new SimulatedGnmiDeviceConnectionInfoHolder(gnmiSimulatorConfiguration.getTargetAddress(),
+                            gnmiSimulatorConfiguration.getTargetPort(),
+                            gnmiSimulatorConfiguration.getMaxConnections()),
                     new UsernamePasswordAuth(gnmiSimulatorConfiguration.getUsername(),
                             gnmiSimulatorConfiguration.getPassword()),
                     gnmiSimulatorConfiguration.isUsePlaintext(),
