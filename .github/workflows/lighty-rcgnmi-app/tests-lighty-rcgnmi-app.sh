@@ -7,6 +7,10 @@
 # and is available at https://www.eclipse.org/legal/epl-v10.html
 #
 
+printLine() {
+  printf '%.0s-' {1..100}; echo ""
+}
+
 POD_CONTROLLER_IPS=$(kubectl get pods -l app.kubernetes.io/name=lighty-rcgnmi-app-helm -o custom-columns=":status.podIP" | xargs)
 POD_CONTROLLER_NAME=$(kubectl get pods -l app.kubernetes.io/name=lighty-rcgnmi-app-helm -o custom-columns=:".metadata.name" | xargs)
 CONTROLLER_PORT=30888
@@ -30,6 +34,12 @@ minikube kubectl -- get services
 
 # change directory to lighty-rcgnmi-app
 cd ${GITHUB_WORKSPACE}/.github/workflows/lighty-rcgnmi-app/
+
+printLine
+echo -e "-- Downloading YANG models for test --\n"
+./download_yangs.sh
+echo -e "Downloaded YANG models:\n"
+ls -1 yangs
 
 #Run simulator for testing purpose
 java -jar ${GITHUB_WORKSPACE}/lighty-modules/lighty-gnmi/lighty-gnmi-device-simulator/target/lighty-gnmi-device-simulator-14.0.1-SNAPSHOT.jar -c ./simulator/example_config.json > /dev/null 2>&1 &
@@ -66,10 +76,6 @@ assertNodeConnected() {
   else
     echo "FAILURE"
   fi
-}
-
-printLine() {
-  printf '%.0s-' {1..100}; echo ""
 }
 
 printLine

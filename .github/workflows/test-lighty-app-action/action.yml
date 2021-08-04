@@ -26,7 +26,7 @@ runs:
       run: minikube kubectl -- version
       shell: bash
     - name: Maven install + build docker image
-      run: mvn install -Pdocker -DskipTests
+      run: mvn install -B -Pdocker -DskipTests
       shell: bash
     - name: Start app in docker container
       run: |

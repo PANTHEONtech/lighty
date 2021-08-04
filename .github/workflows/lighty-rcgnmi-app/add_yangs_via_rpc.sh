@@ -8,7 +8,7 @@
 #
 
 MINIKUBE_IP=$(minikube ip)
-YANG_PATHS="${GITHUB_WORKSPACE}/.github/workflows/lighty-rcgnmi-app/yangs"
+YANG_PATHS="yangs"
 
 printLine() {
   echo "";printf '%.0s-' {1..100}; echo ""
