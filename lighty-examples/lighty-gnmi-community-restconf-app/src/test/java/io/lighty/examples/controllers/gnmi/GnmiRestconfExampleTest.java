@@ -4,6 +4,9 @@ package io.lighty.examples.controllers.gnmi;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import io.lighty.applications.rcgnmi.app.RCgNMIApp;
+import io.lighty.core.controller.impl.config.ConfigurationException;
+import io.lighty.modules.gnmi.simulatordevice.main.GnmiSimulatorApp;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -32,16 +35,16 @@ public class GnmiRestconfExampleTest {
     private static final Duration REQUEST_TIMEOUT_DURATION = Duration.ofMillis(10_000L);
     private static final Duration POLL_INTERVAL_DURATION = Duration.ofMillis(1_000L);
     private static final Duration WAIT_TIME_DURATION = Duration.ofMillis(10_000L);
-    private static final String CA_CERTIFICATE_PATH = "src/main/assembly/resources/certificates/ca.crt";
-    private static final String CLIENT_CERTIFICATE_PATH = "src/main/assembly/resources/certificates/client.crt";
-    private static final String CLIENT_KEY_PATH = "src/main/assembly/resources/certificates/client.key";
+    private static final String CA_CERTIFICATE_PATH = "src/main/resources/certificates/ca.crt";
+    private static final String CLIENT_CERTIFICATE_PATH = "src/main/resources/certificates/client.crt";
+    private static final String CLIENT_KEY_PATH = "src/main/resources/certificates/client.key";
 
     private static final String DEVICE_ID = "gnmi-simulator";
-    private static final int DEVICE_PORT = 3333;
+    private static final int DEVICE_PORT = 10161;
     private static final String DEVICE_IP = "127.0.0.1";
     private static final String KEYSTORE_ID = "keystore-id-1";
-    private static final String USERNAME = "Admin";
-    private static final String PASSWORD = "Admin";
+    private static final String USERNAME = "admin";
+    private static final String PASSWORD = "admin";
     private static final String SYSTEM_AUTHENTICATION = "openconfig-system:authentication";
     private static final String STATE = "state";
     private static final String CONFIG = "config";
@@ -66,11 +69,12 @@ public class GnmiRestconfExampleTest {
     private static HttpClient httpClient;
 
     @BeforeAll
-    public static void startUp() throws IOException {
+    public static void startUp() throws IOException, ConfigurationException {
         httpClientExecutor = Executors.newSingleThreadExecutor();
         httpClient = HttpClient.newBuilder().executor(httpClientExecutor).build();
 
-        Main.main(new String[]{});
+        GnmiSimulatorApp.main(new String[]{"-c", "src/test/resources/simulator_config.json"});
+        RCgNMIApp.main(new String[]{"-c", "src/test/resources/example_config.json"});
     }
 
     @AfterAll
