@@ -63,7 +63,7 @@ If JSON_IETF is not present in the *supported_encoding* field, the gNMI device c
 
 ## CRUD Example: lighty.io gNMI Southbound w/ lighty.io Controller
 
-This example shows how to programmatically connect lighty gNMI-sb with gNMI device. First we start lighty gNMI, lighty.io Controller and gNMI device. For device in this example, [gNMI device simulator](../lighty-gnmi-device-simulator/README.md) is used.
+This example shows how to programmatically connect lighty gNMI-sb with a gNMI device. First we start lighty.io gNMI, then lighty.io controller and the gNMI device. For the device in this example, [lighty.io gNMI Device Simulator](../lighty-gnmi-device-simulator/README.md) is used.
 
 Creating a device connection and CRUD operation, is performed by writing data directly to the MD-SAL data store **without using RESTCONF**. The full example can be found inside the test - [GnmiWithoutRestconfTest](../lighty-gnmi-test/src/test/java/io/lighty/modules/gnmi/test/gnmi/GnmiWithoutRestconfTest.java).
 
