@@ -78,7 +78,7 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
 
     @Bean
     NetconfSBPlugin initNetconfSBP(LightyController lightyController)
-        throws ExecutionException, InterruptedException, ConfigurationException, LightyLaunchException {
+        throws ConfigurationException, LightyLaunchException {
         final NetconfConfiguration netconfSBPConfiguration = NetconfConfigUtils.injectServicesToTopologyConfig(
             NetconfConfigUtils.createDefaultNetconfConfiguration(), lightyController.getServices());
         this.netconfSBPlugin = NetconfTopologyPluginBuilder
@@ -87,7 +87,10 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
         boolean netconfSBPStartOk;
         try {
             netconfSBPStartOk = this.netconfSBPlugin.start().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (ExecutionException | TimeoutException e) {
+            netconfSBPStartOk = false;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             netconfSBPStartOk = false;
         }
         if (!netconfSBPStartOk) {

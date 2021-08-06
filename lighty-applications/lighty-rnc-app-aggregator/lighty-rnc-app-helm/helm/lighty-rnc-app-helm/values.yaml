@@ -35,6 +35,8 @@ lighty:
   akka:
     # If true, overrides akka cluster configuration with default single-node
     isSingleNode: true
+    # SplitBrainResolver strategy supported (out-of-the-box) by akka
+    sbrStrategy: keep-majority
     # Name of the config file must be same as property in configmap
     akkaNodeConfigFilename: "akka-node-k8s.conf"
     # At least three nodes are required for akka voting

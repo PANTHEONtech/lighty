@@ -30,6 +30,10 @@
             <artifactId>lighty-controller</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.lighty.modules</groupId>
+            <artifactId>lighty-aaa-encryption-service</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.opendaylight.netconf</groupId>
             <artifactId>netconf-topology</artifactId>
         </dependency>

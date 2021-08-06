@@ -64,7 +64,7 @@ public class TopologyRestService {
             final Optional<NetworkTopology> readData =
                     tx.read(LogicalDatastoreType.OPERATIONAL, iid).get(TIMEOUT, TimeUnit.SECONDS);
 
-            if (readData.isPresent()) {
+            if (readData.isPresent() && readData.get().getTopology() != null) {
                 final List<String> topology = readData.get().getTopology().values().stream()
                         .map(topology1 -> topology1.getTopologyId().getValue())
                         .collect(Collectors.toList());

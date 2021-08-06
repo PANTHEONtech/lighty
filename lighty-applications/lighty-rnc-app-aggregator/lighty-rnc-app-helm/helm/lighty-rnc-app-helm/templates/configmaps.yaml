@@ -123,13 +123,27 @@ data:
       log-level = "debug"
 
       actor {
+        warn-about-java-serializer-usage = off
         provider = "akka.cluster.ClusterActorRefProvider"
+        serializers {
+          java = "akka.serialization.JavaSerializer"
+          proto = "akka.remote.serialization.ProtobufSerializer"
+          readylocal = "org.opendaylight.controller.cluster.datastore.messages.ReadyLocalTransactionSerializer"
+          simpleReplicatedLogEntry = "org.opendaylight.controller.cluster.raft.persisted.SimpleReplicatedLogEntrySerializer"
+        }
+
+        serialization-bindings {
+          "com.google.protobuf.Message" = proto
+          "org.opendaylight.controller.cluster.datastore.messages.ReadyLocalTransaction" = readylocal
+          "org.opendaylight.controller.cluster.raft.persisted.SimpleReplicatedLogEntry" = simpleReplicatedLogEntry
+        }
       }
 
+
       remote {
-        netty.tcp {
-          hostname = ${?HOSTNAME}
-          port = {{ .Values.lighty.akka.remotingPort }}
+        artery {
+          canonical.hostname = ${?HOSTNAME}
+          canonical.port = {{ .Values.lighty.akka.remotingPort }}
           bind-hostname = 0.0.0.0
           bind-port = {{ .Values.lighty.akka.remotingPort }}
         }
@@ -140,6 +154,10 @@ data:
         roles = [
           "{{ .Values.lighty.akka.memberNamePrefix }}"${?HOSTNAME}
         ]
+        downing-provider-class = "akka.cluster.sbr.SplitBrainResolverProvider"
+        split-brain-resolver {
+          active-strategy = "{{ .Values.lighty.akka.sbrStrategy }}"
+        }
       }
 
       management.http.hostname = ${?HOSTNAME}

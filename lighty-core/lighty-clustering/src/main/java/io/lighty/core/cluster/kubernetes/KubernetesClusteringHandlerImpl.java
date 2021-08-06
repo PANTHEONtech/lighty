@@ -28,8 +28,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
-import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.AddReplicasForAllShardsInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.AddReplicasForAllShardsOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
@@ -40,7 +38,6 @@ import org.slf4j.LoggerFactory;
 public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(KubernetesClusteringHandlerImpl.class);
-    public static final String K8S_DEFAULT_POD_NAMESPACE = "default";
 
     private final Config akkaDeploymentConfig;
     private final ActorSystemProvider actorSystemProvider;
@@ -73,6 +70,7 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
             clusterLeaderElectionFuture.cancel(true);
         } catch (InterruptedException e) {
             LOG.error("Error occurred while waiting for the Cluster to form", e);
+            Thread.currentThread().interrupt();
             return;
         }
 
@@ -96,39 +94,9 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
     }
 
     @Override
-    public void start(@NonNull ClusterSingletonServiceProvider clusterSingletonServiceProvider,
-                      @NonNull ClusterAdminService clusterAdminRPCService, @NonNull DataBroker bindingDataBroker) {
-        Long podRestartTimeout = null;
-        if (this.akkaDeploymentConfig.hasPath(ClusteringConfigUtils.K8S_POD_RESTART_TIMEOUT_PATH)) {
-            podRestartTimeout = this.akkaDeploymentConfig.getLong(ClusteringConfigUtils.K8S_POD_RESTART_TIMEOUT_PATH);
-        }
-        Optional<String> optPodNamespace = ClusteringConfigUtils.getPodNamespaceFromConfig(this.akkaDeploymentConfig);
-        String podNamespace;
-        if (optPodNamespace.isPresent()) {
-            podNamespace = optPodNamespace.get();
-        } else {
-            LOG.info("{} wasn't specified in .conf file, using k8s default value: {} ",
-                    ClusteringConfigUtils.K8S_POD_NAMESPACE_PATH, K8S_DEFAULT_POD_NAMESPACE);
-
-            podNamespace = K8S_DEFAULT_POD_NAMESPACE;
-        }
-
-        Optional<String> optPodSelector = ClusteringConfigUtils.getPodSelectorFromConfig(this.akkaDeploymentConfig);
-        String podSelector;
-        if (optPodSelector.isPresent()) {
-            podSelector = optPodSelector.get();
-        } else {
-            String defaultPodSelector = this.actorSystemProvider.getActorSystem().name();
-            LOG.warn("{} wasn't specified in .conf file, using k8s default value (akka actor system name): {} "
-                            + "Make sure that the value match the deployment label selector",
-                    ClusteringConfigUtils.K8S_POD_LABEL_SELECTOR_PATH, defaultPodSelector);
-
-            podSelector = defaultPodSelector;
-        }
-
-        clusterSingletonServiceProvider.registerClusterSingletonService(
-                new UnreachableListenerService(actorSystemProvider.getActorSystem(), bindingDataBroker,
-                        clusterAdminRPCService, podNamespace, podSelector, podRestartTimeout));
+    public void start(@NonNull ClusterAdminService clusterAdminRPCService) {
+        this.actorSystemProvider.getActorSystem().actorOf(
+                MemberRemovedListener.props(clusterAdminRPCService), "memberRemovedListener");
         this.askForShards(clusterAdminRPCService);
     }
 
@@ -144,13 +112,16 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
     private void askForShards(ClusterAdminService clusterAdminRPCService) {
         if (!Cluster.get(actorSystemProvider.getActorSystem()).selfAddress()
                 .equals(Cluster.get(actorSystemProvider.getActorSystem()).state().getLeader())) {
-            LOG.debug("RPC call - Asking for Shard Snapshots");
+            LOG.info("RPC call - Asking for Shard Snapshots");
             try {
                 RpcResult<AddReplicasForAllShardsOutput> rpcResult = clusterAdminRPCService.addReplicasForAllShards(
                         new AddReplicasForAllShardsInputBuilder().build()).get();
                 LOG.debug("RPC call - Asking for Shard Snapshots result: {}", rpcResult.getResult());
-            } catch (InterruptedException | ExecutionException e) {
+            } catch (ExecutionException e) {
                 LOG.error("RPC call - Asking for Shard Snapshots failed", e);
+            } catch (InterruptedException e) {
+                LOG.error("RPC call - Asking for Shard Snapshots interrupted", e);
+                Thread.currentThread().interrupt();
             }
         }
     }

@@ -117,6 +117,9 @@ public class Main {
             shutdown();
         } catch (Exception e) {
             LOG.error("Main RESTCONF-NETCONF application exception: ", e);
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
             shutdown();
         }
     }
@@ -176,6 +179,9 @@ public class Main {
                 module.shutdown().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
             } catch (final Exception e) {
                 LOG.error("Exception while shutting down {} module: ", module.getClass().getSimpleName(), e);
+                if (e instanceof InterruptedException) {
+                    Thread.currentThread().interrupt();
+                }
             }
         }
     }

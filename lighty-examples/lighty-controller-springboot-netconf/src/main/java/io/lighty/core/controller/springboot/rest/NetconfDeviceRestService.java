@@ -12,7 +12,10 @@ import io.lighty.core.controller.springboot.rest.dto.NetconfDeviceRequest;
 import io.lighty.core.controller.springboot.rest.dto.NetconfDeviceResponse;
 import io.lighty.core.controller.springboot.utils.Utils;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -83,8 +86,10 @@ public class NetconfDeviceRestService {
                 tx.read(LogicalDatastoreType.OPERATIONAL, NETCONF_TOPOLOGY_IID).get(TIMEOUT, TimeUnit.SECONDS);
             final List<NetconfDeviceResponse> response = new ArrayList<>();
 
-            if (netconfTopoOptional.isPresent() && netconfTopoOptional.get().getNode() != null) {
-                for (Node node : netconfTopoOptional.get().getNode().values()) {
+            if (netconfTopoOptional.isPresent()){
+                final Map<NodeKey, Node> netconfNode = netconfTopoOptional.get().getNode();
+                final Map<NodeKey, Node> nodeMap = netconfNode != null ? netconfNode : Collections.emptyMap();
+                for (Node node : nodeMap.values()) {
                     NetconfDeviceResponse nodeResponse = NetconfDeviceResponse.from(node);
 
                     final Optional<MountPoint> netconfMountPoint =
