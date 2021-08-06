@@ -13,4 +13,4 @@ COPY --from=build /lighty-netconf-simulator/examples/devices/lighty-network-topo
 
 EXPOSE 17380
 
-ENTRYPOINT ["java", "-jar", "/lighty-netconf-simulator/target/lighty-network-topology-device-14.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "/lighty-netconf-simulator/target/lighty-network-topology-device-14.1.0.jar"]
