@@ -116,7 +116,7 @@ or completely override it if required.
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:actor-system-provider:impl", "name": "actor-system-provider-impl", "revision": "2015-10-05" },
                 { "nameSpace": "urn:ietf:params:xml:ns:yang:ospf-topology", "name": "ospf-topology", "revision": "2013-07-12" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:distributed-datastore-provider", "name": "distributed-datastore-provider", "revision": "2014-06-12" },
-                { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-library", "name": "ietf-yang-library", "revision": "2016-06-21" },
+                { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-library", "name": "ietf-yang-library", "revision": "2019-01-04" },
                 { "nameSpace": "urn:TBD:params:xml:ns:yang:network:isis-topology", "name": "isis-topology", "revision": "2013-10-21" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:inmemory-datastore-provider", "name": "opendaylight-inmemory-datastore-provider", "revision": "2014-06-17" },
                 { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-restconf", "name": "ietf-restconf", "revision": "2013-10-19" },
