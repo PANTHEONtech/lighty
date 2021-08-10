@@ -23,8 +23,21 @@ _This branch maintains compatibility with __OpenDaylight Silicon,__ release._
 - [OVSDB & OpenFlow](https://pantheon.tech/lighty-io-ovsdb-openflow/)
 - [Migration of ONAP SDNC to lighty.io](https://lighty.io/migration-of-onap-sdnc-to-lighty-io/)
 - [NETCONF Device on ARM](https://lighty.io/lighty-io-netconf-device-on-arm/)
+- [BGP EVPN Route-Reflector](https://pantheon.tech/lightyio-bgp-evpn-rr/)
 - [Migration of OpenDaylight TransportPCE to lighty.io](https://lighty.io/migration-of-odl-transportpce-to-lighty-io/)
 - [Rapid NETCONF Controller Integration Testing](https://lighty.io/netconf-performance-test/)
+
+## Modules, Examples & Apps
+| Modules | Examples | Applications |
+| :---: | :---: | :---:|
+| [AAA Integration Tests](/lighty-modules/integration-tests-aaa/) | [Clustering](/lighty-examples/lighty-cluster-app) | [RESTCONF-NETCONF Application](/lighty-applications/lighty-rnc-app-aggregator/) | 
+| [Integration Tests](/lighty-modules/integration-tests/) |[NETCONF w/ Quarkus.io & GraalVM](/lighty-examples/lighty-community-netconf-quarkus-app) | [gNMI RESTCONF Plug-In](/lighty-applications/lighty-rcgnmi-app-aggregator/) | 
+| [AAA](/lighty-modules/lighty-aaa/) | [NETCONF/RESTCONF App](/lighty-examples/lighty-community-restconf-netconf-app)  | | 
+| [Jetty Server](/lighty-modules/lighty-jetty-server/) |[OpenFlow w/ RESTCONF](/lighty-examples/)  | | 
+| [NETCONF SouthBound](/lighty-modules/lighty-netconf-sb/) | [SpringBoot Integration](/lighty-examples/lighty-controller-springboot-netconf)  | | 
+| [OpenFlow SouthBound](/lighty-modules/lighty-openflow-sb/) | | |
+| [RESTCONF NouthBound](/lighty-modules/lighty-restconf-nb-community/) | | | 
+| [Swagger](/lighty-modules/lighty-swagger/) | | |
 
 ## Components
 * __lighty-codecs__ - Easy to use IO YANG data operations
@@ -65,5 +78,5 @@ To run unit and integration tests, use the command:
 
 ```mvn clean install```
 
-## Support, FAQ & Use-Cases
+## Support & More Information
 If you are interested in lighty.io, require technical support, need blogs, FAQ, technical articles and more examples, visit [lighty.io](https://lighty.io/)
