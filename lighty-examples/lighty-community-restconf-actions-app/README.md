@@ -1,5 +1,5 @@
-# Lighty RESTCONF DOM Actions Application
-This application provides RESTCONF north-bound interface with example of DOM action registration on the controller.
+# Lighty RESTCONF Actions Application
+This application provides RESTCONF north-bound interface with examples of DOM and binding action registration on the controller.
 
 This application starts:
 * Lighty Controller
@@ -29,14 +29,15 @@ Once example application has been started using command ```java -jar lighty-comm
 RESTCONF web interface is available at URL ```http://localhost:8888/restconf/*```
 
 ##### URLs to start with
+* __POST__ ```http://127.0.0.1:8888/restconf/data/example-data-center:device/start```
+
 In this example you invoke an action operating on the container "device" defined by
 [example-data-center](../../lighty-models/test/lighty-example-data-center/src/main/yang/example-data-center@2018-08-07.yang)
 YANG model. In the input you specify "start-at" value.
 The input value is passed as is by action's
-[implementation](./src/main/java/io/lighty/examples/controllers/domactions/DeviceStartActionImpl.java)
-to output's "start-finished-at" value. No data are modified during the execution.
-
-* __POST__ ```http://127.0.0.1:8888/restconf/data/example-data-center:device/start```
+[implementation](./src/main/java/io/lighty/examples/controllers/actions/dom/DeviceStartActionImpl.java)
+to output's "start-finished-at" value.
+No data are modified during the execution. The implementation is using DOM API.
 
 1. Use the payload like the following:
 ```json
@@ -56,7 +57,34 @@ to output's "start-finished-at" value. No data are modified during the execution
     }
 }
 ```
+* __POST__ ```http://127.0.0.1:8888/restconf/data/example-data-center:server=server-earth/reset```
 
+In this example you invoke an action operating on the list "reset" defined by
+[example-data-center](../../lighty-models/test/lighty-example-data-center/src/main/yang/example-data-center@2018-08-07.yang)
+YANG model. In the input you specify "reset-at" value.
+The input value is passed as is by action's
+[implementation](./src/main/java/io/lighty/examples/controllers/actions/binding/ServerResetActionImpl.java)
+to output's "reset-finished-at" value.
+No data are modified during the execution. The implementation is using binding API.
+
+1. Use the payload like the following:
+```json
+{
+    "input": {
+        "reset-at": "2021-09-09T16:20:00Z"
+    }
+}
+```
+
+2. You will receive output like the following:
+
+```json
+{
+    "example-data-center:output": {
+        "example-data-center:reset-finished-at": "2021-09-09T16:20:00Z"
+    }
+}
+```
 ##### Swagger UI
 This application example has active [Swagger](https://swagger.io/) UI for RESTCONF.
 
