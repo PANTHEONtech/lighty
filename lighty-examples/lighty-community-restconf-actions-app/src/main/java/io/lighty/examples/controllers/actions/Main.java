@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-package io.lighty.examples.controllers.domactions;
+package io.lighty.examples.controllers.actions;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.base.Stopwatch;
@@ -18,6 +18,8 @@ import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
+import io.lighty.examples.controllers.actions.binding.ServerResetRegistrationUtil;
+import io.lighty.examples.controllers.actions.dom.DeviceStartRegistrationUtil;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
@@ -38,6 +40,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
+import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.server.Reset;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
@@ -52,6 +55,7 @@ public class Main {
     private CommunityRestConf restconf;
     private LightyModule netconfSBPlugin;
     private ObjectRegistration<DOMActionImplementation> domActionRegistration;
+    private ObjectRegistration<Reset> bindingActionRegistration;
 
     public static void main(final String[] args) {
         final Main app = new Main();
@@ -72,7 +76,7 @@ public class Main {
         LOG.info("|  |_|  / /_/  >   Y  \\  |  \\___  |    |  (  <_> )  /        \\ |    `   \\/    |    \\");
         LOG.info("|____/__\\___  /|___|  /__|  / ____| /\\ |__|\\____/  /_______  //_______  /\\____|__  /");
         LOG.info("        /_____/     \\/      \\/      \\/                     \\/         \\/         \\/");
-        LOG.info("Starting lighty.io RESTCONF-DOM-ACTIONS example application ...");
+        LOG.info("Starting Lighty.io RESTCONF-ACTIONS example application ...");
         LOG.info("https://lighty.io/");
         LOG.info("https://github.com/PANTHEONtech/lighty");
         try {
@@ -112,15 +116,18 @@ public class Main {
                 Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
             }
             startLighty(singleNodeConfiguration, restconfConfiguration, netconfSBPConfiguration);
-            LOG.info("lighty.io and RESTCONF-DOM-ACTIONS started in {}", stopwatch.stop());
+            LOG.info("Lighty.io and RESTCONF-ACTIONS started in {}", stopwatch.stop());
             // Register example DOM action
             domActionRegistration = DeviceStartRegistrationUtil.registerDOMAction(lightyController);
             LOG.info("Example DOM action implementation registered: {}", domActionRegistration.getInstance());
+            // Register example binding action
+            bindingActionRegistration = ServerResetRegistrationUtil.registerBindingAction(lightyController);
+            LOG.info("Example binding action implementation registered: {}", bindingActionRegistration.getInstance());
         } catch (IOException e) {
-            LOG.error("Main RESTCONF-DOM-ACTIONS application - error reading config file: ", e);
+            LOG.error("Main RESTCONF-ACTIONS application - error reading config file: ", e);
             shutdown();
         } catch (Exception e) {
-            LOG.error("Main RESTCONF-DOM-ACTIONS application exception: ", e);
+            LOG.error("Main RESTCONF-ACTIONS application exception: ", e);
             if (e instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
             }
@@ -189,15 +196,18 @@ public class Main {
     }
 
     public void shutdown() {
-        LOG.info("Lighty.io and RESTCONF-DOM-ACTIONS shutting down ...");
+        LOG.info("Lighty.io and RESTCONF-ACTIONS shutting down ...");
         final Stopwatch stopwatch = Stopwatch.createStarted();
         if (domActionRegistration != null) {
             domActionRegistration.close();
+        }
+        if (bindingActionRegistration != null) {
+            bindingActionRegistration.close();
         }
         closeLightyModule(this.netconfSBPlugin);
         closeLightyModule(this.restconf);
         closeLightyModule(this.swagger);
         closeLightyModule(this.lightyController);
-        LOG.info("Lighty.io and RESTCONF-DOM-ACTIONS stopped in {}", stopwatch.stop());
+        LOG.info("Lighty.io and RESTCONF-ACTIONS stopped in {}", stopwatch.stop());
     }
 }
