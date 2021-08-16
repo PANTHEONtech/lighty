@@ -28,7 +28,6 @@
         <module>lighty-swagger</module>
         <module>integration-tests</module>
         <module>integration-tests-aaa</module>
-        <module>lighty-openflow-sb</module>
         <module>lighty-gnmi</module>
     </modules>
 </project>

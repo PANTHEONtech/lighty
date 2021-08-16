@@ -19,8 +19,6 @@ _This branch maintains compatibility with __OpenDaylight Silicon,__ release._
 
 - [OpenDaylight to lighty.io Migration](docs/ODL-migration-guide.md)
 - [BGP Route Reflector](https://pantheon.tech/lighty-io-bgp-route-reflector/)
-- [OpenFlow Integration](https://pantheon.tech/lighty-core-openflow/) 
-- [OVSDB & OpenFlow](https://pantheon.tech/lighty-io-ovsdb-openflow/)
 - [Migration of ONAP SDNC to lighty.io](https://lighty.io/migration-of-onap-sdnc-to-lighty-io/)
 - [NETCONF Device on ARM](https://lighty.io/lighty-io-netconf-device-on-arm/)
 - [BGP EVPN Route-Reflector](https://pantheon.tech/lightyio-bgp-evpn-rr/)
@@ -33,9 +31,8 @@ _This branch maintains compatibility with __OpenDaylight Silicon,__ release._
 | [AAA Integration Tests](/lighty-modules/integration-tests-aaa/) | [Clustering](/lighty-examples/lighty-cluster-app) | [RESTCONF-NETCONF Application](/lighty-applications/lighty-rnc-app-aggregator/) | 
 | [Integration Tests](/lighty-modules/integration-tests/) |[NETCONF w/ Quarkus.io & GraalVM](/lighty-examples/lighty-community-netconf-quarkus-app) | [gNMI RESTCONF Plug-In](/lighty-applications/lighty-rcgnmi-app-aggregator/) | 
 | [AAA](/lighty-modules/lighty-aaa/) | [NETCONF/RESTCONF App](/lighty-examples/lighty-community-restconf-netconf-app)  | | 
-| [Jetty Server](/lighty-modules/lighty-jetty-server/) |[OpenFlow w/ RESTCONF](/lighty-examples/)  | | 
-| [NETCONF SouthBound](/lighty-modules/lighty-netconf-sb/) | [SpringBoot Integration](/lighty-examples/lighty-controller-springboot-netconf)  | | 
-| [OpenFlow SouthBound](/lighty-modules/lighty-openflow-sb/) | | |
+| [Jetty Server](/lighty-modules/lighty-jetty-server/) | [SpringBoot Integration](/lighty-examples/lighty-controller-springboot-netconf) | | 
+| [NETCONF SouthBound](/lighty-modules/lighty-netconf-sb/) | | | 
 | [RESTCONF NouthBound](/lighty-modules/lighty-restconf-nb-community/) | | | 
 | [Swagger](/lighty-modules/lighty-swagger/) | | |
 
