@@ -16,8 +16,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.net.URI;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
@@ -64,13 +64,13 @@ public class JsonNodeConverter implements NodeConverter {
      * @throws SerializationException if there was a problem during writing JSON data
      */
     @Override
-    public Writer serializeData(final SchemaNode schemaNode, final NormalizedNode<?, ?> normalizedNode)
+    public Writer serializeData(final SchemaNode schemaNode, final NormalizedNode normalizedNode)
             throws SerializationException {
         Writer writer = new StringWriter();
         JsonWriter jsonWriter = new JsonWriter(writer);
         JSONCodecFactory jsonCodecFactory =
                 JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02.createLazy(this.effectiveModelContext);
-        URI namespace = schemaNode.getQName().getNamespace();
+        XMLNamespace namespace = schemaNode.getQName().getNamespace();
         NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter.createExclusiveWriter(jsonCodecFactory,
                 schemaNode.getPath(), namespace, jsonWriter);
         try (NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(create)) {
@@ -91,19 +91,19 @@ public class JsonNodeConverter implements NodeConverter {
      * @throws SerializationException if an {@link IOException} occurs during serialization
      */
     @Override
-    public Writer serializeRpc(final SchemaNode schemaNode, final NormalizedNode<?, ?> normalizedNode)
+    public Writer serializeRpc(final SchemaNode schemaNode, final NormalizedNode normalizedNode)
             throws SerializationException {
         Writer writer = new StringWriter();
         JsonWriter jsonWriter = new JsonWriter(writer);
         JSONCodecFactory jsonCodecFactory =
                 JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02.createLazy(this.effectiveModelContext);
         String localName = schemaNode.getQName().getLocalName();
-        URI namespace = schemaNode.getQName().getNamespace();
+        XMLNamespace namespace = schemaNode.getQName().getNamespace();
         NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter.createExclusiveWriter(jsonCodecFactory,
                 schemaNode.getPath(), namespace, jsonWriter);
         try (NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(create)) {
             jsonWriter.beginObject().name(localName);
-            for (NormalizedNode<?, ?> child : ((ContainerNode) normalizedNode).getValue()) {
+            for (NormalizedNode child : ((ContainerNode) normalizedNode).body()) {
                 normalizedNodeWriter.write(child);
             }
             // XXX dirty check for end of object. When serializing RPCs with input/output which is not a
@@ -131,7 +131,7 @@ public class JsonNodeConverter implements NodeConverter {
      *         data
      */
     @Override
-    public NormalizedNode<?, ?> deserialize(final SchemaNode schemaNode, final Reader inputData)
+    public NormalizedNode deserialize(final SchemaNode schemaNode, final Reader inputData)
             throws SerializationException {
         NormalizedNodeResult result = new NormalizedNodeResult();
         JSONCodecFactory jsonCodecFactory =

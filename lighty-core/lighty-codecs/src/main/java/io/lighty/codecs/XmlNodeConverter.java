@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 import javax.xml.XMLConstants;
@@ -26,6 +25,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
@@ -86,7 +86,7 @@ public class XmlNodeConverter implements NodeConverter {
      * @throws SerializationException if it was not possible to serialize the normalized nodes into XML
      */
     @Override
-    public Writer serializeData(final SchemaNode schemaNode, final NormalizedNode<?, ?> normalizedNode)
+    public Writer serializeData(final SchemaNode schemaNode, final NormalizedNode normalizedNode)
             throws SerializationException {
         Writer writer = new StringWriter();
         try (NormalizedNodeWriter normalizedNodeWriter =
@@ -112,18 +112,18 @@ public class XmlNodeConverter implements NodeConverter {
      * @throws SerializationException may be thrown if there was a problem during serialization
      */
     @Override
-    public Writer serializeRpc(final SchemaNode schemaNode, final NormalizedNode<?, ?> normalizedNode)
+    public Writer serializeRpc(final SchemaNode schemaNode, final NormalizedNode normalizedNode)
             throws SerializationException {
         Writer writer = new StringWriter();
         XMLStreamWriter xmlStreamWriter = createXmlStreamWriter(writer);
-        URI namespace = schemaNode.getQName().getNamespace();
+        XMLNamespace namespace = schemaNode.getQName().getNamespace();
         String localName = schemaNode.getQName().getLocalName();
         try (NormalizedNodeWriter normalizedNodeWriter =
                 createNormalizedNodeWriter(effectiveModelContext, xmlStreamWriter, schemaNode.getPath())) {
             // the localName may be "input" or "output" - this may be changed
             xmlStreamWriter.writeStartElement(XMLConstants.DEFAULT_NS_PREFIX, localName, namespace.toString());
             xmlStreamWriter.writeDefaultNamespace(namespace.toString());
-            for (NormalizedNode<?, ?> child : ((ContainerNode) normalizedNode).getValue()) {
+            for (NormalizedNode child : ((ContainerNode) normalizedNode).body()) {
                 normalizedNodeWriter.write(child);
             }
             normalizedNodeWriter.flush();
@@ -149,7 +149,7 @@ public class XmlNodeConverter implements NodeConverter {
      * @throws IllegalArgumentException if a problem occurs during reading the input
      */
     @Override
-    public NormalizedNode<?, ?> deserialize(final SchemaNode schemaNode, final Reader inputData)
+    public NormalizedNode deserialize(final SchemaNode schemaNode, final Reader inputData)
             throws SerializationException {
         final XMLStreamReader reader;
         try {

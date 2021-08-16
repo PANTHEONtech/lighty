@@ -15,7 +15,6 @@ import io.lighty.codecs.api.NodeConverter;
 import io.lighty.codecs.xml.XmlElement;
 import io.lighty.codecs.xml.XmlUtil;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Map.Entry;
@@ -36,6 +35,7 @@ import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.Revision;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
@@ -92,7 +92,7 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
     @SuppressWarnings("unchecked")
     @Override
     @Nullable
-    public T convertToBindingAwareData(final YangInstanceIdentifier identifier, final NormalizedNode<?, ?> data) {
+    public T convertToBindingAwareData(final YangInstanceIdentifier identifier, final NormalizedNode data) {
         final Entry<InstanceIdentifier<?>, DataObject> dataObjectEntry =
                 this.codec.fromNormalizedNode(identifier, data);
         if (dataObjectEntry != null) {
@@ -103,7 +103,7 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
 
     @Override
     public Collection<T> convertBindingAwareList(final YangInstanceIdentifier identifier, final MapNode mapNode) {
-        Collection<MapEntryNode> children = mapNode.getValue();
+        Collection<MapEntryNode> children = mapNode.body();
         final Builder<T> listBuilder = ImmutableList.builderWithExpectedSize(children.size());
         for (MapEntryNode entry : children) {
             listBuilder.add(verifyNotNull(convertToBindingAwareData(identifier, entry), identifier));
@@ -134,7 +134,7 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
     }
 
     @Override
-    public Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> convertToNormalizedNode(
+    public Entry<YangInstanceIdentifier, NormalizedNode> convertToNormalizedNode(
             final InstanceIdentifier<T> identifier, final T data) {
         return this.codec.toNormalizedNode(identifier, data);
     }
@@ -162,7 +162,7 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
     }
 
     @Override
-    public NormalizedNode<?, ?> serializeXMLError(final String body) {
+    public NormalizedNode serializeXMLError(final String body) {
         final Optional<Revision> restconfRevision = Revision.ofNullable("2017-01-26");
         final Optional<? extends Module> optModule =
                 this.effectiveModelContext.findModule("ietf-restconf", restconfRevision);
@@ -172,7 +172,7 @@ public class DataCodec<T extends DataObject> implements Codec<T> {
         final Module restconfModule = optModule.get();
         final Collection<? extends UnknownSchemaNode> unknownSchemaNodes = restconfModule.getUnknownSchemaNodes();
         final QNameModule qNameRestconfModule = QNameModule
-                .create(URI.create("urn:ietf:params:xml:ns:yang:ietf-restconf"), restconfRevision);
+                .create(XMLNamespace.of("urn:ietf:params:xml:ns:yang:ietf-restconf"), restconfRevision);
         final QName yangDataYangErrors = QName.create(qNameRestconfModule, "yang-errors");
         YangDataSchemaNode yangDataNode =
                 (YangDataSchemaNode) unknownSchemaNodes.stream()

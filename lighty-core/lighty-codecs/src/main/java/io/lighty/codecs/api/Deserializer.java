@@ -43,8 +43,7 @@ public interface Deserializer<BA extends DataObject> {
      * @param data Binding Aware data to be deserialized
      * @return deserialized Binding Independent data with Binding Independent identifier wrapped in {@link Entry}
      */
-    Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> convertToNormalizedNode(InstanceIdentifier<BA> identifier,
-            BA data);
+    Entry<YangInstanceIdentifier, NormalizedNode> convertToNormalizedNode(InstanceIdentifier<BA> identifier, BA data);
 
     /**
      * Deserialize Binding Independent RPC data(input/output) FROM Binding Aware RPC data(input/output).

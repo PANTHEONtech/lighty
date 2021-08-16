@@ -35,7 +35,7 @@ public interface Serializer<BA extends DataObject> {
      * @param data Binding Independent data to be serialized
      * @return serialized Binding Aware data
      */
-    BA convertToBindingAwareData(YangInstanceIdentifier identifier, NormalizedNode<?, ?> data);
+    BA convertToBindingAwareData(YangInstanceIdentifier identifier, NormalizedNode data);
 
     /**
      * Serialize the Binding Independent {@link MapNode} into Binding Aware data list.
@@ -52,7 +52,7 @@ public interface Serializer<BA extends DataObject> {
      * @param body restconf error input data
      * @return normalized node of the restconf error
      */
-    NormalizedNode<?, ?> serializeXMLError(String body);
+    NormalizedNode serializeXMLError(String body);
 
     /**
      * Serialize Binding Independent RPC data (input/output) TO Binding Aware RPC data (input/output).
