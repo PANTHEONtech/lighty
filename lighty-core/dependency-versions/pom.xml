@@ -83,21 +83,6 @@
                 <scope>import</scope>
             </dependency>
 
-            <dependency>
-                <groupId>org.opendaylight.openflowplugin</groupId>
-                <artifactId>openflowplugin-artifacts</artifactId>
-                <version>0.12.0</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.serviceutils</groupId>
-                <artifactId>serviceutils-artifacts</artifactId>
-                <version>0.7.0</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
             <!-- Other third-party stuff -->
             <dependency>
                 <groupId>javax.activation</groupId>
