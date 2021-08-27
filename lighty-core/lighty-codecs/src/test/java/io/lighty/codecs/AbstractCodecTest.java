@@ -152,7 +152,7 @@ public abstract class AbstractCodecTest {
      * }
      * </pre>
      *
-     * @return
+     * @return String container the toaster object
      */
     protected static String loadToasterXml() {
         return loadResourceAsString("toaster.xml");

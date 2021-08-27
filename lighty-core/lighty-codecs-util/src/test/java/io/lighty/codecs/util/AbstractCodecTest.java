@@ -146,7 +146,7 @@ public abstract class AbstractCodecTest {
      * }
      * </pre>
      *
-     * @return
+     * @return A sample toaster object.
      */
     protected static String loadToasterXml() {
         return loadResourceAsString("toaster.xml");

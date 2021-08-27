@@ -79,18 +79,22 @@ public interface LightyServices extends LightyModuleRegistryService {
 
     DistributedDataStoreInterface getOperationalDatastore();
 
-    /** Get DOMDataTreeShardingService.
+    /**
+     * Get DOMDataTreeShardingService.
+     *
+     * @return {@link DOMDataTreeShardingService}
      * @deprecated This interface is scheduled for removal in the next major release.
      *             Use {@link #getDistributedShardFactory()} instead of this.
-     * @return {@link DOMDataTreeShardingService}
      */
     @Deprecated(forRemoval = true)
     DOMDataTreeShardingService getDOMDataTreeShardingService();
 
-    /** Get DOMDataTreeService.
+    /**
+     * Get DOMDataTreeService.
+     *
+     * @return {@link DOMDataTreeShardingService}
      * @deprecated This interface is scheduled for removal in the next major release.
      *             Use {@link #getDistributedShardFactory()} instead of this.
-     * @return {@link DOMDataTreeShardingService}
      */
     @Deprecated(forRemoval = true)
     DOMDataTreeService getDOMDataTreeService();
