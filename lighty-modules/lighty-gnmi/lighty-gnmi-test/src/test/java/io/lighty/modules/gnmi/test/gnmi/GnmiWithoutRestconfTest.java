@@ -202,29 +202,6 @@ public class GnmiWithoutRestconfTest {
     }
 
     @Test
-    public void testMultipleCrudOperation() throws ExecutionException, InterruptedException, TimeoutException,
-            InvalidAlgorithmParameterException, ConfigurationException, NoSuchPaddingException, IOException,
-            NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException {
-        testCrudOperation();
-        tearDown();
-        for (int i = 0; i < 50; i++) {
-            try {
-                startUp();
-                testCrudOperation();
-            } catch (InvalidAlgorithmParameterException | ConfigurationException | NoSuchPaddingException
-                    | IOException | NoSuchAlgorithmException | InvalidKeySpecException | ExecutionException
-                    | InvalidKeyException | InterruptedException | TimeoutException e) {
-                Assertions.fail(e);
-
-            } finally {
-                tearDown();
-            }
-        }
-        startUp();
-        testCrudOperation();
-    }
-
-    @Test
     public void testCrudOperation() throws ExecutionException, InterruptedException, TimeoutException {
         final DataBroker bindingDataBroker = lightyController.getServices().getBindingDataBroker();
         //Write device to data-store
