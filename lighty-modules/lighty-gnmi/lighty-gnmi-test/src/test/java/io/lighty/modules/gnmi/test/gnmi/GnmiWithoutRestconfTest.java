@@ -287,7 +287,7 @@ public class GnmiWithoutRestconfTest {
         } catch (ExecutionException | InterruptedException e) {
             Assertions.fail("Failed to remove device data from gNMI", e);
         }
-
+        //Verify that device is already removed from data store
         Awaitility.waitAtMost(WAIT_TIME_DURATION)
                 .pollInterval(POLL_INTERVAL_DURATION)
                 .untilAsserted(() -> {
