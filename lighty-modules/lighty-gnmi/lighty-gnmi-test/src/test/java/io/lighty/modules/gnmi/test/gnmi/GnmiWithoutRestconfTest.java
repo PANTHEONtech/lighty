@@ -310,6 +310,13 @@ public class GnmiWithoutRestconfTest {
         } catch (ExecutionException | InterruptedException e) {
             Assertions.fail("Failed to remove device data from gNMI", e);
         }
+
+        Awaitility.waitAtMost(WAIT_TIME_DURATION)
+                .pollInterval(POLL_INTERVAL_DURATION)
+                .untilAsserted(() -> {
+                    final Optional<Node> node = readOperData(bindingDataBroker, nodeInstanceIdentifier);
+                    assertFalse(node.isPresent());
+                });
     }
 
     @Test
