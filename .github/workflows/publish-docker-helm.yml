@@ -57,7 +57,7 @@ jobs:
           echo "DOCKER_IMAGE_NAME=$(echo $DOCKER_IMAGE_NAME)" >> $GITHUB_ENV
           echo "DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME_TAG)" >> $GITHUB_ENV
       - name: Build docker image
-        run: mvn install -B -pl :${{ github.event.inputs.app-name }}-module,:${{ github.event.inputs.app-name }}-app,:${{ github.event.inputs.app-name }}-app-docker -P docker
+        run: mvn install -B -pl :${{ github.event.inputs.app-name }}-app-module,:${{ github.event.inputs.app-name }}-app,:${{ github.event.inputs.app-name }}-app-docker -P docker
       - name: Tag image
         run: |
           image_name=$(mvn help:evaluate -f ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-app-docker/pom.xml -Dexpression=image.name -q -DforceStdout)
