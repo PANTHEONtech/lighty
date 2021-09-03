@@ -23,22 +23,19 @@ public class GnmiDataBrokerFactoryImpl implements GnmiDataBrokerFactory {
     public GnmiDataBroker create(DeviceConnection deviceConnection) {
 
         final Gson gson = new Gson();
-
         final boolean prefixFirstElement =
-            deviceConnection.getConfigurableParameters().getUseModelNamePrefix().orElse(false);
+                deviceConnection.getConfigurableParameters().getUseModelNamePrefix().orElse(false);
 
+        YangInstanceIdentifierToPathCodec yiiToPathCodec
+                = new YangInstanceIdentifierToPathCodec(deviceConnection, prefixFirstElement);
         final GnmiGet getOperation = new GnmiGet(deviceConnection, deviceConnection.getIdentifier(),
                 new GetResponseToNormalizedNodeCodec(deviceConnection, gson),
-                new GnmiGetRequestFactoryImpl(deviceConnection,
-                        new YangInstanceIdentifierToPathCodec(deviceConnection, prefixFirstElement)));
+                new GnmiGetRequestFactoryImpl(deviceConnection, yiiToPathCodec));
 
         final GnmiSet setOperation = new GnmiSet(deviceConnection,
-                new GnmiSetRequestFactoryImpl(
-                        new YangInstanceIdentifierToPathCodec(deviceConnection, false),
-                        new YangInstanceNormToGnmiUpdateCodec(deviceConnection,
-                                new YangInstanceIdentifierToPathCodec(deviceConnection, false), gson)),
+                new GnmiSetRequestFactoryImpl(yiiToPathCodec,
+                        new YangInstanceNormToGnmiUpdateCodec(deviceConnection, yiiToPathCodec, gson)),
                 deviceConnection.getIdentifier());
-
 
         return new GnmiDataBroker(getOperation, setOperation);
     }
