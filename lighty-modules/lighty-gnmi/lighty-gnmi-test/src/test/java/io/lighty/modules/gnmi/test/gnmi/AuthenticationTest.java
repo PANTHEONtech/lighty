@@ -306,10 +306,10 @@ public class AuthenticationTest {
     private Path getPathToMtu() {
         return Path.newBuilder()
                 .addElem(PathElem.newBuilder()
-                        .setName("interfaces")
+                        .setName(OPENCONFIG_INTERFACES)
                         .build())
                 .addElem(PathElem.newBuilder()
-                        .setName("interface")
+                        .setName(OPENCONFIG_INTERFACE)
                         .putKey("name", "eth3")
                         .build())
                 .addElem(PathElem.newBuilder()

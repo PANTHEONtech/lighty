@@ -253,7 +253,12 @@ public abstract class GnmiITBase {
             + "            \"host\": \"" + ipAddr + "\",\n"
             + "            \"port\": " + port + ",\n"
             + "            \"connection-type\": \"INSECURE\"\n"
-            + "        }\n"
+            + "        },\n"
+            + "        \"extensions-parameters\": {\n"
+            + "            \"gnmi-parameters\": {\n"
+            + "                \"use-model-name-prefix\": true\n"
+            + "            }\n"
+            + "        }"
             + "    }]\n"
             + "}";
     }
