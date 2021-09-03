@@ -311,7 +311,12 @@ public class GnmiCertificatesTest extends GnmiITBase {
               + "                    \"username\": \"%s\",\n"
               + "                    \"password\": \"%s\"\n"
               + "                }\n"
-              + "            }\n"
+              + "            },\n"
+              + "            \"extensions-parameters\": {\n"
+              + "                \"gnmi-parameters\": {\n"
+              + "                    \"use-model-name-prefix\": true\n"
+              + "                }\n"
+              + "            }"
               + "        }\n"
               + "    ]\n"
               + "}", nodeId, DEVICE_IP, DEVICE_PORT, keystoreId, USERNAME, PASSWORD);
