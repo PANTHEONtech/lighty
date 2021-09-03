@@ -18,6 +18,12 @@ module openconfig-extensions {
     "This module provides extensions to the YANG language to allow
     OpenConfig specific functionality and meta-data to be defined.";
 
+  revision "2020-06-16" {
+    description
+      "Add extension for POSIX pattern statements.";
+    reference "0.5.0";
+  }
+
   revision "2018-10-17" {
     description
       "Add extension for regular expression type.";
@@ -103,6 +109,21 @@ module openconfig-extensions {
       within the YANG module specified are conformant with the POSIX
       regular expression format rather than the W3C standard that is
       specified by RFC6020 and RFC7950.";
+  }
+
+  extension posix-pattern {
+    argument "pattern" {
+      yin-element false;
+    }
+    description
+      "Provides a POSIX ERE regular expression pattern statement as an
+      alternative to YANG regular expresssions based on XML Schema Datatypes.
+      It is used the same way as the standard YANG pattern statement defined in
+      RFC6020 and RFC7950, but takes an argument that is a POSIX ERE regular
+      expression string.";
+    reference
+      "POSIX Extended Regular Expressions (ERE) Specification:
+      https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap09.html#tag_09_04";
   }
 
   extension telemetry-on-change {
