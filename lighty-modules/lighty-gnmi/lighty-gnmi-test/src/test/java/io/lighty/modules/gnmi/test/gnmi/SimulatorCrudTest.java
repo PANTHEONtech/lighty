@@ -30,11 +30,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.concurrent.ExecutionException;
+import org.json.JSONException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +84,7 @@ public class SimulatorCrudTest {
     }
 
     @Test
-    public void getDataWithAugmentationTest() throws ExecutionException, InterruptedException {
+    public void getDataWithAugmentationTest() throws ExecutionException, InterruptedException, JSONException {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName("openconfig-interfaces:interfaces")
@@ -107,12 +108,12 @@ public class SimulatorCrudTest {
         Assert.assertEquals(1, getResponse.getNotificationCount());
         Assert.assertEquals(0, getResponse.getNotification(0).getDeleteCount());
         Assert.assertEquals(1, getResponse.getNotification(0).getUpdateCount());
-        Assert.assertTrue(TestUtils.jsonMatch(getEthernetExpectedResponse(),
-                getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8()));
+        JSONAssert.assertEquals(getEthernetExpectedResponse(),
+                getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8(), false);
     }
 
     @Test
-    public void crudSimpleValueTest() throws ExecutionException, InterruptedException, IOException {
+    public void crudSimpleValueTest() throws ExecutionException, InterruptedException, IOException, JSONException {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName("openconfig-interfaces:interfaces")
@@ -151,13 +152,13 @@ public class SimulatorCrudTest {
                 .getAsJsonObject("config")
                 .getAsJsonPrimitive("mtu").getAsInt();
         // construct simple json
-        String expectedOriginalMtuJson = "{\"mtu\": " + expectedOriginalMtu + "}";
-
         Assert.assertEquals(1, getResponse.getNotificationCount());
         Assert.assertEquals(0, getResponse.getNotification(0).getDeleteCount());
         Assert.assertEquals(1, getResponse.getNotification(0).getUpdateCount());
-        Assert.assertTrue(TestUtils.jsonMatch(expectedOriginalMtuJson,
-                getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8()));
+        final String expectedOriginalMtuJson = "{\"mtu\": " + expectedOriginalMtu + "}";
+        JSONAssert.assertEquals(expectedOriginalMtuJson,
+                getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8(), false);
+
         // Set mtu to UPDATE_MTU_VAL
         Gnmi.Update update = Gnmi.Update.newBuilder()
                 .setPath(path)
@@ -180,12 +181,12 @@ public class SimulatorCrudTest {
         getResponse = sessionProvider.getGnmiSession().get(getRequest).get();
         LOG.info("Received get response:\n{}", getResponse);
 
-        String expectedChangedMtuJson = "{\"mtu\": " + UPDATE_MTU_VAL + "}";
         Assert.assertEquals(1, getResponse.getNotificationCount());
         Assert.assertEquals(0, getResponse.getNotification(0).getDeleteCount());
         Assert.assertEquals(1, getResponse.getNotification(0).getUpdateCount());
-        Assert.assertTrue(TestUtils.jsonMatch(expectedChangedMtuJson,
-                getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8()));
+        final String expectedChangedMtuJson = "{\"mtu\": " + UPDATE_MTU_VAL + "}";
+        JSONAssert.assertEquals(expectedChangedMtuJson,
+                getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8(), false);
 
         // Delete mtu
         setRequest = Gnmi.SetRequest.newBuilder()
@@ -205,8 +206,8 @@ public class SimulatorCrudTest {
 
     }
 
-    @Ignore
-    public void crudComplexValueTest() throws ExecutionException, InterruptedException, IOException {
+    @Test
+    public void crudComplexValueTest() throws ExecutionException, InterruptedException, IOException, JSONException {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName("openconfig-interfaces:interfaces")
@@ -232,7 +233,7 @@ public class SimulatorCrudTest {
         final String originalInterfacesJson = TestUtils
                 .readFile(INITIAL_DATA_PATH + "/config.json");
         final JsonObject jsonElement = new JsonParser().parse(originalInterfacesJson).getAsJsonObject();
-        Assert.assertTrue(TestUtils.jsonMatch(responseJson, jsonElement.toString()));
+        JSONAssert.assertEquals(responseJson, jsonElement.toString(), false);
 
         // Set MTU of 0 index interface to 1499
         jsonElement.getAsJsonObject(OPENCONFIG_INTERFACES).getAsJsonArray(OPENCONFIG_INTERFACE)
@@ -272,7 +273,7 @@ public class SimulatorCrudTest {
                 .getJsonIetfVal()
                 .toStringUtf8();
 
-        Assert.assertTrue(TestUtils.jsonMatch(responseJson, jsonElement.toString()));
+        JSONAssert.assertEquals(responseJson, jsonElement.toString(), false);
         // Delete interfaces
         setRequest = Gnmi.SetRequest.newBuilder()
                 .addDelete(path)
@@ -291,7 +292,7 @@ public class SimulatorCrudTest {
     }
 
     @Test
-    public void crudSimpleAugmentedValue() throws ExecutionException, InterruptedException, IOException {
+    public void crudSimpleAugmentedValue() throws ExecutionException, InterruptedException, IOException, JSONException {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName("openconfig-interfaces:interfaces")
@@ -340,7 +341,7 @@ public class SimulatorCrudTest {
 
         final String expectedOriginalFlowControl = "{\"enable-flow-control\": "
                 + originalJsonValue.getAsBoolean() + "}";
-        Assert.assertTrue(TestUtils.jsonMatch(responseJson, expectedOriginalFlowControl));
+        JSONAssert.assertEquals(expectedOriginalFlowControl, responseJson, false);
 
         // Send Set request, change enable-flow-control to opposite
         final Gnmi.Update update = Gnmi.Update.newBuilder()
@@ -369,7 +370,7 @@ public class SimulatorCrudTest {
 
         final String expectedUpdatedFlowControl = "{\"enable-flow-control\": "
                 + !originalJsonValue.getAsBoolean() + "}";
-        Assert.assertTrue(TestUtils.jsonMatch(responseJson, expectedUpdatedFlowControl));
+        JSONAssert.assertEquals(expectedUpdatedFlowControl, responseJson, false);
         // Delete interfaces
         setRequest = Gnmi.SetRequest.newBuilder()
                 .addDelete(path)
@@ -389,7 +390,8 @@ public class SimulatorCrudTest {
 
 
     @Test
-    public void crudComplexAugmentedValue() throws ExecutionException, InterruptedException, IOException {
+    public void crudComplexAugmentedValue() throws ExecutionException, InterruptedException, IOException,
+            JSONException {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName("openconfig-interfaces:interfaces")
@@ -436,8 +438,8 @@ public class SimulatorCrudTest {
         JsonObject wrappedObject = new JsonObject();
         wrappedObject.add(ETHRERNET_PREFIX + ":config", expectedJson);
         expectedJson = wrappedObject;
+        JSONAssert.assertEquals(expectedJson.toString(), responseJson, false);
 
-        Assert.assertTrue(TestUtils.jsonMatch(responseJson, expectedJson.toString()));
         // Set enable-flow-control of 1 index interface (br0) to false
         expectedJson.getAsJsonObject(ETHRERNET_PREFIX + ":config")
                 .addProperty("enable-flow-control", false);
@@ -467,8 +469,8 @@ public class SimulatorCrudTest {
                 .getVal()
                 .getJsonIetfVal()
                 .toStringUtf8();
+        JSONAssert.assertEquals(expectedJson.toString(), responseJson, false);
 
-        Assert.assertTrue(TestUtils.jsonMatch(responseJson, expectedJson.toString()));
         // Delete interfaces
         setRequest = Gnmi.SetRequest.newBuilder()
                 .addDelete(path)
@@ -488,7 +490,7 @@ public class SimulatorCrudTest {
 
 
     @Test
-    public void getListEntryTest() throws ExecutionException, InterruptedException, IOException {
+    public void getListEntryTest() throws ExecutionException, InterruptedException, IOException, JSONException {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName("openconfig-interfaces:interfaces")
@@ -527,7 +529,7 @@ public class SimulatorCrudTest {
 
         jsonElement.getAsJsonObject().remove(OPENCONFIG_CONFIG);
         jsonElement.getAsJsonObject().add(INTERFACES_PREFIX + ":" + OPENCONFIG_CONFIG, configElement);
-        Assert.assertTrue(TestUtils.jsonMatch(responseJson, jsonElement.toString()));
+        JSONAssert.assertEquals(jsonElement.toString(), responseJson, false);
     }
 
     @Test
