@@ -8,8 +8,6 @@
 
 package io.lighty.modules.gnmi.test.utils;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import io.lighty.modules.gnmi.connector.configuration.SecurityFactory;
 import io.lighty.modules.gnmi.connector.gnmi.session.impl.GnmiSessionFactoryImpl;
 import io.lighty.modules.gnmi.connector.security.Security;
@@ -38,8 +36,6 @@ public final class TestUtils {
     private static final SessionManagerFactory SESSION_MANAGER_FACTORY
             = new SessionManagerFactoryImpl(new GnmiSessionFactoryImpl());
 
-    private static final JsonParser JSON_PARSER = new JsonParser();
-
     public static SessionManager createSessionManagerWithCerts()
             throws URISyntaxException, InvalidKeySpecException, CertificateException, NoSuchAlgorithmException,
             IOException {
@@ -50,12 +46,6 @@ public final class TestUtils {
         );
 
         return SESSION_MANAGER_FACTORY.createSessionManager(gnmiSecurity);
-    }
-
-    public static boolean jsonMatch(final String first, final String second) {
-        final JsonElement jsonA = JSON_PARSER.parse(first);
-        final JsonElement jsonB = JSON_PARSER.parse(second);
-        return jsonA.equals(jsonB);
     }
 
     public static String readFile(final String filePath) throws IOException {
