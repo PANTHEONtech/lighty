@@ -63,8 +63,10 @@ public class SerializeIdentifierCodec {
         DataSchemaContextNode<?> schemaNode = this.dataSchemaContextTree.getRoot();
         for (final String args : pathArgs) {
             final QName qName = getQname(qNameModule, args);
-            if (schemaNode != null && schemaNode.getChild(qName) != null && schemaNode.getChild(qName).isMixin()) {
+            if (schemaNode != null) {
                 schemaNode = schemaNode.getChild(qName);
+            }
+            if (schemaNode != null && schemaNode.isMixin()) {
                 final DataSchemaNode dataSchemaNode = schemaNode.getDataSchemaNode();
                 if (dataSchemaNode instanceof ListSchemaNode) {
                     builder.node(qName);

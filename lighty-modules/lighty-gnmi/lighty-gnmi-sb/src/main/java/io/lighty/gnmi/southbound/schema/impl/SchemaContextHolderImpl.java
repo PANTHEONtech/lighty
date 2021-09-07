@@ -134,13 +134,13 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
             throws InterruptedException, ExecutionException, TimeoutException {
         // Try to find the model stored with version
         Optional<GnmiYangModel> readImport;
-        if (capability.getVersionString().isPresent()) {
-            readImport = yangDataStoreService.readYangModel(capability.getName(),
-                    capability.getVersionString().get())
+        Optional<String> capabilityVersion = capability.getVersionString();
+        if (capabilityVersion.isPresent()) {
+            readImport = yangDataStoreService.readYangModel(capability.getName(), capabilityVersion.get())
                     .get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
             if (readImport.isEmpty()) {
                 LOG.warn("Requested gNMI (capability/dependency of capability) {} was not found with requested version"
-                        + " {}.", capability.getName(), capability.getVersionString().get());
+                        + " {}.", capability.getName(), capabilityVersion.get());
                 readImport = yangDataStoreService.readYangModel(capability.getName())
                         .get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
                 readImport.ifPresent(gnmiYangModel ->
