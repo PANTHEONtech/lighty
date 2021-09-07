@@ -30,11 +30,11 @@ public class UserAccessServiceImpl implements UserAccessService {
     public Optional<UserData> login(String sessionId, LoginRequest loginRequest) {
         UserData userData = users.get(loginRequest.getUserName());
         if (userData != null && userData.verifyPassword(loginRequest.getPassword())) {
-            LOG.info("login OK: {} {}", sessionId, loginRequest.getUserName());
+            LOG.info("login OK: {}", sessionId);
             sessions.put(sessionId, userData);
             return Optional.of(userData);
         }
-        LOG.info("login Failed: {} {}", sessionId, loginRequest.getUserName());
+        LOG.info("login Failed: {}", sessionId);
         return Optional.empty();
     }
 
