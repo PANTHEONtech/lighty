@@ -57,8 +57,11 @@ public class ByPathYangLoaderService implements YangLoaderService {
 
     public ByPathYangLoaderService(final Path yangsPath, @Nullable final CrossSourceStatementReactor customReactor) {
         this.yangsPath = Objects.requireNonNull(yangsPath);
-        this.yangParser = new YangParserFactoryImpl(Objects.requireNonNullElse(customReactor,
-                SchemaConstants.DEFAULT_YANG_REACTOR)).createParser();
+        if (customReactor != null) {
+            this.yangParser = new YangParserFactoryImpl(customReactor).createParser();
+        } else {
+            this.yangParser = new YangParserFactoryImpl(SchemaConstants.DEFAULT_YANG_REACTOR).createParser();
+        }
     }
 
     @Override
