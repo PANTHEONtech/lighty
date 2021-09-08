@@ -22,9 +22,6 @@ public class LightyControllerBuilder {
     private ControllerConfiguration controllerConfiguration = null;
     private ExecutorService executorService = null;
 
-    public LightyControllerBuilder() {
-    }
-
     /**
      * Create new instance of {@link LightyControllerBuilder} from {@link ControllerConfiguration}.
      *
