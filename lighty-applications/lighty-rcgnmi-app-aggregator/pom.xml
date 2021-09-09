@@ -24,7 +24,7 @@
 
     <modules>
         <module>lighty-rcgnmi-app</module>
-        <module>lighty-rcgnmi-app-module</module>
+        <module>lighty-rcgnmi-module</module>
     </modules>
 
     <profiles>
