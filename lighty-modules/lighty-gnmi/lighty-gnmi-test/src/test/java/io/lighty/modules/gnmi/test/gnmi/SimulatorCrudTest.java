@@ -87,7 +87,7 @@ public class SimulatorCrudTest {
     public void getDataWithAugmentationTest() throws ExecutionException, InterruptedException, JSONException {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
-                        .setName("openconfig-interfaces:interfaces")
+                        .setName(OPENCONFIG_INTERFACES)
                         .build())
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName("interface")
@@ -116,7 +116,7 @@ public class SimulatorCrudTest {
     public void crudSimpleValueTest() throws ExecutionException, InterruptedException, IOException, JSONException {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
-                        .setName("openconfig-interfaces:interfaces")
+                        .setName(OPENCONFIG_INTERFACES)
                         .build())
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName("interface")
@@ -210,7 +210,7 @@ public class SimulatorCrudTest {
     public void crudComplexValueTest() throws ExecutionException, InterruptedException, IOException, JSONException {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
-                        .setName("openconfig-interfaces:interfaces")
+                        .setName(OPENCONFIG_INTERFACES)
                         .build())
                 .build();
         final Gnmi.GetRequest getRequest = Gnmi.GetRequest.newBuilder()
@@ -295,7 +295,7 @@ public class SimulatorCrudTest {
     public void crudSimpleAugmentedValue() throws ExecutionException, InterruptedException, IOException, JSONException {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
-                        .setName("openconfig-interfaces:interfaces")
+                        .setName(OPENCONFIG_INTERFACES)
                         .build())
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName("interface")
@@ -394,7 +394,7 @@ public class SimulatorCrudTest {
             JSONException {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
-                        .setName("openconfig-interfaces:interfaces")
+                        .setName(OPENCONFIG_INTERFACES)
                         .build())
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName("interface")
@@ -493,7 +493,7 @@ public class SimulatorCrudTest {
     public void getListEntryTest() throws ExecutionException, InterruptedException, IOException, JSONException {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
-                        .setName("openconfig-interfaces:interfaces")
+                        .setName(OPENCONFIG_INTERFACES)
                         .build())
                 .addElem(Gnmi.PathElem.newBuilder().setName("interface")
                         .putKey("name", "eth3")
