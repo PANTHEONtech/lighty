@@ -45,31 +45,36 @@ public class GnoiFileService extends FileGrpc.FileImplBase {
         LOG.info("Received get rpc: {}", request);
         try {
             final MessageDigest md = MessageDigest.getInstance("MD5");
-            try (InputStream is = new BufferedInputStream(Objects.requireNonNull(getClass().getClassLoader()
-                    .getResourceAsStream(PATH_TO_DATA)));
-                 DigestInputStream dis = new DigestInputStream(is, md)) {
-                while (true) {
-                    final byte[] bytes = dis.readNBytes(CHUNK_SIZE);
+            readFileAndCompleteObserver(md, responseObserver);
+        } catch (final NoSuchAlgorithmException e) {
+            responseObserver.onError(e);
+        }
+    }
 
-                    if (bytes.length == 0) {
-                        break;
-                    }
+    private void readFileAndCompleteObserver(final MessageDigest md,
+                                             final StreamObserver<FileOuterClass.GetResponse> responseObserver) {
+        try (InputStream is = new BufferedInputStream(Objects.requireNonNull(getClass().getClassLoader()
+            .getResourceAsStream(PATH_TO_DATA)));
+            DigestInputStream dis = new DigestInputStream(is, md)) {
+            while (true) {
+                final byte[] bytes = dis.readNBytes(CHUNK_SIZE);
 
-                    responseObserver.onNext(FileOuterClass.GetResponse.newBuilder()
-                            .setContents(ByteString.copyFrom(bytes)).build());
+                if (bytes.length == 0) {
+                    break;
                 }
 
                 responseObserver.onNext(FileOuterClass.GetResponse.newBuilder()
-                        .setHash(Types.HashType.newBuilder()
-                                .setMethod(Types.HashType.HashMethod.MD5)
-                                .setHash(ByteString.copyFrom(md.digest())).build())
-                        .build());
-                responseObserver.onCompleted();
-
-            } catch (final IOException e) {
-                responseObserver.onError(e);
+                    .setContents(ByteString.copyFrom(bytes)).build());
             }
-        } catch (final NoSuchAlgorithmException e) {
+
+            responseObserver.onNext(FileOuterClass.GetResponse.newBuilder()
+                .setHash(Types.HashType.newBuilder()
+                    .setMethod(Types.HashType.HashMethod.MD5)
+                    .setHash(ByteString.copyFrom(md.digest())).build())
+                .build());
+            responseObserver.onCompleted();
+
+        } catch (final IOException e) {
             responseObserver.onError(e);
         }
     }

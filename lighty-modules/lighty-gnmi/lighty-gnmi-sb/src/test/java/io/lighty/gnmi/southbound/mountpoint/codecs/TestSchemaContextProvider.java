@@ -18,18 +18,18 @@ import io.lighty.gnmi.southbound.schema.loader.impl.ByPathYangLoaderService;
 import io.lighty.gnmi.southbound.schema.provider.SchemaContextProvider;
 import java.nio.file.Path;
 import java.util.List;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.EffectiveSchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public class TestSchemaContextProvider implements SchemaContextProvider {
 
-    private final EffectiveSchemaContext schemaContext;
+    private final EffectiveModelContext schemaContext;
 
-    public TestSchemaContextProvider(final EffectiveSchemaContext schemaContext) {
+    public TestSchemaContextProvider(final EffectiveModelContext schemaContext) {
         this.schemaContext = schemaContext;
     }
 
     @Override
-    public EffectiveSchemaContext getSchemaContext() {
+    public EffectiveModelContext getSchemaContext() {
         return schemaContext;
 
     }

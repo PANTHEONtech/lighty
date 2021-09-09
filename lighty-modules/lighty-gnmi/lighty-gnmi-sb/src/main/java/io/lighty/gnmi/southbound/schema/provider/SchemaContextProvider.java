@@ -8,9 +8,9 @@
 
 package io.lighty.gnmi.southbound.schema.provider;
 
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.EffectiveSchemaContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public interface SchemaContextProvider {
 
-    EffectiveSchemaContext getSchemaContext();
+    EffectiveModelContext getSchemaContext();
 }
