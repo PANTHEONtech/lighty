@@ -14,7 +14,6 @@ import io.grpc.stub.StreamObserver;
 
 public class GnoiOSService extends OSGrpc.OSImplBase {
 
-
     @Override
     public StreamObserver<Os.InstallRequest> install(final StreamObserver<Os.InstallResponse> responseObserver) {
         return new StreamObserver<>() {
@@ -58,7 +57,7 @@ public class GnoiOSService extends OSGrpc.OSImplBase {
 
             @Override
             public void onError(final Throwable throwable) {
-
+                responseObserver.onError(throwable);
             }
 
             @Override

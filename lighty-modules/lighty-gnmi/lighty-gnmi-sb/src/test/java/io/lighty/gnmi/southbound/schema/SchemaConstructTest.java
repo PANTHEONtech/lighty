@@ -33,8 +33,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.gnmi.yang.models.GnmiYangModel;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.EffectiveSchemaContext;
 
 public class SchemaConstructTest {
 
@@ -104,7 +104,7 @@ public class SchemaConstructTest {
     @Test
     public void schemaConstructSemVerTest() throws SchemaException {
         final SchemaContextHolder schemaContextHolder = new SchemaContextHolderImpl(dataStoreService, null);
-        final EffectiveSchemaContext schemaContext = schemaContextHolder.getSchemaContext(completeCapabilities);
+        final EffectiveModelContext schemaContext = schemaContextHolder.getSchemaContext(completeCapabilities);
         // Check that every module in requested capabilities is contained in resulting schema
         assertSchemaContainsModels(schemaContext, completeCapabilities);
     }
@@ -125,7 +125,7 @@ public class SchemaConstructTest {
         Assertions.assertEquals(completeCapabilities.size() - CAPABILITIES_TO_MISS.size(),
                 requestedCapabilities.size());
 
-        final EffectiveSchemaContext schemaContext = schemaContextHolder.getSchemaContext(
+        final EffectiveModelContext schemaContext = schemaContextHolder.getSchemaContext(
                 requestedCapabilities);
         // Check that every module in full set of capabilities are contained in schema
         assertSchemaContainsModels(schemaContext, completeCapabilities);
@@ -150,7 +150,7 @@ public class SchemaConstructTest {
         } catch (SchemaException schemaException) {
             // Check that all missing models are reported in SchemaException
             Assertions.assertFalse(schemaException.getMissingModels().isEmpty());
-            Assertions.assertTrue(schemaException.getMissingModels().size() == MODELS_TO_MISS.size());
+            Assertions.assertEquals(MODELS_TO_MISS.size(), schemaException.getMissingModels().size());
             for (GnmiDeviceCapability missingCap : schemaException.getMissingModels()) {
                 Assertions.assertTrue(MODELS_TO_MISS.contains(missingCap.getName()));
             }
@@ -180,7 +180,7 @@ public class SchemaConstructTest {
         } catch (SchemaException schemaException) {
             // Check that all missing models are reported in SchemaException
             Assertions.assertFalse(schemaException.getMissingModels().isEmpty());
-            Assertions.assertTrue(schemaException.getMissingModels().size() == modelsToDelete.size());
+            Assertions.assertEquals(modelsToDelete.size(), schemaException.getMissingModels().size());
             for (GnmiDeviceCapability missingCap : schemaException.getMissingModels()) {
                 Assertions.assertTrue(modelsToDelete.contains(missingCap.getName()));
             }
@@ -217,7 +217,7 @@ public class SchemaConstructTest {
             Assertions.fail("Schema context creation should fail!");
         } catch (SchemaException schemaException) {
             // Check that reported number of models with errors is equal to actual number of yangs with error syntax
-            Assertions.assertTrue(schemaException.getErrorMessages().size() == filesInFolder.size());
+            Assertions.assertEquals(filesInFolder.size(), schemaException.getErrorMessages().size());
         }
 
     }
@@ -259,10 +259,10 @@ public class SchemaConstructTest {
             Assertions.fail("Schema context creation should fail!");
         } catch (SchemaException schemaException) {
             // Check that number of models with errors is equal to actual number of yangs with error syntax
-            Assertions.assertTrue(schemaException.getErrorMessages().size() == filesInFolder.size());
+            Assertions.assertEquals(filesInFolder.size(), schemaException.getErrorMessages().size());
             // Check that all missing models are reported in SchemaException
             Assertions.assertFalse(schemaException.getMissingModels().isEmpty());
-            Assertions.assertTrue(schemaException.getMissingModels().size() == modelsToDelete.size());
+            Assertions.assertEquals(modelsToDelete.size(), schemaException.getMissingModels().size());
             for (GnmiDeviceCapability missingCap : schemaException.getMissingModels()) {
                 Assertions.assertTrue(modelsToDelete.contains(missingCap.getName()));
             }
@@ -270,13 +270,13 @@ public class SchemaConstructTest {
 
     }
 
-    private static void assertSchemaContainsModels(final EffectiveSchemaContext schema,
+    private static void assertSchemaContainsModels(final EffectiveModelContext schema,
                                                    final List<GnmiDeviceCapability> capsToCheck) {
         for (GnmiDeviceCapability capability : capsToCheck) {
             final Optional<Module> match =
-                    schema.getModules().stream()
-                            .filter(module -> module.getName().equals(capability.getName()))
-                            .findAny();
+                (Optional<Module>) schema.getModules().stream()
+                        .filter(module -> module.getName().equals(capability.getName()))
+                        .findAny();
             Assertions.assertTrue(match.isPresent());
         }
     }

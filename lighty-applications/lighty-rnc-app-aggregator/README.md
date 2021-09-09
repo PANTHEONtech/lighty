@@ -1,29 +1,29 @@
-# Lighty RNC application
-Lighty Restconf Netconf application allows to easily initialize, start and use most used OpenDaylight services and optionally add custom business logic.
+# lighty.io RNC application
+The lighty.io RESTCONF-NETCONF application allows to easily initialize, start and utilize the most used OpenDaylight services and optionally add custom business logic.
 
 Most important lighty.io components used are:
 - [lighty.io controller](https://github.com/PANTHEONtech/lighty/tree/master/lighty-core/lighty-controller)
   provides core ODL services (like MDSAL, yangtools, global schema context,...) that are required
   for other services or plugins.
-- [RESTCONF northbound plugin](https://github.com/PANTHEONtech/lighty/tree/master/lighty-modules/lighty-restconf-nb-community)
+- [RESTCONF Northbound plugin](https://github.com/PANTHEONtech/lighty/tree/master/lighty-modules/lighty-restconf-nb-community)
   provides the RESTCONF interface that is used to communicate with the application using the RESTCONF protocol over the HTTP.
-- [NETCONF southbound plugin](https://github.com/PANTHEONtech/lighty/tree/master/lighty-modules/lighty-netconf-sb)
+- [NETCONF Southbound plugin](https://github.com/PANTHEONtech/lighty/tree/master/lighty-modules/lighty-netconf-sb)
   enables application to connect to the NETCONF devices using the NETCONF protocol and read/write configuration
   from them or execute RPCs.
-- [AAA module](https://github.com/PANTHEONtech/lighty/tree/master/lighty-modules/lighty-aaa) provides authorization,
+- [AAA Module](https://github.com/PANTHEONtech/lighty/tree/master/lighty-modules/lighty-aaa) provides authorization,
   authentication and accounting which for example enables to use Basic Authentication for RESTCONF northbound interface.
   This module is optional and can be turned ON/OFF using application configuration.
 
-![RNC lighty.io architecture](docs/lighty-architecture.png)
+![lighty.io RNC Architecture](docs/lighty-architecture.png)
 
 ## Prerequisites
-In order to build and start the RNC lighty.io application locally, you need:
+In order to build and start the lighty.io RNC application locally, you need:
 * Java 11 or later 
 * maven 3.5.4 or later
-* optionally docker for creating and running docker images
+* (Optional) Docker for creating and running Docker images
 
 ## Build and start
-To build and start the RNC lighty.io application in the local environment follow these steps:
+To build and start the lighty.io RNC application in the local environment, follow these steps:
 
 1. Build the application using this maven command:  
    `mvn clean install -pl :lighty-rnc-app -am`
@@ -43,10 +43,10 @@ To build and start the RNC lighty.io application in the local environment follow
 5. If the application was started successfully, then a log similar should be present in the console:  
    `INFO [main] (Main.java:80) - RNC lighty.io application started in 5989.108ms`
 
-6. Test the RNC lighty.io application. Default RESTCONF port is `8888`
+6. Test the lighty.io RNC application. The default RESTCONF port is `8888`
 
-7. The default credential for http requests is login:`admin`, password: `admin`. 
-To manipulate user's credentials [idmtool](https://docs.opendaylight.org/projects/aaa/en/stable-aluminium/user-guide.html#idmtool) can be used:
+7. The default credentials for http requests is login:`admin`, password: `admin`. 
+To edit the user's credentials, [idmtool](https://docs.opendaylight.org/projects/aaa/en/stable-aluminium/user-guide.html#idmtool) can be used to:
     - create new `etc` directory and create there `org.ops4j.pax.web.cfg` file
     - add this two lines in the `org.ops4j.pax.web.cfg` file: 
        
@@ -63,7 +63,7 @@ To manipulate user's credentials [idmtool](https://docs.opendaylight.org/project
         `python etc/idmtool.py -h`
         
         This will show you the list of possible commands that can be used.
-        If you are using self generated ssl sertificate, you should use `-k` argument.
+        If you are using a self-generated SSL sertificate, you should use the `-k` argument.
         For example, to show the list of all users:
       
         `python etc/idmtool.py -k admin list-users`
@@ -73,7 +73,7 @@ To manipulate user's credentials [idmtool](https://docs.opendaylight.org/project
     
     Also, it is possible to configure user's credentials via [REST](https://docs.opendaylight.org/projects/aaa/en/latest/user-guide.html#configuration-using-the-restful-web-service)
 
-8. For using ssl connection the correct certificate must be used.
+8. For using a SSL connection, the correct certificate must be used.
 By default, a test certificate is used (`lighty-rnc-module/src/main/resources/keystore/lightyio.jks`).
 For generating a JKS file `keytool` utility can be used. Example of command to regenerate keystore with self-signed certificate:
 
@@ -85,8 +85,8 @@ which creates new `lightyio.jks` keystore file with hostnames: `lighty.io, light
 The path to correct certificate can be placed in `configuration.json file` (`restconf.keyStoreFile`)
 Also you need to provide file type for this certificate (`restconf.keyStoreType`) and password (`restconf.keyStorePassword`)
 
-## Build and start with the docker
-To build and start the RNC lighty.io application using docker in the local environment follow these steps:
+## Build & Start w/ Docker
+To build and start the lighty.io RNC application using Docker in a local environment, follow these steps:
 
 1. Build the application using this maven command:  
    `mvn clean install -P docker`
@@ -94,7 +94,7 @@ To build and start the RNC lighty.io application using docker in the local envir
 2. Start the application using following docker command.   
    `docker run -it --name lighty-rnc --network host --rm lighty-rnc`
 
-3. To start the application with custom lighty configuration( -c ) and custom initial log4j config file( -l ) use command:
+3. To start the application with a custom lighty configuration( -c ) and custom initial log4j config file( -l ), use the command:
   ```
    docker run -it --name lighty-rnc --network host
    -v /absolute_path/to/config-file/configuration.json:/lighty-rnc/configuration.json 
@@ -102,10 +102,10 @@ To build and start the RNC lighty.io application using docker in the local envir
    --rm lighty-rnc -c configuration.json -l logger.properties
   ```
 
-   If your configuration.json file specifies path to initial configuration data to load on start up
+   If your configuration.json file specifies a path to the initial configuration data to load on startup
    (for more information, check 
    [lighty-controller](https://github.com/PANTHEONtech/lighty/tree/master/lighty-core/lighty-controller))
-   you need to mount the json/xml file as well:
+   you need to mount the JSON/XML file as well:
    `-v /absolute/path/to/file/initData.xml:/lighty-rnc/initData.xml`
    , then your path to this file in configuration.json becomes just "./initData.xml":
    ``` 
@@ -114,13 +114,13 @@ To build and start the RNC lighty.io application using docker in the local envir
           "format": "xml"
     }
    ```
-   Example configuration files are located on following path:  
+   Example configuration files are located here:  
    `lighty-rnc-app-docker/example-config/*`
 
-4. If the application was started successfully, then a log similar should be present in the console:  
+4. If the application was started successfully, then a similar log should be present in the console:  
    `INFO [main] (Main.java:81) - RNC lighty.io application started in 5989.108ms`
 
-5. Test the RNC lighty.io application. Default RESTCONF port is `8888`
+5. Test the lighty.io RNC application. Default RESTCONF port is `8888`
 
 ## Example Postman collection
 For convenience, we provide [postman-collection](lighty-rnc-app/Lighty-RNC.postman_collection.json) which contains
@@ -128,17 +128,17 @@ For convenience, we provide [postman-collection](lighty-rnc-app/Lighty-RNC.postm
 _Note: IP addresses and port numbers may differ depending on deployment._
 ## Deployment via helm chart
 ### Prerequisites
-* kubernetes cluster 1.15.11 (minikube / microk8s /..)
+* Kubernetes cluster 1.15.11 (minikube / microk8s /..)
 * helm 2.17
 ### Deploy
-To easily deploy Lighty RNC application to kubernetes we provide custom helm chart located in /lighty-rnc-app-helm/helm/.
-To install, make sure that the docker image defined in `values.yaml` is accessible, then run command:
+To easily deploy the lighty.io RNC application to Kubernetes, we provide a custom helm chart located in /lighty-rnc-app-helm/helm/.
+To install, make sure that the Docker image is defined in `values.yaml` and accessible, then run command:
 `helm install microk8s helm install --name lighty-rnc-app ./lighty-rnc-app-helm/`
-in `/lighty-rnc-app-helm/helm/` directory.
+in the `/lighty-rnc-app-helm/helm/` directory.
 ### Providing startup configuration
-By default, the deployed application is started with custom configuration.json 
-(for more information check [lighty-controller](https://github.com/PANTHEONtech/lighty/tree/master/lighty-core/lighty-controller)).
-We supply this configuration file by passing kubernetes configmap (`configmaps.yaml`), which you can modify to your needs.
+By default, the deployed application is started with a custom configuration.json 
+(for more information check the [lighty-controller](https://github.com/PANTHEONtech/lighty/tree/master/lighty-core/lighty-controller)).
+We supply this configuration file by passing a Kubernetes configmap (`configmaps.yaml`), which you can modify to your needs.
 To use the functionality of loading configuration data on startup, add new entry to configmaps.yaml:
 `initData: |
      your initial yang modeled json/xml data
@@ -184,14 +184,14 @@ configuration of the application. Among other options, we expose the option to c
 via JMX client which can be connected to running lighty instance.
 1. Start the application (see previous sections)
 2. Connect the JXM client  
-  We recommend using `jconsole` because it is part of the standard java JRE.  
+  We recommend using `jconsole` because it is part of the standard Java JRE.  
   The command for connecting jconsole to JMX server is:  
     `jconsole <ip-of-running-lighty>:<JMX-port>`, the default JMX-port is 1099.
       
 This approach works only if the application is running locally.  
   
-If you want to connect the JMX client to application running remotely or containerized (k8s deployment or/and docker),
-you need to start the application using following JAVA_OPTS:  
+If you want to connect the JMX client to the application running remotely or containerized (k8s deployment or/and docker),
+you need to start the application using the following JAVA_OPTS:  
 ```
 JAVA_OPTS = -Dcom.sun.management.jmxremote
              -Dcom.sun.management.jmxremote.authenticate=false
@@ -203,18 +203,18 @@ JAVA_OPTS = -Dcom.sun.management.jmxremote
 ```          
 Then run `java $JAVA_OPTS -jar lighty-rnc-app-<version> ...`  
 ## Connecting JMX client to application running in docker
-1. As we said, if we want to be able to connect the JMX, we need to start the app with JAVA_OPTS described in
+1. If we want to be able to connect the JMX, we need to start the app with JAVA_OPTS, as described in the
  previous chapter.  
- In docker the most convenient way to do this is to create env.file and run the docker run with `--env-file env.file` argument
+ In Docker, the most convenient way to do this is to create env.file and run the docker run with `--env-file env.file` argument
  The env.file must contain the definition of the described JAVA_OPTS environment variable.  
  We also need to publish the container JMX_PORT to host, this is done via `-p <JMX_PORT>:<JMX_PORT>` argument.
  So the docker run command becomes:  
   `docker run -it --name lighty-rnc --env-file env.file -p <JMX_PORT>:<JMX_PORT> ...`
  The rest of the command stays the same as explained in previous chapters.
- 2. Connect the JMX client via command `jconsole <ip-of-container>:<JMX_PORT>`.
- ## Connecting JMX client to application deployed in kubernetes
-Once you have deployed the application via our provided helm chart in which you enabled jmxRemoting,
-you just need to forward the JMX port of the pod in which the instance of the application you want to debug is running.
-In kubernetes this is done via `kubectl port-forward` command.
+ 2. Connect the JMX client via the command `jconsole <ip-of-container>:<JMX_PORT>`.
+ ## Connecting a JMX client to the application, deployed in kubernetes
+Once you have deployed the application via our provided helm chart, in which you enabled jmxRemoting,
+you just need to forward the JMX port of the pod, in which the instance of the application you want to debug, is running.
+In Kubernetes, this is done via `kubectl port-forward` command.
 1. Forward the pod's JMX port, run `kubectl port-forward <name-of-the-pod> <JMX_PORT>`  
 2. Connect JMX client, run `jconsole <pod-ip>:<JMX-port>`

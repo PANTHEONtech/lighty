@@ -20,7 +20,7 @@
     "schemaServiceConfig":{
       "topLevelModels":[
         { "nameSpace": "urn:opendaylight:params:xml:ns:yang:mdsal:core:general-entity", "name": "odl-general-entity", "revision": "2015-09-30" },
-        { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-library", "name": "ietf-yang-library", "revision": "2016-04-09" },
+        { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-library", "name": "ietf-yang-library", "revision": "2019-01-04" },
         { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-restconf-monitoring", "name": "ietf-restconf-monitoring", "revision": "2017-01-26" },
         { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-types", "name": "ietf-yang-types", "revision": "2010-09-24" },
         { "nameSpace": "instance:identifier:patch:module", "name": "instance-identifier-patch-module", "revision": "2015-11-21" },
@@ -37,7 +37,6 @@
         { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:dom:pingpong", "name": "opendaylight-pingpong-broker", "revision": "2014-11-07" },
         { "nameSpace": "urn:sal:restconf:event:subscription", "name": "sal-remote-augment", "revision": "2014-07-08" },
         { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:netty", "name": "netty", "revision": "2013-11-19" },
-        { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-library", "name": "ietf-yang-library", "revision": "2016-06-21" },
         { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-restconf", "name": "ietf-restconf", "revision": "2013-10-19" },
         { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:cluster:admin", "name": "cluster-admin", "revision": "2015-10-13" },
         { "nameSpace": "urn:opendaylight:params:xml:ns:yang:md:sal:config:impl:cluster-singleton-service", "name": "cluster-singleton-service-impl", "revision": "2016-07-18" },

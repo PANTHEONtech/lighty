@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
@@ -21,7 +22,6 @@ import org.opendaylight.yangtools.yang.parser.rfc7950.reactor.RFC7950Reactors;
 import org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangStatementStreamSource;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.EffectiveSchemaContext;
 
 class GnmiDataConverterTest {
     private static final String YANG_MODEL_1_FILE_NAME = "rootModel1.yang";
@@ -29,7 +29,7 @@ class GnmiDataConverterTest {
 
     @Test
     public void findCorrectRootYangModel() throws ReactorException, YangSyntaxErrorException, IOException {
-        EffectiveSchemaContext schemaContext = prepareSchemaWithMultipleRootContainersWithSameName();
+        EffectiveModelContext schemaContext = prepareSchemaWithMultipleRootContainersWithSameName();
         final Optional<? extends Module> rootModel1
                 = DataConverter.findModuleByElement("root-model-1:root-container", schemaContext);
         Assertions.assertTrue(rootModel1.isPresent());
@@ -43,7 +43,7 @@ class GnmiDataConverterTest {
         Assertions.assertTrue(unspecifiedRootModule.isEmpty());
     }
 
-    private static EffectiveSchemaContext prepareSchemaWithMultipleRootContainersWithSameName()
+    private static EffectiveModelContext prepareSchemaWithMultipleRootContainersWithSameName()
             throws ReactorException, IOException, YangSyntaxErrorException {
 
         final CrossSourceStatementReactor.BuildAction buildAction = RFC7950Reactors.defaultReactorBuilder()

@@ -137,7 +137,7 @@ public class GnmiService extends gNMIGrpc.gNMIImplBase {
 
     private void validateGetRequest(final Gnmi.GetRequest request) {
         if (request.getEncoding() != Gnmi.Encoding.JSON_IETF && request.getEncoding() != Gnmi.Encoding.JSON) {
-            throw new RuntimeException("Simulator only supports JSON_IETF encoding.");
+            throw new UnsupportedOperationException("Simulator only supports JSON_IETF encoding.");
         }
     }
 }
