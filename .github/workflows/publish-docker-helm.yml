@@ -7,20 +7,16 @@ on:
         default: lighty-rnc
         required: true
       app-modules:
-        description: Name of the modules with format ':{module-name},...' in /lighty-applications required for build
-        default: :lighty-rnc-app,:lighty-rnc-app-docker,:lighty-rnc-module
+        description: Name of the modules with format ':{module-name},...' required for build
         required: true
       app-docker-pom-path:
-        description: Path to docker pom file in /lighty-applications
-        default: lighty-applications/lighty-rnc-app-aggregator/lighty-rnc-app-docker/pom.xml
+        description: Path to docker pom.xml file
         required: true
       app-helm-values-path:
-        description: Path to Helm YAML values in /lighty-applications
-        default: lighty-applications/lighty-rnc-app-aggregator/lighty-rnc-app-helm/helm/lighty-rnc-app-helm/values.yaml
+        description: Path to Helm YAML values
         required: true
       app-helm-folder-path:
-        description: Path to Helm folde in /lighty-applications
-        default: lighty-applications/lighty-rnc-app-aggregator/lighty-rnc-app-helm/helm/
+        description: Path to Helm folder
         required: true
       image-name:
         description: Desired NAME of docker image
@@ -72,7 +68,7 @@ jobs:
           echo "DOCKER_IMAGE_NAME=$(echo $DOCKER_IMAGE_NAME)" >> $GITHUB_ENV
           echo "DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME_TAG)" >> $GITHUB_ENV
       - name: Build docker image
-        run: mvn install -B -pl :${{ github.event.inputs.app-modules }} -P docker
+        run: mvn install -B -pl ${{ github.event.inputs.app-modules }} -P docker
       - name: Tag image
         run: |
           image_name=$(mvn help:evaluate -f ${{ github.event.inputs.app-docker-pom-path }} -Dexpression=image.name -q -DforceStdout)
