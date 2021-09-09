@@ -88,9 +88,7 @@ import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
-import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingAdapterFactory;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMDataBrokerAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMMountPointServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationPublishServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationServiceAdapter;
@@ -185,7 +183,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private DOMClusterSingletonServiceProviderImpl clusterSingletonServiceProvider;
     private NotificationService notificationService;
     private NotificationPublishService notificationPublishService;
-    private BindingDOMDataBrokerAdapter domDataBroker;
+    private DataBroker dataBroker;
     private final LightyDiagStatusServiceImpl lightyDiagStatusService;
     private EventExecutor eventExecutor;
     private EventLoopGroup bossGroup;
@@ -196,7 +194,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private ModuleInfoSnapshot moduleInfoSnapshot;
     private ModuleInfoSnapshotResolver snapshotResolver;
     private DOMSchemaService schemaService;
-    private AdapterContext codec;
+    private ConstantAdapterContext codec;
     private BindingCodecTreeFactory bindingCodecTreeFactory;
     private YangParserFactory yangParserFactory;
     private BindingAdapterFactory bindingAdapterFactory;
@@ -353,8 +351,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.notificationPublishService =
                 new BindingDOMNotificationPublishServiceAdapter(this.codec, this.domNotificationRouter);
 
-        //create binding data broker
-        this.domDataBroker = new BindingDOMDataBrokerAdapter(this.codec, this.concurrentDOMDataBroker);
+        //create data broker
+        this.dataBroker = bindingAdapterFactory.createDataBroker(concurrentDOMDataBroker);
 
         this.clusteringHandler.ifPresent(handler -> handler.start(clusterAdminRpcService));
 
@@ -668,11 +666,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     public DataBroker getBindingDataBroker() {
-        return this.domDataBroker;
+        return this.dataBroker;
     }
 
     @Override
-    public AdapterContext getAdapterContext() {
+    public ConstantAdapterContext getAdapterContext() {
         return codec;
     }
 
