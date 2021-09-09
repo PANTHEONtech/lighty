@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-package io.lighty.examples.controllers.domactions;
+package io.lighty.examples.controllers.actions.dom;
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -23,9 +23,9 @@ import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
- * The example implementation of action 'start' from 'example-data-center' module.
+ * The example DOM implementation of action 'start' from 'example-data-center' module.
  */
-final class DeviceStartActionImpl implements DOMActionImplementation {
+public final class DeviceStartActionImpl implements DOMActionImplementation {
     private static final QName INPUT_LEAF_QNAME = QName.create(Input.QNAME, "start-at").intern();
     private static final QName OUTPUT_LEAF_QNAME = QName.create(Output.QNAME, "start-finished-at").intern();
 

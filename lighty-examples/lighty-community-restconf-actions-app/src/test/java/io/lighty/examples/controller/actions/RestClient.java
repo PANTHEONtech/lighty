@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-package io.lighty.examples.controller.domactions;
+package io.lighty.examples.controller.actions;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -13,7 +13,6 @@ import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.util.StringContentProvider;
-import org.eclipse.jetty.http.HttpMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,19 +44,7 @@ public class RestClient implements AutoCloseable {
             throws InterruptedException, ExecutionException, TimeoutException {
         Request request =  httpClient.POST(baseUrl + uri);
         request.content(new StringContentProvider(data), "application/json");
-        return request.send();
-    }
-
-    public ContentResponse PUT(String uri) throws InterruptedException, ExecutionException, TimeoutException {
-        Request request =  httpClient.newRequest(baseUrl + uri);
-        request.method(HttpMethod.PUT);
-        return request.send();
-    }
-
-    @SuppressWarnings("AbbreviationAsWordInName")
-    public ContentResponse DELETE(String uri) throws InterruptedException, ExecutionException, TimeoutException {
-        Request request =  httpClient.newRequest(baseUrl + uri);
-        request.method(HttpMethod.DELETE);
+        request.accept("application/json");
         return request.send();
     }
 
