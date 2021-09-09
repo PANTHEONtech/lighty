@@ -17,7 +17,7 @@ To use Lighty controller in your project:
   <dependency>
     <groupId>io.lighty.core</groupId>
     <artifactId>lighty-controller</artifactId>
-    <version>14.2.0-SNAPSHOT</version>
+    <version>14.2.1-SNAPSHOT</version>
   </dependency>
 ```
 
