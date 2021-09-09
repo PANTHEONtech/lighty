@@ -33,6 +33,7 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.ExecutionException;
 import org.junit.Assert;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,8 +83,8 @@ public class AuthenticationTest {
         Assert.assertEquals(1, getResponse.getNotificationCount());
         Assert.assertEquals(0, getResponse.getNotification(0).getDeleteCount());
         Assert.assertEquals(1, getResponse.getNotification(0).getUpdateCount());
-        Assert.assertTrue(TestUtils.jsonMatch(expectedOriginalMtuJson,
-                getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8()));
+        JSONAssert.assertEquals(expectedOriginalMtuJson,
+                getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8(), false);
 
         // Set mtu to UPDATE_MTU_VAL
         final SetRequest setRequest = getSetRequest(pathToMtu);
@@ -98,12 +99,12 @@ public class AuthenticationTest {
         getResponse = sessionProvider.getGnmiSession().get(getRequest).get();
         LOG.info("Received get response:\n{}", getResponse);
 
-        String expectedChangedMtuJson = "{\"mtu\": " + UPDATE_MTU_VAL + "}";
         Assert.assertEquals(1, getResponse.getNotificationCount());
         Assert.assertEquals(0, getResponse.getNotification(0).getDeleteCount());
         Assert.assertEquals(1, getResponse.getNotification(0).getUpdateCount());
-        Assert.assertTrue(TestUtils.jsonMatch(expectedChangedMtuJson,
-                getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8()));
+        final String expectedChangedMtuJson = "{\"mtu\": " + UPDATE_MTU_VAL + "}";
+        JSONAssert.assertEquals(expectedChangedMtuJson,
+                getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8(), false);
 
         // Delete mtu
         final SetRequest deleteRequest = getDeleteRequest(pathToMtu);
@@ -179,8 +180,8 @@ public class AuthenticationTest {
         Assert.assertEquals(1, getResponse.getNotificationCount());
         Assert.assertEquals(0, getResponse.getNotification(0).getDeleteCount());
         Assert.assertEquals(1, getResponse.getNotification(0).getUpdateCount());
-        Assert.assertTrue(TestUtils.jsonMatch(expectedOriginalMtuJson,
-                getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8()));
+        JSONAssert.assertEquals(expectedOriginalMtuJson,
+                getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8(), false);
 
         // Set mtu to UPDATE_MTU_VAL
         final SetRequest setRequest = getSetRequest(pathToMtu);
@@ -195,12 +196,12 @@ public class AuthenticationTest {
         getResponse = sessionProvider.getGnmiSession().get(getRequest).get();
         LOG.info("Received get response:\n{}", getResponse);
 
-        String expectedChangedMtuJson = "{\"mtu\": " + UPDATE_MTU_VAL + "}";
         Assert.assertEquals(1, getResponse.getNotificationCount());
         Assert.assertEquals(0, getResponse.getNotification(0).getDeleteCount());
         Assert.assertEquals(1, getResponse.getNotification(0).getUpdateCount());
-        Assert.assertTrue(TestUtils.jsonMatch(expectedChangedMtuJson,
-                getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8()));
+        final String expectedChangedMtuJson = "{\"mtu\": " + UPDATE_MTU_VAL + "}";
+        JSONAssert.assertEquals(expectedChangedMtuJson,
+                getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8(), false);
 
         // Delete mtu
         final SetRequest deleteRequest = getDeleteRequest(pathToMtu);
@@ -306,10 +307,10 @@ public class AuthenticationTest {
     private Path getPathToMtu() {
         return Path.newBuilder()
                 .addElem(PathElem.newBuilder()
-                        .setName("interfaces")
+                        .setName(OPENCONFIG_INTERFACES)
                         .build())
                 .addElem(PathElem.newBuilder()
-                        .setName("interface")
+                        .setName(OPENCONFIG_INTERFACE)
                         .putKey("name", "eth3")
                         .build())
                 .addElem(PathElem.newBuilder()

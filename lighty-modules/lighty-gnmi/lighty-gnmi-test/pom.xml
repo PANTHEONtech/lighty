@@ -29,6 +29,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>io.lighty.modules.gnmi</groupId>
             <artifactId>lighty-gnmi-connector</artifactId>
             <scope>test</scope>

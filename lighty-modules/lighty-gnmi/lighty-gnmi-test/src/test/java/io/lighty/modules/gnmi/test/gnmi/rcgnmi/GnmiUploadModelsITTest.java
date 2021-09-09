@@ -20,12 +20,14 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.http.HttpResponse;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,15 +88,12 @@ public class GnmiUploadModelsITTest extends GnmiITBase {
     }
 
     @Test
-    public void uploadModelTest() throws InterruptedException, IOException {
+    public void uploadModelTest() throws InterruptedException, IOException, JSONException {
         //assert that uploaded yang currently does not exist in gnmi-yang-storage
         final HttpResponse<String> getYangStorageTestModelNonUploadedResponse = sendGetRequestJSON(YANG_MODEL_PATH);
         assertEquals(HttpURLConnection.HTTP_CONFLICT, getYangStorageTestModelNonUploadedResponse.statusCode());
-        final JSONArray errorsResponse = new JSONObject(getYangStorageTestModelNonUploadedResponse.body())
-            .getJSONObject("errors").getJSONArray("error");
-        assertEquals(1, errorsResponse.length());
-        final String errorResponse = errorsResponse.getJSONObject(0).toString();
-        assertEquals(ERR_MSG_RELEVANT_MODEL_NOT_EXIST, errorResponse);
+        JSONAssert.assertEquals(ERR_MSG_RELEVANT_MODEL_NOT_EXIST,
+                getYangStorageTestModelNonUploadedResponse.body(), false);
 
         //read and upload model and assert successful RPC response
         final String testModel = TEST_YANG_NAME + ".yang";
@@ -119,7 +118,7 @@ public class GnmiUploadModelsITTest extends GnmiITBase {
     }
 
     @Test
-    public void reuploadModelTest() throws InterruptedException, IOException {
+    public void reuploadModelTest() throws InterruptedException, IOException, JSONException {
         final String testModel = REUPLOAD_YANG_NAME + ".yang";
         final String modelBody = TestUtils.readFile(MODELS_PATH + "/plugin_models/" + testModel);
         LOG.info("Content of YANG {} file to re-upload: {}", testModel, modelBody);
