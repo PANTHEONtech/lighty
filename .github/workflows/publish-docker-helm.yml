@@ -98,7 +98,7 @@ jobs:
           sudo snap install yq
       - name: Set image.name, image.version in values.yaml of helm chart
         run: |
-          yq eval '.image.name="ghcr.io/pantheontech/${{ github.event.inputs.image-name }}" | .image.version="${{ github.event.inputs.version }}"' ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-app-helm/helm/${{ github.event.inputs.app-name }}-app-helm/values.yaml -i
+          yq eval '.image.name="ghcr.io/pantheontech/${{ github.event.inputs.image-name }}" | .image.version="${{ github.event.inputs.version }}"' ${{ github.event.inputs.app-helm-values-path }} -i
       - name: Print values.yaml
         run: |
           cat -A ${{ github.event.inputs.app-helm-values-path }}
