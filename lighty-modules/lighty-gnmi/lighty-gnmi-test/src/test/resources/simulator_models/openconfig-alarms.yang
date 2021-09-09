@@ -209,8 +209,6 @@ module openconfig-alarms {
     }
   }
 
-  uses alarms-top;
-
   // augments
 
   augment "/oc-platform:components/oc-platform:component/oc-platform:state" {
