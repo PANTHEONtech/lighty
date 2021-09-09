@@ -103,7 +103,7 @@
         { "nameSpace":"urn:opendaylight:params:xml:ns:yang:controller:md:sal:clustering:entity-owners", "name":"entity-owners","revision":"2015-08-04"},
         { "nameSpace":"urn:opendaylight:params:xml:ns:yang:controller:md:sal:clustering:prefix-shard-configuration", "name":"prefix-shard-configuration","revision":"2017-01-10"},
         { "nameSpace":"urn:opendaylight:params:xml:ns:yang:controller:md:sal:cluster:admin", "name":"cluster-admin","revision":"2015-10-13"},
-        { "nameSpace":"urn:ietf:params:xml:ns:yang:ietf-yang-library", "name":"ietf-yang-library","revision":"2016-06-21"},
+        { "nameSpace":"urn:ietf:params:xml:ns:yang:ietf-yang-library", "name":"ietf-yang-library","revision":"2019-01-04"},
         { "nameSpace":"urn:ietf:params:xml:ns:yang:ietf-restconf", "name":"ietf-restconf","revision":"2017-01-26"},
         { "nameSpace":"urn:ietf:params:xml:ns:yang:ietf-restconf-monitoring", "name":"ietf-restconf-monitoring","revision":"2017-01-26"},
         { "nameSpace":"urn:opendaylight:params:xml:ns:yang:controller:md:sal:remote", "name": "sal-remote","revision":"2014-01-14"},

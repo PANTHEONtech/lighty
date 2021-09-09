@@ -58,7 +58,7 @@ public final class NetconfConfigUtils {
                     .$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.monitoring.extension.rev131210
                     .$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104
                     .$YangModuleInfoImpl.getInstance()
     );
     public static final Set<YangModuleInfo> NETCONF_CALLHOME_MODELS = ImmutableSet.of(
