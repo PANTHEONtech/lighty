@@ -24,11 +24,13 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,15 +41,19 @@ public class GnmiGetITTest extends GnmiITBase {
             = GNMI_TOPOLOGY_PATH + "/node=" + GNMI_NODE_ID + "/gnmi-topology:node-state/available-capabilities";
     private static final String INTERFACES_PATH = GNMI_DEVICE_MOUNTPOINT + OPENCONFIG_INTERFACES;
     private static final List<String> EXPECTED_CAPABILITIES = List.of(
-        "iana-if-type revision: 2013-07-04", "openconfig-alarm-types semver: 0.2.1", "openconfig-alarms semver: 0.3.2",
-        "openconfig-extensions revision: 2018-10-17", "openconfig-if-aggregate semver: 2.4.3",
-        "openconfig-if-ethernet semver: 2.8.1", "openconfig-if-types semver: 0.2.1",
-        "openconfig-inet-types semver: 0.3.2", "openconfig-interfaces semver: 2.4.3",
-        "openconfig-platform semver: 0.12.2", "openconfig-platform-types semver: 1.0.0",
-        "openconfig-vlan-types semver: 3.1.1", "openconfig-types semver: 0.5.1", "openconfig-vlan semver: 3.2.0",
-        "openconfig-yang-types semver: 0.2.1", "gnmi-test-model semver: 1.0.0");
+        "iana-if-type revision: 2017-01-19", "openconfig-alarm-types semver: 0.2.1", "openconfig-alarms semver: 0.3.2",
+        "openconfig-extensions revision: 2020-06-16", "openconfig-if-aggregate semver: 2.4.3",
+        "openconfig-if-ethernet semver: 2.11.0", "openconfig-if-types semver: 0.2.1",
+        "openconfig-inet-types semver: 0.4.0", "openconfig-interfaces semver: 2.5.0",
+        "openconfig-platform semver: 0.13.0", "openconfig-platform-types semver: 1.1.0",
+        "openconfig-vlan-types semver: 3.1.1", "openconfig-types semver: 0.6.0", "openconfig-vlan semver: 3.2.0",
+        "openconfig-yang-types semver: 0.3.0", "gnmi-test-model semver: 1.0.0", "ietf-interfaces revision: 2018-02-20",
+        "ietf-yang-types revision: 2013-07-15", "openconfig-aaa semver: 0.5.0", "openconfig-aaa-types semver: 0.4.1",
+        "openconfig-license semver: 0.2.0", "openconfig-messages semver: 0.0.1", "openconfig-procmon semver: 0.4.0",
+        "openconfig-system semver: 0.10.0","openconfig-system-logging semver: 0.3.1",
+        "openconfig-system-terminal semver: 0.3.1");
 
-    private static final JSONObject OC_INTERFACES_CONTAINER_EXPECTED_JSON_OBJ = new JSONObject(
+    private static final String OC_INTERFACES_CONTAINER_EXPECTED_JSON_OBJ =
         "{\"openconfig-interfaces:interfaces\":"
             + "{\"interface\":[{\"name\":\"eth3\",\"config\":{\"enabled\":false,\"name\":\"admin\","
             + "\"type\":\"openconfig-if-types:IF_ETHERNET\",\"loopback-mode\":false,\"mtu\":1500}},"
@@ -72,15 +78,16 @@ public class GnmiGetITTest extends GnmiITBase {
             + "\"out-octets\":\"105\",\"in-fcs-errors\":\"104\",\"out-errors\":\"108\",\"out-pkts\":"
             + "\"106\",\"out-discards\":\"107\",\"in-pkts\":\"101\",\"in-discards\":\"102\","
             + "\"in-errors\":\"103\"},\"enabled\":false,\"logical\":true,\"type\":"
-            + "\"openconfig-if-types:IF_ETHERNET\",\"admin-status\":\"UP\"}}]}}");
+            + "\"openconfig-if-types:IF_ETHERNET\",\"admin-status\":\"UP\"}}]}}";
     private static final String OC_INTERFACE_ETH3_CONFIG_NAME_EXPECTED = "admin";
     private static final String OC_INTERFACE_ETH3_CONFIG_TYPE_EXPECTED = "openconfig-if-types:IF_ETHERNET";
     private static final String OC_INTERFACE_ETH3_EXPECTED = "{\"name\":\"eth3\",\"config\":{\"name\":\"admin\","
         + "\"type\":\"openconfig-if-types:IF_ETHERNET\",\"loopback-mode\":false,\"enabled\":false,\"mtu\":1500}}";
-    private static final String OC_INTERFACES_INCORRECT_ERROR_MESSAGE_EXPECTED = "{\"error-message\":"
-        + "\"Could not parse Instance Identifier 'openconfig-interfaces:interfacesincorrect'. Offset: '41' : "
-        + "Reason: '(http://openconfig.net/yang/interfaces?revision=2019-11-19)interfacesincorrect' "
-        + "is not correct schema node identifier.\",\"error-tag\":\"malformed-message\",\"error-type\":\"protocol\"}";
+    private static final String OC_INTERFACES_INCORRECT_ERROR_MESSAGE_EXPECTED = "{\"errors\":{\"error\""
+          + ":[{\"error-tag\":\"malformed-message\",\"error-type\":\"protocol\",\"error-message\":"
+          + "\"Could not parse Instance Identifier 'openconfig-interfaces:interfacesincorrect'. Offset: '41' : Reason: "
+          + "'(http://openconfig.net/yang/interfaces?revision=2021-04-06)interfacesincorrect' is not correct "
+          + "schema node identifier.\"}]}}";
     private static SimulatedGnmiDevice device;
 
     @BeforeAll
@@ -110,7 +117,7 @@ public class GnmiGetITTest extends GnmiITBase {
     }
 
     @Test
-    public void getCapabilitiesTest() throws InterruptedException, IOException {
+    public void getCapabilitiesTest() throws InterruptedException, IOException, JSONException {
         //assert all expected capabilities are contained in device response
         final HttpResponse<String> capabilitiesResponse = sendGetRequestJSON(GET_CAPABILITIES_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, capabilitiesResponse.statusCode());
@@ -123,17 +130,17 @@ public class GnmiGetITTest extends GnmiITBase {
     }
 
     @Test
-    public void getContainerTest() throws InterruptedException, IOException {
+    public void getContainerTest() throws InterruptedException, IOException, JSONException {
         //assert openconfig-interfaces container returns expected value
         final HttpResponse<String> getOcInterfacesContainerResponse = sendGetRequestJSON(INTERFACES_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, getOcInterfacesContainerResponse.statusCode());
         final JSONObject ocInterfacesContainer = new JSONObject(getOcInterfacesContainerResponse.body());
         LOG.info("Response: {}", ocInterfacesContainer);
-        assertEquals(OC_INTERFACES_CONTAINER_EXPECTED_JSON_OBJ.toString(), ocInterfacesContainer.toString());
+        JSONAssert.assertEquals(OC_INTERFACES_CONTAINER_EXPECTED_JSON_OBJ, ocInterfacesContainer.toString(), false);
     }
 
     @Test
-    public void getLeafTest() throws InterruptedException, IOException {
+    public void getLeafTest() throws InterruptedException, IOException, JSONException {
         //assert name which is of leaf type in gnmi openconfig-interfaces - interface - eth3
         final HttpResponse<String> getOcInterfaceEth3ConfigNameResponse =
             sendGetRequestJSON(INTERFACES_PATH + "/interface=eth3/config/name");
@@ -145,7 +152,7 @@ public class GnmiGetITTest extends GnmiITBase {
     }
 
     @Test
-    public void getLeafIdentityRefTest() throws InterruptedException, IOException {
+    public void getLeafIdentityRefTest() throws InterruptedException, IOException, JSONException {
         //assert type which is of leaf type(identityref) in gnmi openconfig-interfaces - interface - eth3
         final HttpResponse<String> getOcInterfaceEth3ConfigTypeResponse =
             sendGetRequestJSON(INTERFACES_PATH + "/interface=eth3/config/type");
@@ -157,7 +164,7 @@ public class GnmiGetITTest extends GnmiITBase {
     }
 
     @Test
-    public void getListEntryTest() throws InterruptedException, IOException {
+    public void getListEntryTest() throws InterruptedException, IOException, JSONException {
         //assert list entry in openconfig-interfaces - interface - eth3, and also if it is only one with that key
         final HttpResponse<String> getOcInterfaceEth3Response = sendGetRequestJSON(INTERFACES_PATH + "/interface=eth3");
         assertEquals(HttpURLConnection.HTTP_OK, getOcInterfaceEth3Response.statusCode());
@@ -170,33 +177,25 @@ public class GnmiGetITTest extends GnmiITBase {
     }
 
     @Test
-    public void getIncorrectListEntryTest() throws InterruptedException, IOException {
+    public void getIncorrectListEntryTest() throws InterruptedException, IOException, JSONException {
         //assert that request to list entry which does not exist - interface - ethNonExisting, will fail
         final HttpResponse<String> getOcInterfaceNonExistingResponse =
             sendGetRequestJSON(INTERFACES_PATH + "/interface=ethNonExisting");
         assertEquals(HttpURLConnection.HTTP_CONFLICT, getOcInterfaceNonExistingResponse.statusCode());
-        final JSONArray responseErrors =
-            new JSONObject(getOcInterfaceNonExistingResponse.body()).getJSONObject("errors").getJSONArray("error");
-        assertEquals(1, responseErrors.length());
-        final String ocInterfaceNonExistingError = responseErrors.getJSONObject(0).toString();
-        LOG.info("Response: {}", ocInterfaceNonExistingError);
-        assertEquals(ERR_MSG_RELEVANT_MODEL_NOT_EXIST, ocInterfaceNonExistingError);
+        JSONAssert.assertEquals(ERR_MSG_RELEVANT_MODEL_NOT_EXIST, getOcInterfaceNonExistingResponse.body(), false);
     }
 
     @Test
-    public void getNonExistingDataTest() throws InterruptedException, IOException {
+    public void getNonExistingDataTest() throws InterruptedException, IOException, JSONException {
         //assert error for request to non existing interfacesincorrect container
         final HttpResponse<String> getOcInterfacesContainerWrongResponse =
             sendGetRequestJSON(INTERFACES_PATH + "incorrect");
         assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, getOcInterfacesContainerWrongResponse.statusCode());
-        final JSONArray responseErrors =
-            new JSONObject(getOcInterfacesContainerWrongResponse.body()).getJSONObject("errors").getJSONArray("error");
-        final String ocInterfacesContainerError = responseErrors.getJSONObject(0).toString();
-        LOG.info("Response: {}", ocInterfacesContainerError);
-        assertEquals(OC_INTERFACES_INCORRECT_ERROR_MESSAGE_EXPECTED, ocInterfacesContainerError);
+        JSONAssert.assertEquals(OC_INTERFACES_INCORRECT_ERROR_MESSAGE_EXPECTED,
+                getOcInterfacesContainerWrongResponse.body(), false);
     }
 
-    private List<String> convertCapabilitiesJSONArrayToList(final JSONArray capabilitiesArray) {
+    private List<String> convertCapabilitiesJSONArrayToList(final JSONArray capabilitiesArray) throws JSONException {
         final List<String> capabilitiesList = new ArrayList<>();
         for (int i = 0; i < capabilitiesArray.length(); i++) {
             capabilitiesList.add(capabilitiesArray.getJSONObject(i).getString("capability"));

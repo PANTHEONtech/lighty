@@ -253,7 +253,12 @@ public abstract class GnmiITBase {
             + "            \"host\": \"" + ipAddr + "\",\n"
             + "            \"port\": " + port + ",\n"
             + "            \"connection-type\": \"INSECURE\"\n"
-            + "        }\n"
+            + "        },\n"
+            + "        \"extensions-parameters\": {\n"
+            + "            \"gnmi-parameters\": {\n"
+            + "                \"use-model-name-prefix\": true\n"
+            + "            }\n"
+            + "        }"
             + "    }]\n"
             + "}";
     }
@@ -359,8 +364,9 @@ public abstract class GnmiITBase {
         public static final String GNMI_NODE_STATUS_READY = "READY";
 
         public static final String ERR_MSG_RELEVANT_MODEL_NOT_EXIST =
-            "{\"error-message\":\"Request could not be completed because the relevant data model content does not "
-                + "exist\",\"error-tag\":\"data-missing\",\"error-type\":\"protocol\"}";
+                "{\"errors\":{\"error\":[{\"error-message\":"
+              + "\"Request could not be completed because the relevant data model content does not "
+              + "exist\",\"error-tag\":\"data-missing\",\"error-type\":\"protocol\"}]}}";
         protected static final String INTERFACE_ETH3_CONFIG_NAME_PAYLOAD = "{\n"
             + "\"openconfig-interfaces:name\": \"updated-config-name\"\n"
             + "}";

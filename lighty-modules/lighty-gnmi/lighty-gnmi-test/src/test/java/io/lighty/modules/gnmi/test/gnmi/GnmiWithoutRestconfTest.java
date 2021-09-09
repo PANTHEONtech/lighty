@@ -67,6 +67,9 @@ import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev21050
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.GnmiNode;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.GnmiNodeBuilder;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.connection.parameters.ConnectionParametersBuilder;
+import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.connection.parameters.ExtensionsParameters;
+import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.connection.parameters.ExtensionsParametersBuilder;
+import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.connection.parameters.extensions.parameters.GnmiParametersBuilder;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.node.state.NodeState;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.security.SecurityChoice;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.security.security.choice.InsecureDebugOnly;
@@ -116,7 +119,7 @@ public class GnmiWithoutRestconfTest {
     private static final String YANG_NAME = "YANG_NAME";
     private static final String YANG_VERSION = "YANG_VERSION";
     private static final QNameModule INERFACE_QNAME_MODULE
-            = QNameModule.create(URI.create("http://openconfig.net/yang/interfaces"), Revision.of("2019-11-19"));
+            = QNameModule.create(URI.create("http://openconfig.net/yang/interfaces"), Revision.of("2021-04-06"));
     private static final QName INTERFACES_QNAME = QName.create(INERFACE_QNAME_MODULE, "interfaces");
     private static final QNameModule TEST_MODULE_QN_MODULE = QNameModule.create(URI.create("test:model"));
     private static final QName TEST_DATA_CONTAINER_QN = QName.create(TEST_MODULE_QN_MODULE, "test-data");
@@ -451,10 +454,17 @@ public class GnmiWithoutRestconfTest {
                 .setPort(new PortNumber(Uint16.valueOf(port)))
                 .setSecurityChoice(securityChoice);
 
+        ExtensionsParameters extensionsParameters = new ExtensionsParametersBuilder()
+                .setGnmiParameters(new GnmiParametersBuilder()
+                        .setUseModelNamePrefix(true)
+                        .build())
+                .build();
+
         return new NodeBuilder()
                 .setNodeId(new NodeId(nameOfNode))
                 .addAugmentation(new GnmiNodeBuilder()
                         .setConnectionParameters(connectionParametersBuilder.build())
+                        .setExtensionsParameters(extensionsParameters)
                         .build())
                 .build();
     }
