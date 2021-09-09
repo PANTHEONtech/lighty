@@ -15,26 +15,22 @@ import static io.lighty.modules.gnmi.test.gnmi.rcgnmi.GnmiITBase.GeneralConstant
 import static io.lighty.modules.gnmi.test.gnmi.rcgnmi.GnmiITBase.GeneralConstants.OPENCONFIG_INTERFACES;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
-import io.lighty.modules.gnmi.test.utils.TestUtils;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +80,7 @@ public class GnmiSetITTest extends GnmiITBase {
     private static final String INTERFACE_BR0_STATE_AGGREGATE_MIN_LINKS_TYPE_PAYLOAD = "{\n"
         + "    \"openconfig-if-aggregate:min-links\": 10\n"
         + "}";
-    private static final JSONObject CONFIG_FALSE_ERROR = new JSONObject("{\n"
+    private static final String CONFIG_FALSE_ERROR = "{\n"
         + "    \"errors\": {\n"
         + "        \"error\": [\n"
         + "            {\n"
@@ -96,7 +92,7 @@ public class GnmiSetITTest extends GnmiITBase {
         + "            }\n"
         + "        ]\n"
         + "    }\n"
-        + "}");
+        + "}";
     private static SimulatedGnmiDevice device;
 
     @BeforeAll
@@ -126,7 +122,7 @@ public class GnmiSetITTest extends GnmiITBase {
     }
 
     @Test
-    public void setContainerTest() throws InterruptedException, IOException {
+    public void setContainerTest() throws InterruptedException, IOException, JSONException {
         //assert value before set, does not equals value that should be set
         final JSONObject configContainerPayloadJSONObject = new JSONObject(INTERFACE_ETH3_CONFIG_PAYLOAD);
         final HttpResponse<String> getOcInterfaceEth3ConfigContainerBeforeResponse = sendGetRequestJSON(CONTAINER_PATH);
@@ -153,7 +149,7 @@ public class GnmiSetITTest extends GnmiITBase {
     }
 
     @Test
-    public void setLeafTest() throws InterruptedException, IOException {
+    public void setLeafTest() throws InterruptedException, IOException, JSONException {
         final JSONObject configNameLeafPayloadJSONObject = new JSONObject(INTERFACE_ETH3_CONFIG_NAME_PAYLOAD);
         final HttpResponse<String> getOcInterfaceEth3ConfigNameLeafBeforeResponse = sendGetRequestJSON(LEAF_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, getOcInterfaceEth3ConfigNameLeafBeforeResponse.statusCode());
@@ -174,7 +170,7 @@ public class GnmiSetITTest extends GnmiITBase {
     }
 
     @Test
-    public void setLeafIdentityRefTest() throws InterruptedException, IOException {
+    public void setLeafIdentityRefTest() throws InterruptedException, IOException, JSONException {
         //Check if current data is not same as updating data
         final HttpResponse<String> getIdentityData = sendGetRequestJSON(IDENTITY_REF_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, getIdentityData.statusCode());
@@ -195,7 +191,7 @@ public class GnmiSetITTest extends GnmiITBase {
     }
 
     @Test
-    public void setConfigFalseDataTest() throws InterruptedException, IOException {
+    public void setConfigFalseDataTest() throws InterruptedException, IOException, JSONException {
         //check if min-links on the given path is default(not updated)
         final JSONObject minLinksPayloadJSONObject =
             new JSONObject(INTERFACE_BR0_STATE_AGGREGATE_MIN_LINKS_TYPE_PAYLOAD);
@@ -212,11 +208,7 @@ public class GnmiSetITTest extends GnmiITBase {
                     + "/interface=br0/openconfig-if-aggregate:aggregation/state/min-links",
                 INTERFACE_BR0_STATE_AGGREGATE_MIN_LINKS_TYPE_PAYLOAD);
         assertEquals(HttpURLConnection.HTTP_INTERNAL_ERROR, setMinLinksResponse.statusCode());
-        final JSONArray errorsResponse =
-            new JSONObject(setMinLinksResponse.body()).getJSONObject("errors").getJSONArray("error");
-        assertEquals(1, errorsResponse.length());
-        final JSONArray errorsExpected = CONFIG_FALSE_ERROR.getJSONObject("errors").getJSONArray("error");
-        assertEquals(errorsExpected.toString(), errorsResponse.toString());
+        JSONAssert.assertEquals(CONFIG_FALSE_ERROR, setMinLinksResponse.body(), false);
 
         //assert that it was not updated
         final HttpResponse<String> getMinLinksResponse =
@@ -230,7 +222,7 @@ public class GnmiSetITTest extends GnmiITBase {
     }
 
     @Test
-    public void deleteLeafTest() throws InterruptedException, IOException {
+    public void deleteLeafTest() throws InterruptedException, IOException, JSONException {
         //assert default initialized state of name of interface eth3
         final HttpResponse<String> getOcInterfaceEth3ConfigNameLeafBeforeResponse =
             sendGetRequestJSON(GNMI_DEVICE_MOUNTPOINT + OPENCONFIG_INTERFACES + "/interface=eth3/config/name");
@@ -249,17 +241,14 @@ public class GnmiSetITTest extends GnmiITBase {
         final HttpResponse<String> getOcInterfaceEth3ConfigNameLeafResponse =
             sendGetRequestJSON(GNMI_DEVICE_MOUNTPOINT + OPENCONFIG_INTERFACES + "/interface=eth3/config/name");
         assertEquals(HttpURLConnection.HTTP_CONFLICT, getOcInterfaceEth3ConfigNameLeafResponse.statusCode());
-        final JSONArray responseErrors = new JSONObject(getOcInterfaceEth3ConfigNameLeafResponse.body())
-            .getJSONObject("errors").getJSONArray("error");
-        assertEquals(1, responseErrors.length());
-        final String ocDeletedLeafError = responseErrors.getJSONObject(0).toString();
-        assertEquals(ERR_MSG_RELEVANT_MODEL_NOT_EXIST, ocDeletedLeafError);
+        JSONAssert.assertEquals(ERR_MSG_RELEVANT_MODEL_NOT_EXIST, getOcInterfaceEth3ConfigNameLeafResponse.body(),
+                false);
 
         restoreDeviceToOriginalState();
     }
 
     @Test
-    public void setSimpleListEntryTest() throws IOException, InterruptedException {
+    public void setSimpleListEntryTest() throws IOException, InterruptedException, JSONException {
         // Set simple list with
         final String listPath = GNMI_TEST_CONTAINER_PATH + "/test-list=" + LIST_ID_10;
         final String listBody = getSimpleListData(LIST_ID_10);
@@ -269,7 +258,7 @@ public class GnmiSetITTest extends GnmiITBase {
         //Verify that simple list is setup correctly
         final HttpResponse<String> getListdata = sendGetRequestJSON(listPath);
         assertEquals(HttpURLConnection.HTTP_OK, getListdata.statusCode());
-        assertTrue(TestUtils.jsonMatch(getListdata.body(), listBody));
+        JSONAssert.assertEquals(listBody, getListdata.body(), false);
 
         //Update simple list
         final String updateListPath = GNMI_TEST_CONTAINER_PATH + "/test-list=" + LIST_ID_20;
@@ -280,19 +269,13 @@ public class GnmiSetITTest extends GnmiITBase {
         //Verify that simple list is updated
         final HttpResponse<String> getAllListData = sendGetRequestJSON(GNMI_TEST_CONTAINER_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, getAllListData.statusCode());
-        final JSONArray updatedJsonArray = new JSONObject(getAllListData.body())
-                .getJSONObject(GNMI_TEST_DATA).getJSONArray(TEST_LIST);
-        final List<String> sortedJsonArray = getSortedJsonArray(updatedJsonArray);
-        assertEquals(2, sortedJsonArray.size());
-        sortedJsonArray.remove(String.format("{\"key\":\"%s\"}", LIST_ID_10));
-        sortedJsonArray.remove(String.format("{\"key\":\"%s\"}", LIST_ID_20));
-        assertEquals(0, sortedJsonArray.size());
+        JSONAssert.assertEquals(getSimpleListEntryResultData(), getAllListData.body(), false);
 
         removeGnmiTestDataContainer();
     }
 
     @Test
-    public void setSimpleListEntryInsideContainerTest() throws IOException, InterruptedException {
+    public void setSimpleListEntryInsideContainerTest() throws IOException, InterruptedException, JSONException {
         //Set list from container path
         final String setListBody = getNewListInContainerData();
         final HttpResponse<String> setListResponse = sendPutRequestJSON(GNMI_TEST_CONTAINER_PATH, setListBody);
@@ -301,14 +284,7 @@ public class GnmiSetITTest extends GnmiITBase {
         //Verify that list is created
         final HttpResponse<String> getAllListData = sendGetRequestJSON(GNMI_TEST_CONTAINER_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, getAllListData.statusCode());
-
-        final JSONArray expected = new JSONObject(getAllListData.body())
-                .getJSONObject(GNMI_TEST_DATA).getJSONArray(TEST_LIST);
-        final JSONArray actual = new JSONObject(setListBody)
-                .getJSONObject(GNMI_TEST_DATA).getJSONArray(TEST_LIST);
-        final List<String> expectedArray = getSortedJsonArray(expected);
-        final List<String> actualArray = getSortedJsonArray(actual);
-        assertEquals(expectedArray, actualArray);
+        JSONAssert.assertEquals(setListBody, getAllListData.body(), false);
 
         // Update list data
         final HttpResponse<String> updateListResponse
@@ -318,19 +294,13 @@ public class GnmiSetITTest extends GnmiITBase {
         // Verify that list is updated
         final HttpResponse<String> getUpdatedData = sendGetRequestJSON(GNMI_TEST_CONTAINER_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, getAllListData.statusCode());
-        final JSONArray expectedUpdate = new JSONObject(getUpdatedData.body())
-                .getJSONObject(GNMI_TEST_DATA).getJSONArray(TEST_LIST);
-        final JSONArray actualUpdate  = new JSONObject(getUpdatedListInContainerResultData())
-                .getJSONObject(GNMI_TEST_DATA).getJSONArray(TEST_LIST);
-        List<String> expectedUpdateArray = getSortedJsonArray(expectedUpdate);
-        List<String> actualUpdateArray = getSortedJsonArray(actualUpdate);
-        assertEquals(expectedUpdateArray, actualUpdateArray);
+        JSONAssert.assertEquals(getUpdatedListInContainerResultData(), getUpdatedData.body(), false);
 
         removeGnmiTestDataContainer();
     }
 
     @Test
-    public void setInterfaceListEntryTest() throws IOException, InterruptedException {
+    public void setInterfaceListEntryTest() throws IOException, InterruptedException, JSONException {
         // Replace data in interface config
         String setListPath = GNMI_DEVICE_MOUNTPOINT + OPENCONFIG_INTERFACES;
         String setListBody = getInterfaceContainerListBody(LIST_ID_10);
@@ -340,7 +310,7 @@ public class GnmiSetITTest extends GnmiITBase {
         // Verify that data was replaced in configuration data-store
         final HttpResponse<String> getListResponse = sendGetRequestJSON(setListPath + CONFIG_DATASTORE);
         assertEquals(HttpURLConnection.HTTP_OK, getListResponse.statusCode());
-        assertTrue(TestUtils.jsonMatch(setListBody, getListResponse.body()));
+        JSONAssert.assertEquals(setListBody, getListResponse.body(), false);
 
         // Update interface data
         String updateListPath = GNMI_DEVICE_MOUNTPOINT + OPENCONFIG_INTERFACES;
@@ -351,14 +321,7 @@ public class GnmiSetITTest extends GnmiITBase {
         //Verify that interface data was updated
         final HttpResponse<String> getAllData = sendGetRequestJSON(setListPath + CONFIG_DATASTORE);
         assertEquals(HttpURLConnection.HTTP_OK, getAllData.statusCode());
-
-        JSONArray actualUpdatedData = new JSONObject(getAllData.body())
-                .getJSONObject(INTERFACES_CONTAINER).getJSONArray(INTERFACE);
-        JSONArray expectedUpdatedData = new JSONObject(getInterfaceListUpdateResponse(LIST_ID_10, LIST_ID_20))
-                .getJSONObject(INTERFACES_CONTAINER).getJSONArray(INTERFACE);
-        List<String> actualUpdateArray = getSortedJsonArray(actualUpdatedData);
-        List<String> expectedUpdateArray = getSortedJsonArray(expectedUpdatedData);
-        assertEquals(expectedUpdateArray, actualUpdateArray);
+        JSONAssert.assertEquals(getInterfaceListUpdateResponse(LIST_ID_10, LIST_ID_20), getAllData.body(), false);
 
         restoreDeviceToOriginalState();
     }
@@ -371,7 +334,7 @@ public class GnmiSetITTest extends GnmiITBase {
     }
 
     @Test
-    public void setNestedListTest() throws IOException, InterruptedException {
+    public void setNestedListTest() throws IOException, InterruptedException, JSONException {
         // Create data in base list
         String baseListBody = getBaseListBody();
         final HttpResponse<String> nestedResponse = sendPutRequestJSON(GNMI_TEST_BASE_LIST_PATH, baseListBody);
@@ -380,7 +343,7 @@ public class GnmiSetITTest extends GnmiITBase {
         // Verify created base list data
         final HttpResponse<String> getBaseList = sendGetRequestJSON(GNMI_TEST_BASE_LIST_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, getBaseList.statusCode());
-        assertTrue(TestUtils.jsonMatch(getBaseList.body(), getBaseListBody()));
+        JSONAssert.assertEquals(getBaseListBody(), getBaseList.body(), false);
 
         // Replace data in nested list
         String nestedListBody = getNestedListBody();
@@ -390,7 +353,7 @@ public class GnmiSetITTest extends GnmiITBase {
         // Verify replaced data in nested list
         final HttpResponse<String> getRequestJSON = sendGetRequestJSON(GNMI_TEST_BASE_LIST_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, getRequestJSON.statusCode());
-        assertTrue(TestUtils.jsonMatch(getRequestJSON.body(), getNestedListBodyResponse()));
+        JSONAssert.assertEquals(getNestedListBodyResponse(), getRequestJSON.body(), false);
 
         // Update nested list
         final HttpResponse<String> nestedListUpdateResponse
@@ -400,21 +363,13 @@ public class GnmiSetITTest extends GnmiITBase {
         // Verify that nested list was updated
         final HttpResponse<String> getUpdatedNestedList = sendGetRequestJSON(GNMI_TEST_BASE_LIST_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, getUpdatedNestedList.statusCode());
-
-        JSONObject actualBaseList = new JSONObject(getUpdatedNestedList.body())
-                .getJSONArray(BASE_LIST).getJSONObject(0);
-        JSONObject expectedBaseList = new JSONObject(getNestedListUpdateBodyResponse())
-                .getJSONArray(BASE_LIST).getJSONObject(0);
-        assertEquals(expectedBaseList.get(LIST_KEY), actualBaseList.get(LIST_KEY));
-        List<String> actualNestedList = getSortedJsonArray(actualBaseList.getJSONArray(NESTED_LIST));
-        List<String> expectedNestedList = getSortedJsonArray(expectedBaseList.getJSONArray(NESTED_LIST));
-        assertEquals(expectedNestedList, actualNestedList);
+        JSONAssert.assertEquals(getNestedListUpdateBodyResponse(), getUpdatedNestedList.body(), false);
 
         removeGnmiTestBaseList();
     }
 
     @Test
-    public void setLeafListEntryTest() throws InterruptedException, IOException {
+    public void setLeafListEntryTest() throws InterruptedException, IOException, JSONException {
         //Verify that leaf-list data are empty
         final HttpResponse<String> getInvalidResponse = sendGetRequestJSON(GNMI_TEST_CONTAINER_PATH);
         assertEquals(HttpURLConnection.HTTP_CONFLICT, getInvalidResponse.statusCode());
@@ -428,7 +383,7 @@ public class GnmiSetITTest extends GnmiITBase {
         final HttpResponse<String> getLeafListData = sendGetRequestJSON(GNMI_TEST_CONTAINER_PATH);
         final String successResponse = getLeafListData.body();
         assertEquals(HttpURLConnection.HTTP_OK, getLeafListData.statusCode());
-        compareLeafListResponse(LEAFLIST_REPLACE_VAL, successResponse);
+        JSONAssert.assertEquals(LEAFLIST_REPLACE_VAL, successResponse, false);
 
         //Update data in leaf-list
         final HttpResponse<String> updateLeafListResponse
@@ -439,29 +394,11 @@ public class GnmiSetITTest extends GnmiITBase {
         final HttpResponse<String> getLeafListUpdateData = sendGetRequestJSON(GNMI_TEST_CONTAINER_PATH);
         final String updateResponse = getLeafListUpdateData.body();
         assertEquals(HttpURLConnection.HTTP_OK, getLeafListUpdateData.statusCode());
-        compareLeafListResponse(LEAFLIST_UPDATE_RESPONSE_VAL, updateResponse);
+        JSONAssert.assertEquals(LEAFLIST_UPDATE_RESPONSE_VAL, updateResponse, false);
 
         removeGnmiTestDataContainer();
     }
 
-    private static void compareLeafListResponse(final String expected, final String actual) {
-        final JSONArray expectedArray = new JSONObject(expected)
-                .getJSONObject(GNMI_TEST_DATA).getJSONArray(TEST_LEAF_LIST);
-        final JSONArray actualArray = new JSONObject(actual)
-                .getJSONObject(GNMI_TEST_DATA).getJSONArray(TEST_LEAF_LIST);
-        final List<String> expectedList = getSortedJsonArray(expectedArray);
-        final List<String> actualList = getSortedJsonArray(actualArray);
-        assertEquals(expectedList, actualList);
-    }
-
-    private static List<String> getSortedJsonArray(final JSONArray jsonArray) {
-        final List<String> list = new ArrayList<>(jsonArray.length());
-        for (int i = 0; i < jsonArray.length(); i++) {
-            list.add(jsonArray.get(i).toString());
-        }
-        Collections.sort(list);
-        return list;
-    }
 
     private void restoreDeviceToOriginalState() throws IOException, InterruptedException {
         String path = GNMI_DEVICE_MOUNTPOINT + OPENCONFIG_INTERFACES;
@@ -579,6 +516,21 @@ public class GnmiSetITTest extends GnmiITBase {
               + "    }\n"
               + "  ]\n"
               + "}", keyId);
+    }
+
+    private String getSimpleListEntryResultData() {
+        return "{\n"
+                + "    \"gnmi-test-model:test-data\" : {\n"
+                + "        \"test-list\" : [\n"
+                + "            {\n"
+                + "                    \"key\":\"" + LIST_ID_10 + "\"\n"
+                + "            },\n"
+                + "            {\n"
+                + "                    \"key\":\"" + LIST_ID_20 + "\"\n"
+                + "            }\n"
+                + "        ]\n"
+                + "    }\n"
+                + "}";
     }
 
     private String getNewListInContainerData() {

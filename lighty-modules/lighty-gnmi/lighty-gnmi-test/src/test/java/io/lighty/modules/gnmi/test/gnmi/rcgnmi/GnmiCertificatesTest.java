@@ -22,6 +22,7 @@ import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.awaitility.Awaitility;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -75,7 +76,7 @@ public class GnmiCertificatesTest extends GnmiITBase {
     }
 
     @Test
-    public void testCertificateRegistration() throws IOException, InterruptedException {
+    public void testCertificateRegistration() throws IOException, InterruptedException, JSONException {
         // Register keystore
         final String id = "test-registration";
         final String certificatesRequestBody = getCertificatesRequestBody(id, TEST_CERTIFICATES.getCaCert(),
@@ -311,7 +312,12 @@ public class GnmiCertificatesTest extends GnmiITBase {
               + "                    \"username\": \"%s\",\n"
               + "                    \"password\": \"%s\"\n"
               + "                }\n"
-              + "            }\n"
+              + "            },\n"
+              + "            \"extensions-parameters\": {\n"
+              + "                \"gnmi-parameters\": {\n"
+              + "                    \"use-model-name-prefix\": true\n"
+              + "                }\n"
+              + "            }"
               + "        }\n"
               + "    ]\n"
               + "}", nodeId, DEVICE_IP, DEVICE_PORT, keystoreId, USERNAME, PASSWORD);

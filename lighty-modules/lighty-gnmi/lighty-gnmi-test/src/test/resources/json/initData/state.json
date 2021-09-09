@@ -68,18 +68,20 @@
       }
     ]
   },
-  "openconfig-alarms:alarms": {
-    "alarm": [
-      {
-        "id": "1",
-        "state": {
+  "openconfig-system:system": {
+    "alarms": {
+      "alarm": [
+        {
           "id": "1",
-          "resource": "res",
-          "text": "alarm-text",
-          "time-created": 1597765771184,
-          "severity": "openconfig-alarm-types:MINOR"
+          "state": {
+            "id": "1",
+            "resource": "res",
+            "text": "alarm-text",
+            "time-created": 1597765771184,
+            "severity": "openconfig-alarm-types:MINOR"
+          }
         }
-      }
-    ]
+      ]
+    }
   }
 }
