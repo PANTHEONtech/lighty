@@ -59,7 +59,7 @@
         <connection>scm:git:https://github.com/PANTHEONtech/lighty.git</connection>
         <developerConnection>scm:git:https://github.com/PANTHEONtech/lighty.git</developerConnection>
         <url>https://github.com/PANTHEONtech/lighty</url>
-        <tag>14.2.1</tag>
+        <tag>14.2.2-SNAPSHOT</tag>
     </scm>
     <developers>
         <developer>
