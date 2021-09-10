@@ -4,10 +4,9 @@ on:
     inputs:
       app-name:
         description: Name of the application in /lighty-applications
-        default: lighty-rnc
         required: true
       app-modules:
-        description: Name of the modules with format ':{module-name},...' required for build
+        description: Name of the modules with format ':{module-name},...' required to build docker image
         required: true
       app-docker-pom-path:
         description: Path to docker pom.xml file
@@ -20,7 +19,6 @@ on:
         required: true
       image-name:
         description: Desired NAME of docker image
-        default: lighty-rnc
         required: true
       version:
         description: Desired version of published docker image & helm charts
