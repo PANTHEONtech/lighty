@@ -100,16 +100,34 @@ public final class ControllerConfigUtils {
 
         StringBuilder jsonPath = new StringBuilder().append(CONTROLLER_CONFIG_ROOT_ELEMENT_NAME);
         if (!configNode.has(CONTROLLER_CONFIG_ROOT_ELEMENT_NAME)) {
-            LOG.warn("Json config does not contain {} element. Using defaults.", jsonPath.toString());
+            LOG.warn("Json config does not contain {} element. Using defaults.", CONTROLLER_CONFIG_ROOT_ELEMENT_NAME);
             return getDefaultSingleNodeConfiguration();
         }
         JsonNode controllerNode = configNode.path(CONTROLLER_CONFIG_ROOT_ELEMENT_NAME);
 
+        ControllerConfiguration controllerConfiguration = getControllerConfiguration(mapper, jsonPath, controllerNode);
 
+        injectActorSystemConfigToControllerConfig(controllerConfiguration);
+
+        LOG.info("Controller configuration: Restore dir path: {}\n"
+                + "Module Shards config path: {}\n"
+                + "Modules config path: {}\n"
+                + "Akka-default config path: {}\n"
+                + "Factory-akka-default config path: {}",
+                controllerConfiguration.getRestoreDirectoryPath(),
+                controllerConfiguration.getModuleShardsConfig(),
+                controllerConfiguration.getModulesConfig(),
+                controllerConfiguration.getActorSystemConfig().getAkkaConfigPath(),
+                controllerConfiguration.getActorSystemConfig().getFactoryAkkaConfigPath());
+
+        return controllerConfiguration;
+    }
+
+    private static ControllerConfiguration getControllerConfiguration(final ObjectMapper mapper,
+            final StringBuilder jsonPath, final JsonNode controllerNode) throws ConfigurationException {
         ControllerConfiguration controllerConfiguration;
         try {
-            controllerConfiguration = mapper.treeToValue(controllerNode,
-                    ControllerConfiguration.class);
+            controllerConfiguration = mapper.treeToValue(controllerNode, ControllerConfiguration.class);
             if (controllerNode.has(DatastoreConfigurationUtils.DATASTORECTX_CONFIG_ROOT_ELEMENT_NAME)) {
                 JsonNode configDatastoreCtxNode = controllerNode.path(
                     DatastoreConfigurationUtils.DATASTORECTX_CONFIG_ROOT_ELEMENT_NAME);
@@ -131,26 +149,7 @@ public final class ControllerConfigUtils {
                     DatastoreConfigurationUtils.createDefaultOperationalDatastoreContext());
             }
             if (controllerNode.has(SCHEMA_SERVICE_CONFIG_ELEMENT_NAME)) {
-                jsonPath.append(JSON_PATH_DELIMITER).append(SCHEMA_SERVICE_CONFIG_ELEMENT_NAME);
-                JsonNode schemaServiceNode = controllerNode.path(SCHEMA_SERVICE_CONFIG_ELEMENT_NAME);
-                if (schemaServiceNode.has(TOP_LEVEL_MODELS_ELEMENT_NAME)) {
-                    jsonPath.append(JSON_PATH_DELIMITER).append(TOP_LEVEL_MODELS_ELEMENT_NAME);
-                    JsonNode topLevelModelsNode = schemaServiceNode.path(TOP_LEVEL_MODELS_ELEMENT_NAME);
-                    if (topLevelModelsNode.isArray()) {
-                        Set<ModuleId> moduleIds = new HashSet<>();
-                        for (JsonNode moduleIdNode: topLevelModelsNode) {
-                            ModuleId moduleId = mapper.treeToValue(moduleIdNode, ModuleId.class);
-                            moduleIds.add(moduleId);
-                        }
-                        Set<YangModuleInfo> modelsFromClasspath = YangModuleUtils.getModelsFromClasspath(moduleIds);
-                        controllerConfiguration.getSchemaServiceConfig().setModels(modelsFromClasspath);
-                    } else {
-                        throw new ConfigurationException("Expected JSON array at " + jsonPath);
-                    }
-                } else {
-                    throw new ConfigurationException(String.format("JSON controller config file is missing %s element!",
-                            jsonPath));
-                }
+                setModelsToControllerConfiguration(mapper, jsonPath, controllerNode, controllerConfiguration);
             } else {
                 throw new ConfigurationException(String.format("JSON controller config file is missing %s element!",
                         jsonPath));
@@ -159,21 +158,32 @@ public final class ControllerConfigUtils {
             throw new ConfigurationException(String.format("Cannot bind Json tree to type: %s",
                     ControllerConfiguration.class), e);
         }
-
-        injectActorSystemConfigToControllerConfig(controllerConfiguration);
-
-        LOG.info("Controller configuration: Restore dir path: {}\n"
-                + "Module Shards config path: {}\n"
-                + "Modules config path: {}\n"
-                + "Akka-default config path: {}\n"
-                + "Factory-akka-default config path: {}",
-                controllerConfiguration.getRestoreDirectoryPath(),
-                controllerConfiguration.getModuleShardsConfig(),
-                controllerConfiguration.getModulesConfig(),
-                controllerConfiguration.getActorSystemConfig().getAkkaConfigPath(),
-                controllerConfiguration.getActorSystemConfig().getFactoryAkkaConfigPath());
-
         return controllerConfiguration;
+    }
+
+    private static void setModelsToControllerConfiguration(final ObjectMapper mapper, final StringBuilder jsonPath,
+            final JsonNode controllerNode, final ControllerConfiguration controllerConfiguration)
+            throws JsonProcessingException, ConfigurationException {
+        jsonPath.append(JSON_PATH_DELIMITER).append(SCHEMA_SERVICE_CONFIG_ELEMENT_NAME);
+        JsonNode schemaServiceNode = controllerNode.path(SCHEMA_SERVICE_CONFIG_ELEMENT_NAME);
+        if (schemaServiceNode.has(TOP_LEVEL_MODELS_ELEMENT_NAME)) {
+            jsonPath.append(JSON_PATH_DELIMITER).append(TOP_LEVEL_MODELS_ELEMENT_NAME);
+            JsonNode topLevelModelsNode = schemaServiceNode.path(TOP_LEVEL_MODELS_ELEMENT_NAME);
+            if (topLevelModelsNode.isArray()) {
+                Set<ModuleId> moduleIds = new HashSet<>();
+                for (JsonNode moduleIdNode: topLevelModelsNode) {
+                    ModuleId moduleId = mapper.treeToValue(moduleIdNode, ModuleId.class);
+                    moduleIds.add(moduleId);
+                }
+                Set<YangModuleInfo> modelsFromClasspath = YangModuleUtils.getModelsFromClasspath(moduleIds);
+                controllerConfiguration.getSchemaServiceConfig().setModels(modelsFromClasspath);
+            } else {
+                throw new ConfigurationException("Expected JSON array at " + jsonPath);
+            }
+        } else {
+            throw new ConfigurationException(String.format("JSON controller config file is missing %s element!",
+                    jsonPath));
+        }
     }
 
     /**
