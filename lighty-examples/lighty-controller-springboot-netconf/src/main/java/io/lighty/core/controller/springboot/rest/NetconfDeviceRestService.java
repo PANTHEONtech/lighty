@@ -79,46 +79,49 @@ public class NetconfDeviceRestService {
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping(path = "/list")
-    public ResponseEntity getNetconfDevicesIds(Authentication authentication) throws InterruptedException, ExecutionException, TimeoutException {
+    public ResponseEntity getNetconfDevicesIds(Authentication authentication) throws InterruptedException,
+            ExecutionException, TimeoutException {
         Utils.logUserData(LOG, authentication);
+        final Optional<Topology> netconfTopoOptional;
         try (final ReadTransaction tx = dataBroker.newReadOnlyTransaction()) {
-            final Optional<Topology> netconfTopoOptional =
-                tx.read(LogicalDatastoreType.OPERATIONAL, NETCONF_TOPOLOGY_IID).get(TIMEOUT, TimeUnit.SECONDS);
-            final List<NetconfDeviceResponse> response = new ArrayList<>();
-
-            if (netconfTopoOptional.isPresent()){
-                final Map<NodeKey, Node> netconfNode = netconfTopoOptional.get().getNode();
-                final Map<NodeKey, Node> nodeMap = netconfNode != null ? netconfNode : Collections.emptyMap();
-                for (Node node : nodeMap.values()) {
-                    NetconfDeviceResponse nodeResponse = NetconfDeviceResponse.from(node);
-
-                    final Optional<MountPoint> netconfMountPoint =
-                        mountPointService.getMountPoint(NETCONF_TOPOLOGY_IID
-                            .child(Node.class, new NodeKey(node.getNodeId())));
-
-                    if (netconfMountPoint.isPresent()) {
-                        final Optional<DataBroker> netconfDataBroker =
-                            netconfMountPoint.get().getService(DataBroker.class);
-                        if (netconfDataBroker.isPresent()) {
-                            try (final ReadTransaction netconfReadTx =
-                                         netconfDataBroker.get().newReadOnlyTransaction()) {
-                                final Optional<Toaster> toasterData = netconfReadTx
-                                        .read(LogicalDatastoreType.OPERATIONAL, TOASTER_IID)
-                                        .get(TIMEOUT, TimeUnit.SECONDS);
-
-                                if (toasterData.isPresent() && toasterData.get().getDarknessFactor() != null) {
-                                    nodeResponse = NetconfDeviceResponse.from(node, toasterData.get()
-                                            .getDarknessFactor().toJava());
-                                }
-                            }
-                        }
-                    }
-                    response.add(nodeResponse);
-                }
-
-            }
-            return ResponseEntity.ok(response);
+            netconfTopoOptional = tx.read(LogicalDatastoreType.OPERATIONAL, NETCONF_TOPOLOGY_IID)
+                    .get(TIMEOUT, TimeUnit.SECONDS);
         }
+
+        if (netconfTopoOptional.isPresent()) {
+            return ResponseEntity.ok(getNetconfDeviceResponse(netconfTopoOptional.get()));
+        }
+        return ResponseEntity.ok(Collections.emptyList());
+    }
+
+    private List<NetconfDeviceResponse> getNetconfDeviceResponse(final Topology netconfTopology)
+            throws InterruptedException, TimeoutException, ExecutionException {
+        final List<NetconfDeviceResponse> response = new ArrayList<>();
+        final Map<NodeKey, Node> netconfNode = netconfTopology.getNode();
+        final Map<NodeKey, Node> nodeMap = netconfNode != null ? netconfNode : Collections.emptyMap();
+
+        for (Node node : nodeMap.values()) {
+            NetconfDeviceResponse nodeResponse = NetconfDeviceResponse.from(node);
+            final Optional<MountPoint> netconfMountPoint = mountPointService.getMountPoint(NETCONF_TOPOLOGY_IID
+                    .child(Node.class, new NodeKey(node.getNodeId())));
+            if (netconfMountPoint.isPresent()) {
+                final Optional<DataBroker> netconfDataBroker = netconfMountPoint.get().getService(DataBroker.class);
+
+                if (netconfDataBroker.isPresent()) {
+                    final Optional<Toaster> toasterData;
+                    try (final ReadTransaction netconfReadTx = netconfDataBroker.get().newReadOnlyTransaction()) {
+                        toasterData = netconfReadTx.read(LogicalDatastoreType.OPERATIONAL, TOASTER_IID)
+                                .get(TIMEOUT, TimeUnit.SECONDS);
+                    }
+                    if (toasterData.isPresent() && toasterData.get().getDarknessFactor() != null) {
+                        nodeResponse = NetconfDeviceResponse.from(node, toasterData.get()
+                                .getDarknessFactor().toJava());
+                    }
+                }
+            }
+            response.add(nodeResponse);
+        }
+        return response;
     }
 
     @Secured({"ROLE_ADMIN"})
