@@ -6,22 +6,22 @@ on:
         description: Name of the application in `lighty-applications`
         required: true
       app-modules:
-        description: Name of the modules with format ':{module-name},...' required to build docker image, e.g.:":lighty-rnc-app,:lighty-rnc-app-docker,:lighty-rnc-module"
+        description: Name of the modules with format ':{module-name},...' required to build docker image, e.g. ":lighty-rnc-app,:lighty-rnc-app-docker,:lighty-rnc-module"
         required: true
       app-docker-pom-path:
-        description: Path to docker pom.xml file from repository root, e.g.:"lighty-applications/lighty-rnc-app-aggregator/lighty-rnc-app-docker/pom.xml"
+        description: Path to docker pom.xml file from repository root, e.g. "lighty-applications/lighty-rnc-app-aggregator/lighty-rnc-app-docker/pom.xml"
         required: true
       app-helm-values-path:
-        description: Path to Helm YAML values from repository root, e.g.:"lighty-applications/lighty-rnc-app-aggregator/lighty-rnc-app-helm/helm/lighty-rnc-app-helm/values.yaml"
+        description: Path to Helm YAML values from repository root, e.g. "lighty-applications/lighty-rnc-app-aggregator/lighty-rnc-app-helm/helm/lighty-rnc-app-helm/values.yaml"
         required: true
       app-helm-folder-path:
-        description: Path to Helm folder from repository root, e.g.:"lighty-applications/lighty-rnc-app-aggregator/lighty-rnc-app-helm/helm/"
+        description: Path to Helm folder from repository root, e.g. "lighty-applications/lighty-rnc-app-aggregator/lighty-rnc-app-helm/helm/"
         required: true
       image-name:
-        description: Desired NAME of docker image, e.g.:"lighty-rnc"
+        description: Desired NAME of docker image, e.g. "lighty-rnc"
         required: true
       version:
-        description: Desired version of published docker image & helm charts, e.g.:"14.0.0"
+        description: Desired version of published docker image & helm charts, e.g. "14.0.0"
         required: true
       image-tag-latest:
         description: Should be this docker labeled with tag latest? Enter `true` if the tag `latest` should be added for image.
