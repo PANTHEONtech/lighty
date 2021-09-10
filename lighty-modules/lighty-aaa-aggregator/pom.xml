@@ -4,7 +4,7 @@
 
     <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-aaa-aggregator</artifactId>
-    <version>14.2.1-SNAPSHOT</version>
+    <version>14.2.1</version>
     <packaging>pom</packaging>
 
     <properties>
