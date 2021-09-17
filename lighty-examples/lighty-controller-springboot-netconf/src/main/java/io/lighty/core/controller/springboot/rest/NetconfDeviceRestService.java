@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -31,7 +30,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.NetconfNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.NetconfNodeBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.netconf.node.credentials.credentials.LoginPasswordBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
@@ -89,18 +87,19 @@ public class NetconfDeviceRestService {
         }
 
         if (netconfTopoOptional.isPresent()) {
-            return ResponseEntity.ok(getNetconfDeviceResponse(netconfTopoOptional.get()));
+            return ResponseEntity.ok(getNetconfDevices(netconfTopoOptional.get()));
         }
         return ResponseEntity.ok(Collections.emptyList());
     }
 
-    private List<NetconfDeviceResponse> getNetconfDeviceResponse(final Topology netconfTopology)
+    private List<NetconfDeviceResponse> getNetconfDevices(final Topology netconfTopology)
             throws InterruptedException, TimeoutException, ExecutionException {
-        final List<NetconfDeviceResponse> response = new ArrayList<>();
-        final Map<NodeKey, Node> netconfNode = netconfTopology.getNode();
-        final Map<NodeKey, Node> nodeMap = netconfNode != null ? netconfNode : Collections.emptyMap();
+        final List<NetconfDeviceResponse> devices = new ArrayList<>();
+        final Map<NodeKey, Node> netconfNodes =
+                Optional.ofNullable(netconfTopology.getNode())
+                        .orElse(Collections.emptyMap());
 
-        for (Node node : nodeMap.values()) {
+        for (Node node : netconfNodes.values()) {
             NetconfDeviceResponse nodeResponse = NetconfDeviceResponse.from(node);
             final Optional<MountPoint> netconfMountPoint = mountPointService.getMountPoint(NETCONF_TOPOLOGY_IID
                     .child(Node.class, new NodeKey(node.getNodeId())));
@@ -119,9 +118,9 @@ public class NetconfDeviceRestService {
                     }
                 }
             }
-            response.add(nodeResponse);
+            devices.add(nodeResponse);
         }
-        return response;
+        return devices;
     }
 
     @Secured({"ROLE_ADMIN"})
