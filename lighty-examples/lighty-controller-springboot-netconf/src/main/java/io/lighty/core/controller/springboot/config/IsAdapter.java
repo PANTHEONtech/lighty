@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 public class IsAdapter implements Adapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(IsAdapter.class);
+    private static final String NOT_IMPLEMENTED = "not implemented";
 
     private final String classPath;
 
@@ -39,17 +40,17 @@ public class IsAdapter implements Adapter {
 
     @Override
     public void addPolicy(String sec, String ptype, List<String> rule) {
-        throw new Error("not implemented");
+        throw new Error(NOT_IMPLEMENTED);
     }
 
     @Override
     public void removePolicy(String sec, String ptype, List<String> rule) {
-        throw new Error("not implemented");
+        throw new Error(NOT_IMPLEMENTED);
     }
 
     @Override
     public void removeFilteredPolicy(String sec, String ptype, int fieldIndex, String... fieldValues) {
-        throw new Error("not implemented");
+        throw new Error(NOT_IMPLEMENTED);
     }
 
     private void loadPolicyClassPath(Model model, Helper.loadPolicyLineHandler<String, Model> handler) {
