@@ -105,7 +105,7 @@ public final class ControllerConfigUtils {
         }
         JsonNode controllerNode = configNode.path(CONTROLLER_CONFIG_ROOT_ELEMENT_NAME);
 
-        ControllerConfiguration controllerConfiguration = getControllerConfiguration(mapper, jsonPath, controllerNode);
+        ControllerConfiguration controllerConfiguration = parseControllerConfig(mapper, jsonPath, controllerNode);
 
         injectActorSystemConfigToControllerConfig(controllerConfiguration);
 
@@ -123,9 +123,9 @@ public final class ControllerConfigUtils {
         return controllerConfiguration;
     }
 
-    private static ControllerConfiguration getControllerConfiguration(final ObjectMapper mapper,
+    private static ControllerConfiguration parseControllerConfig(final ObjectMapper mapper,
             final StringBuilder jsonPath, final JsonNode controllerNode) throws ConfigurationException {
-        ControllerConfiguration controllerConfiguration;
+        final ControllerConfiguration controllerConfiguration;
         try {
             controllerConfiguration = mapper.treeToValue(controllerNode, ControllerConfiguration.class);
             if (controllerNode.has(DatastoreConfigurationUtils.DATASTORECTX_CONFIG_ROOT_ELEMENT_NAME)) {
@@ -151,12 +151,12 @@ public final class ControllerConfigUtils {
             if (controllerNode.has(SCHEMA_SERVICE_CONFIG_ELEMENT_NAME)) {
                 setModelsToControllerConfiguration(mapper, jsonPath, controllerNode, controllerConfiguration);
             } else {
-                throw new ConfigurationException(String.format("JSON controller config file is missing %s element!",
-                        jsonPath));
+                throw new ConfigurationException(
+                        String.format("JSON controller config file is missing %s element!", jsonPath));
             }
         } catch (JsonProcessingException e) {
-            throw new ConfigurationException(String.format("Cannot bind Json tree to type: %s",
-                    ControllerConfiguration.class), e);
+            throw new ConfigurationException(
+                    String.format("Cannot bind Json tree to type: %s", ControllerConfiguration.class), e);
         }
         return controllerConfiguration;
     }
@@ -181,8 +181,8 @@ public final class ControllerConfigUtils {
                 throw new ConfigurationException("Expected JSON array at " + jsonPath);
             }
         } else {
-            throw new ConfigurationException(String.format("JSON controller config file is missing %s element!",
-                    jsonPath));
+            throw new ConfigurationException(
+                    String.format("JSON controller config file is missing %s element!", jsonPath));
         }
     }
 
