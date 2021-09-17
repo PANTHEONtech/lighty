@@ -17,6 +17,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.sh
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.shiro.configuration.UrlsBuilder;
 
 public final class ShiroConfigurationConfig {
+
+    private static final String ROLES_ADMIN = "authcBasic, roles[admin]";
+
     private ShiroConfigurationConfig() {
 
     }
@@ -31,9 +34,9 @@ public final class ShiroConfigurationConfig {
         mains.add(initMain("dynamicAuthorization", "org.opendaylight.aaa.shiro.realm.MDSALDynamicAuthorizationFilter"));
 
         final List<Urls> urls = new ArrayList<>();
-        urls.add(initUrl("/operations/cluster-admin**", "authcBasic, roles[admin]"));
-        urls.add(initUrl("/v1/**", "authcBasic, roles[admin]"));
-        urls.add(initUrl("/config/aaa*/**", "authcBasic, roles[admin]"));
+        urls.add(initUrl("/operations/cluster-admin**", ROLES_ADMIN));
+        urls.add(initUrl("/v1/**", ROLES_ADMIN));
+        urls.add(initUrl("/config/aaa*/**", ROLES_ADMIN));
         urls.add(initUrl("/**", "authcBasic"));
 
         return new ShiroConfigurationBuilder().setMain(mains).setUrls(urls).build();

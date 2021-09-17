@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 public final class YangModuleUtils {
     private static final Logger LOG = LoggerFactory.getLogger(YangModuleUtils.class);
+    private static final String ADDING_MODULE_INTO_KNOWN_MODULES = "Adding [{}] module into known modules";
 
     private YangModuleUtils() {
         throw new UnsupportedOperationException("do not instantiate utility class");
@@ -39,7 +40,7 @@ public final class YangModuleUtils {
         ServiceLoader<YangModelBindingProvider> yangProviderLoader = ServiceLoader.load(YangModelBindingProvider.class);
         for (YangModelBindingProvider yangModelBindingProvider : yangProviderLoader) {
             moduleInfos.add(yangModelBindingProvider.getModuleInfo());
-            LOG.info("Adding [{}] module into known modules", yangModelBindingProvider.getModuleInfo());
+            LOG.info(ADDING_MODULE_INTO_KNOWN_MODULES, yangModelBindingProvider.getModuleInfo());
         }
         return Collections.unmodifiableSet(moduleInfos);
     }
@@ -91,7 +92,7 @@ public final class YangModuleUtils {
             Set<YangModuleInfo> filteredSet = filterYangModelBindingProviders(moduleId, yangProviderLoader);
             for (YangModuleInfo yangModuleInfo : filteredSet) {
                 resolvedModules.put(ModuleId.from(yangModuleInfo), yangModuleInfo);
-                LOG.info("Adding [{}] module into known modules", yangModuleInfo);
+                LOG.info(ADDING_MODULE_INTO_KNOWN_MODULES, yangModuleInfo);
                 addDependencies(resolvedModules, yangModuleInfo.getImportedModules());
             }
         }
@@ -103,7 +104,7 @@ public final class YangModuleUtils {
             final Collection<YangModuleInfo> importedModules) {
         for (YangModuleInfo yangModuleInfo : importedModules) {
             resolvedModules.put(ModuleId.from(yangModuleInfo), yangModuleInfo);
-            LOG.info("Adding [{}] module into known modules", yangModuleInfo);
+            LOG.info(ADDING_MODULE_INTO_KNOWN_MODULES, yangModuleInfo);
             addDependencies(resolvedModules, yangModuleInfo.getImportedModules());
         }
     }
