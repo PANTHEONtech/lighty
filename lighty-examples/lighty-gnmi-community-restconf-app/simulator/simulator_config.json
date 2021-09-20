@@ -1,0 +1,13 @@
+{
+  "gnmi_simulator":{
+    "targetAddress": "127.0.0.1",
+    "targetPort": 10161,
+    "certPath": "../../../../../lighty-examples/lighty-gnmi-community-restconf-app/src/main/resources/certificates/server.crt",
+    "certKeyPath": "../../../../../lighty-examples/lighty-gnmi-community-restconf-app/src/main/resources/certificates/server-pkcs8.key",
+    "initialConfigDataPath": "../../../../../lighty-examples/lighty-gnmi-community-restconf-app/src/main/resources/simulator/initialJsonData.json",
+    "initialStateDataPath": "../../../../../lighty-examples/lighty-gnmi-community-restconf-app/src/main/resources/simulator/initialJsonData.json",
+    "yangsPath": "../../../../../lighty-examples/lighty-gnmi-community-restconf-app/src/main/resources/yangs",
+    "username": "admin",
+    "password": "admin"
+  }
+}
