@@ -46,10 +46,6 @@
         </dependency>
         <dependency>
             <groupId>io.lighty.core</groupId>
-            <artifactId>lighty-codecs</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.lighty.core</groupId>
             <artifactId>lighty-codecs-util</artifactId>
         </dependency>
         <dependency>
