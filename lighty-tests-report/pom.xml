@@ -25,12 +25,10 @@
         <dependency>
             <groupId>io.lighty.applications.rnc</groupId>
             <artifactId>lighty-rnc-app</artifactId>
-            <version>15.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.applications.rnc</groupId>
             <artifactId>lighty-rnc-module</artifactId>
-            <version>15.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.applications.rcgnmi</groupId>
@@ -53,7 +51,6 @@
         <dependency>
             <groupId>io.lighty.core</groupId>
             <artifactId>lighty-codecs-util</artifactId>
-            <version>15.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.core</groupId>
@@ -78,29 +75,24 @@
         <dependency>
             <groupId>io.lighty.kit.examples.controllers</groupId>
             <artifactId>lighty-community-aaa-restconf-app</artifactId>
-            <version>15.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.kit.examples.controllers</groupId>
             <artifactId>lighty-community-restconf-netconf-app</artifactId>
-            <version>15.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.core</groupId>
             <artifactId>lighty-controller-springboot</artifactId>
-            <version>15.0.0-SNAPSHOT</version>
         </dependency>
 
         <!-- Modules -->
         <dependency>
             <groupId>io.lighty.modules.tests</groupId>
             <artifactId>integration-tests</artifactId>
-            <version>15.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.modules.tests</groupId>
             <artifactId>integration-tests-aaa</artifactId>
-            <version>15.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.modules</groupId>
@@ -167,7 +159,7 @@
                         </goals>
                         <configuration>
                             <dataFileIncludes>target/jacoco.exec</dataFileIncludes>
-                            <outputDirectory>target/site/jacoco-aggregate</outputDirectory>
+                            <outputDirectory>target/site/jacoco-report</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
