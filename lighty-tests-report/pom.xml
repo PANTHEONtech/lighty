@@ -7,11 +7,11 @@
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-parent</artifactId>
         <version>15.0.0-SNAPSHOT</version>
-        <relativePath>../../lighty-core/lighty-parent</relativePath>
+        <relativePath>../lighty-core/lighty-parent</relativePath>
     </parent>
 
-    <groupId>io.lighty.tests.report.aggregator</groupId>
-    <artifactId>test-report-aggregator</artifactId>
+    <groupId>io.lighty.tests.report</groupId>
+    <artifactId>lighty-tests-report</artifactId>
 
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
