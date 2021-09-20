@@ -4,9 +4,9 @@ Application works as standalone SDN controller. It is capable to connect to gNMI
 over RESTCONF north-bound APIs. In this application gNMI simulator starts as gNMI target and all operations performs
 on this device.
 
-Application lighty.io gNMI/RESTCONF is pre-prepared with [Openconfig YANG models](src/main/resources/yangs).
+Application lighty.io gNMI/RESTCONF is pre-prepared with [Openconfig YANG models](yangs).
 These models are used by both gNMI application and gNMI device simulator. Device has already prepared state/config data
-configured by [this](src/main/resources/simulator/initialJsonData.json) json file.
+configured by [this](simulator/initialJsonData.json) json file.
 For communication with gNMI device there is required to use TLS communication with certificates and authorized
 by username and password.
 
@@ -42,7 +42,7 @@ When lighty build is successfully finished, unzip lighty-rcgnmi-app.
 cd lighty/lighty-applications/lighty-rcgnmi-app-aggregator/lighty-rcgnmi-app/target
 unzip lighty-rcgnmi-app-14.0.1-SNAPSHOT-bin.zip
 ```
-Start application with pre-prepared configuration [example_config.json](src/main/resources/example_config.json)
+Start application with pre-prepared configuration [example_config.json](example_config.json)
 ```
 cd lighty-rcgnmi-app-14.0.1-SNAPSHOT
  ./start-controller.sh -c [PATH_TO_EXAMPLE_CONFIG.JSON]
@@ -54,7 +54,7 @@ Go to lighty gNMI simulator folder and unzip gNMI simulator app.
 cd lighty/lighty-modules/lighty-gnmi/lighty-gnmi-device-simulator/target
 unzip lighty-gnmi-device-simulator-14.0.1-SNAPSHOT-bin.zip
 ```
-Start the application with pre-prepared configuration [simulator_config.json](src/main/resources/simulator/simulator_config.json)
+Start the application with pre-prepared configuration [simulator_config.json](simulator/simulator_config.json)
 ```
 cd lighty-gnmi-device-simulator-14.0.1-SNAPSHOT
  ./start-controller.sh -c [PATH_TO_SIMULATOR_CONFIG.json]
