@@ -9,7 +9,6 @@
 package io.lighty.core.controller.springboot.rest;
 
 import io.lighty.core.controller.springboot.utils.Utils;
-import java.util.Map;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
@@ -65,16 +64,14 @@ public class TopologyRestService {
             final Optional<NetworkTopology> readData =
                     tx.read(LogicalDatastoreType.OPERATIONAL, iid).get(TIMEOUT, TimeUnit.SECONDS);
 
-            if (readData.isPresent()) {
-                Map<TopologyKey, Topology> topologyMap = readData.get().getTopology();
-                if (topologyMap != null) {
-                    final List<String> topology = topologyMap.values().stream()
-                            .map(topology1 -> topology1.getTopologyId().getValue())
-                            .collect(Collectors.toList());
-                    return ResponseEntity.ok(topology);
-                }
+            if (readData.isPresent() && readData.get().getTopology() != null) {
+                final List<String> topology = readData.get().getTopology().values().stream()
+                        .map(topology1 -> topology1.getTopologyId().getValue())
+                        .collect(Collectors.toList());
+                return ResponseEntity.ok(topology);
+            } else {
+                return ResponseEntity.ok(Collections.emptyList());
             }
-            return ResponseEntity.ok(Collections.emptyList());
         }
     }
 

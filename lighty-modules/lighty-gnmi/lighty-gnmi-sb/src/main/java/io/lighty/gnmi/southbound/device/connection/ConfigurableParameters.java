@@ -10,12 +10,9 @@ package io.lighty.gnmi.southbound.device.connection;
 
 import gnmi.Gnmi;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.force.capabilities.rev210702.ForceCapabilities;
-import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.force.capabilities.rev210702.force.yang.models.ForceCapability;
-import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.force.capabilities.rev210702.force.yang.models.ForceCapabilityKey;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.connection.parameters.ExtensionsParameters;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.connection.parameters.extensions.parameters.GnmiParameters;
 
@@ -64,18 +61,15 @@ public class ConfigurableParameters {
     }
 
     private Optional<List<Gnmi.ModelData>> loadModelDataList() {
-        if (forceCapabilities != null) {
-            final Map<ForceCapabilityKey, ForceCapability> forceCapability = forceCapabilities.getForceCapability();
-            if (forceCapability != null) {
-                return Optional.of(forceCapability
-                        .entrySet()
-                        .stream()
-                        .map(model -> model.getValue())
-                        .map(model -> Gnmi.ModelData.newBuilder()
-                                .setName(model.getName())
-                                .setVersion(model.getVersion().getValue()).build())
-                        .collect(Collectors.toList()));
-            }
+        if (forceCapabilities != null && forceCapabilities.getForceCapability() != null) {
+            return Optional.of(forceCapabilities.getForceCapability()
+                .entrySet()
+                .stream()
+                .map(model -> model.getValue())
+                .map(model -> Gnmi.ModelData.newBuilder()
+                    .setName(model.getName())
+                    .setVersion(model.getVersion().getValue()).build())
+                .collect(Collectors.toList()));
         }
         return Optional.empty();
     }
