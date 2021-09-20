@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Pantheon Technologies s.r.o. All Rights Reserved.
+ * Copyright (c) 2018 PANTHEON.tech s.r.o. All Rights Reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -28,7 +28,7 @@ public final class RestConfConfigUtils {
 
     public static final String RESTCONF_CONFIG_ROOT_ELEMENT_NAME = "restconf";
     public static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104
                     .$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126
                     .$YangModuleInfoImpl.getInstance(),

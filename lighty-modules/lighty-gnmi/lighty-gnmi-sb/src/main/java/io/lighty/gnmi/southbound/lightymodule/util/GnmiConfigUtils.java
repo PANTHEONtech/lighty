@@ -11,7 +11,6 @@ package io.lighty.gnmi.southbound.lightymodule.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableSet;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
 import java.io.IOException;
@@ -25,7 +24,7 @@ public final class GnmiConfigUtils {
     private static final Logger LOG = LoggerFactory.getLogger(GnmiConfigUtils.class);
 
     public static final String GNMI_CONFIG_JSON_ROOT_ELEMENT = "gnmi";
-    public static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
+    public static final Set<YangModuleInfo> YANG_MODELS = Set.of(
             org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.$YangModuleInfoImpl.getInstance()

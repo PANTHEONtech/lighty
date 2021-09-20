@@ -79,7 +79,12 @@ public class GnmiConnectionITTest extends GnmiITBase {
         + "                        \"host\": \"" + DEVICE_IP + "\",\n"
         + "                        \"port\": " + DEVICE_PORT + ",\n"
         + "                        \"connection-type\": \"INSECURE\"\n"
-        + "                    }\n"
+        + "                    },\n"
+        + "                    \"extensions-parameters\": {\n"
+        + "                        \"gnmi-parameters\": {\n"
+        + "                            \"use-model-name-prefix\": true\n"
+        + "                        }\n"
+        + "                    }"
         + "                },\n"
         + "                {\n"
         + "                    \"node-id\": \"" + ANOTHER_GNMI_NODE_ID + "\",\n"
@@ -87,7 +92,12 @@ public class GnmiConnectionITTest extends GnmiITBase {
         + "                        \"host\": \"" + DEVICE_IP + "\",\n"
         + "                        \"port\": " + ANOTHER_DEVICE_PORT + ",\n"
         + "                        \"connection-type\": \"INSECURE\"\n"
-        + "                    }\n"
+        + "                    },\n"
+        + "                    \"extensions-parameters\": {\n"
+        + "                        \"gnmi-parameters\": {\n"
+        + "                            \"use-model-name-prefix\": true\n"
+        + "                        }\n"
+        + "                    }"
         + "                }]\n"
         + "        }]\n"
         + "}";
@@ -169,7 +179,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
 
     @Test
     public void connectDeviceCorrectlyTest()
-        throws InterruptedException, IOException, ExecutionException, TimeoutException {
+            throws InterruptedException, IOException, ExecutionException, TimeoutException, JSONException {
         //assert existing and empty gnmi topology
         final HttpResponse<String> getGnmiTopologyResponse = sendGetRequestJSON(GNMI_TOPOLOGY_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, getGnmiTopologyResponse.statusCode());
@@ -215,7 +225,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
         final String nodeIdFromTopology = new JSONObject(getGnmiTopologyUpdatedResponse.body())
             .getJSONArray("network-topology:topology").getJSONObject(0)
             .getJSONArray("node").getJSONObject(0).getString("node-id");
-        assertEquals(nodeIdFromTopology, GNMI_NODE_ID);
+        assertEquals(GNMI_NODE_ID, nodeIdFromTopology);
 
         //assert disconnected device
         assertTrue(disconnectDevice(GNMI_NODE_ID));
@@ -223,7 +233,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
 
     @Test
     public void connectDeviceWithForceCapabilityAndModelTest()
-        throws InterruptedException, IOException, ExecutionException, TimeoutException {
+            throws InterruptedException, IOException, ExecutionException, TimeoutException, JSONException {
         final HttpResponse<String> getGnmiTopologyResponse = sendGetRequestJSON(GNMI_TOPOLOGY_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, getGnmiTopologyResponse.statusCode());
         final JSONArray topologies =
@@ -251,7 +261,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
                 assertEquals(HttpURLConnection.HTTP_OK, capabilitiesResponse.statusCode());
                 final JSONArray gnmiDeviceCapabilities = new JSONObject(capabilitiesResponse.body())
                     .getJSONObject("gnmi-topology:available-capabilities").getJSONArray("available-capability");
-                assertTrue(gnmiDeviceCapabilities.toString().equals(EXPECTED_CAPABILITY));
+                assertEquals(EXPECTED_CAPABILITY, gnmiDeviceCapabilities.toString());
             });
 
         //assert disconnected device
@@ -260,7 +270,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
 
     @Test
     public void connectDeviceWithForceCapabilityWithNotImportedYangModelTest()
-        throws InterruptedException, IOException, ExecutionException, TimeoutException {
+            throws InterruptedException, IOException, ExecutionException, TimeoutException, JSONException {
         final HttpResponse<String> getGnmiTopologyResponse = sendGetRequestJSON(GNMI_TOPOLOGY_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, getGnmiTopologyResponse.statusCode());
         final JSONArray topologies =
@@ -294,7 +304,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
                 final String gnmiDeviceFailureDetails =
                     new JSONObject(capabilitiesResponse.body()).getJSONObject(nodeState).getString(
                         "failure-details");
-                assertTrue(gnmiDeviceConnectStatus.equals("FAILURE"));
+                assertEquals("FAILURE", gnmiDeviceConnectStatus);
                 assertTrue(gnmiDeviceFailureDetails.contains(modelName));
             });
 
@@ -304,7 +314,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
 
     @Test
     public void connectDeviceIncorrectlyTest()
-        throws InterruptedException, IOException, ExecutionException, TimeoutException {
+            throws InterruptedException, IOException, ExecutionException, TimeoutException, JSONException {
         //assert existing and empty gnmi topology
         final HttpResponse<String> getGnmiTopologyResponse = sendGetRequestJSON(GNMI_TOPOLOGY_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, getGnmiTopologyResponse.statusCode());
@@ -374,7 +384,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
 
     @Test
     public void connectMultipleDevicesTest()
-        throws IOException, InterruptedException, ExecutionException, TimeoutException {
+            throws IOException, InterruptedException, ExecutionException, TimeoutException, JSONException {
         //assert existing and empty gnmi topology
         final HttpResponse<String> getGnmiTopologyResponse = sendGetRequestJSON(GNMI_TOPOLOGY_PATH);
         final JSONArray topologies =
@@ -480,7 +490,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
 
     @Test
     public void reconnectIncorrectlyConnectedDeviceTest()
-        throws IOException, InterruptedException, ExecutionException, TimeoutException {
+            throws IOException, InterruptedException, ExecutionException, TimeoutException, JSONException {
         //assert existing and empty gnmi topology
         final HttpResponse<String> getGnmiTopologyResponse = sendGetRequestJSON(GNMI_TOPOLOGY_PATH);
         final JSONArray topologies =
@@ -558,7 +568,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
 
     @Test
     public void connectDeviceWithIncorrectCredentialsTest()
-        throws IOException, InterruptedException, ExecutionException, TimeoutException {
+            throws IOException, InterruptedException, ExecutionException, TimeoutException, JSONException {
         //assert existing and empty gnmi topology
         final HttpResponse<String> getGnmiTopologyResponse = sendGetRequestJSON(GNMI_TOPOLOGY_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, getGnmiTopologyResponse.statusCode());
@@ -614,7 +624,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
 
     @Test
     public void connectDeviceWithMissingEncodingTest()
-            throws IOException, InterruptedException, ExecutionException, TimeoutException {
+            throws IOException, InterruptedException, ExecutionException, TimeoutException, JSONException {
         //assert existing and empty gnmi topology
         final HttpResponse<String> getGnmiTopologyResponse = sendGetRequestJSON(GNMI_TOPOLOGY_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, getGnmiTopologyResponse.statusCode());

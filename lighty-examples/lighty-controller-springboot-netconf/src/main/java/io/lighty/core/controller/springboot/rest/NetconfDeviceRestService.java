@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Pantheon Technologies s.r.o. All Rights Reserved.
+ * Copyright (c) 2018 PANTHEON.tech s.r.o. All Rights Reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -31,7 +30,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.NetconfNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.NetconfNodeBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.netconf.node.credentials.credentials.LoginPasswordBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
@@ -79,46 +77,50 @@ public class NetconfDeviceRestService {
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @GetMapping(path = "/list")
-    public ResponseEntity getNetconfDevicesIds(Authentication authentication) throws InterruptedException, ExecutionException, TimeoutException {
+    public ResponseEntity getNetconfDevicesIds(Authentication authentication) throws InterruptedException,
+            ExecutionException, TimeoutException {
         Utils.logUserData(LOG, authentication);
+        final Optional<Topology> netconfTopoOptional;
         try (final ReadTransaction tx = dataBroker.newReadOnlyTransaction()) {
-            final Optional<Topology> netconfTopoOptional =
-                tx.read(LogicalDatastoreType.OPERATIONAL, NETCONF_TOPOLOGY_IID).get(TIMEOUT, TimeUnit.SECONDS);
-            final List<NetconfDeviceResponse> response = new ArrayList<>();
-
-            if (netconfTopoOptional.isPresent()){
-                final Map<NodeKey, Node> netconfNode = netconfTopoOptional.get().getNode();
-                final Map<NodeKey, Node> nodeMap = netconfNode != null ? netconfNode : Collections.emptyMap();
-                for (Node node : nodeMap.values()) {
-                    NetconfDeviceResponse nodeResponse = NetconfDeviceResponse.from(node);
-
-                    final Optional<MountPoint> netconfMountPoint =
-                        mountPointService.getMountPoint(NETCONF_TOPOLOGY_IID
-                            .child(Node.class, new NodeKey(node.getNodeId())));
-
-                    if (netconfMountPoint.isPresent()) {
-                        final Optional<DataBroker> netconfDataBroker =
-                            netconfMountPoint.get().getService(DataBroker.class);
-                        if (netconfDataBroker.isPresent()) {
-                            try (final ReadTransaction netconfReadTx =
-                                         netconfDataBroker.get().newReadOnlyTransaction()) {
-                                final Optional<Toaster> toasterData = netconfReadTx
-                                        .read(LogicalDatastoreType.OPERATIONAL, TOASTER_IID)
-                                        .get(TIMEOUT, TimeUnit.SECONDS);
-
-                                if (toasterData.isPresent() && toasterData.get().getDarknessFactor() != null) {
-                                    nodeResponse = NetconfDeviceResponse.from(node, toasterData.get()
-                                            .getDarknessFactor().toJava());
-                                }
-                            }
-                        }
-                    }
-                    response.add(nodeResponse);
-                }
-
-            }
-            return ResponseEntity.ok(response);
+            netconfTopoOptional = tx.read(LogicalDatastoreType.OPERATIONAL, NETCONF_TOPOLOGY_IID)
+                    .get(TIMEOUT, TimeUnit.SECONDS);
         }
+
+        if (netconfTopoOptional.isPresent()) {
+            return ResponseEntity.ok(getNetconfDevices(netconfTopoOptional.get()));
+        }
+        return ResponseEntity.ok(Collections.emptyList());
+    }
+
+    private List<NetconfDeviceResponse> getNetconfDevices(final Topology netconfTopology)
+            throws InterruptedException, TimeoutException, ExecutionException {
+        final List<NetconfDeviceResponse> devices = new ArrayList<>();
+        final Map<NodeKey, Node> netconfNodes =
+                Optional.ofNullable(netconfTopology.getNode())
+                        .orElse(Collections.emptyMap());
+
+        for (Node node : netconfNodes.values()) {
+            NetconfDeviceResponse nodeResponse = NetconfDeviceResponse.from(node);
+            final Optional<MountPoint> netconfMountPoint = mountPointService.getMountPoint(NETCONF_TOPOLOGY_IID
+                    .child(Node.class, new NodeKey(node.getNodeId())));
+            if (netconfMountPoint.isPresent()) {
+                final Optional<DataBroker> netconfDataBroker = netconfMountPoint.get().getService(DataBroker.class);
+
+                if (netconfDataBroker.isPresent()) {
+                    final Optional<Toaster> toasterData;
+                    try (final ReadTransaction netconfReadTx = netconfDataBroker.get().newReadOnlyTransaction()) {
+                        toasterData = netconfReadTx.read(LogicalDatastoreType.OPERATIONAL, TOASTER_IID)
+                                .get(TIMEOUT, TimeUnit.SECONDS);
+                    }
+                    if (toasterData.isPresent() && toasterData.get().getDarknessFactor() != null) {
+                        nodeResponse = NetconfDeviceResponse.from(node, toasterData.get()
+                                .getDarknessFactor().toJava());
+                    }
+                }
+            }
+            devices.add(nodeResponse);
+        }
+        return devices;
     }
 
     @Secured({"ROLE_ADMIN"})

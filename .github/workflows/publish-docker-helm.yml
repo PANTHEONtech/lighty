@@ -3,15 +3,25 @@ on:
   workflow_dispatch:
     inputs:
       app-name:
-        description: Name of the application in /lighty-applications
-        default: lighty-rnc
+        description: Name of the application in `lighty-applications`
+        required: true
+      app-modules:
+        description: Name of the modules with format ':{module-name},...' required to build docker image, e.g. ":lighty-rnc-app,:lighty-rnc-app-docker,:lighty-rnc-module"
+        required: true
+      app-docker-pom-path:
+        description: Path to docker pom.xml file from repository root, e.g. "lighty-applications/lighty-rnc-app-aggregator/lighty-rnc-app-docker/pom.xml"
+        required: true
+      app-helm-values-path:
+        description: Path to Helm YAML values from repository root, e.g. "lighty-applications/lighty-rnc-app-aggregator/lighty-rnc-app-helm/helm/lighty-rnc-app-helm/values.yaml"
+        required: true
+      app-helm-folder-path:
+        description: Path to Helm folder from repository root, e.g. "lighty-applications/lighty-rnc-app-aggregator/lighty-rnc-app-helm/helm/"
         required: true
       image-name:
-        description: Desired NAME of docker image
-        default: lighty-rnc
+        description: Desired NAME of docker image, e.g. "lighty-rnc"
         required: true
       version:
-        description: Desired version of published docker image & helm charts
+        description: Desired version of published docker image & helm charts, e.g. "14.0.0"
         required: true
       image-tag-latest:
         description: Should be this docker labeled with tag latest? Enter `true` if the tag `latest` should be added for image.
@@ -28,7 +38,6 @@ jobs:
       run:
         shell: bash
     env:
-      app-aggregator-dir: lighty-applications/${{ github.event.inputs.app-name }}-app-aggregator
       PUBLISH_ACCESS_KEY: ${{ secrets.MM_PKG_WRITE }}
     name: "Publish docker image and helm chart. App: ${{ github.event.inputs.app-name }}, Checkout-ref: ${{ github.event.inputs.checkout-ref }}"
     steps:
@@ -57,10 +66,10 @@ jobs:
           echo "DOCKER_IMAGE_NAME=$(echo $DOCKER_IMAGE_NAME)" >> $GITHUB_ENV
           echo "DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME_TAG)" >> $GITHUB_ENV
       - name: Build docker image
-        run: mvn install -B -pl :${{ github.event.inputs.app-name }}-module,:${{ github.event.inputs.app-name }}-app,:${{ github.event.inputs.app-name }}-app-docker -P docker
+        run: mvn install -B -pl ${{ github.event.inputs.app-modules }} -P docker
       - name: Tag image
         run: |
-          image_name=$(mvn help:evaluate -f ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-app-docker/pom.xml -Dexpression=image.name -q -DforceStdout)
+          image_name=$(mvn help:evaluate -f ${{ github.event.inputs.app-docker-pom-path }} -Dexpression=image.name -q -DforceStdout)
           docker tag $image_name $DOCKER_IMAGE_NAME_TAG
           if [ "${{ github.event.inputs.image-tag-latest }}" = 'true' ]; then
             docker tag $image_name $DOCKER_IMAGE_NAME:latest
@@ -87,16 +96,16 @@ jobs:
           sudo snap install yq
       - name: Set image.name, image.version in values.yaml of helm chart
         run: |
-          yq eval '.image.name="ghcr.io/pantheontech/${{ github.event.inputs.image-name }}" | .image.version="${{ github.event.inputs.version }}"' ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-app-helm/helm/${{ github.event.inputs.app-name }}-app-helm/values.yaml -i
+          yq eval '.image.name="ghcr.io/pantheontech/${{ github.event.inputs.image-name }}" | .image.version="${{ github.event.inputs.version }}"' ${{ github.event.inputs.app-helm-values-path }} -i
       - name: Print values.yaml
         run: |
-          cat -A ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-app-helm/helm/${{ github.event.inputs.app-name }}-app-helm/values.yaml
+          cat -A ${{ github.event.inputs.app-helm-values-path }}
       - name: "Publish Helm chart to Helm repository (Version: ${{ github.event.inputs.version }} )"
         if: ${{ github.event.inputs.version != '' }}
         uses: stefanprodan/helm-gh-pages@master
         with:
           token: ${{ env.PUBLISH_ACCESS_KEY }}
-          charts_dir: ${{ env.app-aggregator-dir}}/${{ github.event.inputs.app-name }}-app-helm/helm/
+          charts_dir: ${{ github.event.inputs.app-helm-folder-path }}
           charts_url: https://pantheontech.github.io/helm-charts/
           repository: helm-charts
           branch: main

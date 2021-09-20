@@ -102,7 +102,7 @@ public class KeystoreGnmiSecurityProvider implements GnmiSecurityProvider {
             return new PKIUtil().decodePrivateKey(
                     new StringReader(this.certService
                             .decrypt(clientKey)
-                            .replaceAll("\\\\n", "\n")),
+                            .replace("\\\\n", "\n")),
                     this.certService.decrypt(passphrase));
         } catch (IOException e) {
             throw new SessionSecurityException("Error while creating KeyPair from private key and passphrase", e);

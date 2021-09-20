@@ -32,7 +32,7 @@ data:
                 "topLevelModels":[
                     { "nameSpace": "urn:opendaylight:params:xml:ns:yang:mdsal:core:general-entity", "name": "odl-general-entity", "revision": "2015-09-30" },
                     { "nameSpace": "urn:opendaylight:callhome:device-status", "name": "callhome-status", "revision": "2017-01-12" },
-                    { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-library", "name": "ietf-yang-library", "revision": "2016-04-09" },
+                    { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-library", "name": "ietf-yang-library", "revision": "2019-01-04" },
                     { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-restconf-monitoring", "name": "ietf-restconf-monitoring", "revision": "2017-01-26" },
                     { "nameSpace": "urn:opendaylight:params:xml:ns:yang:aaa", "name": "aaa", "revision": "2016-12-14" },
                     { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-types", "name": "ietf-yang-types", "revision": "2010-09-24" },
@@ -43,7 +43,6 @@ data:
                     { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:clustering:entity-owners", "name": "entity-owners", "revision": "2015-08-04" },
                     { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-access-control-list", "name": "ietf-access-control-list", "revision": "2016-02-18" },
                     { "nameSpace": "config:aaa:authn:encrypt:service:config", "name": "aaa-encrypt-service-config", "revision": "2016-09-15" },
-                    { "nameSpace": "urn:TBD:params:xml:ns:yang:network:isis-topology", "name": "isis-topology", "revision": "2013-10-21" },
                     { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-lisp-address-types", "name": "ietf-lisp-address-types", "revision": "2015-11-05" },
                     { "nameSpace": "urn:opendaylight:netconf:topology:singleton:config", "name": "netconf-clustered-topology-config", "revision": "2017-04-19" },
                     { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring-extension", "name": "ietf-netconf-monitoring-extension", "revision": "2013-12-10" },
@@ -54,8 +53,6 @@ data:
                     { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:dom:pingpong", "name": "opendaylight-pingpong-broker", "revision": "2014-11-07" },
                     { "nameSpace": "urn:sal:restconf:event:subscription", "name": "sal-remote-augment", "revision": "2014-07-08" },
                     { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:netty", "name": "netty", "revision": "2013-11-19" },
-                    { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-library", "name": "ietf-yang-library", "revision": "2016-06-21" },
-                    { "nameSpace": "urn:ietf:params:xml:ns:yang:ospf-topology", "name": "ospf-topology", "revision": "2013-07-12" },
                     { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-netconf-notifications", "name": "ietf-netconf-notifications", "revision": "2012-02-06" },
                     { "nameSpace": "urn:opendaylight:netconf:keystore", "name": "netconf-keystore", "revision": "2017-10-17" },
                     { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-restconf", "name": "ietf-restconf", "revision": "2013-10-19" },
@@ -71,9 +68,7 @@ data:
                     { "nameSpace": "urn:ietf:params:xml:ns:netmod:notification", "name": "nc-notifications", "revision": "2008-07-14" },
                     { "nameSpace": "urn:opendaylight:l2:types", "name": "opendaylight-l2-types", "revision": "2013-08-27" },
                     { "nameSpace": "urn:opendaylight:aaa:app:config", "name": "aaa-app-config", "revision": "2017-06-19" },
-                    { "nameSpace": "urn:TBD:params:xml:ns:yang:network:isis-topology", "name": "isis-topology", "revision": "2013-07-12" },
                     { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:distributed-datastore-provider", "name": "distributed-datastore-provider", "revision": "2014-06-12" },
-                    { "nameSpace": "urn:TBD:params:xml:ns:yang:ospf-topology", "name": "ospf-topology", "revision": "2013-10-21" },
                     { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:legacy-entity-ownership-service-provider", "name": "opendaylight-legacy-entity-ownership-service-provider", "revision": "2016-02-26" }
                 ]
             }

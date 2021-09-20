@@ -7,15 +7,23 @@
   ~ and is available at https://www.eclipse.org/legal/epl-v10.html
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.lighty.models.gnmi</groupId>
     <artifactId>lighty-gnmi-models</artifactId>
-    <version>14.0.1-SNAPSHOT</version>
+    <version>14.2.2-SNAPSHOT</version>
     <packaging>pom</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>
+        The artifact contains models for lighty.io gNMI southbound module.
+    </description>
+
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.install.skip>true</maven.install.skip>
+    </properties>
 
     <modules>
         <module>lighty-gnmi-topology-model</module>
@@ -24,5 +32,4 @@
         <module>lighty-gnoi-sonic-yang-model</module>
         <module>lighty-gnmi-force-capabilities</module>
     </modules>
-
 </project>
