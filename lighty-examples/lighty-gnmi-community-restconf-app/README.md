@@ -31,37 +31,55 @@ app and [gNMI simulator](../../lighty-modules/lighty-gnmi/lighty-gnmi-device-sim
 perform basic CRUD operations on the gNMI device using RCgNMI app. All RESTCONF requests used in this
 example are provided in [postman-collection](lighty.io gNMI-RESTCONF application.postman_collection.json).
 
-Before starting the applications is required to build lighty with maven.
+Clone lighty repository and build it with maven. Then move to lighty-gnmi-community-restconf-app folder.
 ```
+git clone git@github.com:PANTHEONtech/lighty.git
+cd lighty
 mvn clean install
+cd lighty-examples/lighty-gnmi-community-restconf-app
 ```
 
 ### Start RCgNMI controller app
-When lighty build is successfully finished, unzip lighty-rcgnmi-app.
+Unzip lighty-rcgnmi-app to current location
 ```
-cd lighty/lighty-applications/lighty-rcgnmi-app-aggregator/lighty-rcgnmi-app/target
-unzip lighty-rcgnmi-app-14.0.1-SNAPSHOT-bin.zip
+unzip ../../lighty-applications/lighty-rcgnmi-app-aggregator/lighty-rcgnmi-app/target/lighty-rcgnmi-app-14.2.2-SNAPSHOT-bin.zip
 ```
-Start application with pre-prepared configuration [example_config.json](example_config.json)
+Start application with pre-prepared configuration [example_config.json](example_config.json).
 ```
-cd lighty-rcgnmi-app-14.0.1-SNAPSHOT
- ./start-controller.sh -c [PATH_TO_EXAMPLE_CONFIG.JSON]
+java -jar lighty-rcgnmi-app-14.2.2-SNAPSHOT/lighty-rcgnmi-app-14.2.2-SNAPSHOT.jar -c example_config.json
 ```
 
 ### Start lighty.io gNMI device simulator
-Go to lighty gNMI simulator folder and unzip gNMI simulator app.
+Unzip gNMI simulator app to current folder.
 ```
-cd lighty/lighty-modules/lighty-gnmi/lighty-gnmi-device-simulator/target
-unzip lighty-gnmi-device-simulator-14.0.1-SNAPSHOT-bin.zip
-```
-Start the application with pre-prepared configuration [simulator_config.json](simulator/simulator_config.json)
-```
-cd lighty-gnmi-device-simulator-14.0.1-SNAPSHOT
- ./start-controller.sh -c [PATH_TO_SIMULATOR_CONFIG.json]
+unzip ../../lighty-modules/lighty-gnmi/lighty-gnmi-device-simulator/target/lighty-gnmi-device-simulator-14.2.2-SNAPSHOT-bin.zip
 ```
 
+Start the application with pre-prepared configuration [simulator_config.json](simulator/simulator_config.json)
+```
+java -jar lighty-gnmi-device-simulator-14.2.2-SNAPSHOT/lighty-gnmi-device-simulator-14.2.2-SNAPSHOT.jar  -c simulator/simulator_config.json 
+```
+
+### Add client certificates to lighty.io gNMI keystore
+Certificates used in this example can be found [here](certificates). Only the client certificates are added
+to keystore with RPC. This RPC stores certificates in configuration data-store and encrypt their private key and passphrase.
+Adding required certificates for gNMI device to lighty.io gNMI application is performs by postman request `'Add Keystore'`.
+```
+curl --request POST 'http://127.0.0.1:8888/restconf/operations/gnmi-certificate-storage:add-keystore-certificate' \
+--header 'Content-Type: application/json' \
+--data-raw "{
+    \"input\": {
+        \"keystore-id\": \"keystore-id-1\",
+        \"ca-certificate\": \"$(cat certificates/ca.crt)\",
+        \"client-key\": \"$(cat certificates/client.key)\",
+        \"client-cert\": \"$(cat certificates/client.crt)\"
+    }
+}"
+```
+
+
 ### Connect simulator to controller
-Device connection is performed by request `'Connect device'`.
+Simulated gNMI device can be connected with `'Connect device'` request located in postman collection.
 ```
 curl --request PUT 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator' \
 --header 'Content-Type: application/json' \
@@ -108,7 +126,7 @@ curl --request GET 'http://127.0.0.1:8888/restconf/data/network-topology:network
 ```
 
 ### Write configuration to device
-In collection can be found PUT request example `'Put Authentication config/state'`.
+To write authentication data use PUT request example `'Put Authentication config/state'` in postman collection.
 ```
 curl --request PUT 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication' \
 --header 'Content-Type: application/json' \
@@ -130,7 +148,13 @@ curl --request PUT 'http://127.0.0.1:8888/restconf/data/network-topology:network
 This request replace data in `config` container, remove `admin-user` container and add new container `state`. All set request on
 gNMI simulator are applying into CONFIGURATION datastore. For view changed data, is required to sent request with
 `?content=nonconfig` query at the end of URL or execute request from postman collection `'Get Authentication from CONFIG'`.
+```
+curl --request GET 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication?content=config'
+```
 To view original data on STATE datastore send request `'Get Authentication from STATE'`.
+```
+curl --location --request GET 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication?content=nonconfig'
+```
 
 ### Update configuration on device
 For updating data send request `'Update config data'`. This request append new type to config authentication-method.
@@ -146,6 +170,9 @@ curl --request PATCH 'http://127.0.0.1:8888/restconf/data/network-topology:netwo
 }'
 ```
 To validate request send GET request `'Get Authentication from CONFIG'`.
+```
+curl --request GET 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication?content=config'
+```
 
 ### Delete configuration from device
 For deleting `config` container send request `'Delete authentication config'`.
@@ -153,6 +180,9 @@ For deleting `config` container send request `'Delete authentication config'`.
 curl --location --request DELETE 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication/config'
 ```
 To validate request send GET request `'Get Authentication from CONFIG'`.
+```
+curl --request GET 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication?content=config'
+```
 
 ### Disconnect the device from controller
 When is required restart of connection or removal of device, just send request `'Remove device'`.
