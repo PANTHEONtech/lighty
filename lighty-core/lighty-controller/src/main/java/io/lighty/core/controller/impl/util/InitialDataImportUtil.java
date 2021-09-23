@@ -8,9 +8,9 @@
 package io.lighty.core.controller.impl.util;
 
 import com.google.common.base.Preconditions;
-import io.lighty.codecs.JsonNodeConverter;
-import io.lighty.codecs.XmlNodeConverter;
-import io.lighty.codecs.api.SerializationException;
+import io.lighty.codecs.util.JsonNodeConverter;
+import io.lighty.codecs.util.SerializationException;
+import io.lighty.codecs.util.XmlNodeConverter;
 import io.lighty.core.controller.impl.config.ControllerConfiguration.InitialConfigData.ImportFileFormat;
 import java.io.IOException;
 import java.io.InputStream;

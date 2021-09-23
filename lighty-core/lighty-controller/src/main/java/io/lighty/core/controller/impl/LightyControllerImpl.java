@@ -11,7 +11,7 @@ import akka.actor.Terminated;
 import akka.management.javadsl.AkkaManagement;
 import com.google.common.base.Stopwatch;
 import com.typesafe.config.Config;
-import io.lighty.codecs.api.SerializationException;
+import io.lighty.codecs.util.SerializationException;
 import io.lighty.core.cluster.ClusteringHandler;
 import io.lighty.core.cluster.ClusteringHandlerProvider;
 import io.lighty.core.common.SocketAnalyzer;

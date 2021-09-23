@@ -37,7 +37,6 @@ _This branch maintains compatibility with __OpenDaylight Silicon,__ release._
 | [Swagger](/lighty-modules/lighty-swagger/) | | |
 
 ## Components
-* __lighty-codecs__ - Easy to use IO YANG data operations
 * __lighty-core__ - [OpenDaylight](https://www.opendaylight.org/) [core services](lighty-core/lighty-controller/README.md): MD-SAL, Controller, yangtools, Clustering
   - [google guice extension](lighty-core/lighty-controller-guice-di/README.md) - Dependency injection extension for [Google Guice](https://github.com/google/guice)
   - [spring extension](lighty-core/lighty-controller-spring-di/README.md) - Dependency injection extension for [spring.io](https://spring.io/)  
