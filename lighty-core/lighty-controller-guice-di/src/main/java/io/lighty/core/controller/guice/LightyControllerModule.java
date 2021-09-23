@@ -28,8 +28,6 @@ import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingService;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
@@ -81,10 +79,6 @@ public class LightyControllerModule extends AbstractModule {
         bind(DistributedDataStoreInterface.class)
                 .annotatedWith(Names.named("ControllerOperationalDatastore"))
                 .toInstance(lightyServices.getOperationalDatastore());
-        bind(DOMDataTreeShardingService.class)
-                .toInstance(lightyServices.getDOMDataTreeShardingService());
-        bind(DOMDataTreeService.class)
-                .toInstance(lightyServices.getDOMDataTreeService());
         bind(DistributedShardFactory.class)
                 .toInstance(lightyServices.getDistributedShardFactory());
         bind(BindingNormalizedNodeSerializer.class)
