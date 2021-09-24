@@ -61,7 +61,7 @@ public class ConfigurableParameters {
     }
 
     private Optional<List<Gnmi.ModelData>> loadModelDataList() {
-        if (forceCapabilities != null) {
+        if (forceCapabilities != null && forceCapabilities.getForceCapability() != null) {
             return Optional.of(forceCapabilities.getForceCapability()
                 .entrySet()
                 .stream()

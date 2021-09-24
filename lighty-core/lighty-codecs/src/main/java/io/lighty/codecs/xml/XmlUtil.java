@@ -47,35 +47,31 @@ public final class XmlUtil {
 
     public static final String XMLNS_ATTRIBUTE_KEY = "xmlns";
     public static final String XMLNS_URI = "http://www.w3.org/2000/xmlns/";
-    private static final DocumentBuilderFactory BUILDER_FACTORY;
     private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
 
-    static {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        try {
-            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-            factory.setXIncludeAware(false);
-            factory.setExpandEntityReferences(false);
-            // Performance improvement for messages with size <10k according to
-            // https://xerces.apache.org/xerces2-j/faq-performance.html
-            factory.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
-        } catch (final ParserConfigurationException e) {
-            throw new ExceptionInInitializerError(e);
-        }
-        factory.setNamespaceAware(true);
-        factory.setCoalescing(true);
-        factory.setIgnoringElementContentWhitespace(true);
-        factory.setIgnoringComments(true);
-        BUILDER_FACTORY = factory;
-    }
 
     public static final ThreadLocal<DocumentBuilder> DEFAULT_DOM_BUILDER = new ThreadLocal<>() {
         @Override
         protected DocumentBuilder initialValue() {
             try {
-                return BUILDER_FACTORY.newDocumentBuilder();
+                DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+                try {
+                    builderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+                    builderFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+                    builderFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+                    builderFactory.setXIncludeAware(false);
+                    builderFactory.setExpandEntityReferences(false);
+                    // Performance improvement for messages with size <10k according to
+                    // https://xerces.apache.org/xerces2-j/faq-performance.html
+                    builderFactory.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
+                } catch (final ParserConfigurationException e) {
+                    throw new ExceptionInInitializerError(e);
+                }
+                builderFactory.setNamespaceAware(true);
+                builderFactory.setCoalescing(true);
+                builderFactory.setIgnoringElementContentWhitespace(true);
+                builderFactory.setIgnoringComments(true);
+                return builderFactory.newDocumentBuilder();
             } catch (final ParserConfigurationException e) {
                 throw new IllegalStateException("Failed to create threadLocal dom builder", e);
             }
@@ -205,6 +201,8 @@ public final class XmlUtil {
         try {
             final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             schemaFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             return schemaFactory.newSchema(sources);
         } catch (final SAXException e) {
             throw new IllegalStateException("Failed to instantiate XML schema", e);
