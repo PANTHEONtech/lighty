@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcServiceAdapter;
 import org.opendaylight.openflowjava.protocol.api.connection.OpenflowDiagStatusProvider;
@@ -93,9 +93,9 @@ public class OpenflowSouthboundPlugin extends AbstractLightyModule {
      * @param frmConfigBuilder If is not provide, OFP start without FRM.
      * @param packetProcessingListener If is not provide, OFP will be handling packets arrived to controller by default.
      */
-    public OpenflowSouthboundPlugin(@Nonnull final LightyServices lightyServices,
-                                    @Nonnull final OpenflowProviderConfig openflowProviderConfig,
-                                    @Nonnull final List<SwitchConnectionProvider> providers,
+    public OpenflowSouthboundPlugin(@NonNull final LightyServices lightyServices,
+                                    @NonNull final OpenflowProviderConfig openflowProviderConfig,
+                                    @NonNull final List<SwitchConnectionProvider> providers,
                                     @Nullable final ExecutorService executorService,
                                     @Nullable final ForwardingRulesManagerConfigBuilder frmConfigBuilder,
                                     @Nullable final PacketProcessingListener packetProcessingListener) {
