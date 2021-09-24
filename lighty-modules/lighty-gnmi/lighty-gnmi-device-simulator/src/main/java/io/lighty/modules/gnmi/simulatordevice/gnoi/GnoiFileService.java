@@ -44,7 +44,7 @@ public class GnoiFileService extends FileGrpc.FileImplBase {
                     final StreamObserver<FileOuterClass.GetResponse> responseObserver) {
         LOG.info("Received get rpc: {}", request);
         try {
-            final MessageDigest md = MessageDigest.getInstance("MD5");
+            final MessageDigest md = MessageDigest.getInstance("SHA-512");
             readFileAndCompleteObserver(md, responseObserver);
         } catch (final NoSuchAlgorithmException e) {
             responseObserver.onError(e);

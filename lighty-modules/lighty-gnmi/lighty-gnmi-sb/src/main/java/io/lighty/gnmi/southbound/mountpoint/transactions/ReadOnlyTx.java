@@ -53,8 +53,7 @@ public class ReadOnlyTx implements DOMDataTreeReadTransaction {
 
     @Override
     public FluentFuture<Boolean> exists(LogicalDatastoreType store, YangInstanceIdentifier path) {
-        return read(store, path).transform(optResult -> optResult != null && optResult.isPresent(),
-                MoreExecutors.directExecutor());
+        return read(store, path).transform(Optional::isPresent, MoreExecutors.directExecutor());
     }
 
     @Override
