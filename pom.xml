@@ -27,6 +27,7 @@
         <module>lighty-models</module>
         <module>lighty-modules</module>
         <module>lighty-resources</module>
+        <module>lighty-tests-report</module>
     </modules>
 
     <build>
