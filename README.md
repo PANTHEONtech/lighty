@@ -28,16 +28,17 @@ _This branch maintains compatibility with __OpenDaylight Silicon,__ release._
 ## Modules, Examples & Apps
 | Modules | Examples | Applications |
 | :---: | :---: | :---:|
-| [AAA Integration Tests](/lighty-modules/integration-tests-aaa/) | [Clustering](/lighty-examples/lighty-cluster-app) | [RESTCONF-NETCONF Application](/lighty-applications/lighty-rnc-app-aggregator/) | 
-| [Integration Tests](/lighty-modules/integration-tests/) |[NETCONF w/ Quarkus.io & GraalVM](/lighty-examples/lighty-community-netconf-quarkus-app) | [gNMI RESTCONF Plug-In](/lighty-applications/lighty-rcgnmi-app-aggregator/) | 
-| [AAA](/lighty-modules/lighty-aaa/) | [NETCONF/RESTCONF App](/lighty-examples/lighty-community-restconf-netconf-app)  | | 
-| [Jetty Server](/lighty-modules/lighty-jetty-server/) | [SpringBoot Integration](/lighty-examples/lighty-controller-springboot-netconf) | | 
+| [AAA Integration Tests](/lighty-modules/integration-tests-aaa/) | [NETCONF/RESTCONF App](/lighty-examples/lighty-community-restconf-netconf-app) | [RESTCONF-NETCONF Application](/lighty-applications/lighty-rnc-app-aggregator/) | 
+| [Integration Tests](/lighty-modules/integration-tests/) | [gNMI/RESTCONF App](/lighty-examples/lighty-gnmi-community-restconf-app) | [gNMI RESTCONF Application](/lighty-applications/lighty-rcgnmi-app-aggregator/) | 
+| [AAA](/lighty-modules/lighty-aaa/) | [SpringBoot Integration](/lighty-examples/lighty-controller-springboot-netconf) | | 
+| [gNMI](/lighty-modules/lighty-gnmi/) | | |
+| [Jetty Server](/lighty-modules/lighty-jetty-server/) | | | 
 | [NETCONF SouthBound](/lighty-modules/lighty-netconf-sb/) | | | 
 | [RESTCONF NouthBound](/lighty-modules/lighty-restconf-nb-community/) | | | 
 | [Swagger](/lighty-modules/lighty-swagger/) | | |
 
+
 ## Components
-* __lighty-codecs__ - Easy to use IO YANG data operations
 * __lighty-core__ - [OpenDaylight](https://www.opendaylight.org/) [core services](lighty-core/lighty-controller/README.md): MD-SAL, Controller, yangtools, Clustering
   - [google guice extension](lighty-core/lighty-controller-guice-di/README.md) - Dependency injection extension for [Google Guice](https://github.com/google/guice)
   - [spring extension](lighty-core/lighty-controller-spring-di/README.md) - Dependency injection extension for [spring.io](https://spring.io/)  

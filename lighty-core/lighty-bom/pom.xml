@@ -30,11 +30,6 @@
             </dependency>
             <dependency>
                 <groupId>io.lighty.core</groupId>
-                <artifactId>lighty-codecs</artifactId>
-                <version>15.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-common</artifactId>
                 <version>15.0.0-SNAPSHOT</version>
             </dependency>
