@@ -17,7 +17,7 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
  *
  * @param <BA> - type of Binding Aware data, RPC data or Notification data
  * @deprecated Codec is marked as deprecated because it can be replaced by direct implementation
- * {@link BindingNormalizedNodeSerializer} and {@link NodeConverter}.
+ *             {@link BindingNormalizedNodeSerializer} and {@link NodeConverter}.
  */
 @Deprecated(forRemoval = true)
 public interface Codec<BA extends DataObject> extends Serializer<BA>, Deserializer<BA> {

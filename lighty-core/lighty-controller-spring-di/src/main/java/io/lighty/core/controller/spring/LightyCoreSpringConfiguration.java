@@ -194,23 +194,29 @@ public abstract class LightyCoreSpringConfiguration {
         return this.lightyController.getServices().getClusteredDOMDataBroker();
     }
 
-    /** Get DOMDataTreeService.
+    /**
+     * Get DOMDataTreeService.
+     *
+     * @return {@link DOMDataTreeShardingService}
      * @deprecated This interface is scheduled for removal in the next major release.
      *             Use {@link #distributedShardFactory()} instead of this.
-     * @return {@link DOMDataTreeShardingService}
      */
     @Bean(destroyMethod = "")
+    @Deprecated(forRemoval = true)
     public DOMDataTreeShardingService domDataTreeShardingService() {
         return this.lightyController.getServices().getDOMDataTreeShardingService();
     }
 
-    /** Get DOMDataTreeService.
+    /**
+     * Get DOMDataTreeService.
+     *
+     * @return {@link DOMDataTreeService}
      * @deprecated This interface is scheduled for removal in the next major release.
      *             Use {@link #distributedShardFactory()} instead of this.
-     * @return {@link DOMDataTreeService}
      */
     @Bean(destroyMethod = "")
     @Primary
+    @Deprecated(forRemoval = true)
     public DOMDataTreeService domDataTreeService() {
         return this.lightyController.getServices().getDOMDataTreeService();
     }

@@ -21,7 +21,7 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absol
  *
  * @param <BA>  Binding Aware object type of data, RPC data or Notification data
  * @deprecated The interface is no longer needed. The most used methods are covered by
- * {@link BindingNormalizedNodeSerializer}.
+ *             {@link BindingNormalizedNodeSerializer}.
  */
 @Deprecated(forRemoval = true)
 public interface Serializer<BA extends DataObject> {
