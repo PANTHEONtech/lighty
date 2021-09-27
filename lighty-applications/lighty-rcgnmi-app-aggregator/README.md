@@ -40,6 +40,7 @@ To build and start the RCgNMI application in your local environment, follow thes
 
 ## How to Use the RCgNMI Example App
 In this section we explore all necessities of connecting gNMI device and provide some examples on how to use the RESTCONF interface for communicating with the device.
+Quick start example with pre-prepared gNMI/RESTCONF application and gNMI device simulator can be found [here](../../lighty-examples/lighty-gnmi-community-restconf-app/README.md).
 
 ### YANG Models for Schema Context of the gNMI Device
 Before **lighty.io gNMI Southbound** creates a mount point for communication with the gNMI device, it is necessary to create a **schema context**. A schema context is created based on the YANG files, which device implements. 

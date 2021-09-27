@@ -10,7 +10,7 @@ package io.lighty.gnmi.southbound.schema.impl;
 
 import io.lighty.gnmi.southbound.capabilities.GnmiDeviceCapability;
 import java.util.List;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * Key used for caching schema context based on capabilities.

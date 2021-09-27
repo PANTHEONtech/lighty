@@ -46,6 +46,8 @@ jobs:
           -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
           -Dsonar.organization=${{ env.SONAR_ORGANIZATION }}
           -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.coverage.jacoco.xmlReportPaths=$(find "$(pwd)" -path '*lighty-tests-report/target/site/jacoco-report/jacoco.xml')
+          -Dsonar.coverage.exclusions=**/lighty-codecs/**/*
       - name: Maven test no SonarCloud
         if: ${{ env.SONAR_TOKEN == 0 }}
         run: mvn -B verify
