@@ -29,12 +29,14 @@ _This branch maintains compatibility with __OpenDaylight Silicon,__ release._
 | Modules | Examples | Applications |
 | :---: | :---: | :---:|
 | [AAA Integration Tests](/lighty-modules/integration-tests-aaa/) | [NETCONF/RESTCONF App](/lighty-examples/lighty-community-restconf-netconf-app) | [RESTCONF-NETCONF Application](/lighty-applications/lighty-rnc-app-aggregator/) | 
-| [Integration Tests](/lighty-modules/integration-tests/) | [gNMI/RESTCONF App](/lighty-examples/lighty-gnmi-community-restconf-app) | [gNMI RESTCONF Plug-In](/lighty-applications/lighty-rcgnmi-app-aggregator/) | 
+| [Integration Tests](/lighty-modules/integration-tests/) | [gNMI/RESTCONF App](/lighty-examples/lighty-gnmi-community-restconf-app) | [gNMI RESTCONF Application](/lighty-applications/lighty-rcgnmi-app-aggregator/) | 
 | [AAA](/lighty-modules/lighty-aaa/) | [SpringBoot Integration](/lighty-examples/lighty-controller-springboot-netconf) | | 
+| [gNMI](/lighty-modules/lighty-gnmi/) | | |
 | [Jetty Server](/lighty-modules/lighty-jetty-server/) | | | 
 | [NETCONF SouthBound](/lighty-modules/lighty-netconf-sb/) | | | 
 | [RESTCONF NouthBound](/lighty-modules/lighty-restconf-nb-community/) | | | 
 | [Swagger](/lighty-modules/lighty-swagger/) | | |
+
 
 ## Components
 * __lighty-core__ - [OpenDaylight](https://www.opendaylight.org/) [core services](lighty-core/lighty-controller/README.md): MD-SAL, Controller, yangtools, Clustering
