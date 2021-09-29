@@ -9,9 +9,8 @@
 package io.lighty.examples.controllers.restconfapp.tests;
 
 import io.lighty.examples.controllers.restconfapp.Main;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-import org.eclipse.jetty.client.api.ContentResponse;
+import java.io.IOException;
+import java.net.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
@@ -46,30 +45,29 @@ public class RestconfAppTest {
      * Perform basic GET operations via RESTCONF.
      */
     @Test
-    public void simpleApplicationTest() throws TimeoutException, ExecutionException, InterruptedException {
-        ContentResponse operations = null;
+    public void simpleApplicationTest() throws IOException, InterruptedException {
+        HttpResponse<String> operations;
+        /*
+        TODO: Uncomment when ODL bug will be resolved https://jira.opendaylight.org/browse/NETCONF-822
         operations = restClient.GET("restconf/operations");
-        Assert.assertEquals(operations.getStatus(), 200);
+        Assert.assertEquals(operations.statusCode(), 200);
+         */
         operations = restClient.GET("restconf/data/network-topology:network-topology?content=config");
-        Assert.assertEquals(operations.getStatus(), 200);
+        Assert.assertEquals(operations.statusCode(), 200);
         operations = restClient.GET("restconf/data/network-topology:network-topology?content=nonconfig");
-        Assert.assertEquals(operations.getStatus(), 200);
+        Assert.assertEquals(operations.statusCode(), 200);
     }
 
     /**
      * Check if Swagger service and UI is responding.
      */
     @Test
-    public void swaggerURLsTest() {
-        ContentResponse operations = null;
-        try {
-            operations = restClient.GET("apidoc/openapi3/18/apis/single");
-            Assert.assertEquals(operations.getStatus(), 200);
-            operations = restClient.GET("apidoc/explorer/index.html");
-            Assert.assertEquals(operations.getStatus(), 200);
-        } catch (TimeoutException | ExecutionException | InterruptedException e) {
-            Assert.fail();
-        }
+    public void swaggerURLsTest() throws IOException, InterruptedException {
+        HttpResponse<String> operations;
+        operations = restClient.GET("apidoc/openapi3/18/apis/single");
+        Assert.assertEquals(operations.statusCode(), 200);
+        operations = restClient.GET("apidoc/explorer/index.html");
+        Assert.assertEquals(operations.statusCode(), 200);
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
