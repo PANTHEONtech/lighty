@@ -81,7 +81,7 @@
                 { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-restconf-monitoring", "name": "ietf-restconf-monitoring", "revision": "2017-01-26" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:clustering:prefix-shard-configuration", "name": "prefix-shard-configuration", "revision": "2017-01-10" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:distributed-datastore-provider", "name": "distributed-datastore-provider", "revision": "2014-06-12" },
-                { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:clustering:entity-owners", "name": "entity-owners", "revision": "2015-08-04" },
+                { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:entity-owners", "name": "odl-entity-owners" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:openflowplugin:app:forwardingrules-manager:config", "name": "forwarding-rules-manager-config", "revision": "2016-05-11" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:openflowplugin:app:arbitrator-reconcile:service", "name": "arbitrator-reconcile", "revision": "2018-02-27" },
                 { "nameSpace": "urn:opendaylight:serviceutils:upgrade", "name": "odl-serviceutils-upgrade", "revision": "2018-07-02" },
