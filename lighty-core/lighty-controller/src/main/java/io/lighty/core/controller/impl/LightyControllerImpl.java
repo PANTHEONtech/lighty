@@ -61,14 +61,11 @@ import org.opendaylight.controller.cluster.datastore.DistributedDataStoreFactory
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
 import org.opendaylight.controller.cluster.datastore.config.ConfigurationImpl;
-import org.opendaylight.controller.cluster.entityownership.DistributedEntityOwnershipService;
-import org.opendaylight.controller.cluster.entityownership.selectionstrategy.EntityOwnerSelectionStrategyConfigReader;
-import org.opendaylight.controller.cluster.sharding.DistributedShardFactory;
-import org.opendaylight.controller.cluster.sharding.DistributedShardedDOMDataTree;
 import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
 import org.opendaylight.controller.config.threadpool.ThreadPool;
 import org.opendaylight.controller.config.threadpool.util.FixedThreadPoolWrapper;
 import org.opendaylight.controller.config.threadpool.util.ScheduledThreadPoolWrapper;
+import org.opendaylight.controller.eos.akka.AkkaEntityOwnershipService;
 import org.opendaylight.controller.remote.rpc.RemoteOpsProvider;
 import org.opendaylight.controller.remote.rpc.RemoteOpsProviderConfig;
 import org.opendaylight.controller.remote.rpc.RemoteOpsProviderFactory;
@@ -76,8 +73,6 @@ import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistryImpl;
 import org.opendaylight.infrautils.caches.guava.internal.GuavaCacheProvider;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
-import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
-import org.opendaylight.infrautils.jobcoordinator.internal.JobCoordinatorImpl;
 import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.infrautils.metrics.internal.MetricProviderImpl;
 import org.opendaylight.infrautils.ready.SystemReadyMonitor;
@@ -134,8 +129,8 @@ import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserFactoryImpl;
+import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
+import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
 import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
 import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
 import org.slf4j.Logger;
@@ -170,12 +165,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private ExecutorService listenableFutureExecutor;
     private DurationStatisticsTracker commitStatsTracker;
     private DOMDataBroker concurrentDOMDataBroker;
-    private DistributedShardedDOMDataTree distributedShardedDOMDataTree;
     private DOMRpcRouter domRpcRouter;
     private RemoteOpsProvider remoteOpsProvider;
     private DOMActionService domActionService;
     private DOMActionProviderService domActionProviderService;
-    private DistributedEntityOwnershipService distributedEntityOwnershipService;
+    private AkkaEntityOwnershipService akkaEntityOwnershipService;
     private BindingDOMEntityOwnershipServiceAdapter bindingDOMEntityOwnershipServiceAdapter;
     private ClusterAdminRpcService clusterAdminRpcService;
     private DOMClusterSingletonServiceProviderImpl clusterSingletonServiceProvider;
@@ -194,14 +188,13 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private DOMSchemaService schemaService;
     private ConstantAdapterContext codec;
     private BindingCodecTreeFactory bindingCodecTreeFactory;
-    private YangParserFactory yangParserFactory;
+    private DefaultYangParserFactory yangParserFactory;
     private BindingAdapterFactory bindingAdapterFactory;
     private RpcProviderService rpcProviderService;
     private MountPointService mountPointService;
     private ActionService actionService;
     private ActionProviderService actionProviderService;
     private final LightySystemReadyMonitorImpl systemReadyMonitor;
-    private final JobCoordinator jobCoordinator;
     private final MetricProvider metricProvider;
     private final CacheProvider cacheProvider;
     private List<ObjectRegistration<YangModuleInfo>> modelsRegistration = new ArrayList<>();
@@ -243,7 +236,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.systemReadyMonitor = new LightySystemReadyMonitorImpl();
         this.lightyDiagStatusService = new LightyDiagStatusServiceImpl(systemReadyMonitor);
         this.metricProvider = new MetricProviderImpl();
-        this.jobCoordinator = new JobCoordinatorImpl(metricProvider);
         this.cacheProvider = new GuavaCacheProvider(new CacheManagersRegistryImpl());
         this.initialConfigData = initialConfigData;
     }
@@ -280,7 +272,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
         // INIT yang parser factory
         final YangXPathParserFactory xpathFactory = new AntlrXPathParserFactory();
-        this.yangParserFactory = new YangParserFactoryImpl(xpathFactory);
+        this.yangParserFactory = new DefaultYangParserFactory(xpathFactory);
 
         //INIT schema context
         this.snapshotResolver = new ModuleInfoSnapshotResolver("binding-dom-codec", yangParserFactory);
@@ -310,10 +302,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                 this.schemaService, this.datastoreSnapshotRestore, this.actorSystemProvider);
 
         createConcurrentDOMDataBroker();
-        this.distributedShardedDOMDataTree = new DistributedShardedDOMDataTree(this.actorSystemProvider,
-                this.operDatastore,
-                this.configDatastore);
-        this.distributedShardedDOMDataTree.init();
 
         this.domRpcRouter = DOMRpcRouter.newInstance(this.schemaService);
         this.domActionProviderService = domRpcRouter.getActionProviderService();
@@ -325,22 +313,27 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                 this.domActionProviderService);
         this.actionService = bindingAdapterFactory.createActionService(this.domActionService);
 
-        // ENTITY OWNERSHIP
-        this.distributedEntityOwnershipService = DistributedEntityOwnershipService.start(this.operDatastore
-                .getActorUtils(), EntityOwnerSelectionStrategyConfigReader.loadStrategyWithConfig(
-                this.distributedEosProperties));
-
-        this.bindingDOMEntityOwnershipServiceAdapter = new BindingDOMEntityOwnershipServiceAdapter(
-                this.distributedEntityOwnershipService, this.codec);
-        this.clusterAdminRpcService =
-                new ClusterAdminRpcService(this.configDatastore, this.operDatastore, this.codec.currentSerializer());
-
-        this.clusterSingletonServiceProvider =
-                new DefaultClusterSingletonServiceProvider(this.distributedEntityOwnershipService);
-        this.clusterSingletonServiceProvider.initializeProvider();
-
         this.rpcProviderService = new BindingDOMRpcProviderServiceAdapter(this.codec,
                 this.domRpcRouter.getRpcProviderService());
+
+        // ENTITY OWNERSHIP
+        try {
+            this.akkaEntityOwnershipService
+                    = new AkkaEntityOwnershipService(this.actorSystemProvider, this.rpcProviderService);
+        } catch (ExecutionException | InterruptedException e) {
+            LOG.error("Exception occurred while creating AkkaEntityOwnershipService", e);
+            return false;
+        }
+
+        this.bindingDOMEntityOwnershipServiceAdapter = new BindingDOMEntityOwnershipServiceAdapter(
+                akkaEntityOwnershipService, this.codec);
+        this.clusterAdminRpcService =
+                new ClusterAdminRpcService(this.configDatastore, this.operDatastore, this.codec.currentSerializer(),
+                        this.akkaEntityOwnershipService);
+
+        this.clusterSingletonServiceProvider =
+                new DefaultClusterSingletonServiceProvider(this.akkaEntityOwnershipService);
+        this.clusterSingletonServiceProvider.initializeProvider();
 
         //create binding mount point service
         this.mountPointService = new BindingDOMMountPointServiceAdapter(this.codec, this.domMountPointService);
@@ -409,8 +402,13 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         if (this.bindingDOMEntityOwnershipServiceAdapter != null) {
             this.bindingDOMEntityOwnershipServiceAdapter.close();
         }
-        if (this.distributedEntityOwnershipService != null) {
-            this.distributedEntityOwnershipService.close();
+        if (this.akkaEntityOwnershipService != null) {
+            try {
+                this.akkaEntityOwnershipService.close();
+            } catch (ExecutionException e) {
+                LOG.error("Closing akka AkkaEntityOwnershipService failed!", e);
+                stopSuccessful = false;
+            }
         }
         if (this.operDatastore != null) {
             this.operDatastore.close();
@@ -533,11 +531,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public DistributedShardFactory getDistributedShardFactory() {
-        return this.distributedShardedDOMDataTree;
-    }
-
-    @Override
     public YangParserFactory getYangParserFactory() {
         return yangParserFactory;
     }
@@ -554,7 +547,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     public DOMEntityOwnershipService getDOMEntityOwnershipService() {
-        return this.distributedEntityOwnershipService;
+        return this.akkaEntityOwnershipService;
     }
 
     @Override
@@ -686,11 +679,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     public DOMActionProviderService getDOMActionProviderService() {
         return domActionProviderService;
-    }
-
-    @Override
-    public JobCoordinator getJobCoordinator() {
-        return this.jobCoordinator;
     }
 
     @Override

@@ -36,14 +36,7 @@ import org.opendaylight.netconf.sal.restconf.impl.ControllerContext;
 import org.opendaylight.netconf.sal.restconf.impl.RestconfImpl;
 import org.opendaylight.netconf.sal.restconf.impl.RestconfProviderImpl;
 import org.opendaylight.netconf.sal.restconf.impl.StatisticsRestconfServiceWrapper;
-import org.opendaylight.restconf.nb.rfc8040.handlers.ActionServiceHandler;
-import org.opendaylight.restconf.nb.rfc8040.handlers.DOMDataBrokerHandler;
-import org.opendaylight.restconf.nb.rfc8040.handlers.DOMMountPointServiceHandler;
-import org.opendaylight.restconf.nb.rfc8040.handlers.NotificationServiceHandler;
-import org.opendaylight.restconf.nb.rfc8040.handlers.RpcServiceHandler;
 import org.opendaylight.restconf.nb.rfc8040.handlers.SchemaContextHandler;
-import org.opendaylight.restconf.nb.rfc8040.handlers.TransactionChainHandler;
-import org.opendaylight.restconf.nb.rfc8040.services.wrapper.ServicesWrapper;
 import org.opendaylight.restconf.nb.rfc8040.streams.Configuration;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
@@ -125,22 +118,11 @@ public class CommunityRestConf extends AbstractLightyModule {
                 .getHostAddress()), this.webSocketPort);
         this.restconfProvider.start();
 
-        LOG.info("Starting RestConnectorProvider");
-        final TransactionChainHandler transactionChainHandler = new TransactionChainHandler(this.domDataBroker);
-        final SchemaContextHandler schemaCtxHandler = new SchemaContextHandler(transactionChainHandler,
-                this.domSchemaService);
+        final SchemaContextHandler schemaCtxHandler
+                = new SchemaContextHandler(this.domDataBroker, this.domSchemaService);
         schemaCtxHandler.init();
-        final DOMMountPointServiceHandler domMountPointServiceHandler = new DOMMountPointServiceHandler(
-                this.domMountPointService);
-        final DOMDataBrokerHandler domDataBrokerHandler = new DOMDataBrokerHandler(this.domDataBroker);
-        final RpcServiceHandler rpcServiceHandler = new RpcServiceHandler(this.domRpcService);
-        final ActionServiceHandler actionServiceHandler = new ActionServiceHandler(this.domActionService);
-        final NotificationServiceHandler notificationServiceHandler = new NotificationServiceHandler(
-                this.domNotificationService);
+
         final Configuration streamsConfiguration = RestConfConfigUtils.getStreamsConfiguration();
-        final ServicesWrapper servicesWrapper = ServicesWrapper.newInstance(schemaCtxHandler,
-                domMountPointServiceHandler, transactionChainHandler, domDataBrokerHandler, rpcServiceHandler,
-                actionServiceHandler, notificationServiceHandler, this.domSchemaService, streamsConfiguration);
 
         ServletHolder jaxrs = null;
 
@@ -155,7 +137,8 @@ public class CommunityRestConf extends AbstractLightyModule {
             case DRAFT_18:
                 final Application restconfApplication8040 =
                     new org.opendaylight.restconf.nb.rfc8040.RestconfApplication(schemaCtxHandler,
-                    domMountPointServiceHandler, servicesWrapper);
+                            this.domMountPointService, this.domDataBroker, this.domRpcService, this.domActionService,
+                            this.domNotificationService, this.domSchemaService, streamsConfiguration);
                 final ServletContainer servletContainer8040 = new ServletContainer(ResourceConfig
                     .forApplication(restconfApplication8040));
                 jaxrs = new ServletHolder(servletContainer8040);

@@ -153,7 +153,9 @@ public final class YangModuleUtils {
             ModuleId modileId = ModuleId.from(yangModuleInfo);
             modelObject.put("nameSpace", modileId.getNameSpace().toString());
             modelObject.put("name", modileId.getName());
-            modelObject.put("revision", modileId.getRevision().toString());
+            if (modileId.getRevision() != null) {
+                modelObject.put("revision", modileId.getRevision().toString());
+            }
             arrayNode.add(modelObject);
         }
         return arrayNode;

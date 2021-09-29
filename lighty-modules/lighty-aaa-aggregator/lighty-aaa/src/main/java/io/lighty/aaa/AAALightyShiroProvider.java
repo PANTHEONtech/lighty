@@ -13,14 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtConstructor;
-import javassist.CtMethod;
-import javassist.CtNewConstructor;
-import javassist.CtNewMethod;
-import javax.ws.rs.NotFoundException;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.FilterHolder;
@@ -30,13 +22,11 @@ import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.glassfish.jersey.internal.guava.Preconditions;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
-import org.opendaylight.aaa.AAAShiroProvider;
 import org.opendaylight.aaa.api.AuthenticationService;
 import org.opendaylight.aaa.api.ClaimCache;
 import org.opendaylight.aaa.api.CredentialAuth;
 import org.opendaylight.aaa.api.IDMStoreException;
 import org.opendaylight.aaa.api.IIDMStore;
-import org.opendaylight.aaa.api.IdMServiceImpl;
 import org.opendaylight.aaa.api.PasswordCredentials;
 import org.opendaylight.aaa.api.StoreBuilder;
 import org.opendaylight.aaa.api.password.service.PasswordHashService;
@@ -53,10 +43,10 @@ import org.opendaylight.aaa.shiro.filters.AAAShiroFilter;
 import org.opendaylight.aaa.shiro.idm.IdmLightApplication;
 import org.opendaylight.aaa.shiro.idm.IdmLightProxy;
 import org.opendaylight.aaa.shiro.moon.MoonTokenEndpoint;
-import org.opendaylight.aaa.shiro.tokenauthrealm.auth.AuthenticationManager;
-import org.opendaylight.aaa.shiro.tokenauthrealm.auth.HttpBasicAuth;
-import org.opendaylight.aaa.shiro.tokenauthrealm.auth.TokenAuthenticators;
 import org.opendaylight.aaa.shiro.web.env.ShiroWebEnvironmentLoaderListener;
+import org.opendaylight.aaa.tokenauthrealm.auth.AuthenticationManager;
+import org.opendaylight.aaa.tokenauthrealm.auth.HttpBasicAuth;
+import org.opendaylight.aaa.tokenauthrealm.auth.TokenAuthenticators;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.DatastoreConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.ShiroConfiguration;
@@ -83,7 +73,6 @@ public final class AAALightyShiroProvider {
     private ClaimCache claimCache;
     private PasswordHashService passwordHashService;
     private H2TokenStore tokenStore;
-    private IdMServiceImpl idmService;
 
     private ShiroWebEnvironmentLoaderListener shiroWebEnvironmentLoaderListener;
 
@@ -102,7 +91,6 @@ public final class AAALightyShiroProvider {
         this.shiroConfiguration = shiroConfiguration;
         this.handlers = new ArrayList<>();
         this.authenticationService = new AuthenticationManager();
-        injectLightyShiroProviderMethodsToOriginalProvider();
 
         if (datastoreConfig != null && datastoreConfig.getStore().equals(DatastoreConfig.Store.H2DataStore)) {
             final IdmLightConfig config = new IdmLightConfigBuilder().dbUser(dbUsername).dbPwd(dbPassword).build();
@@ -126,7 +114,6 @@ public final class AAALightyShiroProvider {
             this.claimCache = idmLightProxy;
         }
         this.tokenAuthenticators = buildTokenAuthenticators(this.credentialAuth);
-        this.idmService = new IdMServiceImpl(iidmStore);
         try {
             new StoreBuilder(iidmStore).initWithDefaultUsers(IIDMStore.DEFAULT_DOMAIN);
         } catch (final IDMStoreException e) {
@@ -268,77 +255,5 @@ public final class AAALightyShiroProvider {
 
         Preconditions.checkNotNull(httpService, "httpService cannot be null");
         httpService.registerServlet(moonEndpointPath, new MoonTokenEndpoint(), null);
-    }
-
-    /**
-     * In this way, we do not need to call new instance of {@link AAAShiroProvider}. We want to avoid dependence
-     * on OSGi. According to {@link AAAShiroProvider} is singleton, we need to hook public and public static methods
-     * from the {@link AAAShiroProvider} with methods from {@link AAALightyShiroProvider}.
-     */
-    private void injectLightyShiroProviderMethodsToOriginalProvider() {
-        try {
-            final CtClass ctClass = ClassPool.getDefault().get("org.opendaylight.aaa.AAAShiroProvider");
-            final CtConstructor c = CtNewConstructor.make("public AAAShiroProvider(){}", ctClass);
-            ctClass.addConstructor(c);
-
-            final CtMethod getInstance = CtNewMethod.make(
-                    "public static org.opendaylight.aaa.AAAShiroProvider getInstance() {"
-                            + "return new org.opendaylight.aaa.AAAShiroProvider();}",
-                            ctClass);
-            ctClass.addMethod(getInstance);
-
-            final CtMethod getInstanceFuture = CtNewMethod.make(
-                    "public static java.util.concurrent.CompletableFuture getInstanceFuture() {"
-                            + "java.util.concurrent.CompletableFuture completableFuture = "
-                            + "new java.util.concurrent.CompletableFuture();"
-                            + "completableFuture.complete(org.opendaylight.aaa.AAAShiroProvider.getInstance());"
-                            + "return completableFuture;}",
-                            ctClass);
-            ctClass.addMethod(getInstanceFuture);
-
-            final CtMethod getIdmStore = CtNewMethod.make(
-                    "public static org.opendaylight.aaa.api.IIDMStore getIdmStore() {"
-                            + "return io.lighty.aaa.AAALightyShiroProvider.getIdmStore();}",
-                            ctClass);
-            ctClass.addMethod(getIdmStore);
-
-            final CtMethod setIdmStore = CtNewMethod.make(
-                    "public static void setIdmStore(org.opendaylight.aaa.api.IIDMStore store) {"
-                            + "return io.lighty.aaa.AAALightyShiroProvider.setIdmStore(store);}", ctClass);
-            ctClass.addMethod(setIdmStore);
-
-            ctClass.removeMethod(ctClass.getDeclaredMethod("getDataBroker"));
-            final CtMethod getDataBroker = CtNewMethod.make(
-                    "public org.opendaylight.mdsal.binding.api.DataBroker getDataBroker() {"
-                            + "return io.lighty.aaa.AAALightyShiroProvider.getInstance().getDataBroker();}", ctClass);
-            ctClass.addMethod(getDataBroker);
-
-            ctClass.removeMethod(ctClass.getDeclaredMethod("getCertificateManager"));
-            final CtMethod getCertificateManager = CtNewMethod.make(
-                    "public org.opendaylight.aaa.cert.api.ICertificateManager getCertificateManager() {"
-                            + "return io.lighty.aaa.AAALightyShiroProvider.getInstance().getCertificateManager();}",
-                            ctClass);
-            ctClass.addMethod(getCertificateManager);
-
-            ctClass.removeMethod(ctClass.getDeclaredMethod("getShiroConfiguration"));
-            final CtMethod getShiroConfiguration = CtNewMethod.make(
-                    "public org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.ShiroConfiguration "
-                            + "getShiroConfiguration() {"
-                            + "return io.lighty.aaa.AAALightyShiroProvider.getInstance().getShiroConfiguration();}",
-                            ctClass);
-            ctClass.addMethod(getShiroConfiguration);
-
-            ctClass.removeMethod(ctClass.getDeclaredMethod("getTokenAuthenticators"));
-            final CtMethod getTokenAuthenticators = CtMethod.make(
-                    "public org.opendaylight.aaa.shiro.tokenauthrealm.auth.TokenAuthenticators "
-                    + "getTokenAuthenticators() {"
-                    + "return io.lighty.aaa.AAALightyShiroProvider.getInstance().getTokenAuthenticators();}", ctClass);
-            ctClass.addMethod(getTokenAuthenticators);
-
-            ctClass.toClass();
-
-        } catch (NotFoundException | CannotCompileException | javassist.NotFoundException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
