@@ -82,15 +82,16 @@ do \
 sleep 1
 
 # Pods healthcheck (:8888/restconf/operations)
-for pod_controller_ip in $POD_CONTROLLER_IPS; \
-do \
-  assertHttpStatusCode $(curl -o /dev/null -s -w "%{http_code} GET %{url_effective}\n" --user admin:admin -H "Content-Type: application/json" --insecure http://$pod_controller_ip:8888/restconf/operations) \
-;done
-sleep 1
-
-# Service healthcheck (:30888/restconf/operations)
-assertHttpStatusCode $(curl -o /dev/null -s -w "%{http_code} GET %{url_effective}\n" --user admin:admin -H "Content-Type: application/json" --insecure http://$MINIKUBE_IP:$CONTROLLER_PORT/restconf/operations)
-sleep 1
+# TODO: Uncomment when ODL bug will be resolved https://jira.opendaylight.org/browse/NETCONF-822
+#for pod_controller_ip in $POD_CONTROLLER_IPS; \
+#do \
+#  assertHttpStatusCode $(curl -o /dev/null -s -w "%{http_code} GET %{url_effective}\n" --user admin:admin -H "Content-Type: application/json" --insecure http://$pod_controller_ip:8888/restconf/operations) \
+#;done
+#sleep 1
+#
+## Service healthcheck (:30888/restconf/operations)
+#assertHttpStatusCode $(curl -o /dev/null -s -w "%{http_code} GET %{url_effective}\n" --user admin:admin -H "Content-Type: application/json" --insecure http://$MINIKUBE_IP:$CONTROLLER_PORT/restconf/operations)
+#sleep 1
 
 # add node into topology
   assertHttpStatusCode $(curl -X PUT -o /dev/null -s -w "%{http_code} PUT %{url_effective}\n" http://"$MINIKUBE_IP":$CONTROLLER_PORT/restconf/data/network-topology:network-topology/topology=topology-netconf/node=node-"${SIMULATOR_IP//.}" \
