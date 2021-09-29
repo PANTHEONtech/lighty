@@ -56,10 +56,6 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.infrautils</groupId>
-            <artifactId>jobcoordinator-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.infrautils</groupId>
             <artifactId>caches-guava-impl</artifactId>
         </dependency>
         <dependency>
@@ -150,11 +146,7 @@
         <!--odl-mdsal-binding-runtime-->
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-generator-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-generator-impl</artifactId>
+            <artifactId>mdsal-binding-generator</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
@@ -174,7 +166,7 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-generator-util</artifactId>
+            <artifactId>mdsal-binding-model-ri</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
@@ -412,7 +404,7 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
-            <artifactId>sal-distributed-eos</artifactId>
+            <artifactId>eos-dom-akka</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
