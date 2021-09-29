@@ -37,14 +37,14 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.impl.schema.builder.api.DataContainerNodeBuilder;
+import org.opendaylight.yangtools.yang.data.api.schema.builder.DataContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLeafNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapEntryNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserFactoryImpl;
+import org.opendaylight.yangtools.yang.parser.api.YangParserException;
+import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
 import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
 import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
 
@@ -72,14 +72,14 @@ public abstract class AbstractCodecTest {
     // tested DataObject for RPC
     protected final MakeToastInput testedMakeToasterInput;
     // BI representation of testedToaster
-    protected final NormalizedNode<?, ?> testedToasterNormalizedNodes;
+    protected final NormalizedNode testedToasterNormalizedNodes;
     // BI representation of testedMakeToasterInput
 
-    protected final NormalizedNode<?, ?> testedSimpleRpcInputNormalizedNodes;
-    protected final NormalizedNode<?, ?> testedSimpleRpcOutputNormalizedNodes;
-    protected final NormalizedNode<?, ?> testedNotificationNormalizedNodes;
-    protected final NormalizedNode<?, ?> testedSampleListNormalizedNodes;
-    protected final NormalizedNode<?, ?> testedSampleMapNodeNormalizedNodes;
+    protected final NormalizedNode testedSimpleRpcInputNormalizedNodes;
+    protected final NormalizedNode testedSimpleRpcOutputNormalizedNodes;
+    protected final NormalizedNode testedNotificationNormalizedNodes;
+    protected final NormalizedNode testedSampleListNormalizedNodes;
+    protected final NormalizedNode testedSampleMapNodeNormalizedNodes;
 
     protected final BindingCodecContext bindingCodecContext;
     protected final EffectiveModelContext effectiveModelContext;
@@ -102,11 +102,12 @@ public abstract class AbstractCodecTest {
         this.testedSampleMapNodeNormalizedNodes = sampleMapNode();
     }
 
-    protected BindingCodecContext createCodecContext(List<YangModuleInfo> moduleInfos) throws YangParserException {
+    protected BindingCodecContext createCodecContext(List<YangModuleInfo> moduleInfos)
+            throws YangParserException {
         final YangXPathParserFactory xpathFactory = new AntlrXPathParserFactory();
-        final YangParserFactoryImpl yangParserFactory = new YangParserFactoryImpl(xpathFactory);
+        DefaultYangParserFactory defaultYangParserFactory = new DefaultYangParserFactory(xpathFactory);
         DefaultBindingRuntimeGenerator bindingRuntimeGenerator = new DefaultBindingRuntimeGenerator();
-        ModuleInfoSnapshotBuilder moduleInfoSnapshotBuilder = new ModuleInfoSnapshotBuilder(yangParserFactory);
+        ModuleInfoSnapshotBuilder moduleInfoSnapshotBuilder = new ModuleInfoSnapshotBuilder(defaultYangParserFactory);
         moduleInfoSnapshotBuilder.add(moduleInfos);
 
         BindingRuntimeTypes bindingRuntimeTypes = bindingRuntimeGenerator
@@ -175,7 +176,7 @@ public abstract class AbstractCodecTest {
         return moduleInfos;
     }
 
-    private static NormalizedNode<?, ?> createToasterNormalizedNodes() {
+    private static NormalizedNode createToasterNormalizedNodes() {
         NodeIdentifier toasterNodeIdentifier = new NodeIdentifier(Toaster.QNAME);
         LeafNode<String> manufacturer = new ImmutableLeafNodeBuilder<String>().withValue("manufacturer")
                 .withNodeIdentifier(getToasterNodeIdentifier("toasterManufacturer")).build();
@@ -187,7 +188,7 @@ public abstract class AbstractCodecTest {
                 .withValue(ImmutableList.of(manufacturer, darknessFactor, toasterStatus)).build();
     }
 
-    private static NormalizedNode<?, ?> simpleRpcInputNormalizedNodes_in() {
+    private static NormalizedNode simpleRpcInputNormalizedNodes_in() {
         NodeIdentifier toasterNodeIdentifier =
                 new NodeIdentifier(QName.create(SAMPLES_NAMESPACE, "2018-01-19", "input"));
         LeafNode<String> input = new ImmutableLeafNodeBuilder<String>()
@@ -197,7 +198,7 @@ public abstract class AbstractCodecTest {
                 .withValue(ImmutableList.of(input)).build();
     }
 
-    private static NormalizedNode<?, ?> simpleRpcInputNormalizedNodes_out() {
+    private static NormalizedNode simpleRpcInputNormalizedNodes_out() {
         NodeIdentifier toasterNodeIdentifier =
                 new NodeIdentifier(QName.create(SAMPLES_NAMESPACE, "2018-01-19", "output"));
         LeafNode<String> input = new ImmutableLeafNodeBuilder<String>()
@@ -207,7 +208,7 @@ public abstract class AbstractCodecTest {
                 .withValue(ImmutableList.of(input)).build();
     }
 
-    private static NormalizedNode<?, ?> toasterNotificationNormalizedNodes() {
+    private static NormalizedNode toasterNotificationNormalizedNodes() {
         NodeIdentifier toasterNodeIdentifier =
                 new NodeIdentifier(QName.create(TOASTER_NAMESPACE, TOASTER_REVISION, "toasterRestocked"));
         LeafNode<Long> value = new ImmutableLeafNodeBuilder<Long>()
@@ -218,9 +219,9 @@ public abstract class AbstractCodecTest {
                 .withValue(ImmutableList.of(value)).build();
     }
 
-    private static NormalizedNode<?, ?> sampleListNormalizedNodes() {
-        DataContainerNodeBuilder<NodeIdentifierWithPredicates, MapEntryNode> create =
-                ImmutableMapEntryNodeBuilder.create();
+    private static NormalizedNode sampleListNormalizedNodes() {
+        DataContainerNodeBuilder<NodeIdentifierWithPredicates, MapEntryNode> create
+                = ImmutableMapEntryNodeBuilder.create();
         QName keyQname = QName.create(SAMPLES_NAMESPACE, SAMPLES_REVISION, "name");
         QName valueQname = QName.create(SAMPLES_NAMESPACE, SAMPLES_REVISION, "value");
         NodeIdentifierWithPredicates nodeIdentifier = NodeIdentifierWithPredicates.of(
@@ -234,7 +235,7 @@ public abstract class AbstractCodecTest {
         return create.build();
     }
 
-    private static NormalizedNode<?, ?> sampleMapNode() {
+    private static NormalizedNode sampleMapNode() {
         return ImmutableMapNodeBuilder.create().withNodeIdentifier(new NodeIdentifier(SampleList.QNAME))
                 .withChild((MapEntryNode) sampleListNormalizedNodes()).build();
     }

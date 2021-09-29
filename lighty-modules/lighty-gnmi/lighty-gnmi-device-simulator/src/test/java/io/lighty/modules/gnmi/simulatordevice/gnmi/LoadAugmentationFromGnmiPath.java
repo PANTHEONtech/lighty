@@ -60,11 +60,11 @@ public class LoadAugmentationFromGnmiPath {
         Map<Path, YangInstanceIdentifier> yangInstanceIdMap = this.gnmiCrudService.pathToIdentifierMap(getValidData());
         Set<String> validJsonResponse = getValidJsonResponse();
         for (final Map.Entry<Gnmi.Path, YangInstanceIdentifier> entry : yangInstanceIdMap.entrySet()) {
-            Optional<NormalizedNode<?, ?>> result
+            Optional<NormalizedNode> result
                     = this.dataService.readDataByPath(DatastoreType.CONFIGURATION, entry.getValue());
             Assert.assertTrue(result.isPresent(),
                     String.format("Failed to load [%s] from data-store", entry.getValue().getLastPathArgument()));
-            NormalizedNode<?, ?> normalizedNode = result.get();
+            NormalizedNode normalizedNode = result.get();
             Assert.assertEquals(normalizedNode.getIdentifier(), entry.getValue().getLastPathArgument());
             //Test to parse data retrieved from data-store to JSON format.
             Map.Entry<Path, String> resultInJsonFormat
@@ -78,7 +78,7 @@ public class LoadAugmentationFromGnmiPath {
     public void compareWrongIdentifiersWithDataInDatastore() {
         Map<Path, YangInstanceIdentifier> yangInstanceIdMap = this.gnmiCrudService.pathToIdentifierMap(getWrongData());
         for (final Map.Entry<Gnmi.Path, YangInstanceIdentifier> entry : yangInstanceIdMap.entrySet()) {
-            Optional<NormalizedNode<?, ?>> result
+            Optional<NormalizedNode> result
                     = this.dataService.readDataByPath(DatastoreType.CONFIGURATION, entry.getValue());
             Assert.assertTrue(result.isEmpty(),
                     String.format("Loaded wrong data [%s] from data-store", entry.getValue().getLastPathArgument()));

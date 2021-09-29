@@ -142,8 +142,8 @@ public class GnmiSetITTest extends GnmiITBase {
         assertEquals(HttpURLConnection.HTTP_OK, getOcInterfaceEth3ConfigContainerResponse.statusCode());
         final JSONObject eth3ConfigContainerJSONObject =
             new JSONObject(getOcInterfaceEth3ConfigContainerResponse.body());
-        assertEquals(configContainerPayloadJSONObject.getJSONObject("config").toString(),
-                     eth3ConfigContainerJSONObject.getJSONObject("openconfig-interfaces:config").toString());
+        JSONAssert.assertEquals(configContainerPayloadJSONObject.getJSONObject("config").toString(),
+                     eth3ConfigContainerJSONObject.getJSONObject("openconfig-interfaces:config").toString(), false);
 
         restoreDeviceToOriginalState();
     }

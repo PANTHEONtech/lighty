@@ -173,7 +173,7 @@ public class GnmiGetITTest extends GnmiITBase {
         assertEquals(1, ocInterfaces.length());
         final String ocInterfaceEth3 = ocInterfaces.getJSONObject(0).toString();
         LOG.info("Response: {}", ocInterfaceEth3);
-        assertEquals(OC_INTERFACE_ETH3_EXPECTED, ocInterfaceEth3);
+        JSONAssert.assertEquals(OC_INTERFACE_ETH3_EXPECTED, ocInterfaceEth3, false);
     }
 
     @Test

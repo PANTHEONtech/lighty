@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
-import org.opendaylight.controller.cluster.sharding.DistributedShardFactory;
 import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
 import org.opendaylight.controller.config.threadpool.ThreadPool;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
@@ -113,9 +112,6 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
     DOMDataBroker clusteredDOMDataBrokerTestProperty;
 
     @Autowired
-    DistributedShardFactory distributedShardFactoryTestProperty;
-
-    @Autowired
     DOMRpcService domRpcServiceTestProperty;
 
     @Autowired
@@ -190,7 +186,6 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
         Assert.assertNotNull(configDatastoreTestProperty);
         Assert.assertNotNull(operationalDatastoreTestProperty);
         Assert.assertNotNull(clusteredDOMDataBrokerTestProperty);
-        Assert.assertNotNull(distributedShardFactoryTestProperty);
         Assert.assertNotNull(domRpcServiceTestProperty);
         Assert.assertNotNull(domRpcProviderServiceTestProperty);
         Assert.assertNotNull(bindingNormalizedNodeSerializerTestProperty);

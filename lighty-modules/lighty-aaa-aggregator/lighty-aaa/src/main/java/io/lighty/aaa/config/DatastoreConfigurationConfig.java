@@ -7,10 +7,10 @@
  */
 package io.lighty.aaa.config;
 
-import java.math.BigInteger;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.DatastoreConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.DatastoreConfig.Store;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.DatastoreConfigBuilder;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public final class DatastoreConfigurationConfig {
     private DatastoreConfigurationConfig() {
@@ -18,8 +18,8 @@ public final class DatastoreConfigurationConfig {
     }
 
     public static DatastoreConfig getDefault() {
-        return new DatastoreConfigBuilder().setStore(Store.H2DataStore).setTimeToLive(new BigInteger("36000"))
-                .setTimeToWait(new BigInteger("3600")).build();
+        return new DatastoreConfigBuilder().setStore(Store.H2DataStore).setTimeToLive(Uint64.valueOf("36000"))
+                .setTimeToWait(Uint64.valueOf("3600")).build();
     }
 }
 

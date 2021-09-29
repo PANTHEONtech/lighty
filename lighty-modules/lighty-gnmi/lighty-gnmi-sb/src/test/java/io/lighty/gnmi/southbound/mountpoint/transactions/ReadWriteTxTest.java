@@ -29,7 +29,7 @@ public class ReadWriteTxTest {
     @Mock
     private WriteOnlyTx writeOnlyTx;
     private YangInstanceIdentifier yiid;
-    private NormalizedNode<?, ?> node;
+    private NormalizedNode node;
     private LogicalDatastoreType logicalDatastoreType;
 
     @BeforeEach

@@ -47,8 +47,8 @@ public class GnmiSet {
     }
 
     public ListenableFuture<CommitInfo> set(
-            final List<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>>> replaceList,
-            final List<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>>> updateList,
+            final List<ImmutablePair<YangInstanceIdentifier, NormalizedNode>> replaceList,
+            final List<ImmutablePair<YangInstanceIdentifier, NormalizedNode>> updateList,
             final List<YangInstanceIdentifier> deleteList) {
 
         final SettableFuture<CommitInfo> ret = SettableFuture.create();
