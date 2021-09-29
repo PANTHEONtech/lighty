@@ -54,7 +54,7 @@ public final class GnmiSouthboundModule extends AbstractLightyModule {
     @Override
     protected boolean initProcedure() {
         LOG.info("Starting lighty gNMI Southbound Module");
-        final List<YangLoaderService> initialLoaders = prepareByPathLoaders(gnmiConfiguration, customReactor);
+        final List<YangLoaderService> initialLoaders = prepareByPathLoaders(gnmiConfiguration);
         try {
             gnmiProvider = new GnmiSouthboundProvider(lightyServices.getDOMMountPointService(),
                     lightyServices.getBindingDataBroker(), lightyServices.getRpcProviderService(), gnmiExecutorService,
@@ -84,11 +84,10 @@ public final class GnmiSouthboundModule extends AbstractLightyModule {
         return false;
     }
 
-    private List<YangLoaderService> prepareByPathLoaders(final GnmiConfiguration config,
-                                                         final CrossSourceStatementReactor reactor) {
+    private List<YangLoaderService> prepareByPathLoaders(final GnmiConfiguration config) {
         return config != null
                 ? config.getInitialYangsPaths().stream()
-                .map(path -> new ByPathYangLoaderService(Path.of(path), reactor))
+                .map(path -> new ByPathYangLoaderService(Path.of(path)))
                 .collect(Collectors.toList())
                 : Collections.emptyList();
     }
