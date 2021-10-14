@@ -82,7 +82,8 @@ do \
 sleep 1
 
 # Pods healthcheck (:8888/restconf/operations)
-# TODO: Uncomment when ODL bug will be resolved https://jira.opendaylight.org/browse/NETCONF-822
+# TODO: Uncomment after bump to ODL netconf version 2.0.6 and yangtools 7.0.9. Where is this bug resolved https://jira.opendaylight.org/browse/NETCONF-822
+
 #for pod_controller_ip in $POD_CONTROLLER_IPS; \
 #do \
 #  assertHttpStatusCode $(curl -o /dev/null -s -w "%{http_code} GET %{url_effective}\n" --user admin:admin -H "Content-Type: application/json" --insecure http://$pod_controller_ip:8888/restconf/operations) \
