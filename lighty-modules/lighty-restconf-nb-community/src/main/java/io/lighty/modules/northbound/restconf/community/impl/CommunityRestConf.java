@@ -65,6 +65,7 @@ public class CommunityRestConf extends AbstractLightyModule {
     private RestconfProviderImpl restconfProvider;
     private Server jettyServer;
     private LightyServerBuilder lightyServerBuilder;
+    private SchemaContextHandler schemaCtxHandler;
 
     public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMSchemaService schemaService,
             final DOMRpcService domRpcService, final DOMActionService domActionService,
@@ -118,10 +119,9 @@ public class CommunityRestConf extends AbstractLightyModule {
                 .getHostAddress()), this.webSocketPort);
         this.restconfProvider.start();
 
-        final SchemaContextHandler schemaCtxHandler
+        this.schemaCtxHandler
                 = new SchemaContextHandler(this.domDataBroker, this.domSchemaService);
-        schemaCtxHandler.init();
-
+        this.schemaCtxHandler.init();
         final Configuration streamsConfiguration = RestConfConfigUtils.getStreamsConfiguration();
 
         ServletHolder jaxrs = null;
@@ -191,6 +191,10 @@ public class CommunityRestConf extends AbstractLightyModule {
     @Override
     protected boolean stopProcedure() {
         boolean stopFailed = false;
+        if (this.schemaCtxHandler != null) {
+            this.schemaCtxHandler.close();
+            LOG.info("Schema context handler closed");
+        }
         if (this.restconfProvider != null) {
             this.restconfProvider.close();
             LOG.info("RestconfProvider closed");
