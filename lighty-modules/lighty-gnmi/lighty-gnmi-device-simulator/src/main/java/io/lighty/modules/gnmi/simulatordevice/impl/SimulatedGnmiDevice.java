@@ -85,8 +85,7 @@ public class SimulatedGnmiDevice {
                                final Set<YangModuleInfo> modulesInfoSet) {
         this.bossGroup = Objects.requireNonNullElseGet(groups.bossGroup, () -> new NioEventLoopGroup(1));
         this.workerGroup = Objects.requireNonNullElseGet(groups.workerGroup, NioEventLoopGroup::new);
-        this.yangsPath = Objects.requireNonNull(paths.yangsPath, "Path to directory of yang files form which schema"
-                + " will be created is needed!");
+        this.yangsPath = paths.yangsPath;
         this.modulesInfoSet = modulesInfoSet;
         this.host = connectionInfo.host;
         this.port = connectionInfo.port;
