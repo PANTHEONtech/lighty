@@ -9,7 +9,6 @@
 package io.lighty.gnmi.southbound.schema.loader.impl;
 
 import io.lighty.gnmi.southbound.capabilities.GnmiDeviceCapability;
-import io.lighty.gnmi.southbound.schema.SchemaConstants;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoaderService;
 import io.lighty.gnmi.southbound.schema.yangstore.service.YangDataStoreService;
@@ -30,16 +29,16 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.io.IOUtils;
-import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.concepts.SemVer;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.common.YangConstants;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParser;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserFactoryImpl;
+import org.opendaylight.yangtools.yang.parser.api.YangParser;
+import org.opendaylight.yangtools.yang.parser.api.YangParserException;
+import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
 import org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangModelDependencyInfo;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
+import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
+import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,10 +54,10 @@ public class ByPathYangLoaderService implements YangLoaderService {
      */
     private final YangParser yangParser;
 
-    public ByPathYangLoaderService(final Path yangsPath, @Nullable final CrossSourceStatementReactor customReactor) {
+    public ByPathYangLoaderService(final Path yangsPath) {
         this.yangsPath = Objects.requireNonNull(yangsPath);
-        this.yangParser = new YangParserFactoryImpl(Objects.requireNonNullElse(customReactor,
-                SchemaConstants.DEFAULT_YANG_REACTOR)).createParser();
+        final YangXPathParserFactory xpathFactory = new AntlrXPathParserFactory();
+        this.yangParser = new DefaultYangParserFactory(xpathFactory).createParser();
     }
 
     @Override

@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractWriteTx implements DOMDataTreeWriteTransaction {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractWriteTx.class);
-    protected List<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>>> putList;
-    protected List<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>>> mergeList;
+    protected List<ImmutablePair<YangInstanceIdentifier, NormalizedNode>> putList;
+    protected List<ImmutablePair<YangInstanceIdentifier, NormalizedNode>> mergeList;
     protected List<YangInstanceIdentifier> deleteList;
     protected NodeId nodeId;
     private boolean finished;
@@ -64,7 +64,7 @@ public abstract class AbstractWriteTx implements DOMDataTreeWriteTransaction {
     }
 
     @Override
-    public synchronized void put(LogicalDatastoreType store, YangInstanceIdentifier path, NormalizedNode<?, ?> data) {
+    public synchronized void put(LogicalDatastoreType store, YangInstanceIdentifier path, NormalizedNode data) {
         checkEditableDatastore(store);
         if (containsOnlyNonVisibleData(path, data)) {
             LOG.debug("Ignoring put for {} and data {}. Resulting data structure is empty.", path, data);
@@ -74,7 +74,7 @@ public abstract class AbstractWriteTx implements DOMDataTreeWriteTransaction {
     }
 
     @Override
-    public synchronized void merge(LogicalDatastoreType store, YangInstanceIdentifier path, NormalizedNode<?, ?> data) {
+    public synchronized void merge(LogicalDatastoreType store, YangInstanceIdentifier path, NormalizedNode data) {
         checkEditableDatastore(store);
         if (containsOnlyNonVisibleData(path, data)) {
             LOG.debug("Ignoring merge for {} and data {}. Resulting data structure is empty.", path, data);
@@ -102,7 +102,7 @@ public abstract class AbstractWriteTx implements DOMDataTreeWriteTransaction {
     }
 
     private boolean containsOnlyNonVisibleData(final YangInstanceIdentifier path,
-                                               final NormalizedNode<?, ?> data) {
+                                               final NormalizedNode data) {
         return path.getPathArguments().size() == 1 && data instanceof MixinNode;
     }
 

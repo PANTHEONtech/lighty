@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * Default codec which transforms (YangInstanceIdentifier, NormalizedNode) to Gnmi.Update.
  */
 public class YangInstanceNormToGnmiUpdateCodec implements
-        BiCodec<YangInstanceIdentifier, NormalizedNode<?, ?>, Gnmi.Update> {
+        BiCodec<YangInstanceIdentifier, NormalizedNode, Gnmi.Update> {
 
     private static final Logger LOG = LoggerFactory.getLogger(YangInstanceNormToGnmiUpdateCodec.class);
     private final YangInstanceIdentifierToPathCodec toPathCodec;
@@ -46,7 +46,7 @@ public class YangInstanceNormToGnmiUpdateCodec implements
     }
 
     @Override
-    public Gnmi.Update apply(YangInstanceIdentifier identifier, NormalizedNode<?, ?> node)
+    public Gnmi.Update apply(YangInstanceIdentifier identifier, NormalizedNode node)
             throws GnmiCodecException {
 
         Gnmi.Path path = toPathCodec.apply(identifier);
@@ -91,7 +91,7 @@ public class YangInstanceNormToGnmiUpdateCodec implements
     }
 
     @SuppressWarnings("IllegalCatch")
-    public String toJson(final YangInstanceIdentifier identifier, final NormalizedNode<?, ?> data)
+    public String toJson(final YangInstanceIdentifier identifier, final NormalizedNode data)
             throws GnmiCodecException {
         try {
             return DataConverter.jsonStringFromNormalizedNodes(identifier, data,
@@ -137,15 +137,15 @@ public class YangInstanceNormToGnmiUpdateCodec implements
         }
     }
 
-    private static boolean isListEntry(final NormalizedNode<?, ?> node) {
+    private static boolean isListEntry(final NormalizedNode node) {
         return node instanceof MapEntryNode;
     }
 
-    private static boolean isLeaf(final NormalizedNode<?, ?> node) {
+    private static boolean isLeaf(final NormalizedNode node) {
         return node instanceof LeafNode;
     }
 
-    private static boolean isContainer(final NormalizedNode<?, ?> node) {
+    private static boolean isContainer(final NormalizedNode node) {
         return node instanceof ContainerNode;
     }
 

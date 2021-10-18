@@ -72,8 +72,8 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
                 .invokeRpc(any(QName.class), capturedNN.capture());
 
         assertTrue(capturedNN.getValue() instanceof ContainerNode);
-        Collection<DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>> children =
-                ((ContainerNode) capturedNN.getValue()).getValue();
+        Collection<DataContainerChild> children =
+                ((ContainerNode) capturedNN.getValue()).body();
         assertFalse(children.isEmpty());
         assertEquals(children.size(), 1);
         assertTrue(hasSpecificChild(children, "filter"));
@@ -110,8 +110,8 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
         Mockito.verify(domRpcService, times(1))
                 .invokeRpc(any(QName.class), capturedNN.capture());
         assertTrue(capturedNN.getValue() instanceof ContainerNode);
-        Collection<DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>> children =
-                ((ContainerNode) capturedNN.getValue()).getValue();
+        Collection<DataContainerChild> children =
+                ((ContainerNode) capturedNN.getValue()).body();
         assertFalse(children.isEmpty());
         assertEquals(children.size(), 2);
         assertTrue(hasSpecificChild(children, "source"));
@@ -164,8 +164,8 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
                 any(QName.class), capturedNN.capture());
 
         assertTrue(capturedNN.getValue() instanceof ContainerNode);
-        Collection<DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>> children =
-                ((ContainerNode) capturedNN.getValue()).getValue();
+        Collection<DataContainerChild> children =
+                ((ContainerNode) capturedNN.getValue()).body();
         assertFalse(children.isEmpty());
         assertEquals(children.size(), 4);
         assertTrue(hasSpecificChild(children, "target"));

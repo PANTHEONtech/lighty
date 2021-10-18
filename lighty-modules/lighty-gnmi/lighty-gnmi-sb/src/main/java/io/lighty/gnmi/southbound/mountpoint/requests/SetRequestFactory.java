@@ -16,8 +16,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 public interface SetRequestFactory {
 
-    Gnmi.SetRequest newRequest(List<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?,?>>> putList,
-                               List<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?,?>>> mergeList,
+    Gnmi.SetRequest newRequest(List<ImmutablePair<YangInstanceIdentifier, NormalizedNode>> putList,
+                               List<ImmutablePair<YangInstanceIdentifier, NormalizedNode>> mergeList,
                                List<YangInstanceIdentifier> deleteList) throws GnmiRequestException;
 
 }

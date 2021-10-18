@@ -70,14 +70,14 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
         Mockito.verify(domRpcService, times(1))
                 .invokeRpc(any(QName.class), capturedNN.capture());
         assertTrue(capturedNN.getValue() instanceof ContainerNode);
-        Collection<DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>> children =
-                ((ContainerNode) capturedNN.getValue()).getValue();
+        Collection<DataContainerChild> children =
+                ((ContainerNode) capturedNN.getValue()).body();
         assertFalse(children.isEmpty());
         assertEquals(children.size(), 2);
         assertTrue(hasSpecificChild(children, "datastore"));
         assertTrue(hasSpecificChild(children, "filter-spec"));
 
-        Optional<DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>> filter = children.stream()
+        Optional<DataContainerChild> filter = children.stream()
                 .filter(child -> child.getIdentifier().getNodeType().getLocalName().equals("filter-spec")).findAny();
         assertTrue(filter.isPresent());
 
@@ -116,8 +116,8 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
         Mockito.verify(domRpcService, times(1))
                 .invokeRpc(any(QName.class), capturedNN.capture());
         assertTrue(capturedNN.getValue() instanceof ContainerNode);
-        Collection<DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>> children =
-                ((ContainerNode) capturedNN.getValue()).getValue();
+        Collection<DataContainerChild> children =
+                ((ContainerNode) capturedNN.getValue()).body();
         assertFalse(children.isEmpty());
         assertEquals(children.size(), 6);
         assertTrue(hasSpecificChild(children, "datastore"));
@@ -168,8 +168,8 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
         Mockito.verify(domRpcService, times(1))
                 .invokeRpc(any(QName.class), capturedNN.capture());
         assertTrue(capturedNN.getValue() instanceof ContainerNode);
-        Collection<DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>> children =
-                ((ContainerNode) capturedNN.getValue()).getValue();
+        Collection<DataContainerChild> children =
+                ((ContainerNode) capturedNN.getValue()).body();
         assertFalse(children.isEmpty());
         assertEquals(children.size(), 3);
         assertTrue(hasSpecificChild(children, "datastore"));

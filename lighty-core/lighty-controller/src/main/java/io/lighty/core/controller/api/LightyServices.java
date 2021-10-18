@@ -13,12 +13,10 @@ import io.netty.util.Timer;
 import io.netty.util.concurrent.EventExecutor;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
-import org.opendaylight.controller.cluster.sharding.DistributedShardFactory;
 import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
 import org.opendaylight.controller.config.threadpool.ThreadPool;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
-import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.infrautils.ready.SystemReadyMonitor;
 import org.opendaylight.mdsal.binding.api.ActionProviderService;
@@ -47,7 +45,7 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
+import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 
 /**
  * This interface provides methods to access ODL core services
@@ -76,8 +74,6 @@ public interface LightyServices extends LightyModuleRegistryService {
     DistributedDataStoreInterface getConfigDatastore();
 
     DistributedDataStoreInterface getOperationalDatastore();
-
-    DistributedShardFactory getDistributedShardFactory();
 
     YangParserFactory getYangParserFactory();
 
@@ -130,8 +126,6 @@ public interface LightyServices extends LightyModuleRegistryService {
     NotificationPublishService getBindingNotificationPublishService();
 
     DataBroker getBindingDataBroker();
-
-    JobCoordinator getJobCoordinator();
 
     MetricProvider getMetricProvider();
 

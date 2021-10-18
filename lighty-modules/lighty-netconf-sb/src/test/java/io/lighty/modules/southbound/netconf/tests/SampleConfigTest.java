@@ -44,7 +44,7 @@ public class SampleConfigTest {
         final SchemaContext schemaContext =
                 lightyController.getServices().getEffectiveModelContextProvider().getEffectiveModelContext();
 
-        Assert.assertEquals(schemaContext.getModules().size(), 10);
+        Assert.assertEquals(schemaContext.getModules().size(), 9);
 
         lightyController.shutdown().get();
     }

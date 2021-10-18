@@ -35,14 +35,14 @@ public class GnmiGet {
     private static final Logger LOG = LoggerFactory.getLogger(GnmiGet.class);
 
     private final BiCodec<Gnmi.GetResponse, YangInstanceIdentifier,
-            Optional<NormalizedNode<?, ?>>> getResponseToNormalizedNodeCodec;
+            Optional<NormalizedNode>> getResponseToNormalizedNodeCodec;
     private final GnmiSessionProvider sessionProvider;
     private final GnmiGetRequestFactory getRequestFactory;
     private final NodeId nodeId;
 
     public GnmiGet(final GnmiSessionProvider sessionProvider, final NodeId nodeId,
                    final BiCodec<Gnmi.GetResponse, YangInstanceIdentifier,
-                           Optional<NormalizedNode<?, ?>>> getResponseNormalizedNodeCodec,
+                           Optional<NormalizedNode>> getResponseNormalizedNodeCodec,
                    final GnmiGetRequestFactory gnmiGetRequestFactory) {
         this.sessionProvider = sessionProvider;
         this.nodeId = nodeId;
@@ -50,17 +50,17 @@ public class GnmiGet {
         this.getRequestFactory = gnmiGetRequestFactory;
     }
 
-    public ListenableFuture<Optional<NormalizedNode<?, ?>>> readOperationalData(final YangInstanceIdentifier path) {
+    public ListenableFuture<Optional<NormalizedNode>> readOperationalData(final YangInstanceIdentifier path) {
         return readData(Gnmi.GetRequest.DataType.STATE, path);
     }
 
-    public ListenableFuture<Optional<NormalizedNode<?, ?>>> readConfigurationData(final YangInstanceIdentifier path) {
+    public ListenableFuture<Optional<NormalizedNode>> readConfigurationData(final YangInstanceIdentifier path) {
         return readData(Gnmi.GetRequest.DataType.CONFIG, path);
     }
 
-    public ListenableFuture<Optional<NormalizedNode<?, ?>>> readData(final Gnmi.GetRequest.DataType dataType,
+    public ListenableFuture<Optional<NormalizedNode>> readData(final Gnmi.GetRequest.DataType dataType,
                                                                      final YangInstanceIdentifier path) {
-        final SettableFuture<Optional<NormalizedNode<?, ?>>> ret = SettableFuture.create();
+        final SettableFuture<Optional<NormalizedNode>> ret = SettableFuture.create();
         try {
             final Gnmi.GetRequest request = getRequestFactory.newRequest(path, dataType);
             LOG.debug("[{}] Sending gNMI GetRequest:\n{}", nodeId.getValue(), request);
@@ -71,7 +71,7 @@ public class GnmiGet {
                 public void onSuccess(Gnmi.GetResponse getResponse) {
                     try {
                         LOG.debug("[{}] Got gNMI GetResponse:\n{}", nodeId.getValue(), getResponse);
-                        final Optional<NormalizedNode<?, ?>> optNormalizedNode = getResponseToNormalizedNodeCodec
+                        final Optional<NormalizedNode> optNormalizedNode = getResponseToNormalizedNodeCodec
                                 .apply(getResponse, path);
                         LOG.debug("[{}] Parsed Normalized nodes from gNMI GetResponse:\n{}", nodeId.getValue(),
                                 optNormalizedNode.isPresent()

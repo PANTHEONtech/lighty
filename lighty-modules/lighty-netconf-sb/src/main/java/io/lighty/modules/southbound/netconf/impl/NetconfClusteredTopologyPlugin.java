@@ -28,7 +28,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.topology.singleton.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
+import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
