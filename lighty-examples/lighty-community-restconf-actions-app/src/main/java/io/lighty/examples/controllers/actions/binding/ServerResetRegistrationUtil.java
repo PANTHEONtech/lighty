@@ -25,7 +25,7 @@ public final class ServerResetRegistrationUtil {
     /**
      * The example how to register binding implementation for action 'reset' from 'example-data-center' module
      * using {@code ActionProviderService} obtained from {@code lightyController}.
-     * 
+     *
      * @param lightyController {@code LightyController} instance for easy access to controller services.
      * @return {@code ObjectRegistration} Registration instance of binding action implementation on the controller.
      */
