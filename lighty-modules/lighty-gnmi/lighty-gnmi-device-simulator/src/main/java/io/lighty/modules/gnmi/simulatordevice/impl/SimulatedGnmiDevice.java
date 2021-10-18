@@ -20,6 +20,8 @@ import io.lighty.modules.gnmi.simulatordevice.gnoi.GnoiFileService;
 import io.lighty.modules.gnmi.simulatordevice.gnoi.GnoiOSService;
 import io.lighty.modules.gnmi.simulatordevice.gnoi.GnoiSonicService;
 import io.lighty.modules.gnmi.simulatordevice.gnoi.GnoiSystemService;
+import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder;
+import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
 import io.lighty.modules.gnmi.simulatordevice.utils.FileUtils;
 import io.lighty.modules.gnmi.simulatordevice.utils.UsernamePasswordAuth;
 import io.lighty.modules.gnmi.simulatordevice.yang.YangDataService;
@@ -33,6 +35,8 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.EnumSet;
 import java.util.Objects;
+import java.util.Set;
+import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +55,7 @@ public class SimulatedGnmiDevice {
     private final String certificatePath;
     private final String keyPath;
     private final String yangsPath;
+    private final Set<YangModuleInfo> modulesInfoSet;
     private final String initialConfigDataPath;
     private final String initialStateDataPath;
     private final UsernamePasswordAuth usernamePasswordAuth;
@@ -76,11 +81,13 @@ public class SimulatedGnmiDevice {
     public SimulatedGnmiDevice(final SimulatedGnmiDeviceGroupHolder groups, final SimulatedGnmiDevicePathsHolder paths,
                                final SimulatedGnmiDeviceConnectionInfoHolder connectionInfo,
                                final UsernamePasswordAuth usernamePasswordAuth, final boolean plaintext,
-                               final Gson gson, final EnumSet<Gnmi.Encoding> supportedEncodings) {
+                               final Gson gson, final EnumSet<Gnmi.Encoding> supportedEncodings,
+                               final Set<YangModuleInfo> modulesInfoSet) {
         this.bossGroup = Objects.requireNonNullElseGet(groups.bossGroup, () -> new NioEventLoopGroup(1));
         this.workerGroup = Objects.requireNonNullElseGet(groups.workerGroup, NioEventLoopGroup::new);
         this.yangsPath = Objects.requireNonNull(paths.yangsPath, "Path to directory of yang files form which schema"
                 + " will be created is needed!");
+        this.modulesInfoSet = modulesInfoSet;
         this.host = connectionInfo.host;
         this.port = connectionInfo.port;
         this.maxConnections = connectionInfo.maxConnections;
@@ -94,7 +101,7 @@ public class SimulatedGnmiDevice {
         this.supportedEncodings = supportedEncodings;
     }
 
-    public void start() throws IOException {
+    public void start() throws IOException, EffectiveModelContextBuilderException {
         final NettyServerBuilder serverBuilder = NettyServerBuilder.forAddress(new InetSocketAddress(host, port))
                 .bossEventLoopGroup(bossGroup)
                 .workerEventLoopGroup(workerGroup)
@@ -122,7 +129,10 @@ public class SimulatedGnmiDevice {
         }
 
         // Initialize schema context from yang models
-        schemaContext = FileUtils.buildSchemaFromYangsDir(yangsPath);
+        schemaContext = new EffectiveModelContextBuilder()
+                .addYangModulesPath(yangsPath)
+                .addYangModulesInfo(modulesInfoSet)
+                .build();
 
         // Initialize data service
         dataService = new YangDataService(schemaContext, initialConfigDataPath, initialStateDataPath);

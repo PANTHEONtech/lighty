@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
+import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.http.HttpResponse;
@@ -134,7 +135,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
             anotherDevice.start();
             deviceWithCredentials.start();
             deviceWithMissingEncoding.start();
-        } catch (IOException e) {
+        } catch (IOException | EffectiveModelContextBuilderException e) {
             LOG.info("Exception during device startup: ", e);
         }
     }

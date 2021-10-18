@@ -12,6 +12,7 @@ import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
+import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
 import io.lighty.modules.gnmi.simulatordevice.yang.DatastoreType;
 import java.io.IOException;
 import java.util.Optional;
@@ -31,7 +32,8 @@ public class DeviceCreationTest {
     public static final String PASSWORD_TEST = "Test";
 
     @Test
-    public void deviceInitiatedWithDataTest() throws IOException, ConfigurationException {
+    public void deviceInitiatedWithDataTest()
+            throws IOException, ConfigurationException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfigurationMultipleTopElement = new GnmiSimulatorConfiguration();
         simulatorConfigurationMultipleTopElement.setTargetAddress(TARGET_HOST);
@@ -78,7 +80,8 @@ public class DeviceCreationTest {
     }
 
     @Test
-    public void deviceInitiatedWithNoDataTest() throws IOException, ConfigurationException {
+    public void deviceInitiatedWithNoDataTest()
+            throws IOException, ConfigurationException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
         simulatorConfiguration.setTargetAddress(TARGET_HOST);
@@ -100,7 +103,8 @@ public class DeviceCreationTest {
     }
 
     @Test
-    public void deviceInitiatedWithAuthTest() throws IOException, ConfigurationException {
+    public void deviceInitiatedWithAuthTest()
+            throws IOException, ConfigurationException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
         simulatorConfiguration.setTargetAddress(TARGET_HOST);
@@ -125,7 +129,8 @@ public class DeviceCreationTest {
 
 
     @Test
-    public void initialDataPresentMultipleTopElemsTest() throws IOException, ConfigurationException {
+    public void initialDataPresentMultipleTopElemsTest()
+            throws IOException, ConfigurationException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
         simulatorConfiguration.setTargetAddress(TARGET_HOST);
@@ -174,7 +179,8 @@ public class DeviceCreationTest {
     }
 
     @Test
-    public void initialDataPresentOneTopElemTest() throws IOException, ConfigurationException {
+    public void initialDataPresentOneTopElemTest()
+            throws IOException, ConfigurationException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
         simulatorConfiguration.setTargetAddress(TARGET_HOST);
@@ -223,7 +229,8 @@ public class DeviceCreationTest {
     }
 
     @Test
-    public void initialDataPresentOneTopElemWithNoTLSTest() throws IOException, ConfigurationException {
+    public void initialDataPresentOneTopElemWithNoTLSTest()
+            throws IOException, ConfigurationException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
         simulatorConfiguration.setTargetAddress(TARGET_HOST);
@@ -247,7 +254,8 @@ public class DeviceCreationTest {
     }
 
     @Test
-    public void initialDataPresentOneTopElemWithAuthorizationTest() throws IOException, ConfigurationException {
+    public void initialDataPresentOneTopElemWithAuthorizationTest()
+            throws IOException, ConfigurationException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
         simulatorConfiguration.setTargetAddress(TARGET_HOST);

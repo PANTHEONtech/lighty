@@ -41,7 +41,8 @@ public class SimulatedGnmiDeviceBuilder {
                             gnmiSimulatorConfiguration.getPassword()),
                     gnmiSimulatorConfiguration.isUsePlaintext(),
                     gnmiSimulatorConfiguration.getGson(),
-                    gnmiSimulatorConfiguration.getSupportedEncodings());
+                    gnmiSimulatorConfiguration.getSupportedEncodings(),
+                    gnmiSimulatorConfiguration.getYangModulesInfo());
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }

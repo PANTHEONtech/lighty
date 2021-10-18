@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
+import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
 import io.lighty.modules.gnmi.test.utils.TestUtils;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -54,7 +55,7 @@ public class GnmiUploadModelsITTest extends GnmiITBase {
         device = getUnsecureGnmiDevice(DEVICE_IP, DEVICE_PORT);
         try {
             device.start();
-        } catch (IOException e) {
+        } catch (IOException | EffectiveModelContextBuilderException e) {
             LOG.info("Exception during device startup: ", e);
         }
     }

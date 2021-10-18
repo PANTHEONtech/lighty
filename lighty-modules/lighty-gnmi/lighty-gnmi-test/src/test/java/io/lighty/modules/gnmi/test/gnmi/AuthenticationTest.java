@@ -27,6 +27,7 @@ import io.lighty.modules.gnmi.connector.session.api.SessionProvider;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
+import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
 import io.lighty.modules.gnmi.test.utils.TestUtils;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -234,7 +235,7 @@ public class AuthenticationTest {
     }
 
     private SimulatedGnmiDevice startDeviceWithAuthentication(final String username, final String password)
-            throws IOException, ConfigurationException {
+            throws IOException, ConfigurationException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
         simulatorConfiguration.setTargetAddress(TARGET_HOST);
@@ -251,7 +252,8 @@ public class AuthenticationTest {
         return authenticateDevice;
     }
 
-    private SimulatedGnmiDevice startDeviceInNotTlsMode() throws IOException, ConfigurationException {
+    private SimulatedGnmiDevice startDeviceInNotTlsMode()
+            throws IOException, ConfigurationException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
         simulatorConfiguration.setTargetAddress(TARGET_HOST);

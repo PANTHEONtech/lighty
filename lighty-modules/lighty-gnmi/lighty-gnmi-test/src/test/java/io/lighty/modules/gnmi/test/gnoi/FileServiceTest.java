@@ -17,6 +17,7 @@ import io.lighty.modules.gnmi.connector.session.api.SessionProvider;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
+import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
 import io.lighty.modules.gnmi.test.utils.TestUtils;
 import io.lighty.modules.gnmi.test.utils.TimeoutUtil;
 import java.io.IOException;
@@ -51,7 +52,7 @@ public class FileServiceTest {
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, CertificateException, InvalidKeySpecException, IOException,
-            URISyntaxException, ConfigurationException {
+            URISyntaxException, ConfigurationException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
         simulatorConfiguration.setTargetAddress(TARGET_HOST);
