@@ -32,8 +32,8 @@ public final class DeviceStartActionImpl implements DOMActionImplementation {
     @Override
     public ListenableFuture<? extends DOMActionResult> invokeAction(final Absolute type,
             final DOMDataTreeIdentifier path, final ContainerNode input) {
-        final var inputValue = input.getChild(NodeIdentifier.create(INPUT_LEAF_QNAME))
-                .map(NormalizedNode::getValue).orElseThrow();
+        final var inputValue = input.findChildByArg(NodeIdentifier.create(INPUT_LEAF_QNAME))
+                .map(NormalizedNode::body).orElseThrow();
         return Futures.immediateFuture(new SimpleDOMActionResult(Builders.containerBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(Output.QNAME))
                 .withChild(Builders.leafBuilder().withNodeIdentifier(NodeIdentifier.create(OUTPUT_LEAF_QNAME))
