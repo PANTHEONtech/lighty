@@ -18,6 +18,7 @@ import io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
+import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -154,7 +155,7 @@ public class GnmiWithoutRestconfTest {
     @BeforeAll
     public static void startUp() throws ConfigurationException, ExecutionException, InterruptedException, IOException,
             InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchAlgorithmException,
-            InvalidKeySpecException, InvalidKeyException, TimeoutException {
+            InvalidKeySpecException, InvalidKeyException, TimeoutException, EffectiveModelContextBuilderException {
 
         lightyController = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getConfiguration(Files.newInputStream(CONFIGURATION_PATH)))

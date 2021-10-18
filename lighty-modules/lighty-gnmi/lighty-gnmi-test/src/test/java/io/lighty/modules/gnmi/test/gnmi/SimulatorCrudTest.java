@@ -22,6 +22,7 @@ import io.lighty.modules.gnmi.connector.session.api.SessionProvider;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
+import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
 import io.lighty.modules.gnmi.test.utils.TestUtils;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -60,7 +61,7 @@ public class SimulatorCrudTest {
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, CertificateException, InvalidKeySpecException, IOException,
-            URISyntaxException, ConfigurationException {
+            URISyntaxException, ConfigurationException, EffectiveModelContextBuilderException {
 
         GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
         simulatorConfiguration.setTargetAddress(TARGET_HOST);
