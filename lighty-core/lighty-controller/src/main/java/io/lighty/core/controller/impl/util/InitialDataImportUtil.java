@@ -43,7 +43,7 @@ public final class InitialDataImportUtil {
         throw new UnsupportedOperationException("Init of utility class is forbidden");
     }
 
-    private static NormalizedNode<?, ?> inputStreamJSONtoNormalizedNodes(InputStream inputStream,
+    private static NormalizedNode inputStreamJSONtoNormalizedNodes(InputStream inputStream,
                                                                          EffectiveModelContext effectiveModelContext)
             throws IOException, SerializationException {
         final SchemaNode rootSchemaNode = Objects.requireNonNull(
@@ -52,20 +52,20 @@ public final class InitialDataImportUtil {
         JsonNodeConverter jsonNodeConverter = new JsonNodeConverter(effectiveModelContext);
         try (Reader reader =
                      new InputStreamReader(inputStream, Charset.defaultCharset())) {
-            NormalizedNode<?, ?> nodes = jsonNodeConverter.deserialize(rootSchemaNode, reader);
+            NormalizedNode nodes = jsonNodeConverter.deserialize(rootSchemaNode, reader);
             // For some reason JsonParserStream.parse() doesn't wrap deserialized NormalizedNode in root schema node
             // (urn:ietf:params:xml:ns:netconf:base:1.0)data as XMLParserStream does..
             // Wrap it here:
             nodes = ImmutableContainerNodeBuilder.create()
                     .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(
                             rootSchemaNode.getQName()))
-                    .addChild((DataContainerChild<? extends YangInstanceIdentifier.PathArgument, ?>) nodes)
+                    .addChild((DataContainerChild) nodes)
                     .build();
             return nodes;
         }
     }
 
-    private static NormalizedNode<?, ?> inputStreamXMLtoNormalizedNodes(InputStream inputStream,
+    private static NormalizedNode inputStreamXMLtoNormalizedNodes(InputStream inputStream,
                                                                         EffectiveModelContext effectiveModelContext)
             throws IOException, SerializationException {
         SchemaNode rootSchemaNode = DataSchemaContextTree.from(effectiveModelContext).getRoot().getDataSchemaNode();
@@ -82,7 +82,7 @@ public final class InitialDataImportUtil {
                                                    @NonNull DOMDataBroker dataBroker)
             throws InterruptedException, ExecutionException, TimeoutException, IOException, SerializationException,
             IllegalStateException, UnsupportedOperationException {
-        NormalizedNode<?, ?> nodes;
+        NormalizedNode nodes;
         if (fileFormat == ImportFileFormat.JSON) {
             LOG.info("Converting JSON initial config data file to nodes");
             nodes = inputStreamJSONtoNormalizedNodes(inputFileStream, effectiveModelContext);
@@ -99,7 +99,7 @@ public final class InitialDataImportUtil {
         LOG.debug("Normalized nodes loaded on startup from file: {}", nodes);
     }
 
-    private static void mergeConfigNormalizedNodes(NormalizedNode<?, ?> nodes, DOMDataBroker dataBroker)
+    private static void mergeConfigNormalizedNodes(NormalizedNode nodes, DOMDataBroker dataBroker)
             throws InterruptedException, ExecutionException, TimeoutException {
         DOMDataTreeWriteTransaction wrTrx = dataBroker.newWriteOnlyTransaction();
         wrTrx.merge(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.empty(), nodes);

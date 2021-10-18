@@ -150,10 +150,12 @@ public final class YangModuleUtils {
         ArrayNode arrayNode = mapper.createArrayNode();
         for (YangModuleInfo yangModuleInfo: models) {
             ObjectNode modelObject = mapper.createObjectNode();
-            ModuleId modileId = ModuleId.from(yangModuleInfo);
-            modelObject.put("nameSpace", modileId.getNameSpace().toString());
-            modelObject.put("name", modileId.getName());
-            modelObject.put("revision", modileId.getRevision().toString());
+            ModuleId moduleId = ModuleId.from(yangModuleInfo);
+            modelObject.put("nameSpace", moduleId.getNameSpace().toString());
+            modelObject.put("name", moduleId.getName());
+            if (moduleId.getRevision() != null) {
+                modelObject.put("revision", moduleId.getRevision().toString());
+            }
             arrayNode.add(modelObject);
         }
         return arrayNode;

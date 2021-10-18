@@ -25,7 +25,7 @@
             <dependency>
                 <groupId>org.opendaylight.odlparent</groupId>
                 <artifactId>odlparent</artifactId>
-                <version>8.1.1</version>
+                <version>9.0.6</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -34,14 +34,14 @@
             <dependency>
                 <groupId>org.opendaylight.aaa</groupId>
                 <artifactId>aaa-artifacts</artifactId>
-                <version>0.13.2</version>
+                <version>0.14.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.controller</groupId>
                 <artifactId>controller-artifacts</artifactId>
-                <version>3.0.7</version>
+                <version>4.0.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -50,35 +50,35 @@
                 This artifact dependency management was removed from odl-parent in Aluminium release. -->
                 <groupId>org.opendaylight.controller</groupId>
                 <artifactId>bundle-parent</artifactId>
-                <version>3.0.7</version>
+                <version>4.0.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.infrautils</groupId>
                 <artifactId>infrautils-artifacts</artifactId>
-                <version>1.9.6</version>
+                <version>2.0.6</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-artifacts</artifactId>
-                <version>7.0.6</version>
+                <version>8.0.5</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.netconf</groupId>
                 <artifactId>netconf-artifacts</artifactId>
-                <version>1.13.1</version>
+                <version>2.0.5</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.yangtools</groupId>
                 <artifactId>yangtools-artifacts</artifactId>
-                <version>6.0.5</version>
+                <version>7.0.8</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -117,9 +117,10 @@
                 <version>1.8</version>
             </dependency>
             <dependency>
-                <groupId>com.google.code.findbugs</groupId>
-                <artifactId>annotations</artifactId>
-                <version>3.0.1</version>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-annotations</artifactId>
+                <version>3.1.12</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
@@ -130,7 +131,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.11</version>
+                <version>3.12.0</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
@@ -151,57 +152,57 @@
             <dependency>
                 <groupId>com.typesafe.akka</groupId>
                 <artifactId>akka-remote_2.13</artifactId>
-                <version>2.6.12</version>
+                <version>2.6.16</version>
             </dependency>
             <dependency>
                 <groupId>com.typesafe.akka</groupId>
                 <artifactId>akka-slf4j_2.13</artifactId>
-                <version>2.6.12</version>
+                <version>2.6.16</version>
             </dependency>
             <dependency>
                 <groupId>com.typesafe.akka</groupId>
                 <artifactId>akka-cluster_2.13</artifactId>
-                <version>2.6.12</version>
+                <version>2.6.16</version>
             </dependency>
             <dependency>
                 <groupId>com.typesafe.akka</groupId>
                 <artifactId>akka-discovery_2.13</artifactId>
-                <version>2.6.12</version>
+                <version>2.6.16</version>
             </dependency>
             <dependency>
                 <groupId>com.typesafe.akka</groupId>
                 <artifactId>akka-protobuf_2.13</artifactId>
-                <version>2.6.12</version>
+                <version>2.6.16</version>
             </dependency>
             <dependency>
                 <groupId>com.typesafe.akka</groupId>
                 <artifactId>akka-coordination_2.13</artifactId>
-                <version>2.6.12</version>
+                <version>2.6.16</version>
             </dependency>
             <dependency>
                 <groupId>com.typesafe.akka</groupId>
                 <artifactId>akka-distributed-data_2.13</artifactId>
-                <version>2.6.12</version>
+                <version>2.6.16</version>
             </dependency>
             <dependency>
                 <groupId>com.typesafe.akka</groupId>
                 <artifactId>akka-cluster-tools_2.13</artifactId>
-                <version>2.6.12</version>
+                <version>2.6.16</version>
             </dependency>
             <dependency>
                 <groupId>com.typesafe.akka</groupId>
                 <artifactId>akka-cluster-sharding_2.13</artifactId>
-                <version>2.6.12</version>
+                <version>2.6.16</version>
             </dependency>
             <dependency>
                 <groupId>com.typesafe.akka</groupId>
                 <artifactId>akka-actor_2.13</artifactId>
-                <version>2.6.12</version>
+                <version>2.6.16</version>
             </dependency>
             <dependency>
                 <groupId>com.typesafe.akka</groupId>
                 <artifactId>akka-stream_2.13</artifactId>
-                <version>2.6.12</version>
+                <version>2.6.16</version>
             </dependency>
             <dependency>
                 <groupId>com.lightbend.akka.management</groupId>

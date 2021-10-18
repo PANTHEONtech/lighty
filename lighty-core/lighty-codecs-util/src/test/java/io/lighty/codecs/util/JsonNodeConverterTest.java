@@ -15,7 +15,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
+import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 
 public class JsonNodeConverterTest extends AbstractCodecTest {
 
@@ -52,7 +52,7 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
 
     @Test
     public void testDeserializeData() throws Exception {
-        NormalizedNode<?, ?> deserializeData = bindingSerializer.deserialize(this.effectiveModelContext,
+        NormalizedNode deserializeData = bindingSerializer.deserialize(this.effectiveModelContext,
                 new StringReader(loadResourceAsString("toaster.json")));
         Assert.assertNotNull(deserializeData);
     }
@@ -62,7 +62,7 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
         Optional<? extends RpcDefinition>
                 loadRpc = ConverterUtils.loadRpc(this.effectiveModelContext, SIMPLE_IO_RPC_QNAME);
         String loadIoRpcIn = loadResourceAsString("input-output-rpc-in.json");
-        NormalizedNode<?, ?> deserializeRpc =
+        NormalizedNode deserializeRpc =
                 bindingSerializer.deserialize(loadRpc.orElseThrow(), new StringReader(loadIoRpcIn));
         Assert.assertNotNull(deserializeRpc);
     }
@@ -72,14 +72,14 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
         Optional<? extends RpcDefinition>
                 loadRpc = ConverterUtils.loadRpc(this.effectiveModelContext, SIMPLE_IO_RPC_QNAME);
         String loadIoRpcOut = loadResourceAsString("input-output-rpc-out.json");
-        NormalizedNode<?, ?> deserializeRpc =
+        NormalizedNode deserializeRpc =
                 bindingSerializer.deserialize(loadRpc.orElseThrow(), new StringReader(loadIoRpcOut));
         Assert.assertNotNull(deserializeRpc);
     }
 
     @Test
     public void testDeserialize_container() throws SerializationException {
-        NormalizedNode<?, ?> deserializeContainer = bindingSerializer.deserialize(this.effectiveModelContext,
+        NormalizedNode deserializeContainer = bindingSerializer.deserialize(this.effectiveModelContext,
                 new StringReader(loadResourceAsString("top-level-container.json")));
         Assert.assertNotNull(deserializeContainer);
     }
@@ -88,7 +88,7 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
     public void testDeserialize_container_rpc() throws SerializationException {
         Optional<? extends RpcDefinition>
                 loadRpcContainer = ConverterUtils.loadRpc(this.effectiveModelContext, CONTAINER_IO_RPC_QNAME);
-        NormalizedNode<?, ?> deserializeData = bindingSerializer.deserialize(loadRpcContainer.orElseThrow(),
+        NormalizedNode deserializeData = bindingSerializer.deserialize(loadRpcContainer.orElseThrow(),
                 new StringReader(loadResourceAsString("container-io-rpc.json")));
         Assert.assertNotNull(deserializeData);
     }

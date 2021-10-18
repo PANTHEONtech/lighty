@@ -37,18 +37,18 @@ public class GetResponseToNormalizedNodeCodecTest {
 
     @Test
     public void rootElementCase() throws GnmiCodecException {
-        final Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode<?, ?>> prepared =
+        final Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode> prepared =
                 testCases.rootCase();
-        final Optional<NormalizedNode<?, ?>> result = codec.apply(prepared.getKey().right, prepared.getKey().left);
+        final Optional<NormalizedNode> result = codec.apply(prepared.getKey().right, prepared.getKey().left);
         assertEqualsCodecResult(prepared.getValue(), result);
     }
 
     @Test
     public void topLevelElementTest() throws GnmiCodecException {
         // Test if json response is at the same level as identifier
-        Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode<?, ?>> prepared =
+        Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode> prepared =
                 testCases.topElementTestCase(false);
-        Optional<NormalizedNode<?, ?>> result = codec.apply(prepared.getKey().right, prepared.getKey().left);
+        Optional<NormalizedNode> result = codec.apply(prepared.getKey().right, prepared.getKey().left);
         assertEqualsCodecResult(prepared.getValue(), result);
         // Test if json response is one level deeper as identifier
         prepared = testCases.topElementTestCase(true);
@@ -59,9 +59,9 @@ public class GetResponseToNormalizedNodeCodecTest {
     @Test
     public void containerTest() throws GnmiCodecException {
         // Test container if response is at the same level as requested
-        Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode<?, ?>> prepared =
+        Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode> prepared =
                 testCases.containerTestCase(false);
-        Optional<NormalizedNode<?, ?>> result = codec.apply(prepared.getKey().right, prepared.getKey().left);
+        Optional<NormalizedNode> result = codec.apply(prepared.getKey().right, prepared.getKey().left);
         assertEqualsCodecResult(prepared.getValue(), result);
         // Test container if response is one level deeper than requested
         prepared = testCases.containerTestCase(true);
@@ -80,9 +80,9 @@ public class GetResponseToNormalizedNodeCodecTest {
     @Test
     public void listEntryTest() throws GnmiCodecException {
         // Test list entry if response is at the same level as requested
-        Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode<?, ?>> prepared =
+        Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode> prepared =
                 testCases.listEntryTestCase(false);
-        Optional<NormalizedNode<?, ?>> result = codec.apply(prepared.getKey().right, prepared.getKey().left);
+        Optional<NormalizedNode> result = codec.apply(prepared.getKey().right, prepared.getKey().left);
         assertEqualsCodecResult(prepared.getValue(), result);
         // Test list entry if response is one level deeper than requested
         prepared = testCases.listEntryTestCase(true);
@@ -98,9 +98,9 @@ public class GetResponseToNormalizedNodeCodecTest {
     public void leafJsonTest() throws GnmiCodecException {
         // ------Number cases:----------
         // Test leaf value if response is json in format "{leaf:value}"
-        Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode<?, ?>> prepared =
+        Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode> prepared =
                 testCases.leafNumberTestCase(true, false);
-        Optional<NormalizedNode<?, ?>> result = codec.apply(prepared.getKey().right, prepared.getKey().left);
+        Optional<NormalizedNode> result = codec.apply(prepared.getKey().right, prepared.getKey().left);
         assertEqualsCodecResult(prepared.getValue(), result);
         // Test leaf value if response is json in format "value"
         prepared = testCases.leafNumberTestCase(true, true);
@@ -142,9 +142,9 @@ public class GetResponseToNormalizedNodeCodecTest {
     @Test
     public void leafNonJsonTest() throws GnmiCodecException {
         // ------Number case:----------
-        Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode<?, ?>> prepared =
+        Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode> prepared =
                 testCases.leafNumberTestCase(false, true);
-        Optional<NormalizedNode<?, ?>> result = codec.apply(prepared.getKey().right, prepared.getKey().left);
+        Optional<NormalizedNode> result = codec.apply(prepared.getKey().right, prepared.getKey().left);
         assertEqualsCodecResult(prepared.getValue(), result);
 
         // ------String case:----------
@@ -165,8 +165,8 @@ public class GetResponseToNormalizedNodeCodecTest {
         assertEqualsCodecResult(prepared.getValue(), result);
     }
 
-    private static void assertEqualsCodecResult(final NormalizedNode<?, ?> expected,
-                                                final Optional<NormalizedNode<?, ?>> result) {
+    private static void assertEqualsCodecResult(final NormalizedNode expected,
+                                                final Optional<NormalizedNode> result) {
         Assertions.assertTrue(result.isPresent());
         Assertions.assertEquals(expected, result.get());
     }

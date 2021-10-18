@@ -42,7 +42,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
      * Returns test case for top schema element (openconfig-interfaces:interfaces).
      * @return test case ((inputs to codec), expected output).
      */
-    public Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?,?>>, Gnmi.Update> topElementTestCase() {
+    public Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> topElementTestCase() {
 
         final JsonObject jsonInterfaces =
                 new JsonParser().parse(baseJson)
@@ -63,7 +63,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
      * Returns test case for list entry (openconfig-interfaces:interfaces/interface=eth3).
      * @return test case ((inputs to codec), expected output).
      */
-    public Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?,?>>, Gnmi.Update> listEntryTestCase() {
+    public Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> listEntryTestCase() {
 
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
@@ -89,7 +89,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
      * Returns test case for simple container (openconfig-interfaces:interfaces/interface=eth3/config).
      * @return test case ((inputs to codec), expected output).
      */
-    public Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?,?>>, Gnmi.Update> containerTestCase() {
+    public Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> containerTestCase() {
 
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
@@ -119,7 +119,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
      * Returns test case for augmented container (openconfig-interfaces:interfaces/interface=br0/ethernet/config).
      * @return test case ((inputs to codec), expected output).
      */
-    public Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?,?>>, Gnmi.Update> augmentedContainerCase() {
+    public Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> augmentedContainerCase() {
 
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
@@ -153,7 +153,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
      * Returns test case for number leaf (openconfig-interfaces:interfaces/interface=eth3/config/mtu).
      * @return test case ((inputs to codec), expected output).
      */
-    public Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?,?>>, Gnmi.Update> leafNumberTestCase() {
+    public Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> leafNumberTestCase() {
 
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
@@ -185,7 +185,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
      * Returns test case for string leaf (openconfig-interfaces:interfaces/interface=eth3/config/name).
      * @return test case ((inputs to codec), expected output).
      */
-    public Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?,?>>, Gnmi.Update> leafStringTestCase() {
+    public Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> leafStringTestCase() {
 
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
@@ -217,7 +217,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
      * Returns test case for boolean leaf (openconfig-interfaces:interfaces/interface=eth3/config/loopback-mode).
      * @return test case ((inputs to codec), expected output).
      */
-    public Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?,?>>, Gnmi.Update> leafBooleanTestCase() {
+    public Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> leafBooleanTestCase() {
 
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
@@ -251,7 +251,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
      *  aggregate-id).
      * @return test case ((inputs to codec), expected output).
      */
-    public Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?,?>>, Gnmi.Update> leafAugmentedTestCase() {
+    public Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> leafAugmentedTestCase() {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName("interfaces"))

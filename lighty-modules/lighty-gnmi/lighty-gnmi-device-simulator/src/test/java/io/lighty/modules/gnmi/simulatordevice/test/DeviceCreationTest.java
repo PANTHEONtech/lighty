@@ -137,7 +137,7 @@ public class DeviceCreationTest {
         final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
         target.start();
 
-        Optional<NormalizedNode<?, ?>> optNormalizedNode = target.getDataService()
+        Optional<NormalizedNode> optNormalizedNode = target.getDataService()
                 .readDataByPath(DatastoreType.CONFIGURATION,
                         YangInstanceIdentifier.of(
                                 QName.create(
@@ -186,7 +186,7 @@ public class DeviceCreationTest {
         final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
         target.start();
 
-        Optional<NormalizedNode<?, ?>> optNormalizedNode = target.getDataService()
+        Optional<NormalizedNode> optNormalizedNode = target.getDataService()
                 .readDataByPath(DatastoreType.CONFIGURATION,
                         YangInstanceIdentifier.of(
                                 QName.create(
@@ -235,7 +235,7 @@ public class DeviceCreationTest {
 
         final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
         target.start();
-        Optional<NormalizedNode<?, ?>> optNormalizedNode = target.getDataService()
+        Optional<NormalizedNode> optNormalizedNode = target.getDataService()
                 .readDataByPath(DatastoreType.CONFIGURATION,
                         YangInstanceIdentifier.of(
                                 QName.create(
@@ -260,7 +260,7 @@ public class DeviceCreationTest {
 
         final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
         target.start();
-        Optional<NormalizedNode<?, ?>> optNormalizedNode = target.getDataService()
+        Optional<NormalizedNode> optNormalizedNode = target.getDataService()
                 .readDataByPath(DatastoreType.CONFIGURATION,
                         YangInstanceIdentifier.of(
                                 QName.create(

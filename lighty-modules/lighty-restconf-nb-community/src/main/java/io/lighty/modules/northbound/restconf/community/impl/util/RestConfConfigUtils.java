@@ -28,7 +28,7 @@ public final class RestConfConfigUtils {
 
     public static final String RESTCONF_CONFIG_ROOT_ELEMENT_NAME = "restconf";
     public static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev160621
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104
                     .$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126
                     .$YangModuleInfoImpl.getInstance(),

@@ -16,7 +16,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
-import org.opendaylight.controller.cluster.sharding.DistributedShardFactory;
 import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
 import org.opendaylight.controller.config.threadpool.ThreadPool;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
@@ -69,9 +68,6 @@ public class TestService {
     @Inject
     @Named("ControllerOperationalDatastore")
     private DistributedDataStoreInterface distributedDataStoreInterfaceOperational;
-
-    @Inject
-    private DistributedShardFactory distributedShardFactory;
 
     @Inject
     private BindingNormalizedNodeSerializer bindingNormalizedNodeSerializer;
@@ -182,10 +178,6 @@ public class TestService {
 
     public DistributedDataStoreInterface getDistributedDataStoreInterfaceOperational() {
         return distributedDataStoreInterfaceOperational;
-    }
-
-    public DistributedShardFactory getDistributedShardFactory() {
-        return distributedShardFactory;
     }
 
     public BindingNormalizedNodeSerializer getBindingNormalizedNodeSerializer() {

@@ -58,7 +58,7 @@ public class CodecTestCasesBase {
      *
      * @return test case.
      */
-    protected ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>> rootElementTestCase() {
+    protected ImmutablePair<YangInstanceIdentifier, NormalizedNode> rootElementTestCase() {
         return ImmutablePair.of(YangInstanceIdentifier.empty(), makeRoot());
     }
 
@@ -67,7 +67,7 @@ public class CodecTestCasesBase {
      *
      * @return test case.
      */
-    protected ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>> topElementCase() {
+    protected ImmutablePair<YangInstanceIdentifier, NormalizedNode> topElementCase() {
         final YangInstanceIdentifier identifier =
                 YangInstanceIdentifier.create(
                         getNodeIdentifierOfNodeInModule("interfaces", "interfaces"));
@@ -81,7 +81,7 @@ public class CodecTestCasesBase {
      * @param wrapInMapNode should the resulting MapEntryNode be wrapped in MapNode ?
      * @return test case.
      */
-    protected ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>> listEntryCase(final boolean wrapInMapNode) {
+    protected ImmutablePair<YangInstanceIdentifier, NormalizedNode> listEntryCase(final boolean wrapInMapNode) {
         final YangInstanceIdentifier identifier =
                 YangInstanceIdentifier.create(getNodeIdentifierOfNodeInModule(IT_ID, "interfaces"))
                         .node(getNodeIdentifierOfNodeInModule(IT_ID, "interface"))
@@ -100,7 +100,7 @@ public class CodecTestCasesBase {
      *
      * @return test case.
      */
-    protected ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>> containerCase() {
+    protected ImmutablePair<YangInstanceIdentifier, NormalizedNode> containerCase() {
         final YangInstanceIdentifier identifier =
                 YangInstanceIdentifier.create(getNodeIdentifierOfNodeInModule(IT_ID, "interfaces"))
                         .node(getNodeIdentifierOfNodeInModule(IT_ID, "interface"))
@@ -116,7 +116,7 @@ public class CodecTestCasesBase {
      *
      * @return test case ((inputs to codec), expected output).
      */
-    protected ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>> containerAugmentedCase() {
+    protected ImmutablePair<YangInstanceIdentifier, NormalizedNode> containerAugmentedCase() {
         final YangInstanceIdentifier identifier =
                 YangInstanceIdentifier.create(getNodeIdentifierOfNodeInModule(IT_ID, "interfaces"))
                         .node(getNodeIdentifierOfNodeInModule(IT_ID, "interface"))
@@ -134,7 +134,7 @@ public class CodecTestCasesBase {
      *
      * @return test case.
      */
-    protected ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>> leafNumberCase() {
+    protected ImmutablePair<YangInstanceIdentifier, NormalizedNode> leafNumberCase() {
         final YangInstanceIdentifier identifier =
                 YangInstanceIdentifier.create(getNodeIdentifierOfNodeInModule(IT_ID, "interfaces"))
                         .node(getNodeIdentifierOfNodeInModule(IT_ID, "interface"))
@@ -152,7 +152,7 @@ public class CodecTestCasesBase {
      *
      * @return test case.
      */
-    protected ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>> leafStringCase() {
+    protected ImmutablePair<YangInstanceIdentifier, NormalizedNode> leafStringCase() {
         final YangInstanceIdentifier identifier =
                 YangInstanceIdentifier.create(getNodeIdentifierOfNodeInModule(IT_ID, "interfaces"))
                         .node(getNodeIdentifierOfNodeInModule(IT_ID, "interface"))
@@ -169,7 +169,7 @@ public class CodecTestCasesBase {
      *
      * @return test case.
      */
-    protected ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>> leafBooleanCase() {
+    protected ImmutablePair<YangInstanceIdentifier, NormalizedNode> leafBooleanCase() {
         final YangInstanceIdentifier identifier =
                 YangInstanceIdentifier.create(getNodeIdentifierOfNodeInModule(IT_ID, "interfaces"))
                         .node(getNodeIdentifierOfNodeInModule(IT_ID, "interface"))
@@ -186,7 +186,7 @@ public class CodecTestCasesBase {
      *
      * @return test case ((inputs to codec), expected output).
      */
-    protected ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>> leafAgumentedCase() {
+    protected ImmutablePair<YangInstanceIdentifier, NormalizedNode> leafAgumentedCase() {
         final YangInstanceIdentifier identifier =
                 YangInstanceIdentifier.create(getNodeIdentifierOfNodeInModule(IT_ID, "interfaces"))
                         .node(getNodeIdentifierOfNodeInModule(IT_ID, "interface"))
@@ -241,15 +241,15 @@ public class CodecTestCasesBase {
                 .findFirst().orElseThrow();
     }
 
-    private NormalizedNode<?, ?> makeRoot() {
-        final NormalizedNode<?, ?> normalizedNode = ImmutableContainerNodeBuilder.create()
+    private NormalizedNode makeRoot() {
+        final NormalizedNode normalizedNode = ImmutableContainerNodeBuilder.create()
                 .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifier.create(SchemaContext.NAME))
-                .withChild((DataContainerChild<?, ?>) makeInterfaces())
-                .withChild((DataContainerChild<?, ?>) makeComponents()).build();
+                .withChild((DataContainerChild) makeInterfaces())
+                .withChild((DataContainerChild) makeComponents()).build();
         return normalizedNode;
     }
 
-    private NormalizedNode<?,?> makeComponents() {
+    private NormalizedNode makeComponents() {
         return ImmutableContainerNodeBuilder.create()
                 .withNodeIdentifier(getNodeIdentifierOfNodeInModule(PLT_ID, "components"))
                 .withChild(ImmutableMapNodeBuilder.create()
@@ -267,7 +267,7 @@ public class CodecTestCasesBase {
                 .build();
     }
 
-    public NormalizedNode<?,?> makeInterfaces() {
+    public NormalizedNode makeInterfaces() {
 
         return ImmutableContainerNodeBuilder.create()
                 .withNodeIdentifier(getNodeIdentifierOfNodeInModule(IT_ID, "interfaces"))

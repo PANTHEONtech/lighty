@@ -30,7 +30,7 @@ public interface NodeConverter {
      * @return {@link Writer}
      * @throws SerializationException may be throws while serializing data
      */
-    Writer serializeData(SchemaNode schemaNode, NormalizedNode<?, ?> normalizedNode) throws SerializationException;
+    Writer serializeData(SchemaNode schemaNode, NormalizedNode normalizedNode) throws SerializationException;
 
     /**
      * This method will serialize the input {@link NormalizedNode} RPC into its string representation. It
@@ -46,7 +46,7 @@ public interface NodeConverter {
      * @return string representation of the given nodes starting with input or output tag
      * @throws SerializationException thrown in case serialization fails.
      */
-    Writer serializeRpc(SchemaNode schemaNode, NormalizedNode<?, ?> normalizedNode) throws SerializationException;
+    Writer serializeRpc(SchemaNode schemaNode, NormalizedNode normalizedNode) throws SerializationException;
 
     /**
      * This method will deserialize the given input data into {@link NormalizedNode}s. In case of RPC
@@ -63,5 +63,5 @@ public interface NodeConverter {
      * @return deserialized {@link NormalizedNode}s
      * @throws SerializationException is thrown in case of an error during deserialization
      */
-    NormalizedNode<?, ?> deserialize(SchemaNode schemaNode, Reader inputData) throws SerializationException;
+    NormalizedNode deserialize(SchemaNode schemaNode, Reader inputData) throws SerializationException;
 }

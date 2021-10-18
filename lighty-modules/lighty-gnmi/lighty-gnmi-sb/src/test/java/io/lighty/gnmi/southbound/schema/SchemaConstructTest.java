@@ -58,7 +58,7 @@ public class SchemaConstructTest {
     @BeforeEach
     public void setup() throws YangLoadException {
         dataStoreService = new TestYangDataStoreService();
-        completeCapabilities = new ByPathYangLoaderService(Path.of(SCHEMA_PATH), null)
+        completeCapabilities = new ByPathYangLoaderService(Path.of(SCHEMA_PATH))
                 .load(dataStoreService);
         Assertions.assertFalse(completeCapabilities.isEmpty());
     }

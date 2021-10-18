@@ -45,7 +45,7 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
     @Override
     public ListenableFuture<? extends DOMRpcResult> get(final Optional<YangInstanceIdentifier> filterYII) {
         if (filterYII.isPresent() && !filterYII.get().isEmpty()) {
-            final DataContainerChild<?, ?> filter =
+            final DataContainerChild filter =
                     NetconfMessageTransformUtil.toFilterStructure(filterYII.get(), effectiveModelContext);
             return domRpcService.invokeRpc(NETCONF_GET_QNAME,
                     NetconfMessageTransformUtil.wrap(NETCONF_GET_QNAME, filter));
@@ -60,7 +60,7 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
         Preconditions.checkNotNull(sourceDatastore);
 
         if (filterYII.isPresent() && !filterYII.get().isEmpty()) {
-            final DataContainerChild<?, ?> filter =
+            final DataContainerChild filter =
                     NetconfMessageTransformUtil.toFilterStructure(filterYII.get(), effectiveModelContext);
             return domRpcService.invokeRpc(NETCONF_GET_CONFIG_QNAME,
                     NetconfMessageTransformUtil.wrap(NETCONF_GET_CONFIG_QNAME,
@@ -74,12 +74,12 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
 
     @Override
     public ListenableFuture<? extends DOMRpcResult> editConfig(final QName targetDatastore,
-            final Optional<NormalizedNode<?, ?>> data, final YangInstanceIdentifier dataPath,
+            final Optional<NormalizedNode> data, final YangInstanceIdentifier dataPath,
             final Optional<ModifyAction> dataModifyActionAttribute,
             final Optional<ModifyAction> defaultModifyAction, final boolean rollback) {
         Preconditions.checkNotNull(targetDatastore);
 
-        DataContainerChild<?, ?> editStructure = NetconfUtils.createEditConfigStructure(effectiveModelContext, data,
+        DataContainerChild editStructure = NetconfUtils.createEditConfigStructure(effectiveModelContext, data,
                 dataModifyActionAttribute, dataPath);
 
         Preconditions.checkNotNull(editStructure);

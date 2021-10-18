@@ -113,7 +113,7 @@ Device [node-status](https://github.com/PANTHEONtech/lighty/blob/14.0.x/lighty-m
 ```java
         final YangInstanceIdentifier interfacesYIID = YangInstanceIdentifier.builder().node(INTERFACES_QNAME).build();
         final DOMDataTreeReadTransaction domDataTreeReadTransaction = domDataBroker.newReadOnlyTransaction();
-        final Optional<NormalizedNode<?, ?>> normalizedNode
+        final Optional<NormalizedNode> normalizedNode
                 = domDataTreeReadTransaction.read(LogicalDatastoreType.CONFIGURATION, interfacesYIID).get();
 ```
 
@@ -150,7 +150,7 @@ This example shows how to programmatically add certificates for lighty.io gNMI. 
 - Invoke RPC for adding certificates to lighty.io gNMI:
 
 ```java
-        final NormalizedNode<?, ?> certificateInput
+        final NormalizedNode certificateInput
                 = getCertificateInput(CERT_ID, CA_VALUE, CLIENT_CERT, CLIENT_KEY, PASSPHRASE);
         lightyController.getServices().getDOMRpcService().invokeRpc(ADD_KEYSTORE_RPC_QN, certificateInput).get();
 ```
@@ -163,7 +163,7 @@ YANG models should be added **before connecting the gNMI device**. YANG storage 
 
 - Invoke RPC for Updating YANG models to lighty.io gNMI.
 ```java
-        final NormalizedNode<?, ?> yangModelInput = getYangModelInput(YANG_NAME, YANG_BODY, YANG_VERSION);
+        final NormalizedNode yangModelInput = getYangModelInput(YANG_NAME, YANG_BODY, YANG_VERSION);
         lightyController.getServices().getDOMRpcService().invokeRpc(UPLOAD_YANG_RPC_QN, yangModelInput).get();
 ```
 Thefull example can be found inside the [GnmiWithoutRestconfTest](../lighty-gnmi-test/src/test/java/io/lighty/modules/gnmi/test/gnmi/GnmiWithoutRestconfTest.java).

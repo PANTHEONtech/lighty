@@ -50,7 +50,7 @@ public class YangDataService {
         initializeDataStore(initialConfigDataPath, initialStateDataPath, schemaContext);
     }
 
-    public Optional<NormalizedNode<?, ?>> readDataByPath(final DatastoreType datastoreType,
+    public Optional<NormalizedNode> readDataByPath(final DatastoreType datastoreType,
                                                          final YangInstanceIdentifier path) {
         try (DOMStoreReadTransaction tx = datastoreMap.get(datastoreType).newReadOnlyTransaction()) {
             return tx.read(path).get();
@@ -123,13 +123,13 @@ public class YangDataService {
              ROOT_IDENTIFIER because we are writing one/or multiple top-level elements
               (interfaces,alarms, components ...).
             */
-            final NormalizedNode<?, ?> node =
+            final NormalizedNode node =
                     DataConverter.nodeFromJsonString(ROOT_IDENTIFIER, configJson, schemaContext);
             /*
              If QName of parsed node is a root node (SchemaContext.NAME), that means we parsed multiple
               top-level element, in that case we need to write this node on ROOT_IDENTIFIER.
             */
-            if (node.getNodeType().equals(SchemaContext.NAME)) {
+            if (node.getIdentifier().getNodeType().equals(SchemaContext.NAME)) {
                 writeDataByPath(datastoreType, ROOT_IDENTIFIER, node);
             // Else we parsed only one top-level element, in that case we write this node on it's identifier.
             } else {

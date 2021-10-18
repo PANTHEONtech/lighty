@@ -22,7 +22,7 @@ import org.testng.Assert;
 public abstract class SwaggerLightyTest extends SwaggerLightyTestBase {
 
     protected static final String DEFAULT_MODEL_NAME = "ietf-yang-library";
-    protected static final String DEFAULT_REVISION_DATE = "2016-06-21";
+    protected static final String DEFAULT_REVISION_DATE = "2019-01-04";
 
     protected SwaggerLightyTest(JsonRestConfServiceType restConfServiceType) {
         super(restConfServiceType);
