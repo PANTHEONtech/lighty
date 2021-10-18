@@ -11,7 +11,7 @@
 
     <groupId>io.lighty.kit.examples</groupId>
     <artifactId>example-applications-aggregator</artifactId>
-    <version>15.0.0-SNAPSHOT</version>
+    <version>14.2.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -23,7 +23,6 @@
         <module>lighty-community-aaa-restconf-app</module>
         <module>lighty-community-restconf-netconf-app</module>
         <module>lighty-controller-springboot-netconf</module>
-        <module>lighty-community-restconf-ofp-app</module>
         <module>lighty-community-restconf-actions-app</module>
     </modules>
 </project>

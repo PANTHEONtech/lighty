@@ -25,7 +25,7 @@
             <!-- Core components -->
             <dependency>
                 <groupId>io.lighty.core</groupId>
-                <artifactId>lighty-codecs</artifactId>
+                <artifactId>lighty-codecs-util</artifactId>
                 <version>15.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
@@ -58,6 +58,16 @@
 
             <!-- Modules -->
             <dependency>
+                <groupId>io.lighty.modules.tests</groupId>
+                <artifactId>integration-tests</artifactId>
+                <version>15.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.lighty.modules.tests</groupId>
+                <artifactId>integration-tests-aaa</artifactId>
+                <version>15.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
                 <groupId>io.lighty.modules</groupId>
                 <artifactId>lighty-aaa</artifactId>
                 <version>15.0.0-SNAPSHOT</version>
@@ -84,11 +94,6 @@
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules</groupId>
-                <artifactId>lighty-openflow-sb</artifactId>
-                <version>15.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>io.lighty.modules</groupId>
                 <artifactId>lighty-aaa-encryption-service</artifactId>
                 <version>15.0.0-SNAPSHOT</version>
             </dependency>
@@ -97,11 +102,6 @@
             <dependency>
                 <groupId>io.lighty.modules.gnmi</groupId>
                 <artifactId>lighty-gnmi-connector</artifactId>
-                <version>15.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>io.lighty.applications.rcgnmi</groupId>
-                <artifactId>lighty-rcgnmi-app-module</artifactId>
                 <version>15.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
@@ -117,11 +117,6 @@
             <dependency>
                 <groupId>io.lighty.modules.gnmi</groupId>
                 <artifactId>lighty-gnmi-device-simulator</artifactId>
-                <version>15.0.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>io.lighty.applications.rcgnmi</groupId>
-                <artifactId>lighty-rcgnmi-app</artifactId>
                 <version>15.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
@@ -147,6 +142,45 @@
             <dependency>
                 <groupId>io.lighty.models.gnmi</groupId>
                 <artifactId>lighty-gnmi-force-capabilities</artifactId>
+                <version>15.0.0-SNAPSHOT</version>
+            </dependency>
+
+            <!-- lighty applications -->
+            <dependency>
+                <groupId>io.lighty.applications.rcgnmi</groupId>
+                <artifactId>lighty-rcgnmi-app</artifactId>
+                <version>15.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.lighty.applications.rcgnmi</groupId>
+                <artifactId>lighty-rcgnmi-app-module</artifactId>
+                <version>15.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.lighty.applications.rnc</groupId>
+                <artifactId>lighty-rnc-app</artifactId>
+                <version>15.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.lighty.applications.rnc</groupId>
+                <artifactId>lighty-rnc-module</artifactId>
+                <version>15.0.0-SNAPSHOT</version>
+            </dependency>
+
+            <!-- lighty examples -->
+            <dependency>
+                <groupId>io.lighty.kit.examples.controllers</groupId>
+                <artifactId>lighty-community-aaa-restconf-app</artifactId>
+                <version>15.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.lighty.kit.examples.controllers</groupId>
+                <artifactId>lighty-community-restconf-netconf-app</artifactId>
+                <version>15.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.lighty.core</groupId>
+                <artifactId>lighty-controller-springboot</artifactId>
                 <version>15.0.0-SNAPSHOT</version>
             </dependency>
 

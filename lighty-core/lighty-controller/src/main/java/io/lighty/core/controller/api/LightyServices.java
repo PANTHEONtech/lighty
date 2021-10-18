@@ -28,14 +28,12 @@ import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
-import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
+import org.opendaylight.mdsal.binding.dom.adapter.ConstantAdapterContext;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingService;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
@@ -78,22 +76,6 @@ public interface LightyServices extends LightyModuleRegistryService {
     DistributedDataStoreInterface getConfigDatastore();
 
     DistributedDataStoreInterface getOperationalDatastore();
-
-    /** Get DOMDataTreeShardingService.
-     * @deprecated This interface is scheduled for removal in the next major release.
-     *             Use {@link #getDistributedShardFactory()} instead of this.
-     * @return {@link DOMDataTreeShardingService}
-     */
-    @Deprecated(forRemoval = true)
-    DOMDataTreeShardingService getDOMDataTreeShardingService();
-
-    /** Get DOMDataTreeService.
-     * @deprecated This interface is scheduled for removal in the next major release.
-     *             Use {@link #getDistributedShardFactory()} instead of this.
-     * @return {@link DOMDataTreeShardingService}
-     */
-    @Deprecated(forRemoval = true)
-    DOMDataTreeService getDOMDataTreeService();
 
     DistributedShardFactory getDistributedShardFactory();
 
@@ -155,7 +137,7 @@ public interface LightyServices extends LightyModuleRegistryService {
 
     CacheProvider getCacheProvider();
 
-    AdapterContext getAdapterContext();
+    ConstantAdapterContext getAdapterContext();
 
     ActionProviderService getActionProviderService();
 

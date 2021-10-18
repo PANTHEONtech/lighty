@@ -28,8 +28,6 @@ import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingService;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
@@ -192,27 +190,6 @@ public abstract class LightyCoreSpringConfiguration {
     @Bean(destroyMethod = "")
     public DOMDataBroker clusteredDOMDataBroker() {
         return this.lightyController.getServices().getClusteredDOMDataBroker();
-    }
-
-    /** Get DOMDataTreeService.
-     * @deprecated This interface is scheduled for removal in the next major release.
-     *             Use {@link #distributedShardFactory()} instead of this.
-     * @return {@link DOMDataTreeShardingService}
-     */
-    @Bean(destroyMethod = "")
-    public DOMDataTreeShardingService domDataTreeShardingService() {
-        return this.lightyController.getServices().getDOMDataTreeShardingService();
-    }
-
-    /** Get DOMDataTreeService.
-     * @deprecated This interface is scheduled for removal in the next major release.
-     *             Use {@link #distributedShardFactory()} instead of this.
-     * @return {@link DOMDataTreeService}
-     */
-    @Bean(destroyMethod = "")
-    @Primary
-    public DOMDataTreeService domDataTreeService() {
-        return this.lightyController.getServices().getDOMDataTreeService();
     }
 
     @Bean(destroyMethod = "")

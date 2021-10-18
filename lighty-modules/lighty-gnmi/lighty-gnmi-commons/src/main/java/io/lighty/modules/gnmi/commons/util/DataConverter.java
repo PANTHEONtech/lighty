@@ -103,7 +103,6 @@ public final class DataConverter {
             throw new IllegalStateException(e);
         } finally {
             closeAutoCloseableResource(normalizedNodeWriter);
-            closeAutoCloseableResource(nodeWriter);
             closeAutoCloseableResource(writer);
         }
         return writer.toString();
@@ -123,7 +122,6 @@ public final class DataConverter {
             throw new IllegalStateException(e);
         } finally {
             closeAutoCloseableResource(normalizedNodeWriter);
-            closeAutoCloseableResource(nodeWriter);
             closeAutoCloseableResource(jsonWriter);
             closeAutoCloseableResource(writer);
         }

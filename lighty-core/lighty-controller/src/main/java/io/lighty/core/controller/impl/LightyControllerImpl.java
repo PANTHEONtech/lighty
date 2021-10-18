@@ -11,7 +11,7 @@ import akka.actor.Terminated;
 import akka.management.javadsl.AkkaManagement;
 import com.google.common.base.Stopwatch;
 import com.typesafe.config.Config;
-import io.lighty.codecs.api.SerializationException;
+import io.lighty.codecs.util.SerializationException;
 import io.lighty.core.cluster.ClusteringHandler;
 import io.lighty.core.cluster.ClusteringHandlerProvider;
 import io.lighty.core.common.SocketAnalyzer;
@@ -88,9 +88,7 @@ import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
-import org.opendaylight.mdsal.binding.dom.adapter.AdapterContext;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingAdapterFactory;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMDataBrokerAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMMountPointServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationPublishServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationServiceAdapter;
@@ -110,8 +108,6 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingService;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
@@ -185,7 +181,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private DOMClusterSingletonServiceProviderImpl clusterSingletonServiceProvider;
     private NotificationService notificationService;
     private NotificationPublishService notificationPublishService;
-    private BindingDOMDataBrokerAdapter domDataBroker;
+    private DataBroker dataBroker;
     private final LightyDiagStatusServiceImpl lightyDiagStatusService;
     private EventExecutor eventExecutor;
     private EventLoopGroup bossGroup;
@@ -196,7 +192,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private ModuleInfoSnapshot moduleInfoSnapshot;
     private ModuleInfoSnapshotResolver snapshotResolver;
     private DOMSchemaService schemaService;
-    private AdapterContext codec;
+    private ConstantAdapterContext codec;
     private BindingCodecTreeFactory bindingCodecTreeFactory;
     private YangParserFactory yangParserFactory;
     private BindingAdapterFactory bindingAdapterFactory;
@@ -353,8 +349,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.notificationPublishService =
                 new BindingDOMNotificationPublishServiceAdapter(this.codec, this.domNotificationRouter);
 
-        //create binding data broker
-        this.domDataBroker = new BindingDOMDataBrokerAdapter(this.codec, this.concurrentDOMDataBroker);
+        //create data broker
+        this.dataBroker = bindingAdapterFactory.createDataBroker(concurrentDOMDataBroker);
 
         this.clusteringHandler.ifPresent(handler -> handler.start(clusterAdminRpcService));
 
@@ -537,16 +533,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public DOMDataTreeShardingService getDOMDataTreeShardingService() {
-        return this.distributedShardedDOMDataTree;
-    }
-
-    @Override
-    public DOMDataTreeService getDOMDataTreeService() {
-        return this.distributedShardedDOMDataTree;
-    }
-
-    @Override
     public DistributedShardFactory getDistributedShardFactory() {
         return this.distributedShardedDOMDataTree;
     }
@@ -668,11 +654,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     public DataBroker getBindingDataBroker() {
-        return this.domDataBroker;
+        return this.dataBroker;
     }
 
     @Override
-    public AdapterContext getAdapterContext() {
+    public ConstantAdapterContext getAdapterContext() {
         return codec;
     }
 
