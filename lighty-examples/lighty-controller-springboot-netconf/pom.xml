@@ -138,6 +138,6 @@
     </build>
 
   <scm>
-    <tag>15.0.0</tag>
+    <tag>HEAD</tag>
   </scm>
 </project>
