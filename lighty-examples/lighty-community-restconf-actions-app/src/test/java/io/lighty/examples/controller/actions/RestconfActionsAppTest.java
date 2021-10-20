@@ -10,12 +10,9 @@ package io.lighty.examples.controller.actions;
 import static org.testng.Assert.assertEquals;
 
 import io.lighty.examples.controllers.actions.Main;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-import org.eclipse.jetty.client.api.ContentResponse;
+import java.net.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -55,30 +52,30 @@ public class RestconfActionsAppTest {
      * Perform basic GET operations via RESTCONF.
      */
     @Test
-    public void simpleApplicationTest() throws TimeoutException, ExecutionException, InterruptedException {
-        ContentResponse operations = null;
+    public void simpleApplicationTest() throws Exception {
+        HttpResponse<String> operations;
+        /*
+        TODO: Uncomment after bump to ODL netconf version 2.0.6 and yangtools 7.0.9.
+              Where is this bug resolved https://jira.opendaylight.org/browse/NETCONF-822
         operations = restClient.GET("restconf/operations");
-        assertEquals(operations.getStatus(), 200);
+        Assert.assertEquals(operations.statusCode(), 200);
+         */
         operations = restClient.GET("restconf/data/network-topology:network-topology?content=config");
-        assertEquals(operations.getStatus(), 200);
+        assertEquals(operations.statusCode(), 200);
         operations = restClient.GET("restconf/data/network-topology:network-topology?content=nonconfig");
-        assertEquals(operations.getStatus(), 200);
+        assertEquals(operations.statusCode(), 200);
     }
 
     /**
      * Check if Swagger service and UI is responding.
      */
     @Test
-    public void swaggerURLsTest() {
-        ContentResponse operations = null;
-        try {
-            operations = restClient.GET("apidoc/openapi3/18/apis/single");
-            assertEquals(operations.getStatus(), 200);
-            operations = restClient.GET("apidoc/explorer/index.html");
-            assertEquals(operations.getStatus(), 200);
-        } catch (TimeoutException | ExecutionException | InterruptedException e) {
-            Assert.fail();
-        }
+    public void swaggerURLsTest() throws Exception {
+        HttpResponse<String> operations;
+        operations = restClient.GET("apidoc/openapi3/18/apis/single");
+        assertEquals(operations.statusCode(), 200);
+        operations = restClient.GET("apidoc/explorer/index.html");
+        assertEquals(operations.statusCode(), 200);
     }
 
     /**
@@ -87,15 +84,18 @@ public class RestconfActionsAppTest {
     @Test
     public void domActionInvocationTest() throws Exception {
         final var response = restClient.POST(DOM_ACTION_PATH, DOM_ACTION_INPUT);
-        assertEquals(response.getStatus(), 200);
-        assertEquals(response.getContentAsString(), DOM_ACTION_OUTPUT);
+        assertEquals(response.statusCode(), 200);
+        assertEquals(response.body(), DOM_ACTION_OUTPUT);
     }
 
+    /**
+     * Check that it is possible to invoke example binding action.
+     */
     @Test
     public void bindingActionInvocationTest() throws Exception {
         final var response = restClient.POST(BINDING_ACTION_PATH, BINDING_ACTION_INPUT);
-        assertEquals(response.getStatus(), 200);
-        assertEquals(response.getContentAsString(), BINDING_ACTION_OUTPUT);
+        assertEquals(response.statusCode(), 200);
+        assertEquals(response.body(), BINDING_ACTION_OUTPUT);
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
