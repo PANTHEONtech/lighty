@@ -1,10 +1,24 @@
 # gNMI Southbound Module
 
-A southbound [lighty.io](https://lighty.io/) module, which manages connections with gNMI targets. This module implements functionality to make **CRUD operations on multiple gNMI targets**. This make it easy to read and manipulate data in gNMI devices.
+A southbound [lighty.io](https://lighty.io/) module, which manages connections with gNMI targets.
+This module implements functionality to make **CRUD operations on multiple gNMI targets**.
+This make it easy to read and manipulate data in gNMI devices.
 
-lighty.io gNMI augments the OpenDaylight network-topology model with the [gnmi-topology](../../../lighty-models/lighty-gnmi-models/lighty-gnmi-topology-model/src/main/yang/gnmi-topology.yang) model. This provides the possibility to connect a gNMI device, by adding a new node with the desired [parameters](https://github.com/PANTHEONtech/lighty/blob/master/lighty-models/lighty-gnmi-models/lighty-gnmi-topology-model/src/main/yang/gnmi-topology.yang#L67) to the gnmi-topology in data store (as OpenDaylight NETCONF SBP does). 
+lighty.io gNMI augments the OpenDaylight network-topology model with the
+[gnmi-topology](../../../lighty-models/lighty-gnmi-models/lighty-gnmi-topology-model/src/main/yang/gnmi-topology.yang)
+model. This provides the possibility to connect a gNMI device, by adding a new node with the desired
+[parameters](../../../lighty-models/lighty-gnmi-models/lighty-gnmi-topology-model/src/main/yang/gnmi-topology.yang#L67)
+to the gnmi-topology in data store (as OpenDaylight NETCONF SBP does).
 
-Once a new node is added, gNMI-south-bound established a connection to the gNMI device and creates a mount point containing [GnmiDataBroker](src/main/java/io/lighty/gnmi/southbound/mountpoint/broker/GnmiDataBroker.java), which is used for communicating with gNMI device via transactions. GnmiDataBroker also contains [schemaContext](https://javadocs.opendaylight.org/org.opendaylight.yangtools/master/org/opendaylight/yangtools/yang/model/api/SchemaContext.html) created from capabilities received from the device. All YANG models which the gNMI device will use, should be provided in the [GnmiConfiguration](src/main/java/io/lighty/gnmi/southbound/lightymodule/config/GnmiConfiguration.java), as a path to the folder with requires YANG models or added via [upload-yang-model](https://github.com/PANTHEONtech/lighty/blob/master/lighty-models/lighty-gnmi-models/lighty-gnmi-yang-storage-model/src/main/yang/gnmi-yang-storage.yang#L57) RPC.
+Once a new node is added, gNMI-south-bound established a connection to the gNMI device and creates a mount point
+containing [GnmiDataBroker](src/main/java/io/lighty/gnmi/southbound/mountpoint/broker/GnmiDataBroker.java), which is
+used for communicating with gNMI device via transactions. GnmiDataBroker also contains
+[schemaContext](https://javadocs.opendaylight.org/org.opendaylight.yangtools/master/org/opendaylight/yangtools/yang/model/api/SchemaContext.html)
+created from capabilities received from the device. All YANG models which the gNMI device will use, should be provided
+in the [GnmiConfiguration](src/main/java/io/lighty/gnmi/southbound/lightymodule/config/GnmiConfiguration.java), as a
+path to the folder with requires YANG models or added via
+[upload-yang-model](../../../lighty-models/lighty-gnmi-models/lighty-gnmi-yang-storage-model/src/main/yang/gnmi-yang-storage.yang#L57)
+RPC.
 
 ## How To Use
 
@@ -84,7 +98,7 @@ Creating a device connection and CRUD operation, is performed by writing data di
         gnmiSouthboundModule.start().get();
 ```
 
-2. Connect gNMI device. More about configuring security or extension parameter on gNMI device can be found in the [RCgNMI Documentation](https://github.com/PANTHEONtech/lighty/blob/master/lighty-applications/lighty-rcgnmi-app-aggregator/README.md#how-to-use-rcgnmi-example-app) and in the [gnmi-topology.yang](https://github.com/PANTHEONtech/lighty/blob/master/lighty-models/lighty-gnmi-models/lighty-gnmi-topology-model/src/main/yang/gnmi-topology.yang) YANG model.
+2. Connect gNMI device. More about configuring security or extension parameter on gNMI device can be found in the [RCgNMI Documentation](../../../lighty-applications/lighty-rcgnmi-app-aggregator/README.md#how-to-use-rcgnmi-example-app) and in the [gnmi-topology.yang](../../../lighty-models/lighty-gnmi-models/lighty-gnmi-topology-model/src/main/yang/gnmi-topology.yang) YANG model.
 
 ```java
         final Node testGnmiNode = createNode(GNMI_NODE_ID, DEVICE_ADDRESS, DEVICE_PORT, getInsecureSecurityChoice());
@@ -96,7 +110,7 @@ Creating a device connection and CRUD operation, is performed by writing data di
 
 3. Wait until the gNMI device is successfully connected to gNMI-sb. The device is successfully connected, when the status is `NodeState.NodeStatus.READY`.
 
-Device [node-status](https://github.com/PANTHEONtech/lighty/blob/14.0.x/lighty-models/lighty-gnmi-models/lighty-gnmi-topology-model/src/main/yang/gnmi-topology.yang#L140) is available in operational memory, inside data store.
+Device [node-status](../../../lighty-models/lighty-gnmi-models/lighty-gnmi-topology-model/src/main/yang/gnmi-topology.yang#L140) is available in operational memory, inside data store.
 
 4. Get DOM GnmiDataBroker registered for specific gNMI device. For each successfully registered gNMI device, a new GnmiDataBroker with a device specific schema context is created.
 
@@ -145,7 +159,7 @@ Device [node-status](https://github.com/PANTHEONtech/lighty/blob/14.0.x/lighty-m
 ```
 
 ## Register Client Certificates
-This example shows how to programmatically add certificates for lighty.io gNMI. Certificates keystore should be created before connecting the actual gNMI device. Certificates could be assigned to device, with [keystore-id](https://github.com/PANTHEONtech/lighty/blob/master/lighty-models/lighty-gnmi-models/lighty-gnmi-topology-model/src/main/yang/gnmi-topology.yang#L45) parameter when the mountpoint is being created. YANG RPC and certificates keystore is modeled by [gnmi-certificate-storage.yang](../../../lighty-models/lighty-gnmi-models/lighty-gnmi-certificates-storage-model/src/main/yang/gnmi-certificate-storage.yang)
+This example shows how to programmatically add certificates for lighty.io gNMI. Certificates keystore should be created before connecting the actual gNMI device. Certificates could be assigned to device, with [keystore-id](../../../lighty-models/lighty-gnmi-models/lighty-gnmi-topology-model/src/main/yang/gnmi-topology.yang#L45) parameter when the mountpoint is being created. YANG RPC and certificates keystore is modeled by [gnmi-certificate-storage.yang](../../../lighty-models/lighty-gnmi-models/lighty-gnmi-certificates-storage-model/src/main/yang/gnmi-certificate-storage.yang)
 
 - Invoke RPC for adding certificates to lighty.io gNMI:
 
