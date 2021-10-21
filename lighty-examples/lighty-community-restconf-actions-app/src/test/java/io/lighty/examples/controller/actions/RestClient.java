@@ -31,6 +31,7 @@ public class RestClient implements AutoCloseable {
     private HttpClient httpClient;
     private static ExecutorService httpClientExecutor;
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     public RestClient(String baseUrl) {
         try {
             this.baseUrl = baseUrl;
