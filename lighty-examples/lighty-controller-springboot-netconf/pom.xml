@@ -136,4 +136,8 @@
             </plugins>
         </pluginManagement>
     </build>
+
+  <scm>
+    <tag>HEAD</tag>
+  </scm>
 </project>
