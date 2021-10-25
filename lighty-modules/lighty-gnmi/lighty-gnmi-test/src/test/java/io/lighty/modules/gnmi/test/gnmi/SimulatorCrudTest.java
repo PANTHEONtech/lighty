@@ -23,6 +23,7 @@ import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
 import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
+import io.lighty.modules.gnmi.simulatordevice.utils.GnmiSimulatorConfUtils;
 import io.lighty.modules.gnmi.test.utils.TestUtils;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -47,7 +48,8 @@ public class SimulatorCrudTest {
     private static final int TARGET_PORT = 10161;
     private static final String TARGET_HOST = "127.0.0.1";
     private static final String INITIAL_DATA_PATH = "src/test/resources/json/initData";
-    private static final String TEST_SCHEMA_PATH = "src/test/resources/simulator_models";
+    private static final String TEST_SCHEMA_PATH = "src/test/resources/additional/simulator/models";
+    private static final String SIMULATOR_CONFIG = "/json/simulator_config.json";
     private static final String INTERFACES_PREFIX = "openconfig-interfaces";
     private static final String OPENCONFIG_INTERFACES = INTERFACES_PREFIX + ":" + "interfaces";
     private static final String ETHRERNET_PREFIX = "openconfig-if-ethernet";
@@ -63,12 +65,12 @@ public class SimulatorCrudTest {
     public void setUp() throws NoSuchAlgorithmException, CertificateException, InvalidKeySpecException, IOException,
             URISyntaxException, ConfigurationException, EffectiveModelContextBuilderException {
 
-        GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
+        GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
+                .loadGnmiSimulatorConfiguration(this.getClass().getResourceAsStream(SIMULATOR_CONFIG));
         simulatorConfiguration.setTargetAddress(TARGET_HOST);
         simulatorConfiguration.setTargetPort(TARGET_PORT);
         simulatorConfiguration.setInitialConfigDataPath(INITIAL_DATA_PATH + "/config.json");
         simulatorConfiguration.setInitialStateDataPath(INITIAL_DATA_PATH + "/state.json");
-        simulatorConfiguration.setYangsPath(TEST_SCHEMA_PATH);
 
         target = new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
         target.start();

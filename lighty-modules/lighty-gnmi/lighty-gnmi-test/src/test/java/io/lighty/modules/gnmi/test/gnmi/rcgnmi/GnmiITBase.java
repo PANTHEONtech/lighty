@@ -20,6 +20,7 @@ import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
+import io.lighty.modules.gnmi.simulatordevice.utils.GnmiSimulatorConfUtils;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -54,7 +55,8 @@ public abstract class GnmiITBase {
     protected static final Duration WAIT_TIME_DURATION = Duration.ofMillis(10_000L);
 
     protected static final String INITIAL_JSON_DATA_PATH = "src/test/resources/json/initData";
-    protected static final String TEST_SCHEMA_PATH = "src/test/resources/simulator_models";
+    private static final String TEST_SCHEMA_PATH = "src/test/resources/additional/simulator/models";
+    private static final String SIMULATOR_CONFIG = "/json/simulator_config.json";
 
     protected static ExecutorService httpClientExecutor;
     protected static RCgNMIApp application;
@@ -99,7 +101,8 @@ public abstract class GnmiITBase {
     protected static SimulatedGnmiDevice getUnsecureGnmiDevice(final String host, final int port)
             throws ConfigurationException {
 
-        final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
+        final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
+                .loadGnmiSimulatorConfiguration(GnmiITBase.class.getResourceAsStream(SIMULATOR_CONFIG));
         simulatorConfiguration.setTargetAddress(host);
         simulatorConfiguration.setTargetPort(port);
         simulatorConfiguration.setYangsPath(TEST_SCHEMA_PATH);
@@ -112,7 +115,8 @@ public abstract class GnmiITBase {
     protected static SimulatedGnmiDevice getUnsecureGnmiDevice(final String host, final int port,
                                                               final String username, final String password)
             throws ConfigurationException {
-        final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
+        final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
+                .loadGnmiSimulatorConfiguration(GnmiITBase.class.getResourceAsStream(SIMULATOR_CONFIG));
         simulatorConfiguration.setTargetAddress(host);
         simulatorConfiguration.setTargetPort(port);
         simulatorConfiguration.setYangsPath(TEST_SCHEMA_PATH);
@@ -126,7 +130,8 @@ public abstract class GnmiITBase {
 
     protected static SimulatedGnmiDevice getNonCompliableEncodingDevice(final String host, final int port)
             throws ConfigurationException {
-        final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
+        final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
+                .loadGnmiSimulatorConfiguration(GnmiITBase.class.getResourceAsStream(SIMULATOR_CONFIG));
         simulatorConfiguration.setTargetAddress(host);
         simulatorConfiguration.setTargetPort(port);
         simulatorConfiguration.setYangsPath(TEST_SCHEMA_PATH);
@@ -141,7 +146,8 @@ public abstract class GnmiITBase {
                                                              final String keyPath, final String certPath,
                                                              final String username, final String password)
             throws ConfigurationException {
-        final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
+        final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
+                .loadGnmiSimulatorConfiguration(GnmiITBase.class.getResourceAsStream(SIMULATOR_CONFIG));
         simulatorConfiguration.setTargetAddress(host);
         simulatorConfiguration.setTargetPort(port);
         simulatorConfiguration.setYangsPath(TEST_SCHEMA_PATH);
