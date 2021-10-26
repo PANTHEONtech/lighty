@@ -25,7 +25,6 @@ import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
 import io.lighty.gnmi.southbound.schema.loader.impl.ByPathYangLoaderService;
 import io.lighty.modules.gnmi.connector.gnmi.session.api.GnmiSession;
 import io.lighty.modules.gnmi.connector.session.api.SessionProvider;
-import java.net.URI;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +46,7 @@ import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.Revision;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
@@ -60,7 +60,7 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 public class WriteTransactionTest {
-    private static final QNameModule INTERFACES_MODULE_QN_MODULE = QNameModule.create(URI.create("http://openconfig.net/yang/interfaces"), Revision.of("2019-11-19"));
+    private static final QNameModule INTERFACES_MODULE_QN_MODULE = QNameModule.create(XMLNamespace.of("http://openconfig.net/yang/interfaces"), Revision.of("2019-11-19"));
     private static final String SCHEMA_PATH = "src/test/resources/test_schema";
     private static final QName INTERFACES_CONTAINER_QN = QName.create(INTERFACES_MODULE_QN_MODULE, "interfaces");
     private static final YangInstanceIdentifier TEST_PREPARE_DATASTORE_IID = YangInstanceIdentifier.builder()
@@ -73,7 +73,6 @@ public class WriteTransactionTest {
     private static final QName CONFIG_LOOPBACK_QN = QName.create(CONFIG_CONTAINER_QN, "loopback-mode");
     private static final long TIMEOUT_MILLIS = 30_000;
     private static final String NAME_KEY_VALUE = "NAME";
-    private static final String SECOND_NAME_KEY_VALUE = "SECOND_NAME";
     private static final HashMap<QName, Object> INTERFACE_NAME_KEY = new HashMap<>() {{
             put(NAME_QN, NAME_KEY_VALUE);
         }};
@@ -103,7 +102,7 @@ public class WriteTransactionTest {
 
         final TestYangDataStoreService dataStoreService = new TestYangDataStoreService();
         final List<GnmiDeviceCapability> completeCapabilities
-                = new ByPathYangLoaderService(Path.of(SCHEMA_PATH), null).load(dataStoreService);
+                = new ByPathYangLoaderService(Path.of(SCHEMA_PATH)).load(dataStoreService);
         final SchemaContextHolder schemaContextHolder = new SchemaContextHolderImpl(dataStoreService, null);
         final EffectiveModelContext schemaContext = schemaContextHolder.getSchemaContext(completeCapabilities);
         deviceConnection.setSchemaContext(schemaContext);
