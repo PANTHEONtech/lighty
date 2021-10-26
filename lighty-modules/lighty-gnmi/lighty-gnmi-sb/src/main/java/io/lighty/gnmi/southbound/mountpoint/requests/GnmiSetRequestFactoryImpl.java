@@ -28,25 +28,25 @@ public class GnmiSetRequestFactoryImpl implements SetRequestFactory {
     private static final Logger LOG = LoggerFactory.getLogger(GnmiSetRequestFactoryImpl.class);
 
     private final Codec<YangInstanceIdentifier, Gnmi.Path> instanceIdentifierToPathCodec;
-    private final BiCodec<YangInstanceIdentifier, NormalizedNode<?, ?>, Gnmi.Update> updateCodec;
+    private final BiCodec<YangInstanceIdentifier, NormalizedNode, Gnmi.Update> updateCodec;
 
     public GnmiSetRequestFactoryImpl(
             final Codec<YangInstanceIdentifier, Gnmi.Path> instanceIdentifierToPathCodec,
-            final BiCodec<YangInstanceIdentifier, NormalizedNode<?, ?>, Gnmi.Update> updateCodec) {
+            final BiCodec<YangInstanceIdentifier, NormalizedNode, Gnmi.Update> updateCodec) {
         this.instanceIdentifierToPathCodec = instanceIdentifierToPathCodec;
         this.updateCodec = updateCodec;
     }
 
     @Override
     public Gnmi.SetRequest newRequest(
-            final List<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>>> replaceList,
-            final List<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>>> updateList,
+            final List<ImmutablePair<YangInstanceIdentifier, NormalizedNode>> replaceList,
+            final List<ImmutablePair<YangInstanceIdentifier, NormalizedNode>> updateList,
             final List<YangInstanceIdentifier> deleteList) throws GnmiRequestException {
 
         final Gnmi.SetRequest.Builder setRequestBuilder = Gnmi.SetRequest.newBuilder();
 
         // REPLACE
-        for (ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>> toConvert : replaceList) {
+        for (ImmutablePair<YangInstanceIdentifier, NormalizedNode> toConvert : replaceList) {
             try {
                 setRequestBuilder.addReplace(updateCodec.apply(toConvert.left, toConvert.right));
             } catch (GnmiCodecException e) {
@@ -55,7 +55,7 @@ public class GnmiSetRequestFactoryImpl implements SetRequestFactory {
         }
 
         // UPDATE
-        for (ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>> toConvert : updateList) {
+        for (ImmutablePair<YangInstanceIdentifier, NormalizedNode> toConvert : updateList) {
             try {
                 setRequestBuilder.addUpdate(updateCodec.apply(toConvert.left, toConvert.right));
             } catch (GnmiCodecException e) {

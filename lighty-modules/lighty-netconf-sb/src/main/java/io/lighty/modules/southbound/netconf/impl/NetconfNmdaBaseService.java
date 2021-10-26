@@ -51,7 +51,7 @@ public interface NetconfNmdaBaseService extends NetconfBaseService {
      * @return future with RPC result
      */
     ListenableFuture<? extends DOMRpcResult> editData(QName targetDatastore,
-                                                      Optional<NormalizedNode<?, ?>> data,
+                                                      Optional<NormalizedNode> data,
                                                       YangInstanceIdentifier dataPath,
                                                       Optional<ModifyAction> dataModifyActionAttribute,
                                                       Optional<ModifyAction> defaultModifyAction);

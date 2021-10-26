@@ -45,7 +45,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
      * @return test case ((inputs to codec), expected output).
      */
     public Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>,
-            NormalizedNode<?, ?>> rootCase() {
+            NormalizedNode> rootCase() {
 
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .build();
@@ -58,7 +58,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
                                         .setJsonIetfVal(ByteString.copyFromUtf8(jsonResponse)))))
                 .build();
 
-        final ImmutablePair<YangInstanceIdentifier,NormalizedNode<?,?>> testCase = super.rootElementTestCase();
+        final ImmutablePair<YangInstanceIdentifier,NormalizedNode> testCase = super.rootElementTestCase();
         return Maps.immutableEntry(ImmutablePair.of(testCase.left, getResponse), testCase.right);
     }
 
@@ -71,7 +71,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
      * @return test case ((inputs to codec), expected output).
      */
     public Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>,
-            NormalizedNode<?, ?>> topElementTestCase(final boolean oneLevelDeeperThanRequest) {
+            NormalizedNode> topElementTestCase(final boolean oneLevelDeeperThanRequest) {
 
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
@@ -96,7 +96,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
                                         .setJsonIetfVal(ByteString.copyFromUtf8(jsonResponse)))))
                 .build();
 
-        final ImmutablePair<YangInstanceIdentifier,NormalizedNode<?,?>> testCase = super.topElementCase();
+        final ImmutablePair<YangInstanceIdentifier,NormalizedNode> testCase = super.topElementCase();
         return Maps.immutableEntry(ImmutablePair.of(testCase.left, getResponse), testCase.right);
     }
 
@@ -108,7 +108,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
      *                                    responses from some devices.)
      * @return test case ((inputs to codec), expected output).
      */
-    public Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode<?, ?>> listEntryTestCase(
+    public Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode> listEntryTestCase(
             final boolean oneLevelDeeperThanRequest) {
 
         final Gnmi.Path path = Gnmi.Path.newBuilder()
@@ -142,7 +142,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
                                         .setJsonIetfVal(ByteString.copyFromUtf8(jsonResponse)))))
                 .build();
 
-        final ImmutablePair<YangInstanceIdentifier,NormalizedNode<?,?>> testCase = super.listEntryCase(true);
+        final ImmutablePair<YangInstanceIdentifier,NormalizedNode> testCase = super.listEntryCase(true);
         return Maps.immutableEntry(ImmutablePair.of(testCase.left, getResponse), testCase.right);
     }
 
@@ -154,7 +154,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
      *                                    responses from some devices.)
      * @return test case ((inputs to codec), expected output).
      */
-    public Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode<?, ?>> containerTestCase(
+    public Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode> containerTestCase(
             final boolean oneLevelDeeperThanRequest) {
 
         final Gnmi.Path path = Gnmi.Path.newBuilder()
@@ -189,7 +189,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
                                         .setJsonIetfVal(ByteString.copyFromUtf8(jsonResponse)))))
                 .build();
 
-        final ImmutablePair<YangInstanceIdentifier,NormalizedNode<?,?>> testCase = super.containerCase();
+        final ImmutablePair<YangInstanceIdentifier,NormalizedNode> testCase = super.containerCase();
         return Maps.immutableEntry(ImmutablePair.of(testCase.left, getResponse), testCase.right);
     }
 
@@ -202,7 +202,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
      * @return test case ((inputs to codec), expected output).
      */
     public Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>,
-            NormalizedNode<?, ?>> augmentedContainerCase(final boolean oneLevelDeeperThanRequest) {
+            NormalizedNode> augmentedContainerCase(final boolean oneLevelDeeperThanRequest) {
 
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
@@ -239,7 +239,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
                                         .setJsonIetfVal(ByteString.copyFromUtf8(jsonResponse)))))
                 .build();
 
-        final ImmutablePair<YangInstanceIdentifier,NormalizedNode<?,?>> testCase = super.containerAugmentedCase();
+        final ImmutablePair<YangInstanceIdentifier,NormalizedNode> testCase = super.containerAugmentedCase();
         return Maps.immutableEntry(ImmutablePair.of(testCase.left, getResponse), testCase.right);
     }
 
@@ -250,7 +250,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
      *                            (codec should handle both cases).
      * @return test case ((inputs to codec), expected output).
      */
-    public Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode<?, ?>> leafNumberTestCase(
+    public Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode> leafNumberTestCase(
             final boolean responseAsJson, final boolean deeperThanRequested) {
 
         final Gnmi.Path path = Gnmi.Path.newBuilder()
@@ -289,7 +289,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
                                         .setUintVal(jsonMtu.getAsLong()))))
                 .build();
 
-        final ImmutablePair<YangInstanceIdentifier,NormalizedNode<?,?>> testCase = super.leafNumberCase();
+        final ImmutablePair<YangInstanceIdentifier,NormalizedNode> testCase = super.leafNumberCase();
         return Maps.immutableEntry(ImmutablePair.of(testCase.left, getResponse), testCase.right);
     }
 
@@ -300,7 +300,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
      *                            (codec should handle both cases).
      * @return test case ((inputs to codec), expected output).
      */
-    public Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode<?, ?>> leafStringTestCase(
+    public Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode> leafStringTestCase(
             final boolean responseAsJson, final boolean deeperThanRequested) {
 
         final Gnmi.Path path = Gnmi.Path.newBuilder()
@@ -339,7 +339,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
                                         .setStringVal(jsonConfigName.getAsString()))))
                 .build();
 
-        final ImmutablePair<YangInstanceIdentifier,NormalizedNode<?,?>> testCase = super.leafStringCase();
+        final ImmutablePair<YangInstanceIdentifier,NormalizedNode> testCase = super.leafStringCase();
         return Maps.immutableEntry(ImmutablePair.of(testCase.left, getResponse), testCase.right);
     }
 
@@ -350,7 +350,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
      *                            (codec should handle both cases).
      * @return test case ((inputs to codec), expected output).
      */
-    public Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode<?, ?>> leafBooleanTestCase(
+    public Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>, NormalizedNode> leafBooleanTestCase(
             final boolean responseAsJson, final boolean deeperThanRequested) {
 
         final Gnmi.Path path = Gnmi.Path.newBuilder()
@@ -389,7 +389,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
                                         .setBoolVal(jsonLoopbackMode.getAsBoolean()))))
                 .build();
 
-        final ImmutablePair<YangInstanceIdentifier,NormalizedNode<?,?>> testCase = super.leafBooleanCase();
+        final ImmutablePair<YangInstanceIdentifier,NormalizedNode> testCase = super.leafBooleanCase();
         return Maps.immutableEntry(ImmutablePair.of(testCase.left, getResponse), testCase.right);
 
     }
@@ -403,7 +403,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
      * @return test case ((inputs to codec), expected output).
      */
     public Map.Entry<ImmutablePair<YangInstanceIdentifier, Gnmi.GetResponse>,
-            NormalizedNode<?, ?>> leafAugmentedTestCase(final boolean responseAsJson,
+            NormalizedNode> leafAugmentedTestCase(final boolean responseAsJson,
                                                         final boolean deeperThanRequested) {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
@@ -445,7 +445,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
                                         .setStringVal(jsonAggregateId.getAsString()))))
                 .build();
 
-        final ImmutablePair<YangInstanceIdentifier,NormalizedNode<?,?>> testCase = super.leafAgumentedCase();
+        final ImmutablePair<YangInstanceIdentifier,NormalizedNode> testCase = super.leafAgumentedCase();
         return Maps.immutableEntry(ImmutablePair.of(testCase.left, getResponse), testCase.right);
 
     }

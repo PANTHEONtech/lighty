@@ -24,7 +24,7 @@ import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
+import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 
 public class XmlNodeConverterTest extends AbstractCodecTest {
 
@@ -64,7 +64,7 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
         final DataSchemaNode schemaNode = DataSchemaContextTree.from(this.effectiveModelContext)
                 .findChild(YangInstanceIdentifier.of(Toaster.QNAME)).orElseThrow().getDataSchemaNode();
 
-        NormalizedNode<?, ?> deserializeData =
+        NormalizedNode deserializeData =
                 bindingSerializer.deserialize(schemaNode, new StringReader(loadToasterXml()));
         Assert.assertNotNull(deserializeData);
     }
@@ -74,7 +74,7 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
         Optional<? extends RpcDefinition>
                 loadRpc = ConverterUtils.loadRpc(this.effectiveModelContext, SIMPLE_IO_RPC_QNAME);
         String loadMakeToasterInputXml = loadResourceAsString("input-output-rpc-in.xml");
-        NormalizedNode<?, ?> deserializeRpc = bindingSerializer
+        NormalizedNode deserializeRpc = bindingSerializer
                 .deserialize(loadRpc.orElseThrow().getInput(), new StringReader(loadMakeToasterInputXml));
         Assert.assertNotNull(deserializeRpc);
     }
@@ -84,7 +84,7 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
         Optional<? extends RpcDefinition>
                 loadRpc = ConverterUtils.loadRpc(this.effectiveModelContext, SIMPLE_IO_RPC_QNAME);
         String loadMakeToasterInputXml = loadResourceAsString("input-output-rpc-out.xml");
-        NormalizedNode<?, ?> deserializeRpc = bindingSerializer
+        NormalizedNode deserializeRpc = bindingSerializer
                 .deserialize(loadRpc.orElseThrow().getOutput(), new StringReader(loadMakeToasterInputXml));
         Assert.assertNotNull(deserializeRpc);
     }
@@ -105,7 +105,7 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
         Optional<? extends NotificationDefinition> loadNotification =
                 ConverterUtils.loadNotification(this.effectiveModelContext,
                         QName.create(TOASTER_NAMESPACE, TOASTER_REVISION, "toasterRestocked"));
-        NormalizedNode<?, ?> nodes =
+        NormalizedNode nodes =
                 bindingSerializer.deserialize(loadNotification.orElseThrow(), new StringReader(notification));
         Assert.assertNotNull(nodes);
     }
@@ -115,7 +115,7 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
         final DataSchemaNode schemaNode = DataSchemaContextTree.from(this.effectiveModelContext)
                 .findChild(YangInstanceIdentifier.of(TopLevelContainer.QNAME)).orElseThrow().getDataSchemaNode();
 
-        NormalizedNode<?, ?> deserializeData = bindingSerializer.deserialize(schemaNode,
+        NormalizedNode deserializeData = bindingSerializer.deserialize(schemaNode,
                 new StringReader(loadResourceAsString("top-level-container.xml")));
         Assert.assertNotNull(deserializeData);
     }
@@ -124,7 +124,7 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
     public void testSerializeData_container_rpc() throws SerializationException {
         Optional<? extends RpcDefinition>
                 loadRpc = ConverterUtils.loadRpc(this.effectiveModelContext, CONTAINER_IO_RPC_QNAME);
-        NormalizedNode<?, ?> deserializeData = bindingSerializer.deserialize(loadRpc.orElseThrow().getInput(),
+        NormalizedNode deserializeData = bindingSerializer.deserialize(loadRpc.orElseThrow().getInput(),
                 new StringReader(loadResourceAsString("container-io-rpc.xml")));
         Assert.assertNotNull(deserializeData);
     }
@@ -141,14 +141,14 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
     public void testDeserializeData_list_single() throws SerializationException {
         SchemaNode schemaNode = ConverterUtils.getSchemaNode(this.effectiveModelContext, SAMPLES_NAMESPACE,
             SAMPLES_REVISION, "sample-list").orElseThrow().getDataSchemaNode();
-        NormalizedNode<?, ?> serializedData = bindingSerializer
+        NormalizedNode serializedData = bindingSerializer
             .deserialize(schemaNode, new StringReader(loadResourceAsString("sample-list.xml")));
         Assert.assertNotNull(serializedData.toString());
     }
 
     @Test
     public void testDeserializeData_list_multiple() throws SerializationException {
-        NormalizedNode<?, ?> serializedData = bindingSerializer.deserialize(this.effectiveModelContext,
+        NormalizedNode serializedData = bindingSerializer.deserialize(this.effectiveModelContext,
                 new StringReader(loadResourceAsString("sample-list-multiple.xml")));
         Assert.assertNotNull(serializedData.toString());
     }

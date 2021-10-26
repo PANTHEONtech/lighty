@@ -1,11 +1,11 @@
 # RESTCONF gNMI (RCgNMI) Application
 A lighty.io application, which starts and wires the following components:
 
-- [lighty.io Controller](https://github.com/PANTHEONtech/lighty/tree/master/lighty-core/lighty-controller)
+- [lighty.io Controller](../../lighty-core/lighty-controller)
   provides core OpenDaylight services (like MD-SAL, YANG Tools, global schema context, etc.), which are required for other services.
-- [lighty.io RESTCONF Northbound](https://github.com/PANTHEONtech/lighty/tree/master/lighty-modules/lighty-restconf-nb-community)
+- [lighty.io RESTCONF Northbound](../../lighty-modules/lighty-restconf-nb-community)
   provides the RESTCONF interface, that is used to communicate with the application using the RESTCONF protocol over HTTP.
-- [lighty.io gNMI Southbound](https://github.com/PANTHEONtech/lighty/tree/master/lighty-modules/lighty-gnmi/lighty-gnmi-sb) acts as a gNMI client, manages connections to gNMI devices and gNMI communication. Currently, only _gNMI Capabilities, gNMI Get_ & _gNMI Set_ are supported.
+- [lighty.io gNMI Southbound](../../lighty-modules/lighty-gnmi/lighty-gnmi-sb) acts as a gNMI client, manages connections to gNMI devices and gNMI communication. Currently, only _gNMI Capabilities, gNMI Get_ & _gNMI Set_ are supported.
 
 ![RCgNMI lighty.io architecture](docs/lighty-rcgnmi-architecture.png)
 
@@ -337,7 +337,7 @@ To build and start the RCgNMI lighty.io application using Docker in a local envi
    --rm lighty-rcgnmi -c configuration.json -l log4j.properties
   ```
 
-If your _configuration.json_ file specifies a path to the initial configuration data to load on start up (for more information, check the [lighty-controller](https://github.com/PANTHEONtech/lighty/tree/master/lighty-core/lighty-controller)), you need to mount the JSON/XML file as well:
+If your _configuration.json_ file specifies a path to the initial configuration data to load on start up (for more information, check the [lighty-controller](../../lighty-core/lighty-controller)), you need to mount the JSON/XML file as well:
 
 `-v /absolute/path/to/file/initData.xml:/lighty-rcgnmi/initData.xml`
 Then, your path to this file in configuration.json becomes just `./initData.xml`:
@@ -381,7 +381,7 @@ To ***uninstall** the deployment, run the command:
 
 ### Providing Startup Configuration
 
-By default, the deployed application is started with a custom _configuration.json_ (for more information check [lighty-controller]       (https://github.com/PANTHEONtech/lighty/tree/master/lighty-core/lighty-controller)). We supply this configuration file by passing the Kubernetes configmap (`configmaps.yaml`), which can be modified to your needs.
+By default, the deployed application is started with a custom _configuration.json_ (for more information check [lighty-controller](../../lighty-core/lighty-controller)). We supply this configuration file by passing the Kubernetes configmap (`configmaps.yaml`), which can be modified to your needs.
 
 To use the functionality of loading configuration data on startup, add a new entry to _configmaps.yaml_:
 

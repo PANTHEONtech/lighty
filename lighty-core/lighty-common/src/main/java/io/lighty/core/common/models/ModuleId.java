@@ -9,11 +9,11 @@ package io.lighty.core.common.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.net.URI;
 import java.util.Objects;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Revision;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 
 /**
  * This class represents unique identifier of yang module.
@@ -22,7 +22,7 @@ import org.opendaylight.yangtools.yang.common.Revision;
  */
 public final class ModuleId {
 
-    private final URI nameSpace;
+    private final XMLNamespace nameSpace;
     private final String name;
     private final Revision revision;
 
@@ -33,10 +33,10 @@ public final class ModuleId {
     }
 
     public ModuleId(final String nameSpace, final String name, final Revision revision) {
-        this(URI.create(nameSpace), name, revision);
+        this(XMLNamespace.of(nameSpace), name, revision);
     }
 
-    public ModuleId(final URI nameSpace, final String name, final Revision revision) {
+    public ModuleId(final XMLNamespace nameSpace, final String name, final Revision revision) {
         this.nameSpace = nameSpace;
         this.name = name;
         this.revision = revision;
@@ -50,7 +50,7 @@ public final class ModuleId {
         return this.revision;
     }
 
-    public URI getNameSpace() {
+    public XMLNamespace getNameSpace() {
         return this.nameSpace;
     }
 

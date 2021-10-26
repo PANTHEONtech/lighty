@@ -16,7 +16,6 @@ import io.netty.util.Timer;
 import io.netty.util.concurrent.EventExecutor;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
-import org.opendaylight.controller.cluster.sharding.DistributedShardFactory;
 import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
 import org.opendaylight.controller.config.threadpool.ThreadPool;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
@@ -79,8 +78,6 @@ public class LightyControllerModule extends AbstractModule {
         bind(DistributedDataStoreInterface.class)
                 .annotatedWith(Names.named("ControllerOperationalDatastore"))
                 .toInstance(lightyServices.getOperationalDatastore());
-        bind(DistributedShardFactory.class)
-                .toInstance(lightyServices.getDistributedShardFactory());
         bind(BindingNormalizedNodeSerializer.class)
                 .toInstance(lightyServices.getBindingNormalizedNodeSerializer());
         bind(BindingCodecTreeFactory.class)

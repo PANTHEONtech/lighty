@@ -73,7 +73,7 @@ public class GnmiCrudService {
             } else {
                 datastoreType = DatastoreType.CONFIGURATION;
             }
-            final Optional<NormalizedNode<?, ?>> optNode = dataService.readDataByPath(datastoreType, entry.getValue());
+            final Optional<NormalizedNode> optNode = dataService.readDataByPath(datastoreType, entry.getValue());
 
             optNode.ifPresent(node -> {
                 Map.Entry<Gnmi.Path, String> jsonResult = getResultInJsonFormat(entry, node);
@@ -131,8 +131,9 @@ public class GnmiCrudService {
 
 
     Map.Entry<Gnmi.Path, String> getResultInJsonFormat(final Map.Entry<Gnmi.Path, YangInstanceIdentifier> entry,
-                                                       final NormalizedNode<?, ?> node) {
-        final Optional<? extends Module> module = DataConverter.findModuleByQName(node.getNodeType(), context);
+                                                       final NormalizedNode node) {
+        final Optional<? extends Module> module
+                = DataConverter.findModuleByQName(node.getIdentifier().getNodeType(), context);
         final String moduleName = module.map(Module::getName).orElse(null);
 
         final String jsonValue = DataConverter.jsonStringFromNormalizedNodes(entry.getValue(), node, context);
@@ -186,7 +187,7 @@ public class GnmiCrudService {
                                                               final Module module, final boolean isReplace) {
         // list entries need to also be wrapped in a list
         final String json;
-        final NormalizedNode<?, ?> node;
+        final NormalizedNode node;
         YangInstanceIdentifier resultingIdentifier = identifier;
         final Gnmi.UpdateResult result;
 
@@ -223,7 +224,7 @@ public class GnmiCrudService {
 
     private Gnmi.UpdateResult processUpdateListSimpleValue(final Gnmi.Update update,
                                                            final YangInstanceIdentifier identifier) {
-        final Optional<NormalizedNode<?, ?>> updatingNode
+        final Optional<NormalizedNode> updatingNode
                 = dataService.readDataByPath(DatastoreType.CONFIGURATION, identifier);
         if (updatingNode.isEmpty()) {
             LOG.error("Update for non existing simple value is not permitted");
@@ -232,7 +233,7 @@ public class GnmiCrudService {
         }
         // Modify existing simple value
         final String simpleJson = getSimpleJsonValue(update.getVal(), update.getPath());
-        final NormalizedNode<?, ?> resultNode = DataConverter.nodeFromJsonString(identifier, simpleJson, context);
+        final NormalizedNode resultNode = DataConverter.nodeFromJsonString(identifier, simpleJson, context);
         dataService.mergeDataByPath(DatastoreType.CONFIGURATION, identifier, resultNode);
         return Gnmi.UpdateResult.newBuilder()
                 .setPath(update.getPath())

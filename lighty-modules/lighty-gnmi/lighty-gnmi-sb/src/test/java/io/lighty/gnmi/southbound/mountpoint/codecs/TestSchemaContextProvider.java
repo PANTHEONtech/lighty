@@ -38,7 +38,7 @@ public class TestSchemaContextProvider implements SchemaContextProvider {
             throws YangLoadException, SchemaException {
         final TestYangDataStoreService dataStoreService = new TestYangDataStoreService();
         final List<GnmiDeviceCapability> capabilities =
-                new ByPathYangLoaderService(path, null)
+                new ByPathYangLoaderService(path)
                 .load(dataStoreService);
         final SchemaContextHolder schemaContextHolder = new SchemaContextHolderImpl(dataStoreService, null);
         return new TestSchemaContextProvider(schemaContextHolder.getSchemaContext(capabilities));

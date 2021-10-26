@@ -13,8 +13,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.net.URI;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
@@ -27,6 +27,8 @@ import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeS
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
+import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
+import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack.Inference;
 
 /**
  * The implementation of {@link NodeConverter} which serializes and deserializes binding independent
@@ -85,11 +87,11 @@ public class JsonNodeConverter implements NodeConverter {
      * @throws SerializationException if there was a problem during writing JSON data
      */
     @Override
-    public Writer serializeData(final SchemaNode schemaNode, final NormalizedNode<?, ?> normalizedNode)
+    public Writer serializeData(final SchemaNode schemaNode, final NormalizedNode normalizedNode)
             throws SerializationException {
         Writer writer = new StringWriter();
         JsonWriter jsonWriter = new JsonWriter(writer);
-        URI namespace = schemaNode.getQName().getNamespace();
+        XMLNamespace namespace = schemaNode.getQName().getNamespace();
         NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter.createExclusiveWriter(this.jsonCodecFactory,
                 schemaNode.getPath(), namespace, jsonWriter);
         try (NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(create)) {
@@ -110,17 +112,17 @@ public class JsonNodeConverter implements NodeConverter {
      * @throws SerializationException if an {@link IOException} occurs during serialization
      */
     @Override
-    public Writer serializeRpc(final SchemaNode schemaNode, final NormalizedNode<?, ?> normalizedNode)
+    public Writer serializeRpc(final SchemaNode schemaNode, final NormalizedNode normalizedNode)
             throws SerializationException {
         Writer writer = new StringWriter();
         JsonWriter jsonWriter = new JsonWriter(writer);
         String localName = schemaNode.getQName().getLocalName();
-        URI namespace = schemaNode.getQName().getNamespace();
+        XMLNamespace namespace = schemaNode.getQName().getNamespace();
         NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter.createExclusiveWriter(this.jsonCodecFactory,
                 schemaNode.getPath(), namespace, jsonWriter);
         try (NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(create)) {
             jsonWriter.beginObject().name(localName);
-            for (NormalizedNode<?, ?> child : ((ContainerNode) normalizedNode).getValue()) {
+            for (NormalizedNode child : ((ContainerNode) normalizedNode).body()) {
                 normalizedNodeWriter.write(child);
             }
             // XXX dirty check for end of object. When serializing RPCs with input/output which is not a
@@ -148,13 +150,15 @@ public class JsonNodeConverter implements NodeConverter {
      *         data
      */
     @Override
-    public NormalizedNode<?, ?> deserialize(final SchemaNode schemaNode, final Reader inputData)
+    public NormalizedNode deserialize(final SchemaNode schemaNode, final Reader inputData)
             throws SerializationException {
+        Inference inference = SchemaInferenceStack.ofSchemaPath(jsonCodecFactory.getEffectiveModelContext(),
+                schemaNode.getPath()).toInference();
         NormalizedNodeResult result = new NormalizedNodeResult();
         try (JsonReader reader = new JsonReader(inputData);
                 NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
                 JsonParserStream jsonParser = JsonParserStream.create(streamWriter,
-                        this.jsonCodecFactory, schemaNode)) {
+                        this.jsonCodecFactory, inference)) {
             jsonParser.parse(reader);
         } catch (IOException e) {
             throw new SerializationException(e);

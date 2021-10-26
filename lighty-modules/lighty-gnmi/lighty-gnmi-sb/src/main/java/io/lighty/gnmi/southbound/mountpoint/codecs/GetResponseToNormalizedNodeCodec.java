@@ -28,7 +28,7 @@ import org.opendaylight.yangtools.yang.model.api.Module;
  * Default codec which transforms (Gnmi.GetResponse, YangInstanceIdentifier) to NormalizedNode.
  */
 public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetResponse, YangInstanceIdentifier,
-        Optional<NormalizedNode<?, ?>>> {
+        Optional<NormalizedNode>> {
 
     private final SchemaContextProvider schemaContextProvider;
     private final Gson gson;
@@ -53,12 +53,12 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
      * @throws GnmiCodecException if parsing failed.
      */
     @Override
-    public Optional<NormalizedNode<?, ?>> apply(Gnmi.GetResponse response, YangInstanceIdentifier identifier)
+    public Optional<NormalizedNode> apply(Gnmi.GetResponse response, YangInstanceIdentifier identifier)
             throws GnmiCodecException {
         for (Gnmi.Notification notification : response.getNotificationList()) {
             for (Gnmi.Update update : notification.getUpdateList()) {
                 // Json to NormalizedNode
-                final NormalizedNode<?, ?> codecResult = updateToNormalizedNode(update, identifier);
+                final NormalizedNode codecResult = updateToNormalizedNode(update, identifier);
                 /*
                 If the serialized normalized node is of type AugmentationNode we need to return the child
                  because the AugmentationNode has no QName so later post processing (for example restconf)
@@ -67,8 +67,8 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
                 if (codecResult instanceof AugmentationNode) {
                     final AugmentationNode node = (AugmentationNode) codecResult;
                     if (node.getIdentifier().getPossibleChildNames().size() == 1
-                            && node.getValue().size() == 1) {
-                        return Optional.of(node.getValue().iterator().next());
+                            && node.body().size() == 1) {
+                        return Optional.of(node.body().iterator().next());
 
                     }
                 } else {
@@ -79,7 +79,7 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
         return Optional.empty();
     }
 
-    private NormalizedNode<?, ?> updateToNormalizedNode(final Update update, final YangInstanceIdentifier identifier)
+    private NormalizedNode updateToNormalizedNode(final Update update, final YangInstanceIdentifier identifier)
         throws GnmiCodecException {
         switch (update.getVal().getValueCase()) {
             case JSON_VAL:
@@ -158,7 +158,7 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
     }
 
     @SuppressWarnings("IllegalCatch")
-    private NormalizedNode<?, ?> resolveJsonResponse(YangInstanceIdentifier identifier, String inputJson)
+    private NormalizedNode resolveJsonResponse(YangInstanceIdentifier identifier, String inputJson)
             throws GnmiCodecException {
         try {
             return DataConverter.nodeFromJsonString(identifier,inputJson,

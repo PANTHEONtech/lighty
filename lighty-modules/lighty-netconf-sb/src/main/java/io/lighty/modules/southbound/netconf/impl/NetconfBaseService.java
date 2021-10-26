@@ -58,7 +58,7 @@ public interface NetconfBaseService extends DOMService {
      * @param rollback if true, rollback on error option is added to the edit-config message
      * @return future with RPC result
      */
-    ListenableFuture<? extends DOMRpcResult> editConfig(QName targetDatastore, Optional<NormalizedNode<?, ?>> data,
+    ListenableFuture<? extends DOMRpcResult> editConfig(QName targetDatastore, Optional<NormalizedNode> data,
             YangInstanceIdentifier dataPath, Optional<ModifyAction> dataModifyActionAttribute,
             Optional<ModifyAction> defaultModifyAction, boolean rollback);
 

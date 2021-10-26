@@ -19,7 +19,6 @@ import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.InvalidAlgorithmParameterException;
@@ -87,6 +86,7 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafSetEntryNode;
@@ -119,14 +119,14 @@ public class GnmiWithoutRestconfTest {
     private static final String YANG_NAME = "YANG_NAME";
     private static final String YANG_VERSION = "YANG_VERSION";
     private static final QNameModule INERFACE_QNAME_MODULE
-            = QNameModule.create(URI.create("http://openconfig.net/yang/interfaces"), Revision.of("2021-04-06"));
+            = QNameModule.create(XMLNamespace.of("http://openconfig.net/yang/interfaces"), Revision.of("2021-04-06"));
     private static final QName INTERFACES_QNAME = QName.create(INERFACE_QNAME_MODULE, "interfaces");
-    private static final QNameModule TEST_MODULE_QN_MODULE = QNameModule.create(URI.create("test:model"));
+    private static final QNameModule TEST_MODULE_QN_MODULE = QNameModule.create(XMLNamespace.of("test:model"));
     private static final QName TEST_DATA_CONTAINER_QN = QName.create(TEST_MODULE_QN_MODULE, "test-data");
     private static final QName TEST_LEAF_LIST_QN = QName.create(TEST_DATA_CONTAINER_QN, "test-leaf-list");
 
     private static final QNameModule CERT_STORAGE_QN_MODULE
-            = QNameModule.create(URI.create("urn:lighty:gnmi:certificate:storage"), Revision.of("2021-05-04"));
+            = QNameModule.create(XMLNamespace.of("urn:lighty:gnmi:certificate:storage"), Revision.of("2021-05-04"));
     private static final QName ADD_KEYSTORE_RPC_QN = QName.create(CERT_STORAGE_QN_MODULE, "add-keystore-certificate");
     private static final QName ADD_KEYSTORE_INPUT_QN = QName.create(ADD_KEYSTORE_RPC_QN, "input");
     private static final QName KEYSTORE_ID_QN = QName.create(CERT_STORAGE_QN_MODULE, "keystore-id");
@@ -136,7 +136,7 @@ public class GnmiWithoutRestconfTest {
     private static final QName CLIENT_CERT_QN = QName.create(CERT_STORAGE_QN_MODULE, "client-cert");
 
     private static final QNameModule YANG_STORAGE_QN_MODULE
-            = QNameModule.create(URI.create("urn:lighty:gnmi:yang:storage"), Revision.of("2021-03-31"));
+            = QNameModule.create(XMLNamespace.of("urn:lighty:gnmi:yang:storage"), Revision.of("2021-03-31"));
     private static final QName UPLOAD_YANG_RPC_QN = QName.create(YANG_STORAGE_QN_MODULE, "upload-yang-model");
     private static final QName UPLOAD_YANG_INPUT_QN = QName.create(UPLOAD_YANG_RPC_QN, "input");
     private static final QName GNMI_YANG_MODELS_QN = QName.create(YANG_STORAGE_QN_MODULE, "gnmi-yang-models");
@@ -241,7 +241,7 @@ public class GnmiWithoutRestconfTest {
 
         //GET Interfaces
         final YangInstanceIdentifier interfacesYIID = YangInstanceIdentifier.builder().node(INTERFACES_QNAME).build();
-        final Optional<NormalizedNode<?, ?>> normalizedNode = readDOMConfigData(domDataBroker, interfacesYIID);
+        final Optional<NormalizedNode> normalizedNode = readDOMConfigData(domDataBroker, interfacesYIID);
         assertTrue(normalizedNode.isPresent());
         assertEquals(INTERFACES_QNAME, normalizedNode.get().getIdentifier().getNodeType());
 
@@ -252,7 +252,7 @@ public class GnmiWithoutRestconfTest {
         writeDOMConfigData(domDataBroker, testLeafListYIID, testDataContainerNode);
 
         //GET created data
-        final Optional<NormalizedNode<?, ?>> createdContainer = readDOMConfigData(domDataBroker, testLeafListYIID);
+        final Optional<NormalizedNode> createdContainer = readDOMConfigData(domDataBroker, testLeafListYIID);
         assertTrue(createdContainer.isPresent());
         assertEquals(TEST_DATA_CONTAINER_QN, createdContainer.get().getIdentifier().getNodeType());
 
@@ -261,26 +261,26 @@ public class GnmiWithoutRestconfTest {
         updateDOMConfigData(domDataBroker, testLeafListYIID, updateTestDataContainerNode);
 
         //GET updated data
-        final Optional<NormalizedNode<?, ?>> updatedContainer = readDOMConfigData(domDataBroker, testLeafListYIID);
+        final Optional<NormalizedNode> updatedContainer = readDOMConfigData(domDataBroker, testLeafListYIID);
         assertTrue(updatedContainer.isPresent());
         assertEquals(TEST_DATA_CONTAINER_QN, updatedContainer.get().getIdentifier().getNodeType());
         assertTrue(updatedContainer.get() instanceof ContainerNode);
         ContainerNode containerNode = (ContainerNode) updatedContainer.get();
-        assertEquals(1, containerNode.getValue().toArray().length);
-        assertTrue(containerNode.getValue().toArray()[0] instanceof LeafSetNode);
-        LeafSetNode<?> leafSetNode = (LeafSetNode) containerNode.getValue().toArray()[0];
-        assertEquals(3, leafSetNode.getValue().size());
+        assertEquals(1, containerNode.body().toArray().length);
+        assertTrue(containerNode.body().toArray()[0] instanceof LeafSetNode);
+        LeafSetNode<?> leafSetNode = (LeafSetNode) containerNode.body().toArray()[0];
+        assertEquals(3, leafSetNode.body().size());
         List<String> list = Arrays.asList(FIRST_VALUE, SECOND_VALUE, THIRD_VALUE);
-        for (Object object : leafSetNode.getValue()) {
+        for (Object object : leafSetNode.body()) {
             assertTrue(object instanceof LeafSetEntryNode);
-            assertTrue(list.contains(((LeafSetEntryNode<String>) object).getValue()));
+            assertTrue(list.contains(((LeafSetEntryNode<String>) object).body()));
         }
 
         //DELETE created data
         deleteDOMConfigData(domDataBroker, testLeafListYIID);
 
         //GET deleted data
-        final Optional<NormalizedNode<?, ?>> removedLeafListNN = readDOMConfigData(domDataBroker, testLeafListYIID);
+        final Optional<NormalizedNode> removedLeafListNN = readDOMConfigData(domDataBroker, testLeafListYIID);
         assertFalse(removedLeafListNN.isPresent());
 
         //Remove device after test
@@ -302,7 +302,7 @@ public class GnmiWithoutRestconfTest {
     @Test
     public void testRegisterCertificateToKeystore() throws ExecutionException, InterruptedException, TimeoutException {
         // Invoke RPC for registering certificates
-        final NormalizedNode<?, ?> certificateInput
+        final NormalizedNode certificateInput
                 = getCertificateInput(CERT_ID, CA_VALUE, CLIENT_CERT, CLIENT_KEY, PASSPHRASE);
         lightyController.getServices().getDOMRpcService().invokeRpc(ADD_KEYSTORE_RPC_QN, certificateInput)
                 .get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
@@ -327,7 +327,7 @@ public class GnmiWithoutRestconfTest {
     @Test
     public void testUpdatingYangModels() throws ExecutionException, InterruptedException, TimeoutException {
         // Invoke RPC for uploading yang models
-        final NormalizedNode<?, ?> yangModelInput = getYangModelInput(YANG_NAME, YANG_BODY, YANG_VERSION);
+        final NormalizedNode yangModelInput = getYangModelInput(YANG_NAME, YANG_BODY, YANG_VERSION);
         lightyController.getServices().getDOMRpcService().invokeRpc(UPLOAD_YANG_RPC_QN, yangModelInput)
                 .get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
 
@@ -346,7 +346,7 @@ public class GnmiWithoutRestconfTest {
         deleteOperData(bindingDataBroker, yangModelII);
     }
 
-    private NormalizedNode<?,?> getYangModelInput(final String yangName, final String yangBody,
+    private NormalizedNode getYangModelInput(final String yangName, final String yangBody,
                                                   final String yangVersion) {
         return ImmutableContainerNodeBuilder.create()
                 .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(UPLOAD_YANG_INPUT_QN))
@@ -365,7 +365,7 @@ public class GnmiWithoutRestconfTest {
                 .build();
     }
 
-    private NormalizedNode<?,?> getCertificateInput(final String certId, final String ca, final String clientCert,
+    private NormalizedNode getCertificateInput(final String certId, final String ca, final String clientCert,
                                                     final String certKey, final String passphrase) {
         return ImmutableContainerNodeBuilder.create()
                 .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(ADD_KEYSTORE_INPUT_QN))
@@ -415,7 +415,7 @@ public class GnmiWithoutRestconfTest {
         writeTransaction.commit().get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
     }
 
-    private Optional<NormalizedNode<?, ?>> readDOMConfigData(final DOMDataBroker domDataBroker,
+    private Optional<NormalizedNode> readDOMConfigData(final DOMDataBroker domDataBroker,
                                                              final YangInstanceIdentifier path)
             throws ExecutionException, InterruptedException, TimeoutException {
         try (DOMDataTreeReadTransaction readTransaction = domDataBroker.newReadOnlyTransaction();) {
@@ -425,7 +425,7 @@ public class GnmiWithoutRestconfTest {
     }
 
     private void writeDOMConfigData(final DOMDataBroker domDataBroker, final YangInstanceIdentifier path,
-                                    final NormalizedNode<?,?> data)
+                                    final NormalizedNode data)
             throws ExecutionException, InterruptedException,TimeoutException {
         final DOMDataTreeWriteTransaction writeTransaction = domDataBroker.newWriteOnlyTransaction();
         writeTransaction.put(LogicalDatastoreType.CONFIGURATION, path, data);
@@ -433,7 +433,7 @@ public class GnmiWithoutRestconfTest {
     }
 
     private void updateDOMConfigData(final DOMDataBroker domDataBroker, final YangInstanceIdentifier path,
-                                     final NormalizedNode<?,?> data)
+                                     final NormalizedNode data)
             throws ExecutionException, InterruptedException, TimeoutException {
         final DOMDataTreeWriteTransaction writeTransaction = domDataBroker.newWriteOnlyTransaction();
         writeTransaction.merge(LogicalDatastoreType.CONFIGURATION, path, data);

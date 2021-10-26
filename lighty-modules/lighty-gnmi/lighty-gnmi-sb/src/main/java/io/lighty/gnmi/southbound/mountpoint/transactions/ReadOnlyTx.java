@@ -37,7 +37,7 @@ public class ReadOnlyTx implements DOMDataTreeReadTransaction {
     }
 
     @Override
-    public FluentFuture<Optional<NormalizedNode<?, ?>>> read(LogicalDatastoreType store, YangInstanceIdentifier path) {
+    public FluentFuture<Optional<NormalizedNode>> read(LogicalDatastoreType store, YangInstanceIdentifier path) {
         switch (store) {
             case OPERATIONAL:
                 return FluentFuture.from(getProvider.readOperationalData(path));

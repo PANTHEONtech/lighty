@@ -41,7 +41,7 @@ public class YangInstanceNormToGnmiUpdateCodecTest {
 
     @Test
     public void topLevelElementTest() throws GnmiCodecException {
-        final Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>>, Gnmi.Update> prepared =
+        final Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> prepared =
                 testCases.topElementTestCase();
         final Gnmi.Update result = codec.apply(prepared.getKey().left, prepared.getKey().right);
         assertUpdateEquals(prepared.getValue(), result);
@@ -49,7 +49,7 @@ public class YangInstanceNormToGnmiUpdateCodecTest {
 
     @Test
     public void listEntryCase() throws GnmiCodecException {
-        final Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>>, Gnmi.Update> prepared =
+        final Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> prepared =
                 testCases.listEntryTestCase();
         final Gnmi.Update result = codec.apply(prepared.getKey().left, prepared.getKey().right);
         assertUpdateEquals(prepared.getValue(), result);
@@ -57,7 +57,7 @@ public class YangInstanceNormToGnmiUpdateCodecTest {
 
     @Test
     public void containerCase() throws GnmiCodecException {
-        Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>>, Gnmi.Update> prepared =
+        Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> prepared =
                 testCases.containerTestCase();
         Gnmi.Update result = codec.apply(prepared.getKey().left, prepared.getKey().right);
         assertUpdateEquals(prepared.getValue(), result);
@@ -71,7 +71,7 @@ public class YangInstanceNormToGnmiUpdateCodecTest {
     @Test
     public void simpleValuesTest() throws GnmiCodecException {
         // ------Boolean case:----------
-        Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode<?, ?>>, Gnmi.Update> prepared =
+        Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> prepared =
                 testCases.leafBooleanTestCase();
         Gnmi.Update result = codec.apply(prepared.getKey().left, prepared.getKey().right);
         assertUpdateEquals(prepared.getValue(), result);

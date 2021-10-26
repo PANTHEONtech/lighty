@@ -98,11 +98,6 @@ public class GuiceDITest {
     }
 
     @Test
-    public void testDIDistributedShardFactory() {
-        assertNotNull(testService.getDistributedShardFactory());
-    }
-
-    @Test
     public void testDIBindingNormalizedNodeSerializer() {
         assertNotNull(testService.getBindingNormalizedNodeSerializer());
     }

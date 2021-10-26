@@ -15,15 +15,14 @@ import java.util.List;
 import org.opendaylight.mdsal.binding.runtime.spi.ModuleInfoSnapshotBuilder;
 import org.opendaylight.netconf.sal.connect.netconf.schema.mapping.BaseSchema;
 import org.opendaylight.netconf.sal.connect.netconf.schema.mapping.DefaultBaseNetconfSchemas;
-import org.opendaylight.yangtools.rcf8528.data.util.EmptyMountPointContext;
 import org.opendaylight.yangtools.rfc8528.data.api.MountPointContext;
+import org.opendaylight.yangtools.rfc8528.data.util.EmptyMountPointContext;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.parser.api.YangParserException;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserFactoryImpl;
+import org.opendaylight.yangtools.yang.parser.api.YangParserException;
+import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
 import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -51,10 +50,10 @@ public abstract class NetconfBaseServiceBaseTest {
         );
         effectiveModelContext = getEffectiveModelContext(new ArrayList<>(yangModuleInfos));
         mountContext = new EmptyMountPointContext(effectiveModelContext);
-        baseSchema = new DefaultBaseNetconfSchemas(new YangParserFactoryImpl()).getBaseSchema();
+        baseSchema = new DefaultBaseNetconfSchemas(new DefaultYangParserFactory()).getBaseSchema();
     }
 
-    boolean hasSpecificChild(final Collection<DataContainerChild<? extends PathArgument, ?>> children,
+    boolean hasSpecificChild(final Collection<DataContainerChild> children,
                                      final String localName) {
         return children.stream()
                 .anyMatch(child -> child.getIdentifier().getNodeType().getLocalName().equals(localName));
@@ -80,7 +79,7 @@ public abstract class NetconfBaseServiceBaseTest {
 
     private static EffectiveModelContext getEffectiveModelContext(final List<YangModuleInfo> moduleInfos)
             throws YangParserException {
-        final YangParserFactoryImpl yangParserFactory = new YangParserFactoryImpl(new AntlrXPathParserFactory());
+        final DefaultYangParserFactory yangParserFactory = new DefaultYangParserFactory(new AntlrXPathParserFactory());
         ModuleInfoSnapshotBuilder moduleInfoSnapshotBuilder = new ModuleInfoSnapshotBuilder(yangParserFactory);
         moduleInfoSnapshotBuilder.add(moduleInfos);
         return moduleInfoSnapshotBuilder.build().getEffectiveModelContext();
