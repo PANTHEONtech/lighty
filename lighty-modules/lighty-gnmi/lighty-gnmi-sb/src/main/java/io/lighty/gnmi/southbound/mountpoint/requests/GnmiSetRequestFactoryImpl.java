@@ -80,8 +80,8 @@ public class GnmiSetRequestFactoryImpl implements SetRequestFactory {
         }
         // Expect one request per commit and if there is two request and only one is the update request
         // than the update request should be data store prepare request
-        if ((requestBuilder.getDeleteCount() != 0 || requestBuilder.getReplaceCount() != 0)
-                && requestBuilder.getUpdateCount() == 1) {
+        if (requestBuilder.getReplaceCount() == 1 && requestBuilder.getUpdateCount() == 1
+                && isLeftValueDataStorePrepareRequest(requestBuilder.getUpdate(0), requestBuilder.getReplace(0))) {
             LOG.debug("Remove Data store prepare request [{}]", requestBuilder.getUpdate(0));
             requestBuilder.removeUpdate(0);
             return requestBuilder;

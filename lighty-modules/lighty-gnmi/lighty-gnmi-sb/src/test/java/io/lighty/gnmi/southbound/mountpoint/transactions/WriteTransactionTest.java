@@ -73,6 +73,7 @@ public class WriteTransactionTest {
     private static final QName CONFIG_LOOPBACK_QN = QName.create(CONFIG_CONTAINER_QN, "loopback-mode");
     private static final long TIMEOUT_MILLIS = 30_000;
     private static final String NAME_KEY_VALUE = "NAME";
+    private static final String SECOND_NAME_KEY_VALUE = "SECOND_NAME";
     private static final HashMap<QName, Object> INTERFACE_NAME_KEY = new HashMap<>() {{
             put(NAME_QN, NAME_KEY_VALUE);
         }};
@@ -155,6 +156,19 @@ public class WriteTransactionTest {
         JSONAssert.assertEquals(EXPECTED_IETF_VALUE, jetfValue, true);
     }
 
+    @Test
+    public void addMultipleMergeRequest() throws ExecutionException, InterruptedException, TimeoutException {
+        final DOMDataTreeWriteTransaction writeTransaction = gnmiDataBroker.newWriteOnlyTransaction();
+        writeTransaction.merge(LogicalDatastoreType.CONFIGURATION,  TEST_CONFIG_IID, getTestDataContainerNode());
+        writeTransaction.merge(LogicalDatastoreType.CONFIGURATION, TEST_CONFIG_IID, getTestDataContainerNode());
+        writeTransaction.commit().get(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+
+        final ArgumentCaptor<Gnmi.SetRequest> setRequestArgumentCaptor = ArgumentCaptor.forClass(Gnmi.SetRequest.class);
+        verify(gnmiSession).set(setRequestArgumentCaptor.capture());
+        assertEquals(1, setRequestArgumentCaptor.getAllValues().size());
+        Gnmi.SetRequest setRequest = setRequestArgumentCaptor.getValue();
+        assertEquals(2, setRequest.getUpdateCount());
+    }
 
     @Test
     public void removeEmptyPrepareReqFromUpdateListTest() throws ExecutionException, InterruptedException,
