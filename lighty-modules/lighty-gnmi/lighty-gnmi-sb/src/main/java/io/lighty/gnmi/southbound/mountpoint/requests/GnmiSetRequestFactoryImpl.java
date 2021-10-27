@@ -74,6 +74,16 @@ public class GnmiSetRequestFactoryImpl implements SetRequestFactory {
         return filterDataStorePrepareRequest(setRequestBuilder).build();
     }
 
+    /**
+     * When PUT or PATCH request is sent through RESTCONF to gNMI device, it can produce additional merge request.
+     * Inside this merge request it is intended to prepare datastore if data with specific path does not exist yet. If
+     * path contains list than it create merge request which will try to create this list entity before actual write
+     * request. In gNMI this behavior is not required and if part of datastore prepare request is list node than this
+     * request can crash and prevent user to write data.
+     *
+     * @param requestBuilder {@link Builder} contains update data.
+     * @return {@link Builder} with removed datastore prepare updates.
+     */
     private Builder filterDataStorePrepareRequest(final Builder requestBuilder) {
         if (requestBuilder.getUpdateCount() == 0) {
             return requestBuilder;
