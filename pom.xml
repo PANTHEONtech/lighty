@@ -49,6 +49,36 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <!-- profile to collect all licenses and generate them to file
+             target/generated-sources/license/THIRD-PARTY.txt -->
+            <id>get-all-licenses</id>
+            <properties>
+                <license.sortArtifactByName>true</license.sortArtifactByName>
+                <license.force>true</license.force>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>license-maven-plugin</artifactId>
+                        <version>2.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>analyze-license</id>
+                                <goals>
+                                    <goal>aggregate-add-third-party</goal>
+                                </goals>
+                                <phase>validate</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <licenses>
         <license>
             <name>Eclipse Public License 1.0</name>
