@@ -52,7 +52,8 @@
     <profiles>
         <profile>
             <!-- profile to collect all licenses and generate them to file
-             target/generated-sources/license/THIRD-PARTY.txt -->
+             target/generated-sources/license/THIRD-PARTY.txt
+             The process of generation can be executed simply by `mvn validate -P get-all-licenses`-->
             <id>get-all-licenses</id>
             <properties>
                 <license.sortArtifactByName>true</license.sortArtifactByName>
