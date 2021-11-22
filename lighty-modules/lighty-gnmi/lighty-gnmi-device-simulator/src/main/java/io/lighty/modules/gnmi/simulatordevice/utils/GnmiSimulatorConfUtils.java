@@ -66,22 +66,22 @@ public final class GnmiSimulatorConfUtils {
     private static GnmiSimulatorConfiguration setModelsToSimulatorConfig(final ObjectMapper mapper,
             final JsonNode schemaServiceElement, final GnmiSimulatorConfiguration gnmiSimulatorConfiguration)
             throws JsonProcessingException {
-        if (!schemaServiceElement.has(TOP_LEVEL_MODELS_ELEMENT_NAME)) {
+        if (schemaServiceElement.has(TOP_LEVEL_MODELS_ELEMENT_NAME)) {
+            JsonNode yangModels = schemaServiceElement.path(TOP_LEVEL_MODELS_ELEMENT_NAME);
+            if (yangModels.isArray()) {
+                Set<ModuleId> moduleIds = new HashSet<>();
+                for (JsonNode moduleIdNode : yangModels) {
+                    ModuleId moduleId = mapper.treeToValue(moduleIdNode, ModuleId.class);
+                    moduleIds.add(moduleId);
+                }
+                Set<YangModuleInfo> modelsFromClasspath = YangModuleUtils.getModelsFromClasspath(moduleIds);
+                gnmiSimulatorConfiguration.setYangModulesInfo(modelsFromClasspath);
+            } else {
+                LOG.error("Expected JSON array at {}", TOP_LEVEL_MODELS_ELEMENT_NAME);
+            }
+        } else {
             LOG.info("Missing [{}] inside element [{}] in gNMI configuration", TOP_LEVEL_MODELS_ELEMENT_NAME,
                     SCHEMA_SERVICE_ELEMENT_NAME);
-            return gnmiSimulatorConfiguration;
-        }
-        JsonNode yangModels = schemaServiceElement.path(TOP_LEVEL_MODELS_ELEMENT_NAME);
-        if (yangModels.isArray()) {
-            Set<ModuleId> moduleIds = new HashSet<>();
-            for (JsonNode moduleIdNode : yangModels) {
-                ModuleId moduleId = mapper.treeToValue(moduleIdNode, ModuleId.class);
-                moduleIds.add(moduleId);
-            }
-            Set<YangModuleInfo> modelsFromClasspath = YangModuleUtils.getModelsFromClasspath(moduleIds);
-            gnmiSimulatorConfiguration.setYangModulesInfo(modelsFromClasspath);
-        } else {
-            LOG.error("Expected JSON array at {}", TOP_LEVEL_MODELS_ELEMENT_NAME);
         }
         return gnmiSimulatorConfiguration;
     }
