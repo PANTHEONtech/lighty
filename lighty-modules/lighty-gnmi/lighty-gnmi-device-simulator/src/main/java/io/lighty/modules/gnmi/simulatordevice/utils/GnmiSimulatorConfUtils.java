@@ -60,8 +60,6 @@ public final class GnmiSimulatorConfUtils {
             throw new RuntimeException(String.format("Cannot bind Json tree to type: %s",
                 io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration.class), e);
         }
-
-
         return gnmiSimulatorConfiguration;
     }
 
@@ -88,12 +86,10 @@ public final class GnmiSimulatorConfUtils {
         return gnmiSimulatorConfiguration;
     }
 
-
     public static GnmiSimulatorConfiguration loadDefaultGnmiSimulatorConfiguration() {
         GnmiSimulatorConfiguration gnmiSimulatorConfiguration = new GnmiSimulatorConfiguration();
         gnmiSimulatorConfiguration.setYangsPath(GnmiSimulatorConfUtils.class.getResource("/yangs").getPath());
         return gnmiSimulatorConfiguration;
     }
-
 
 }

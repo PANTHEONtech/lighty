@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2021 PANTHEON.tech s.r.o. All Rights Reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at https://www.eclipse.org/legal/epl-v10.html
+ */
+
 package io.lighty.modules.gnmi.simulatordevice.utils;
 
 import java.io.File;
@@ -69,7 +77,7 @@ public class EffectiveModelContextBuilder {
             throw new EffectiveModelContextBuilderException("Cannot create EffectiveModelContext without"
                     + "yangModulesPath or yangModulesInfo");
         }
-        BuildAction buildAction = RFC7950Reactors.defaultReactorBuilder().build().newBuild();
+        final BuildAction buildAction = RFC7950Reactors.defaultReactorBuilder().build().newBuild();
         if (this.yangModulesInfo != null) {
             buildAction.addSources(getYangStatementsFromYangModulesInfo(this.yangModulesInfo));
         }
@@ -85,7 +93,7 @@ public class EffectiveModelContextBuilder {
 
     private static List<YangStatementStreamSource> getYangStatementsFromYangModulesPath(final String path)
             throws EffectiveModelContextBuilderException {
-        ArrayList<YangStatementStreamSource> sourceArrayList = new ArrayList<>();
+        final ArrayList<YangStatementStreamSource> sourceArrayList = new ArrayList<>();
         try (Stream<Path> pathStream = Files.walk(Path.of(path))) {
             final List<File> filesInFolder = pathStream
                     .filter(Files::isRegularFile)
@@ -101,7 +109,7 @@ public class EffectiveModelContextBuilder {
             }
             return sourceArrayList;
         } catch (IOException | YangParserException e) {
-            String errorMsg = String.format("Failed to create YangStatementStreamSource from"
+            final String errorMsg = String.format("Failed to create YangStatementStreamSource from"
                     + "provided path: [%s]", path);
             throw new EffectiveModelContextBuilderException(errorMsg, e);
         }
@@ -109,7 +117,7 @@ public class EffectiveModelContextBuilder {
 
     private static List<YangStatementStreamSource> getYangStatementsFromYangModulesInfo(
             final Set<YangModuleInfo> yangModulesInfo) throws EffectiveModelContextBuilderException {
-        ArrayList<YangStatementStreamSource> sourceArrayList = new ArrayList<>();
+        final ArrayList<YangStatementStreamSource> sourceArrayList = new ArrayList<>();
         for (YangModuleInfo yangModuleInfo : yangModulesInfo) {
             try {
                 final YangStatementStreamSource statementSource
@@ -119,7 +127,7 @@ public class EffectiveModelContextBuilder {
                         yangModuleInfo.getYangTextByteSource()));
                 sourceArrayList.add(statementSource);
             } catch (IOException | YangParserException e) {
-                String errorMsg = String.format("Failed to create YangStatementStreamSource from"
+                final String errorMsg = String.format("Failed to create YangStatementStreamSource from"
                         + "provided YangModuleInfo: [%s]", yangModuleInfo);
                 throw new EffectiveModelContextBuilderException(errorMsg, e);
             }
