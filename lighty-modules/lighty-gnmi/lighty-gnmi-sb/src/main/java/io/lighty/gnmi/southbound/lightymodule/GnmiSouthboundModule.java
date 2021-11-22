@@ -14,15 +14,15 @@ import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
 import io.lighty.gnmi.southbound.provider.GnmiSouthboundProvider;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoaderService;
+import io.lighty.gnmi.southbound.schema.loader.impl.ByClassPathYangLoaderService;
 import io.lighty.gnmi.southbound.schema.loader.impl.ByPathYangLoaderService;
 import java.nio.file.Path;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
@@ -85,11 +85,16 @@ public final class GnmiSouthboundModule extends AbstractLightyModule {
     }
 
     private List<YangLoaderService> prepareByPathLoaders(final GnmiConfiguration config) {
-        return config != null
-                ? config.getInitialYangsPaths().stream()
-                .map(path -> new ByPathYangLoaderService(Path.of(path)))
-                .collect(Collectors.toList())
-                : Collections.emptyList();
+        final List<YangLoaderService> services = new ArrayList<>();
+        if (config != null) {
+            config.getInitialYangsPaths().stream()
+                    .map(path -> new ByPathYangLoaderService(Path.of(path)))
+                    .forEach(services::add);
+            if (config.getYangModulesInfo() != null) {
+                services.add(new ByClassPathYangLoaderService(config.getYangModulesInfo()));
+            }
+        }
+        return services;
     }
 
 }
