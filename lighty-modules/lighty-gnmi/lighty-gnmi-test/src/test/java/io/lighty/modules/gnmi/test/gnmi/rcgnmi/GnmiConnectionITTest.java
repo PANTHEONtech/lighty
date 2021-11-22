@@ -472,7 +472,7 @@ public class GnmiConnectionITTest extends GnmiITBase {
             assertEquals(HttpURLConnection.HTTP_OK, getDataFromDevice.statusCode());
             final HttpResponse<String> getIncorrectDataFromDevice =
                 sendGetRequestJSON(GNMI_DEVICE_MOUNTPOINT + OPENCONFIG_INTERFACES + "incorrect");
-            assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, getIncorrectDataFromDevice.statusCode());
+            assertEquals(HttpURLConnection.HTTP_CONFLICT, getIncorrectDataFromDevice.statusCode());
 
             final HttpResponse<String> setDataOnDevice =
                 sendPutRequestJSON(GNMI_DEVICE_MOUNTPOINT + OPENCONFIG_INTERFACES + "/interface=eth3/config/name",
