@@ -8,19 +8,24 @@
 
 package io.lighty.gnmi.southbound.lightymodule.config;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 
 /**
  * Configuration of gNMI Southbound.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class GnmiConfiguration {
     //-----JSON configurables---
     /**
      * Optional list of paths from which ByPathYangLoaderService instances will be created and added to initialLoaders.
      */
     private final List<String> initialYangsPaths;
+    private Set<YangModuleInfo> yangModulesInfo;
 
     public GnmiConfiguration() {
         initialYangsPaths = new ArrayList<>();
@@ -35,5 +40,12 @@ public class GnmiConfiguration {
         return initialYangsPaths;
     }
 
+    public Set<YangModuleInfo> getYangModulesInfo() {
+        return yangModulesInfo;
+    }
+
+    public void setYangModulesInfo(final Set<YangModuleInfo> yangModulesInfo) {
+        this.yangModulesInfo = yangModulesInfo;
+    }
 
 }
