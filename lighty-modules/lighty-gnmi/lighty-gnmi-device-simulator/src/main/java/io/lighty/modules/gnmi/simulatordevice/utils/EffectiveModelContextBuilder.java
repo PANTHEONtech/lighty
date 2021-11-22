@@ -27,6 +27,10 @@ import org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangStatementStreamSo
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor.BuildAction;
 
+/**
+ * EffectiveModelContextBuilder build {@link EffectiveModelContext} from provided path to folder which contains
+ * yang models and also from provided instances of {@link YangModuleInfo}.
+ */
 public class EffectiveModelContextBuilder {
 
     private String yangModulesPath;
@@ -73,21 +77,22 @@ public class EffectiveModelContextBuilder {
      *                                               during construct EffectiveModelContext
      */
     public EffectiveModelContext build() throws EffectiveModelContextBuilderException {
-        if (this.yangModulesPath == null && this.yangModulesInfo == null) {
+        if (this.yangModulesPath != null || this.yangModulesInfo != null) {
+            final BuildAction buildAction = RFC7950Reactors.defaultReactorBuilder().build().newBuild();
+            if (this.yangModulesInfo != null) {
+                buildAction.addSources(getYangStatementsFromYangModulesInfo(this.yangModulesInfo));
+            }
+            if (this.yangModulesPath != null) {
+                buildAction.addSources(getYangStatementsFromYangModulesPath(this.yangModulesPath));
+            }
+            try {
+                return buildAction.buildEffective();
+            } catch (ReactorException e) {
+                throw new EffectiveModelContextBuilderException("Failed to create EffectiveModelContext", e);
+            }
+        } else {
             throw new EffectiveModelContextBuilderException("Cannot create EffectiveModelContext without"
                     + "yangModulesPath or yangModulesInfo");
-        }
-        final BuildAction buildAction = RFC7950Reactors.defaultReactorBuilder().build().newBuild();
-        if (this.yangModulesInfo != null) {
-            buildAction.addSources(getYangStatementsFromYangModulesInfo(this.yangModulesInfo));
-        }
-        if (this.yangModulesPath != null) {
-            buildAction.addSources(getYangStatementsFromYangModulesPath(this.yangModulesPath));
-        }
-        try {
-            return buildAction.buildEffective();
-        } catch (ReactorException e) {
-            throw new EffectiveModelContextBuilderException("Failed to create EffectiveModelContext", e);
         }
     }
 
