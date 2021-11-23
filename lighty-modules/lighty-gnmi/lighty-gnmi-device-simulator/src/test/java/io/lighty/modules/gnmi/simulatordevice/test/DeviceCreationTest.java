@@ -8,10 +8,8 @@
 
 package io.lighty.modules.gnmi.simulatordevice.test;
 
-import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
-import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
 import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
 import io.lighty.modules.gnmi.simulatordevice.utils.GnmiSimulatorConfUtils;
 import io.lighty.modules.gnmi.simulatordevice.yang.DatastoreType;
@@ -32,7 +30,7 @@ public class DeviceCreationTest {
 
     @Test
     public void deviceInitiatedWithDataTest()
-            throws IOException, ConfigurationException, EffectiveModelContextBuilderException {
+            throws IOException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfigurationMultipleTopElement = GnmiSimulatorConfUtils
                 .loadGnmiSimulatorConfiguration(this.getClass().getResourceAsStream(SIMULATOR_CONFIG));
@@ -40,8 +38,7 @@ public class DeviceCreationTest {
         simulatorConfigurationMultipleTopElement.setInitialStateDataPath(INIT_DATA_PATH + "/state.json");
 
         //Case with multiple top elements
-        SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder()
-                .from(simulatorConfigurationMultipleTopElement).build();
+        SimulatedGnmiDevice target = new SimulatedGnmiDevice(simulatorConfigurationMultipleTopElement);
         target.start();
         Assert.assertNotNull(target);
         Assert.assertNotNull(target.getSchemaContext());
@@ -60,7 +57,7 @@ public class DeviceCreationTest {
         simulatorConfigurationOneTopElement.setInitialStateDataPath(INIT_DATA_PATH + "/state_one_top.json");
 
         //Case with one top elements
-        target = new SimulatedGnmiDeviceBuilder().from(simulatorConfigurationOneTopElement).build();
+        target = new SimulatedGnmiDevice(simulatorConfigurationOneTopElement);
         target.start();
         Assert.assertNotNull(target);
         Assert.assertNotNull(target.getSchemaContext());
@@ -76,12 +73,12 @@ public class DeviceCreationTest {
 
     @Test
     public void deviceInitiatedWithNoDataTest()
-            throws IOException, ConfigurationException, EffectiveModelContextBuilderException {
+            throws IOException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
                 .loadGnmiSimulatorConfiguration(this.getClass().getResourceAsStream(SIMULATOR_CONFIG));
 
-        final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
+        final SimulatedGnmiDevice target = new SimulatedGnmiDevice(simulatorConfiguration);
         target.start();
         Assert.assertNotNull(target);
         Assert.assertNotNull(target.getSchemaContext());
@@ -97,14 +94,14 @@ public class DeviceCreationTest {
 
     @Test
     public void deviceInitiatedWithAuthTest()
-            throws IOException, ConfigurationException, EffectiveModelContextBuilderException {
+            throws IOException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
                 .loadGnmiSimulatorConfiguration(this.getClass().getResourceAsStream(SIMULATOR_CONFIG));
         simulatorConfiguration.setUsername(USERNAME_TEST);
         simulatorConfiguration.setPassword(PASSWORD_TEST);
 
-        final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
+        final SimulatedGnmiDevice target = new SimulatedGnmiDevice(simulatorConfiguration);
         target.start();
         Assert.assertNotNull(target);
         Assert.assertNotNull(target.getSchemaContext());
@@ -121,14 +118,14 @@ public class DeviceCreationTest {
 
     @Test
     public void initialDataPresentMultipleTopElemsTest()
-            throws IOException, ConfigurationException, EffectiveModelContextBuilderException {
+            throws IOException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
                 .loadGnmiSimulatorConfiguration(this.getClass().getResourceAsStream(SIMULATOR_CONFIG));
         simulatorConfiguration.setInitialConfigDataPath(INIT_DATA_PATH + "/config.json");
         simulatorConfiguration.setInitialStateDataPath(INIT_DATA_PATH + "/state.json");
 
-        final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
+        final SimulatedGnmiDevice target = new SimulatedGnmiDevice(simulatorConfiguration);
         target.start();
 
         Optional<NormalizedNode> optNormalizedNode = target.getDataService()
@@ -169,14 +166,14 @@ public class DeviceCreationTest {
 
     @Test
     public void initialDataPresentOneTopElemTest()
-            throws IOException, ConfigurationException, EffectiveModelContextBuilderException {
+            throws IOException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
                 .loadGnmiSimulatorConfiguration(this.getClass().getResourceAsStream(SIMULATOR_CONFIG));
         simulatorConfiguration.setInitialConfigDataPath(INIT_DATA_PATH + "/config_one_top.json");
         simulatorConfiguration.setInitialStateDataPath(INIT_DATA_PATH + "/state_one_top.json");
 
-        final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
+        final SimulatedGnmiDevice target = new SimulatedGnmiDevice(simulatorConfiguration);
         target.start();
 
         Optional<NormalizedNode> optNormalizedNode = target.getDataService()
@@ -217,7 +214,7 @@ public class DeviceCreationTest {
 
     @Test
     public void initialDataPresentOneTopElemWithNoTLSTest()
-            throws IOException, ConfigurationException, EffectiveModelContextBuilderException {
+            throws IOException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
                 .loadGnmiSimulatorConfiguration(this.getClass().getResourceAsStream(SIMULATOR_CONFIG));
@@ -225,7 +222,7 @@ public class DeviceCreationTest {
         simulatorConfiguration.setInitialStateDataPath(INIT_DATA_PATH + "/state_one_top.json");
         simulatorConfiguration.setUsePlaintext(true);
 
-        final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
+        final SimulatedGnmiDevice target = new SimulatedGnmiDevice(simulatorConfiguration);
         target.start();
         Optional<NormalizedNode> optNormalizedNode = target.getDataService()
                 .readDataByPath(DatastoreType.CONFIGURATION,
@@ -240,7 +237,7 @@ public class DeviceCreationTest {
 
     @Test
     public void initialDataPresentOneTopElemWithAuthorizationTest()
-            throws IOException, ConfigurationException, EffectiveModelContextBuilderException {
+            throws IOException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
                 .loadGnmiSimulatorConfiguration(this.getClass().getResourceAsStream(SIMULATOR_CONFIG));
@@ -249,7 +246,7 @@ public class DeviceCreationTest {
         simulatorConfiguration.setInitialConfigDataPath(INIT_DATA_PATH + "/config_one_top.json");
         simulatorConfiguration.setInitialStateDataPath(INIT_DATA_PATH + "/state_one_top.json");
 
-        final SimulatedGnmiDevice target = new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
+        final SimulatedGnmiDevice target = new SimulatedGnmiDevice(simulatorConfiguration);
         target.start();
         Optional<NormalizedNode> optNormalizedNode = target.getDataService()
                 .readDataByPath(DatastoreType.CONFIGURATION,

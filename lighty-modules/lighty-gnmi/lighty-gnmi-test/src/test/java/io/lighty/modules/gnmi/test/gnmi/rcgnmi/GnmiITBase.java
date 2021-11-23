@@ -16,10 +16,8 @@ import static io.lighty.modules.gnmi.test.gnmi.rcgnmi.GnmiITBase.GeneralConstant
 
 import gnmi.Gnmi;
 import io.lighty.applications.rcgnmi.app.RCgNMIApp;
-import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
-import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
 import io.lighty.modules.gnmi.simulatordevice.utils.GnmiSimulatorConfUtils;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -98,8 +96,7 @@ public abstract class GnmiITBase {
         LOG.info("Cleanup done!");
     }
 
-    protected static SimulatedGnmiDevice getUnsecureGnmiDevice(final String host, final int port)
-            throws ConfigurationException {
+    protected static SimulatedGnmiDevice getUnsecureGnmiDevice(final String host, final int port) {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
                 .loadGnmiSimulatorConfiguration(GnmiITBase.class.getResourceAsStream(SIMULATOR_CONFIG));
@@ -109,12 +106,11 @@ public abstract class GnmiITBase {
         simulatorConfiguration.setInitialConfigDataPath(INITIAL_JSON_DATA_PATH + "/config.json");
         simulatorConfiguration.setInitialStateDataPath(INITIAL_JSON_DATA_PATH + "/state.json");
 
-        return new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
+        return new SimulatedGnmiDevice(simulatorConfiguration);
     }
 
     protected static SimulatedGnmiDevice getUnsecureGnmiDevice(final String host, final int port,
-                                                              final String username, final String password)
-            throws ConfigurationException {
+                                                              final String username, final String password) {
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
                 .loadGnmiSimulatorConfiguration(GnmiITBase.class.getResourceAsStream(SIMULATOR_CONFIG));
         simulatorConfiguration.setTargetAddress(host);
@@ -125,11 +121,10 @@ public abstract class GnmiITBase {
         simulatorConfiguration.setUsername(username);
         simulatorConfiguration.setPassword(password);
 
-        return new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
+        return new SimulatedGnmiDevice(simulatorConfiguration);
     }
 
-    protected static SimulatedGnmiDevice getNonCompliableEncodingDevice(final String host, final int port)
-            throws ConfigurationException {
+    protected static SimulatedGnmiDevice getNonCompliableEncodingDevice(final String host, final int port) {
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
                 .loadGnmiSimulatorConfiguration(GnmiITBase.class.getResourceAsStream(SIMULATOR_CONFIG));
         simulatorConfiguration.setTargetAddress(host);
@@ -139,13 +134,12 @@ public abstract class GnmiITBase {
         simulatorConfiguration.setInitialStateDataPath(INITIAL_JSON_DATA_PATH + "/state.json");
         simulatorConfiguration.setSupportedEncodings(EnumSet.of(Gnmi.Encoding.JSON));
 
-        return new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
+        return new SimulatedGnmiDevice(simulatorConfiguration);
     }
 
     protected static SimulatedGnmiDevice getSecureGnmiDevice(final String host, final int port,
                                                              final String keyPath, final String certPath,
-                                                             final String username, final String password)
-            throws ConfigurationException {
+                                                             final String username, final String password) {
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
                 .loadGnmiSimulatorConfiguration(GnmiITBase.class.getResourceAsStream(SIMULATOR_CONFIG));
         simulatorConfiguration.setTargetAddress(host);
@@ -158,7 +152,7 @@ public abstract class GnmiITBase {
         simulatorConfiguration.setUsername(username);
         simulatorConfiguration.setPassword(password);
 
-        return new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
+        return new SimulatedGnmiDevice(simulatorConfiguration);
     }
 
     protected boolean connectDevice(final String nodeId, final String ipAddr, final int port)

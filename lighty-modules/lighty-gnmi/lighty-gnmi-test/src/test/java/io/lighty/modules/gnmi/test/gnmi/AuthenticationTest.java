@@ -20,13 +20,11 @@ import gnmi.Gnmi.SetResponse;
 import gnmi.Gnmi.TypedValue;
 import gnmi.Gnmi.Update;
 import gnmi.Gnmi.UpdateResult;
-import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.gnmi.connector.configuration.SessionConfiguration;
 import io.lighty.modules.gnmi.connector.session.api.SessionManager;
 import io.lighty.modules.gnmi.connector.session.api.SessionProvider;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
-import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
 import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
 import io.lighty.modules.gnmi.simulatordevice.utils.GnmiSimulatorConfUtils;
 import io.lighty.modules.gnmi.test.utils.TestUtils;
@@ -237,7 +235,7 @@ public class AuthenticationTest {
     }
 
     private SimulatedGnmiDevice startDeviceWithAuthentication(final String username, final String password)
-            throws IOException, ConfigurationException, EffectiveModelContextBuilderException {
+            throws IOException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
                 .loadGnmiSimulatorConfiguration(this.getClass().getResourceAsStream(SIMULATOR_CONFIG));
@@ -250,13 +248,13 @@ public class AuthenticationTest {
         simulatorConfiguration.setPassword(password);
 
         final SimulatedGnmiDevice authenticateDevice =
-                new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
+                new SimulatedGnmiDevice(simulatorConfiguration);
         authenticateDevice.start();
         return authenticateDevice;
     }
 
     private SimulatedGnmiDevice startDeviceInNotTlsMode()
-            throws IOException, ConfigurationException, EffectiveModelContextBuilderException {
+            throws IOException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
                 .loadGnmiSimulatorConfiguration(this.getClass().getResourceAsStream(SIMULATOR_CONFIG));
@@ -268,7 +266,7 @@ public class AuthenticationTest {
         simulatorConfiguration.setUsePlaintext(true);
 
         final SimulatedGnmiDevice authenticateDevice
-                = new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
+                = new SimulatedGnmiDevice(simulatorConfiguration);
         authenticateDevice.start();
         return authenticateDevice;
     }

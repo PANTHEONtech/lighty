@@ -17,7 +17,6 @@ import io.lighty.gnmi.southbound.lightymodule.GnmiSouthboundModuleBuilder;
 import io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
-import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
 import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
 import io.lighty.modules.gnmi.simulatordevice.utils.GnmiSimulatorConfUtils;
 import java.io.IOException;
@@ -546,8 +545,7 @@ public class GnmiWithoutRestconfTest {
                 .setCipherTransforms("AES/CBC/PKCS5Padding").build();
     }
 
-    private static SimulatedGnmiDevice getUnsecureGnmiDevice(final String host, final int port)
-            throws ConfigurationException {
+    private static SimulatedGnmiDevice getUnsecureGnmiDevice(final String host, final int port) {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
                 .loadGnmiSimulatorConfiguration(GnmiWithoutRestconfTest.class.getResourceAsStream(SIMULATOR_CONFIG));
@@ -557,6 +555,6 @@ public class GnmiWithoutRestconfTest {
         simulatorConfiguration.setInitialConfigDataPath(INITIAL_JSON_DATA_PATH + "/config.json");
         simulatorConfiguration.setInitialStateDataPath(INITIAL_JSON_DATA_PATH + "/state.json");
 
-        return new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
+        return new SimulatedGnmiDevice(simulatorConfiguration);
     }
 }
