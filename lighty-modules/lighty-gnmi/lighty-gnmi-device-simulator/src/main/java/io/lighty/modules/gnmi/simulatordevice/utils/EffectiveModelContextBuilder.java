@@ -61,7 +61,7 @@ public class EffectiveModelContextBuilder {
      */
     public EffectiveModelContextBuilder addYangModulesInfo(@Nullable final Set<YangModuleInfo> yangModuleInfoSet)
             throws EffectiveModelContextBuilderException {
-        if (yangModuleInfoSet != null && yangModuleInfoSet.size() == 0) {
+        if (yangModuleInfoSet != null && yangModuleInfoSet.isEmpty()) {
             throw new EffectiveModelContextBuilderException("Provided list of YangModuleInfo  is empty");
         }
         this.yangModulesInfo = yangModuleInfoSet;
