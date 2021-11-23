@@ -16,7 +16,6 @@ import static io.lighty.modules.gnmi.test.gnmi.rcgnmi.GnmiITBase.GeneralConstant
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
 import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
 import java.io.IOException;
@@ -97,7 +96,7 @@ public class GnmiSetITTest extends GnmiITBase {
     private static SimulatedGnmiDevice device;
 
     @BeforeAll
-    public static void setupDevice() throws ConfigurationException {
+    public static void setupDevice() {
         device = getUnsecureGnmiDevice(DEVICE_IP, DEVICE_PORT);
         try {
             device.start();

@@ -10,13 +10,11 @@ package io.lighty.modules.gnmi.test.gnoi;
 
 import gnoi.file.FileOuterClass;
 import io.grpc.stub.StreamObserver;
-import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.gnmi.connector.configuration.SessionConfiguration;
 import io.lighty.modules.gnmi.connector.session.api.SessionManager;
 import io.lighty.modules.gnmi.connector.session.api.SessionProvider;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
-import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
 import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
 import io.lighty.modules.gnmi.simulatordevice.utils.GnmiSimulatorConfUtils;
 import io.lighty.modules.gnmi.test.utils.TestUtils;
@@ -54,14 +52,14 @@ public class FileServiceTest {
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, CertificateException, InvalidKeySpecException, IOException,
-            URISyntaxException, ConfigurationException, EffectiveModelContextBuilderException {
+            URISyntaxException, EffectiveModelContextBuilderException {
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
                 .loadGnmiSimulatorConfiguration(this.getClass().getResourceAsStream(SIMULATOR_CONFIG));
         simulatorConfiguration.setTargetAddress(TARGET_HOST);
         simulatorConfiguration.setTargetPort(TARGET_PORT);
         simulatorConfiguration.setYangsPath(TEST_SCHEMA_PATH);
 
-        target = new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
+        target = new SimulatedGnmiDevice(simulatorConfiguration);
         target.start();
         final SessionManager sessionManager = TestUtils.createSessionManagerWithCerts();
         final InetSocketAddress targetAddress = new InetSocketAddress(TARGET_HOST, TARGET_PORT);

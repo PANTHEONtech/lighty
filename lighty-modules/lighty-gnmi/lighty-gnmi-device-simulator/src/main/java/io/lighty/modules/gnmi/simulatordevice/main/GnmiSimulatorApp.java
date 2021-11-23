@@ -9,10 +9,8 @@
 package io.lighty.modules.gnmi.simulatordevice.main;
 
 import com.beust.jcommander.JCommander;
-import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
-import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
 import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
 import io.lighty.modules.gnmi.simulatordevice.utils.GnmiSimulatorConfUtils;
 import java.io.IOException;
@@ -59,15 +57,11 @@ public class GnmiSimulatorApp {
                 gnmiSimulatorConfiguration = GnmiSimulatorConfUtils
                         .loadGnmiSimulatorConfiguration(Files.newInputStream(Path.of(arguments.getConfigPath())));
             }
-
-            device = new SimulatedGnmiDeviceBuilder().from(gnmiSimulatorConfiguration).build();
+            device = new SimulatedGnmiDevice(gnmiSimulatorConfiguration);
             device.start();
 
         } catch (EffectiveModelContextBuilderException e) {
             LOG.error("Lighty gNMI application - failed during creating schema context: ", e);
-            shutdown();
-        } catch (ConfigurationException e) {
-            LOG.error("Lighty gNMI application - configuration fail: ", e);
             shutdown();
         } catch (IOException e) {
             LOG.error("Lighty gNMI application - failed to read configuration: ", e);
