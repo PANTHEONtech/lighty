@@ -17,7 +17,8 @@ import io.lighty.gnmi.southbound.lightymodule.GnmiSouthboundModuleBuilder;
 import io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
-import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
+import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
+import io.lighty.modules.gnmi.simulatordevice.utils.GnmiSimulatorConfUtils;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -99,7 +100,8 @@ import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLe
 
 public class GnmiWithoutRestconfTest {
     private static final String INITIAL_JSON_DATA_PATH = "src/test/resources/json/initData";
-    private static final String TEST_SCHEMA_PATH = "src/test/resources/simulator_models";
+    private static final String TEST_SCHEMA_PATH = "src/test/resources/additional/simulator/models";
+    private static final String SIMULATOR_CONFIG = "/json/simulator_config.json";
     private static final Path CONFIGURATION_PATH = Path.of("src/test/resources/json/app_init_config.json");
     private static final Duration POLL_INTERVAL_DURATION = Duration.ofMillis(1_000L);
     private static final Duration WAIT_TIME_DURATION = Duration.ofMillis(10_000L);
@@ -154,7 +156,7 @@ public class GnmiWithoutRestconfTest {
     @BeforeAll
     public static void startUp() throws ConfigurationException, ExecutionException, InterruptedException, IOException,
             InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchAlgorithmException,
-            InvalidKeySpecException, InvalidKeyException, TimeoutException {
+            InvalidKeySpecException, InvalidKeyException, TimeoutException, EffectiveModelContextBuilderException {
 
         lightyController = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getConfiguration(Files.newInputStream(CONFIGURATION_PATH)))
@@ -543,16 +545,16 @@ public class GnmiWithoutRestconfTest {
                 .setCipherTransforms("AES/CBC/PKCS5Padding").build();
     }
 
-    private static SimulatedGnmiDevice getUnsecureGnmiDevice(final String host, final int port)
-            throws ConfigurationException {
+    private static SimulatedGnmiDevice getUnsecureGnmiDevice(final String host, final int port) {
 
-        final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
+        final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
+                .loadGnmiSimulatorConfiguration(GnmiWithoutRestconfTest.class.getResourceAsStream(SIMULATOR_CONFIG));
         simulatorConfiguration.setTargetAddress(host);
         simulatorConfiguration.setTargetPort(port);
         simulatorConfiguration.setYangsPath(TEST_SCHEMA_PATH);
         simulatorConfiguration.setInitialConfigDataPath(INITIAL_JSON_DATA_PATH + "/config.json");
         simulatorConfiguration.setInitialStateDataPath(INITIAL_JSON_DATA_PATH + "/state.json");
 
-        return new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
+        return new SimulatedGnmiDevice(simulatorConfiguration);
     }
 }

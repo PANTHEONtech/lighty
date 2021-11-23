@@ -11,7 +11,10 @@ package io.lighty.modules.gnmi.simulatordevice.gnmi;
 import com.google.gson.Gson;
 import gnmi.Gnmi;
 import gnmi.Gnmi.Path;
-import io.lighty.modules.gnmi.simulatordevice.utils.FileUtils;
+import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
+import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder;
+import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
+import io.lighty.modules.gnmi.simulatordevice.utils.GnmiSimulatorConfUtils;
 import io.lighty.modules.gnmi.simulatordevice.yang.DatastoreType;
 import io.lighty.modules.gnmi.simulatordevice.yang.YangDataService;
 import java.io.IOException;
@@ -32,16 +35,21 @@ import org.testng.Assert;
 
 public class LoadAugmentationFromGnmiPath {
 
+    private static final String SIMULATOR_CONFIG = "/initData/simulator_config.json";
     private static final String INIT_DATA_PATH = "src/test/resources/initData";
-    private static final String SCHEMA_PATH = "src/test/resources/test_schema";
+
     BindingCodecContext codecContext;
     EffectiveModelContext schemaContext;
     YangDataService dataService;
     GnmiCrudService gnmiCrudService;
 
     @Before
-    public void startUp() throws IOException {
-        this.schemaContext = FileUtils.buildSchemaFromYangsDir(SCHEMA_PATH);
+    public void startUp() throws IOException, EffectiveModelContextBuilderException {
+        final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
+                .loadGnmiSimulatorConfiguration(this.getClass().getResourceAsStream(SIMULATOR_CONFIG));
+        this.schemaContext = new EffectiveModelContextBuilder()
+                .addYangModulesInfo(simulatorConfiguration.getYangModulesInfo())
+                .build();
         this.dataService = new YangDataService(schemaContext, INIT_DATA_PATH + "/config.json",
                 INIT_DATA_PATH + "/state.json");
         this.gnmiCrudService = new GnmiCrudService(dataService, schemaContext, new Gson());
