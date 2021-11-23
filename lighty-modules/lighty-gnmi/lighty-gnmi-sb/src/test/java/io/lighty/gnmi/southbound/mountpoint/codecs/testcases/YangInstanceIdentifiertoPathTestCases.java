@@ -10,6 +10,7 @@ package io.lighty.gnmi.southbound.mountpoint.codecs.testcases;
 
 import com.google.common.collect.Maps;
 import gnmi.Gnmi;
+import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
 import java.util.Map;
@@ -17,7 +18,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 public class YangInstanceIdentifiertoPathTestCases extends CodecTestCasesBase {
 
-    public YangInstanceIdentifiertoPathTestCases() throws YangLoadException, SchemaException {
+    public YangInstanceIdentifiertoPathTestCases() throws YangLoadException, SchemaException, ConfigurationException {
         super();
     }
 

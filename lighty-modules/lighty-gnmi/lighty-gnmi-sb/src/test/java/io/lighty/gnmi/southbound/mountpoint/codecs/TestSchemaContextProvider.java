@@ -14,10 +14,13 @@ import io.lighty.gnmi.southbound.schema.TestYangDataStoreService;
 import io.lighty.gnmi.southbound.schema.impl.SchemaContextHolderImpl;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
+import io.lighty.gnmi.southbound.schema.loader.impl.ByClassPathYangLoaderService;
 import io.lighty.gnmi.southbound.schema.loader.impl.ByPathYangLoaderService;
 import io.lighty.gnmi.southbound.schema.provider.SchemaContextProvider;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
+import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public class TestSchemaContextProvider implements SchemaContextProvider {
@@ -34,12 +37,12 @@ public class TestSchemaContextProvider implements SchemaContextProvider {
 
     }
 
-    public static TestSchemaContextProvider createFromPath(final Path path)
+    public static TestSchemaContextProvider createInstance(final Path path, final Set<YangModuleInfo> moduleInfoSet)
             throws YangLoadException, SchemaException {
         final TestYangDataStoreService dataStoreService = new TestYangDataStoreService();
-        final List<GnmiDeviceCapability> capabilities =
-                new ByPathYangLoaderService(path)
-                .load(dataStoreService);
+        final List<GnmiDeviceCapability> capabilities = new ByPathYangLoaderService(path).load(dataStoreService);
+        capabilities.addAll(new ByClassPathYangLoaderService(moduleInfoSet).load(dataStoreService));
+
         final SchemaContextHolder schemaContextHolder = new SchemaContextHolderImpl(dataStoreService, null);
         return new TestSchemaContextProvider(schemaContextHolder.getSchemaContext(capabilities));
     }

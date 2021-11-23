@@ -16,6 +16,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.protobuf.ByteString;
 import gnmi.Gnmi;
+import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
 import java.io.IOException;
@@ -35,7 +36,8 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
 
     private final String baseJson;
 
-    public GetResponseToNormalizedNodeTestCases() throws IOException, YangLoadException, SchemaException {
+    public GetResponseToNormalizedNodeTestCases()
+            throws IOException, YangLoadException, SchemaException, ConfigurationException {
         super();
         this.baseJson = Files.readString(BASE_JSON_PATH);
     }
