@@ -9,6 +9,9 @@
 package io.lighty.gnmi.southbound.mountpoint.codecs.testcases;
 
 
+import io.lighty.core.controller.impl.config.ConfigurationException;
+import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
+import io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils;
 import io.lighty.gnmi.southbound.mountpoint.codecs.TestSchemaContextProvider;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
@@ -17,6 +20,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.junit.jupiter.api.Assertions;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.Uint16;
@@ -39,18 +43,23 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
  */
 public class CodecTestCasesBase {
 
-    protected static final String BASE_YANGS_PATH = "src/test/resources/test_schema";
-    protected static final String IT_ID = "openconfig-interfaces";
-    protected static final String IT_AGGR_ID = "openconfig-if-aggregate";
-    protected static final String IT_TYPES_ID = "openconfig-if-types";
-    protected static final String ETH_ID = "openconfig-if-ethernet";
-    protected static final String VLAN_ID = "openconfig-vlan";
-    protected static final String PLT_ID = "openconfig-platform";
+    private static final String BASE_YANGS_PATH = "src/test/resources/additional/test/schema";
+    private static final String OPENCONFIG_GNMI_CONFIG = "/lightyconfigs/openconfig_gnmi_config.json";
+    private static final String IT_TYPES_ID = "openconfig-if-types";
+    private static final String VLAN_ID = "openconfig-vlan";
+    private static final String PLT_ID = "openconfig-platform";
+    static final String ETH_ID = "openconfig-if-ethernet";
+    static final String IT_ID = "openconfig-interfaces";
+    static final String IT_AGGR_ID = "openconfig-if-aggregate";
 
     private final SchemaContextProvider schemaContextProvider;
 
-    public CodecTestCasesBase() throws YangLoadException, SchemaException {
-        this.schemaContextProvider = TestSchemaContextProvider.createFromPath(Paths.get(BASE_YANGS_PATH));
+    public CodecTestCasesBase() throws YangLoadException, SchemaException, ConfigurationException {
+        final GnmiConfiguration gnmiConfiguration = GnmiConfigUtils.getGnmiConfiguration(
+                this.getClass().getResourceAsStream(OPENCONFIG_GNMI_CONFIG));
+        Assertions.assertNotNull(gnmiConfiguration.getYangModulesInfo());
+        this.schemaContextProvider = TestSchemaContextProvider.createInstance(Paths.get(BASE_YANGS_PATH),
+                gnmiConfiguration.getYangModulesInfo());
     }
 
     /**
@@ -70,7 +79,7 @@ public class CodecTestCasesBase {
     protected ImmutablePair<YangInstanceIdentifier, NormalizedNode> topElementCase() {
         final YangInstanceIdentifier identifier =
                 YangInstanceIdentifier.create(
-                        getNodeIdentifierOfNodeInModule("interfaces", "interfaces"));
+                        getNodeIdentifierOfNodeInModule(IT_ID, "interfaces"));
 
         return ImmutablePair.of(identifier, makeInterfaces());
     }
@@ -351,7 +360,7 @@ public class CodecTestCasesBase {
 
     public ContainerNode interfaceConfigNode() {
         return ImmutableContainerNodeBuilder.create()
-                .withNodeIdentifier(getNodeIdentifierOfNodeInModule("interfaces", "config"))
+                .withNodeIdentifier(getNodeIdentifierOfNodeInModule(IT_ID, "config"))
                 .withValue(List.of(
                         makeLeafNode(IT_ID, "name", "admin"),
                         makeLeafNode(IT_ID, "enabled", false),

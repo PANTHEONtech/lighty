@@ -15,6 +15,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.protobuf.ByteString;
 import gnmi.Gnmi;
+import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
 import java.io.IOException;
@@ -33,7 +34,8 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
 
     private final String baseJson;
 
-    public YangInstanceNormToGnmiUpdateTestCases() throws YangLoadException, SchemaException, IOException {
+    public YangInstanceNormToGnmiUpdateTestCases()
+            throws YangLoadException, SchemaException, IOException, ConfigurationException {
         super();
         this.baseJson = Files.readString(BASE_JSON_PATH);
     }
