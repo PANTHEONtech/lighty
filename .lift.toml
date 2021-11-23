@@ -1,3 +1,4 @@
+setup = ".lift/setup.sh"
 build = "maven"
 jdk11 = true
 summaryComments = true

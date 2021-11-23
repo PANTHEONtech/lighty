@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2018 PANTHEON.tech s.r.o. All Rights Reserved.
+
+  This program and the accompanying materials are made available under the
+  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+  and is available at https://www.eclipse.org/legal/epl-v10.html
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.lighty</groupId>
+    <artifactId>lighty-aggregator</artifactId>
+    <version>16.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>lighty</name>
+
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.install.skip>true</maven.install.skip>
+    </properties>
+
+    <modules>
+        <module>lighty-core/lighty-minimal-parent</module>
+        <module>lighty-core/lighty-parent</module>
+        <module>lighty-resources/log4j-properties</module>
+        <module>lighty-core/lighty-common</module>
+        <module>lighty-core/lighty-clustering</module>
+        <module>lighty-core/lighty-binding-parent</module>
+        <module>lighty-models/test/lighty-test-models</module>
+        <module>lighty-models/test/lighty-toaster</module>
+        <module>lighty-core/lighty-codecs-util</module>
+        <module>lighty-resources/singlenode-configuration</module>
+        <module>lighty-core/lighty-controller</module>
+        <module>lighty-modules/lighty-aaa-aggregator/lighty-aaa-encryption-service</module>
+        <module>lighty-modules/lighty-netconf-sb</module>
+        <module>lighty-modules/lighty-jetty-server</module>
+        <module>lighty-modules/lighty-restconf-nb-community</module>
+        <module>lighty-modules/lighty-aaa-aggregator/lighty-aaa</module>
+        <module>lighty-applications/lighty-rnc-app-aggregator/lighty-rnc-module</module>
+        <module>lighty-resources/start-script</module>
+        <module>lighty-resources/controller-application-assembly</module>
+        <module>lighty-core/lighty-app-parent</module>
+        <module>lighty-applications/lighty-rnc-app-aggregator/lighty-rnc-app</module>
+
+        <module>lighty-core/dependency-versions</module>
+        <module>lighty-core/lighty-bom</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <tagNameFormat>@{project.version}</tagNameFormat>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <preparationGoals>clean install</preparationGoals>
+                    <localCheckout>true</localCheckout>
+                    <pushChanges>false</pushChanges>
+                    <goals>deploy</goals>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <!-- profile to collect all licenses and generate them to file
+             target/generated-sources/license/THIRD-PARTY.txt
+             The process of generation can be executed simply by `mvn validate -P get-all-licenses`-->
+            <id>get-all-licenses</id>
+            <properties>
+                <license.sortArtifactByName>true</license.sortArtifactByName>
+                <license.force>true</license.force>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>license-maven-plugin</artifactId>
+                        <version>2.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>analyze-license</id>
+                                <goals>
+                                    <goal>aggregate-add-third-party</goal>
+                                </goals>
+                                <phase>validate</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <licenses>
+        <license>
+            <name>Eclipse Public License 1.0</name>
+            <url>https://www.eclipse.org/legal/epl-v10.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:https://github.com/PANTHEONtech/lighty.git</connection>
+        <developerConnection>scm:git:https://github.com/PANTHEONtech/lighty.git</developerConnection>
+        <url>https://github.com/PANTHEONtech/lighty</url>
+        <tag>HEAD</tag>
+    </scm>
+    <developers>
+        <developer>
+            <id>rovarga</id>
+            <name>Robert Varga</name>
+            <email>robert.varga@pantheon.tech</email>
+            <organization>PANTHEON.tech s.r.o.</organization>
+            <organizationUrl>https://www.pantheon.tech</organizationUrl>
+        </developer>
+    </developers>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+</project>
