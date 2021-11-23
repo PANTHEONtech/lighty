@@ -16,8 +16,8 @@ import static io.lighty.modules.gnmi.test.gnmi.rcgnmi.GnmiITBase.GeneralConstant
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
+import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.http.HttpResponse;
@@ -47,7 +47,7 @@ public class GnmiGetITTest extends GnmiITBase {
         "openconfig-inet-types semver: 0.4.0", "openconfig-interfaces semver: 2.5.0",
         "openconfig-platform semver: 0.13.0", "openconfig-platform-types semver: 1.1.0",
         "openconfig-vlan-types semver: 3.1.1", "openconfig-types semver: 0.6.0", "openconfig-vlan semver: 3.2.0",
-        "openconfig-yang-types semver: 0.3.0", "gnmi-test-model semver: 1.0.0", "ietf-interfaces revision: 2018-02-20",
+        "openconfig-yang-types semver: 0.3.0", "gnmi-test-model semver: 1.0.0", "ietf-interfaces revision: 2014-05-08",
         "ietf-yang-types revision: 2013-07-15", "openconfig-aaa semver: 0.5.0", "openconfig-aaa-types semver: 0.4.1",
         "openconfig-license semver: 0.2.0", "openconfig-messages semver: 0.0.1", "openconfig-procmon semver: 0.4.0",
         "openconfig-system semver: 0.10.0","openconfig-system-logging semver: 0.3.1",
@@ -91,11 +91,11 @@ public class GnmiGetITTest extends GnmiITBase {
     private static SimulatedGnmiDevice device;
 
     @BeforeAll
-    public static void setupDevice() throws ConfigurationException {
+    public static void setupDevice() {
         device = getUnsecureGnmiDevice(DEVICE_IP, DEVICE_PORT);
         try {
             device.start();
-        } catch (IOException e) {
+        } catch (IOException | EffectiveModelContextBuilderException e) {
             LOG.info("Exception during device startup: ", e);
         }
     }

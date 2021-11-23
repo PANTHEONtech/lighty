@@ -14,8 +14,9 @@ This simulator provides gNMI device driven by gNMI proto files, with datastore d
 
 2. Initialize and start an instance of gNMI device simulator. Setting configuration for gNMI device simulator 
    is required. Use ```GnmiSimulatorConfUtils``` for loading configuration. There are two options: load configuration
-   from file or load default configuration. The path to folder with the yang models is required, so the default
-   configuration points to the ```resources/yangs``` folder. 
+   from file or load default configuration. Specifying the yang models for simulator si required. Yang models can be load 
+   from class path with ```schemaServiceConfig``` or added as path to folder containing yang models with json element ```yangsPath```.
+   Both option for loading models can be used at same time. Default models configuration points to the ```resources/yangs``` folder. 
    Load default configuration:
 ```
     GnmiSimulatorConfiguration gnmiSimulatorConfiguration = GnmiSimulatorConfUtils.loadDefaultGnmiSimulatorConfiguration();
@@ -38,7 +39,37 @@ This simulator provides gNMI device driven by gNMI proto files, with datastore d
            "yangsPath": "./yangs",
            "username": "admin",
            "password": "admin",
-           "maxConnections": 50
+           "maxConnections": 50,
+           "schemaServiceConfig": {
+              "topLevelModels": [
+                { "nameSpace":"http://openconfig.net/yang/aaa","name":"openconfig-aaa","revision":"2020-07-30"},
+                { "nameSpace":"http://openconfig.net/yang/aaa","name":"openconfig-aaa-radius","revision":"2020-07-30"},
+                { "nameSpace":"http://openconfig.net/yang/aaa","name":"openconfig-aaa-tacacs","revision":"2020-07-30"},
+                { "nameSpace":"http://openconfig.net/yang/aaa/types","name":"openconfig-aaa-types","revision":"2018-11-21"},
+                { "nameSpace":"http://openconfig.net/yang/alarms/types","name":"openconfig-alarm-types","revision":"2018-11-21"},
+                { "nameSpace":"http://openconfig.net/yang/alarms","name":"openconfig-alarms","revision":"2019-07-09"},
+                { "nameSpace":"http://openconfig.net/yang/openconfig-ext","name":"openconfig-extensions","revision":"2020-06-16"},
+                { "nameSpace":"http://openconfig.net/yang/types/inet","name":"openconfig-inet-types","revision":"2021-01-07"},
+                { "nameSpace":"http://openconfig.net/yang/interfaces","name":"openconfig-interfaces","revision":"2021-04-06"},
+                { "nameSpace":"http://openconfig.net/yang/interfaces/aggregate","name":"openconfig-if-aggregate","revision":"2020-05-01"},
+                { "nameSpace":"http://openconfig.net/yang/openconfig-if-types","name":"openconfig-if-types","revision":"2018-11-21"},
+                { "nameSpace":"http://openconfig.net/yang/interfaces/ethernet","name":"openconfig-if-ethernet","revision":"2021-06-09"},
+                { "nameSpace":"http://openconfig.net/yang/license","name":"openconfig-license","revision":"2020-04-22"},
+                { "nameSpace":"http://openconfig.net/yang/messages","name":"openconfig-messages","revision":"2018-08-13"},
+                { "nameSpace":"http://openconfig.net/yang/openflow","name":"openconfig-openflow","revision":"2018-11-21"},
+                { "nameSpace":"http://openconfig.net/yang/openflow/types","name":"openconfig-openflow-types","revision":"2020-06-30"},
+                { "nameSpace":"http://openconfig.net/yang/platform","name":"openconfig-platform","revision":"2021-01-18"},
+                { "nameSpace":"http://openconfig.net/yang/platform-types","name":"openconfig-platform-types","revision":"2021-01-18"},
+                { "nameSpace":"http://openconfig.net/yang/system/procmon","name":"openconfig-procmon","revision":"2019-03-15"},
+                { "nameSpace":"http://openconfig.net/yang/system","name":"openconfig-system","revision":"2020-04-13"},
+                { "nameSpace":"http://openconfig.net/yang/system/logging","name":"openconfig-system-logging","revision":"2018-11-21"},
+                { "nameSpace":"http://openconfig.net/yang/system/terminal","name":"openconfig-system-terminal","revision":"2018-11-21"},
+                { "nameSpace":"http://openconfig.net/yang/openconfig-types","name":"openconfig-types","revision":"2019-04-16"},
+                { "nameSpace":"http://openconfig.net/yang/vlan","name":"openconfig-vlan","revision":"2019-04-16"},
+                { "nameSpace":"http://openconfig.net/yang/vlan-types","name":"openconfig-vlan-types","revision":"2020-06-30"},
+                { "nameSpace":"http://openconfig.net/yang/types/yang","name":"openconfig-yang-types","revision":"2021-03-02"}
+              ]
+           }
        }
    }
 ```
@@ -60,42 +91,53 @@ This simulator provides gNMI device driven by gNMI proto files, with datastore d
 ## Additional configuration
 
 Any additional configuration has to be done before starting simulator. This configuration is available in
-SimulatedGnmiDeviceBuilder.
+[GnmiSimulatorConfiguration](src/main/java/io/lighty/modules/gnmi/simulatordevice/config/GnmiSimulatorConfiguration.java).
 
-1. **setInitialConfigDataPath(String)** - (default: empty) Set configuration data-store for device. Path to file
+1. **setTargetAddress(String)** - (default: "0.0.0.0") Set host address.
+
+2. **setTargetPort(int)** - (default: 10161) Set port value (port >= 0 && port <= 65535).
+
+3. **setInitialConfigDataPath(String)** - (default: empty) Set configuration data-store for device. Path to file
    in JSON format is expected. Data inside this file should be modeled by YANG files provided in *setYangsPath(String)*
 
-2. **setInitialStateDataPath(String)** - (default: empty) Set **?operational?** data-store for device. Path to
-   file in JSON format is expected. Data inside this file should be modeled by YANG files provided in *setYangsPath(String)*
+4. **setMaxConnections(int)** - (default: 50) Determines the number of connections queued.
 
-3. **setBossGroup(EventLoopGroup)** - (default: NioEventLoopGroup(1)) Provides the boss EventGroupLoop to the server.
-
-4. **setWorkerGroup(EventLoopGroup)** - (default: NioEventLoopGroup(0)) Provides the worker EventGroupLoop to the server.
-
-5. **setHost(String)** - (default: "0.0.0.0") Set host address.
-
-6. **setPort(int)** - (default: 10161) Set port value (port >= 0 && port <= 65535).
-
-7. **setMaxConnections(int)** - (default: 50) Determines the number of connections queued.
-
-8. **setCertificatePath(String)** - (default: "certs/server.crt") Set certificate for gNMI device simulator.
+5. **setCertPath(String)** - (default: "certs/server.crt") Set certificate for gNMI device simulator.
    Path to certificate file is expected.
 
-9. **setKeyPath(String)** - (default: "certs/server.key") Set certificate key for gNMI device simulator.
+6. **setCertKeyPath(String)** - (default: "certs/server.key") Set certificate key for gNMI device simulator.
    Path to certificate key file is expected.
 
-10. **setUsernamePasswordAuth(String, String)** - (default: empty) Setting username and password will allow
-   authentication. All requests routed to gNMI simulator will have to provide username/password
-   authentication in request metadata.
+7. **setYangsPath(String)** - Load provided yang models from file.
 
-11. **usePlaintext()** - (default: turned off) This will Disable TLS validation. If this is enabled, then there is no need
-   to specify TLS related options.
-   
-12. **setSupportedEncodings(EnumSet<Gnmi.Encoding>)** - overwrites default encoding set {JSON_IETF, JSON} 
-    returned in CapabilityResponse.
+8. **setUsername(String)** - default: empty) Setting username will allow authentication. All requests routed to gNMI
+   simulator will have to provide username/password authentication in request metadata.
 
-12. **setGsonInstance(Gson)** - (default: default instance of Gson)  Provides an option to customize Gson parser instance
-   used in device.
+9. **setPassword(String)** - default: empty) Setting password will allow authentication. All requests routed to gNMI
+   simulator will have to provide username/password authentication in request metadata.
+
+10. **setUsePlaintext(boolean)** - (default: turned off) This will Disable TLS validation. If this is enabled, then there is no need
+    to specify TLS related options.
+
+11. **setBossGroup(EventLoopGroup)** - (default: NioEventLoopGroup(1)) Provides the boss EventGroupLoop to the server.
+
+12. **setWorkerGroup(EventLoopGroup)** - (default: NioEventLoopGroup(0)) Provides the worker EventGroupLoop to the server.
+
+13. **setInitialStateDataPath(String)** - (default: empty) Set **?operational?** data-store for device. Path to
+    file in JSON format is expected. Data inside this file should be modeled by YANG models provided in *setYangsPath(String)*
+    or *setYangModulesInfo(Set<YangModuleInfo>)*
+
+15. **setBossGroup(EventLoopGroup)** - (default: NioEventLoopGroup(1)) Provides the boss EventGroupLoop to the server.
+
+16. **setWorkerGroup(EventLoopGroup)** - (default: NioEventLoopGroup(0)) Provides the worker EventGroupLoop to the server.
+
+17. **setSupportedEncodings(EnumSet<Gnmi.Encoding>)** - overwrites default encoding set {JSON_IETF, JSON}
+        returned in CapabilityResponse.
+
+18. **setGsonInstance(Gson)** - (default: default instance of Gson)  Provides an option to customize Gson parser instance
+    used in device.
+
+19. **setYangModulesInfo(Set<YangModuleInfo>)** - (default: empty) Load provided yang models from classpath.
 
 ##Example with gnmic client
 This example will show how to execute basic operations on lighty.io gNMI device simulator. Request will be performed with

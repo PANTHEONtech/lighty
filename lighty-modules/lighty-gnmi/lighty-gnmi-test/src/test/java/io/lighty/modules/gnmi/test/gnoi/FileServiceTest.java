@@ -10,13 +10,13 @@ package io.lighty.modules.gnmi.test.gnoi;
 
 import gnoi.file.FileOuterClass;
 import io.grpc.stub.StreamObserver;
-import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.gnmi.connector.configuration.SessionConfiguration;
 import io.lighty.modules.gnmi.connector.session.api.SessionManager;
 import io.lighty.modules.gnmi.connector.session.api.SessionProvider;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
-import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
+import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
+import io.lighty.modules.gnmi.simulatordevice.utils.GnmiSimulatorConfUtils;
 import io.lighty.modules.gnmi.test.utils.TestUtils;
 import io.lighty.modules.gnmi.test.utils.TimeoutUtil;
 import java.io.IOException;
@@ -40,7 +40,8 @@ public class FileServiceTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(FileServiceTest.class);
 
-    private static final String TEST_SCHEMA_PATH = "src/test/resources/simulator_models";
+    private static final String TEST_SCHEMA_PATH = "src/test/resources/additional/simulator/models";
+    private static final String SIMULATOR_CONFIG = "/json/simulator_config.json";
     private static final int  TARGET_PORT = 10161;
     private static final String TARGET_HOST = "127.0.0.1";
     private static final int DUMMYFILE_CHUNKS = 5;
@@ -51,14 +52,14 @@ public class FileServiceTest {
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, CertificateException, InvalidKeySpecException, IOException,
-            URISyntaxException, ConfigurationException {
-
-        final GnmiSimulatorConfiguration simulatorConfiguration = new GnmiSimulatorConfiguration();
+            URISyntaxException, EffectiveModelContextBuilderException {
+        final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
+                .loadGnmiSimulatorConfiguration(this.getClass().getResourceAsStream(SIMULATOR_CONFIG));
         simulatorConfiguration.setTargetAddress(TARGET_HOST);
         simulatorConfiguration.setTargetPort(TARGET_PORT);
         simulatorConfiguration.setYangsPath(TEST_SCHEMA_PATH);
 
-        target = new SimulatedGnmiDeviceBuilder().from(simulatorConfiguration).build();
+        target = new SimulatedGnmiDevice(simulatorConfiguration);
         target.start();
         final SessionManager sessionManager = TestUtils.createSessionManagerWithCerts();
         final InetSocketAddress targetAddress = new InetSocketAddress(TARGET_HOST, TARGET_PORT);

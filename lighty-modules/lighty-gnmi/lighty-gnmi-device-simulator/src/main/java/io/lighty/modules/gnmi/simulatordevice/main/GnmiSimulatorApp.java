@@ -9,10 +9,9 @@
 package io.lighty.modules.gnmi.simulatordevice.main;
 
 import com.beust.jcommander.JCommander;
-import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
-import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDeviceBuilder;
+import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
 import io.lighty.modules.gnmi.simulatordevice.utils.GnmiSimulatorConfUtils;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,14 +27,13 @@ public class GnmiSimulatorApp {
 
     private SimulatedGnmiDevice device;
 
-    public static void main(String[] args) throws IOException, ConfigurationException {
+    public static void main(String[] args) {
         BasicConfigurator.configure();
         final GnmiSimulatorApp gnmiSimulatorApp = new GnmiSimulatorApp();
         gnmiSimulatorApp.start(true, args);
     }
 
-    public void start(final boolean registerShutdownHook, final String[] args)
-            throws IOException, ConfigurationException {
+    public void start(final boolean registerShutdownHook, final String[] args) {
 
         // Parse args
         final Arguments arguments = new Arguments();
@@ -52,15 +50,23 @@ public class GnmiSimulatorApp {
 
         final GnmiSimulatorConfiguration gnmiSimulatorConfiguration;
 
-        if (arguments.getConfigPath() == null) {
-            gnmiSimulatorConfiguration = GnmiSimulatorConfUtils.loadDefaultGnmiSimulatorConfiguration();
-        } else {
-            gnmiSimulatorConfiguration = GnmiSimulatorConfUtils
-                .loadGnmiSimulatorConfiguration(Files.newInputStream(Path.of(arguments.getConfigPath())));
-        }
+        try {
+            if (arguments.getConfigPath() == null) {
+                gnmiSimulatorConfiguration = GnmiSimulatorConfUtils.loadDefaultGnmiSimulatorConfiguration();
+            } else {
+                gnmiSimulatorConfiguration = GnmiSimulatorConfUtils
+                        .loadGnmiSimulatorConfiguration(Files.newInputStream(Path.of(arguments.getConfigPath())));
+            }
+            device = new SimulatedGnmiDevice(gnmiSimulatorConfiguration);
+            device.start();
 
-        device = new SimulatedGnmiDeviceBuilder().from(gnmiSimulatorConfiguration).build();
-        device.start();
+        } catch (EffectiveModelContextBuilderException e) {
+            LOG.error("Lighty gNMI application - failed during creating schema context: ", e);
+            shutdown();
+        } catch (IOException e) {
+            LOG.error("Lighty gNMI application - failed to read configuration: ", e);
+            shutdown();
+        }
         if (registerShutdownHook) {
             Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
         }
