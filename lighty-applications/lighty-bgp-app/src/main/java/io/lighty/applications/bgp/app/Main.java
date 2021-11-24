@@ -7,7 +7,7 @@
  */
 package io.lighty.applications.bgp.app;
 
-import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
@@ -15,7 +15,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
-import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import io.lighty.modules.bgp.config.BgpConfigUtils;
 import io.lighty.modules.bgp.deployer.BgpModule;
@@ -34,27 +33,27 @@ public class Main {
     private static final int APP_FAILED_TO_START_SC = 500;
     private static final long MODULE_STARTUP_WAIT_TIME = 20_000;
 
-    @VisibleForTesting
-    LightyController controller;
-    @VisibleForTesting
-    LightyModule restconf;
-    @VisibleForTesting
-    LightyModule bgpModule;
+    private LightyController controller;
+    private LightyModule restconf;
+    private LightyModule bgpModule;
+    private boolean running = false;
 
+
+    @SuppressWarnings({"checkstyle:illegalCatch"})
     public static void main(String[] args) {
         final Main instance = new Main();
         try {
             LOG.info("Registering shutdown hook for graceful shutdown");
             Runtime.getRuntime().addShutdownHook(new Thread(instance::stop));
             instance.start(args);
-        } catch (ConfigurationException | ExecutionException | TimeoutException | InterruptedException e) {
+        } catch (Exception e) {
+            LOG.error("Failed to start lighty BGP application, exiting", e);
             Runtime.getRuntime().exit(APP_FAILED_TO_START_SC);
         }
     }
 
     @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
-    public synchronized void start(String[] args) throws ConfigurationException, InterruptedException,
-            ExecutionException, TimeoutException {
+    public synchronized void start(String[] args) throws Exception {
         final Stopwatch stopwatch = Stopwatch.createStarted();
         LOG.info(".__  .__       .__     __              .__           ");
         LOG.info("|  | |__| ____ |  |___/  |_ ___.__.    |__| ____     ");
@@ -71,16 +70,17 @@ public class Main {
         controller = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(additionalModules))
                 .build();
-        startLightyModule(controller);
+        Preconditions.checkState(startLightyModule(controller), "Unable to start controller");
 
         restconf = CommunityRestConfBuilder
                 .from(RestConfConfigUtils.getDefaultRestConfConfiguration(controller.getServices()))
                 .build();
+        Preconditions.checkState(startLightyModule(restconf), "Unable to start restconf module");
 
-        startLightyModule(restconf);
         bgpModule = new BgpModule(controller.getServices());
-        startLightyModule(bgpModule);
+        Preconditions.checkState(startLightyModule(bgpModule), "Unable to start BGP module");
 
+        running = true;
         LOG.info("BGP lighty.io application started in {}", stopwatch.stop());
     }
 
@@ -119,13 +119,17 @@ public class Main {
             }
             LOG.error("Exception while shutting down controller:", e);
         }
-
+        running = false;
     }
 
-    private static void startLightyModule(final LightyModule lightyModule) throws InterruptedException,
+    private static boolean startLightyModule(final LightyModule lightyModule) throws InterruptedException,
             ExecutionException, TimeoutException {
         LOG.info("Starting lighty module {}", lightyModule.getClass().getName());
-        lightyModule.start().get(MODULE_STARTUP_WAIT_TIME, TimeUnit.MILLISECONDS);
+        return lightyModule.start().get(MODULE_STARTUP_WAIT_TIME, TimeUnit.MILLISECONDS);
+    }
+
+    public synchronized boolean isRunning() {
+        return running;
     }
 
 }
