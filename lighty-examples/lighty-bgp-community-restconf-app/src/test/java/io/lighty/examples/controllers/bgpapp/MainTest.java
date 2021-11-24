@@ -1,4 +1,4 @@
-package io.lighty.applications.bgp.app;
+package io.lighty.examples.controllers.bgpapp;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

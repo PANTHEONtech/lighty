@@ -22,6 +22,5 @@
     <modules>
         <module>lighty-rnc-app-aggregator</module>
         <module>lighty-rcgnmi-app-aggregator</module>
-        <module>lighty-bgp-app</module>
     </modules>
 </project>

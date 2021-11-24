@@ -104,6 +104,11 @@
                 <artifactId>lighty-aaa-encryption-service</artifactId>
                 <version>16.0.0-SNAPSHOT</version>
             </dependency>
+            <dependency>
+                <groupId>io.lighty.modules</groupId>
+                <artifactId>lighty-bgp</artifactId>
+                <version>16.0.0-SNAPSHOT</version>
+            </dependency>
 
             <!-- gNMI -->
             <dependency>
@@ -151,11 +156,6 @@
                 <artifactId>lighty-gnmi-force-capabilities</artifactId>
                 <version>16.0.0-SNAPSHOT</version>
             </dependency>
-            <dependency>
-                <groupId>io.lighty.modules</groupId>
-                <artifactId>lighty-bgp</artifactId>
-                <version>16.0.0-SNAPSHOT</version>
-            </dependency>
 
             <!-- lighty applications -->
             <dependency>
@@ -178,11 +178,6 @@
                 <artifactId>lighty-rnc-module</artifactId>
                 <version>16.0.0-SNAPSHOT</version>
             </dependency>
-            <dependency>
-                <groupId>io.lighty.applications</groupId>
-                <artifactId>lighty-bgp-app</artifactId>
-                <version>16.0.0-SNAPSHOT</version>
-            </dependency>
 
             <!-- lighty examples -->
             <dependency>
@@ -193,6 +188,11 @@
             <dependency>
                 <groupId>io.lighty.kit.examples.controllers</groupId>
                 <artifactId>lighty-community-restconf-netconf-app</artifactId>
+                <version>16.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.lighty.kit.examples.controllers</groupId>
+                <artifactId>lighty-bgp-community-restconf-app</artifactId>
                 <version>16.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
