@@ -93,9 +93,12 @@ public class Main {
             }
         } catch (Exception e) {
             if (e instanceof InterruptedException) {
+                LOG.error("Interrupted while shutting down RESTCONF:", e);
                 Thread.currentThread().interrupt();
+            } else {
+                LOG.error("Exception while shutting down RESTCONF:", e);
             }
-            LOG.error("Exception while shutting down RESTCONF:", e);
+
         }
 
         try {
@@ -104,9 +107,11 @@ public class Main {
             }
         } catch (Exception e) {
             if (e instanceof InterruptedException) {
+                LOG.error("Interrupted while shutting down BGP module:", e);
                 Thread.currentThread().interrupt();
+            } else {
+                LOG.error("Exception while shutting down BGP module:", e);
             }
-            LOG.error("Exception while shutting down BGPModule:", e);
         }
 
         try {
@@ -115,9 +120,11 @@ public class Main {
             }
         } catch (Exception e) {
             if (e instanceof InterruptedException) {
+                LOG.error("Interrupted while shutting down controller:", e);
                 Thread.currentThread().interrupt();
+            } else {
+                LOG.error("Exception while shutting down controller:", e);
             }
-            LOG.error("Exception while shutting down controller:", e);
         }
         running = false;
     }
