@@ -108,16 +108,38 @@ public class BgpModule extends AbstractLightyModule {
     @Override
     @SuppressWarnings({"checkstyle:illegalCatch"})
     protected boolean stopProcedure() {
+        boolean closeSuccess = true;
         try {
             simpleStatementRegistry.close();
-            peerRegistry.close();
-            bgpDeployer.close();
-            stateProvider.close();
-            return true;
         } catch (Exception e) {
-            LOG.warn("Failed to stop BGPModule", e);
+            LOG.warn("Failed to stop BGP statement registry", e);
             return false;
         }
+        try {
+            peerRegistry.close();
+        } catch (Exception e) {
+            LOG.warn("Failed to stop BGP peer registry", e);
+            closeSuccess = false;
+        }
+        try {
+            bgpDispatcher.close();
+        } catch (Exception e) {
+            LOG.warn("Failed to stop BGP dispatcher", e);
+            closeSuccess = false;
+        }
+        try {
+            bgpDeployer.close();
+        } catch (Exception e) {
+            LOG.warn("Failed to stop BGP deployer", e);
+            closeSuccess = false;
+        }
+        try {
+            stateProvider.close();
+        } catch (Exception e) {
+            LOG.warn("Failed to stop BGP state provider", e);
+            closeSuccess = false;
+        }
+        return closeSuccess;
     }
 
     private RIBExtensionConsumerContext createRibExtensions(final BindingNormalizedNodeSerializer serializer) {
