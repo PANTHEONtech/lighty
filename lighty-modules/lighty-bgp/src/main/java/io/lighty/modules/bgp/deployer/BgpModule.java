@@ -5,6 +5,12 @@ import io.lighty.core.controller.api.LightyServices;
 import io.lighty.modules.bgp.config.InitialBgpConfigLoader;
 import io.netty.channel.EventLoopGroup;
 import java.util.List;
+import org.opendaylight.bgpcep.bgp.topology.provider.config.BgpTopologyDeployerImpl;
+import org.opendaylight.bgpcep.bgp.topology.provider.config.Ipv4TopologyProvider;
+import org.opendaylight.bgpcep.bgp.topology.provider.config.Ipv6TopologyProvider;
+import org.opendaylight.bgpcep.bgp.topology.provider.config.LinkstateGraphProvider;
+import org.opendaylight.bgpcep.bgp.topology.provider.config.LinkstateTopologyProvider;
+import org.opendaylight.graph.impl.ConnectedGraphServer;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
@@ -36,12 +42,22 @@ public class BgpModule extends AbstractLightyModule {
     private static final Logger LOG = LoggerFactory.getLogger(BgpModule.class);
     private static final String DEFAULT_BGP_NETWORK_INSTANCE_NAME = "global-bgp";
 
+    //Basic BGP
     private final SimpleStatementRegistry simpleStatementRegistry;
     private final BGPDispatcherImpl bgpDispatcher;
     private final DefaultBgpDeployer bgpDeployer;
     private final StateProviderImpl stateProvider;
     private final StrictBGPPeerRegistry peerRegistry;
     private final InitialBgpConfigLoader initialConfigLoader;
+    private final BgpTopologyDeployerImpl bgpTopologyDeployer;
+
+    //Topologies
+    private final Ipv4TopologyProvider ipv4TopologyProvider;
+    private final Ipv6TopologyProvider ipv6TopologyProvider;
+    private final LinkstateTopologyProvider linkstateTopologyProvider;
+    //Linkstate graph
+    private final ConnectedGraphServer graphServer;
+    private final LinkstateGraphProvider linkstateGraphProvider;
 
     public BgpModule(final EffectiveModelContext modelContext, final DataBroker dataBroker,
             final DOMDataBroker domDataBroker, final BindingCodecTree codecTree, final RpcProviderService rpcProvider,
@@ -62,6 +78,13 @@ public class BgpModule extends AbstractLightyModule {
         bgpDeployer = new DefaultBgpDeployer(DEFAULT_BGP_NETWORK_INSTANCE_NAME, cssProvider, rpcProvider,
                 ribExtensionConsumerContext, bgpDispatcher, routingPolicyFactory, codecsRegistry, domDataBroker,
                 dataBroker, tableTypeRegistryConsumer, stateCollector);
+        //Topologies
+        bgpTopologyDeployer = new BgpTopologyDeployerImpl(dataBroker, cssProvider);
+        ipv4TopologyProvider = new Ipv4TopologyProvider(bgpTopologyDeployer);
+        ipv6TopologyProvider = new Ipv6TopologyProvider(bgpTopologyDeployer);
+        linkstateTopologyProvider = new LinkstateTopologyProvider(bgpTopologyDeployer);
+        graphServer = new ConnectedGraphServer(dataBroker);
+        linkstateGraphProvider = new LinkstateGraphProvider(bgpTopologyDeployer, graphServer);
     }
 
     public BgpModule(final EffectiveModelContext modelContext, final DataBroker dataBroker,
@@ -127,23 +150,70 @@ public class BgpModule extends AbstractLightyModule {
             LOG.warn("Failed to stop BGP deployer", e);
             closeSuccess = false;
         }
+        if (!closeTopologies()) {
+            closeSuccess = false;
+        }
+        try {
+            bgpTopologyDeployer.close();
+        } catch (Exception e) {
+            LOG.warn("Failed to stop BGP topology deployer", e);
+            closeSuccess = false;
+        }
         try {
             stateProvider.close();
         } catch (Exception e) {
             LOG.warn("Failed to stop BGP state provider", e);
             closeSuccess = false;
         }
+
+
         return closeSuccess;
     }
 
-    private RIBExtensionConsumerContext createRibExtensions(final BindingNormalizedNodeSerializer serializer) {
+    @SuppressWarnings({"checkstyle:illegalCatch"})
+    private boolean closeTopologies() {
+        boolean closeSuccess = true;
+        try {
+            ipv4TopologyProvider.close();
+        } catch (Exception e) {
+            LOG.warn("Failed to stop BGP IPV4 topology provider", e);
+            closeSuccess = false;
+        }
+        try {
+            ipv6TopologyProvider.close();
+        } catch (Exception e) {
+            LOG.warn("Failed to stop BGP IPV6 topology provider", e);
+            closeSuccess = false;
+        }
+        try {
+            linkstateGraphProvider.close();
+        } catch (Exception e) {
+            LOG.warn("Failed to stop BGP link state graph provider", e);
+            closeSuccess = false;
+        }
+        try {
+            graphServer.close();
+        } catch (Exception e) {
+            LOG.warn("Failed to stop BGP graph server", e);
+            closeSuccess = false;
+        }
+        try {
+            linkstateTopologyProvider.close();
+        } catch (Exception e) {
+            LOG.warn("Failed to stop BGP link state topology provider", e);
+            closeSuccess = false;
+        }
+        return closeSuccess;
+    }
+
+    private static RIBExtensionConsumerContext createRibExtensions(final BindingNormalizedNodeSerializer serializer) {
         return new DefaultRIBExtensionConsumerContext(serializer, List.of(
                 new org.opendaylight.protocol.bgp.inet.RIBActivator(),
                 new org.opendaylight.protocol.bgp.route.targetcontrain.impl.activators.RIBActivator(),
                 new org.opendaylight.protocol.bgp.linkstate.impl.RIBActivator()));
     }
 
-    private BGPExtensionConsumerContext createBgpExtensions() {
+    private static BGPExtensionConsumerContext createBgpExtensions() {
         return new DefaultBGPExtensionConsumerContext(List.of(
                 new org.opendaylight.protocol.bgp.inet.BGPActivator(),
                 new org.opendaylight.protocol.bgp.parser.impl.BGPActivator(),
@@ -151,14 +221,14 @@ public class BgpModule extends AbstractLightyModule {
                 new org.opendaylight.protocol.bgp.linkstate.impl.BGPActivator()));
     }
 
-    private BGPTableTypeRegistryConsumer createBgpTableTypes() {
+    private static BGPTableTypeRegistryConsumer createBgpTableTypes() {
         return new DefaultBGPTableTypeRegistryConsumer(List.of(
                 new org.opendaylight.protocol.bgp.inet.TableTypeActivator(),
                 new org.opendaylight.protocol.bgp.route.targetcontrain.impl.activators.TableTypeActivator(),
                 new org.opendaylight.protocol.bgp.linkstate.impl.TableTypeActivator()));
     }
 
-    private SimpleStatementRegistry createStatementRegistry(final DataBroker dataBroker) {
+    private static SimpleStatementRegistry createStatementRegistry(final DataBroker dataBroker) {
         return new SimpleStatementRegistry(
                 List.of(new StatementActivator(dataBroker),
                         new org.opendaylight.protocol.bgp.route.targetcontrain.impl.activators.StatementActivator()));

@@ -53,6 +53,19 @@ public final class BgpConfigUtils {
             org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.odl.bgp._default.policy
                     .rev200120.$YangModuleInfoImpl.getInstance());
 
+    private static final Set<YangModuleInfo> TOPOLOGY_MODELS = ImmutableSet.of(
+            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.odl.bgp.topology.config
+                    .rev180329.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.odl.bgp.topology.types
+                    .rev160524.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.isis.topology
+                    .rev131021.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.ted
+                    .rev131021.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.ospf.topology
+                    .rev131021.$YangModuleInfoImpl.getInstance()
+    );
+
     private static final Set<YangModuleInfo> EXTENSIONS_MODELS = ImmutableSet.of(
             org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.bgp.evpn
                     .rev200120.$YangModuleInfoImpl.getInstance(),
@@ -71,9 +84,11 @@ public final class BgpConfigUtils {
             org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.bgp.labeled.unicast
                     .rev180329.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.bgp.linkstate
-                    .rev200120.$YangModuleInfoImpl.getInstance()
+                    .rev200120.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.graph
+                    .rev191125.$YangModuleInfoImpl.getInstance()
     );
 
     public static final Set<YangModuleInfo> ALL_BGP_MODELS =
-            ImmutableSet.copyOf(Iterables.concat(BASE_MODELS, EXTENSIONS_MODELS));
+            ImmutableSet.copyOf(Iterables.concat(BASE_MODELS, EXTENSIONS_MODELS, TOPOLOGY_MODELS));
 }
