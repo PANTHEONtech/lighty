@@ -37,32 +37,26 @@ public class BgpModule extends AbstractLightyModule {
     private static final String DEFAULT_BGP_NETWORK_INSTANCE_NAME = "global-bgp";
 
     private final SimpleStatementRegistry simpleStatementRegistry;
-    private final RIBExtensionConsumerContext ribExtensionConsumerContext;
     private final BGPDispatcherImpl bgpDispatcher;
-    private final DefaultBGPRibRoutingPolicyFactory routingPolicyFactory;
-    private final ConstantCodecsRegistry codecsRegistry;
-    private final BGPTableTypeRegistryConsumer tableTypeRegistryConsumer;
     private final DefaultBgpDeployer bgpDeployer;
-    private final BGPStateCollector stateCollector;
     private final StateProviderImpl stateProvider;
     private final StrictBGPPeerRegistry peerRegistry;
     private final InitialBgpConfigLoader initialConfigLoader;
-
 
     public BgpModule(final EffectiveModelContext modelContext, final DataBroker dataBroker,
             final DOMDataBroker domDataBroker, final BindingCodecTree codecTree, final RpcProviderService rpcProvider,
             final ClusterSingletonServiceProvider cssProvider, final BindingNormalizedNodeSerializer serializer,
             final EventLoopGroup bossGroup, final EventLoopGroup workerGroup) {
         initialConfigLoader = new InitialBgpConfigLoader(domDataBroker, modelContext);
-        ribExtensionConsumerContext = createRibExtensions(serializer);
         peerRegistry = new StrictBGPPeerRegistry();
         bgpDispatcher = new BGPDispatcherImpl(createBgpExtensions(), bossGroup, workerGroup, peerRegistry);
         simpleStatementRegistry = createStatementRegistry(dataBroker);
-        routingPolicyFactory = new DefaultBGPRibRoutingPolicyFactory(
+        final DefaultBGPRibRoutingPolicyFactory routingPolicyFactory = new DefaultBGPRibRoutingPolicyFactory(
                 dataBroker, simpleStatementRegistry);
-        codecsRegistry = new ConstantCodecsRegistry(codecTree);
-        tableTypeRegistryConsumer = createBgpTableTypes();
-        stateCollector = new BGPStateCollector();
+        final ConstantCodecsRegistry codecsRegistry = new ConstantCodecsRegistry(codecTree);
+        final BGPTableTypeRegistryConsumer tableTypeRegistryConsumer = createBgpTableTypes();
+        final BGPStateCollector stateCollector = new BGPStateCollector();
+        final RIBExtensionConsumerContext ribExtensionConsumerContext = createRibExtensions(serializer);
         stateProvider = new StateProviderImpl(dataBroker, 5, tableTypeRegistryConsumer, stateCollector,
                 DEFAULT_BGP_NETWORK_INSTANCE_NAME);
         bgpDeployer = new DefaultBgpDeployer(DEFAULT_BGP_NETWORK_INSTANCE_NAME, cssProvider, rpcProvider,
