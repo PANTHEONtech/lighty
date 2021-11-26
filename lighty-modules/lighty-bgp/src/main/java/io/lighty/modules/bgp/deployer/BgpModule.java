@@ -130,7 +130,7 @@ public class BgpModule extends AbstractLightyModule {
             simpleStatementRegistry.close();
         } catch (Exception e) {
             LOG.warn("Failed to stop BGP statement registry", e);
-            return false;
+            closeSuccess = false;
         }
         try {
             peerRegistry.close();
