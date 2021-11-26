@@ -11,6 +11,7 @@ package io.lighty.gnmi.southbound.schema.yangstore.impl;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.gnmi.southbound.schema.yangstore.service.YangDataStoreService;
+import io.lighty.modules.gnmi.commons.util.SanitizeYangModel;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -49,10 +50,10 @@ public class YangDataStoreServiceImpl implements YangDataStoreService {
         final InstanceIdentifier<GnmiYangModel> instanceIdentifier = InstanceIdentifier.builder(GnmiYangModels.class)
                 .child(GnmiYangModel.class, gnmiYangModelKey)
                 .build();
-
+        final String sanitizedModelBody = SanitizeYangModel.removeRegexpPosix(modelBody);
         final GnmiYangModelBuilder gnmiYangModelBuilder = new GnmiYangModelBuilder()
                 .setName(modelName)
-                .setBody(modelBody)
+                .setBody(sanitizedModelBody)
                 .withKey(gnmiYangModelKey);
         final WriteTransaction writeTX = dataBroker.newWriteOnlyTransaction();
         writeTX.merge(LogicalDatastoreType.OPERATIONAL, instanceIdentifier, gnmiYangModelBuilder.build());
