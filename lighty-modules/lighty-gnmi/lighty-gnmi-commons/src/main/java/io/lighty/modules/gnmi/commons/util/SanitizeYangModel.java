@@ -31,7 +31,7 @@ public final class SanitizeYangModel {
 
     /**
      * Sanitize regex posix ['^','$'] from YANG model.
-     * E.g.: '^[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){7}$' -> '[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){7}'
+     * E.g.: from '^[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){7}$' to: '[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){7}'
      * This method is workaround to YANGTOOLS issue: https://jira.opendaylight.org/browse/YANGTOOLS-1005
      * TODO: Remove when https://jira.opendaylight.org/browse/YANGTOOLS-1005 issue will be resolved.
      *
@@ -47,7 +47,7 @@ public final class SanitizeYangModel {
 
     /**
      * Sanitize regex posix ['^','$'] from YANG model.
-     * E.g.: '^[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){7}$' -> '[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){7}'
+     * E.g.: from: '^[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){7}$' to: '[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){7}'
      * This method is workaround to YANGTOOLS issue: https://jira.opendaylight.org/browse/YANGTOOLS-1005
      * TODO: Remove when https://jira.opendaylight.org/browse/YANGTOOLS-1005 issue will be resolved.
      *
