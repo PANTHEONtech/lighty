@@ -1,4 +1,3 @@
-#!/bin/bash
 #
 # Copyright © 2021 PANTHEON.tech s.r.o. All Rights Reserved.
 #
