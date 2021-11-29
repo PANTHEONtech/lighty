@@ -318,8 +318,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
         // ENTITY OWNERSHIP
         try {
-            this.akkaEntityOwnershipService
-                    = new AkkaEntityOwnershipService(this.actorSystemProvider, this.rpcProviderService);
+            this.akkaEntityOwnershipService = new AkkaEntityOwnershipService(this.actorSystemProvider,
+                    this.rpcProviderService, bindingCodecContext);
         } catch (ExecutionException | InterruptedException e) {
             LOG.error("Exception occurred while creating AkkaEntityOwnershipService", e);
             Thread.currentThread().interrupt();
