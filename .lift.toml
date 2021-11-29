@@ -1,0 +1,3 @@
+build = "maven"
+jdk11 = true
+summaryComments = true
