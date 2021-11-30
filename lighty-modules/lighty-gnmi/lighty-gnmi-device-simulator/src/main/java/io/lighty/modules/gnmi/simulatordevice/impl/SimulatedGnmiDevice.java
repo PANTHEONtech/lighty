@@ -13,6 +13,7 @@ import gnmi.Gnmi;
 import io.grpc.Server;
 import io.grpc.netty.InternalProtocolNegotiators;
 import io.grpc.netty.NettyServerBuilder;
+import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.gnmi.AuthenticationInterceptor;
 import io.lighty.modules.gnmi.simulatordevice.gnmi.GnmiService;
 import io.lighty.modules.gnmi.simulatordevice.gnoi.GnoiCertService;
@@ -20,6 +21,8 @@ import io.lighty.modules.gnmi.simulatordevice.gnoi.GnoiFileService;
 import io.lighty.modules.gnmi.simulatordevice.gnoi.GnoiOSService;
 import io.lighty.modules.gnmi.simulatordevice.gnoi.GnoiSonicService;
 import io.lighty.modules.gnmi.simulatordevice.gnoi.GnoiSystemService;
+import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder;
+import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
 import io.lighty.modules.gnmi.simulatordevice.utils.FileUtils;
 import io.lighty.modules.gnmi.simulatordevice.utils.UsernamePasswordAuth;
 import io.lighty.modules.gnmi.simulatordevice.yang.YangDataService;
@@ -33,6 +36,8 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.EnumSet;
 import java.util.Objects;
+import java.util.Set;
+import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +56,7 @@ public class SimulatedGnmiDevice {
     private final String certificatePath;
     private final String keyPath;
     private final String yangsPath;
+    private final Set<YangModuleInfo> modulesInfoSet;
     private final String initialConfigDataPath;
     private final String initialStateDataPath;
     private final UsernamePasswordAuth usernamePasswordAuth;
@@ -60,41 +66,37 @@ public class SimulatedGnmiDevice {
     private final Gson gson;
     private final EnumSet<Gnmi.Encoding> supportedEncodings;
     private Server server;
-
     private GnoiSystemService gnoiSystemService;
     private GnoiCertService gnoiCertService;
     private GnoiFileService gnoiFileService;
     private GnoiOSService gnoiOSService;
     private GnoiSonicService gnoiSonicService;
-
     private GnmiService gnmiService;
-
     private EffectiveModelContext schemaContext;
     private YangDataService dataService;
 
 
-    public SimulatedGnmiDevice(final SimulatedGnmiDeviceGroupHolder groups, final SimulatedGnmiDevicePathsHolder paths,
-                               final SimulatedGnmiDeviceConnectionInfoHolder connectionInfo,
-                               final UsernamePasswordAuth usernamePasswordAuth, final boolean plaintext,
-                               final Gson gson, final EnumSet<Gnmi.Encoding> supportedEncodings) {
-        this.bossGroup = Objects.requireNonNullElseGet(groups.bossGroup, () -> new NioEventLoopGroup(1));
-        this.workerGroup = Objects.requireNonNullElseGet(groups.workerGroup, NioEventLoopGroup::new);
-        this.yangsPath = Objects.requireNonNull(paths.yangsPath, "Path to directory of yang files form which schema"
-                + " will be created is needed!");
-        this.host = connectionInfo.host;
-        this.port = connectionInfo.port;
-        this.maxConnections = connectionInfo.maxConnections;
-        this.certificatePath = paths.certificatePath;
-        this.keyPath = paths.keyPath;
-        this.initialConfigDataPath = paths.initialConfigDataPath;
-        this.initialStateDataPath = paths.initialStateDataPath;
-        this.usernamePasswordAuth = usernamePasswordAuth;
-        this.plaintext = plaintext;
-        this.gson = gson;
-        this.supportedEncodings = supportedEncodings;
+    public SimulatedGnmiDevice(final GnmiSimulatorConfiguration simulatorConfig) {
+        this.bossGroup = Objects.requireNonNullElseGet(simulatorConfig.getBossGroup(),
+                () -> new NioEventLoopGroup(1));
+        this.workerGroup = Objects.requireNonNullElseGet(simulatorConfig.getWorkerGroup(), NioEventLoopGroup::new);
+        this.yangsPath = simulatorConfig.getYangsPath();
+        this.modulesInfoSet = simulatorConfig.getYangModulesInfo();
+        this.host = simulatorConfig.getTargetAddress();
+        this.port = simulatorConfig.getTargetPort();
+        this.maxConnections = simulatorConfig.getMaxConnections();
+        this.certificatePath = simulatorConfig.getCertPath();
+        this.keyPath = simulatorConfig.getCertKeyPath();
+        this.initialConfigDataPath = simulatorConfig.getInitialConfigDataPath();
+        this.initialStateDataPath = simulatorConfig.getInitialStateDataPath();
+        this.usernamePasswordAuth = new UsernamePasswordAuth(simulatorConfig.getUsername(),
+                simulatorConfig.getPassword());
+        this.plaintext = simulatorConfig.isUsePlaintext();
+        this.gson = simulatorConfig.getGson();
+        this.supportedEncodings = simulatorConfig.getSupportedEncodings();
     }
 
-    public void start() throws IOException {
+    public void start() throws IOException, EffectiveModelContextBuilderException {
         final NettyServerBuilder serverBuilder = NettyServerBuilder.forAddress(new InetSocketAddress(host, port))
                 .bossEventLoopGroup(bossGroup)
                 .workerEventLoopGroup(workerGroup)
@@ -122,7 +124,10 @@ public class SimulatedGnmiDevice {
         }
 
         // Initialize schema context from yang models
-        schemaContext = FileUtils.buildSchemaFromYangsDir(yangsPath);
+        schemaContext = new EffectiveModelContextBuilder()
+                .addYangModulesPath(yangsPath)
+                .addYangModulesInfo(modulesInfoSet)
+                .build();
 
         // Initialize data service
         dataService = new YangDataService(schemaContext, initialConfigDataPath, initialStateDataPath);
@@ -204,51 +209,6 @@ public class SimulatedGnmiDevice {
 
     public EffectiveModelContext getSchemaContext() {
         return schemaContext;
-    }
-
-    protected static final class SimulatedGnmiDeviceGroupHolder {
-
-        private final EventLoopGroup bossGroup;
-        private final EventLoopGroup workerGroup;
-
-        public SimulatedGnmiDeviceGroupHolder(final EventLoopGroup bossGroup, final EventLoopGroup workerGroup) {
-            this.bossGroup = bossGroup;
-            this.workerGroup = workerGroup;
-        }
-
-    }
-
-    protected static final class SimulatedGnmiDeviceConnectionInfoHolder {
-
-        private final String host;
-        private final int port;
-        private final int maxConnections;
-
-        public SimulatedGnmiDeviceConnectionInfoHolder(final String host, final int port, final int maxConnections) {
-            this.host = host;
-            this.port = port;
-            this.maxConnections = maxConnections;
-        }
-
-    }
-
-    protected static final class SimulatedGnmiDevicePathsHolder {
-
-        private final String certificatePath;
-        private final String keyPath;
-        private final String yangsPath;
-        private final String initialConfigDataPath;
-        private final String initialStateDataPath;
-
-        public SimulatedGnmiDevicePathsHolder(final String certificatePath, final String keyPath,
-                                              final String yangsPath, final String initialConfigDataPath,
-                                              final String initialStateDataPath) {
-            this.yangsPath = yangsPath;
-            this.certificatePath = certificatePath;
-            this.keyPath = keyPath;
-            this.initialConfigDataPath = initialConfigDataPath;
-            this.initialStateDataPath = initialStateDataPath;
-        }
     }
 
     static final class SimulatedGnmiDeviceException extends RuntimeException {

@@ -190,6 +190,6 @@ curl --request GET 'http://127.0.0.1:8888/restconf/data/network-topology:network
 ### Disconnect the device from controller
 When is required restart of connection or removal of device, just send request `'Remove device'`.
 ```
-curl --request DELETE 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator
+curl --request DELETE 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator'
 ```
 For restarting connection it is required to send request `'Connect device'`

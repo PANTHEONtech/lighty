@@ -100,6 +100,10 @@
             <artifactId>jcommander</artifactId>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>io.lighty.models</groupId>
+            <artifactId>openconfig-models</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>

@@ -6,6 +6,8 @@
 **/snapshots
 **/*.db.mv.db
 
+lighty-models/**/java/org/opendaylight/yang/gen/**/*
+
 bin/
 dist
 .idea
@@ -17,5 +19,6 @@ dist
 *.ipr
 *.iws
 *.log
+
 
 persistence

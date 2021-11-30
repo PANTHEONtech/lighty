@@ -8,11 +8,15 @@
 
 package io.lighty.modules.gnmi.simulatordevice.config;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.gson.Gson;
 import gnmi.Gnmi;
 import io.netty.channel.EventLoopGroup;
 import java.util.EnumSet;
+import java.util.Set;
+import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public final class GnmiSimulatorConfiguration {
     private String targetAddress = "0.0.0.0";
     private int targetPort = 10161;
@@ -29,6 +33,15 @@ public final class GnmiSimulatorConfiguration {
     private EventLoopGroup workerGroup;
     private Gson gson;
     private EnumSet<Gnmi.Encoding> supportedEncodings;
+    private Set<YangModuleInfo> yangModulesInfo;
+
+    public void setYangModulesInfo(Set<YangModuleInfo> yangModulesInfo) {
+        this.yangModulesInfo = yangModulesInfo;
+    }
+
+    public Set<YangModuleInfo> getYangModulesInfo() {
+        return yangModulesInfo;
+    }
 
     public String getTargetAddress() {
         return targetAddress;
