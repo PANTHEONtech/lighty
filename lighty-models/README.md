@@ -56,7 +56,7 @@ my-model/pom.xml
     <parent>
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-binding-parent</artifactId>
-        <version>15.1.0</version>
+        <version>15.1.1-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
