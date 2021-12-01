@@ -21,7 +21,7 @@ on:
         description: Desired NAME of docker image, e.g. "lighty-rnc"
         required: true
       version:
-        description: Desired version of published docker image & helm charts, e.g. "14.0.0"
+        description: Desired version of published docker image & helm charts, e.g. "14.3.0"
         required: true
       image-tag-latest:
         description: Should be this docker labeled with tag latest? Enter `true` if the tag `latest` should be added for image.
