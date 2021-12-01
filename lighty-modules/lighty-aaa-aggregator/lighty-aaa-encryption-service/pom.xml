@@ -4,7 +4,7 @@
     <parent>
         <artifactId>lighty-parent</artifactId>
         <groupId>io.lighty.core</groupId>
-        <version>14.3.0</version>
+        <version>14.3.1-SNAPSHOT</version>
         <relativePath>../../../lighty-core/lighty-parent/pom.xml</relativePath>
     </parent>
 

@@ -17,7 +17,7 @@
 
     <groupId>io.lighty.core</groupId>
     <artifactId>lighty-controller-springboot</artifactId>
-    <version>14.3.0</version>
+    <version>14.3.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <description>Demo lighty.io project for SpringBoot</description>
 
@@ -32,14 +32,14 @@
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-bom</artifactId>
-                <version>14.3.0</version>
+                <version>14.3.1-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>dependency-versions</artifactId>
-                <version>14.3.0</version>
+                <version>14.3.1-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -136,8 +136,4 @@
             </plugins>
         </pluginManagement>
     </build>
-
-  <scm>
-    <tag>14.3.0</tag>
-  </scm>
 </project>
