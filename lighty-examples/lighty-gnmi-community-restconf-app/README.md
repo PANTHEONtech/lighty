@@ -11,10 +11,10 @@ To communicate with gNMI device it is required to use TLS communication with cer
 authorization.
 
 This application starts:
-* [Lighty.io Controller](https://github.com/PANTHEONtech/lighty/tree/14.3.0/lighty-core/lighty-controller) with modules:
-  * [lighty.io RESTCONF module](https://github.com/PANTHEONtech/lighty/tree/14.3.0/lighty-modules/lighty-restconf-nb-community)
-  * [lighty.io gNMI module](https://github.com/PANTHEONtech/lighty/tree/14.3.0/lighty-modules/lighty-gnmi/lighty-gnmi-sb)
-* [lighty.io gNMI device simulator](https://github.com/PANTHEONtech/lighty/tree/14.3.0/lighty-modules/lighty-gnmi/lighty-gnmi-device-simulator)
+* [Lighty.io Controller](https://github.com/PANTHEONtech/lighty/tree/14.3.1-SNAPSHOT/lighty-core/lighty-controller) with modules:
+  * [lighty.io RESTCONF module](https://github.com/PANTHEONtech/lighty/tree/14.3.1-SNAPSHOT/lighty-modules/lighty-restconf-nb-community)
+  * [lighty.io gNMI module](https://github.com/PANTHEONtech/lighty/tree/14.3.1-SNAPSHOT/lighty-modules/lighty-gnmi/lighty-gnmi-sb)
+* [lighty.io gNMI device simulator](https://github.com/PANTHEONtech/lighty/tree/14.3.1-SNAPSHOT/lighty-modules/lighty-gnmi/lighty-gnmi-device-simulator)
 
 ![lighty.io gNMI / RESTCONF architecture](docs/lighty-gnmi-restconf-architecture.png)
 
