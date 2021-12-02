@@ -31,7 +31,7 @@ runs:
       shell: bash
     - name: Install app helm chart
       run: |
-        helm install lighty-applications/${{ inputs.app-name }}-aggregator/${{ inputs.app-name }}-helm/helm/${{ inputs.app-name }}-helm --name ${{ inputs.app-name }}
+        helm install ${{ inputs.app-name }} lighty-applications/${{ inputs.app-name }}-aggregator/${{ inputs.app-name }}-helm/helm/${{ inputs.app-name }}-helm
         sleep 35 # Wait for app to start
       shell: bash
     - name: Run apps testing scripts
