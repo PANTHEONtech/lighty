@@ -11,7 +11,7 @@ import akka.actor.Terminated;
 import akka.management.javadsl.AkkaManagement;
 import com.google.common.base.Stopwatch;
 import com.typesafe.config.Config;
-import io.lighty.codecs.util.SerializationException;
+import io.lighty.codecs.util.exception.DeserializationException;
 import io.lighty.core.cluster.ClusteringHandler;
 import io.lighty.core.cluster.ClusteringHandlerProvider;
 import io.lighty.core.common.SocketAnalyzer;
@@ -23,7 +23,7 @@ import io.lighty.core.controller.impl.config.ControllerConfiguration.InitialConf
 import io.lighty.core.controller.impl.services.LightyDiagStatusServiceImpl;
 import io.lighty.core.controller.impl.services.LightySystemReadyMonitorImpl;
 import io.lighty.core.controller.impl.services.LightySystemReadyService;
-import io.lighty.core.controller.impl.util.InitialDataImportUtil;
+import io.lighty.core.controller.impl.util.FileToDatastoreUtils;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.HashedWheelTimer;
@@ -31,7 +31,6 @@ import io.netty.util.Timer;
 import io.netty.util.concurrent.DefaultEventExecutor;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.EventExecutor;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -46,6 +45,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.akka.impl.ActorSystemProviderImpl;
 import org.opendaylight.controller.cluster.common.actor.QuarantinedMonitorActor;
@@ -214,7 +214,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                                 final DatastoreContext operDatastoreContext,
                                 final Map<String, Object> datastoreProperties,
                                 final Set<YangModuleInfo> modelSet,
-                                final Optional<InitialConfigData> initialConfigData) {
+                                final @Nullable InitialConfigData initialConfigData) {
         super(executorService);
         initSunXMLWriterProperty();
         this.actorSystemConfig = actorSystemConfig;
@@ -237,7 +237,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.lightyDiagStatusService = new LightyDiagStatusServiceImpl(systemReadyMonitor);
         this.metricProvider = new MetricProviderImpl();
         this.cacheProvider = new GuavaCacheProvider(new CacheManagersRegistryImpl());
-        this.initialConfigData = initialConfigData;
+        this.initialConfigData = Optional.ofNullable(initialConfigData);
     }
 
     /**
@@ -358,14 +358,12 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                 new ScheduledThreadPoolWrapper(2, new DefaultThreadFactory("default-scheduled-pool"));
 
         if (this.initialConfigData.isPresent()) {
-            InitialConfigData initialData = this.initialConfigData.get();
-            try (InputStream stream = new FileInputStream(initialData.getPathToInitDataFile())) {
-                InitialDataImportUtil
-                        .importInitialConfigDataFile(stream, initialData.getFormat(),
-                                getEffectiveModelContextProvider().getEffectiveModelContext(),
-                                this.getClusteredDOMDataBroker());
-            } catch (TimeoutException | ExecutionException | IOException
-                    | SerializationException | IllegalStateException e) {
+            final InitialConfigData initialData = this.initialConfigData.get();
+            try (InputStream inputStream = initialData.getAsInputStream()) {
+                FileToDatastoreUtils.importConfigDataFile(inputStream, initialData.getFormat(),
+                        getEffectiveModelContextProvider().getEffectiveModelContext(),
+                        this.getClusteredDOMDataBroker(), true);
+            } catch (TimeoutException | ExecutionException | IOException | DeserializationException e) {
                 LOG.error("Exception occurred while importing config data from file", e);
                 return false;
             } catch (InterruptedException e) {
@@ -383,7 +381,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             final DatastoreSnapshotRestore newDatastoreSnapshotRestore,
             final ActorSystemProvider newActorSystemProvider) {
         final ConfigurationImpl configuration = new ConfigurationImpl(newModuleShardsConfig, newModulesConfig);
-        DefaultDatastoreContextIntrospectorFactory introspectorFactory
+        final DefaultDatastoreContextIntrospectorFactory introspectorFactory
                 = new DefaultDatastoreContextIntrospectorFactory(this.codec.currentSerializer());
         final DatastoreContextIntrospector introspector = introspectorFactory
                 .newInstance(datastoreContext.getLogicalStoreType(), datastoreProperties);
