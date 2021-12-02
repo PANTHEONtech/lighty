@@ -10,7 +10,6 @@ package io.lighty.core.controller.impl;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
@@ -70,7 +69,7 @@ public class LightyControllerBuilder {
                     this.controllerConfiguration.getOperDatastoreContext(),
                     this.controllerConfiguration.getDatastoreProperties(),
                     modelSet,
-                    Optional.ofNullable(this.controllerConfiguration.getInitialConfigData())
+                    this.controllerConfiguration.getInitialConfigData()
             );
         } catch (Exception e) {
             throw new ConfigurationException(e);
