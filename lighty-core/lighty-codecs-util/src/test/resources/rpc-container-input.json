@@ -1,5 +1,5 @@
 {
-  "test-models:top-level-container": {
+  "input": {
     "sample-container": {
       "name": "name",
       "value": 1

@@ -5,13 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-package io.lighty.codecs.util;
+package io.lighty.codecs.util.exception;
 
 /**
  * This exception should be thrown when serialization problem occurs.
  */
 public class SerializationException extends Exception {
-    private static final long serialVersionUID = 2053802415449540367L;
 
     public SerializationException(final Throwable cause) {
         super(cause);
