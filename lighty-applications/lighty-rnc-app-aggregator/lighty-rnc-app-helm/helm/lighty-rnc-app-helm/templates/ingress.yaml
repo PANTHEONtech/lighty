@@ -1,5 +1,5 @@
 {{- if .Values.ingress.useIngress }}
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "lighty-rnc-app-helm.fullname" . }}
@@ -9,16 +9,22 @@ spec:
       http:
         paths:
           - path: /
+            pathType: Prefix
             backend:
-              serviceName: {{ include "lighty-rnc-app-helm.fullname" . }}
-              servicePort: {{ .Values.lighty.restconf.restconfPort }}
+              service:
+                name: {{ include "lighty-rnc-app-helm.fullname" . }}
+                port:
+                  number: {{ .Values.lighty.restconf.restconfPort }}
     {{- if .Values.ingress.exposeManagement }}
     - host: {{ .Values.ingress.managementHost }}
       http:
         paths:
           - path: /
+            pathType: Prefix
             backend:
-              serviceName: {{ include "lighty-rnc-app-helm.fullname" . }}
-              servicePort: {{ .Values.lighty.akka.managementPort }}
+              service:
+                name: {{ include "lighty-rnc-app-helm.fullname" . }}
+                port:
+                  number: {{ .Values.lighty.akka.managementPort }}
     {{- end }}
 {{- end }}
