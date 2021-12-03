@@ -60,14 +60,7 @@
             <groupId>org.opendaylight.bgpcep</groupId>
             <artifactId>bgp-openconfig-state</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.opendaylight.bgpcep</groupId>
-            <artifactId>config-loader-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.bgpcep</groupId>
-            <artifactId>bgp-config-example</artifactId>
-        </dependency>
+
         <!-- BGP Extensions -->
         <dependency>
             <groupId>org.opendaylight.bgpcep</groupId>
@@ -80,10 +73,6 @@
         <dependency>
             <groupId>org.opendaylight.bgpcep</groupId>
             <artifactId>bgp-inet</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.bgpcep</groupId>
-            <artifactId>bgp-l3vpn</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.bgpcep</groupId>

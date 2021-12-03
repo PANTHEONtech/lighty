@@ -34,10 +34,6 @@
         </dependency>
         <dependency>
             <groupId>io.lighty.modules</groupId>
-            <artifactId>lighty-restconf-nb-community</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-swagger</artifactId>
         </dependency>
         <dependency>

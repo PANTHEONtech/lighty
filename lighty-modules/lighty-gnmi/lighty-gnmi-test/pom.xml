@@ -47,11 +47,7 @@
             <artifactId>lighty-rcgnmi-app</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>io.lighty.models</groupId>
-            <artifactId>openconfig-models</artifactId>
-            <scope>test</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
