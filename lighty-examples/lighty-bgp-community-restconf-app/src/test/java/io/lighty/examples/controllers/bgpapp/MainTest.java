@@ -11,29 +11,50 @@ package io.lighty.examples.controllers.bgpapp;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import io.lighty.core.controller.impl.config.ConfigurationException;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 class MainTest {
 
     private static Main app;
 
-    @BeforeAll
-    static void startApp() throws Exception {
+    @Test
+    void testStartNoConfig() throws Exception {
         app = new Main();
         app.start(new String[]{});
-    }
-
-    @Test
-    void appStartedTest() {
         assertTrue(app.isRunning());
     }
 
-    @AfterAll
-    static void stop() {
+    @Test
+    void testStartConfigMissingModels() throws InterruptedException, ExecutionException, TimeoutException,
+            ConfigurationException, IOException, URISyntaxException {
+        app = new Main();
+        app.start(new String[] {"-c", absolutePathOfResource("/missingSomeModelsConfig.json")});
+        assertTrue(app.isRunning());
+    }
+
+    @Test
+    void testStartConfigNoModels() throws InterruptedException, ExecutionException, TimeoutException,
+            ConfigurationException, IOException, URISyntaxException {
+        app = new Main();
+        app.start(new String[] {"-c", absolutePathOfResource("/missingSchemaServiceConfig.json")});
+        assertTrue(app.isRunning());
+    }
+
+    @AfterEach
+    void stop() {
         app.stop();
         assertFalse(app.isRunning());
+    }
+
+    private static String absolutePathOfResource(final String resourcePath) throws URISyntaxException {
+        return new File(MainTest.class.getResource(resourcePath).toURI()).getAbsolutePath();
     }
 
 }
