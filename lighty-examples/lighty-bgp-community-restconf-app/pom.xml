@@ -33,16 +33,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.lighty.core</groupId>
-            <artifactId>lighty-controller</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-restconf-nb-community</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.lighty.core</groupId>
-            <artifactId>lighty-common</artifactId>
         </dependency>
         <dependency>
             <groupId>io.lighty.modules</groupId>
