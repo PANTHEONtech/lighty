@@ -361,15 +361,15 @@ For additional configurable parameters and their explanation, see previous chapt
 
 ## Deployment via helm chart
 ### Prerequisites
-* Kubernetes cluster 1.15.11 (minikube, microk8s, etc.)
-* Helm 2.17
+* Kubernetes cluster 1.22.4 (minikube, microk8s, etc.)
+* Helm 3.7.1
 
 ### Deploy
 To easily deploy the lighty.io RcGNMI application to Kubernetes, we provide a custom helm chart located [here](lighty-rcgnmi-app-helm/helm).
 
 To install, make sure that the docker image defined in `values.yaml` is accessible in your kubernetes (for microk8s you can use the [docker-microk8s-script](lighty-rcgnmi-app-helm/helm/microk8s-uploadDocker.sh)), then run the command:
 
-`microk8s helm install --name lighty-rcgnmi-app ./lighty-rcgnmi-app-helm/`
+`microk8s helm3 install lighty-rcgnmi-app ./lighty-rcgnmi-app-helm/`
 
 in the `/lighty-rcgnmi-app-helm/helm/` directory.  
 
