@@ -11,11 +11,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Objects;
 import com.typesafe.config.Config;
 import io.lighty.core.controller.impl.util.DatastoreConfigurationUtils;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -89,24 +89,22 @@ public class ControllerConfiguration {
             }
         }
 
-        private String pathToInitDataFile = null;
-        @JsonProperty(value = "format")
-        private ImportFileFormat fileFormat = null;
+        private String pathToInitDataFile;
+        private ImportFileFormat fileFormat;
+
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        public InitialConfigData(@JsonProperty("pathToInitDataFile") final String pathToInitDataFile,
+                @JsonProperty("format") final ImportFileFormat fileFormat) {
+            this.pathToInitDataFile = Objects.requireNonNull(pathToInitDataFile);
+            this.fileFormat = Objects.requireNonNullElse(fileFormat, ImportFileFormat.JSON);
+        }
 
         public String getPathToInitDataFile() {
             return pathToInitDataFile;
         }
 
-        public void setPathToInitDataFile(String pathToInitDataFile) {
-            this.pathToInitDataFile = pathToInitDataFile;
-        }
-
         public ImportFileFormat getFormat() {
             return fileFormat;
-        }
-
-        public void setFormat(ImportFileFormat newFileFormat) {
-            this.fileFormat = newFileFormat;
         }
 
         @Override
@@ -118,7 +116,7 @@ public class ControllerConfiguration {
                 return false;
             }
 
-            InitialConfigData that = (InitialConfigData) obj;
+            final InitialConfigData that = (InitialConfigData) obj;
 
             if (fileFormat != that.fileFormat) {
                 return false;
@@ -308,7 +306,7 @@ public class ControllerConfiguration {
                 return false;
             }
             SchemaServiceConfig that = (SchemaServiceConfig) obj;
-            return Objects.equal(models, that.models);
+            return Objects.equals(models, that.models);
         }
 
         @Override
