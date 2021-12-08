@@ -25,20 +25,22 @@
         <dependency>
             <groupId>io.lighty.core</groupId>
             <artifactId>lighty-controller</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-jetty-server</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-restconf-nb-community</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.netconf</groupId>
             <artifactId>sal-rest-docgen</artifactId>
         </dependency>
-
         <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>singlenode-configuration</artifactId>
