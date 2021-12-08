@@ -35,7 +35,6 @@
         <dependency>
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-swagger</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.lighty.modules</groupId>
