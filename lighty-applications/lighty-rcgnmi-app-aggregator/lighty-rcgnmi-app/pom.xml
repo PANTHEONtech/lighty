@@ -28,7 +28,6 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>io.lighty.applications.rcgnmi</groupId>
             <artifactId>lighty-rcgnmi-app-module</artifactId>
