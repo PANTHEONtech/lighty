@@ -15,15 +15,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Utility class for sanitizing YANG model body.
+ * Utility class for sanitizing YANG model body. This class is workaround for incompatible regex patterns
+ * inside Openconfig YANG models. https://github.com/openconfig/public/issues/44
+ * TODO: Remove when https://jira.opendaylight.org/browse/YANGTOOLS-1005 issue will be resolved.
  */
-public final class SanitizeYangModel {
+public final class YangModelSanitizer {
 
-    private SanitizeYangModel() {
+    private YangModelSanitizer() {
         // Utility class
     }
 
     /*
+     *  Match patterns and add them to regex group.
+     *  e.q.
      *  pattern '^REGEX$';
      *  oc-ext:posix-pattern '^REGEX$';
      */
