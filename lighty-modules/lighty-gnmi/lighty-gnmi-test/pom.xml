@@ -41,13 +41,11 @@
             <artifactId>lighty-gnmi-device-simulator</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>io.lighty.applications.rcgnmi</groupId>
             <artifactId>lighty-rcgnmi-app</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>

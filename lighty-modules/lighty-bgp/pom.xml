@@ -83,6 +83,10 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.bgpcep</groupId>
+            <artifactId>bgp-l3vpn</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.bgpcep</groupId>
             <artifactId>bgp-labeled-unicast</artifactId>
         </dependency>
         <dependency>
