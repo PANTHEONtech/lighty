@@ -9,7 +9,7 @@
 package io.lighty.modules.gnmi.simulatordevice.utils;
 
 import com.google.common.io.ByteSource;
-import io.lighty.modules.gnmi.commons.util.SanitizeYangModel;
+import io.lighty.modules.gnmi.commons.util.YangModelSanitizer;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -107,7 +107,7 @@ public class EffectiveModelContextBuilder {
                     .map(Path::toFile)
                     .collect(Collectors.toList());
             for (File file : filesInFolder) {
-                final ByteSource sanitizedYangByteSource = SanitizeYangModel
+                final ByteSource sanitizedYangByteSource = YangModelSanitizer
                         .removeRegexpPosix(com.google.common.io.Files.asByteSource(file));
                 final YangStatementStreamSource statementSource = YangStatementStreamSource.create(
                         YangTextSchemaSource.delegateForByteSource(
@@ -129,7 +129,7 @@ public class EffectiveModelContextBuilder {
         final ArrayList<YangStatementStreamSource> sourceArrayList = new ArrayList<>();
         for (YangModuleInfo yangModuleInfo : yangModulesInfo) {
             try {
-                final ByteSource sanitizedYangByteSource = SanitizeYangModel
+                final ByteSource sanitizedYangByteSource = YangModelSanitizer
                         .removeRegexpPosix(yangModuleInfo.getYangTextByteSource());
                 final YangStatementStreamSource statementSource
                         = YangStatementStreamSource.create(YangTextSchemaSource.delegateForByteSource(

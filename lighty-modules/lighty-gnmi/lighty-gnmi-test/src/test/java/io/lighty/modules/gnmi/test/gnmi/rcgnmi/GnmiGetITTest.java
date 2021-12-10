@@ -203,7 +203,7 @@ public class GnmiGetITTest extends GnmiITBase {
     public void getLeafWithRegexPosix() throws IOException, InterruptedException, JSONException {
         final HttpResponse<String> openflowResponse = sendGetRequestJSON(OPENFLOW_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, openflowResponse.statusCode());
-        JSONAssert.assertEquals(getOcOpenflowJsonResult(), openflowResponse.body(), false);
+        JSONAssert.assertEquals(getExpectedOcOpenflowJsonResult(), openflowResponse.body(), false);
     }
 
     private List<String> convertCapabilitiesJSONArrayToList(final JSONArray capabilitiesArray) throws JSONException {
@@ -214,7 +214,7 @@ public class GnmiGetITTest extends GnmiITBase {
         return capabilitiesList;
     }
 
-    private static String getOcOpenflowJsonResult() {
+    private static String getExpectedOcOpenflowJsonResult() {
         return "{\"openconfig-openflow:openflow\":{"
                 + "\"agent\":{"
                 +   "\"config\":{"
