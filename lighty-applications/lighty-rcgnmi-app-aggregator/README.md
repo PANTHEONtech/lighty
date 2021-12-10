@@ -66,7 +66,7 @@ Both of these options will load the YANG files into data-store, from which **lig
       }
     ```
     3. Use one or both [`initialYangsPaths`,`initialYangModels`] option for adding YANG models to gNMI module. 
-       1. `initialYangsPaths`: Change `INITIAL_FOLDER_PATH`, from the JSON block above, to a folder path, which contains YANG models you wish to load into the datastore. 
+       1. `initialYangsPaths`: Change `INITIAL_FOLDER_PATH`, from the JSON block above, to a folder paths, which contain YANG models you wish to load into the datastore. 
        2. `initialYangModels`: Add all required models which can be found in classpath of application in format mention above. Change `MODEL_NAMESPACE`, `MODEL_NAME`, `MODEL_REVISION` to required values.
     These models will be then automatically loaded on startup.
 

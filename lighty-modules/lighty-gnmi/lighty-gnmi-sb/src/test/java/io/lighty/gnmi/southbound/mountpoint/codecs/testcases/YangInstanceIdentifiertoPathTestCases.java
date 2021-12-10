@@ -27,7 +27,7 @@ public class YangInstanceIdentifiertoPathTestCases extends CodecTestCasesBase {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName(addPrefixToTopElement
-                                ? makePrefixString(IT_ID, "interfaces")
+                                ? makePrefixString(OC_INTERFACES_ID, "interfaces")
                                 : "interfaces"))
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName("interface")
@@ -52,7 +52,7 @@ public class YangInstanceIdentifiertoPathTestCases extends CodecTestCasesBase {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName(addPrefixToTopElement
-                                ? makePrefixString(IT_ID, "interfaces")
+                                ? makePrefixString(OC_INTERFACES_ID, "interfaces")
                                 : "interfaces")
                         .build())
                 .build();
@@ -64,7 +64,7 @@ public class YangInstanceIdentifiertoPathTestCases extends CodecTestCasesBase {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName(addPrefixToTopElement
-                                ? makePrefixString(IT_ID, "interfaces")
+                                ? makePrefixString(OC_INTERFACES_ID, "interfaces")
                                 : "interfaces"))
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName("interface")
@@ -79,7 +79,7 @@ public class YangInstanceIdentifiertoPathTestCases extends CodecTestCasesBase {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName(addPrefixToTopElement
-                                ? makePrefixString(IT_ID, "interfaces")
+                                ? makePrefixString(OC_INTERFACES_ID, "interfaces")
                                 : "interfaces"))
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName("interface")
