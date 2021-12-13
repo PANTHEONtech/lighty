@@ -30,6 +30,8 @@ import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeS
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The implementation of {@link NodeConverter} which serializes and deserializes binding independent
@@ -38,6 +40,7 @@ import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
  * @see XmlNodeConverter
  */
 public class JsonNodeConverter implements NodeConverter {
+    private static final Logger LOG = LoggerFactory.getLogger(JsonNodeConverter.class);
 
     private final JSONCodecFactory jsonCodecFactory;
 
@@ -94,8 +97,9 @@ public class JsonNodeConverter implements NodeConverter {
                 : schemaInferenceStack.currentModule().localQNameModule().getNamespace();
         // nnStreamWriter closes underlying JsonWriter, we don't need too
         final JsonWriter jsonWriter = new JsonWriter(writer);
-        // nnWriter closes underlying NormalizedNodeStreamWriter, we don't need too
-        final NormalizedNodeStreamWriter nnStreamWriter = normalizedNode instanceof MapEntryNode
+        // Exclusive nnWriter closes underlying NormalizedNodeStreamWriter, we don't need too
+        final boolean useNested = normalizedNode instanceof MapEntryNode;
+        final NormalizedNodeStreamWriter nnStreamWriter = useNested
                 ? JSONNormalizedNodeStreamWriter.createNestedWriter(
                         this.jsonCodecFactory, schemaInferenceStack.toInference(), initialNamespace, jsonWriter)
                 : JSONNormalizedNodeStreamWriter.createExclusiveWriter(
@@ -106,6 +110,14 @@ public class JsonNodeConverter implements NodeConverter {
             return writer;
         } catch (RuntimeException | IOException e) {
             throw new SerializationException(e);
+        } finally {
+            if (useNested) {
+                try {
+                    jsonWriter.close();
+                } catch (IOException e) {
+                    LOG.warn("Failed to close underlying JsonWriter", e);
+                }
+            }
         }
     }
 
