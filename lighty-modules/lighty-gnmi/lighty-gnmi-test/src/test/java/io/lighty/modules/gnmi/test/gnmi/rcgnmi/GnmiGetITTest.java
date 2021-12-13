@@ -13,6 +13,8 @@ import static io.lighty.modules.gnmi.test.gnmi.rcgnmi.GnmiITBase.GeneralConstant
 import static io.lighty.modules.gnmi.test.gnmi.rcgnmi.GnmiITBase.GeneralConstants.GNMI_NODE_ID;
 import static io.lighty.modules.gnmi.test.gnmi.rcgnmi.GnmiITBase.GeneralConstants.GNMI_TOPOLOGY_PATH;
 import static io.lighty.modules.gnmi.test.gnmi.rcgnmi.GnmiITBase.GeneralConstants.OPENCONFIG_INTERFACES;
+import static io.lighty.modules.gnmi.test.gnmi.rcgnmi.GnmiITBase.GeneralConstants.OPENCONFIG_OPENFLOW;
+import static io.lighty.modules.gnmi.test.gnmi.rcgnmi.GnmiITBase.GeneralConstants.OPENCONFIG_SYSTEM;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -40,6 +42,7 @@ public class GnmiGetITTest extends GnmiITBase {
     private static final String GET_CAPABILITIES_PATH
             = GNMI_TOPOLOGY_PATH + "/node=" + GNMI_NODE_ID + "/gnmi-topology:node-state/available-capabilities";
     private static final String INTERFACES_PATH = GNMI_DEVICE_MOUNTPOINT + OPENCONFIG_INTERFACES;
+    private static final String OPENFLOW_PATH = GNMI_DEVICE_MOUNTPOINT + OPENCONFIG_SYSTEM +  OPENCONFIG_OPENFLOW;
     private static final List<String> EXPECTED_CAPABILITIES = List.of(
         "iana-if-type revision: 2017-01-19", "openconfig-alarm-types semver: 0.2.1", "openconfig-alarms semver: 0.3.2",
         "openconfig-extensions revision: 2020-06-16", "openconfig-if-aggregate semver: 2.4.3",
@@ -51,7 +54,8 @@ public class GnmiGetITTest extends GnmiITBase {
         "ietf-yang-types revision: 2013-07-15", "openconfig-aaa semver: 0.5.0", "openconfig-aaa-types semver: 0.4.1",
         "openconfig-license semver: 0.2.0", "openconfig-messages semver: 0.0.1", "openconfig-procmon semver: 0.4.0",
         "openconfig-system semver: 0.10.0","openconfig-system-logging semver: 0.3.1",
-        "openconfig-system-terminal semver: 0.3.1");
+        "openconfig-system-terminal semver: 0.3.1", "openconfig-openflow semver: 0.1.2",
+        "openconfig-openflow-types semver: 0.1.3");
 
     private static final String OC_INTERFACES_CONTAINER_EXPECTED_JSON_OBJ =
         "{\"openconfig-interfaces:interfaces\":"
@@ -188,6 +192,13 @@ public class GnmiGetITTest extends GnmiITBase {
         assertEquals(HttpURLConnection.HTTP_CONFLICT, getOcInterfacesContainerWrongResponse.statusCode());
     }
 
+    @Test
+    public void getLeafWithRegexPosix() throws IOException, InterruptedException, JSONException {
+        final HttpResponse<String> openflowResponse = sendGetRequestJSON(OPENFLOW_PATH);
+        assertEquals(HttpURLConnection.HTTP_OK, openflowResponse.statusCode());
+        JSONAssert.assertEquals(getExpectedOcOpenflowJsonResult(), openflowResponse.body(), false);
+    }
+
     private List<String> convertCapabilitiesJSONArrayToList(final JSONArray capabilitiesArray) throws JSONException {
         final List<String> capabilitiesList = new ArrayList<>();
         for (int i = 0; i < capabilitiesArray.length(); i++) {
@@ -196,4 +207,15 @@ public class GnmiGetITTest extends GnmiITBase {
         return capabilitiesList;
     }
 
+    private static String getExpectedOcOpenflowJsonResult() {
+        return "{\"openconfig-openflow:openflow\":{"
+                + "\"agent\":{"
+                +   "\"config\":{"
+                +       "\"backoff-interval\":5,"
+                +       "\"datapath-id\":\"00:16:3e:00:00:00:00:00\","
+                +       "\"inactivity-probe\":10,"
+                +       "\"failure-mode\":\"SECURE\","
+                +       "\"max-backoff\":10"
+                + "}}}}";
+    }
 }

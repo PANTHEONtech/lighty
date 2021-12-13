@@ -361,6 +361,8 @@ public abstract class GnmiITBase {
         public static final String GNMI_DEVICE_MOUNTPOINT =
             GNMI_TOPOLOGY_PATH + "/node=" + GNMI_NODE_ID + "/yang-ext:mount";
         public static final String OPENCONFIG_INTERFACES = "/openconfig-interfaces:interfaces";
+        public static final String OPENCONFIG_OPENFLOW = "/openconfig-openflow:openflow";
+        public static final String OPENCONFIG_SYSTEM = "/openconfig-system:system";
         public static final String GNMI_NODE_STATUS_READY = "READY";
 
         public static final String ERR_MSG_RELEVANT_MODEL_NOT_EXIST =
