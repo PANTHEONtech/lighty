@@ -200,10 +200,8 @@ public final class DataConverter {
 
     /**
      * Find module by the element-name in current converter's schema-context.
-     * <p></p>
      * <p>It is necessary to specify module name as prefix, if there are multiple modules with same elements - the
      * element has to be specified uniquely.</p>
-     * <p></p>
      * <ul>
      *      <li>Looking for module end correctly and return the module found, when:
      *      <ul>
@@ -239,6 +237,7 @@ public final class DataConverter {
      *      </ul></li>
      * </ul>
      * @param element the element-name (with or without module prefix)
+     * @param context Schema context
      * @return YANG module containing the specific element
      */
     public static Optional<Module> findModuleByElement(@NonNull final String element,

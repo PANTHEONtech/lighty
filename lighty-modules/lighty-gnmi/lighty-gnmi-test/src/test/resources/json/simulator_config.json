@@ -11,6 +11,8 @@
         { "nameSpace":"http://openconfig.net/yang/openconfig-ext","name":"openconfig-extensions","revision":"2020-06-16"},
         { "nameSpace":"http://openconfig.net/yang/types/inet","name":"openconfig-inet-types","revision":"2021-01-07"},
         { "nameSpace":"http://openconfig.net/yang/interfaces","name":"openconfig-interfaces","revision":"2021-04-06"},
+        { "nameSpace":"http://openconfig.net/yang/openflow","name":"openconfig-openflow","revision":"2018-11-21"},
+        { "nameSpace":"http://openconfig.net/yang/openflow/types","name":"openconfig-openflow-types","revision":"2020-06-30"},
         { "nameSpace":"http://openconfig.net/yang/interfaces/aggregate","name":"openconfig-if-aggregate","revision":"2020-05-01"},
         { "nameSpace":"http://openconfig.net/yang/openconfig-if-types","name":"openconfig-if-types","revision":"2018-11-21"},
         { "nameSpace":"http://openconfig.net/yang/interfaces/ethernet","name":"openconfig-if-ethernet","revision":"2021-06-09"},

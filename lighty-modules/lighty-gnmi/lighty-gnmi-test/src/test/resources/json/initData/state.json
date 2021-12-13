@@ -82,6 +82,17 @@
           }
         }
       ]
+    },
+    "openconfig-openflow:openflow": {
+      "agent": {
+        "config": {
+          "backoff-interval": 5,
+          "datapath-id": "00:16:3e:00:00:00:00:00",
+          "failure-mode": "SECURE",
+          "inactivity-probe": 10,
+          "max-backoff": 10
+        }
+      }
     }
   }
 }

@@ -79,6 +79,8 @@
       { "nameSpace":"http://openconfig.net/yang/interfaces/aggregate","name":"openconfig-if-aggregate","revision":"2020-05-01"},
       { "nameSpace":"http://openconfig.net/yang/openconfig-if-types","name":"openconfig-if-types","revision":"2018-11-21"},
       { "nameSpace":"http://openconfig.net/yang/interfaces/ethernet","name":"openconfig-if-ethernet","revision":"2021-06-09"},
+      { "nameSpace":"http://openconfig.net/yang/openflow","name":"openconfig-openflow","revision":"2018-11-21"},
+      { "nameSpace":"http://openconfig.net/yang/openflow/types","name":"openconfig-openflow-types","revision":"2020-06-30"},
       { "nameSpace":"http://openconfig.net/yang/license","name":"openconfig-license","revision":"2020-04-22"},
       { "nameSpace":"http://openconfig.net/yang/messages","name":"openconfig-messages","revision":"2018-08-13"},
       { "nameSpace":"http://openconfig.net/yang/platform","name":"openconfig-platform","revision":"2021-01-18"},
