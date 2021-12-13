@@ -15,10 +15,28 @@ containing [GnmiDataBroker](src/main/java/io/lighty/gnmi/southbound/mountpoint/b
 used for communicating with gNMI device via transactions. GnmiDataBroker also contains
 [schemaContext](https://javadocs.opendaylight.org/org.opendaylight.yangtools/master/org/opendaylight/yangtools/yang/model/api/SchemaContext.html)
 created from capabilities received from the device. All YANG models which the gNMI device will use, should be provided
-in the [GnmiConfiguration](src/main/java/io/lighty/gnmi/southbound/lightymodule/config/GnmiConfiguration.java), as a
-path to the folder with requires YANG models or added via
-[upload-yang-model](../../../lighty-models/lighty-gnmi-models/lighty-gnmi-yang-storage-model/src/main/yang/gnmi-yang-storage.yang#L57)
-RPC.
+in the [GnmiConfiguration](src/main/java/io/lighty/gnmi/southbound/lightymodule/config/GnmiConfiguration.java).
+YANG models could be added to gNMI Southbound module with 3 ways:
+ 1) Add path to folder containing YANG modules in GnmiConfiguration with property `initialYangsPaths` to json configuration.
+    ```
+      "gnmi": {
+         "initialYangsPaths" : [
+            PATH_TO_FOLDER_WITH_YANG_MODELS
+         ]
+      }
+    ```
+ 2) Add models from classpath as a set of `YangModuleInfo` (org.opendaylight.yangtools.yang.binding.YangModuleInfo) to json configuration.
+    ```
+     "gnmi": {
+        "initialYangModels": [
+            { "nameSpace":"MODEL_NAMESPACE","name":"MODEL_NAME","revision":"MODEL_REVISION"}
+            ...
+        ]
+    }
+    ```
+ 3) Add models in runtime with RPC [upload-yang-model](../../../lighty-models/lighty-gnmi-models/lighty-gnmi-yang-storage-model/src/main/yang/gnmi-yang-storage.yang#L61)
+
+Yang models can be added with any combination of the mentioned methods.
 
 ## How To Use
 

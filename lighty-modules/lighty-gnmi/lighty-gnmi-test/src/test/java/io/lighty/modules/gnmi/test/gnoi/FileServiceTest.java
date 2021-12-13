@@ -40,7 +40,7 @@ public class FileServiceTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(FileServiceTest.class);
 
-    private static final String TEST_SCHEMA_PATH = "src/test/resources/additional/simulator/models";
+    private static final String TEST_SCHEMA_PATH = "src/test/resources/additional/models";
     private static final String SIMULATOR_CONFIG = "/json/simulator_config.json";
     private static final int  TARGET_PORT = 10161;
     private static final String TARGET_HOST = "127.0.0.1";

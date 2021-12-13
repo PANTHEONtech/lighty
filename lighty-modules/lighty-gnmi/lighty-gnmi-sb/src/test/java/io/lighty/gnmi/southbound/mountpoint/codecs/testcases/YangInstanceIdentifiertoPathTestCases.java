@@ -10,6 +10,7 @@ package io.lighty.gnmi.southbound.mountpoint.codecs.testcases;
 
 import com.google.common.collect.Maps;
 import gnmi.Gnmi;
+import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
 import java.util.Map;
@@ -17,7 +18,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 public class YangInstanceIdentifiertoPathTestCases extends CodecTestCasesBase {
 
-    public YangInstanceIdentifiertoPathTestCases() throws YangLoadException, SchemaException {
+    public YangInstanceIdentifiertoPathTestCases() throws YangLoadException, SchemaException, ConfigurationException {
         super();
     }
 
@@ -26,7 +27,7 @@ public class YangInstanceIdentifiertoPathTestCases extends CodecTestCasesBase {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName(addPrefixToTopElement
-                                ? makePrefixString(IT_ID, "interfaces")
+                                ? makePrefixString(OC_INTERFACES_ID, "interfaces")
                                 : "interfaces"))
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName("interface")
@@ -51,7 +52,7 @@ public class YangInstanceIdentifiertoPathTestCases extends CodecTestCasesBase {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName(addPrefixToTopElement
-                                ? makePrefixString(IT_ID, "interfaces")
+                                ? makePrefixString(OC_INTERFACES_ID, "interfaces")
                                 : "interfaces")
                         .build())
                 .build();
@@ -63,7 +64,7 @@ public class YangInstanceIdentifiertoPathTestCases extends CodecTestCasesBase {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName(addPrefixToTopElement
-                                ? makePrefixString(IT_ID, "interfaces")
+                                ? makePrefixString(OC_INTERFACES_ID, "interfaces")
                                 : "interfaces"))
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName("interface")
@@ -78,7 +79,7 @@ public class YangInstanceIdentifiertoPathTestCases extends CodecTestCasesBase {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName(addPrefixToTopElement
-                                ? makePrefixString(IT_ID, "interfaces")
+                                ? makePrefixString(OC_INTERFACES_ID, "interfaces")
                                 : "interfaces"))
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName("interface")
