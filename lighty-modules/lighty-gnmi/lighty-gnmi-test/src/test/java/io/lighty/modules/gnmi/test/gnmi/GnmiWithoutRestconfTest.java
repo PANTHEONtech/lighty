@@ -100,7 +100,7 @@ import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLe
 
 public class GnmiWithoutRestconfTest {
     private static final String INITIAL_JSON_DATA_PATH = "src/test/resources/json/initData";
-    private static final String TEST_SCHEMA_PATH = "src/test/resources/additional/simulator/models";
+    private static final String TEST_SCHEMA_PATH = "src/test/resources/additional/models";
     private static final String SIMULATOR_CONFIG = "/json/simulator_config.json";
     private static final Path CONFIGURATION_PATH = Path.of("src/test/resources/json/app_init_config.json");
     private static final Duration POLL_INTERVAL_DURATION = Duration.ofMillis(1_000L);

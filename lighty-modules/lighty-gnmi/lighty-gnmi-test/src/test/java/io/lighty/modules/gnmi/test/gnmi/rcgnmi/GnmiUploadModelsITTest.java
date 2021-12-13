@@ -40,9 +40,9 @@ public class GnmiUploadModelsITTest extends GnmiITBase {
     private static final String GNMI_YANG_STORAGE_MODELS = "/gnmi-yang-storage:gnmi-yang-models";
     private static final String TEST_YANG_NAME = "test-yang";
     private static final String TEST_YANG_SEMVER = "1.2.3";
-    private static final String REUPLOAD_YANG_NAME = "openconfig-vlan";
-    private static final String REUPLOAD_YANG_SEMVER = "3.2.0";
-    private static final String MODELS_PATH = "src/test/resources/models";
+    private static final String REUPLOAD_YANG_NAME = "gnmi-test-model";
+    private static final String REUPLOAD_YANG_SEMVER = "1.0.0";
+    private static final String RESOURCES_PATH = "src/test/resources/";
     private static final String RESTCONF_OPERATIONS_PATH = "http://localhost:8888/restconf/operations";
     private static final String YANG_MODEL_RPC = RESTCONF_DATA_PATH + GNMI_YANG_STORAGE_MODELS + "/gnmi-yang-model=";
     private static final String YANG_MODEL_PATH = YANG_MODEL_RPC + TEST_YANG_NAME + "," + TEST_YANG_SEMVER;
@@ -98,7 +98,7 @@ public class GnmiUploadModelsITTest extends GnmiITBase {
 
         //read and upload model and assert successful RPC response
         final String testModel = TEST_YANG_NAME + ".yang";
-        final String modelBody = TestUtils.readFile(MODELS_PATH + "/" + testModel);
+        final String modelBody = TestUtils.readFile(RESOURCES_PATH + "models/" + testModel);
         LOG.info("Content of YANG {} file: {}", testModel, modelBody);
         final String modelsToUploadRpcInput =
             createUploadRpcInput(TEST_YANG_NAME, TEST_YANG_SEMVER, modelBody.replace("\"", "\\\""));
@@ -121,7 +121,7 @@ public class GnmiUploadModelsITTest extends GnmiITBase {
     @Test
     public void reuploadModelTest() throws InterruptedException, IOException, JSONException {
         final String testModel = REUPLOAD_YANG_NAME + ".yang";
-        final String modelBody = TestUtils.readFile(MODELS_PATH + "/plugin_models/" + testModel);
+        final String modelBody = TestUtils.readFile(RESOURCES_PATH + "additional/models/" + testModel);
         LOG.info("Content of YANG {} file to re-upload: {}", testModel, modelBody);
 
         //assert model is already contained in gnmi-yang-storage and assert model name, semver and content
