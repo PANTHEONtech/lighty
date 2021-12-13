@@ -87,19 +87,13 @@ public class XmlNodeConverter implements NodeConverter {
         } catch (XMLStreamException | FactoryConfigurationError e) {
             throw new SerializationException(e);
         }
-        try (NormalizedNodeStreamWriter nnStreamWriter = XMLStreamNormalizedNodeStreamWriter
+        final NormalizedNodeStreamWriter nnStreamWriter = XMLStreamNormalizedNodeStreamWriter
                 .create(xmlStreamWriter, schemaInferenceStack.toInference());
-             NormalizedNodeWriter nnWriter = NormalizedNodeWriter.forStreamWriter(nnStreamWriter)) {
+        try (NormalizedNodeWriter nnWriter = NormalizedNodeWriter.forStreamWriter(nnStreamWriter)) {
             nnWriter.write(normalizedNode);
             return writer;
         } catch (RuntimeException | IOException e) {
             throw new SerializationException(e);
-        } finally {
-            try {
-                xmlStreamWriter.close();
-            } catch (XMLStreamException e) {
-                LOG.warn("Failed to close XML stream", e);
-            }
         }
     }
 
@@ -119,9 +113,9 @@ public class XmlNodeConverter implements NodeConverter {
         final XMLNamespace namespace = schemaInferenceStack.currentModule().localQNameModule().getNamespace();
         // Input/output
         final String localName = schemaInferenceStack.toSchemaNodeIdentifier().lastNodeIdentifier().getLocalName();
-        try (NormalizedNodeStreamWriter nnStreamWriter = XMLStreamNormalizedNodeStreamWriter
+        final NormalizedNodeStreamWriter nnStreamWriter = XMLStreamNormalizedNodeStreamWriter
                 .create(xmlStreamWriter, schemaInferenceStack.toInference());
-             NormalizedNodeWriter nnWriter = NormalizedNodeWriter.forStreamWriter(nnStreamWriter)) {
+        try (NormalizedNodeWriter nnWriter = NormalizedNodeWriter.forStreamWriter(nnStreamWriter)) {
             xmlStreamWriter.writeStartElement(XMLConstants.DEFAULT_NS_PREFIX, localName, namespace.toString());
             xmlStreamWriter.writeDefaultNamespace(namespace.toString());
             for (NormalizedNode child : ((ContainerNode) normalizedNode).body()) {
@@ -158,8 +152,8 @@ public class XmlNodeConverter implements NodeConverter {
         }
 
         final NormalizedNodeResult result = new NormalizedNodeResult();
-        try (NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
-             XmlParserStream xmlParser = XmlParserStream.create(streamWriter, schemaInferenceStack.toInference())) {
+        final NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
+        try (XmlParserStream xmlParser = XmlParserStream.create(streamWriter, schemaInferenceStack.toInference())) {
             xmlParser.parse(reader);
             return result.getResult();
         } catch (RuntimeException | XMLStreamException | URISyntaxException | SAXException | IOException e) {
