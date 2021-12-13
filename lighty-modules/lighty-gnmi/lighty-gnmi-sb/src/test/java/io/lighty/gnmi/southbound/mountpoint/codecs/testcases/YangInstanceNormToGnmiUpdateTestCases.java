@@ -49,7 +49,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
         final JsonObject jsonInterfaces =
                 new JsonParser().parse(baseJson)
                         .getAsJsonObject()
-                        .getAsJsonObject(makePrefixString(IT_ID, "interfaces"));
+                        .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"));
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName("interfaces"))
@@ -77,7 +77,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
 
         final JsonObject jsonInterfaceEth3 =
                 new JsonParser().parse(baseJson).getAsJsonObject()
-                        .getAsJsonObject(makePrefixString(IT_ID, "interfaces"))
+                        .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"))
                         .getAsJsonArray("interface").get(0).getAsJsonObject();
 
         final Gnmi.Update expectedUpdate = Gnmi.Update.newBuilder().setPath(path)
@@ -105,7 +105,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
 
         final JsonObject jsonInterfaceEthConfig =
                 new JsonParser().parse(baseJson).getAsJsonObject()
-                        .getAsJsonObject(makePrefixString(IT_ID, "interfaces"))
+                        .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"))
                         .getAsJsonArray("interface")
                         .get(0).getAsJsonObject().getAsJsonObject("config");
 
@@ -138,9 +138,9 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
 
         final JsonObject jsonInterfaceEthConfig =
                 new JsonParser().parse(baseJson).getAsJsonObject()
-                        .getAsJsonObject(makePrefixString(IT_ID, "interfaces"))
+                        .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"))
                         .getAsJsonArray("interface")
-                        .get(1).getAsJsonObject().getAsJsonObject(makePrefixString(ETH_ID, "ethernet"))
+                        .get(1).getAsJsonObject().getAsJsonObject(makePrefixString(OC_IF_ETHERNET_ID, "ethernet"))
                         .getAsJsonObject("config");
 
         final Gnmi.Update expectedUpdate = Gnmi.Update.newBuilder().setPath(path)
@@ -171,7 +171,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
 
         final JsonElement jsonMtu =
                 new JsonParser().parse(baseJson).getAsJsonObject()
-                        .getAsJsonObject(makePrefixString(IT_ID, "interfaces"))
+                        .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"))
                         .getAsJsonArray("interface").get(0)
                         .getAsJsonObject().getAsJsonObject("config").getAsJsonPrimitive("mtu");
 
@@ -203,7 +203,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
 
         final JsonElement jsonConfigName =
                 new JsonParser().parse(baseJson).getAsJsonObject()
-                        .getAsJsonObject(makePrefixString(IT_ID, "interfaces"))
+                        .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"))
                         .getAsJsonArray("interface").get(0)
                         .getAsJsonObject().getAsJsonObject("config").getAsJsonPrimitive("name");
 
@@ -235,7 +235,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
 
         final JsonElement jsonLoopbackMode =
                 new JsonParser().parse(baseJson).getAsJsonObject()
-                        .getAsJsonObject(makePrefixString(IT_ID, "interfaces"))
+                        .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"))
                         .getAsJsonArray("interface").get(0)
                         .getAsJsonObject().getAsJsonObject("config").getAsJsonPrimitive("loopback-mode");
 
@@ -270,11 +270,11 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
 
         final JsonElement jsonAggregateId =
                 new JsonParser().parse(baseJson).getAsJsonObject()
-                        .getAsJsonObject(makePrefixString(IT_ID, "interfaces"))
+                        .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"))
                         .getAsJsonArray("interface").get(1)
-                        .getAsJsonObject().getAsJsonObject(makePrefixString(ETH_ID, "ethernet"))
+                        .getAsJsonObject().getAsJsonObject(makePrefixString(OC_IF_ETHERNET_ID, "ethernet"))
                         .getAsJsonObject("config")
-                        .getAsJsonPrimitive(makePrefixString(IT_AGGR_ID, "aggregate-id"));
+                        .getAsJsonPrimitive(makePrefixString(OC_IF_AGGREGATE_ID, "aggregate-id"));
 
         final Gnmi.Update expectedUpdate = Gnmi.Update.newBuilder().setPath(path)
                 .setVal(Gnmi.TypedValue.newBuilder()

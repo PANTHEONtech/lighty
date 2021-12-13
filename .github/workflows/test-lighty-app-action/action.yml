@@ -11,14 +11,6 @@ runs:
       run: |
         sudo apt-get -y install socat
       shell: bash
-    - name: Load image to minikube
-      run: |
-        minikube kubectl -- create serviceaccount tiller --namespace kube-system
-        minikube kubectl -- create clusterrolebinding tiller-cluster-rule \
-        --clusterrole=cluster-admin \
-        --serviceaccount=kube-system:tiller
-        helm init --stable-repo-url https://charts.helm.sh/stable --service-account tiller --wait
-      shell: bash
     - name: Helm version
       run: helm version
       shell: bash
@@ -39,7 +31,7 @@ runs:
       shell: bash
     - name: Install app helm chart
       run: |
-        helm install lighty-applications/${{ inputs.app-name }}-aggregator/${{ inputs.app-name }}-helm/helm/${{ inputs.app-name }}-helm --name ${{ inputs.app-name }}
+        helm install ${{ inputs.app-name }} lighty-applications/${{ inputs.app-name }}-aggregator/${{ inputs.app-name }}-helm/helm/${{ inputs.app-name }}-helm
         sleep 35 # Wait for app to start
       shell: bash
     - name: Run apps testing scripts

@@ -66,7 +66,7 @@ Both of these options will load the YANG files into data-store, from which **lig
       }
     ```
     3. Use one or both [`initialYangsPaths`,`initialYangModels`] option for adding YANG models to gNMI module. 
-       1. `initialYangsPaths`: Change `INITIAL_FOLDER_PATH`, from the JSON block above, to a folder path, which contains YANG models you wish to load into the datastore. 
+       1. `initialYangsPaths`: Change `INITIAL_FOLDER_PATH`, from the JSON block above, to a folder paths, which contain YANG models you wish to load into the datastore. 
        2. `initialYangModels`: Add all required models which can be found in classpath of application in format mention above. Change `MODEL_NAMESPACE`, `MODEL_NAME`, `MODEL_REVISION` to required values.
     These models will be then automatically loaded on startup.
 
@@ -367,15 +367,15 @@ For additional configurable parameters and their explanation, see previous chapt
 
 ## Deployment via helm chart
 ### Prerequisites
-* Kubernetes cluster 1.15.11 (minikube, microk8s, etc.)
-* Helm 2.17
+* Kubernetes cluster 1.22.4 (minikube, microk8s, etc.)
+* Helm 3.7.1
 
 ### Deploy
 To easily deploy the lighty.io RcGNMI application to Kubernetes, we provide a custom helm chart located [here](lighty-rcgnmi-app-helm/helm).
 
 To install, make sure that the docker image defined in `values.yaml` is accessible in your kubernetes (for microk8s you can use the [docker-microk8s-script](lighty-rcgnmi-app-helm/helm/microk8s-uploadDocker.sh)), then run the command:
 
-`microk8s helm install --name lighty-rcgnmi-app ./lighty-rcgnmi-app-helm/`
+`microk8s helm3 install lighty-rcgnmi-app ./lighty-rcgnmi-app-helm/`
 
 in the `/lighty-rcgnmi-app-helm/helm/` directory.  
 

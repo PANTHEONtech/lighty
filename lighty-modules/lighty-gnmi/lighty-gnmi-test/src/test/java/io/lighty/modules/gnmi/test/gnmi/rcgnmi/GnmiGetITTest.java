@@ -87,11 +87,6 @@ public class GnmiGetITTest extends GnmiITBase {
     private static final String OC_INTERFACE_ETH3_CONFIG_TYPE_EXPECTED = "openconfig-if-types:IF_ETHERNET";
     private static final String OC_INTERFACE_ETH3_EXPECTED = "{\"name\":\"eth3\",\"config\":{\"name\":\"admin\","
         + "\"type\":\"openconfig-if-types:IF_ETHERNET\",\"loopback-mode\":false,\"enabled\":false,\"mtu\":1500}}";
-    private static final String OC_INTERFACES_INCORRECT_ERROR_MESSAGE_EXPECTED = "{\"errors\":{\"error\""
-          + ":[{\"error-tag\":\"malformed-message\",\"error-type\":\"protocol\",\"error-message\":"
-          + "\"Could not parse Instance Identifier 'openconfig-interfaces:interfacesincorrect'. Offset: '41' : Reason: "
-          + "'(http://openconfig.net/yang/interfaces?revision=2021-04-06)interfacesincorrect' is not correct "
-          + "schema node identifier.\"}]}}";
     private static SimulatedGnmiDevice device;
 
     @BeforeAll
@@ -190,13 +185,11 @@ public class GnmiGetITTest extends GnmiITBase {
     }
 
     @Test
-    public void getNonExistingDataTest() throws InterruptedException, IOException, JSONException {
+    public void getNonExistingDataTest() throws InterruptedException, IOException {
         //assert error for request to non existing interfacesincorrect container
         final HttpResponse<String> getOcInterfacesContainerWrongResponse =
             sendGetRequestJSON(INTERFACES_PATH + "incorrect");
-        assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, getOcInterfacesContainerWrongResponse.statusCode());
-        JSONAssert.assertEquals(OC_INTERFACES_INCORRECT_ERROR_MESSAGE_EXPECTED,
-                getOcInterfacesContainerWrongResponse.body(), false);
+        assertEquals(HttpURLConnection.HTTP_CONFLICT, getOcInterfacesContainerWrongResponse.statusCode());
     }
 
     @Test

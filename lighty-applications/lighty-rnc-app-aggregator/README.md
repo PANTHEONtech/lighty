@@ -128,12 +128,12 @@ For convenience, we provide [postman-collection](lighty-rnc-app/Lighty-RNC.postm
 _Note: IP addresses and port numbers may differ depending on deployment._
 ## Deployment via helm chart
 ### Prerequisites
-* Kubernetes cluster 1.15.11 (minikube / microk8s /..)
-* helm 2.17
+* Kubernetes cluster 1.22.4 (minikube / microk8s /..)
+* helm 3.7.1
 ### Deploy
 To easily deploy the lighty.io RNC application to Kubernetes, we provide a custom helm chart located in /lighty-rnc-app-helm/helm/.
 To install, make sure that the Docker image is defined in `values.yaml` and accessible, then run command:
-`helm install microk8s helm install --name lighty-rnc-app ./lighty-rnc-app-helm/`
+`microk8s helm3 install --name lighty-rnc-app ./lighty-rnc-app-helm/`
 in the `/lighty-rnc-app-helm/helm/` directory.
 ### Providing startup configuration
 By default, the deployed application is started with a custom configuration.json 

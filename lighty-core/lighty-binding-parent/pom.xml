@@ -41,11 +41,6 @@
             <artifactId>spotbugs-annotations</artifactId>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.jdt</groupId>
-            <artifactId>org.eclipse.jdt.annotation</artifactId>
-            <optional>true</optional>
-        </dependency>
     </dependencies>
 
     <build>
@@ -54,12 +49,12 @@
             <plugin>
                 <groupId>org.opendaylight.yangtools</groupId>
                 <artifactId>yang-maven-plugin</artifactId>
-                <version>7.0.8</version>
+                <version>7.0.9</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.opendaylight.mdsal</groupId>
                         <artifactId>mdsal-binding-java-api-generator</artifactId>
-                        <version>8.0.5</version>
+                        <version>8.0.7</version>
                     </dependency>
                 </dependencies>
                 <executions>

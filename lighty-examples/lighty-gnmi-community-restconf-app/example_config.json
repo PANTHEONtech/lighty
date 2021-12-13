@@ -22,9 +22,7 @@
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:mdsal:core:general-entity", "name": "odl-general-entity", "revision": "2015-09-30" },
                 { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-library", "name": "ietf-yang-library", "revision": "2019-01-04"},
                 { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-restconf-monitoring", "name": "ietf-restconf-monitoring", "revision": "2017-01-26" },
-                { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-types", "name": "ietf-yang-types", "revision": "2010-09-24" },
                 { "nameSpace": "instance:identifier:patch:module", "name": "instance-identifier-patch-module", "revision": "2015-11-21" },
-                { "nameSpace": "urn:ietf:params:xml:ns:yang:iana-if-type", "name": "iana-if-type", "revision": "2014-05-08" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:actor-system-provider:impl", "name": "actor-system-provider-impl", "revision": "2015-10-05" },
                 { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-network-topology", "name": "ietf-network-topology", "revision": "2015-06-08" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:clustering:entity-owners", "name": "entity-owners", "revision": "2015-08-04" },
@@ -63,29 +61,13 @@
         "jsonRestconfServiceType": "DRAFT_18"
     },
     "gnmi": {
-        "initialYangModels": [
-            { "nameSpace":"http://openconfig.net/yang/aaa","name":"openconfig-aaa","revision":"2020-07-30"},
-            { "nameSpace":"http://openconfig.net/yang/aaa","name":"openconfig-aaa-radius","revision":"2020-07-30"},
-            { "nameSpace":"http://openconfig.net/yang/aaa","name":"openconfig-aaa-tacacs","revision":"2020-07-30"},
-            { "nameSpace":"http://openconfig.net/yang/aaa/types","name":"openconfig-aaa-types","revision":"2018-11-21"},
-            { "nameSpace":"http://openconfig.net/yang/alarms/types","name":"openconfig-alarm-types","revision":"2018-11-21"},
-            { "nameSpace":"http://openconfig.net/yang/alarms","name":"openconfig-alarms","revision":"2019-07-09"},
-            { "nameSpace":"http://openconfig.net/yang/openconfig-ext","name":"openconfig-extensions","revision":"2020-06-16"},
-            { "nameSpace":"http://openconfig.net/yang/types/inet","name":"openconfig-inet-types","revision":"2021-01-07"},
-            { "nameSpace":"http://openconfig.net/yang/interfaces","name":"openconfig-interfaces","revision":"2021-04-06"},
-            { "nameSpace":"http://openconfig.net/yang/license","name":"openconfig-license","revision":"2020-04-22"},
-            { "nameSpace":"http://openconfig.net/yang/openconfig-if-types","name":"openconfig-if-types","revision":"2018-11-21"},
-            { "nameSpace":"http://openconfig.net/yang/messages","name":"openconfig-messages","revision":"2018-08-13"},
-            { "nameSpace":"http://openconfig.net/yang/openflow","name":"openconfig-openflow","revision":"2018-11-21"},
-            { "nameSpace":"http://openconfig.net/yang/openflow/types","name":"openconfig-openflow-types","revision":"2020-06-30"},
-            { "nameSpace":"http://openconfig.net/yang/platform","name":"openconfig-platform","revision":"2021-01-18"},
-            { "nameSpace":"http://openconfig.net/yang/platform-types","name":"openconfig-platform-types","revision":"2021-01-18"},
-            { "nameSpace":"http://openconfig.net/yang/system/procmon","name":"openconfig-procmon","revision":"2019-03-15"},
-            { "nameSpace":"http://openconfig.net/yang/system","name":"openconfig-system","revision":"2020-04-13"},
-            { "nameSpace":"http://openconfig.net/yang/system/logging","name":"openconfig-system-logging","revision":"2018-11-21"},
-            { "nameSpace":"http://openconfig.net/yang/system/terminal","name":"openconfig-system-terminal","revision":"2018-11-21"},
-            { "nameSpace":"http://openconfig.net/yang/openconfig-types","name":"openconfig-types","revision":"2019-04-16"},
-            { "nameSpace":"http://openconfig.net/yang/types/yang","name":"openconfig-yang-types","revision":"2021-03-02"}
+        "initialYangsPaths" : [
+          "../../lighty-models/openconfig-models/src/main/yang"
+        ],
+        "initialYangModels" : [
+            { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-interfaces", "name":"ietf-interfaces", "revision":"2014-05-08"},
+            { "nameSpace": "urn:ietf:params:xml:ns:yang:iana-if-type", "name": "iana-if-type", "revision": "2017-01-19" },
+            { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-types", "name": "ietf-yang-types", "revision": "2013-07-15" }
         ]
     }
 }
