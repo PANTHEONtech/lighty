@@ -144,9 +144,9 @@ public final class FileToDatastoreUtils {
         JSON("json"),
         XML("xml");
 
-        private String fileFormat;
+        private final String fileFormat;
 
-        ImportFileFormat(String formatString) {
+        ImportFileFormat(final String formatString) {
             this.fileFormat = formatString;
         }
 
@@ -155,7 +155,7 @@ public final class FileToDatastoreUtils {
         }
 
         @JsonCreator
-        public static ImportFileFormat getFormatType(String inputtedFormat) {
+        public static ImportFileFormat getFormatType(final String inputtedFormat) {
             for (ImportFileFormat formatType : ImportFileFormat.values()) {
                 if (formatType.fileFormat.equalsIgnoreCase(inputtedFormat)) {
                     return formatType;
