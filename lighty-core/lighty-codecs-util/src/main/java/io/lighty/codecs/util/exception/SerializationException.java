@@ -15,8 +15,4 @@ public class SerializationException extends Exception {
     public SerializationException(final Throwable cause) {
         super(cause);
     }
-
-    public SerializationException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
 }
