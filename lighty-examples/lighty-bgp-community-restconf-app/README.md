@@ -14,7 +14,7 @@ In order to build and start the application locally, you need:
 ## Build
 
 To build the application issue the following:
-`mvn clean install -am`
+`mvn clean install`
 
 ## Start 
 
