@@ -16,11 +16,18 @@ import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.config.ConfigurationException;
+import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import io.lighty.modules.bgp.config.BgpConfigUtils;
 import io.lighty.modules.bgp.deployer.BgpModule;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
+import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -46,7 +53,8 @@ public class Main {
             LOG.info("Registering shutdown hook for graceful shutdown");
             Runtime.getRuntime().addShutdownHook(new Thread(instance::stop));
             instance.start(args);
-        } catch (IllegalStateException | ConfigurationException | ExecutionException | TimeoutException e) {
+        } catch (IllegalStateException | ConfigurationException | ExecutionException | TimeoutException
+                | IOException e) {
             LOG.error("Failed to start lighty BGP application, exiting", e);
             Runtime.getRuntime().exit(APP_FAILED_TO_START_SC);
         } catch (InterruptedException e) {
@@ -57,7 +65,7 @@ public class Main {
 
     @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
     public synchronized void start(String[] args) throws InterruptedException, ExecutionException, TimeoutException,
-            ConfigurationException {
+            ConfigurationException, IOException {
         final Stopwatch stopwatch = Stopwatch.createStarted();
         LOG.info(".__  .__       .__     __              .__           ");
         LOG.info("|  | |__| ____ |  |___/  |_ ___.__.    |__| ____     ");
@@ -67,17 +75,39 @@ public class Main {
         LOG.info("        /_____/     \\/      \\/      \\/            ");
         LOG.info("Starting BGP lighty.io application...");
 
+        final ControllerConfiguration controllerConfiguration;
+        final RestConfConfiguration restConfConfiguration;
+        final Optional<MainArgs> mArgs = MainArgs.parse(args);
 
-        final Set<YangModuleInfo> additionalModules =
-                Sets.newHashSet(Iterables.concat(BgpConfigUtils.ALL_BGP_MODELS, RestConfConfigUtils.YANG_MODELS));
+        final Set<YangModuleInfo> minimalModelSet =
+                Sets.newHashSet(Iterables.concat(ControllerConfigUtils.YANG_MODELS, BgpConfigUtils.ALL_BGP_MODELS,
+                        RestConfConfigUtils.YANG_MODELS));
+
+        if (mArgs.isPresent()) {
+            final Path configPath = Paths.get(mArgs.get().getConfigPath());
+            LOG.info("Using configuration from file {}", configPath);
+            controllerConfiguration = ControllerConfigUtils.getConfiguration(Files.newInputStream(configPath));
+
+            // Inject minimal required model set, in cases when user does not list them all in the config
+            final ControllerConfiguration.SchemaServiceConfig schemaServiceConfig = controllerConfiguration
+                    .getSchemaServiceConfig();
+            schemaServiceConfig.setModels(Sets.newHashSet(
+                    Iterables.concat(schemaServiceConfig.getModels(), minimalModelSet)));
+
+            restConfConfiguration = RestConfConfigUtils.getRestConfConfiguration(Files.newInputStream(configPath));
+        } else {
+            LOG.info("Using default configuration");
+            controllerConfiguration = ControllerConfigUtils.getDefaultSingleNodeConfiguration(minimalModelSet);
+            restConfConfiguration = RestConfConfigUtils.getDefaultRestConfConfiguration();
+        }
 
         controller = new LightyControllerBuilder()
-                .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(additionalModules))
+                .from(controllerConfiguration)
                 .build();
         Preconditions.checkState(startLightyModule(controller), "Unable to start controller");
 
         restconf = CommunityRestConfBuilder
-                .from(RestConfConfigUtils.getDefaultRestConfConfiguration(controller.getServices()))
+                .from(RestConfConfigUtils.getRestConfConfiguration(restConfConfiguration, controller.getServices()))
                 .build();
         Preconditions.checkState(startLightyModule(restconf), "Unable to start restconf module");
 
