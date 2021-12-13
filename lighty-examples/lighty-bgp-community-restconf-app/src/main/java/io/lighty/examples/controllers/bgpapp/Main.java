@@ -15,6 +15,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
+import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import io.lighty.modules.bgp.config.BgpConfigUtils;
 import io.lighty.modules.bgp.deployer.BgpModule;
@@ -39,21 +40,24 @@ public class Main {
     private boolean running = false;
 
 
-    @SuppressWarnings({"checkstyle:illegalCatch"})
     public static void main(String[] args) {
         final Main instance = new Main();
         try {
             LOG.info("Registering shutdown hook for graceful shutdown");
             Runtime.getRuntime().addShutdownHook(new Thread(instance::stop));
             instance.start(args);
-        } catch (Exception e) {
+        } catch (IllegalStateException | ConfigurationException | ExecutionException | TimeoutException e) {
             LOG.error("Failed to start lighty BGP application, exiting", e);
             Runtime.getRuntime().exit(APP_FAILED_TO_START_SC);
+        } catch (InterruptedException e) {
+            LOG.error("Interrupted while starting lighty BGP application", e);
+            Thread.currentThread().interrupt();
         }
     }
 
     @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
-    public synchronized void start(String[] args) throws Exception {
+    public synchronized void start(String[] args) throws InterruptedException, ExecutionException, TimeoutException,
+            ConfigurationException {
         final Stopwatch stopwatch = Stopwatch.createStarted();
         LOG.info(".__  .__       .__     __              .__           ");
         LOG.info("|  | |__| ____ |  |___/  |_ ___.__.    |__| ____     ");
@@ -91,41 +95,35 @@ public class Main {
             if (restconf != null) {
                 restconf.shutdown().get();
             }
+        } catch (InterruptedException e) {
+            LOG.error("Interrupted while shutting down RESTCONF:", e);
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
-            if (e instanceof InterruptedException) {
-                LOG.error("Interrupted while shutting down RESTCONF:", e);
-                Thread.currentThread().interrupt();
-            } else {
-                LOG.error("Exception while shutting down RESTCONF:", e);
-            }
-
+            LOG.error("Exception while shutting down RESTCONF:", e);
         }
 
         try {
             if (bgpModule != null) {
                 bgpModule.shutdown().get();
             }
+        } catch (InterruptedException e) {
+            LOG.error("Interrupted while shutting down BGP module:", e);
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
-            if (e instanceof InterruptedException) {
-                LOG.error("Interrupted while shutting down BGP module:", e);
-                Thread.currentThread().interrupt();
-            } else {
-                LOG.error("Exception while shutting down BGP module:", e);
-            }
+            LOG.error("Exception while shutting down BGP module:", e);
         }
 
         try {
             if (controller != null) {
                 controller.shutdown().get();
             }
+        } catch (InterruptedException e) {
+            LOG.error("Interrupted while shutting down controller:", e);
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
-            if (e instanceof InterruptedException) {
-                LOG.error("Interrupted while shutting down controller:", e);
-                Thread.currentThread().interrupt();
-            } else {
-                LOG.error("Exception while shutting down controller:", e);
-            }
+            LOG.error("Exception while shutting down controller:", e);
         }
+
         running = false;
     }
 
