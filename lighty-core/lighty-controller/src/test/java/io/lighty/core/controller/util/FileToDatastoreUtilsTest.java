@@ -64,7 +64,7 @@ public class FileToDatastoreUtilsTest {
         //Retrieve data from datastore
         TopLevelContainer topLevelContainer = readDataFromDatastore(
                 TopLevelContainer.class, lightyController.getServices().getBindingDataBroker());
-        assertEquals(1, topLevelContainer.getSampleContainer().getValue().intValue());
+        assertEquals(topLevelContainer.getSampleContainer().getValue().intValue(), 1);
 
 
         //Import second file, overrides whole top level container, expecting value = 2
@@ -73,7 +73,7 @@ public class FileToDatastoreUtilsTest {
         //Retrieve data from datastore
         topLevelContainer = readDataFromDatastore(
                 TopLevelContainer.class, lightyController.getServices().getBindingDataBroker());
-        assertEquals(2, topLevelContainer.getSampleContainer().getValue().intValue());
+        assertEquals(topLevelContainer.getSampleContainer().getValue().intValue(), 2);
 
         // Import third file, overrides only inner leaf, expecting value = 3
         importFile(lightyController.getServices(), OVERRIDE_VALUE_JSON_PATH,
@@ -81,7 +81,7 @@ public class FileToDatastoreUtilsTest {
         //Retrieve data from datastore
         topLevelContainer = readDataFromDatastore(
                 TopLevelContainer.class, lightyController.getServices().getBindingDataBroker());
-        assertEquals(3, topLevelContainer.getSampleContainer().getValue().intValue());
+        assertEquals(topLevelContainer.getSampleContainer().getValue().intValue(), 3);
 
         // Import fourth file, overrides only inner leaf, expecting value = 4
         importFile(lightyController.getServices(), OVERRIDE_VALUE_XML_PATH,
@@ -89,7 +89,7 @@ public class FileToDatastoreUtilsTest {
         //Retrieve data from datastore
         topLevelContainer = readDataFromDatastore(
                 TopLevelContainer.class, lightyController.getServices().getBindingDataBroker());
-        assertEquals(4, topLevelContainer.getSampleContainer().getValue().intValue());
+        assertEquals(topLevelContainer.getSampleContainer().getValue().intValue(), 4);
 
         assertTrue(lightyController.shutdown().get(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
     }
