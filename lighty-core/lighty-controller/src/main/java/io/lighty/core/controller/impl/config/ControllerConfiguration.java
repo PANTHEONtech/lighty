@@ -74,8 +74,8 @@ public class ControllerConfiguration {
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
         public InitialConfigData(@JsonProperty("pathToInitDataFile") final String pathToInitDataFile,
                 @JsonProperty("format") final FileToDatastoreUtils.ImportFileFormat fileFormat) {
-            this.pathToInitDataFile = pathToInitDataFile;
-            this.fileFormat = fileFormat;
+            this.pathToInitDataFile = Objects.requireNonNull(pathToInitDataFile);
+            this.fileFormat = Objects.requireNonNullElse(fileFormat, FileToDatastoreUtils.ImportFileFormat.JSON);
         }
 
         public InitialConfigData(final InputStream inputStream,
