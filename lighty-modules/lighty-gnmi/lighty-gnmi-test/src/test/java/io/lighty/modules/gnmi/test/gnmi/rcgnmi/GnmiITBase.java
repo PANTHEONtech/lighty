@@ -53,7 +53,7 @@ public abstract class GnmiITBase {
     protected static final Duration WAIT_TIME_DURATION = Duration.ofMillis(10_000L);
 
     protected static final String INITIAL_JSON_DATA_PATH = "src/test/resources/json/initData";
-    private static final String TEST_SCHEMA_PATH = "src/test/resources/additional/simulator/models";
+    private static final String TEST_SCHEMA_PATH = "src/test/resources/additional/models";
     private static final String SIMULATOR_CONFIG = "/json/simulator_config.json";
 
     protected static ExecutorService httpClientExecutor;
@@ -361,6 +361,8 @@ public abstract class GnmiITBase {
         public static final String GNMI_DEVICE_MOUNTPOINT =
             GNMI_TOPOLOGY_PATH + "/node=" + GNMI_NODE_ID + "/yang-ext:mount";
         public static final String OPENCONFIG_INTERFACES = "/openconfig-interfaces:interfaces";
+        public static final String OPENCONFIG_OPENFLOW = "/openconfig-openflow:openflow";
+        public static final String OPENCONFIG_SYSTEM = "/openconfig-system:system";
         public static final String GNMI_NODE_STATUS_READY = "READY";
 
         public static final String ERR_MSG_RELEVANT_MODEL_NOT_EXIST =

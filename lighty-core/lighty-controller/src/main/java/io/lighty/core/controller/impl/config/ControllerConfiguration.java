@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Objects;
 import com.typesafe.config.Config;
 import io.lighty.core.controller.impl.util.DatastoreConfigurationUtils;
 import io.lighty.core.controller.impl.util.FileToDatastoreUtils;
@@ -20,6 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -97,6 +97,33 @@ public class ControllerConfiguration {
 
         public FileToDatastoreUtils.ImportFileFormat getFormat() {
             return fileFormat;
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null || getClass() != obj.getClass()) {
+                return false;
+            }
+
+            InitialConfigData that = (InitialConfigData) obj;
+
+            if (fileFormat != that.fileFormat) {
+                return false;
+            }
+
+            if (inputStream != that.inputStream) {
+                return false;
+            }
+
+            return pathToInitDataFile.equals(that.pathToInitDataFile);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(this);
         }
     }
 
@@ -276,7 +303,7 @@ public class ControllerConfiguration {
                 return false;
             }
             SchemaServiceConfig that = (SchemaServiceConfig) obj;
-            return Objects.equal(models, that.models);
+            return Objects.equals(models, that.models);
         }
 
         @Override

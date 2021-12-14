@@ -12,6 +12,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.gnmi.southbound.schema.yangstore.service.YangDataStoreService;
 import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
+import io.lighty.modules.gnmi.commons.util.YangModelSanitizer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,8 @@ public class TestYangDataStoreService implements YangDataStoreService {
     @Override
     public ListenableFuture<CommitInfo> addYangModel(final String modelName, final String modelVersion,
                                                                final String modelBody) {
-        yangs.put(ImmutablePair.of(modelName, modelVersion), modelBody);
+        final String sanitizedModelBody = YangModelSanitizer.removeRegexpPosix(modelBody);
+        yangs.put(ImmutablePair.of(modelName, modelVersion), sanitizedModelBody);
         return Futures.immediateFuture(CommitInfo.empty());
     }
 

@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import gnmi.Gnmi;
+import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.gnmi.southbound.mountpoint.codecs.testcases.YangInstanceNormToGnmiUpdateTestCases;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
@@ -31,7 +32,7 @@ public class YangInstanceNormToGnmiUpdateCodecTest {
     private static YangInstanceNormToGnmiUpdateCodec codec;
 
     @BeforeAll
-    public static void init() throws IOException, YangLoadException, SchemaException {
+    public static void init() throws IOException, YangLoadException, SchemaException, ConfigurationException {
         testCases = new YangInstanceNormToGnmiUpdateTestCases();
         codec = new YangInstanceNormToGnmiUpdateCodec(
                 testCases.getSchemaContextProvider(),

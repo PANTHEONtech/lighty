@@ -47,7 +47,7 @@ Before **lighty.io gNMI Southbound** creates a mount point for communication wit
 
 These models are obtained via the *gNMI Capability* response, but only the model name and version are actually returned. This means, that we need to somehow provide the content of the YANG model. 
 
-The way of providing content of the YANG file, so **lighty.io gNMI** can correctly use it for creating the schema context, is to add a field to the .json configuration of the RCgNMI app, or to use the `upload-yang-model` RPC, once the application is already running. 
+The way of providing content of the YANG models, so **lighty.io gNMI** can correctly use it for creating the schema context, is to add a field to the .json configuration of the RCgNMI app, or to use the `upload-yang-model` RPC, once the application is already running. 
 
 Both of these options will load the YANG files into data-store, from which **ligthy.io gNMI** reads the content of the model, based on it's name and version - obtained from the *gNMI Capability* response.
 
@@ -59,10 +59,16 @@ Both of these options will load the YANG files into data-store, from which **lig
       "gnmi": {
         "initialYangsPaths" : [
           "INITIAL_FOLDER_PATH"
+        ],
+        "initialYangModels": [
+            { "nameSpace":"MODEL_NAMESPACE","name":"MODEL_NAME","revision":"MODEL_REVISION"}
         ]
       }
     ```
-    3. Change `INITIAL_FOLDER_PATH`, from the JSON block above, to a folder path, which contains YANG models you wish to load into the datastore. These models will be then automatically loaded on startup.
+    3. Use one or both [`initialYangsPaths`,`initialYangModels`] option for adding YANG models to gNMI module. 
+       1. `initialYangsPaths`: Change `INITIAL_FOLDER_PATH`, from the JSON block above, to a folder paths, which contain YANG models you wish to load into the datastore. 
+       2. `initialYangModels`: Add all required models which can be found in classpath of application in format mention above. Change `MODEL_NAMESPACE`, `MODEL_NAME`, `MODEL_REVISION` to required values.
+    These models will be then automatically loaded on startup.
 
 2. Add the YANG model with the RPC request to the running app
 - 'YANG_MODEL' - Should have included escape characters before each double quotation marks character.
@@ -361,15 +367,15 @@ For additional configurable parameters and their explanation, see previous chapt
 
 ## Deployment via helm chart
 ### Prerequisites
-* Kubernetes cluster 1.15.11 (minikube, microk8s, etc.)
-* Helm 2.17
+* Kubernetes cluster 1.22.4 (minikube, microk8s, etc.)
+* Helm 3.7.1
 
 ### Deploy
 To easily deploy the lighty.io RcGNMI application to Kubernetes, we provide a custom helm chart located [here](lighty-rcgnmi-app-helm/helm).
 
 To install, make sure that the docker image defined in `values.yaml` is accessible in your kubernetes (for microk8s you can use the [docker-microk8s-script](lighty-rcgnmi-app-helm/helm/microk8s-uploadDocker.sh)), then run the command:
 
-`microk8s helm install --name lighty-rcgnmi-app ./lighty-rcgnmi-app-helm/`
+`microk8s helm3 install lighty-rcgnmi-app ./lighty-rcgnmi-app-helm/`
 
 in the `/lighty-rcgnmi-app-helm/helm/` directory.  
 

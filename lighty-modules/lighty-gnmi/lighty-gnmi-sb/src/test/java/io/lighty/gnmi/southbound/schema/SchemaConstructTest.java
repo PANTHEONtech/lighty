@@ -8,10 +8,14 @@
 
 package io.lighty.gnmi.southbound.schema;
 
+import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.gnmi.southbound.capabilities.GnmiDeviceCapability;
+import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
+import io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils;
 import io.lighty.gnmi.southbound.schema.impl.SchemaContextHolderImpl;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
+import io.lighty.gnmi.southbound.schema.loader.impl.ByClassPathYangLoaderService;
 import io.lighty.gnmi.southbound.schema.loader.impl.ByPathYangLoaderService;
 import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
 import java.io.File;
@@ -38,17 +42,14 @@ import org.opendaylight.yangtools.yang.model.api.Module;
 
 public class SchemaConstructTest {
 
-    private static final String SCHEMA_PATH = "src/test/resources/test_schema";
+    private static final String SCHEMA_PATH = "src/test/resources/additional/test/schema";
+    private static final String OPENCONFIG_GNMI_CONFIG = "/lightyconfigs/openconfig_gnmi_config.json";
     private static final String SYNTAX_ERROR_YANGS_PATH = "src/test/resources/syntax_error_yangs";
     private static final List<String> MODELS_TO_MISS = Arrays.asList("openconfig-alarms",
             "openconfig-platform");
     private static final List<String> CAPABILITIES_TO_MISS = Arrays.asList("openconfig-alarm-types",
             "openconfig-yang-types", "openconfig-if-aggregate", "openconfig-platform-types", "openconfig-extensions",
             "test-dependency", "test-dependency2");
-    private static final List<String> REVISION_MODELS = Arrays.asList("iana-if-type",
-            "openconfig-extensions");
-    private static final List<String> NO_VERSION_MODELS = Arrays.asList("no-version", "test-dependency",
-            "test-dependency2", "test-interfaces");
     private TestYangDataStoreService dataStoreService;
     private List<GnmiDeviceCapability> completeCapabilities;
 
@@ -56,11 +57,17 @@ public class SchemaConstructTest {
         Creates and loads all models to TestYangDataStoreService.
      */
     @BeforeEach
-    public void setup() throws YangLoadException {
+    public void setup() throws YangLoadException, ConfigurationException {
         dataStoreService = new TestYangDataStoreService();
-        completeCapabilities = new ByPathYangLoaderService(Path.of(SCHEMA_PATH))
-                .load(dataStoreService);
+        completeCapabilities = new ByPathYangLoaderService(Path.of(SCHEMA_PATH)).load(dataStoreService);
         Assertions.assertFalse(completeCapabilities.isEmpty());
+
+        final GnmiConfiguration gnmiConfiguration = GnmiConfigUtils.getGnmiConfiguration(
+                this.getClass().getResourceAsStream(OPENCONFIG_GNMI_CONFIG));
+        final List<GnmiDeviceCapability> openconfigCapabilities
+                = new ByClassPathYangLoaderService(gnmiConfiguration.getYangModulesInfo()).load(dataStoreService);
+        Assertions.assertFalse(openconfigCapabilities.isEmpty());
+        completeCapabilities.addAll(openconfigCapabilities);
     }
 
     /*
@@ -82,13 +89,11 @@ public class SchemaConstructTest {
             }
         }
         for (GnmiYangModel model : storedModels) {
-            if (NO_VERSION_MODELS.contains(model.getName())) {
-                Assertions.assertTrue(model.getVersion().getValue().isEmpty());
-            } else if (REVISION_MODELS.contains(model.getName())) {
-                Assertions.assertTrue(model.getVersion().getValue().matches(SchemaConstants.REVISION_REGEX));
-            } else {
-                Assertions.assertTrue(model.getVersion().getValue().matches(SchemaConstants.SEMVER_REGEX));
-            }
+            Assertions.assertTrue(model.getVersion().getValue().isEmpty()
+                    || model.getVersion().getValue().matches(SchemaConstants.REVISION_REGEX)
+                    || model.getVersion().getValue().matches(SchemaConstants.SEMVER_REGEX),
+                    String.format("Model [%s] version value have wrong format [%s]", model.getName(),
+                            model.getVersion().getValue()));
         }
     }
 
@@ -275,7 +280,11 @@ public class SchemaConstructTest {
         for (GnmiDeviceCapability capability : capsToCheck) {
             final Optional<Module> match =
                 (Optional<Module>) schema.getModules().stream()
-                        .filter(module -> module.getName().equals(capability.getName()))
+                        .filter(module -> module.getName().equals(capability.getName())
+                                || module.getSubmodules().stream()
+                                        .filter(submodule -> submodule.getName().equals(capability.getName()))
+                                        .findAny()
+                                        .isPresent())
                         .findAny();
             Assertions.assertTrue(match.isPresent());
         }

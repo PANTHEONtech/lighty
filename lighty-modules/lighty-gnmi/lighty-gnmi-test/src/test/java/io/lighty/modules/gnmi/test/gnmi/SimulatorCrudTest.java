@@ -46,7 +46,7 @@ public class SimulatorCrudTest {
     private static final int TARGET_PORT = 10161;
     private static final String TARGET_HOST = "127.0.0.1";
     private static final String INITIAL_DATA_PATH = "src/test/resources/json/initData";
-    private static final String TEST_SCHEMA_PATH = "src/test/resources/additional/simulator/models";
+    private static final String TEST_SCHEMA_PATH = "src/test/resources/additional/models";
     private static final String SIMULATOR_CONFIG = "/json/simulator_config.json";
     private static final String INTERFACES_PREFIX = "openconfig-interfaces";
     private static final String OPENCONFIG_INTERFACES = INTERFACES_PREFIX + ":" + "interfaces";

@@ -8,6 +8,8 @@
 
 package io.lighty.modules.gnmi.simulatordevice.utils;
 
+import com.google.common.io.ByteSource;
+import io.lighty.modules.gnmi.commons.util.YangModelSanitizer;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -105,10 +107,12 @@ public class EffectiveModelContextBuilder {
                     .map(Path::toFile)
                     .collect(Collectors.toList());
             for (File file : filesInFolder) {
+                final ByteSource sanitizedYangByteSource = YangModelSanitizer
+                        .removeRegexpPosix(com.google.common.io.Files.asByteSource(file));
                 final YangStatementStreamSource statementSource = YangStatementStreamSource.create(
                         YangTextSchemaSource.delegateForByteSource(
                                 YangTextSchemaSource.identifierFromFilename(file.getName()),
-                                com.google.common.io.Files.asByteSource(file)));
+                                sanitizedYangByteSource));
 
                 sourceArrayList.add(statementSource);
             }
@@ -125,11 +129,12 @@ public class EffectiveModelContextBuilder {
         final ArrayList<YangStatementStreamSource> sourceArrayList = new ArrayList<>();
         for (YangModuleInfo yangModuleInfo : yangModulesInfo) {
             try {
+                final ByteSource sanitizedYangByteSource = YangModelSanitizer
+                        .removeRegexpPosix(yangModuleInfo.getYangTextByteSource());
                 final YangStatementStreamSource statementSource
                         = YangStatementStreamSource.create(YangTextSchemaSource.delegateForByteSource(
-                        YangTextSchemaSource.identifierFromFilename(
-                                yangModuleInfo.getName().getLocalName() + ".yang"),
-                        yangModuleInfo.getYangTextByteSource()));
+                        YangTextSchemaSource.identifierFromFilename(yangModuleInfo.getName().getLocalName() + ".yang"),
+                        sanitizedYangByteSource));
                 sourceArrayList.add(statementSource);
             } catch (IOException | YangParserException e) {
                 final String errorMsg = String.format("Failed to create YangStatementStreamSource from"
