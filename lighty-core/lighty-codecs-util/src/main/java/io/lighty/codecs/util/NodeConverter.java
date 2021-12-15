@@ -16,7 +16,6 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
@@ -26,12 +25,6 @@ import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
  * {@link JsonNodeConverter}.
  */
 public interface NodeConverter {
-
-    @Deprecated
-    default Writer serializeData(SchemaNode schemaNode, NormalizedNode normalizedNode) throws SerializationException {
-        return serializeData(SchemaInferenceStack.ofSchemaPath(getModelContext(), schemaNode.getPath()),
-                normalizedNode);
-    }
 
     default Writer serializeData(SchemaNodeIdentifier.Absolute schemaNodeIdentifier, NormalizedNode normalizedNode)
             throws SerializationException {
@@ -58,11 +51,6 @@ public interface NodeConverter {
 
     Writer serializeData(SchemaInferenceStack schemaInferenceStack, NormalizedNode normalizedNode)
             throws SerializationException;
-
-    @Deprecated
-    default Writer serializeRpc(SchemaNode schemaNode, NormalizedNode normalizedNode) throws SerializationException {
-        return serializeRpc(SchemaInferenceStack.ofSchemaPath(getModelContext(), schemaNode.getPath()), normalizedNode);
-    }
 
     default Writer serializeRpc(NormalizedNode normalizedNode, QName... schemaIdentifierPath)
             throws SerializationException {
@@ -93,12 +81,6 @@ public interface NodeConverter {
      */
     Writer serializeRpc(SchemaInferenceStack schemaInferenceStack, NormalizedNode normalizedNode)
             throws SerializationException;
-
-    @Deprecated
-    default NormalizedNode deserialize(SchemaNode schemaNode, Reader inputData)
-            throws DeserializationException {
-        return deserialize(SchemaInferenceStack.ofSchemaPath(getModelContext(), schemaNode.getPath()), inputData);
-    }
 
     default NormalizedNode deserialize(Reader inputData, QName... schemaIdentifierPath)
             throws DeserializationException {
