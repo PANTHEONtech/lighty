@@ -13,6 +13,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.typesafe.config.Config;
 import io.lighty.core.controller.impl.util.DatastoreConfigurationUtils;
+import io.lighty.core.controller.impl.util.FileToDatastoreUtils;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -63,47 +67,35 @@ public class ControllerConfiguration {
 
     public static class InitialConfigData {
 
-        public enum ImportFileFormat {
-            JSON("json"),
-            XML("xml"),
-            NOT_SUPPORTED("");
-
-            private String fileFormat;
-
-            ImportFileFormat(String formatString) {
-                this.fileFormat = formatString;
-            }
-
-            public String getFormatString() {
-                return fileFormat;
-            }
-
-            @JsonCreator
-            public static ImportFileFormat getFormatType(String fullName) {
-                for (ImportFileFormat formatType : ImportFileFormat.values()) {
-                    if (formatType.fileFormat.equalsIgnoreCase(fullName)) {
-                        return formatType;
-                    }
-                }
-                return NOT_SUPPORTED;
-            }
-        }
-
         private String pathToInitDataFile;
-        private ImportFileFormat fileFormat;
+        private InputStream inputStream;
+        private FileToDatastoreUtils.ImportFileFormat fileFormat;
 
         @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
         public InitialConfigData(@JsonProperty("pathToInitDataFile") final String pathToInitDataFile,
-                @JsonProperty("format") final ImportFileFormat fileFormat) {
+                @JsonProperty("format") final FileToDatastoreUtils.ImportFileFormat fileFormat) {
             this.pathToInitDataFile = Objects.requireNonNull(pathToInitDataFile);
-            this.fileFormat = Objects.requireNonNullElse(fileFormat, ImportFileFormat.JSON);
+            this.fileFormat = Objects.requireNonNullElse(fileFormat, FileToDatastoreUtils.ImportFileFormat.JSON);
+        }
+
+        public InitialConfigData(final InputStream inputStream,
+                final FileToDatastoreUtils.ImportFileFormat fileFormat) {
+            this.inputStream = inputStream;
+            this.fileFormat = fileFormat;
         }
 
         public String getPathToInitDataFile() {
             return pathToInitDataFile;
         }
 
-        public ImportFileFormat getFormat() {
+        public InputStream getAsInputStream() throws FileNotFoundException {
+            if (inputStream != null) {
+                return inputStream;
+            }
+            return new FileInputStream(pathToInitDataFile);
+        }
+
+        public FileToDatastoreUtils.ImportFileFormat getFormat() {
             return fileFormat;
         }
 
@@ -116,11 +108,16 @@ public class ControllerConfiguration {
                 return false;
             }
 
-            final InitialConfigData that = (InitialConfigData) obj;
+            InitialConfigData that = (InitialConfigData) obj;
 
             if (fileFormat != that.fileFormat) {
                 return false;
             }
+
+            if (inputStream != that.inputStream) {
+                return false;
+            }
+
             return pathToInitDataFile.equals(that.pathToInitDataFile);
         }
 

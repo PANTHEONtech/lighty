@@ -26,6 +26,7 @@ import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -44,21 +45,21 @@ public final class ConverterUtils {
      *
      * <p>
      * {@code
-     *  QName.create("http://netconfcentral.org/ns/toaster", "2009-11-20", "make-toast");
+     * QName.create("http://netconfcentral.org/ns/toaster", "2009-11-20", "make-toast");
      * } , where {@code "make-toast"} is the name of the RPC given in the yang model.
      *
      * <p>
-     * If the given RPC was found in the {@link EffectiveModelContext} the {@link RpcDefinition} will be present
+     * If the given RPC was found in the {@link EffectiveModelContext} the {@link RpcDefinition} will be returned
      *
-     * @see QName
      * @param effectiveModelContext the effective model context used for the RPC resolution
-     * @param rpcQName {@link QName} of the RPC
+     * @param rpcQName              {@link QName} of the RPC
      * @return {@link Optional} representation of the {@link RpcDefinition}
+     * @see QName
      */
     public static Optional<? extends RpcDefinition> loadRpc(final EffectiveModelContext effectiveModelContext,
-                                                            final QName rpcQName) {
+            final QName rpcQName) {
         Optional<Module> findModule = findModule(effectiveModelContext, rpcQName);
-        if (!findModule.isPresent()) {
+        if (findModule.isEmpty()) {
             return Optional.empty();
         }
         return findDefinition(rpcQName, findModule.get().getRpcs());
@@ -68,11 +69,11 @@ public final class ConverterUtils {
      * Utility method to extract the {@link SchemaNode} for the given Notification.
      *
      * @param effectiveModelContext to be used
-     * @param notificationQname yang RPC name
+     * @param notificationQname     yang RPC name
      * @return {@link Optional} of {@link SchemaNode}
      */
     public static Optional<? extends NotificationDefinition> loadNotification(
-        final EffectiveModelContext effectiveModelContext, final QName notificationQname) {
+            final EffectiveModelContext effectiveModelContext, final QName notificationQname) {
         Optional<Module> findModule = findModule(effectiveModelContext, notificationQname);
         if (!findModule.isPresent()) {
             return Optional.empty();
@@ -138,7 +139,7 @@ public final class ConverterUtils {
      * document.
      *
      * @param inputXmlElement input xml data to wrap.
-     * @param namespace namespace
+     * @param namespace       namespace
      * @return wrapped xml data.
      */
     public static XmlElement rpcAsInput(final XmlElement inputXmlElement, final String namespace) {
@@ -148,10 +149,10 @@ public final class ConverterUtils {
     /**
      * Calls the method {@link ConverterUtils#rpcAsOutput(XmlElement, String)} with an empty namespace.
      *
-     * @see ConverterUtils#rpcAsOutput(XmlElement, String)
-     * @see XmlUtil
      * @param inputXmlElement input rpc element data.
      * @return wrapped xml element.
+     * @see ConverterUtils#rpcAsOutput(XmlElement, String)
+     * @see XmlUtil
      */
     public static XmlElement rpcAsOutput(final XmlElement inputXmlElement) {
         return rpcAsOutput(inputXmlElement, "");
@@ -161,58 +162,88 @@ public final class ConverterUtils {
      * Removes the first XML tag and replaces it with an {@code <output>} element. This method may be
      * useful when the output rpc is created. The namespace will be used for the output tag.
      *
-     * @see XmlUtil
      * @param inputXmlElement input rpc element data.
-     * @param namespace namespace
+     * @param namespace       namespace
      * @return wrapped xml element.
+     * @see XmlUtil
      */
     public static XmlElement rpcAsOutput(final XmlElement inputXmlElement, final String namespace) {
         return wrapNodes("output", namespace, inputXmlElement.getChildElements());
     }
 
     /**
-     * Creates an instance of {@link SchemaNode} for the given {@link QName} in the given {@link EffectiveModelContext}.
+     * Finds the {@link DataSchemaContextNode} for the given {@link QName} in {@link EffectiveModelContext}.
      *
-     * @see ConverterUtils#getSchemaNode(EffectiveModelContext, String, String, String)
-     * @param effectiveModelContext the given effective model context which contains the {@link QName}
-     * @param qname the given {@link QName}
-     * @return instance of {@link DataSchemaContextNode}
+     * <p>
+     * Search is performed only on first level nodes of the modules, for recursive search,
+     * the {@link YangInstanceIdentifier} is needed, thus consider using
+     * {@link ConverterUtils#getSchemaNode(EffectiveModelContext, YangInstanceIdentifier)}.
+     *
+     * @param effectiveModelContext model context to search
+     * @param qname                 {@link QName} of node to search for
+     * @return optional found {@link DataSchemaContextNode}
      */
     public static Optional<@NonNull DataSchemaContextNode<?>> getSchemaNode(
-        final EffectiveModelContext effectiveModelContext, final QName qname) {
-        return DataSchemaContextTree.from(effectiveModelContext).findChild(YangInstanceIdentifier.of(qname));
+            final EffectiveModelContext effectiveModelContext, final QName qname) {
+        return getSchemaNode(effectiveModelContext, YangInstanceIdentifier.of(qname));
     }
 
+    /**
+     * Finds the {@link DataSchemaContextNode} for the given {@link YangInstanceIdentifier}
+     * in {@link EffectiveModelContext}.
+     *
+     * @param effectiveModelContext  model context to search
+     * @param yangInstanceIdentifier {@link YangInstanceIdentifier} of the node to search for
+     * @return optional found {@link DataSchemaContextNode}
+     */
     public static Optional<@NonNull DataSchemaContextNode<?>> getSchemaNode(
-        final EffectiveModelContext effectiveModelContext, final YangInstanceIdentifier yangInstanceIdentifier) {
+            final EffectiveModelContext effectiveModelContext, final YangInstanceIdentifier yangInstanceIdentifier) {
         return DataSchemaContextTree.from(effectiveModelContext).findChild(yangInstanceIdentifier);
     }
 
     /**
-     * Creates an instance of {@link SchemaNode} for the given namespace, revision and localname. The
-     * namespace, revision and localname are used to construct the {@link QName} which must exist in the
-     * {@link EffectiveModelContext}.
+     * Finds the {@link DataSchemaContextNode} for the given namespace, revision and local name
+     * in {@link EffectiveModelContext}.
      *
-     * @see ConverterUtils#getSchemaNode(EffectiveModelContext, QName)
-     * @param effectiveModelContext given effective model context
-     * @param namespace {@link QName} namespace
-     * @param revision {@link QName} revision
-     * @param localName {@link QName} localname
-     * @return instance of {@link SchemaNode}
+     * <p>
+     * Search is performed only on first level nodes of the modules, for recursive search,
+     * the {@link YangInstanceIdentifier} is needed, thus consider using
+     * {@link ConverterUtils#getSchemaNode(EffectiveModelContext, YangInstanceIdentifier)}.
+     *
+     * @param effectiveModelContext model context to search
+     * @param namespace             {@link QName} module namespace of the node to search for
+     * @param revision              {@link QName} module revision of the node to search for
+     * @param localName             {@link QName} local name of the node to search for
+     * @return optional found {@link DataSchemaContextNode}
      */
     public static Optional<@NonNull DataSchemaContextNode<?>> getSchemaNode(
-        final EffectiveModelContext effectiveModelContext, final String namespace, final String revision,
-        final String localName) {
-        QName qname = QName.create(namespace, revision, localName);
-        return DataSchemaContextTree.from(effectiveModelContext).findChild(YangInstanceIdentifier.of(qname));
+            final EffectiveModelContext effectiveModelContext, final String namespace, final String revision,
+            final String localName) {
+        return getSchemaNode(effectiveModelContext, QName.create(namespace, revision, localName));
+    }
+
+    /**
+     * Converts provided {@link YangInstanceIdentifier} to {@link SchemaNodeIdentifier.Absolute}.
+     *
+     * @param yangInstanceIdentifier yang instance identifier
+     * @return optional of converted {@link SchemaNodeIdentifier.Absolute}, empty if provided
+     *         {@link YangInstanceIdentifier} is empty
+     */
+    public static Optional<SchemaNodeIdentifier.Absolute> toSchemaNodeIdentifier(
+            final YangInstanceIdentifier yangInstanceIdentifier) {
+        final List<QName> filtered = yangInstanceIdentifier.getPathArguments().stream()
+                .filter(pa -> !(pa instanceof YangInstanceIdentifier.AugmentationIdentifier)
+                        && !(pa instanceof YangInstanceIdentifier.NodeIdentifierWithPredicates))
+                .map(YangInstanceIdentifier.PathArgument::getNodeType).collect(Collectors.toList());
+        return filtered.isEmpty() ? Optional.empty() : Optional.of(SchemaNodeIdentifier.Absolute.of(filtered));
     }
 
     /**
      * Appends all nodes given as children into a node given by node name with given namespace.
      *
-     * @param nodeName the top level node
+     * @param nodeName  the top level node
      * @param namespace provided namespace for the nodename
-     * @param children child elements to be appended
+     * @param children  child elements to be appended
      * @return created {@link XmlElement}
      * @see XmlUtil
      */

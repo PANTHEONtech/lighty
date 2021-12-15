@@ -14,6 +14,7 @@ import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import io.lighty.core.controller.impl.util.DatastoreConfigurationUtils;
+import io.lighty.core.controller.impl.util.FileToDatastoreUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
@@ -115,7 +116,7 @@ public class ConfigLoadingTest {
         Assert.assertNotNull(configuration);
         Assert.assertTrue(configuration.getInitialConfigData().getPathToInitDataFile().equals("test-path"));
         Assert.assertTrue(configuration.getInitialConfigData().getFormat()
-                .equals(ControllerConfiguration.InitialConfigData.ImportFileFormat.JSON));
+                .equals(FileToDatastoreUtils.ImportFileFormat.JSON));
     }
 
     @Test
