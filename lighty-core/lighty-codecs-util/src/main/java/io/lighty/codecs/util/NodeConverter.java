@@ -27,7 +27,7 @@ import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
  */
 public interface NodeConverter {
 
-    @Deprecated
+    @Deprecated(forRemoval = true)
     default Writer serializeData(SchemaNode schemaNode, NormalizedNode normalizedNode) throws SerializationException {
         return serializeData(SchemaInferenceStack.ofSchemaPath(getModelContext(), schemaNode.getPath()),
                 normalizedNode);
@@ -59,7 +59,7 @@ public interface NodeConverter {
     Writer serializeData(SchemaInferenceStack schemaInferenceStack, NormalizedNode normalizedNode)
             throws SerializationException;
 
-    @Deprecated
+    @Deprecated(forRemoval = true)
     default Writer serializeRpc(SchemaNode schemaNode, NormalizedNode normalizedNode) throws SerializationException {
         return serializeRpc(SchemaInferenceStack.ofSchemaPath(getModelContext(), schemaNode.getPath()), normalizedNode);
     }
@@ -94,7 +94,7 @@ public interface NodeConverter {
     Writer serializeRpc(SchemaInferenceStack schemaInferenceStack, NormalizedNode normalizedNode)
             throws SerializationException;
 
-    @Deprecated
+    @Deprecated(forRemoval = true)
     default NormalizedNode deserialize(SchemaNode schemaNode, Reader inputData)
             throws DeserializationException {
         return deserialize(SchemaInferenceStack.ofSchemaPath(getModelContext(), schemaNode.getPath()), inputData);
