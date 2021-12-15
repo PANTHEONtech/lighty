@@ -98,7 +98,7 @@ do \
 ;done
 sleep 1
 
- Service healthcheck (:30888/restconf/operations)
+#Service healthcheck (:30888/restconf/operations)
 assertHttpStatusCode $(curl -o /dev/null -s -w "%{http_code} GET %{url_effective}\n" --user admin:admin -H "Content-Type: application/json" --insecure http://$MINIKUBE_IP:$CONTROLLER_PORT/restconf/operations)
 
 # add gNMI node into gNMI topology
