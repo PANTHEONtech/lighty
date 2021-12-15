@@ -43,10 +43,12 @@
             <groupId>io.lighty.kit.examples.controllers</groupId>
             <artifactId>lighty-community-aaa-restconf-app</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-client</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
