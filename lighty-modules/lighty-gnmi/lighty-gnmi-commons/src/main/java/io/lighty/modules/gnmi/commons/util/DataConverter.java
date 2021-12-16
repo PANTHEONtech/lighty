@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -39,8 +40,9 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveStatementInference;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
+import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack.Inference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,43 +61,50 @@ public final class DataConverter {
     public static String jsonStringFromNormalizedNodes(@NonNull final YangInstanceIdentifier identifier,
                                                        @NonNull final NormalizedNode data,
                                                        @NonNull final EffectiveModelContext context) {
-        return toJson(toSchemaPath(identifier), data, context);
+        return toJson(identifier, data, context);
     }
 
     public static NormalizedNode nodeFromJsonString(@NonNull final YangInstanceIdentifier yangInstanceIdentifier,
                                                     @NonNull final String inputJson,
                                                     @NonNull final EffectiveModelContext context) {
         final EffectiveStatementInference statementInference;
-        final SchemaPath parentPath = getParentPath(yangInstanceIdentifier);
-        if (parentPath.equals(SchemaPath.ROOT)) {
+        final Optional<Absolute> parentPath = getParentPath(yangInstanceIdentifier);
+        if (parentPath.isEmpty()) {
             statementInference = SchemaInferenceStack.of(context).toInference();
         } else {
-            statementInference = SchemaInferenceStack.of(context, parentPath.asAbsolute()).toInference();
+            statementInference = SchemaInferenceStack.of(context, parentPath.get()).toInference();
         }
         return fromJson(inputJson, statementInference, context);
 
     }
 
-    private static String toJson(final SchemaPath schemaPath, final NormalizedNode data,
+    private static String toJson(final YangInstanceIdentifier identifier, final NormalizedNode data,
                                  final EffectiveModelContext context) {
         final JSONCodecFactory jsonCodecFactory
                 = JSONCodecFactorySupplier.RFC7951.createSimple(context);
         if (isListEntry(data)) {
-            return createJsonWithNestedWriter(schemaPath, data, jsonCodecFactory);
+            return createJsonWithNestedWriter(identifier, data, jsonCodecFactory);
         } else {
-            return createJsonWithExclusiveWriter(schemaPath, data, jsonCodecFactory);
+            return createJsonWithExclusiveWriter(identifier, data, jsonCodecFactory);
         }
     }
 
-    private static String createJsonWithExclusiveWriter(final SchemaPath schemaPath, final NormalizedNode data,
-                                                        final JSONCodecFactory jsonCodecFactory) {
+    private static String createJsonWithExclusiveWriter(final YangInstanceIdentifier identifier,
+            final NormalizedNode data, final JSONCodecFactory jsonCodecFactory) {
         final Writer writer = new StringWriter();
         final JsonWriter jsonWriter = new JsonWriter(writer);
+        final Optional<Absolute> parentPath = getParentPath(identifier);
+        final Inference inference;
+        if (parentPath.isPresent()) {
+            inference = SchemaInferenceStack.of(jsonCodecFactory.getEffectiveModelContext(), parentPath.get())
+                    .toInference();
+        } else {
+            inference = SchemaInferenceStack.of(jsonCodecFactory.getEffectiveModelContext()).toInference();
+        }
+
+        final XMLNamespace namespace = identifier.getLastPathArgument().getNodeType().getNamespace();
         final NormalizedNodeStreamWriter nodeWriter = JSONNormalizedNodeStreamWriter
-                .createExclusiveWriter(jsonCodecFactory, schemaPath.getParent(),
-                        schemaPath.getParent() == SchemaPath.ROOT
-                                ? null
-                                : schemaPath.getParent().getLastComponent().getNamespace(), jsonWriter);
+                .createExclusiveWriter(jsonCodecFactory, inference, namespace, jsonWriter);
         final NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(nodeWriter);
         try {
             normalizedNodeWriter.write(data);
@@ -108,13 +117,22 @@ public final class DataConverter {
         return writer.toString();
     }
 
-    private static String createJsonWithNestedWriter(final SchemaPath schemaPath, NormalizedNode data,
+    private static String createJsonWithNestedWriter(final YangInstanceIdentifier identifier, final NormalizedNode data,
                                                      final JSONCodecFactory jsonCodecFactory) {
         final Writer writer = new StringWriter();
         final JsonWriter jsonWriter = new JsonWriter(writer);
+        final Optional<Absolute> absolutePath = toAbsolutePath(identifier);
+        final Inference inference;
+        if (absolutePath.isPresent()) {
+            inference = SchemaInferenceStack.of(jsonCodecFactory.getEffectiveModelContext(), absolutePath.get())
+                    .toInference();
+        } else {
+            inference = SchemaInferenceStack.of(jsonCodecFactory.getEffectiveModelContext()).toInference();
+        }
+
+        final XMLNamespace namespace = identifier.getLastPathArgument().getNodeType().getNamespace();
         final NormalizedNodeStreamWriter nodeWriter = JSONNormalizedNodeStreamWriter
-                .createNestedWriter(jsonCodecFactory, schemaPath, schemaPath.getLastComponent().getNamespace(),
-                        jsonWriter);
+                .createNestedWriter(jsonCodecFactory, inference, namespace, jsonWriter);
         final NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(nodeWriter);
         try {
             normalizedNodeWriter.write(data);
@@ -172,10 +190,10 @@ public final class DataConverter {
         }
     }
 
-    private static SchemaPath getParentPath(final YangInstanceIdentifier identifier) {
+    private static Optional<Absolute> getParentPath(final YangInstanceIdentifier identifier) {
         // In case of root
         if (identifier == ROOT_IDENTIFIER) {
-            return SchemaPath.ROOT;
+            return Optional.empty();
         }
 
         final int offset = isMapEntryPath(identifier) ? MAP_ENTRY_PARENT_OFFSET : PARENT_OFFSET;
@@ -185,17 +203,17 @@ public final class DataConverter {
                 .filter(arg -> !(arg instanceof YangInstanceIdentifier.AugmentationIdentifier))
                 .map(YangInstanceIdentifier.PathArgument::getNodeType)
                 .collect(Collectors.toList());
-        return SchemaPath.create(schemaArgs, true);
+        return schemaArgs.size() != 0 ? Optional.of(Absolute.of(schemaArgs)) : Optional.empty();
     }
 
-    private static SchemaPath toSchemaPath(final YangInstanceIdentifier path) {
+    private static Optional<Absolute> toAbsolutePath(final YangInstanceIdentifier path) {
         final List<QName> schemaArgs = path.getPathArguments()
                 .stream()
                 .filter(arg -> !(arg instanceof YangInstanceIdentifier.NodeIdentifierWithPredicates))
                 .filter(arg -> !(arg instanceof YangInstanceIdentifier.AugmentationIdentifier))
                 .map(YangInstanceIdentifier.PathArgument::getNodeType)
                 .collect(Collectors.toList());
-        return SchemaPath.create(schemaArgs, true);
+        return schemaArgs.size() != 0 ? Optional.of(Absolute.of(schemaArgs)) : Optional.empty();
     }
 
     /**
