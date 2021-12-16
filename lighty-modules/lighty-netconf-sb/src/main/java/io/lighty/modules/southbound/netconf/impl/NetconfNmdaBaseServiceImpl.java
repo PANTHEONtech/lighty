@@ -14,6 +14,7 @@ import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTr
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
+import io.lighty.modules.southbound.netconf.impl.util.NetconfUtils;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -48,9 +49,9 @@ import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableAnydataNodeBuilder;
 import org.opendaylight.yangtools.yang.data.util.ImmutableNormalizedAnydata;
-import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveStatementInference;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
 public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implements NetconfNmdaBaseService {
@@ -99,19 +100,19 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
                                                             Optional<Set<QName>> originFilter,
                                                             Optional<Boolean> negateOriginFilter,
                                                             Optional<Boolean> withOrigin) {
-        List<DataContainerChild> getDataChildren = new ArrayList<>();
-
+        final List<DataContainerChild> getDataChildren = new ArrayList<>();
         getDataChildren.add(getDatastoreNode(requireNonNull(sourceDatastore)));
 
         if (filterYII.isPresent()) {
-            NormalizedNode filterNN = ImmutableNodes.fromInstanceId(getEffectiveModelContext(), filterYII.get());
-            QName nodeType = filterNN.getIdentifier().getNodeType();
-            Optional<DataSchemaNode> dataTreeChild = getEffectiveModelContext().findDataTreeChild(nodeType);
-            DataSchemaNode dataSchemaNode = dataTreeChild.orElseThrow(() ->
-                    new NoSuchElementException(String.format("Node [%s] was not found in schema context", nodeType)));
+            final NormalizedNode filterNN = ImmutableNodes.fromInstanceId(getEffectiveModelContext(), filterYII.get());
+            final Optional<Absolute> absolute = NetconfUtils.getAbsolutePathToNNode(filterYII.get(), filterNN);
+            final EffectiveStatementInference inference;
+            if (absolute.isPresent()) {
+                inference = SchemaInferenceStack.of(getEffectiveModelContext(), absolute.get()).toInference();
+            } else {
+                inference = SchemaInferenceStack.of(getEffectiveModelContext()).toInference();
+            }
 
-            EffectiveStatementInference inference = SchemaInferenceStack.ofSchemaPath(getEffectiveModelContext(),
-                    dataSchemaNode.getPath()).toInference();
             final AnydataNode<NormalizedAnydata> subtreeFilter =
                     ImmutableAnydataNodeBuilder.create(NormalizedAnydata.class)
                             .withNodeIdentifier(NETCONF_FILTER_NODEID)
@@ -122,7 +123,6 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
                             .withNodeIdentifier(NETCONF_FILTER_CHOICE_NODEID)
                             .withChild(subtreeFilter)
                             .build();
-
             getDataChildren.add(filterSpecChoice);
         }
 
@@ -162,30 +162,29 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
                                                              YangInstanceIdentifier dataPath,
                                                              Optional<ModifyAction> dataModifyActionAttribute,
                                                              Optional<ModifyAction> defaultModifyAction) {
-        NormalizedNode editNNContent = ImmutableNodes.fromInstanceId(getEffectiveModelContext(), dataPath,
+        final NormalizedNode editNNContent = ImmutableNodes.fromInstanceId(getEffectiveModelContext(), dataPath,
                 data.orElseThrow(() -> new NoSuchElementException("Data is missing")));
-        QName nodeType = editNNContent.getIdentifier().getNodeType();
-        Optional<DataSchemaNode> dataTreeChild = getEffectiveModelContext().findDataTreeChild(nodeType);
 
         final NormalizedMetadata metadata = dataModifyActionAttribute
                 .map(oper -> leafMetadata(dataPath, oper))
                 .orElse(null);
 
-        DataSchemaNode dataSchemaNode = dataTreeChild.orElseThrow(() ->
-                new NoSuchElementException(String.format("Node [%s] was not found in schema context", nodeType)));
+        final Optional<Absolute> absolute = NetconfUtils.getAbsolutePathToNNode(dataPath, editNNContent);
+        final EffectiveStatementInference inference;
+        if (absolute.isPresent()) {
+            inference = SchemaInferenceStack.of(getEffectiveModelContext(), absolute.get()).toInference();
+        } else {
+            inference = SchemaInferenceStack.of(getEffectiveModelContext()).toInference();
+        }
 
-        EffectiveStatementInference inference = SchemaInferenceStack.ofSchemaPath(getEffectiveModelContext(),
-                dataSchemaNode.getPath()).toInference();
-
-        final AnydataNode<NormalizedAnydata> editContent = ImmutableAnydataNodeBuilder.create(NormalizedAnydata.class)
+        final AnydataNode<NormalizedAnydata> editContent = ImmutableAnydataNodeBuilder
+                .create(NormalizedAnydata.class)
                 .withNodeIdentifier(NETCONF_EDIT_DATA_CONFIG_NODEID)
                 .withValue(new ImmutableMetadataNormalizedAnydata(inference, editNNContent, metadata)).build();
 
         ChoiceNode editStructure = Builders.choiceBuilder().withNodeIdentifier(toId(EditContent.QNAME))
                 .withChild(editContent).build();
-
         Preconditions.checkNotNull(editStructure);
-
         return getDOMRpcService().invokeRpc(NETCONF_EDIT_DATA_QNAME,
                 NetconfMessageTransformUtil.wrap(NETCONF_EDIT_DATA_QNAME,
                         getDatastoreNode(requireNonNull(targetDatastore)),
