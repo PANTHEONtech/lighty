@@ -22,7 +22,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
@@ -61,12 +60,6 @@ public class RCgNMIApp {
                 .addObject(arguments)
                 .build()
                 .parse(args);
-
-        if (arguments.getLoggerPath() != null) {
-            LOG.debug("Argument for custom logging settings path is present: {} ", arguments.getLoggerPath());
-            PropertyConfigurator.configure(arguments.getLoggerPath());
-            LOG.info("Custom logger properties loaded successfully");
-        }
 
         try {
             if (arguments.getConfigPath() != null) {

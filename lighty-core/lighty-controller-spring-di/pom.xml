@@ -22,18 +22,6 @@
     <name>${project.groupId}:${project.artifactId}</name>
     <url>https://github.com/PANTHEONtech/lighty</url>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>2.1.5.RELEASE</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>io.lighty.core</groupId>
@@ -42,6 +30,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
+            <version>5.1.7.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>javax.annotation</groupId>
@@ -49,9 +38,21 @@
             <version>1.3.2</version>
         </dependency>
 
+        <!-- Tests -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.resources</groupId>
+            <artifactId>log4j-properties</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+            <version>2.1.5.RELEASE</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -62,13 +63,8 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j</artifactId>
-            <version>1.3.8.RELEASE</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <version>2.1.5.RELEASE</version>
             <scope>test</scope>
         </dependency>
         <dependency>

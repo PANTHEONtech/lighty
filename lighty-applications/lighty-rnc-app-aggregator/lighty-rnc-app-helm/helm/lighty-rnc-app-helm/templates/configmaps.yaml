@@ -107,10 +107,22 @@ data:
     }
 
   log4j.properties: |
-    log4j.rootLogger=INFO, STDOUT
-    log4j.appender.STDOUT=org.apache.log4j.ConsoleAppender
-    log4j.appender.STDOUT.layout=org.apache.log4j.PatternLayout
-    log4j.appender.STDOUT.layout.ConversionPattern=%5p %d{HH:mm:ss} [%c] (%F:%L) - %m%n
+    # Extra logging related to initialization of Log4j
+    # Set to debug or trace if log4j initialization is failing
+    status = warn
+    # Name of the configuration
+    name = ConsoleLogConfig
+
+    # Console appender configuration
+    appender.console.type = Console
+    appender.console.name = STDOUT
+    appender.console.layout.type = PatternLayout
+    appender.console.layout.pattern = %5p [%t] (%F:%L) - %m%n
+
+    # Root logger level
+    rootLogger.level = INFO
+    # Root logger referring to console appender
+    rootLogger.appenderRef.stdout.ref = STDOUT
 
   akka-node-k8s.conf: |
     akka {
