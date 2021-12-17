@@ -102,49 +102,13 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
                                                             Optional<Boolean> withOrigin) {
         final List<DataContainerChild> getDataChildren = new ArrayList<>();
         getDataChildren.add(getDatastoreNode(requireNonNull(sourceDatastore)));
-
-        if (filterYII.isPresent()) {
-            final NormalizedNode filterNN = ImmutableNodes.fromInstanceId(getEffectiveModelContext(), filterYII.get());
-            final Optional<Absolute> absolute = NetconfUtils.getAbsolutePathToNNode(filterYII.get(), filterNN);
-            final EffectiveStatementInference inference;
-            if (absolute.isPresent()) {
-                inference = SchemaInferenceStack.of(getEffectiveModelContext(), absolute.get()).toInference();
-            } else {
-                inference = SchemaInferenceStack.of(getEffectiveModelContext()).toInference();
-            }
-
-            final AnydataNode<NormalizedAnydata> subtreeFilter =
-                    ImmutableAnydataNodeBuilder.create(NormalizedAnydata.class)
-                            .withNodeIdentifier(NETCONF_FILTER_NODEID)
-                            .withValue(new ImmutableNormalizedAnydata(inference, filterNN))
-                            .build();
-            final ChoiceNode filterSpecChoice =
-                    Builders.choiceBuilder()
-                            .withNodeIdentifier(NETCONF_FILTER_CHOICE_NODEID)
-                            .withChild(subtreeFilter)
-                            .build();
-            getDataChildren.add(filterSpecChoice);
-        }
-
+        filterYII.ifPresent(yangIID -> getDataChildren.add(getFilterSpecChoiceNode(yangIID)));
         configFilter.ifPresent(configFilterValue -> getDataChildren.add(getConfigFilterNode(configFilterValue)));
 
-        if (originFilter.isPresent()) {
-            DataContainerChild originFilterChild;
-            if (negateOriginFilter.isPresent() && negateOriginFilter.get()) {
-                originFilterChild = getNegatedOriginFilterNode(originFilter.get());
-            } else {
-                originFilterChild = getOriginFilterNode(originFilter.get());
-            }
-            final ChoiceNode originFilterSpecChoice =
-                    Builders.choiceBuilder()
-                            .withNodeIdentifier(NETCONF_ORIGIN_FILTERS_CHOICE_NODEID)
-                            .withChild(originFilterChild)
-                            .build();
-            getDataChildren.add(originFilterSpecChoice);
-        }
+        originFilter.ifPresent(originFilterQNames -> getDataChildren.add(getOriginFilterSpecChoiceNode(
+                originFilterQNames, negateOriginFilter.isPresent() && negateOriginFilter.get())));
 
         maxDepth.ifPresent(maxDepthValue -> getDataChildren.add(getMaxDepthNode(maxDepthValue)));
-
         if (withOrigin.isPresent() && withOrigin.get()) {
             getDataChildren.add(getWithOriginNode());
         }
@@ -153,7 +117,7 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
         getDataChildrenArray = getDataChildren.toArray(getDataChildrenArray);
 
         return getDOMRpcService().invokeRpc(NETCONF_GET_DATA_QNAME,
-                NetconfMessageTransformUtil.wrap(NETCONF_GET_DATA_QNAME, getDataChildrenArray));
+                NetconfMessageTransformUtil.wrap(NodeIdentifier.create(NETCONF_GET_DATA_QNAME), getDataChildrenArray));
     }
 
     @Override
@@ -278,5 +242,38 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
                 return currentMeta;
             }
         }
+    }
+
+    private ChoiceNode getOriginFilterSpecChoiceNode(final Set<QName> originFilter, final boolean negateOriginFilter) {
+        final DataContainerChild originFilterChild;
+        if (negateOriginFilter) {
+            originFilterChild = getNegatedOriginFilterNode(originFilter);
+        } else {
+            originFilterChild = getOriginFilterNode(originFilter);
+        }
+        return Builders.choiceBuilder()
+                .withNodeIdentifier(NETCONF_ORIGIN_FILTERS_CHOICE_NODEID)
+                .withChild(originFilterChild)
+                .build();
+    }
+
+    private ChoiceNode getFilterSpecChoiceNode(final YangInstanceIdentifier filterYII) {
+        final NormalizedNode filterNN = ImmutableNodes.fromInstanceId(getEffectiveModelContext(), filterYII);
+        final Optional<Absolute> absolute = NetconfUtils.getAbsolutePathToNNode(filterYII, filterNN);
+        final EffectiveStatementInference inference;
+        if (absolute.isPresent()) {
+            inference = SchemaInferenceStack.of(getEffectiveModelContext(), absolute.get()).toInference();
+        } else {
+            inference = SchemaInferenceStack.of(getEffectiveModelContext()).toInference();
+        }
+        final AnydataNode<NormalizedAnydata> subtreeFilter =
+                ImmutableAnydataNodeBuilder.create(NormalizedAnydata.class)
+                        .withNodeIdentifier(NETCONF_FILTER_NODEID)
+                        .withValue(new ImmutableNormalizedAnydata(inference, filterNN))
+                        .build();
+        return Builders.choiceBuilder()
+                .withNodeIdentifier(NETCONF_FILTER_CHOICE_NODEID)
+                .withChild(subtreeFilter)
+                .build();
     }
 }
