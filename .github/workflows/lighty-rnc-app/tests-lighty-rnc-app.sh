@@ -82,7 +82,6 @@ do \
 sleep 1
 
 # Pods healthcheck (:8888/restconf/operations)
-# TODO: Uncomment after bump to ODL netconf version 2.0.6 and yangtools 7.0.9. Where is this bug resolved https://jira.opendaylight.org/browse/NETCONF-822
 
 for pod_controller_ip in $POD_CONTROLLER_IPS; \
 do \

@@ -90,7 +90,7 @@ do \
 ;done
 sleep 1
 
-Pods healthcheck (:8888/restconf/operations)
+#Pods healthcheck (:8888/restconf/operations)
 
 for pod_controller_ip in $POD_CONTROLLER_IPS; \
 do \
