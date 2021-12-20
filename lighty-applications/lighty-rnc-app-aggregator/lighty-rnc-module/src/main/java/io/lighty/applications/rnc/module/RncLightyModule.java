@@ -28,6 +28,7 @@ import io.lighty.modules.southbound.netconf.impl.NetconfTopologyPluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
 import io.lighty.server.LightyServerBuilder;
+import io.lighty.swagger.SwaggerLighty;
 import java.net.InetSocketAddress;
 import java.security.Security;
 import java.util.concurrent.ExecutionException;
@@ -51,6 +52,7 @@ public class RncLightyModule extends AbstractLightyModule {
     private NetconfSBPlugin lightyNetconf;
     private AAALighty aaaLighty;
     private LightyServerBuilder jettyServerBuilder;
+    private SwaggerLighty swagger;
 
     public RncLightyModule(RncLightyModuleConfiguration rncModuleConfig) {
         LOG.info("Creating instance of RNC lighty.io module...");
@@ -77,6 +79,8 @@ public class RncLightyModule extends AbstractLightyModule {
                 this.aaaLighty = initAAA(this.rncModuleConfig.getAaaConfig(), this.lightyController.getServices());
                 startAndWaitLightyModule(this.aaaLighty);
             }
+
+            startAndWaitLightyModule(initSwagger());
 
             lightyRestconf.startServer();
         } catch (RncLightyAppStartException e) {
@@ -129,8 +133,14 @@ public class RncLightyModule extends AbstractLightyModule {
         config.setCertificateManager(CertificateManagerConfig.getDefault(services.getBindingDataBroker()));
 
         return new AAALighty(dataBroker, config.getCertificateManager(), null, config.getShiroConf(),
-            config.getMoonEndpointPath(), config.getDatastoreConf(), config.getDbUsername(), config.getDbPassword(),
-            this.jettyServerBuilder);
+                config.getMoonEndpointPath(), config.getDatastoreConf(), config.getDbUsername(), config.getDbPassword(),
+                this.jettyServerBuilder);
+    }
+
+    private SwaggerLighty initSwagger() {
+        return new SwaggerLighty(this.rncModuleConfig.getRestconfConfig(),
+                jettyServerBuilder,
+                lightyController.getServices());
     }
 
     private void startAndWaitLightyModule(LightyModule lightyModule) throws RncLightyAppStartException {
@@ -175,6 +185,10 @@ public class RncLightyModule extends AbstractLightyModule {
         }
 
         if (this.lightyController != null && !stopAndWaitLightyModule(this.lightyController)) {
+            success = false;
+        }
+
+        if (this.swagger != null && !stopAndWaitLightyModule(this.swagger)) {
             success = false;
         }
 

@@ -52,6 +52,10 @@
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.lighty.modules</groupId>
+            <artifactId>lighty-swagger</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
