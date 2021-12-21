@@ -1,15 +1,22 @@
+/*
+ * Copyright (c) 2018-2021 PANTHEON.tech s.r.o. All Rights Reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at https://www.eclipse.org/legal/epl-v10.html
+ */
+
 package io.lighty.core.controller.springboot.services;
 
 import io.lighty.core.controller.springboot.services.dto.LoginRequest;
 import io.lighty.core.controller.springboot.services.dto.UserData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UserAccessServiceImpl implements UserAccessService {
