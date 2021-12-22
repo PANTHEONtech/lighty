@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 public class RncLightyModule extends AbstractLightyModule {
 
     private static final Logger LOG = LoggerFactory.getLogger(RncLightyModule.class);
-    private static final long DEFAULT_LIGHTY_MODULE_TIMEOUT = 60;
+    private static final long DEFAULT_LIGHTY_MODULE_TIMEOUT = 90;
     private static final TimeUnit DEFAULT_LIGHTY_MODULE_TIME_UNIT = TimeUnit.SECONDS;
 
     private final RncLightyModuleConfiguration rncModuleConfig;
