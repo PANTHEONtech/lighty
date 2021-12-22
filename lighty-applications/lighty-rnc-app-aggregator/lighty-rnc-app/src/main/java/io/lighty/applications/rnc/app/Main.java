@@ -40,6 +40,8 @@ public class Main {
 
     private static final String UNABLE_TO_START_APPLICATION = "Unable to start lighty.io application!";
 
+    private AbstractLightyModule rncLightyModule;
+
     // Using args is safe as we need only a configuration file location here
     @SuppressWarnings("squid:S4823")
     public static void main(String[] args) {
@@ -97,21 +99,26 @@ public class Main {
                 rncModuleConfig.getControllerConfig().getSchemaServiceConfig().getModels());
         LOG.info("Loaded YANG modules: {}", arrayNode);
 
-        RncLightyModule rncLightyModule = createRncLightyModule(rncModuleConfig);
+        this.rncLightyModule = createRncLightyModule(rncModuleConfig);
         try {
-            rncLightyModule.start().get();
+            Boolean hasStarted = this.rncLightyModule.start().get();
+            if (hasStarted) {
+                // Register shutdown hook for graceful shutdown
+                LOG.info("Registering ShutdownHook to gracefully shutdown application");
+                registerShutdownHook(this.rncLightyModule);
+                LOG.info("RNC lighty.io application started in {}", stopwatch.stop());
+            } else {
+                LOG.error(UNABLE_TO_START_APPLICATION);
+                stop();
+            }
         } catch (ExecutionException e) {
             LOG.error(UNABLE_TO_START_APPLICATION, e);
-            return;
+            stop();
         } catch (InterruptedException e) {
             LOG.error(UNABLE_TO_START_APPLICATION, e);
             Thread.currentThread().interrupt();
+            stop();
         }
-
-        // Register shutdown hook for graceful shutdown
-        LOG.info("Registering ShutdownHook to gracefully shutdown application");
-        registerShutdownHook(rncLightyModule);
-        LOG.info("RNC lighty.io application started in {}", stopwatch.stop());
     }
 
     public RncLightyModule createRncLightyModule(RncLightyModuleConfiguration rncModuleConfig) {
@@ -120,9 +127,15 @@ public class Main {
 
     private void registerShutdownHook(AbstractLightyModule application) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            shutdownModule(application);
+        }));
+    }
+
+    private void shutdownModule(final AbstractLightyModule module) {
+        if (module != null) {
             try {
                 LOG.info("ShutdownHook triggered. Shutting down RNC lighty.io application...");
-                application.shutdown().get();
+                module.shutdown().get();
                 LOG.info("RNC lighty.io application was shut down!");
             } catch (ExecutionException e) {
                 LOG.error(UNABLE_TO_START_APPLICATION, e);
@@ -130,7 +143,13 @@ public class Main {
                 LOG.error("Unable to shut down RNC lighty.io application! Exception was thrown!", e);
                 Thread.currentThread().interrupt();
             }
-        }));
+        }
+    }
+
+    public void stop() {
+        LOG.info("Shutting down RNC application!");
+        shutdownModule(this.rncLightyModule);
+        LOG.info("RNC application stopped!");
     }
 
     /**
