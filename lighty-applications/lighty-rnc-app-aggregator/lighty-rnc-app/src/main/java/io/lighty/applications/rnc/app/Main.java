@@ -36,21 +36,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Main {
-    private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
-    private static final String UNABLE_TO_START_APPLICATION = "Unable to start lighty.io application!";
+    private static final Logger LOG = LoggerFactory.getLogger(Main.class);
+    private static final String UNABLE_TO_START_APPLICATION = "Unable to start RNC lighty.io application!";
+    private static final String UNABLE_TO_STOP_APPLICATION
+            = "Exception was thrown while shutting down RNC lighty.io application!";
 
     private AbstractLightyModule rncLightyModule;
 
     // Using args is safe as we need only a configuration file location here
     @SuppressWarnings("squid:S4823")
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         Main app = new Main();
         app.start(args);
     }
 
     @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
-    public void start(String[] args) {
+    public void start(final String[] args) {
         final Stopwatch stopwatch = Stopwatch.createStarted();
         LOG.info(".__  .__       .__     __              .__           ");
         LOG.info("|  | |__| ____ |  |___/  |_ ___.__.    |__| ____     ");
@@ -103,7 +105,6 @@ public class Main {
         try {
             Boolean hasStarted = this.rncLightyModule.start().get();
             if (hasStarted) {
-                // Register shutdown hook for graceful shutdown
                 LOG.info("Registering ShutdownHook to gracefully shutdown application");
                 registerShutdownHook(this.rncLightyModule);
                 LOG.info("RNC lighty.io application started in {}", stopwatch.stop());
@@ -121,11 +122,11 @@ public class Main {
         }
     }
 
-    public RncLightyModule createRncLightyModule(RncLightyModuleConfiguration rncModuleConfig) {
+    public RncLightyModule createRncLightyModule(final RncLightyModuleConfiguration rncModuleConfig) {
         return new RncLightyModule(rncModuleConfig);
     }
 
-    private void registerShutdownHook(AbstractLightyModule application) {
+    private void registerShutdownHook(final AbstractLightyModule application) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             shutdownModule(application);
         }));
@@ -138,9 +139,9 @@ public class Main {
                 module.shutdown().get();
                 LOG.info("RNC lighty.io application was shut down!");
             } catch (ExecutionException e) {
-                LOG.error(UNABLE_TO_START_APPLICATION, e);
+                LOG.error(UNABLE_TO_STOP_APPLICATION, e);
             } catch (InterruptedException e) {
-                LOG.error("Unable to shut down RNC lighty.io application! Exception was thrown!", e);
+                LOG.error(UNABLE_TO_STOP_APPLICATION, e);
                 Thread.currentThread().interrupt();
             }
         }
@@ -160,10 +161,10 @@ public class Main {
      * @throws InstanceAlreadyExistsException if MBean is already registered
      * @throws MBeanRegistrationException if MBean cant be registered
      */
-    private void registerLoggerMBeans(MBeanServer server) throws MalformedObjectNameException,
+    private void registerLoggerMBeans(final MBeanServer server) throws MalformedObjectNameException,
             NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException {
 
-        HierarchyDynamicMBean hierarchyDynamicMBean = new HierarchyDynamicMBean();
+        final HierarchyDynamicMBean hierarchyDynamicMBean = new HierarchyDynamicMBean();
         final ObjectName mbo = new ObjectName("log4j:hierarchy=LoggerHierarchy");
         server.registerMBean(hierarchyDynamicMBean, mbo);
 

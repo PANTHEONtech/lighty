@@ -30,9 +30,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RCgNMIApp {
-    private static final Logger LOG = LoggerFactory.getLogger(RCgNMIApp.class);
 
-    private static final String UNABLE_TO_START_APPLICATION = "Unable to start lighty.io application!";
+    private static final Logger LOG = LoggerFactory.getLogger(RCgNMIApp.class);
+    private static final String UNABLE_TO_START_APPLICATION = "Unable to start RCgNMI lighty.io application!";
+    private static final String UNABLE_TO_STOP_APPLICATION
+            = "Exception was thrown while shutting down RCgNMI lighty.io application!";
 
     private AbstractLightyModule rcgnmiLightyModule;
 
@@ -92,12 +94,11 @@ public class RCgNMIApp {
         try {
             final boolean hasStarted = rcgnmiLightyModule.start().get();
             if (hasStarted) {
-                // Register shutdown hook for graceful shutdown
                 LOG.info("Registering ShutdownHook to gracefully shutdown application");
                 registerShutdownHook(rcgnmiLightyModule);
                 LOG.info("RCgNMI lighty.io application started in {}", stopwatch.stop());
             } else {
-                LOG.error("Unable to start RCgNMI lighty.io application!");
+                LOG.error(UNABLE_TO_START_APPLICATION);
                 stop();
             }
         } catch (ExecutionException e) {
@@ -124,15 +125,17 @@ public class RCgNMIApp {
     }
 
     private void shutdownModule(final AbstractLightyModule module) {
-        try {
-            LOG.info("ShutdownHook triggered. Shutting down RCgNMI lighty.io application...");
-            module.shutdown().get();
-            LOG.info("RCgNMI lighty.io application was shut down!");
-        } catch (ExecutionException e) {
-            LOG.error(UNABLE_TO_START_APPLICATION, e);
-        } catch (InterruptedException e) {
-            LOG.error("Unable to shut down RCgNMI lighty.io application! Exception was thrown!", e);
-            Thread.currentThread().interrupt();
+        if (module != null) {
+            try {
+                LOG.info("ShutdownHook triggered. Shutting down RCgNMI lighty.io application...");
+                module.shutdown().get();
+                LOG.info("RCgNMI lighty.io application was shut down!");
+            } catch (ExecutionException e) {
+                LOG.error(UNABLE_TO_STOP_APPLICATION, e);
+            } catch (InterruptedException e) {
+                LOG.error(UNABLE_TO_STOP_APPLICATION, e);
+                Thread.currentThread().interrupt();
+            }
         }
     }
 
