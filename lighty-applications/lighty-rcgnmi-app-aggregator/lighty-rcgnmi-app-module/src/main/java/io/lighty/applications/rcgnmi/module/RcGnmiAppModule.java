@@ -162,7 +162,7 @@ public class RcGnmiAppModule extends AbstractLightyModule {
         if (this.lightyController != null && !stopAndWaitLightyModule(this.lightyController)) {
             success = false;
         }
-        if (this.lightyController != null && !stopAndWaitLightyModule(this.gnmiSouthboundModule)) {
+        if (this.gnmiSouthboundModule != null && !stopAndWaitLightyModule(this.gnmiSouthboundModule)) {
             success = false;
         }
 
