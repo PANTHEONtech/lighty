@@ -9,6 +9,14 @@ package io.lighty.applications.rnc.module.exception;
 
 public class RncLightyAppStartException extends Exception {
 
+    public RncLightyAppStartException() {
+        super();
+    }
+
+    public RncLightyAppStartException(Throwable cause) {
+        super(cause);
+    }
+
     public RncLightyAppStartException(String message) {
         super(message);
     }

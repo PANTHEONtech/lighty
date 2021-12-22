@@ -13,6 +13,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
 import com.google.common.util.concurrent.Futures;
+import io.lighty.applications.rcgnmi.module.RcGnmiAppException;
 import io.lighty.applications.rcgnmi.module.RcGnmiAppModule;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -20,7 +21,7 @@ import org.mockito.Mockito;
 public class RCgNMIAppTest {
 
     @Test
-    public void testStartWithDefaultConfiguration() {
+    public void testStartWithDefaultConfiguration() throws RcGnmiAppException {
         final RCgNMIApp app = Mockito.spy(new RCgNMIApp());
         final RcGnmiAppModule appModule = Mockito.mock(RcGnmiAppModule.class);
         doReturn(Futures.immediateFuture(true)).when(appModule).start();
@@ -31,7 +32,7 @@ public class RCgNMIAppTest {
     }
 
     @Test
-    public void testStartWithConfigFile() {
+    public void testStartWithConfigFile() throws RcGnmiAppException {
         final RCgNMIApp app = Mockito.spy(new RCgNMIApp());
         final RcGnmiAppModule appModule = Mockito.mock(RcGnmiAppModule.class);
         doReturn(Futures.immediateFuture(true)).when(appModule).start();
@@ -42,7 +43,7 @@ public class RCgNMIAppTest {
     }
 
     @Test
-    public void testStartWithConfigFileNoSuchFile() {
+    public void testStartWithConfigFileNoSuchFile() throws RcGnmiAppException {
         final RCgNMIApp app = Mockito.spy(new RCgNMIApp());
         app.start(new String[]{"-c", "no_config.json"});
         verify(app, Mockito.times(0)).createRgnmiAppModule(any(), any(), any());

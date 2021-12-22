@@ -10,6 +10,14 @@ package io.lighty.applications.rcgnmi.module;
 
 public class RcGnmiAppException extends Exception {
 
+    public RcGnmiAppException() {
+        super();
+    }
+
+    public RcGnmiAppException(Throwable cause) {
+        super(cause);
+    }
+
     public RcGnmiAppException(String message) {
         super(message);
     }

@@ -12,6 +12,7 @@ import com.beust.jcommander.JCommander;
 import com.google.common.base.Stopwatch;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.lighty.applications.rcgnmi.module.RcGnmiAppConfiguration;
+import io.lighty.applications.rcgnmi.module.RcGnmiAppException;
 import io.lighty.applications.rcgnmi.module.RcGnmiAppModule;
 import io.lighty.applications.rcgnmi.module.RcGnmiAppModuleConfigUtils;
 import io.lighty.core.common.models.YangModuleUtils;
@@ -42,11 +43,16 @@ public class RCgNMIApp {
     @SuppressWarnings("squid:S4823")
     public static void main(final String[] args) {
         final RCgNMIApp app = new RCgNMIApp();
-        app.start(args);
+        try {
+            app.start(args);
+        } catch (RcGnmiAppException e) {
+            LOG.error(UNABLE_TO_START_APPLICATION, e);
+            System.exit(0);
+        }
     }
 
     @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
-    public void start(final String[] args) {
+    public void start(final String[] args) throws RcGnmiAppException {
         final Stopwatch stopwatch = Stopwatch.createStarted();
         LOG.info(".__  .__       .__     __              .__           ");
         LOG.info("|  | |__| ____ |  |___/  |_ ___.__.    |__| ____     ");
@@ -98,16 +104,16 @@ public class RCgNMIApp {
                 registerShutdownHook(rcgnmiLightyModule);
                 LOG.info("RCgNMI lighty.io application started in {}", stopwatch.stop());
             } else {
-                LOG.error(UNABLE_TO_START_APPLICATION);
                 stop();
+                throw new RcGnmiAppException();
             }
         } catch (ExecutionException e) {
-            LOG.error(UNABLE_TO_START_APPLICATION, e);
             stop();
+            throw new RcGnmiAppException(e);
         } catch (InterruptedException e) {
-            LOG.error(UNABLE_TO_START_APPLICATION, e);
             Thread.currentThread().interrupt();
             stop();
+            throw new RcGnmiAppException(e);
         }
 
     }

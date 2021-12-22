@@ -14,6 +14,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.lighty.applications.rnc.module.RncLightyModule;
 import io.lighty.applications.rnc.module.config.RncLightyModuleConfigUtils;
 import io.lighty.applications.rnc.module.config.RncLightyModuleConfiguration;
+import io.lighty.applications.rnc.module.exception.RncLightyAppStartException;
 import io.lighty.core.common.models.YangModuleUtils;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.impl.config.ConfigurationException;
@@ -48,11 +49,16 @@ public class Main {
     @SuppressWarnings("squid:S4823")
     public static void main(final String[] args) {
         Main app = new Main();
-        app.start(args);
+        try {
+            app.start(args);
+        } catch (RncLightyAppStartException e) {
+            LOG.error(UNABLE_TO_START_APPLICATION, e);
+            System.exit(0);
+        }
     }
 
     @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
-    public void start(final String[] args) {
+    public void start(final String[] args) throws RncLightyAppStartException {
         final Stopwatch stopwatch = Stopwatch.createStarted();
         LOG.info(".__  .__       .__     __              .__           ");
         LOG.info("|  | |__| ____ |  |___/  |_ ___.__.    |__| ____     ");
@@ -109,16 +115,16 @@ public class Main {
                 registerShutdownHook(this.rncLightyModule);
                 LOG.info("RNC lighty.io application started in {}", stopwatch.stop());
             } else {
-                LOG.error(UNABLE_TO_START_APPLICATION);
                 stop();
+                throw new RncLightyAppStartException();
             }
         } catch (ExecutionException e) {
-            LOG.error(UNABLE_TO_START_APPLICATION, e);
             stop();
+            throw new RncLightyAppStartException(e);
         } catch (InterruptedException e) {
-            LOG.error(UNABLE_TO_START_APPLICATION, e);
             Thread.currentThread().interrupt();
             stop();
+            throw new RncLightyAppStartException(e);
         }
     }
 
