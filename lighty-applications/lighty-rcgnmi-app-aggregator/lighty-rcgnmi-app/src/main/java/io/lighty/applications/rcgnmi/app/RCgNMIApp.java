@@ -98,12 +98,15 @@ public class RCgNMIApp {
                 LOG.info("RCgNMI lighty.io application started in {}", stopwatch.stop());
             } else {
                 LOG.error("Unable to start RCgNMI lighty.io application!");
+                stop();
             }
         } catch (ExecutionException e) {
             LOG.error(UNABLE_TO_START_APPLICATION, e);
+            stop();
         } catch (InterruptedException e) {
             LOG.error(UNABLE_TO_START_APPLICATION, e);
             Thread.currentThread().interrupt();
+            stop();
         }
 
     }
