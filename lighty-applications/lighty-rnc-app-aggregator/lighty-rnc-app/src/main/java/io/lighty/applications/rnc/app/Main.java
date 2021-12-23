@@ -22,6 +22,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
@@ -37,8 +39,11 @@ import org.slf4j.LoggerFactory;
 
 public class Main {
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
+    private static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.SECONDS;
 
     private static final String UNABLE_TO_START_APPLICATION = "Unable to start lighty.io application!";
+
+    private Integer lightyModuleTimeout;
 
     // Using args is safe as we need only a configuration file location here
     @SuppressWarnings("squid:S4823")
@@ -71,7 +76,13 @@ public class Main {
             PropertyConfigurator.configure(arguments.getLoggerPath());
             LOG.info("Custom logger properties loaded successfully");
         }
-
+        lightyModuleTimeout = arguments.getApplicationTimeout();
+        if (lightyModuleTimeout < 15) {
+            final Integer defaultValue = new Arguments().getApplicationTimeout();
+            LOG.info("Provided application timeout [{}] is not in range (15 - INT.MAX). Using default value [{}]",
+                    lightyModuleTimeout, defaultValue);
+            lightyModuleTimeout = defaultValue;
+        }
         try {
             MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
             registerLoggerMBeans(mbs);
@@ -97,10 +108,11 @@ public class Main {
                 rncModuleConfig.getControllerConfig().getSchemaServiceConfig().getModels());
         LOG.info("Loaded YANG modules: {}", arrayNode);
 
-        RncLightyModule rncLightyModule = createRncLightyModule(rncModuleConfig);
+        RncLightyModule rncLightyModule = createRncLightyModule(rncModuleConfig)
+                .setRncModuleTimeout(lightyModuleTimeout);
         try {
-            rncLightyModule.start().get();
-        } catch (ExecutionException e) {
+            rncLightyModule.start().get(lightyModuleTimeout, DEFAULT_TIME_UNIT);
+        } catch (ExecutionException | TimeoutException e) {
             LOG.error(UNABLE_TO_START_APPLICATION, e);
             return;
         } catch (InterruptedException e) {
@@ -122,9 +134,9 @@ public class Main {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 LOG.info("ShutdownHook triggered. Shutting down RNC lighty.io application...");
-                application.shutdown().get();
+                application.shutdown().get(lightyModuleTimeout, DEFAULT_TIME_UNIT);
                 LOG.info("RNC lighty.io application was shut down!");
-            } catch (ExecutionException e) {
+            } catch (ExecutionException | TimeoutException e) {
                 LOG.error(UNABLE_TO_START_APPLICATION, e);
             } catch (InterruptedException e) {
                 LOG.error("Unable to shut down RNC lighty.io application! Exception was thrown!", e);

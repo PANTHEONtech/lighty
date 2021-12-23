@@ -21,12 +21,21 @@ public class Arguments {
             + " (If absent, will look on classpath for it")
     private String loggerPath;
 
+    @Parameter(names = {"-t", "--timeout-in-seconds"}, description = "Application timeout in seconds. "
+            + "This parameter specifies max time which application will wait until a timeout exception will be thrown. "
+            + "Default value is 60. (15 - INT.MAX)")
+    private Integer applicationTimeout = 60;
+
     public String getConfigPath() {
         return configPath;
     }
 
     public String getLoggerPath() {
         return loggerPath;
+    }
+
+    public Integer getApplicationTimeout() {
+        return applicationTimeout;
     }
 
 }

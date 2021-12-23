@@ -22,6 +22,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
@@ -33,8 +35,10 @@ public class RCgNMIApp {
     private static final Logger LOG = LoggerFactory.getLogger(RCgNMIApp.class);
 
     private static final String UNABLE_TO_START_APPLICATION = "Unable to start lighty.io application!";
+    private static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.SECONDS;
 
-    private AbstractLightyModule rcgnmiLightyModule;
+    private RcGnmiAppModule rcgnmiLightyModule;
+    private Integer lightyModuleTimeout;
 
     // Using args is safe as we need only a configuration file location here
     @SuppressWarnings("squid:S4823")
@@ -67,7 +71,13 @@ public class RCgNMIApp {
             PropertyConfigurator.configure(arguments.getLoggerPath());
             LOG.info("Custom logger properties loaded successfully");
         }
-
+        lightyModuleTimeout = arguments.getApplicationTimeout();
+        if (lightyModuleTimeout < 15) {
+            final Integer defaultValue = new Arguments().getApplicationTimeout();
+            LOG.info("Provided application timeout [{}] is not in range (15 - INT.MAX). Using default value [{}]",
+                    lightyModuleTimeout, defaultValue);
+            lightyModuleTimeout = defaultValue;
+        }
         try {
             if (arguments.getConfigPath() != null) {
                 final Path configPath = Paths.get(arguments.getConfigPath());
@@ -88,9 +98,10 @@ public class RCgNMIApp {
                 .getControllerConfig().getSchemaServiceConfig().getModels()));
         final ExecutorService executorService = SpecialExecutors.newBoundedCachedThreadPool(10,
                 100, "gnmi_executor", Logger.class);
-        rcgnmiLightyModule = createRgnmiAppModule(rgnmiModuleConfig, executorService, null);
+        rcgnmiLightyModule = createRgnmiAppModule(rgnmiModuleConfig, executorService, null)
+                .setRcGnmiModuleTimeout(lightyModuleTimeout);
         try {
-            final boolean hasStarted = rcgnmiLightyModule.start().get();
+            final boolean hasStarted = rcgnmiLightyModule.start().get(lightyModuleTimeout, DEFAULT_TIME_UNIT);
             if (hasStarted) {
                 // Register shutdown hook for graceful shutdown
                 LOG.info("Registering ShutdownHook to gracefully shutdown application");
@@ -99,7 +110,7 @@ public class RCgNMIApp {
             } else {
                 LOG.error("Unable to start RCgNMI lighty.io application!");
             }
-        } catch (ExecutionException e) {
+        } catch (ExecutionException | TimeoutException e) {
             LOG.error(UNABLE_TO_START_APPLICATION, e);
         } catch (InterruptedException e) {
             LOG.error(UNABLE_TO_START_APPLICATION, e);
@@ -123,9 +134,9 @@ public class RCgNMIApp {
     private void shutdownModule(final AbstractLightyModule module) {
         try {
             LOG.info("ShutdownHook triggered. Shutting down RCgNMI lighty.io application...");
-            module.shutdown().get();
+            module.shutdown().get(lightyModuleTimeout, DEFAULT_TIME_UNIT);
             LOG.info("RCgNMI lighty.io application was shut down!");
-        } catch (ExecutionException e) {
+        } catch (ExecutionException | TimeoutException e) {
             LOG.error(UNABLE_TO_START_APPLICATION, e);
         } catch (InterruptedException e) {
             LOG.error("Unable to shut down RCgNMI lighty.io application! Exception was thrown!", e);

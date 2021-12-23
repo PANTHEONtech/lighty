@@ -24,6 +24,7 @@ public class MainTest {
     public void testStartWithDefaultConfiguration() {
         Main app = spy(new Main());
         RncLightyModule lighty = mock(RncLightyModule.class);
+        doReturn(lighty).when(lighty).setRncModuleTimeout(any());
         doReturn(Futures.immediateFuture(true)).when(lighty).start();
         doReturn(Futures.immediateFuture(true)).when(lighty).shutdown();
         doReturn(lighty).when(app).createRncLightyModule(any());
@@ -34,6 +35,7 @@ public class MainTest {
     public void testStartWithConfigFile() {
         Main app = spy(new Main());
         RncLightyModule lighty = mock(RncLightyModule.class);
+        doReturn(lighty).when(lighty).setRncModuleTimeout(any());
         doReturn(Futures.immediateFuture(true)).when(lighty).start();
         doReturn(Futures.immediateFuture(true)).when(lighty).shutdown();
         doReturn(lighty).when(app).createRncLightyModule(any());

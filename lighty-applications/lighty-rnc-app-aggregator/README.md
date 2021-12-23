@@ -36,7 +36,10 @@ To build and start the lighty.io RNC application in the local environment, follo
    
 4. To start the application with custom lighty configuration, use arg -c and for custom initial log4j configuration use argument -l:  
    `java -jar lighty-rnc-app-<version>.jar -c /path/to/config-file -l /path/to/log4j-config-file`  
-   
+
+    To extend application time-out use the argument `-t/--timeout-in-seconds`. This argument override current default application time-out set to 60s.
+   `java -jar lighty-rnc-app-<version>.jar -t 90`
+
    Example configuration files are located on following path:  
    `lighty-rnc-app-docker/example-config/*`
 
