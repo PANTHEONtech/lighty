@@ -116,8 +116,8 @@ public abstract class AbstractLightyModule implements LightyModule {
         return this.executorService.submit(() -> {
             synchronized (this) {
                 LOG.debug("Starting initialization of LightyModule {}", this.getClass().getSimpleName());
-                boolean initResult = initProcedure();
                 this.running = true;
+                boolean initResult = initProcedure();
                 LOG.info("LightyModule {} started.", this.getClass().getSimpleName());
                 return initResult;
             }
