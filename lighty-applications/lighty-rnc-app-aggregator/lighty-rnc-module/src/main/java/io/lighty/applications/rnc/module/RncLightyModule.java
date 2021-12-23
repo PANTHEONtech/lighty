@@ -41,11 +41,11 @@ import org.slf4j.LoggerFactory;
 public class RncLightyModule extends AbstractLightyModule {
 
     private static final Logger LOG = LoggerFactory.getLogger(RncLightyModule.class);
-    private static final long DEFAULT_LIGHTY_MODULE_TIMEOUT = 60;
     private static final TimeUnit DEFAULT_LIGHTY_MODULE_TIME_UNIT = TimeUnit.SECONDS;
 
     private final RncLightyModuleConfiguration rncModuleConfig;
 
+    private Integer lightyModuleTimeout = 60;
     private LightyController lightyController;
     private CommunityRestConf lightyRestconf;
     private NetconfSBPlugin lightyNetconf;
@@ -56,6 +56,11 @@ public class RncLightyModule extends AbstractLightyModule {
         LOG.info("Creating instance of RNC lighty.io module...");
         this.rncModuleConfig = rncModuleConfig;
         LOG.info("Instance of RNC lighty.io module created!");
+    }
+
+    public RncLightyModule setRncModuleTimeout(final Integer rncModuleTimeout) {
+        this.lightyModuleTimeout = rncModuleTimeout;
+        return this;
     }
 
     @Override
@@ -137,7 +142,7 @@ public class RncLightyModule extends AbstractLightyModule {
         try {
             LOG.info("Initializing lighty.io module ({})...", lightyModule.getClass());
             boolean startSuccess = lightyModule.start()
-                    .get(DEFAULT_LIGHTY_MODULE_TIMEOUT, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
+                    .get(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
             if (startSuccess) {
                 LOG.info("lighty.io module ({}) initialized successfully!", lightyModule.getClass());
             } else {
@@ -192,7 +197,7 @@ public class RncLightyModule extends AbstractLightyModule {
         try {
             LOG.info("Stopping lighty.io module ({})...", lightyModule.getClass());
             boolean stopSuccess =
-                    lightyModule.shutdown().get(DEFAULT_LIGHTY_MODULE_TIMEOUT, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
+                    lightyModule.shutdown().get(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
             if (stopSuccess) {
                 LOG.info("lighty.io module ({}) stopped successfully!", lightyModule.getClass());
                 return true;

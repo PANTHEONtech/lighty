@@ -29,6 +29,9 @@ To build and start the RCgNMI application in your local environment, follow thes
 4. To start the application with a custom lighty.io configuration, use the argument _-c_ and for a custom initial log4j configuration, use argument _-l_:  
    `java -jar lighty-rcgnmi-app-<version>.jar -c /path/to/config-file -l /path/to/log4j-config-file`  
 
+    To extend application time-out use the argument `-t/--timeout-in-seconds`. This argument override current default application time-out set to 60s.
+    `java -jar lighty-rcgnmi-app-<version>.jar -t 90`
+
    Example configuration files are located on following path:  
    `lighty-rcgnmi-app-docker/example-config/*`
 

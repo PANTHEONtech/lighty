@@ -54,9 +54,9 @@ import org.slf4j.LoggerFactory;
 public class RcGnmiAppModule extends AbstractLightyModule {
 
     private static final Logger LOG = LoggerFactory.getLogger(RcGnmiAppModule.class);
-    private static final long DEFAULT_LIGHTY_MODULE_TIMEOUT = 60;
     private static final TimeUnit DEFAULT_LIGHTY_MODULE_TIME_UNIT = TimeUnit.SECONDS;
 
+    private Integer lightyModuleTimeout = 60;
     private final RcGnmiAppConfiguration appModuleConfig;
     private final ExecutorService gnmiExecutorService;
     private final CrossSourceStatementReactor customReactor;
@@ -72,6 +72,11 @@ public class RcGnmiAppModule extends AbstractLightyModule {
         this.gnmiExecutorService = Objects.requireNonNull(gnmiExecutorService);
         this.customReactor = customReactor;
         LOG.info("Instance of RCgNMI lighty.io module created!");
+    }
+
+    public RcGnmiAppModule setRcGnmiModuleTimeout(final Integer rcGnmiModuleTimeout) {
+        this.lightyModuleTimeout = rcGnmiModuleTimeout;
+        return this;
     }
 
     @Override
@@ -132,7 +137,7 @@ public class RcGnmiAppModule extends AbstractLightyModule {
         try {
             LOG.info("Initializing lighty.io module ({})...", lightyModule.getClass());
             final boolean startSuccess = lightyModule.start()
-                    .get(DEFAULT_LIGHTY_MODULE_TIMEOUT, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
+                    .get(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
             if (startSuccess) {
                 LOG.info("lighty.io module ({}) initialized successfully!", lightyModule.getClass());
             } else {
@@ -180,7 +185,7 @@ public class RcGnmiAppModule extends AbstractLightyModule {
         try {
             LOG.info("Stopping lighty.io module ({})...", lightyModule.getClass());
             final boolean stopSuccess =
-                    lightyModule.shutdown().get(DEFAULT_LIGHTY_MODULE_TIMEOUT, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
+                    lightyModule.shutdown().get(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
             if (stopSuccess) {
                 LOG.info("lighty.io module ({}) stopped successfully!", lightyModule.getClass());
                 return true;
