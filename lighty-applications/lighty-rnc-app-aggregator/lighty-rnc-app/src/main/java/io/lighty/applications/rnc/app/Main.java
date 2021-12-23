@@ -14,6 +14,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.lighty.applications.rnc.module.RncLightyModule;
 import io.lighty.applications.rnc.module.config.RncLightyModuleConfigUtils;
 import io.lighty.applications.rnc.module.config.RncLightyModuleConfiguration;
+import io.lighty.applications.rnc.module.exception.RncLightyAppStartException;
 import io.lighty.core.common.models.YangModuleUtils;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.impl.config.ConfigurationException;
@@ -38,22 +39,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Main {
+
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
     private static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.SECONDS;
+    private static final String UNABLE_TO_START_APPLICATION = "Unable to start RNC lighty.io application!";
+    private static final String UNABLE_TO_STOP_APPLICATION
+            = "Exception was thrown while shutting down RNC lighty.io application!";
 
-    private static final String UNABLE_TO_START_APPLICATION = "Unable to start lighty.io application!";
-
+    private AbstractLightyModule rncLightyModule;
     private Integer lightyModuleTimeout;
 
     // Using args is safe as we need only a configuration file location here
     @SuppressWarnings("squid:S4823")
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         Main app = new Main();
-        app.start(args);
+        try {
+            app.start(args);
+        } catch (RncLightyAppStartException e) {
+            LOG.error("Failed to initialize RNC app. Closing application.", e);
+            app.stop();
+        }
     }
 
     @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
-    public void start(String[] args) {
+    public void start(final String[] args) throws RncLightyAppStartException {
         final Stopwatch stopwatch = Stopwatch.createStarted();
         LOG.info(".__  .__       .__     __              .__           ");
         LOG.info("|  | |__| ____ |  |___/  |_ ___.__.    |__| ____     ");
@@ -108,41 +117,53 @@ public class Main {
                 rncModuleConfig.getControllerConfig().getSchemaServiceConfig().getModels());
         LOG.info("Loaded YANG modules: {}", arrayNode);
 
-        RncLightyModule rncLightyModule = createRncLightyModule(rncModuleConfig)
-                .setRncModuleTimeout(lightyModuleTimeout);
+        rncLightyModule = createRncLightyModule(rncModuleConfig).setRncModuleTimeout(lightyModuleTimeout);
         try {
-            rncLightyModule.start().get(lightyModuleTimeout, DEFAULT_TIME_UNIT);
+            Boolean hasStarted = rncLightyModule.start().get(lightyModuleTimeout, DEFAULT_TIME_UNIT);
+            if (hasStarted) {
+                LOG.info("Registering ShutdownHook to gracefully shutdown application");
+                registerShutdownHook(rncLightyModule);
+                LOG.info("RNC lighty.io application started in {}", stopwatch.stop());
+            } else {
+                throw new RncLightyAppStartException(UNABLE_TO_START_APPLICATION);
+            }
         } catch (ExecutionException | TimeoutException e) {
-            LOG.error(UNABLE_TO_START_APPLICATION, e);
-            return;
+            throw new RncLightyAppStartException(UNABLE_TO_START_APPLICATION, e);
         } catch (InterruptedException e) {
-            LOG.error(UNABLE_TO_START_APPLICATION, e);
             Thread.currentThread().interrupt();
+            throw new RncLightyAppStartException(UNABLE_TO_START_APPLICATION, e);
         }
-
-        // Register shutdown hook for graceful shutdown
-        LOG.info("Registering ShutdownHook to gracefully shutdown application");
-        registerShutdownHook(rncLightyModule);
-        LOG.info("RNC lighty.io application started in {}", stopwatch.stop());
     }
 
-    public RncLightyModule createRncLightyModule(RncLightyModuleConfiguration rncModuleConfig) {
+    public RncLightyModule createRncLightyModule(final RncLightyModuleConfiguration rncModuleConfig) {
         return new RncLightyModule(rncModuleConfig);
     }
 
-    private void registerShutdownHook(AbstractLightyModule application) {
+    private void registerShutdownHook(final AbstractLightyModule application) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            shutdownModule(application);
+        }));
+    }
+
+    private void shutdownModule(final AbstractLightyModule module) {
+        if (module != null) {
             try {
                 LOG.info("ShutdownHook triggered. Shutting down RNC lighty.io application...");
-                application.shutdown().get(lightyModuleTimeout, DEFAULT_TIME_UNIT);
+                module.shutdown().get(lightyModuleTimeout, DEFAULT_TIME_UNIT);
                 LOG.info("RNC lighty.io application was shut down!");
             } catch (ExecutionException | TimeoutException e) {
-                LOG.error(UNABLE_TO_START_APPLICATION, e);
+                LOG.error(UNABLE_TO_STOP_APPLICATION, e);
             } catch (InterruptedException e) {
-                LOG.error("Unable to shut down RNC lighty.io application! Exception was thrown!", e);
+                LOG.error(UNABLE_TO_STOP_APPLICATION, e);
                 Thread.currentThread().interrupt();
             }
-        }));
+        }
+    }
+
+    public void stop() {
+        LOG.info("Shutting down RNC application!");
+        shutdownModule(this.rncLightyModule);
+        LOG.info("RNC application stopped!");
     }
 
     /**
@@ -153,10 +174,10 @@ public class Main {
      * @throws InstanceAlreadyExistsException if MBean is already registered
      * @throws MBeanRegistrationException if MBean cant be registered
      */
-    private void registerLoggerMBeans(MBeanServer server) throws MalformedObjectNameException,
+    private void registerLoggerMBeans(final MBeanServer server) throws MalformedObjectNameException,
             NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException {
 
-        HierarchyDynamicMBean hierarchyDynamicMBean = new HierarchyDynamicMBean();
+        final HierarchyDynamicMBean hierarchyDynamicMBean = new HierarchyDynamicMBean();
         final ObjectName mbo = new ObjectName("log4j:hierarchy=LoggerHierarchy");
         server.registerMBean(hierarchyDynamicMBean, mbo);
 

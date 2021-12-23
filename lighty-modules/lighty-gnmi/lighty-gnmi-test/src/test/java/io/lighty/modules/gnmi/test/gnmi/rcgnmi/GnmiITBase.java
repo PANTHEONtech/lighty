@@ -16,6 +16,7 @@ import static io.lighty.modules.gnmi.test.gnmi.rcgnmi.GnmiITBase.GeneralConstant
 
 import gnmi.Gnmi;
 import io.lighty.applications.rcgnmi.app.RCgNMIApp;
+import io.lighty.applications.rcgnmi.module.RcGnmiAppException;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
 import io.lighty.modules.gnmi.simulatordevice.utils.GnmiSimulatorConfUtils;
@@ -61,7 +62,7 @@ public abstract class GnmiITBase {
     protected static HttpClient httpClient;
 
     @BeforeAll
-    public static void setup() {
+    public static void setup() throws RcGnmiAppException {
         httpClientExecutor = Executors.newSingleThreadExecutor();
         httpClient = HttpClient.newBuilder().executor(httpClientExecutor).build();
 
