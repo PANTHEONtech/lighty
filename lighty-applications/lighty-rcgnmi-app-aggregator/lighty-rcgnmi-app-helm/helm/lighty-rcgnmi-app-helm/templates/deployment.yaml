@@ -18,8 +18,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.name }}:{{ .Values.image.version }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args: [ "-c","{{ .Values.lighty.configDirectoryName }}/{{ .Values.lighty.configFilename }}",
-                  "-l","{{ .Values.lighty.configDirectoryName }}/{{ .Values.lighty.loggerConfigFilename }}"]
+          args: [ "-c","{{ .Values.lighty.configDirectoryName }}/{{ .Values.lighty.configFilename }}"]
           volumeMounts:
             - name: config-volume
               mountPath: {{ .Values.lighty.workdir }}/{{ .Values.lighty.configDirectoryName }}
@@ -29,6 +28,8 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: status.podIP
+            - name: LOG_OPTS
+              value: "-Dlog4j.configurationFile={{ .Values.lighty.configDirectoryName }}/{{ .Values.lighty.loggerConfigFilename }}"
             {{- if .Values.lighty.jmx.enableJmxRemoting }}
             - name: JAVA_OPTS
               value: "-Dcom.sun.management.jmxremote
