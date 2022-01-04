@@ -16,6 +16,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.protobuf.ByteString;
 import gnmi.Gnmi;
+import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
 import java.io.IOException;
@@ -35,7 +36,8 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
 
     private final String baseJson;
 
-    public GetResponseToNormalizedNodeTestCases() throws IOException, YangLoadException, SchemaException {
+    public GetResponseToNormalizedNodeTestCases()
+            throws IOException, YangLoadException, SchemaException, ConfigurationException {
         super();
         this.baseJson = Files.readString(BASE_JSON_PATH);
     }
@@ -78,11 +80,11 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
                         .setName("interfaces"))
                 .build();
         JsonObject interfacesObject = new JsonParser().parse(baseJson).getAsJsonObject()
-                .getAsJsonObject(makePrefixString(IT_ID, "interfaces"));
+                .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"));
 
         if (!oneLevelDeeperThanRequest) {
             JsonObject obj = new JsonObject();
-            obj.add(makePrefixString(IT_ID, "interfaces"),interfacesObject);
+            obj.add(makePrefixString(OC_INTERFACES_ID, "interfaces"),interfacesObject);
             interfacesObject = obj;
         }
 
@@ -122,14 +124,14 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
         String jsonResponse = baseJson;
         JsonObject jsonInterfaceEth3 =
                 new JsonParser().parse(jsonResponse).getAsJsonObject()
-                        .getAsJsonObject(makePrefixString(IT_ID, "interfaces"))
+                        .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"))
                         .getAsJsonArray("interface").get(0).getAsJsonObject();
 
         if (oneLevelDeeperThanRequest) {
             final JsonObject wrapped = new JsonObject();
             final JsonArray array = new JsonArray();
             array.add(jsonInterfaceEth3);
-            wrapped.add(String.format("%s:%s", IT_ID, "interface"), array);
+            wrapped.add(String.format("%s:%s", OC_INTERFACES_ID, "interface"), array);
             jsonInterfaceEth3 = wrapped;
         }
 
@@ -170,13 +172,13 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
         String jsonResponse = baseJson;
         JsonObject jsonInterfaceConfig =
                 new JsonParser().parse(jsonResponse).getAsJsonObject()
-                        .getAsJsonObject(makePrefixString(IT_ID, "interfaces"))
+                        .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"))
                         .getAsJsonArray("interface")
                         .get(0).getAsJsonObject().getAsJsonObject("config");
 
         if (!oneLevelDeeperThanRequest) {
             final JsonObject wrapped = new JsonObject();
-            wrapped.add(makePrefixString(IT_ID, "config"), jsonInterfaceConfig);
+            wrapped.add(makePrefixString(OC_INTERFACES_ID, "config"), jsonInterfaceConfig);
             jsonInterfaceConfig = wrapped;
         }
 
@@ -219,14 +221,14 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
         String jsonResponse = baseJson;
         JsonObject jsonInterfaceEthConfig =
                 new JsonParser().parse(jsonResponse).getAsJsonObject()
-                        .getAsJsonObject(makePrefixString(IT_ID, "interfaces"))
+                        .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"))
                         .getAsJsonArray("interface")
                         .get(1).getAsJsonObject().getAsJsonObject("ethernet")
                         .getAsJsonObject("config");
 
         if (!oneLevelDeeperThanRequest) {
             final JsonObject wrapped = new JsonObject();
-            wrapped.add(makePrefixString(ETH_ID, "config"), jsonInterfaceEthConfig);
+            wrapped.add(makePrefixString(OC_IF_ETHERNET_ID, "config"), jsonInterfaceEthConfig);
             jsonInterfaceEthConfig = wrapped;
         }
 
@@ -268,7 +270,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
         String jsonResponse = baseJson;
         JsonElement jsonMtu =
                 new JsonParser().parse(jsonResponse).getAsJsonObject()
-                        .getAsJsonObject(makePrefixString(IT_ID, "interfaces"))
+                        .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"))
                         .getAsJsonArray("interface").get(0)
                         .getAsJsonObject().getAsJsonObject("config").getAsJsonPrimitive("mtu");
 
@@ -318,7 +320,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
         String jsonResponse = baseJson;
         JsonElement jsonConfigName =
                 new JsonParser().parse(jsonResponse).getAsJsonObject()
-                        .getAsJsonObject(makePrefixString(IT_ID, "interfaces"))
+                        .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"))
                         .getAsJsonArray("interface").get(0)
                         .getAsJsonObject().getAsJsonObject("config").getAsJsonPrimitive("name");
 
@@ -368,7 +370,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
         String jsonResponse = baseJson;
         JsonElement jsonLoopbackMode =
                 new JsonParser().parse(jsonResponse).getAsJsonObject()
-                        .getAsJsonObject(makePrefixString(IT_ID, "interfaces"))
+                        .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"))
                         .getAsJsonArray("interface").get(0)
                         .getAsJsonObject().getAsJsonObject("config").getAsJsonPrimitive("loopback-mode");
 
@@ -422,7 +424,7 @@ public class GetResponseToNormalizedNodeTestCases extends CodecTestCasesBase {
         String jsonResponse = baseJson;
         JsonElement jsonAggregateId =
                 new JsonParser().parse(jsonResponse).getAsJsonObject()
-                        .getAsJsonObject(makePrefixString(IT_ID, "interfaces"))
+                        .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"))
                         .getAsJsonArray("interface").get(1)
                         .getAsJsonObject().getAsJsonObject("ethernet")
                         .getAsJsonObject("config")

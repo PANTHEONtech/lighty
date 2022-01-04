@@ -71,7 +71,11 @@ public final class BgpConfigUtils {
             org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.ted
                     .rev131021.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.ospf.topology
-                    .rev131021.$YangModuleInfoImpl.getInstance()
+                    .rev131021.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.topology.sr
+                    .rev130819.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.topology.tunnel.sr
+                    .rev130819.$YangModuleInfoImpl.getInstance()
     );
 
     private static final Set<YangModuleInfo> EXTENSIONS_MODELS = ImmutableSet.of(

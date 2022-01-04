@@ -10,6 +10,7 @@ package io.lighty.gnmi.southbound.mountpoint.codecs;
 
 import com.google.gson.Gson;
 import gnmi.Gnmi;
+import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.gnmi.southbound.mountpoint.codecs.testcases.GetResponseToNormalizedNodeTestCases;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
@@ -29,7 +30,7 @@ public class GetResponseToNormalizedNodeCodecTest {
     private static GetResponseToNormalizedNodeCodec codec;
 
     @BeforeAll
-    public static void init() throws YangLoadException, IOException, SchemaException {
+    public static void init() throws YangLoadException, IOException, SchemaException, ConfigurationException {
         testCases = new GetResponseToNormalizedNodeTestCases();
         final Gson gson = new Gson();
         codec = new GetResponseToNormalizedNodeCodec(testCases.getSchemaContextProvider(), gson);

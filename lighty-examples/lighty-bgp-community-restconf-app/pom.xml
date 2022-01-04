@@ -48,6 +48,11 @@
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-annotations</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <scope>compile</scope>
+        </dependency>
 
         <!-- Test -->
         <dependency>

@@ -7,13 +7,14 @@
  */
 package io.lighty.codecs.util;
 
-import com.google.common.io.Closeables;
+import com.google.common.base.Preconditions;
+import io.lighty.codecs.util.exception.DeserializationException;
+import io.lighty.codecs.util.exception.SerializationException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URISyntaxException;
-import java.util.Optional;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
@@ -21,7 +22,6 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -32,10 +32,7 @@ import org.opendaylight.yangtools.yang.data.codec.xml.XmlParserStream;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
-import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack.Inference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -72,166 +69,108 @@ public class XmlNodeConverter implements NodeConverter {
     }
 
     /**
-     * This method serializes the given {@link NormalizedNode} into its XML string representation.
+     * Serializes the given {@link NormalizedNode} into its {@link Writer} representation.
      *
-     * @see NodeConverter#serializeData(SchemaNode, NormalizedNode)
-     *
-     * @param schemaNode the parent schema node where the nodes exist
-     * @param normalizedNode {@link NormalizedNode} to be serialized
-     * @return {@link StringWriter} implementation of {@link Writer} is returned
-     * @throws SerializationException if it was not possible to serialize the normalized nodes into XML
+     * @param schemaInferenceStack schema inference stack pointing to normalizedNode's parent
+     * @param normalizedNode       normalized node to serialize
+     * @return {@link Writer}
+     * @throws SerializationException if something goes wrong with serialization
      */
     @Override
-    public Writer serializeData(final SchemaNode schemaNode, final NormalizedNode normalizedNode)
-            throws SerializationException {
-        Writer writer = new StringWriter();
-        try (NormalizedNodeWriter normalizedNodeWriter =
-                createNormalizedNodeWriter(effectiveModelContext, writer, schemaNode.getPath())) {
-            normalizedNodeWriter.write(normalizedNode);
-            normalizedNodeWriter.flush();
-        } catch (IOException ioe) {
-            throw new SerializationException(ioe);
+    @SuppressWarnings({"checkstyle:illegalCatch"})
+    public Writer serializeData(final SchemaInferenceStack schemaInferenceStack,
+            final NormalizedNode normalizedNode) throws SerializationException {
+        final Writer writer = new StringWriter();
+        XMLStreamWriter xmlStreamWriter;
+        try {
+            xmlStreamWriter = XML_OUT_FACTORY.createXMLStreamWriter(writer);
+        } catch (XMLStreamException | FactoryConfigurationError e) {
+            throw new SerializationException(e);
         }
-        return writer;
+        final NormalizedNodeStreamWriter nnStreamWriter = XMLStreamNormalizedNodeStreamWriter
+                .create(xmlStreamWriter, schemaInferenceStack.toInference());
+        try (NormalizedNodeWriter nnWriter = NormalizedNodeWriter.forStreamWriter(nnStreamWriter)) {
+            nnWriter.write(normalizedNode);
+            return writer;
+        } catch (RuntimeException | IOException e) {
+            throw new SerializationException(e);
+        }
     }
 
-    /**
-     * This method serializes the input or output of a RPC given as {@link NormalizedNode}
-     * representation into XML string representation.
-     *
-     * <p>
-     * To obtain correct {@link SchemaNode} use {@link ConverterUtils#loadRpc(EffectiveModelContext, QName)} method.
-     *
-     * @param schemaNode input or output {@link SchemaNode}
-     * @param normalizedNode {@link NormalizedNode} representation of input or output
-     * @return XML string representation of provided BI nodes. It utilizes the {@link StringWriter}
-     * @throws SerializationException may be thrown if there was a problem during serialization
-     */
     @Override
-    public Writer serializeRpc(final SchemaNode schemaNode, final NormalizedNode normalizedNode)
+    @SuppressWarnings({"checkstyle:illegalCatch"})
+    public Writer serializeRpc(final SchemaInferenceStack schemaInferenceStack, final NormalizedNode normalizedNode)
             throws SerializationException {
-        Writer writer = new StringWriter();
-        XMLStreamWriter xmlStreamWriter = createXmlStreamWriter(writer);
-        XMLNamespace namespace = schemaNode.getQName().getNamespace();
-        String localName = schemaNode.getQName().getLocalName();
-        try (NormalizedNodeWriter normalizedNodeWriter =
-                createNormalizedNodeWriter(effectiveModelContext, xmlStreamWriter, schemaNode.getPath())) {
-            // the localName may be "input" or "output" - this may be changed
+        Preconditions.checkState(normalizedNode instanceof ContainerNode,
+                "RPC input/output to serialize is expected to be a ContainerNode");
+        final Writer writer = new StringWriter();
+        XMLStreamWriter xmlStreamWriter;
+        try {
+            xmlStreamWriter = XML_OUT_FACTORY.createXMLStreamWriter(writer);
+        } catch (XMLStreamException | FactoryConfigurationError e) {
+            throw new SerializationException(e);
+        }
+        final XMLNamespace namespace = schemaInferenceStack.currentModule().localQNameModule().getNamespace();
+        // Input/output
+        final String localName = schemaInferenceStack.toSchemaNodeIdentifier().lastNodeIdentifier().getLocalName();
+        final NormalizedNodeStreamWriter nnStreamWriter = XMLStreamNormalizedNodeStreamWriter
+                .create(xmlStreamWriter, schemaInferenceStack.toInference());
+        try (NormalizedNodeWriter nnWriter = NormalizedNodeWriter.forStreamWriter(nnStreamWriter)) {
             xmlStreamWriter.writeStartElement(XMLConstants.DEFAULT_NS_PREFIX, localName, namespace.toString());
             xmlStreamWriter.writeDefaultNamespace(namespace.toString());
             for (NormalizedNode child : ((ContainerNode) normalizedNode).body()) {
-                normalizedNodeWriter.write(child);
+                nnWriter.write(child);
             }
-            normalizedNodeWriter.flush();
             xmlStreamWriter.writeEndElement();
-            xmlStreamWriter.flush();
-        } catch (IOException | XMLStreamException ioe) {
-            throw new SerializationException(ioe);
+            return writer;
+        } catch (RuntimeException | XMLStreamException | IOException e) {
+            throw new SerializationException(e);
         }
-        return writer;
     }
 
     /**
-     * This method deserializes the provided XML string representation (via {@link Reader}) interface
-     * into {@link NormalizedNode}s. During deserialization of RPC input and output a proper
-     * {@link SchemaNode} (given for input or output) must be passed. This may be obtained via
-     * {@link ConverterUtils#loadRpc(EffectiveModelContext, QName)}.
+     * Deserializes a given XML input data into {@link NormalizedNode}.
      *
-     * @param schemaNode parent schema node which contains information about the input data
-     * @param inputData XML input
-     * @return an {@link Optional} representation of {@link NormalizedNode}. If the deserialization
-     *         process finished incorrectly an empty value will be present
-     * @throws SerializationException if it was not possible to deserialize the input data
-     * @throws IllegalArgumentException if a problem occurs during reading the input
+     * <p>
+     * In the case of deserializing multiple top level list entries, entries are expected to be wrapped in
+     * {@code <data xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">}.
+     *
+     * @param schemaInferenceStack schema inference stack pointing to a node we are trying to deserialize
+     * @param inputData            Reader containing input JSON data describing node to deserialize
+     * @return deserialized {@link NormalizedNode}
+     * @throws DeserializationException is thrown in case of an error during deserialization
      */
     @Override
-    public NormalizedNode deserialize(final SchemaNode schemaNode, final Reader inputData)
-            throws SerializationException {
+    @SuppressWarnings({"checkstyle:illegalCatch"})
+    public NormalizedNode deserialize(final SchemaInferenceStack schemaInferenceStack,
+            final Reader inputData) throws DeserializationException {
         final XMLStreamReader reader;
         try {
             reader = XML_IN_FACTORY.createXMLStreamReader(inputData);
         } catch (XMLStreamException e) {
-            throw new IllegalArgumentException(e);
+            throw new DeserializationException(e);
         }
 
-        Inference inference = SchemaInferenceStack.ofSchemaPath(this.effectiveModelContext,
-                schemaNode.getPath()).toInference();
         final NormalizedNodeResult result = new NormalizedNodeResult();
-        try (NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
-                XmlParserStream xmlParser = XmlParserStream.create(streamWriter, inference)) {
+        final NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
+        try (XmlParserStream xmlParser = XmlParserStream.create(streamWriter, schemaInferenceStack.toInference())) {
             xmlParser.parse(reader);
-        } catch (XMLStreamException | URISyntaxException | IOException | SAXException e) {
-            throw new SerializationException(e);
+            return result.getResult();
+        } catch (RuntimeException | XMLStreamException | URISyntaxException | SAXException | IOException e) {
+            throw new DeserializationException(e);
         } finally {
-            closeQuietly(reader);
-        }
-        return result.getResult();
-    }
-
-    /**
-     * Utility method to obtain an instance of {@link NormalizedNodeWriter} by using the {@link Writer}.
-     */
-    private static NormalizedNodeWriter createNormalizedNodeWriter(final EffectiveModelContext effectiveModelContext,
-            final Writer backingWriter, final SchemaPath pathToParent) {
-        XMLStreamWriter createXMLStreamWriter = createXmlStreamWriter(backingWriter);
-        return createNormalizedNodeWriter(effectiveModelContext, createXMLStreamWriter, pathToParent);
-    }
-
-    /**
-     * Create a new {@link NormalizedNodeWriter}.
-     *
-     * @see XMLStreamNormalizedNodeStreamWriter#create(XMLStreamWriter, EffectiveModelContext)
-     * @see XMLStreamNormalizedNodeStreamWriter#create(XMLStreamWriter, EffectiveModelContext, SchemaPath)
-     *
-     * @param effectiveModelContext the root effective model context
-     * @param backingWriter used backing writer
-     * @param pathToParent path to parent, may be the same as {@link EffectiveModelContext} param
-     * @return a new instance of {@link NormalizedNodeWriter}
-     */
-    private static NormalizedNodeWriter createNormalizedNodeWriter(final EffectiveModelContext effectiveModelContext,
-            final XMLStreamWriter backingWriter, final SchemaPath pathToParent) {
-        NormalizedNodeStreamWriter streamWriter;
-        if (pathToParent == null) {
-            streamWriter = XMLStreamNormalizedNodeStreamWriter.create(backingWriter, effectiveModelContext);
-        } else {
-            streamWriter =
-                XMLStreamNormalizedNodeStreamWriter.create(backingWriter, effectiveModelContext, pathToParent);
-        }
-        return NormalizedNodeWriter.forStreamWriter(streamWriter);
-    }
-
-    /**
-     * Utility method which returns a new instance of {@link XMLStreamWriter} obtained via
-     * {@link XmlNodeConverter#XML_OUT_FACTORY}. This factory is namespace aware by default.
-     *
-     * @param backingWriter backing {@link Writer}
-     * @return a fresh instance of {@link XMLStreamWriter}
-     * @throws IllegalStateException if it's not possible to obtain the instance
-     */
-    private static XMLStreamWriter createXmlStreamWriter(final Writer backingWriter) {
-        XMLStreamWriter xmlStreamWriter;
-        try {
-            xmlStreamWriter = XML_OUT_FACTORY.createXMLStreamWriter(backingWriter);
-        } catch (XMLStreamException | FactoryConfigurationError e) {
-            throw new IllegalStateException(e);
-        }
-        return xmlStreamWriter;
-    }
-
-    /**
-     * This method is similar to the {@link Closeables#closeQuietly(Reader)} or other 'closeQuietly
-     * methods. It takes the {@link XMLStreamReader} as parameter checks for null and tries to close it
-     * while consuming the {@link IOException}. If the {@link IOException} occurs it will be logged.
-     *
-     * @param xmlStreamReader the given {@link XMLStreamReader} may be null
-     */
-    public static void closeQuietly(final XMLStreamReader xmlStreamReader) {
-        if (xmlStreamReader != null) {
             try {
-                xmlStreamReader.close();
+                reader.close();
             } catch (XMLStreamException e) {
-                LOG.warn("Failed to close stream", e);
+                LOG.warn("Failed to close XML stream", e);
             }
         }
+
     }
+
+    @Override
+    public EffectiveModelContext getModelContext() {
+        return effectiveModelContext;
+    }
+
 }

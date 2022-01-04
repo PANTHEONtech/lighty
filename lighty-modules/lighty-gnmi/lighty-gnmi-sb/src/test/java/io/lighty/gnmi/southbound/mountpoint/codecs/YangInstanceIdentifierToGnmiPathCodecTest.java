@@ -9,6 +9,9 @@
 package io.lighty.gnmi.southbound.mountpoint.codecs;
 
 import gnmi.Gnmi;
+import io.lighty.core.controller.impl.config.ConfigurationException;
+import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
+import io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils;
 import io.lighty.gnmi.southbound.mountpoint.codecs.testcases.YangInstanceIdentifiertoPathTestCases;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
@@ -23,6 +26,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 public class YangInstanceIdentifierToGnmiPathCodecTest {
 
     private static final Path TEST_PATH = Paths.get("src/test/resources/not/unique/model/elements");
+    private static final String OPENCONFIG_GNMI_CONFIG = "/lightyconfigs/openconfig_gnmi_config.json";
     private static final String NAMESPACE_ROOT1 = "tag:lighty.io.2021:yang:test:v1:gnmi:converter:root1";
     private static final String NAMESPACE_ROOT2 = "tag:lighty.io,2021:yang:test:v1:gnmi:converter:root2";
     private static final String ROOT_MODULE_NAME_1 = "root-model-1";
@@ -30,7 +34,8 @@ public class YangInstanceIdentifierToGnmiPathCodecTest {
     private static final String ROOT_CONTAINER = "root-container";
 
     @Test
-    public void yangInstanceIdentifierToPathCodecTest() throws SchemaException, YangLoadException {
+    public void yangInstanceIdentifierToPathCodecTest()
+            throws SchemaException, YangLoadException, ConfigurationException {
         YangInstanceIdentifiertoPathTestCases testCases = new YangInstanceIdentifiertoPathTestCases();
         testCodec(true, testCases);
         testCodec(false, testCases);
@@ -65,9 +70,14 @@ public class YangInstanceIdentifierToGnmiPathCodecTest {
 
     @Test
     public void yangInstanceIdentifierToPathCodecWithNotUniqueNameForRootElement()
-            throws SchemaException, YangLoadException {
+            throws SchemaException, YangLoadException, ConfigurationException {
         //Init YangInstanceIdentifierToPathCodec with test schema context
-        final TestSchemaContextProvider contextProvider = TestSchemaContextProvider.createFromPath(TEST_PATH);
+        final GnmiConfiguration gnmiConfiguration = GnmiConfigUtils.getGnmiConfiguration(
+                this.getClass().getResourceAsStream(OPENCONFIG_GNMI_CONFIG));
+        Assertions.assertNotNull(gnmiConfiguration.getYangModulesInfo());
+        final TestSchemaContextProvider contextProvider = TestSchemaContextProvider.createInstance(TEST_PATH,
+                gnmiConfiguration.getYangModulesInfo());
+
         final YangInstanceIdentifierToPathCodec pathCodec
                 = new YangInstanceIdentifierToPathCodec(contextProvider, true);
         // Test parse YIID path and choosing correct module for not unique name for root element

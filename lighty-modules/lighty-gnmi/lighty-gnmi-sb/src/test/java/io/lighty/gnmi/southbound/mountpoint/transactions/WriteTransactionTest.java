@@ -8,9 +8,12 @@ import static org.testng.AssertJUnit.assertNotNull;
 
 import com.google.gson.Gson;
 import gnmi.Gnmi;
+import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.gnmi.southbound.capabilities.GnmiDeviceCapability;
 import io.lighty.gnmi.southbound.device.connection.DeviceConnection;
 import io.lighty.gnmi.southbound.device.session.listener.GnmiConnectionStatusListener;
+import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
+import io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils;
 import io.lighty.gnmi.southbound.mountpoint.broker.GnmiDataBroker;
 import io.lighty.gnmi.southbound.mountpoint.codecs.YangInstanceIdentifierToPathCodec;
 import io.lighty.gnmi.southbound.mountpoint.codecs.YangInstanceNormToGnmiUpdateCodec;
@@ -22,16 +25,16 @@ import io.lighty.gnmi.southbound.schema.TestYangDataStoreService;
 import io.lighty.gnmi.southbound.schema.impl.SchemaContextHolderImpl;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
-import io.lighty.gnmi.southbound.schema.loader.impl.ByPathYangLoaderService;
+import io.lighty.gnmi.southbound.schema.loader.impl.ByClassPathYangLoaderService;
 import io.lighty.modules.gnmi.connector.gnmi.session.api.GnmiSession;
 import io.lighty.modules.gnmi.connector.session.api.SessionProvider;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.json.JSONException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -60,8 +63,9 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 public class WriteTransactionTest {
-    private static final QNameModule INTERFACES_MODULE_QN_MODULE = QNameModule.create(XMLNamespace.of("http://openconfig.net/yang/interfaces"), Revision.of("2019-11-19"));
-    private static final String SCHEMA_PATH = "src/test/resources/test_schema";
+    private static final QNameModule INTERFACES_MODULE_QN_MODULE = QNameModule.create(
+            XMLNamespace.of("http://openconfig.net/yang/interfaces"), Revision.of("2021-04-06"));
+    private static final String OPENCONFIG_GNMI_CONFIG = "/lightyconfigs/openconfig_gnmi_config.json";
     private static final QName INTERFACES_CONTAINER_QN = QName.create(INTERFACES_MODULE_QN_MODULE, "interfaces");
     private static final YangInstanceIdentifier TEST_PREPARE_DATASTORE_IID = YangInstanceIdentifier.builder()
             .node(INTERFACES_CONTAINER_QN)
@@ -89,7 +93,7 @@ public class WriteTransactionTest {
 
 
     @BeforeEach
-    public void startUp() throws YangLoadException, SchemaException {
+    public void startUp() throws YangLoadException, SchemaException, ConfigurationException {
         MockitoAnnotations.initMocks(this);
         this.gnmiSession = Mockito.mock(GnmiSession.class);
         Mockito.when(this.gnmiSession.set(any(Gnmi.SetRequest.class)))
@@ -100,9 +104,13 @@ public class WriteTransactionTest {
         final DeviceConnection deviceConnection = new DeviceConnection(sessionProvider,
                 Mockito.mock(GnmiConnectionStatusListener.class), node);
 
+        final GnmiConfiguration gnmiConfiguration = GnmiConfigUtils.getGnmiConfiguration(
+                this.getClass().getResourceAsStream(OPENCONFIG_GNMI_CONFIG));
+        Assertions.assertNotNull(gnmiConfiguration.getYangModulesInfo());
         final TestYangDataStoreService dataStoreService = new TestYangDataStoreService();
         final List<GnmiDeviceCapability> completeCapabilities
-                = new ByPathYangLoaderService(Path.of(SCHEMA_PATH)).load(dataStoreService);
+                = new ByClassPathYangLoaderService(gnmiConfiguration.getYangModulesInfo()).load(dataStoreService);
+
         final SchemaContextHolder schemaContextHolder = new SchemaContextHolderImpl(dataStoreService, null);
         final EffectiveModelContext schemaContext = schemaContextHolder.getSchemaContext(completeCapabilities);
         deviceConnection.setSchemaContext(schemaContext);

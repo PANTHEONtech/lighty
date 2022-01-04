@@ -75,16 +75,16 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Setup Minikube
-        uses: manusa/actions-setup-minikube@v2.3.0
+        uses: manusa/actions-setup-minikube@v2.4.2
         with:
-          minikube version: 'v1.17.1'
-          kubernetes version: 'v1.15.11'
+          minikube version: 'v1.24.0'
+          kubernetes version: 'v1.22.4'
       - name: Start Minikube cluster
         run: minikube start
-      - name: Install helm v2.17.0
-        uses: azure/setup-helm@v1
+      - name: Install helm v3.6.2
+        uses: azure/setup-helm@v1.1
         with:
-          version: '2.17.0'
+          version: '3.7.1'
       - name: "Setup, Install and Test. App: lighty_rnc_app"
         uses: ./.github/workflows/test-lighty-app-action
         with:
@@ -108,16 +108,16 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Setup Minikube
-        uses: manusa/actions-setup-minikube@v2.3.0
+        uses: manusa/actions-setup-minikube@v2.4.2
         with:
-          minikube version: 'v1.17.1'
-          kubernetes version: 'v1.15.11'
+          minikube version: 'v1.24.0'
+          kubernetes version: 'v1.22.4'
       - name: Start Minikube cluster
         run: minikube start
-      - name: Install helm v2.17.0
-        uses: azure/setup-helm@v1
+      - name: Install helm v3.6.2
+        uses: azure/setup-helm@v1.1
         with:
-          version: '2.17.0'
+          version: '3.7.1'
       - name: "Setup, Install and Test. App: lighty_rcgnmi_app"
         uses: ./.github/workflows/test-lighty-app-action
         with:

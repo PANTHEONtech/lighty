@@ -67,6 +67,11 @@
             <artifactId>commons-collections4</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.lighty.models</groupId>
+            <artifactId>openconfig-models</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.skyscreamer</groupId>
             <artifactId>jsonassert</artifactId>
             <scope>test</scope>
