@@ -446,6 +446,11 @@
             <artifactId>lighty-toaster</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.lighty.models.test</groupId>
+            <artifactId>lighty-test-models</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

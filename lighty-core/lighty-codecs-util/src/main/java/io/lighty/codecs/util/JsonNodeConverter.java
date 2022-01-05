@@ -7,15 +7,18 @@
  */
 package io.lighty.codecs.util;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import io.lighty.codecs.util.exception.DeserializationException;
+import io.lighty.codecs.util.exception.SerializationException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
-import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
+import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeWriter;
@@ -26,9 +29,9 @@ import org.opendaylight.yangtools.yang.data.codec.gson.JsonParserStream;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
-import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack.Inference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The implementation of {@link NodeConverter} which serializes and deserializes binding independent
@@ -37,6 +40,7 @@ import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack.Inference
  * @see XmlNodeConverter
  */
 public class JsonNodeConverter implements NodeConverter {
+    private static final Logger LOG = LoggerFactory.getLogger(JsonNodeConverter.class);
 
     private final JSONCodecFactory jsonCodecFactory;
 
@@ -54,8 +58,7 @@ public class JsonNodeConverter implements NodeConverter {
      * @param effectiveModelContext initial effective model context
      */
     public JsonNodeConverter(final EffectiveModelContext effectiveModelContext) {
-        this.jsonCodecFactory = JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02
-                .createLazy(effectiveModelContext);
+        this(effectiveModelContext, JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02);
     }
 
     /**
@@ -77,92 +80,100 @@ public class JsonNodeConverter implements NodeConverter {
     }
 
     /**
-     * This method serializes the provided {@link NormalizedNode} into its JSON representation.
+     * Serializes the given {@link NormalizedNode} into its {@link Writer} representation.
      *
-     * @param schemaNode {@link SchemaNode} may be obtained via
-     *        {@link ConverterUtils#getSchemaNode(EffectiveModelContext, QName)} or
-     *        {@link ConverterUtils#getSchemaNode(EffectiveModelContext, String, String, String)}
-     * @param normalizedNode {@link NormalizedNode} to be serialized
-     * @return string representation of JSON serialized data is returned via {@link StringWriter}
-     * @throws SerializationException if there was a problem during writing JSON data
+     * @param schemaInferenceStack schema inference stack pointing to normalizedNode's parent
+     * @param normalizedNode normalized node to serialize
+     * @return {@link Writer}
+     * @throws SerializationException if something goes wrong with serialization
      */
     @Override
-    public Writer serializeData(final SchemaNode schemaNode, final NormalizedNode normalizedNode)
-            throws SerializationException {
-        Writer writer = new StringWriter();
-        JsonWriter jsonWriter = new JsonWriter(writer);
-        XMLNamespace namespace = schemaNode.getQName().getNamespace();
-        NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter.createExclusiveWriter(this.jsonCodecFactory,
-                schemaNode.getPath(), namespace, jsonWriter);
-        try (NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(create)) {
-            normalizedNodeWriter.write(normalizedNode);
-            jsonWriter.flush();
-        } catch (IOException ioe) {
-            throw new SerializationException(ioe);
+    @SuppressWarnings({"checkstyle:illegalCatch"})
+    public Writer serializeData(final SchemaInferenceStack schemaInferenceStack,
+            final NormalizedNode normalizedNode) throws SerializationException {
+        final Writer writer = new StringWriter();
+        final XMLNamespace initialNamespace = schemaInferenceStack.isEmpty()
+                ? normalizedNode.getIdentifier().getNodeType().getNamespace()
+                : schemaInferenceStack.currentModule().localQNameModule().getNamespace();
+        // nnStreamWriter closes underlying JsonWriter, we don't need too
+        final JsonWriter jsonWriter = new JsonWriter(writer);
+        // Exclusive nnWriter closes underlying NormalizedNodeStreamWriter, we don't need too
+        final boolean useNested = normalizedNode instanceof MapEntryNode;
+        final NormalizedNodeStreamWriter nnStreamWriter = useNested
+                ? JSONNormalizedNodeStreamWriter.createNestedWriter(
+                        this.jsonCodecFactory, schemaInferenceStack.toInference(), initialNamespace, jsonWriter)
+                : JSONNormalizedNodeStreamWriter.createExclusiveWriter(
+                        this.jsonCodecFactory, schemaInferenceStack.toInference(), initialNamespace, jsonWriter);
+
+        try (NormalizedNodeWriter nnWriter = NormalizedNodeWriter.forStreamWriter(nnStreamWriter)) {
+            nnWriter.write(normalizedNode);
+            return writer;
+        } catch (RuntimeException | IOException e) {
+            throw new SerializationException(e);
+        } finally {
+            if (useNested) {
+                try {
+                    jsonWriter.close();
+                } catch (IOException e) {
+                    LOG.warn("Failed to close underlying JsonWriter", e);
+                }
+            }
         }
-        return writer;
     }
 
-    /**
-     * This method serializes the {@link NormalizedNode} which represents the input or output of an RPC.
-     *
-     * @param schemaNode the input or output {@link SchemaNode} of the RPC
-     * @param normalizedNode serialized binding independent data
-     * @return JSON string representation of the given {@link NormalizedNode}
-     * @throws SerializationException if an {@link IOException} occurs during serialization
-     */
     @Override
-    public Writer serializeRpc(final SchemaNode schemaNode, final NormalizedNode normalizedNode)
-            throws SerializationException {
-        Writer writer = new StringWriter();
-        JsonWriter jsonWriter = new JsonWriter(writer);
-        String localName = schemaNode.getQName().getLocalName();
-        XMLNamespace namespace = schemaNode.getQName().getNamespace();
-        NormalizedNodeStreamWriter create = JSONNormalizedNodeStreamWriter.createExclusiveWriter(this.jsonCodecFactory,
-                schemaNode.getPath(), namespace, jsonWriter);
-        try (NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(create)) {
+    @SuppressWarnings({"checkstyle:illegalCatch"})
+    public Writer serializeRpc(final SchemaInferenceStack schemaInferenceStack,
+            final NormalizedNode normalizedNode) throws SerializationException {
+        Preconditions.checkState(normalizedNode instanceof ContainerNode,
+                "RPC input/output to serialize is expected to be a ContainerNode");
+        final XMLNamespace namespace = schemaInferenceStack.currentModule().localQNameModule().getNamespace();
+        // Input/output
+        final String localName = schemaInferenceStack.toSchemaNodeIdentifier().lastNodeIdentifier().getLocalName();
+        final Writer writer = new StringWriter();
+        // nnStreamWriter closes underlying JsonWriter, we don't need too
+        final JsonWriter jsonWriter = new JsonWriter(writer);
+        // nnWriter closes underlying NormalizedNodeStreamWriter, we don't need too
+        final NormalizedNodeStreamWriter nnStreamWriter = JSONNormalizedNodeStreamWriter.createExclusiveWriter(
+                this.jsonCodecFactory, schemaInferenceStack.toInference(), namespace, jsonWriter);
+        try (NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(nnStreamWriter)) {
             jsonWriter.beginObject().name(localName);
             for (NormalizedNode child : ((ContainerNode) normalizedNode).body()) {
                 normalizedNodeWriter.write(child);
             }
-            // XXX dirty check for end of object. When serializing RPCs with input/output which is not a
-            // container
-            // the object is not closed.
-            if (!writer.toString().endsWith("}")) {
-                jsonWriter.endObject();
-            }
-        } catch (IOException ioe) {
-            throw new SerializationException(ioe);
-        }
-        return writer;
-    }
-
-    /**
-     * Deserializes the given JSON representation into {@link NormalizedNode}s.
-     *
-     * @param schemaNode a correct {@link SchemaNode} may be obtained via
-     *        {@link ConverterUtils#getSchemaNode(EffectiveModelContext, QName)} or
-     *        {@link ConverterUtils#getSchemaNode(EffectiveModelContext, String, String, String)} or
-     *        {@link ConverterUtils#loadRpc(EffectiveModelContext, QName)} depending on the input/output
-     * @param inputData reader containing input data.
-     * @return {@link NormalizedNode} representation of input data
-     * @throws SerializationException if there was a problem during deserialization or reading the input
-     *         data
-     */
-    @Override
-    public NormalizedNode deserialize(final SchemaNode schemaNode, final Reader inputData)
-            throws SerializationException {
-        Inference inference = SchemaInferenceStack.ofSchemaPath(jsonCodecFactory.getEffectiveModelContext(),
-                schemaNode.getPath()).toInference();
-        NormalizedNodeResult result = new NormalizedNodeResult();
-        try (JsonReader reader = new JsonReader(inputData);
-                NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
-                JsonParserStream jsonParser = JsonParserStream.create(streamWriter,
-                        this.jsonCodecFactory, inference)) {
-            jsonParser.parse(reader);
+            jsonWriter.endObject();
+            return writer;
         } catch (IOException e) {
             throw new SerializationException(e);
         }
-        return result.getResult();
     }
+
+    /**
+     * Deserializes a given JSON input data into {@link NormalizedNode}.
+     * @param schemaInferenceStack schema inference stack pointing to a parent of the node to deserialize
+     * @param inputData Reader containing input JSON data describing node to deserialize
+     * @return deserialized {@link NormalizedNode}
+     * @throws DeserializationException is thrown in case of an error during deserialization
+     */
+    @Override
+    @SuppressWarnings({"checkstyle:illegalCatch"})
+    public NormalizedNode deserialize(final SchemaInferenceStack schemaInferenceStack,
+            final Reader inputData) throws DeserializationException {
+        final NormalizedNodeResult result = new NormalizedNodeResult();
+        try (JsonReader reader = new JsonReader(inputData);
+             NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
+             JsonParserStream jsonParser = JsonParserStream.create(streamWriter, this.jsonCodecFactory,
+                     schemaInferenceStack.toInference())) {
+            jsonParser.parse(reader);
+            return result.getResult();
+        } catch (RuntimeException | IOException e) {
+            throw new DeserializationException(e);
+        }
+    }
+
+    @Override
+    public EffectiveModelContext getModelContext() {
+        return jsonCodecFactory.getEffectiveModelContext();
+    }
+
 }

@@ -11,11 +11,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Objects;
 import com.typesafe.config.Config;
 import io.lighty.core.controller.impl.util.DatastoreConfigurationUtils;
+import io.lighty.core.controller.impl.util.FileToDatastoreUtils;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -63,50 +67,36 @@ public class ControllerConfiguration {
 
     public static class InitialConfigData {
 
-        public enum ImportFileFormat {
-            JSON("json"),
-            XML("xml"),
-            NOT_SUPPORTED("");
+        private String pathToInitDataFile;
+        private InputStream inputStream;
+        private FileToDatastoreUtils.ImportFileFormat fileFormat;
 
-            private String fileFormat;
-
-            ImportFileFormat(String formatString) {
-                this.fileFormat = formatString;
-            }
-
-            public String getFormatString() {
-                return fileFormat;
-            }
-
-            @JsonCreator
-            public static ImportFileFormat getFormatType(String fullName) {
-                for (ImportFileFormat formatType : ImportFileFormat.values()) {
-                    if (formatType.fileFormat.equalsIgnoreCase(fullName)) {
-                        return formatType;
-                    }
-                }
-                return NOT_SUPPORTED;
-            }
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        public InitialConfigData(@JsonProperty("pathToInitDataFile") final String pathToInitDataFile,
+                @JsonProperty("format") final FileToDatastoreUtils.ImportFileFormat fileFormat) {
+            this.pathToInitDataFile = Objects.requireNonNull(pathToInitDataFile);
+            this.fileFormat = Objects.requireNonNullElse(fileFormat, FileToDatastoreUtils.ImportFileFormat.JSON);
         }
 
-        private String pathToInitDataFile = null;
-        @JsonProperty(value = "format")
-        private ImportFileFormat fileFormat = null;
+        public InitialConfigData(final InputStream inputStream,
+                final FileToDatastoreUtils.ImportFileFormat fileFormat) {
+            this.inputStream = inputStream;
+            this.fileFormat = fileFormat;
+        }
 
         public String getPathToInitDataFile() {
             return pathToInitDataFile;
         }
 
-        public void setPathToInitDataFile(String pathToInitDataFile) {
-            this.pathToInitDataFile = pathToInitDataFile;
+        public InputStream getAsInputStream() throws FileNotFoundException {
+            if (inputStream != null) {
+                return inputStream;
+            }
+            return new FileInputStream(pathToInitDataFile);
         }
 
-        public ImportFileFormat getFormat() {
+        public FileToDatastoreUtils.ImportFileFormat getFormat() {
             return fileFormat;
-        }
-
-        public void setFormat(ImportFileFormat newFileFormat) {
-            this.fileFormat = newFileFormat;
         }
 
         @Override
@@ -118,11 +108,16 @@ public class ControllerConfiguration {
                 return false;
             }
 
-            InitialConfigData that = (InitialConfigData) obj;
+            final InitialConfigData that = (InitialConfigData) obj;
 
             if (fileFormat != that.fileFormat) {
                 return false;
             }
+
+            if (inputStream != that.inputStream) {
+                return false;
+            }
+
             return pathToInitDataFile.equals(that.pathToInitDataFile);
         }
 
@@ -308,7 +303,7 @@ public class ControllerConfiguration {
                 return false;
             }
             SchemaServiceConfig that = (SchemaServiceConfig) obj;
-            return Objects.equal(models, that.models);
+            return Objects.equals(models, that.models);
         }
 
         @Override

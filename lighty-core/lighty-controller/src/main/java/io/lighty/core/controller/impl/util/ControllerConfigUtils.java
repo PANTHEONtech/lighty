@@ -149,8 +149,8 @@ public final class ControllerConfigUtils {
             if (controllerNode.has(SCHEMA_SERVICE_CONFIG_ELEMENT_NAME)) {
                 setModelsToControllerConfiguration(mapper, jsonPath, controllerNode, controllerConfiguration);
             } else {
-                throw new ConfigurationException(
-                        String.format("JSON controller config file is missing %s element!", jsonPath));
+                LOG.warn("JSON controller config is missing {} element, make sure to inject required models manually",
+                        SCHEMA_SERVICE_CONFIG_ELEMENT_NAME);
             }
         } catch (JsonProcessingException e) {
             throw new ConfigurationException(

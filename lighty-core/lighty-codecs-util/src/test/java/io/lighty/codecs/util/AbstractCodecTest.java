@@ -7,37 +7,39 @@
  */
 package io.lighty.codecs.util;
 
-import com.google.common.collect.ImmutableList;
+import static org.junit.Assert.assertFalse;
+
+import com.google.common.base.Strings;
 import com.google.common.io.Resources;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ServiceLoader;
+import org.junit.Assert;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
 import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.runtime.api.DefaultBindingRuntimeContext;
 import org.opendaylight.mdsal.binding.runtime.spi.ModuleInfoSnapshotBuilder;
-import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.DisplayString;
-import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.MakeToastInput;
-import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.MakeToastInputBuilder;
+import org.opendaylight.netconf.api.xml.XmlUtil;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster.ToasterStatus;
-import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.ToasterBuilder;
+import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.ToasterRestocked;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SampleList;
+import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SimpleInputOutputRpcInput;
+import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SimpleInputOutputRpcOutput;
+import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.container.group.SampleContainer;
 import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.common.Uint32;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
-import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.api.schema.builder.DataContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLeafNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapEntryNodeBuilder;
@@ -47,110 +49,55 @@ import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
 import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
 import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
+import org.xml.sax.SAXException;
 
 public abstract class AbstractCodecTest {
+    protected static final QName MAKE_TOAST_RPC_QNAME = qOfToasterModel("make-toast");
+    protected static final QName CONTAINER_RPC_QNAME = qOfTestModel("container-io-rpc");
+    protected static final QName LEAF_RPC_QNAME = qOfTestModel("simple-input-output-rpc");
+    protected static final QName NOTIFICATION_QNAME = qOfToasterModel("toasterRestocked");
 
-    protected static final Uint32 EXPECTED_ONE = Uint32.ONE;
-    protected static final Uint32 COFFEE_VALUE = Uint32.valueOf(0xC00FFEEL);
-    protected static final String TOASTER_NAMESPACE = "http://netconfcentral.org/ns/toaster";
-    protected static final String TOASTER_REVISION = "2009-11-20";
+    protected final NormalizedNode toasterTopLevelContainerNode;
+    protected final NormalizedNode innerContainerNode;
 
-    protected static final String SAMPLES_NAMESPACE = "http://pantheon.tech/ns/test-models";
-    protected static final String SAMPLES_REVISION = "2018-01-19";
+    protected final NormalizedNode rpcLeafInputNode;
+    protected final NormalizedNode rpcLeafOutputNode;
 
-    protected static final YangInstanceIdentifier TOASTER_YANG_INSTANCE_IDENTIFIER =
-            YangInstanceIdentifier.of(Toaster.QNAME);
+    protected final NormalizedNode notificationNode;
 
-    protected static final QName SIMPLE_IO_RPC_QNAME =
-            QName.create(SAMPLES_NAMESPACE, SAMPLES_REVISION, "simple-input-output-rpc");
-    protected static final QName MAKE_TOAST_RPC_QNAME = QName.create(TOASTER_NAMESPACE, TOASTER_REVISION, "make-toast");
-    protected static final QName CONTAINER_IO_RPC_QNAME =
-            QName.create(SAMPLES_NAMESPACE, SAMPLES_REVISION, "container-io-rpc");
-
-    // tested DataObject
-    protected final Toaster testedToaster;
-    // tested DataObject for RPC
-    protected final MakeToastInput testedMakeToasterInput;
-    // BI representation of testedToaster
-    protected final NormalizedNode testedToasterNormalizedNodes;
-    // BI representation of testedMakeToasterInput
-
-    protected final NormalizedNode testedSimpleRpcInputNormalizedNodes;
-    protected final NormalizedNode testedSimpleRpcOutputNormalizedNodes;
-    protected final NormalizedNode testedNotificationNormalizedNodes;
-    protected final NormalizedNode testedSampleListNormalizedNodes;
-    protected final NormalizedNode testedSampleMapNodeNormalizedNodes;
+    protected final NormalizedNode listEntryNode;
+    protected final NormalizedNode listNode;
 
     protected final BindingCodecContext bindingCodecContext;
     protected final EffectiveModelContext effectiveModelContext;
 
     public AbstractCodecTest() throws YangParserException {
-        List<YangModuleInfo> moduleInfos = loadModuleInfos();
-        this.bindingCodecContext = createCodecContext(moduleInfos);
+        this.bindingCodecContext = createCodecContext(loadModuleInfos());
         this.effectiveModelContext = bindingCodecContext.getRuntimeContext().getEffectiveModelContext();
 
-        this.testedToaster = new ToasterBuilder().setDarknessFactor(COFFEE_VALUE)
-                .setToasterManufacturer(new DisplayString("manufacturer")).setToasterStatus(ToasterStatus.Up).build();
-        this.testedMakeToasterInput = new MakeToastInputBuilder().setToasterDoneness(EXPECTED_ONE).build();
-
-        this.testedToasterNormalizedNodes = createToasterNormalizedNodes();
-
-        this.testedSimpleRpcInputNormalizedNodes = simpleRpcInputNormalizedNodes_in();
-        this.testedSimpleRpcOutputNormalizedNodes = simpleRpcInputNormalizedNodes_out();
-        this.testedNotificationNormalizedNodes = toasterNotificationNormalizedNodes();
-        this.testedSampleListNormalizedNodes = sampleListNormalizedNodes();
-        this.testedSampleMapNodeNormalizedNodes = sampleMapNode();
+        this.toasterTopLevelContainerNode = topLevelContainerNode();
+        this.rpcLeafInputNode = rpcLeafInputNode();
+        this.rpcLeafOutputNode = rpcLeafOutputNode();
+        this.notificationNode = notificationContainer();
+        this.listEntryNode = listEntryNode();
+        this.listNode = listNode();
+        this.innerContainerNode = innerContainerNode();
     }
 
-    protected BindingCodecContext createCodecContext(List<YangModuleInfo> moduleInfos)
+    private static BindingCodecContext createCodecContext(final List<YangModuleInfo> moduleInfos)
             throws YangParserException {
         final YangXPathParserFactory xpathFactory = new AntlrXPathParserFactory();
-        DefaultYangParserFactory defaultYangParserFactory = new DefaultYangParserFactory(xpathFactory);
-        DefaultBindingRuntimeGenerator bindingRuntimeGenerator = new DefaultBindingRuntimeGenerator();
-        ModuleInfoSnapshotBuilder moduleInfoSnapshotBuilder = new ModuleInfoSnapshotBuilder(defaultYangParserFactory);
+        final DefaultYangParserFactory defaultYangParserFactory = new DefaultYangParserFactory(xpathFactory);
+        final DefaultBindingRuntimeGenerator bindingRuntimeGenerator = new DefaultBindingRuntimeGenerator();
+        final ModuleInfoSnapshotBuilder moduleInfoSnapshotBuilder = new ModuleInfoSnapshotBuilder(
+                defaultYangParserFactory);
         moduleInfoSnapshotBuilder.add(moduleInfos);
+        final BindingRuntimeTypes bindingRuntimeTypes = bindingRuntimeGenerator
+                .generateTypeMapping(moduleInfoSnapshotBuilder.build().getEffectiveModelContext());
 
-        BindingRuntimeTypes bindingRuntimeTypes = bindingRuntimeGenerator
-            .generateTypeMapping(moduleInfoSnapshotBuilder.build().getEffectiveModelContext());
-
-        DefaultBindingRuntimeContext defaultBindingRuntimeContext = new DefaultBindingRuntimeContext(
-            bindingRuntimeTypes, moduleInfoSnapshotBuilder.build());
+        final DefaultBindingRuntimeContext defaultBindingRuntimeContext = new DefaultBindingRuntimeContext(
+                bindingRuntimeTypes, moduleInfoSnapshotBuilder.build());
         return new BindingCodecContext(defaultBindingRuntimeContext);
-    }
-
-    /**
-     * Utility method to create the {@link NodeIdentifier} for a node within the toaster module. The
-     * namespace and version are given by this module.
-     *
-     * @param nodeName of the node
-     * @return created {@link NodeIdentifier}
-     */
-    protected static NodeIdentifier getNodeIdentifier(final String namespace, final String revision,
-            final String nodeName) {
-        return new NodeIdentifier(QName.create(namespace, revision, nodeName));
-    }
-
-    protected static NodeIdentifier getToasterNodeIdentifier(final String nodeName) {
-        return getNodeIdentifier(TOASTER_NAMESPACE, TOASTER_REVISION, nodeName);
-    }
-
-    /**
-     * Loads the XML file containing a sample {@link Toaster} object.
-     *
-     * <pre>
-     * {@code
-     * &lt;toaster xmlns="http://netconfcentral.org/ns/toaster"&gt;
-     *   &lt;toasterManufacturer&gtmanufacturer&lt;/toasterManufacturer&gt;
-     *   &lt;toasterStatus&gtup&lt;/toasterStatus&gt;
-     *   &lt;darknessFactor&gt201392110&lt;/darknessFactor&gt;
-     * &lt;/toaster&gt;
-     * }
-     * </pre>
-     *
-     * @return A sample toaster object.
-     */
-    protected static String loadToasterXml() {
-        return loadResourceAsString("toaster.xml");
     }
 
     protected static String loadResourceAsString(final String fileName) {
@@ -176,67 +123,92 @@ public abstract class AbstractCodecTest {
         return moduleInfos;
     }
 
-    private static NormalizedNode createToasterNormalizedNodes() {
-        NodeIdentifier toasterNodeIdentifier = new NodeIdentifier(Toaster.QNAME);
-        LeafNode<String> manufacturer = new ImmutableLeafNodeBuilder<String>().withValue("manufacturer")
-                .withNodeIdentifier(getToasterNodeIdentifier("toasterManufacturer")).build();
-        LeafNode<String> toasterStatus = new ImmutableLeafNodeBuilder<String>().withValue(ToasterStatus.Up.getName())
-                .withNodeIdentifier(getToasterNodeIdentifier("toasterStatus")).build();
-        LeafNode<Uint32> darknessFactor = new ImmutableLeafNodeBuilder<Uint32>().withValue(COFFEE_VALUE)
-                .withNodeIdentifier(getToasterNodeIdentifier("darknessFactor")).build();
-        return ImmutableContainerNodeBuilder.create().withNodeIdentifier(toasterNodeIdentifier)
-                .withValue(ImmutableList.of(manufacturer, darknessFactor, toasterStatus)).build();
+    private static NormalizedNode topLevelContainerNode() {
+        return ImmutableContainerNodeBuilder.create().withNodeIdentifier(NodeIdentifier.create(Toaster.QNAME))
+                .withValue(List.of(
+                        ImmutableLeafNodeBuilder.createNode(
+                                NodeIdentifier.create(qOfToasterModel("toasterManufacturer")), "manufacturer"),
+                        ImmutableLeafNodeBuilder.createNode(
+                                NodeIdentifier.create(qOfToasterModel("toasterStatus")), ToasterStatus.Up.getName()),
+                        ImmutableLeafNodeBuilder.createNode(
+                                NodeIdentifier.create(qOfToasterModel("darknessFactor")), 50)))
+                .build();
     }
 
-    private static NormalizedNode simpleRpcInputNormalizedNodes_in() {
-        NodeIdentifier toasterNodeIdentifier =
-                new NodeIdentifier(QName.create(SAMPLES_NAMESPACE, "2018-01-19", "input"));
-        LeafNode<String> input = new ImmutableLeafNodeBuilder<String>()
-                .withNodeIdentifier(new NodeIdentifier(QName.create(SAMPLES_NAMESPACE, "2018-01-19", "input-obj")))
-                .withValue("a").build();
-        return ImmutableContainerNodeBuilder.create().withNodeIdentifier(toasterNodeIdentifier)
-                .withValue(ImmutableList.of(input)).build();
+    private static NormalizedNode rpcLeafInputNode() {
+        return ImmutableContainerNodeBuilder.create()
+                .withNodeIdentifier(NodeIdentifier.create(SimpleInputOutputRpcInput.QNAME))
+                .withChild(ImmutableLeafNodeBuilder.createNode(
+                        NodeIdentifier.create(qOfTestModel("input-obj")), "testValue"))
+                .build();
     }
 
-    private static NormalizedNode simpleRpcInputNormalizedNodes_out() {
-        NodeIdentifier toasterNodeIdentifier =
-                new NodeIdentifier(QName.create(SAMPLES_NAMESPACE, "2018-01-19", "output"));
-        LeafNode<String> input = new ImmutableLeafNodeBuilder<String>()
-                .withNodeIdentifier(new NodeIdentifier(QName.create(SAMPLES_NAMESPACE, "2018-01-19", "output-obj")))
-                .withValue("a").build();
-        return ImmutableContainerNodeBuilder.create().withNodeIdentifier(toasterNodeIdentifier)
-                .withValue(ImmutableList.of(input)).build();
+    private static NormalizedNode rpcLeafOutputNode() {
+        return ImmutableContainerNodeBuilder.create()
+                .withNodeIdentifier(NodeIdentifier.create(SimpleInputOutputRpcOutput.QNAME))
+                .withChild(ImmutableLeafNodeBuilder.createNode(
+                        NodeIdentifier.create(qOfTestModel("output-obj")), "testValue"))
+                .build();
     }
 
-    private static NormalizedNode toasterNotificationNormalizedNodes() {
-        NodeIdentifier toasterNodeIdentifier =
-                new NodeIdentifier(QName.create(TOASTER_NAMESPACE, TOASTER_REVISION, "toasterRestocked"));
-        LeafNode<Long> value = new ImmutableLeafNodeBuilder<Long>()
-                .withNodeIdentifier(
-                        new NodeIdentifier(QName.create(TOASTER_NAMESPACE, TOASTER_REVISION, "amountOfBread")))
-                .withValue(1L).build();
-        return ImmutableContainerNodeBuilder.create().withNodeIdentifier(toasterNodeIdentifier)
-                .withValue(ImmutableList.of(value)).build();
+    private static NormalizedNode notificationContainer() {
+        return ImmutableContainerNodeBuilder.create()
+                .withNodeIdentifier(NodeIdentifier.create(ToasterRestocked.QNAME))
+                .withChild(ImmutableLeafNodeBuilder.createNode(
+                        NodeIdentifier.create(qOfToasterModel("amountOfBread")), 1)).build();
     }
 
-    private static NormalizedNode sampleListNormalizedNodes() {
-        DataContainerNodeBuilder<NodeIdentifierWithPredicates, MapEntryNode> create
-                = ImmutableMapEntryNodeBuilder.create();
-        QName keyQname = QName.create(SAMPLES_NAMESPACE, SAMPLES_REVISION, "name");
-        QName valueQname = QName.create(SAMPLES_NAMESPACE, SAMPLES_REVISION, "value");
-        NodeIdentifierWithPredicates nodeIdentifier = NodeIdentifierWithPredicates.of(
-                QName.create(SAMPLES_NAMESPACE, SAMPLES_REVISION, "sample-list"), keyQname, "name");
-        create.withNodeIdentifier(nodeIdentifier);
-        LeafNode<String> name = new ImmutableLeafNodeBuilder<String>().withNodeIdentifier(new NodeIdentifier(keyQname))
-                .withValue("name").build();
-        LeafNode<Short> value = new ImmutableLeafNodeBuilder<Short>().withNodeIdentifier(new NodeIdentifier(valueQname))
-                .withValue((short) 1).build();
-        create.withValue(ImmutableList.of(name, value));
-        return create.build();
+    private static NormalizedNode listEntryNode() {
+        final QName key = qOfTestModel("name");
+        return ImmutableMapEntryNodeBuilder.create()
+                .withNodeIdentifier(NodeIdentifierWithPredicates.of(
+                        SampleList.QNAME, key, "nameValue"))
+                .withValue(List.of(
+                        ImmutableLeafNodeBuilder.createNode(NodeIdentifier.create(key), "nameValue"),
+                        ImmutableLeafNodeBuilder.createNode(NodeIdentifier
+                                .create(qOfTestModel("value")), 1)))
+                .build();
     }
 
-    private static NormalizedNode sampleMapNode() {
+    private static NormalizedNode listNode() {
         return ImmutableMapNodeBuilder.create().withNodeIdentifier(new NodeIdentifier(SampleList.QNAME))
-                .withChild((MapEntryNode) sampleListNormalizedNodes()).build();
+                .withChild((MapEntryNode) listEntryNode()).build();
     }
+
+    private static NormalizedNode innerContainerNode() {
+        return ImmutableContainerNodeBuilder.create().withNodeIdentifier(NodeIdentifier.create(SampleContainer.QNAME))
+                .withValue(List.of(
+                        ImmutableLeafNodeBuilder.createNode(
+                                NodeIdentifier.create(qOfTestModel("name")), "name")))
+                .build();
+    }
+
+    protected static QName qOfTestModel(final String localName) {
+        return org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.$YangModuleInfoImpl
+                .qnameOf(localName);
+    }
+
+    protected static QName qOfToasterModel(final String localName) {
+        return org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.$YangModuleInfoImpl
+                .qnameOf(localName);
+    }
+
+    protected static void assertValidJson(final String json) {
+        assertFalse(Strings.isNullOrEmpty(json));
+        try {
+            JsonParser.parseString(json);
+        } catch (JsonSyntaxException e) {
+            Assert.fail(String.format("XML %s is not valid, reason: %s", json, e));
+        }
+    }
+
+    protected static void assertValidXML(final String xml) {
+        assertFalse(Strings.isNullOrEmpty(xml));
+        try {
+            XmlUtil.readXmlToDocument(xml);
+        } catch (SAXException | IOException e) {
+            Assert.fail(String.format("XML %s is not valid, reason: %s", xml, e));
+        }
+    }
+
 }

@@ -7,23 +7,23 @@
  */
 package io.lighty.codecs.util;
 
-import com.google.common.base.Strings;
+import static org.junit.Assert.assertNotNull;
+
+import io.lighty.codecs.util.exception.DeserializationException;
+import io.lighty.codecs.util.exception.SerializationException;
 import java.io.StringReader;
 import java.io.Writer;
-import java.util.Optional;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster;
+import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.$YangModuleInfoImpl;
+import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.ContainerIoRpcInput;
+import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SampleList;
+import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SimpleInputOutputRpcInput;
+import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SimpleInputOutputRpcOutput;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.TopLevelContainer;
-import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.container.group.SampleContainer;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
-import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
-import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
-import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 
 public class XmlNodeConverterTest extends AbstractCodecTest {
@@ -35,121 +35,118 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
     }
 
     @Test
-    public void testSerializeRpc_in() throws Exception {
-        Optional<? extends RpcDefinition>
-                loadRpc = ConverterUtils.loadRpc(this.effectiveModelContext, SIMPLE_IO_RPC_QNAME);
-        Writer serializeRpc =
-                bindingSerializer.serializeRpc(loadRpc.orElseThrow().getInput(), testedSimpleRpcInputNormalizedNodes);
-        Assert.assertFalse(Strings.isNullOrEmpty(serializeRpc.toString()));
+    public void testSerializeRpcLeafInput() throws SerializationException {
+        final Writer serializedRpc = bindingSerializer.serializeRpc(rpcLeafInputNode,
+                LEAF_RPC_QNAME, SimpleInputOutputRpcInput.QNAME);
+        assertValidXML(serializedRpc.toString());
     }
 
     @Test
-    public void testSerializeRpc_out() throws Exception {
-        Optional<? extends RpcDefinition>
-                loadRpc = ConverterUtils.loadRpc(this.effectiveModelContext, SIMPLE_IO_RPC_QNAME);
-        Writer serializeRpc =
-                bindingSerializer.serializeRpc(loadRpc.orElseThrow().getOutput(), testedSimpleRpcOutputNormalizedNodes);
-        Assert.assertFalse(Strings.isNullOrEmpty(serializeRpc.toString()));
+    public void testSerializeRpcLeafOutput() throws SerializationException {
+        final Writer serializedRpc = bindingSerializer.serializeRpc(rpcLeafOutputNode,
+                LEAF_RPC_QNAME, SimpleInputOutputRpcOutput.QNAME);
+        assertValidXML(serializedRpc.toString());
     }
 
     @Test
-    public void testSerializeData() throws Exception {
-        Writer serializeData =
-                bindingSerializer.serializeData(this.effectiveModelContext, testedToasterNormalizedNodes);
-        Assert.assertFalse(Strings.isNullOrEmpty(serializeData.toString()));
+    public void testSerializeToasterData() throws SerializationException {
+        final Writer serializeData = bindingSerializer.serializeData(toasterTopLevelContainerNode);
+        assertValidXML(serializeData.toString());
     }
 
     @Test
-    public void testDeserializeData() throws Exception {
-        final DataSchemaNode schemaNode = DataSchemaContextTree.from(this.effectiveModelContext)
-                .findChild(YangInstanceIdentifier.of(Toaster.QNAME)).orElseThrow().getDataSchemaNode();
-
-        NormalizedNode deserializeData =
-                bindingSerializer.deserialize(schemaNode, new StringReader(loadToasterXml()));
-        Assert.assertNotNull(deserializeData);
+    public void testSerializeInnerContainer() throws SerializationException {
+        final Writer serializeData = bindingSerializer.serializeData(innerContainerNode, TopLevelContainer.QNAME);
+        assertValidXML(serializeData.toString());
     }
 
     @Test
-    public void testDeserializeRpc_in() throws Exception {
-        Optional<? extends RpcDefinition>
-                loadRpc = ConverterUtils.loadRpc(this.effectiveModelContext, SIMPLE_IO_RPC_QNAME);
-        String loadMakeToasterInputXml = loadResourceAsString("input-output-rpc-in.xml");
-        NormalizedNode deserializeRpc = bindingSerializer
-                .deserialize(loadRpc.orElseThrow().getInput(), new StringReader(loadMakeToasterInputXml));
-        Assert.assertNotNull(deserializeRpc);
+    public void testSerializeList() throws SerializationException {
+        final Writer serializedData = bindingSerializer.serializeData(listNode);
+        assertNotNull(serializedData.toString());
     }
 
     @Test
-    public void testDeserializeRpc_out() throws Exception {
-        Optional<? extends RpcDefinition>
-                loadRpc = ConverterUtils.loadRpc(this.effectiveModelContext, SIMPLE_IO_RPC_QNAME);
-        String loadMakeToasterInputXml = loadResourceAsString("input-output-rpc-out.xml");
-        NormalizedNode deserializeRpc = bindingSerializer
-                .deserialize(loadRpc.orElseThrow().getOutput(), new StringReader(loadMakeToasterInputXml));
-        Assert.assertNotNull(deserializeRpc);
+    public void testSerializeListEntry() throws SerializationException {
+        final Writer serializedData = bindingSerializer.serializeData(
+                listEntryNode, SampleList.QNAME);
+        assertNotNull(serializedData.toString());
     }
 
     @Test
-    public void testLoadNotification() {
-        Optional<? extends NotificationDefinition> loadNotification =
-                ConverterUtils.loadNotification(this.effectiveModelContext,
-                        QName.create(TOASTER_NAMESPACE, TOASTER_REVISION, "toasterRestocked"));
-        Assert.assertNotNull(loadNotification);
-        Assert.assertTrue(loadNotification.isPresent());
+    public void testDeserializeData() throws DeserializationException {
+        NormalizedNode deserializeData = bindingSerializer.deserialize(
+                new StringReader(loadResourceAsString("toaster-container.xml")), Toaster.QNAME);
+        assertNotNull(deserializeData);
     }
 
     @Test
-    @Ignore
-    public void testSerializeNotification() throws Exception {
-        String notification = loadResourceAsString("notification.xml");
-        Optional<? extends NotificationDefinition> loadNotification =
-                ConverterUtils.loadNotification(this.effectiveModelContext,
-                        QName.create(TOASTER_NAMESPACE, TOASTER_REVISION, "toasterRestocked"));
-        NormalizedNode nodes =
-                bindingSerializer.deserialize(loadNotification.orElseThrow(), new StringReader(notification));
-        Assert.assertNotNull(nodes);
+    public void testDeserializeRpcInput() throws DeserializationException {
+        final NormalizedNode deserializeRpc = bindingSerializer.deserialize(
+                new StringReader(loadResourceAsString("rpc-leaf-input.xml")), LEAF_RPC_QNAME,
+                SimpleInputOutputRpcInput.QNAME);
+        assertNotNull(deserializeRpc);
     }
 
     @Test
-    public void testSerializeData_container() throws SerializationException {
-        final DataSchemaNode schemaNode = DataSchemaContextTree.from(this.effectiveModelContext)
-                .findChild(YangInstanceIdentifier.of(TopLevelContainer.QNAME)).orElseThrow().getDataSchemaNode();
-
-        NormalizedNode deserializeData = bindingSerializer.deserialize(schemaNode,
-                new StringReader(loadResourceAsString("top-level-container.xml")));
-        Assert.assertNotNull(deserializeData);
+    public void testDeserializeRpcOutput() throws DeserializationException {
+        final NormalizedNode deserializeRpc = bindingSerializer.deserialize(
+                new StringReader(loadResourceAsString("rpc-leaf-output.xml")), LEAF_RPC_QNAME,
+                SimpleInputOutputRpcOutput.QNAME);
+        assertNotNull(deserializeRpc);
     }
 
     @Test
-    public void testSerializeData_container_rpc() throws SerializationException {
-        Optional<? extends RpcDefinition>
-                loadRpc = ConverterUtils.loadRpc(this.effectiveModelContext, CONTAINER_IO_RPC_QNAME);
-        NormalizedNode deserializeData = bindingSerializer.deserialize(loadRpc.orElseThrow().getInput(),
-                new StringReader(loadResourceAsString("container-io-rpc.xml")));
-        Assert.assertNotNull(deserializeData);
+    @Ignore("Not yet possible for ODL reasons")
+    public void testDeserializeNotification() throws DeserializationException {
+        final NormalizedNode result = bindingSerializer.deserialize(
+                new StringReader(loadResourceAsString("notification.xml")));
+        assertNotNull(result);
     }
 
     @Test
-    public void testSerializeData_list() throws SerializationException {
-        SchemaNode schemaNode = ConverterUtils.getSchemaNode(this.effectiveModelContext, SAMPLES_NAMESPACE,
-            SAMPLES_REVISION, "sample-list").orElseThrow().getDataSchemaNode();
-        Writer serializedData = bindingSerializer.serializeData(schemaNode, testedSampleListNormalizedNodes);
-        Assert.assertNotNull(serializedData.toString());
+    public void testDeserializeContainerRpcInput() throws DeserializationException {
+        final NormalizedNode deserializeData = bindingSerializer.deserialize(
+                new StringReader(loadResourceAsString("rpc-container-input.xml")),
+                CONTAINER_RPC_QNAME, ContainerIoRpcInput.QNAME);
+        assertNotNull(deserializeData);
     }
 
     @Test
-    public void testDeserializeData_list_single() throws SerializationException {
-        SchemaNode schemaNode = ConverterUtils.getSchemaNode(this.effectiveModelContext, SAMPLES_NAMESPACE,
-            SAMPLES_REVISION, "sample-list").orElseThrow().getDataSchemaNode();
-        NormalizedNode serializedData = bindingSerializer
-            .deserialize(schemaNode, new StringReader(loadResourceAsString("sample-list.xml")));
-        Assert.assertNotNull(serializedData.toString());
+    public void testDeserializeTopLevelContainer() throws DeserializationException {
+        final NormalizedNode result = bindingSerializer.deserialize(
+                new StringReader(loadResourceAsString("top-level-container.xml")), TopLevelContainer.QNAME);
+        assertNotNull(result);
     }
 
     @Test
-    public void testDeserializeData_list_multiple() throws SerializationException {
-        NormalizedNode serializedData = bindingSerializer.deserialize(this.effectiveModelContext,
-                new StringReader(loadResourceAsString("sample-list-multiple.xml")));
-        Assert.assertNotNull(serializedData.toString());
+    public void testDeserializeInnerContainer() throws DeserializationException {
+        final NormalizedNode result = bindingSerializer.deserialize(
+                new StringReader(loadResourceAsString("inner-container.xml")),
+                TopLevelContainer.QNAME, SampleContainer.QNAME);
+        assertNotNull(result);
     }
+
+    @Test
+    public void testDeserializeInnerLeaf() throws DeserializationException {
+        final NormalizedNode result = bindingSerializer.deserialize(
+                new StringReader(loadResourceAsString("inner-leaf.xml")),
+                TopLevelContainer.QNAME, SampleContainer.QNAME, $YangModuleInfoImpl.qnameOf("name"));
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testDeserializeListSingleEntry() throws DeserializationException {
+        NormalizedNode result = bindingSerializer.deserialize(
+                new StringReader(loadResourceAsString("single-list-entry.xml")), SampleList.QNAME);
+        assertNotNull(result.toString());
+    }
+
+    @Test
+    public void testDeserializeListMultipleEntries() throws DeserializationException {
+        NormalizedNode result = bindingSerializer.deserialize(
+                new StringReader(loadResourceAsString("multiple-list-entries.xml")));
+        assertNotNull(result.toString());
+    }
+
 }
