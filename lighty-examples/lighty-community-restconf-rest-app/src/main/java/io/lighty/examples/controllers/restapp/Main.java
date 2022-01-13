@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2022 PANTHEON.tech s.r.o. All Rights Reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at https://www.eclipse.org/legal/epl-v10.html
+ */
 package io.lighty.examples.controllers.restapp;
 
 import com.google.common.base.Stopwatch;
@@ -74,13 +81,13 @@ public class Main {
                 //2. get RESTCONF NBP configuration
                 restconfConfiguration = RestConfConfigUtils.getRestConfConfiguration(Files.newInputStream(configPath));
             } else {
-                restconfConfiguration = RestConfConfigUtils.getDefaultRestConfConfiguration();
                 final Set<YangModuleInfo> moduleInfos = new HashSet<>();
                 ServiceLoader<YangModelBindingProvider> yangProviderLoader = ServiceLoader.load(YangModelBindingProvider.class);
                 for (YangModelBindingProvider yangModelBindingProvider : yangProviderLoader) {
                     moduleInfos.add(yangModelBindingProvider.getModuleInfo());
                 }
                 singleNodeConfiguration = ControllerConfigUtils.getDefaultSingleNodeConfiguration(moduleInfos);
+                restconfConfiguration = RestConfConfigUtils.getDefaultRestConfConfiguration();
             }
             if (registerShutdownHook) {
                 Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));

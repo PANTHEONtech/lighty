@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-
 package io.lighty.examples.controllers.restapp.tests;
 
 import org.slf4j.Logger;
@@ -43,6 +42,7 @@ public class RestClient implements AutoCloseable {
             LOG.error("RestClient init ERROR: ", e);
         }
     }
+
     public HttpResponse<String> POST(String uri, String data) throws InterruptedException, IOException {
         final HttpRequest postRequest = HttpRequest.newBuilder()
                 .uri(URI.create(baseUrl + uri))
@@ -52,6 +52,7 @@ public class RestClient implements AutoCloseable {
                 .build();
         return httpClient.send(postRequest, BodyHandlers.ofString());
     }
+
     @Override
     public void close() throws Exception {
         httpClientExecutor.shutdownNow();
