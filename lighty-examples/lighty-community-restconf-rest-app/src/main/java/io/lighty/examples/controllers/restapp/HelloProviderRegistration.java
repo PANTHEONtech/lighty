@@ -11,7 +11,7 @@ import io.lighty.core.controller.api.LightyController;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.hello.rev210321.HelloService;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 
-public class HelloProviderRegistration {
+public final class HelloProviderRegistration {
     private HelloProviderRegistration() {
         // Utility class
     }

@@ -21,13 +21,6 @@ import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBui
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import io.lighty.server.LightyServerBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.hello.rev210321.HelloService;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
-import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
@@ -39,6 +32,12 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.hello.rev210321.HelloService;
+import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
+import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Main {
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
@@ -82,7 +81,8 @@ public class Main {
                 restconfConfiguration = RestConfConfigUtils.getRestConfConfiguration(Files.newInputStream(configPath));
             } else {
                 final Set<YangModuleInfo> moduleInfos = new HashSet<>();
-                ServiceLoader<YangModelBindingProvider> yangProviderLoader = ServiceLoader.load(YangModelBindingProvider.class);
+                ServiceLoader<YangModelBindingProvider> yangProviderLoader =
+                        ServiceLoader.load(YangModelBindingProvider.class);
                 for (YangModelBindingProvider yangModelBindingProvider : yangProviderLoader) {
                     moduleInfos.add(yangModelBindingProvider.getModuleInfo());
                 }
@@ -137,6 +137,7 @@ public class Main {
         this.restconf.startServer();
     }
 
+    @SuppressWarnings("IllegalCatch")
     private void closeLightyModule(LightyModule module) {
         if (module != null) {
             try {

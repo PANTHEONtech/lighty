@@ -7,9 +7,6 @@
  */
 package io.lighty.examples.controllers.restapp.tests;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -20,6 +17,8 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("MethodName")
 public class RestClient implements AutoCloseable {
@@ -54,7 +53,7 @@ public class RestClient implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         httpClientExecutor.shutdownNow();
     }
 }

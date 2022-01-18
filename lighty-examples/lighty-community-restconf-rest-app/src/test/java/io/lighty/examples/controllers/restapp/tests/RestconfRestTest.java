@@ -10,11 +10,10 @@ package io.lighty.examples.controllers.restapp.tests;
 import io.lighty.examples.controllers.restapp.Main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertEquals;
 
 public class RestconfRestTest {
     private static final Logger LOG = LoggerFactory.getLogger(RestconfRestTest.class);
@@ -37,10 +36,11 @@ public class RestconfRestTest {
     @Test
     public void rpcTest() throws Exception {
         final var response = restClient.POST(RPC_PATH, RPC_INPUT);
-        assertEquals(response.statusCode(), 200);
-        assertEquals(response.body(), RPC_OUTPUT);
+        Assert.assertEquals(response.statusCode(), 200);
+        Assert.assertEquals(response.body(), RPC_OUTPUT);
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     @AfterClass
     public static void shutdown() {
         restconfApp.shutdown();

@@ -16,7 +16,7 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 
 
-public class HelloProvider implements HelloService {
+public final class HelloProvider implements HelloService {
 
     @Override
     public ListenableFuture<RpcResult<HelloWorldOutput>> helloWorld(final HelloWorldInput input) {
