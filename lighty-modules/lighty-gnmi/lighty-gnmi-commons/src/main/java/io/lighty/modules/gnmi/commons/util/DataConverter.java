@@ -67,15 +67,7 @@ public final class DataConverter {
     public static NormalizedNode nodeFromJsonString(@NonNull final YangInstanceIdentifier yangInstanceIdentifier,
                                                     @NonNull final String inputJson,
                                                     @NonNull final EffectiveModelContext context) {
-        final EffectiveStatementInference statementInference;
-        final Optional<Absolute> parentPath = getParentPath(yangInstanceIdentifier);
-        if (parentPath.isEmpty()) {
-            statementInference = SchemaInferenceStack.of(context).toInference();
-        } else {
-            statementInference = SchemaInferenceStack.of(context, parentPath.get()).toInference();
-        }
-        return fromJson(inputJson, statementInference, context);
-
+        return fromJson(inputJson, getParentPath(yangInstanceIdentifier, context), context);
     }
 
     private static String toJson(final YangInstanceIdentifier identifier, final NormalizedNode data,
@@ -93,14 +85,7 @@ public final class DataConverter {
             final NormalizedNode data, final JSONCodecFactory jsonCodecFactory) {
         final Writer writer = new StringWriter();
         final JsonWriter jsonWriter = new JsonWriter(writer);
-        final Optional<Absolute> parentPath = getParentPath(identifier);
-        final Inference inference;
-        if (parentPath.isPresent()) {
-            inference = SchemaInferenceStack.of(jsonCodecFactory.getEffectiveModelContext(), parentPath.get())
-                    .toInference();
-        } else {
-            inference = SchemaInferenceStack.of(jsonCodecFactory.getEffectiveModelContext()).toInference();
-        }
+        final Inference inference = getParentPath(identifier, jsonCodecFactory.getEffectiveModelContext());
 
         final XMLNamespace namespace = identifier.getLastPathArgument().getNodeType().getNamespace();
         final NormalizedNodeStreamWriter nodeWriter = JSONNormalizedNodeStreamWriter
@@ -121,14 +106,7 @@ public final class DataConverter {
                                                      final JSONCodecFactory jsonCodecFactory) {
         final Writer writer = new StringWriter();
         final JsonWriter jsonWriter = new JsonWriter(writer);
-        final Optional<Absolute> absolutePath = toAbsolutePath(identifier);
-        final Inference inference;
-        if (absolutePath.isPresent()) {
-            inference = SchemaInferenceStack.of(jsonCodecFactory.getEffectiveModelContext(), absolutePath.get())
-                    .toInference();
-        } else {
-            inference = SchemaInferenceStack.of(jsonCodecFactory.getEffectiveModelContext()).toInference();
-        }
+        final Inference inference = toInferencePath(identifier, jsonCodecFactory.getEffectiveModelContext());
 
         final XMLNamespace namespace = identifier.getLastPathArgument().getNodeType().getNamespace();
         final NormalizedNodeStreamWriter nodeWriter = JSONNormalizedNodeStreamWriter
@@ -190,10 +168,10 @@ public final class DataConverter {
         }
     }
 
-    private static Optional<Absolute> getParentPath(final YangInstanceIdentifier identifier) {
+    private static Inference getParentPath(final YangInstanceIdentifier identifier, final EffectiveModelContext ctx) {
         // In case of root
         if (identifier == ROOT_IDENTIFIER) {
-            return Optional.empty();
+            return SchemaInferenceStack.of(ctx).toInference();
         }
 
         final int offset = isMapEntryPath(identifier) ? MAP_ENTRY_PARENT_OFFSET : PARENT_OFFSET;
@@ -203,17 +181,20 @@ public final class DataConverter {
                 .filter(arg -> !(arg instanceof YangInstanceIdentifier.AugmentationIdentifier))
                 .map(YangInstanceIdentifier.PathArgument::getNodeType)
                 .collect(Collectors.toList());
-        return schemaArgs.size() != 0 ? Optional.of(Absolute.of(schemaArgs)) : Optional.empty();
+
+        return schemaArgs.isEmpty() ? SchemaInferenceStack.of(ctx).toInference()
+                : SchemaInferenceStack.of(ctx, Absolute.of(schemaArgs)).toInference();
     }
 
-    private static Optional<Absolute> toAbsolutePath(final YangInstanceIdentifier path) {
+    private static Inference toInferencePath(final YangInstanceIdentifier path, final EffectiveModelContext ctx) {
         final List<QName> schemaArgs = path.getPathArguments()
                 .stream()
                 .filter(arg -> !(arg instanceof YangInstanceIdentifier.NodeIdentifierWithPredicates))
                 .filter(arg -> !(arg instanceof YangInstanceIdentifier.AugmentationIdentifier))
                 .map(YangInstanceIdentifier.PathArgument::getNodeType)
                 .collect(Collectors.toList());
-        return schemaArgs.size() != 0 ? Optional.of(Absolute.of(schemaArgs)) : Optional.empty();
+        return schemaArgs.isEmpty() ? SchemaInferenceStack.of(ctx).toInference()
+                : SchemaInferenceStack.of(ctx, Absolute.of(schemaArgs)).toInference();
     }
 
     /**
