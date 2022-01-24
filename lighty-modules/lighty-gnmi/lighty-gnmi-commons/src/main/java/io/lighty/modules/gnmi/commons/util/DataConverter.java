@@ -61,17 +61,6 @@ public final class DataConverter {
     public static String jsonStringFromNormalizedNodes(@NonNull final YangInstanceIdentifier identifier,
                                                        @NonNull final NormalizedNode data,
                                                        @NonNull final EffectiveModelContext context) {
-        return toJson(identifier, data, context);
-    }
-
-    public static NormalizedNode nodeFromJsonString(@NonNull final YangInstanceIdentifier yangInstanceIdentifier,
-                                                    @NonNull final String inputJson,
-                                                    @NonNull final EffectiveModelContext context) {
-        return fromJson(inputJson, getParentPath(yangInstanceIdentifier, context), context);
-    }
-
-    private static String toJson(final YangInstanceIdentifier identifier, final NormalizedNode data,
-                                 final EffectiveModelContext context) {
         final JSONCodecFactory jsonCodecFactory
                 = JSONCodecFactorySupplier.RFC7951.createSimple(context);
         if (isListEntry(data)) {
@@ -79,6 +68,12 @@ public final class DataConverter {
         } else {
             return createJsonWithExclusiveWriter(identifier, data, jsonCodecFactory);
         }
+    }
+
+    public static NormalizedNode nodeFromJsonString(@NonNull final YangInstanceIdentifier yangInstanceIdentifier,
+                                                    @NonNull final String inputJson,
+                                                    @NonNull final EffectiveModelContext context) {
+        return fromJson(inputJson, getParentPath(yangInstanceIdentifier, context));
     }
 
     private static String createJsonWithExclusiveWriter(final YangInstanceIdentifier identifier,
@@ -134,8 +129,7 @@ public final class DataConverter {
     }
 
 
-    private static NormalizedNode fromJson(final String inputJson, final EffectiveStatementInference statementInference,
-                                           final EffectiveModelContext context) {
+    private static NormalizedNode fromJson(final String inputJson, final EffectiveStatementInference inference) {
         /*
          Write result into container builder with identifier (netconf:base)data. Makes possible to write multiple
           top level elements.
@@ -145,13 +139,10 @@ public final class DataConverter {
             .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifier.create(SchemaContext.NAME));
 
         final NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(resultBuilder);
-        final JSONCodecFactory jsonCodecFactory =
-                JSONCodecFactorySupplier.RFC7951.createLazy(context);
+        final JSONCodecFactory jsonCodecFactory
+                = JSONCodecFactorySupplier.RFC7951.createLazy(inference.getEffectiveModelContext());
 
-        try (JsonParserStream jsonParser = (statementInference != null)
-                ? JsonParserStream.create(streamWriter, jsonCodecFactory, statementInference)
-                : JsonParserStream.create(streamWriter, jsonCodecFactory)) {
-
+        try (JsonParserStream jsonParser = JsonParserStream.create(streamWriter, jsonCodecFactory, inference)) {
             final JsonReader reader = new JsonReader(new StringReader(inputJson));
             jsonParser.parse(reader);
         /*
@@ -160,8 +151,7 @@ public final class DataConverter {
          Otherwise (1 value) return that value only
          */
             final ContainerNode resultContainer = resultBuilder.build();
-            final Collection<DataContainerChild> values =
-                    resultContainer.body();
+            final Collection<DataContainerChild> values = resultContainer.body();
             return values.size() == 1 ? values.iterator().next() : resultContainer;
         } catch (IOException e) {
             throw new RuntimeException("IO error while closing JsonParserStream", e);
