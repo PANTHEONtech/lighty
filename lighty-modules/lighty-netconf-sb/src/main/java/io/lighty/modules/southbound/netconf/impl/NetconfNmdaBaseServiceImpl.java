@@ -48,9 +48,7 @@ import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableAnydataNodeBuilder;
 import org.opendaylight.yangtools.yang.data.util.ImmutableNormalizedAnydata;
-import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.EffectiveStatementInference;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
 public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implements NetconfNmdaBaseService {
@@ -105,17 +103,13 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
 
         if (filterYII.isPresent()) {
             NormalizedNode filterNN = ImmutableNodes.fromInstanceId(getEffectiveModelContext(), filterYII.get());
-            QName nodeType = filterNN.getIdentifier().getNodeType();
-            Optional<DataSchemaNode> dataTreeChild = getEffectiveModelContext().findDataTreeChild(nodeType);
-            DataSchemaNode dataSchemaNode = dataTreeChild.orElseThrow(() ->
-                    new NoSuchElementException(String.format("Node [%s] was not found in schema context", nodeType)));
+            final SchemaInferenceStack stack = SchemaInferenceStack.of(getEffectiveModelContext());
+            stack.enterSchemaTree(filterNN.getIdentifier().getNodeType());
 
-            EffectiveStatementInference inference = SchemaInferenceStack.ofSchemaPath(getEffectiveModelContext(),
-                    dataSchemaNode.getPath()).toInference();
             final AnydataNode<NormalizedAnydata> subtreeFilter =
                     ImmutableAnydataNodeBuilder.create(NormalizedAnydata.class)
                             .withNodeIdentifier(NETCONF_FILTER_NODEID)
-                            .withValue(new ImmutableNormalizedAnydata(inference, filterNN))
+                            .withValue(new ImmutableNormalizedAnydata(stack.toInference(), filterNN))
                             .build();
             final ChoiceNode filterSpecChoice =
                     Builders.choiceBuilder()
@@ -165,21 +159,17 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
         NormalizedNode editNNContent = ImmutableNodes.fromInstanceId(getEffectiveModelContext(), dataPath,
                 data.orElseThrow(() -> new NoSuchElementException("Data is missing")));
         QName nodeType = editNNContent.getIdentifier().getNodeType();
-        Optional<DataSchemaNode> dataTreeChild = getEffectiveModelContext().findDataTreeChild(nodeType);
 
         final NormalizedMetadata metadata = dataModifyActionAttribute
                 .map(oper -> leafMetadata(dataPath, oper))
                 .orElse(null);
 
-        DataSchemaNode dataSchemaNode = dataTreeChild.orElseThrow(() ->
-                new NoSuchElementException(String.format("Node [%s] was not found in schema context", nodeType)));
-
-        EffectiveStatementInference inference = SchemaInferenceStack.ofSchemaPath(getEffectiveModelContext(),
-                dataSchemaNode.getPath()).toInference();
+        final SchemaInferenceStack stack = SchemaInferenceStack.of(getEffectiveModelContext());
+        stack.enterSchemaTree(nodeType);
 
         final AnydataNode<NormalizedAnydata> editContent = ImmutableAnydataNodeBuilder.create(NormalizedAnydata.class)
-                .withNodeIdentifier(NETCONF_EDIT_DATA_CONFIG_NODEID)
-                .withValue(new ImmutableMetadataNormalizedAnydata(inference, editNNContent, metadata)).build();
+                .withNodeIdentifier(NETCONF_EDIT_DATA_CONFIG_NODEID).withValue(
+                        new ImmutableMetadataNormalizedAnydata(stack.toInference(), editNNContent, metadata)).build();
 
         ChoiceNode editStructure = Builders.choiceBuilder().withNodeIdentifier(toId(EditContent.QNAME))
                 .withChild(editContent).build();
