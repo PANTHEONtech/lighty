@@ -23,10 +23,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.lighty.core</groupId>
             <artifactId>lighty-controller</artifactId>
         </dependency>
@@ -69,6 +65,18 @@
         <dependency>
             <groupId>io.lighty.models</groupId>
             <artifactId>openconfig-models</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Tests -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.resources</groupId>
+            <artifactId>log4j-properties</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

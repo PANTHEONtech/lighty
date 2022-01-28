@@ -41,6 +41,8 @@
             <groupId>org.opendaylight.netconf</groupId>
             <artifactId>sal-rest-docgen</artifactId>
         </dependency>
+
+        <!-- Tests -->
         <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>singlenode-configuration</artifactId>
@@ -49,6 +51,16 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.resources</groupId>
+            <artifactId>log4j-properties</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
