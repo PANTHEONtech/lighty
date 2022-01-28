@@ -20,7 +20,10 @@ public class RncRestConfConfiguration extends RestConfConfiguration {
     private String keyStorePassword = "8pgETwat";
     private String keyStoreType = "JKS";
     private String keyStoreFilePath = "keystore/lightyio.jks";
+    private String trustKeyStorePassword = "8pgETwat";
+    private String trustKeyStoreFilePath = "keystore/lightyio.jks";
     private boolean useHttps = false;
+    private boolean needClientAuth = false;
 
     public RncRestConfConfiguration() {
         super();
@@ -33,7 +36,11 @@ public class RncRestConfConfiguration extends RestConfConfiguration {
         this.keyStorePassword = rncRestConfConfiguration.getKeyStorePassword();
         this.keyStoreType = rncRestConfConfiguration.getKeyStoreType();
         this.keyStoreFilePath = rncRestConfConfiguration.getKeyStoreFilePath();
+        this.trustKeyStorePassword = rncRestConfConfiguration.getTrustKeyStorePassword();
+        this.trustKeyStoreFilePath = rncRestConfConfiguration.getTrustKeyStoreFilePath();
         this.useHttps = rncRestConfConfiguration.isUseHttps();
+        this.needClientAuth = rncRestConfConfiguration.isNeedClientAuth();
+
         setSecurityConfig(rncRestConfConfiguration.getSecurityConfig());
     }
 
@@ -69,9 +76,30 @@ public class RncRestConfConfiguration extends RestConfConfiguration {
         this.keyStoreFilePath = keyStoreFilePath;
     }
 
+    public String getTrustKeyStorePassword() {
+        return trustKeyStorePassword;
+    }
+
+    public void setTrustKeyStorePassword(String trustKeyStorePassword) {
+        this.trustKeyStorePassword = trustKeyStorePassword;
+    }
+
+    public String getTrustKeyStoreFilePath() {
+        return trustKeyStoreFilePath;
+    }
+
+    public void setTrustKeyStoreFilePath(String trustKeyStoreFilePath) {
+        this.trustKeyStoreFilePath = trustKeyStoreFilePath;
+    }
+
     public boolean isUseHttps() {
         return useHttps;
     }
+
+    public boolean isNeedClientAuth() {
+        return needClientAuth;
+    }
+
 
     public void setUseHttps(boolean useHttps) {
         this.useHttps = useHttps;
