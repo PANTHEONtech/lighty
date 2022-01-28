@@ -94,12 +94,13 @@ To build and start the lighty.io RNC application using Docker in a local environ
 2. Start the application using following docker command.   
    `docker run -it --name lighty-rnc --network host --rm lighty-rnc`
 
-3. To start the application with a custom lighty configuration( -c ) and custom initial log4j config file( -l ), use the command:
+3. To start the application with a custom lighty configuration( -c ) and custom initial log4j config file, use the command:
   ```
-   docker run -it --name lighty-rnc --network host
-   -v /absolute_path/to/config-file/configuration.json:/lighty-rnc/configuration.json 
-   -v /absolute_path/to/config-file/logger.properties:/lighty-rnc/logger.properties 
-   --rm lighty-rnc -c configuration.json -l logger.properties
+  docker run --env LOG_OPTS=-Dlog4j.configurationFile=logger.properties
+  -it --name lighty-rnc --network host
+  -v /absolute_path/to/config-file/configuration.json:/lighty-rnc/configuration.json
+  -v /absolute_path/to/config-file/logger.properties:/lighty-rnc/logger.properties
+  --rm lighty-rnc -c configuration.json
   ```
 
    If your configuration.json file specifies a path to the initial configuration data to load on startup

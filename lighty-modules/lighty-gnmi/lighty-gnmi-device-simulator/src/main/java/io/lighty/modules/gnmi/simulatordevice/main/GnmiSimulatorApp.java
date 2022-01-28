@@ -16,8 +16,6 @@ import io.lighty.modules.gnmi.simulatordevice.utils.GnmiSimulatorConfUtils;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +26,6 @@ public class GnmiSimulatorApp {
     private SimulatedGnmiDevice device;
 
     public static void main(String[] args) {
-        BasicConfigurator.configure();
         final GnmiSimulatorApp gnmiSimulatorApp = new GnmiSimulatorApp();
         gnmiSimulatorApp.start(true, args);
     }
@@ -41,12 +38,6 @@ public class GnmiSimulatorApp {
             .addObject(arguments)
             .build()
             .parse(args);
-
-        if (arguments.getLoggerPath() != null) {
-            LOG.debug("Argument for custom logging settings path is present: {} ", arguments.getLoggerPath());
-            PropertyConfigurator.configure(arguments.getLoggerPath());
-            LOG.info("Custom logger properties loaded successfully");
-        }
 
         final GnmiSimulatorConfiguration gnmiSimulatorConfiguration;
 

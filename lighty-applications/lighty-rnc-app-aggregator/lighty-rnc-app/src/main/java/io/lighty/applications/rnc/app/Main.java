@@ -17,21 +17,9 @@ import io.lighty.applications.rnc.module.config.RncLightyModuleConfiguration;
 import io.lighty.core.common.models.YangModuleUtils;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.impl.config.ConfigurationException;
-import java.lang.management.ManagementFactory;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Enumeration;
 import java.util.concurrent.ExecutionException;
-import javax.management.InstanceAlreadyExistsException;
-import javax.management.MBeanRegistrationException;
-import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
-import javax.management.NotCompliantMBeanException;
-import javax.management.ObjectName;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.jmx.HierarchyDynamicMBean;
-import org.apache.log4j.spi.LoggerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,20 +53,6 @@ public class Main {
                 .addObject(arguments)
                 .build()
                 .parse(args);
-
-        if (arguments.getLoggerPath() != null) {
-            LOG.debug("Argument for custom logging settings path is present: {} ", arguments.getLoggerPath());
-            PropertyConfigurator.configure(arguments.getLoggerPath());
-            LOG.info("Custom logger properties loaded successfully");
-        }
-
-        try {
-            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-            registerLoggerMBeans(mbs);
-        } catch (InstanceAlreadyExistsException | MBeanRegistrationException
-                | NotCompliantMBeanException | MalformedObjectNameException e) {
-            LOG.warn("Exception while initializing JMX with MBeans classes", e);
-        }
 
         try {
             if (arguments.getConfigPath() != null) {
@@ -133,28 +107,4 @@ public class Main {
         }));
     }
 
-    /**
-     * Registers necessary log4j MBeans in JMX.
-     * @param server MBeanServer
-     * @throws MalformedObjectNameException wrong formatted ObjectName
-     * @throws NotCompliantMBeanException not compliant MBean
-     * @throws InstanceAlreadyExistsException if MBean is already registered
-     * @throws MBeanRegistrationException if MBean cant be registered
-     */
-    private void registerLoggerMBeans(MBeanServer server) throws MalformedObjectNameException,
-            NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException {
-
-        HierarchyDynamicMBean hierarchyDynamicMBean = new HierarchyDynamicMBean();
-        final ObjectName mbo = new ObjectName("log4j:hierarchy=LoggerHierarchy");
-        server.registerMBean(hierarchyDynamicMBean, mbo);
-
-        final org.apache.log4j.Logger rootLogger = org.apache.log4j.Logger.getRootLogger();
-        hierarchyDynamicMBean.addLoggerMBean(rootLogger.getName());
-        final LoggerRepository loggersRepo = LogManager.getLoggerRepository();
-        final Enumeration loggersEnumer = loggersRepo.getCurrentLoggers();
-        while (loggersEnumer.hasMoreElements()) {
-            final org.apache.log4j.Logger logger = (org.apache.log4j.Logger) loggersEnumer.nextElement();
-            hierarchyDynamicMBean.addLoggerMBean(logger.getName());
-        }
-    }
 }
