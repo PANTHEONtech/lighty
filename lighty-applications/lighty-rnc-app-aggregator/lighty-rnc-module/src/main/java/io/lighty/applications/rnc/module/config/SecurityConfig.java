@@ -14,22 +14,30 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 public class SecurityConfig {
     private final KeyStore keyStore;
+    private final KeyStore trustKeyStore;
     private final String password;
+    private final String trustPassword;
     private final SslContextFactory sslContextFactory;
+    private final boolean isNeedClientAuth;
 
-    public SecurityConfig(final KeyStore keyStore, final String password) {
+    public SecurityConfig(final KeyStore keyStore, final String password, final KeyStore trustKeyStore, final String trustPassword, final boolean isNeedClientAuth) {
         this.keyStore = keyStore;
         this.password = password;
+        this.trustKeyStore = trustKeyStore;
+        this.trustPassword = trustPassword;
+        this.isNeedClientAuth = isNeedClientAuth;
         sslContextFactory = new SslContextFactory.Server();
         initFactoryCtx();
     }
 
     private void initFactoryCtx() {
-        sslContextFactory.setTrustStore(keyStore);
-        sslContextFactory.setTrustStorePassword(password);
+        sslContextFactory.setTrustStore(trustKeyStore);
+        sslContextFactory.setTrustStorePassword(trustPassword);
         sslContextFactory.setKeyStore(keyStore);
         sslContextFactory.setKeyStorePassword(password);
         sslContextFactory.setCipherComparator(HTTP2Cipher.COMPARATOR);
+        if(isNeedClientAuth == true)
+            sslContextFactory.setNeedClientAuth(true);
     }
 
     public SslConnectionFactory getSslConnectionFactory(final String protocol) {

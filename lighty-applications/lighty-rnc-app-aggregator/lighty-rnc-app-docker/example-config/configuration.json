@@ -77,9 +77,12 @@
         "restconfServletContextPath":"/restconf",
         "jsonRestconfServiceType": "DRAFT_18",
         "useHttps": false,
+        "needClientAuth": false,
         "keyStorePassword":"8pgETwat",
         "keyStoreType":"JKS",
-        "keyStoreFilePath":"keystore/lightyio.jks"
+        "keyStoreFilePath":"keystore/lightyio.jks",
+		"trustKeyStorePassword":"8pgETwat",
+		"trustKeyStoreFilePath":"keystore/lightyio.jks"        
     },
     "netconf-northbound":{
         "connectionTimeout":20000,
