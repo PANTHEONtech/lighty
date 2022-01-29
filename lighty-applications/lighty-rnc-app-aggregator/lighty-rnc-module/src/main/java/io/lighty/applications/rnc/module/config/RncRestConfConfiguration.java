@@ -24,6 +24,7 @@ public class RncRestConfConfiguration extends RestConfConfiguration {
     private String trustKeyStoreFilePath = "keystore/lightyio.jks";
     private boolean useHttps = false;
     private boolean needClientAuth = false;
+    private boolean enableSwagger = false;
 
     public RncRestConfConfiguration() {
         super();
@@ -40,6 +41,7 @@ public class RncRestConfConfiguration extends RestConfConfiguration {
         this.trustKeyStoreFilePath = rncRestConfConfiguration.getTrustKeyStoreFilePath();
         this.useHttps = rncRestConfConfiguration.isUseHttps();
         this.needClientAuth = rncRestConfConfiguration.isNeedClientAuth();
+        this.enableSwagger = rncRestConfConfiguration.isEnableSwagger();
 
         setSecurityConfig(rncRestConfConfiguration.getSecurityConfig());
     }
@@ -96,12 +98,23 @@ public class RncRestConfConfiguration extends RestConfConfiguration {
         return useHttps;
     }
 
+    public void setUseHttps(boolean useHttps) {
+        this.useHttps = useHttps;
+    }
+
     public boolean isNeedClientAuth() {
         return needClientAuth;
     }
 
-
-    public void setUseHttps(boolean useHttps) {
-        this.useHttps = useHttps;
+    public void setNeedClientAuth(boolean needClientAuth) {
+        this.needClientAuth = needClientAuth;
     }
+
+    public boolean isEnableSwagger() {
+        return enableSwagger;
+    }
+
+    public void setEnableSwagger(boolean enableSwagger) {
+       this.enableSwagger = enableSwagger;
+    }    
 }
