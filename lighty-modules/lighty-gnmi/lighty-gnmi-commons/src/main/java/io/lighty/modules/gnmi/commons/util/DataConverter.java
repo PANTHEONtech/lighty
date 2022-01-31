@@ -61,8 +61,7 @@ public final class DataConverter {
     public static String jsonStringFromNormalizedNodes(@NonNull final YangInstanceIdentifier identifier,
                                                        @NonNull final NormalizedNode data,
                                                        @NonNull final EffectiveModelContext context) {
-        final JSONCodecFactory jsonCodecFactory
-                = JSONCodecFactorySupplier.RFC7951.createSimple(context);
+        final JSONCodecFactory jsonCodecFactory = JSONCodecFactorySupplier.RFC7951.createSimple(context);
         if (isListEntry(data)) {
             return createJsonWithNestedWriter(identifier, data, jsonCodecFactory);
         } else {
@@ -81,7 +80,6 @@ public final class DataConverter {
         final Writer writer = new StringWriter();
         final JsonWriter jsonWriter = new JsonWriter(writer);
         final Inference inference = getParentPath(identifier, jsonCodecFactory.getEffectiveModelContext());
-
         final XMLNamespace namespace = identifier.getLastPathArgument().getNodeType().getNamespace();
         final NormalizedNodeStreamWriter nodeWriter = JSONNormalizedNodeStreamWriter
                 .createExclusiveWriter(jsonCodecFactory, inference, namespace, jsonWriter);
@@ -102,7 +100,6 @@ public final class DataConverter {
         final Writer writer = new StringWriter();
         final JsonWriter jsonWriter = new JsonWriter(writer);
         final Inference inference = toInferencePath(identifier, jsonCodecFactory.getEffectiveModelContext());
-
         final XMLNamespace namespace = identifier.getLastPathArgument().getNodeType().getNamespace();
         final NormalizedNodeStreamWriter nodeWriter = JSONNormalizedNodeStreamWriter
                 .createNestedWriter(jsonCodecFactory, inference, namespace, jsonWriter);
@@ -171,7 +168,6 @@ public final class DataConverter {
                 .filter(arg -> !(arg instanceof YangInstanceIdentifier.AugmentationIdentifier))
                 .map(YangInstanceIdentifier.PathArgument::getNodeType)
                 .collect(Collectors.toList());
-
         return schemaArgs.isEmpty() ? SchemaInferenceStack.of(ctx).toInference()
                 : SchemaInferenceStack.of(ctx, Absolute.of(schemaArgs)).toInference();
     }
