@@ -1,0 +1,4 @@
+build = "maven"
+jdk11 = true
+summaryComments = true
+tools = ["infer", "findsecbugs", "errorprone", "cobra", "gosec", "shellcheck", "semgrep"]
