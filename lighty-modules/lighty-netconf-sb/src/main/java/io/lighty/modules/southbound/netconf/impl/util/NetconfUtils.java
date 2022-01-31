@@ -23,10 +23,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.netconf.api.ModifyAction;
 import org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil;
@@ -56,7 +54,6 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
 import org.opendaylight.yangtools.yang.data.api.schema.builder.DataContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 public final class NetconfUtils {
     public static final QName NETCONF_DELETE_CONFIG_QNAME =
@@ -178,15 +175,5 @@ public final class NetconfUtils {
     public static NormalizedNode getUnLockContent(final QName targetDatastore) {
         return Builders.containerBuilder().withNodeIdentifier(NETCONF_UNLOCK_NODEID)
                 .withChild(getTargetNode(targetDatastore)).build();
-    }
-
-    public static Optional<Absolute> getAbsolutePathToNNode(final YangInstanceIdentifier yangInstanceIdentifier,
-            final NormalizedNode normalizedNode) {
-        final List<QName> qnamePath = yangInstanceIdentifier.getPathArguments().stream()
-                .filter(pa -> !(pa instanceof YangInstanceIdentifier.AugmentationIdentifier)
-                        && !(pa instanceof YangInstanceIdentifier.NodeIdentifierWithPredicates))
-                .takeWhile(pa -> pa.getNodeType().equals(normalizedNode.getIdentifier().getNodeType()))
-                .map(YangInstanceIdentifier.PathArgument::getNodeType).collect(Collectors.toList());
-        return qnamePath.size() > 0 ? Optional.of(Absolute.of(qnamePath)) : Optional.empty();
     }
 }
