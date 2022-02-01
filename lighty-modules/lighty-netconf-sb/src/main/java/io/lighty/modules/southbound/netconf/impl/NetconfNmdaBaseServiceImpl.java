@@ -22,7 +22,6 @@ import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.netconf.api.ModifyAction;
@@ -50,10 +49,7 @@ import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableAnydataNodeBuilder;
 import org.opendaylight.yangtools.yang.data.util.ImmutableNormalizedAnydata;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.EffectiveStatementInference;
-import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
-import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack.Inference;
 
 public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implements NetconfNmdaBaseService {
 
@@ -129,16 +125,16 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
                                                              Optional<ModifyAction> defaultModifyAction) {
         final NormalizedNode editNNContent = ImmutableNodes.fromInstanceId(getEffectiveModelContext(), dataPath,
                 data.orElseThrow(() -> new NoSuchElementException("Data is missing")));
-
         final NormalizedMetadata metadata = dataModifyActionAttribute
                 .map(oper -> leafMetadata(dataPath, oper))
                 .orElse(null);
-        final EffectiveStatementInference inference = getInferenceUntilNNode(dataPath, editNNContent,
-                getEffectiveModelContext());
+        final SchemaInferenceStack stack = SchemaInferenceStack.of(getEffectiveModelContext());
+        stack.enterSchemaTree(editNNContent.getIdentifier().getNodeType());
         final AnydataNode<NormalizedAnydata> editContent = ImmutableAnydataNodeBuilder
                 .create(NormalizedAnydata.class)
                 .withNodeIdentifier(NETCONF_EDIT_DATA_CONFIG_NODEID)
-                .withValue(new ImmutableMetadataNormalizedAnydata(inference, editNNContent, metadata)).build();
+                .withValue(new ImmutableMetadataNormalizedAnydata(stack.toInference(), editNNContent, metadata))
+                .build();
 
         ChoiceNode editStructure = Builders.choiceBuilder().withNodeIdentifier(toId(EditContent.QNAME))
                 .withChild(editContent).build();
@@ -253,28 +249,16 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
 
     private ChoiceNode getFilterSpecChoiceNode(final YangInstanceIdentifier filterYII) {
         final NormalizedNode filterNN = ImmutableNodes.fromInstanceId(getEffectiveModelContext(), filterYII);
-        final EffectiveStatementInference inference = getInferenceUntilNNode(filterYII, filterNN,
-                getEffectiveModelContext());
+        final SchemaInferenceStack stack = SchemaInferenceStack.of(getEffectiveModelContext());
+        stack.enterSchemaTree(filterNN.getIdentifier().getNodeType());
         final AnydataNode<NormalizedAnydata> subtreeFilter =
                 ImmutableAnydataNodeBuilder.create(NormalizedAnydata.class)
                         .withNodeIdentifier(NETCONF_FILTER_NODEID)
-                        .withValue(new ImmutableNormalizedAnydata(inference, filterNN))
+                        .withValue(new ImmutableNormalizedAnydata(stack.toInference(), filterNN))
                         .build();
         return Builders.choiceBuilder()
                 .withNodeIdentifier(NETCONF_FILTER_CHOICE_NODEID)
                 .withChild(subtreeFilter)
                 .build();
-    }
-
-    private static Inference getInferenceUntilNNode(final YangInstanceIdentifier yangInstanceIdentifier,
-            final NormalizedNode normalizedNode, final EffectiveModelContext ctx) {
-        // Get QName path from yangInstanceIdentifier until normalizedNode QName is found.
-        final List<QName> qnamePath = yangInstanceIdentifier.getPathArguments().stream()
-                .filter(pa -> !(pa instanceof YangInstanceIdentifier.AugmentationIdentifier))
-                .filter(pa -> !(pa instanceof YangInstanceIdentifier.NodeIdentifierWithPredicates))
-                .takeWhile(pa -> pa.getNodeType().equals(normalizedNode.getIdentifier().getNodeType()))
-                .map(YangInstanceIdentifier.PathArgument::getNodeType).collect(Collectors.toList());
-        return qnamePath.isEmpty() ? SchemaInferenceStack.of(ctx).toInference()
-                : SchemaInferenceStack.of(ctx, Absolute.of(qnamePath)).toInference();
     }
 }
