@@ -44,7 +44,6 @@ import org.slf4j.LoggerFactory;
 
 public final class DataConverter {
     private static final Logger LOG = LoggerFactory.getLogger(DataConverter.class);
-    public static final YangInstanceIdentifier ROOT_IDENTIFIER = YangInstanceIdentifier.empty();
 
     private DataConverter() {
         // Utility class
