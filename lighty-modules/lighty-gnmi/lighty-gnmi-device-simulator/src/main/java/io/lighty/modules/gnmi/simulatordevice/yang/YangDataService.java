@@ -5,10 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-
 package io.lighty.modules.gnmi.simulatordevice.yang;
-
-import static io.lighty.modules.gnmi.commons.util.DataConverter.ROOT_IDENTIFIER;
 
 import com.google.common.io.CharStreams;
 import io.lighty.modules.gnmi.commons.util.DataConverter;
@@ -39,7 +36,6 @@ import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("UnstableApiUsage")
 public class YangDataService {
-
     private static final Logger LOG = LoggerFactory.getLogger(YangDataService.class);
 
     private final EnumMap<DatastoreType, InMemoryDOMDataStore> datastoreMap;
@@ -120,17 +116,17 @@ public class YangDataService {
             // read json configuration from file
             final String configJson = CharStreams.toString(new InputStreamReader(stream, StandardCharsets.UTF_8));
             /*
-             ROOT_IDENTIFIER because we are writing one/or multiple top-level elements
+             ROOT YII because we are writing one/or multiple top-level elements
               (interfaces,alarms, components ...).
             */
             final NormalizedNode node =
-                    DataConverter.nodeFromJsonString(ROOT_IDENTIFIER, configJson, schemaContext);
+                    DataConverter.nodeFromJsonString(YangInstanceIdentifier.empty(), configJson, schemaContext);
             /*
              If QName of parsed node is a root node (SchemaContext.NAME), that means we parsed multiple
-              top-level element, in that case we need to write this node on ROOT_IDENTIFIER.
+              top-level element, in that case we need to write this node on ROOT YII.
             */
             if (node.getIdentifier().getNodeType().equals(SchemaContext.NAME)) {
-                writeDataByPath(datastoreType, ROOT_IDENTIFIER, node);
+                writeDataByPath(datastoreType, YangInstanceIdentifier.empty(), node);
             // Else we parsed only one top-level element, in that case we write this node on it's identifier.
             } else {
                 writeDataByPath(datastoreType, YangInstanceIdentifier.of(node.getIdentifier().getNodeType()), node);
