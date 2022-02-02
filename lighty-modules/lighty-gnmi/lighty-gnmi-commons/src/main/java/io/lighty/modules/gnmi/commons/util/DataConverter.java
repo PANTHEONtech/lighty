@@ -14,7 +14,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
@@ -39,17 +38,12 @@ import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class DataConverter {
-
     private static final Logger LOG = LoggerFactory.getLogger(DataConverter.class);
-    private static final int MAP_ENTRY_PARENT_OFFSET = 2;
-    private static final int PARENT_OFFSET = 1;
-
     public static final YangInstanceIdentifier ROOT_IDENTIFIER = YangInstanceIdentifier.empty();
 
     private DataConverter() {
@@ -61,16 +55,16 @@ public final class DataConverter {
                                                        @NonNull final EffectiveModelContext context) {
         final JSONCodecFactory jsonCodecFactory = JSONCodecFactorySupplier.RFC7951.createSimple(context);
         if (isListEntry(data)) {
-            return createJsonWithNestedWriter(toInferencePath(identifier, context), data, jsonCodecFactory);
+            return createJsonWithNestedWriter(toStack(identifier, context), data, jsonCodecFactory);
         } else {
-            return createJsonWithExclusiveWriter(getParentPath(identifier, context), data, jsonCodecFactory);
+            return createJsonWithExclusiveWriter(getParentStack(toStack(identifier, context)), data, jsonCodecFactory);
         }
     }
 
     public static NormalizedNode nodeFromJsonString(@NonNull final YangInstanceIdentifier yangInstanceIdentifier,
                                                     @NonNull final String inputJson,
                                                     @NonNull final EffectiveModelContext context) {
-        return fromJson(inputJson, getParentPath(yangInstanceIdentifier, context));
+        return fromJson(inputJson, getParentStack(toStack(yangInstanceIdentifier, context)));
     }
 
     private static String createJsonWithExclusiveWriter(final SchemaInferenceStack stack, final NormalizedNode data,
@@ -153,34 +147,21 @@ public final class DataConverter {
         }
     }
 
-    private static SchemaInferenceStack getParentPath(final YangInstanceIdentifier identifier,
-                                                      final EffectiveModelContext ctx) {
-        // In case of root
-        if (identifier == ROOT_IDENTIFIER) {
-            return SchemaInferenceStack.of(ctx);
+    private static SchemaInferenceStack getParentStack(final SchemaInferenceStack stack) {
+        if (!stack.isEmpty()) {
+            stack.exit();
         }
-
-        final int offset = isMapEntryPath(identifier) ? MAP_ENTRY_PARENT_OFFSET : PARENT_OFFSET;
-        final List<QName> schemaArgs = identifier.getPathArguments()
-                .subList(0, identifier.getPathArguments().size() - offset).stream()
-                .filter(arg -> !(arg instanceof YangInstanceIdentifier.NodeIdentifierWithPredicates))
-                .filter(arg -> !(arg instanceof YangInstanceIdentifier.AugmentationIdentifier))
-                .map(YangInstanceIdentifier.PathArgument::getNodeType)
-                .collect(Collectors.toList());
-        return schemaArgs.isEmpty() ? SchemaInferenceStack.of(ctx)
-                : SchemaInferenceStack.of(ctx, Absolute.of(schemaArgs));
+        return stack;
     }
 
-    private static SchemaInferenceStack toInferencePath(final YangInstanceIdentifier path,
-                                                        final EffectiveModelContext ctx) {
-        final List<QName> schemaArgs = path.getPathArguments()
-                .stream()
+    private static SchemaInferenceStack toStack(final YangInstanceIdentifier path,
+                                                final EffectiveModelContext ctx) {
+        final var stack = SchemaInferenceStack.of(ctx);
+        path.getPathArguments().stream()
                 .filter(arg -> !(arg instanceof YangInstanceIdentifier.NodeIdentifierWithPredicates))
                 .filter(arg -> !(arg instanceof YangInstanceIdentifier.AugmentationIdentifier))
-                .map(YangInstanceIdentifier.PathArgument::getNodeType)
-                .collect(Collectors.toList());
-        return schemaArgs.isEmpty() ? SchemaInferenceStack.of(ctx)
-                : SchemaInferenceStack.of(ctx, Absolute.of(schemaArgs));
+                .forEach(p -> stack.enterSchemaTree(p.getNodeType()));
+        return stack;
     }
 
     /**
@@ -262,9 +243,4 @@ public final class DataConverter {
     private static boolean isListEntry(final NormalizedNode node) {
         return node instanceof MapEntryNode;
     }
-
-    private static boolean isMapEntryPath(final YangInstanceIdentifier yid) {
-        return yid.getLastPathArgument() instanceof YangInstanceIdentifier.NodeIdentifierWithPredicates;
-    }
-
 }
