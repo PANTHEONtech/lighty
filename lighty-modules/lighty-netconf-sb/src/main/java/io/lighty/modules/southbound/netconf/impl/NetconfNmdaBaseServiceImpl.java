@@ -48,9 +48,7 @@ import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableAnydataNodeBuilder;
 import org.opendaylight.yangtools.yang.data.util.ImmutableNormalizedAnydata;
-import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.EffectiveStatementInference;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
 public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implements NetconfNmdaBaseService {
@@ -99,52 +97,15 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
                                                             Optional<Set<QName>> originFilter,
                                                             Optional<Boolean> negateOriginFilter,
                                                             Optional<Boolean> withOrigin) {
-        List<DataContainerChild> getDataChildren = new ArrayList<>();
-
+        final List<DataContainerChild> getDataChildren = new ArrayList<>();
         getDataChildren.add(getDatastoreNode(requireNonNull(sourceDatastore)));
-
-        if (filterYII.isPresent()) {
-            NormalizedNode filterNN = ImmutableNodes.fromInstanceId(getEffectiveModelContext(), filterYII.get());
-            QName nodeType = filterNN.getIdentifier().getNodeType();
-            Optional<DataSchemaNode> dataTreeChild = getEffectiveModelContext().findDataTreeChild(nodeType);
-            DataSchemaNode dataSchemaNode = dataTreeChild.orElseThrow(() ->
-                    new NoSuchElementException(String.format("Node [%s] was not found in schema context", nodeType)));
-
-            EffectiveStatementInference inference = SchemaInferenceStack.ofSchemaPath(getEffectiveModelContext(),
-                    dataSchemaNode.getPath()).toInference();
-            final AnydataNode<NormalizedAnydata> subtreeFilter =
-                    ImmutableAnydataNodeBuilder.create(NormalizedAnydata.class)
-                            .withNodeIdentifier(NETCONF_FILTER_NODEID)
-                            .withValue(new ImmutableNormalizedAnydata(inference, filterNN))
-                            .build();
-            final ChoiceNode filterSpecChoice =
-                    Builders.choiceBuilder()
-                            .withNodeIdentifier(NETCONF_FILTER_CHOICE_NODEID)
-                            .withChild(subtreeFilter)
-                            .build();
-
-            getDataChildren.add(filterSpecChoice);
-        }
-
+        filterYII.ifPresent(yangIID -> getDataChildren.add(getFilterSpecChoiceNode(yangIID)));
         configFilter.ifPresent(configFilterValue -> getDataChildren.add(getConfigFilterNode(configFilterValue)));
 
-        if (originFilter.isPresent()) {
-            DataContainerChild originFilterChild;
-            if (negateOriginFilter.isPresent() && negateOriginFilter.get()) {
-                originFilterChild = getNegatedOriginFilterNode(originFilter.get());
-            } else {
-                originFilterChild = getOriginFilterNode(originFilter.get());
-            }
-            final ChoiceNode originFilterSpecChoice =
-                    Builders.choiceBuilder()
-                            .withNodeIdentifier(NETCONF_ORIGIN_FILTERS_CHOICE_NODEID)
-                            .withChild(originFilterChild)
-                            .build();
-            getDataChildren.add(originFilterSpecChoice);
-        }
+        originFilter.ifPresent(originFilterQNames -> getDataChildren.add(getOriginFilterSpecChoiceNode(
+                originFilterQNames, negateOriginFilter.isPresent() && negateOriginFilter.get())));
 
         maxDepth.ifPresent(maxDepthValue -> getDataChildren.add(getMaxDepthNode(maxDepthValue)));
-
         if (withOrigin.isPresent() && withOrigin.get()) {
             getDataChildren.add(getWithOriginNode());
         }
@@ -153,7 +114,7 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
         getDataChildrenArray = getDataChildren.toArray(getDataChildrenArray);
 
         return getDOMRpcService().invokeRpc(NETCONF_GET_DATA_QNAME,
-                NetconfMessageTransformUtil.wrap(NETCONF_GET_DATA_QNAME, getDataChildrenArray));
+                NetconfMessageTransformUtil.wrap(NodeIdentifier.create(NETCONF_GET_DATA_QNAME), getDataChildrenArray));
     }
 
     @Override
@@ -162,30 +123,22 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
                                                              YangInstanceIdentifier dataPath,
                                                              Optional<ModifyAction> dataModifyActionAttribute,
                                                              Optional<ModifyAction> defaultModifyAction) {
-        NormalizedNode editNNContent = ImmutableNodes.fromInstanceId(getEffectiveModelContext(), dataPath,
+        final NormalizedNode editNNContent = ImmutableNodes.fromInstanceId(getEffectiveModelContext(), dataPath,
                 data.orElseThrow(() -> new NoSuchElementException("Data is missing")));
-        QName nodeType = editNNContent.getIdentifier().getNodeType();
-        Optional<DataSchemaNode> dataTreeChild = getEffectiveModelContext().findDataTreeChild(nodeType);
-
         final NormalizedMetadata metadata = dataModifyActionAttribute
                 .map(oper -> leafMetadata(dataPath, oper))
                 .orElse(null);
-
-        DataSchemaNode dataSchemaNode = dataTreeChild.orElseThrow(() ->
-                new NoSuchElementException(String.format("Node [%s] was not found in schema context", nodeType)));
-
-        EffectiveStatementInference inference = SchemaInferenceStack.ofSchemaPath(getEffectiveModelContext(),
-                dataSchemaNode.getPath()).toInference();
-
-        final AnydataNode<NormalizedAnydata> editContent = ImmutableAnydataNodeBuilder.create(NormalizedAnydata.class)
+        final SchemaInferenceStack stack = SchemaInferenceStack.of(getEffectiveModelContext());
+        stack.enterSchemaTree(editNNContent.getIdentifier().getNodeType());
+        final AnydataNode<NormalizedAnydata> editContent = ImmutableAnydataNodeBuilder
+                .create(NormalizedAnydata.class)
                 .withNodeIdentifier(NETCONF_EDIT_DATA_CONFIG_NODEID)
-                .withValue(new ImmutableMetadataNormalizedAnydata(inference, editNNContent, metadata)).build();
+                .withValue(new ImmutableMetadataNormalizedAnydata(stack.toInference(), editNNContent, metadata))
+                .build();
 
         ChoiceNode editStructure = Builders.choiceBuilder().withNodeIdentifier(toId(EditContent.QNAME))
                 .withChild(editContent).build();
-
         Preconditions.checkNotNull(editStructure);
-
         return getDOMRpcService().invokeRpc(NETCONF_EDIT_DATA_QNAME,
                 NetconfMessageTransformUtil.wrap(NETCONF_EDIT_DATA_QNAME,
                         getDatastoreNode(requireNonNull(targetDatastore)),
@@ -279,5 +232,33 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
                 return currentMeta;
             }
         }
+    }
+
+    private ChoiceNode getOriginFilterSpecChoiceNode(final Set<QName> originFilter, final boolean negateOriginFilter) {
+        final DataContainerChild originFilterChild;
+        if (negateOriginFilter) {
+            originFilterChild = getNegatedOriginFilterNode(originFilter);
+        } else {
+            originFilterChild = getOriginFilterNode(originFilter);
+        }
+        return Builders.choiceBuilder()
+                .withNodeIdentifier(NETCONF_ORIGIN_FILTERS_CHOICE_NODEID)
+                .withChild(originFilterChild)
+                .build();
+    }
+
+    private ChoiceNode getFilterSpecChoiceNode(final YangInstanceIdentifier filterYII) {
+        final NormalizedNode filterNN = ImmutableNodes.fromInstanceId(getEffectiveModelContext(), filterYII);
+        final SchemaInferenceStack stack = SchemaInferenceStack.of(getEffectiveModelContext());
+        stack.enterSchemaTree(filterNN.getIdentifier().getNodeType());
+        final AnydataNode<NormalizedAnydata> subtreeFilter =
+                ImmutableAnydataNodeBuilder.create(NormalizedAnydata.class)
+                        .withNodeIdentifier(NETCONF_FILTER_NODEID)
+                        .withValue(new ImmutableNormalizedAnydata(stack.toInference(), filterNN))
+                        .build();
+        return Builders.choiceBuilder()
+                .withNodeIdentifier(NETCONF_FILTER_CHOICE_NODEID)
+                .withChild(subtreeFilter)
+                .build();
     }
 }
