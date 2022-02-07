@@ -73,17 +73,11 @@ public class RCgNMIApp {
                 .build()
                 .parse(args);
 
+        lightyModuleTimeout = arguments.getApplicationTimeout();
         if (arguments.getLoggerPath() != null) {
             LOG.debug("Argument for custom logging settings path is present: {} ", arguments.getLoggerPath());
             PropertyConfigurator.configure(arguments.getLoggerPath());
             LOG.info("Custom logger properties loaded successfully");
-        }
-        lightyModuleTimeout = arguments.getApplicationTimeout();
-        if (lightyModuleTimeout < 15) {
-            final Integer defaultValue = new Arguments().getApplicationTimeout();
-            LOG.info("Provided application timeout [{}] is not in range (15 - INT.MAX). Using default value [{}]",
-                    lightyModuleTimeout, defaultValue);
-            lightyModuleTimeout = defaultValue;
         }
         try {
             if (arguments.getConfigPath() != null) {

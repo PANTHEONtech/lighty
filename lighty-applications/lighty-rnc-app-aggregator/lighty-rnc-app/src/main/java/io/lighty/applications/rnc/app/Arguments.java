@@ -7,7 +7,9 @@
  */
 package io.lighty.applications.rnc.app;
 
+import com.beust.jcommander.IParameterValidator;
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +23,9 @@ public class Arguments {
             + " (If absent, will look on classpath for it")
     private String loggerPath;
 
-    @Parameter(names = {"-t", "--timeout-in-seconds"}, description = "Application timeout in seconds. "
-            + "This parameter specifies max time which application will wait until a timeout exception will be thrown. "
-            + "Default value is 60. (15 - INT.MAX)")
+    @Parameter(names = {"-t", "--timeout-in-seconds"}, validateWith = ApplicationTimeoutValidator.class,
+               description = "Application timeout in seconds. This parameter specifies max time which application"
+                       + " will wait until a timeout exception will be thrown. Default value is 60. (15 - INT.MAX)")
     private Integer applicationTimeout = 60;
 
     public String getConfigPath() {
@@ -36,6 +38,19 @@ public class Arguments {
 
     public Integer getApplicationTimeout() {
         return applicationTimeout;
+    }
+
+
+    public static final class ApplicationTimeoutValidator implements IParameterValidator {
+
+        @Override
+        public void validate(String name, String value) throws ParameterException {
+            int intValue = Integer.parseInt(value);
+            if (intValue < 15) {
+                throw new ParameterException("Provided application timeout " + value
+                        + " is not in range (15 - INT.MAX)");
+            }
+        }
     }
 
 }
