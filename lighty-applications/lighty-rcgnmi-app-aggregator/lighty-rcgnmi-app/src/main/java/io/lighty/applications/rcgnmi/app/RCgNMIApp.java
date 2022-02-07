@@ -99,8 +99,7 @@ public class RCgNMIApp {
                 .getControllerConfig().getSchemaServiceConfig().getModels()));
         final ExecutorService executorService = SpecialExecutors.newBoundedCachedThreadPool(10,
                 100, "gnmi_executor", Logger.class);
-        rcgnmiLightyModule = createRgnmiAppModule(rgnmiModuleConfig, executorService, null)
-                .setRcGnmiModuleTimeout(lightyModuleTimeout);
+        rcgnmiLightyModule = createRgnmiAppModule(rgnmiModuleConfig, executorService, null);
         try {
             final boolean hasStarted = rcgnmiLightyModule.start().get(lightyModuleTimeout, DEFAULT_TIME_UNIT);
             if (hasStarted) {
@@ -123,7 +122,7 @@ public class RCgNMIApp {
     public RcGnmiAppModule createRgnmiAppModule(final RcGnmiAppConfiguration rcGnmiAppConfiguration,
                                                 final ExecutorService gnmiExecutorService,
                                                 @Nullable final CrossSourceStatementReactor customReactor) {
-        return new RcGnmiAppModule(rcGnmiAppConfiguration, gnmiExecutorService, customReactor);
+        return new RcGnmiAppModule(rcGnmiAppConfiguration, gnmiExecutorService, lightyModuleTimeout, customReactor);
     }
 
     private void registerShutdownHook(final AbstractLightyModule application) {

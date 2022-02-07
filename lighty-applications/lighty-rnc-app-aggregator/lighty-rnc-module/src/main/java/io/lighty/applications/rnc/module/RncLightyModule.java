@@ -45,22 +45,18 @@ public class RncLightyModule extends AbstractLightyModule {
 
     private final RncLightyModuleConfiguration rncModuleConfig;
 
-    private Integer lightyModuleTimeout = 60;
+    private final int lightyModuleTimeout;
     private LightyController lightyController;
     private CommunityRestConf lightyRestconf;
     private NetconfSBPlugin lightyNetconf;
     private AAALighty aaaLighty;
     private LightyServerBuilder jettyServerBuilder;
 
-    public RncLightyModule(RncLightyModuleConfiguration rncModuleConfig) {
+    public RncLightyModule(final RncLightyModuleConfiguration rncModuleConfig, final int lightyModuleTimeout) {
         LOG.info("Creating instance of RNC lighty.io module...");
         this.rncModuleConfig = rncModuleConfig;
+        this.lightyModuleTimeout = lightyModuleTimeout;
         LOG.info("Instance of RNC lighty.io module created!");
-    }
-
-    public RncLightyModule setRncModuleTimeout(final Integer rncModuleTimeout) {
-        this.lightyModuleTimeout = rncModuleTimeout;
-        return this;
     }
 
     @Override

@@ -24,7 +24,6 @@ public class RCgNMIAppTest {
     public void testStartWithDefaultConfiguration() throws RcGnmiAppException {
         final RCgNMIApp app = Mockito.spy(new RCgNMIApp());
         final RcGnmiAppModule appModule = Mockito.mock(RcGnmiAppModule.class);
-        doReturn(appModule).when(appModule).setRcGnmiModuleTimeout(any());
         doReturn(Futures.immediateFuture(true)).when(appModule).start();
         doReturn(Futures.immediateFuture(true)).when(appModule).shutdown();
         doReturn(appModule).when(app).createRgnmiAppModule(any(), any(), any());
@@ -36,7 +35,6 @@ public class RCgNMIAppTest {
     public void testStartWithConfigFile() throws RcGnmiAppException {
         final RCgNMIApp app = Mockito.spy(new RCgNMIApp());
         final RcGnmiAppModule appModule = Mockito.mock(RcGnmiAppModule.class);
-        doReturn(appModule).when(appModule).setRcGnmiModuleTimeout(any());
         doReturn(Futures.immediateFuture(true)).when(appModule).start();
         doReturn(Futures.immediateFuture(true)).when(appModule).shutdown();
         doReturn(appModule).when(app).createRgnmiAppModule(any(), any(), any());

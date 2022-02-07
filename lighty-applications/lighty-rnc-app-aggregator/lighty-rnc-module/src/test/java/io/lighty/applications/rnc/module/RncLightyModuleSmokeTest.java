@@ -20,13 +20,13 @@ import java.util.concurrent.TimeoutException;
 import org.testng.annotations.Test;
 
 public class RncLightyModuleSmokeTest {
-    private static final long MODULE_TIMEOUT = 60;
+    private static final int MODULE_TIMEOUT = 60;
     private static final TimeUnit MODULE_TIME_UNIT = TimeUnit.SECONDS;
 
     @Test
     public void rncLightyModuleSmokeTest()
             throws ConfigurationException, InterruptedException, ExecutionException, TimeoutException {
-        RncLightyModule rncModule = new RncLightyModule(RncLightyModuleConfigUtils.loadDefaultConfig());
+        RncLightyModule rncModule = new RncLightyModule(RncLightyModuleConfigUtils.loadDefaultConfig(), MODULE_TIMEOUT);
         rncModule.start().get(MODULE_TIMEOUT, MODULE_TIME_UNIT);
         rncModule.shutdown().get(MODULE_TIMEOUT, MODULE_TIME_UNIT);
     }
@@ -36,7 +36,7 @@ public class RncLightyModuleSmokeTest {
             ConfigurationException {
         final RncLightyModuleConfiguration config = spy(RncLightyModuleConfigUtils.loadDefaultConfig());
         when(config.getControllerConfig()).thenReturn(null);
-        RncLightyModule rncModule = new RncLightyModule(config);
+        RncLightyModule rncModule = new RncLightyModule(config, MODULE_TIMEOUT);
         final Boolean isStarted = rncModule.start().get(MODULE_TIMEOUT, MODULE_TIME_UNIT);
 
         assertFalse(isStarted);

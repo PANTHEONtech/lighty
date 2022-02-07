@@ -56,7 +56,7 @@ public class RcGnmiAppModule extends AbstractLightyModule {
     private static final Logger LOG = LoggerFactory.getLogger(RcGnmiAppModule.class);
     private static final TimeUnit DEFAULT_LIGHTY_MODULE_TIME_UNIT = TimeUnit.SECONDS;
 
-    private Integer lightyModuleTimeout = 60;
+    private final int lightyModuleTimeout;
     private final RcGnmiAppConfiguration appModuleConfig;
     private final ExecutorService gnmiExecutorService;
     private final CrossSourceStatementReactor customReactor;
@@ -66,17 +66,14 @@ public class RcGnmiAppModule extends AbstractLightyModule {
 
     public RcGnmiAppModule(final RcGnmiAppConfiguration appModuleConfig,
                            final ExecutorService gnmiExecutorService,
+                           final int lightyModuleTimeout,
                            @Nullable final CrossSourceStatementReactor customReactor) {
         LOG.info("Creating instance of RgNMI lighty.io module...");
         this.appModuleConfig = Objects.requireNonNull(appModuleConfig);
         this.gnmiExecutorService = Objects.requireNonNull(gnmiExecutorService);
+        this.lightyModuleTimeout = lightyModuleTimeout;
         this.customReactor = customReactor;
         LOG.info("Instance of RCgNMI lighty.io module created!");
-    }
-
-    public RcGnmiAppModule setRcGnmiModuleTimeout(final Integer rcGnmiModuleTimeout) {
-        this.lightyModuleTimeout = rcGnmiModuleTimeout;
-        return this;
     }
 
     @Override
