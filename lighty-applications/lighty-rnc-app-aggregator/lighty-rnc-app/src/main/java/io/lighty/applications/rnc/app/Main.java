@@ -110,7 +110,7 @@ public class Main {
                 rncModuleConfig.getControllerConfig().getSchemaServiceConfig().getModels());
         LOG.info("Loaded YANG modules: {}", arrayNode);
 
-        rncLightyModule = createRncLightyModule(rncModuleConfig).setRncModuleTimeout(lightyModuleTimeout);
+        rncLightyModule = createRncLightyModule(rncModuleConfig);
         try {
             Boolean hasStarted = rncLightyModule.start().get(lightyModuleTimeout, DEFAULT_TIME_UNIT);
             if (hasStarted) {
@@ -129,7 +129,7 @@ public class Main {
     }
 
     public RncLightyModule createRncLightyModule(final RncLightyModuleConfiguration rncModuleConfig) {
-        return new RncLightyModule(rncModuleConfig);
+        return new RncLightyModule(rncModuleConfig, lightyModuleTimeout);
     }
 
     private void registerShutdownHook(final AbstractLightyModule application) {
