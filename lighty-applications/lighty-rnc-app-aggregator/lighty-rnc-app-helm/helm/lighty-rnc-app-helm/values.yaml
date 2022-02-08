@@ -70,8 +70,6 @@ ingress:
   managementHost: "management.lighty.io"
 
 deploymentSecurity:
-  usePodSecurity: true
-  useContainerSecurity: true
   # User with UID 1000 is set in RNC docker image
   runAsUser: 1000
 
