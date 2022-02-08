@@ -14,11 +14,9 @@ spec:
       labels:
         {{- include "lighty-rnc-app-helm.selectorLabels" . | nindent 8 }}
     spec:
-      {{- if .Values.deploymentSecurity.usePodSecurity }}
       securityContext:
         runAsNonRoot: true
         runAsUser: {{ .Values.deploymentSecurity.runAsUser }}
-      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.name }}:{{ .Values.image.version }}"
@@ -30,14 +28,12 @@ spec:
               mountPath: {{ .Values.lighty.workdir }}/{{ .Values.lighty.configDirectoryName }}
             - name: secrets-volume
               mountPath: {{ .Values.lighty.workdir }}/{{ .Values.lighty.restconf.keyStoreDirectory }}
-          {{- if .Values.deploymentSecurity.useContainerSecurity }}
           securityContext:
             allowPrivilegeEscalation: false
             runAsUser: {{ .Values.deploymentSecurity.runAsUser }}
             capabilities:
               drop:
                 - all
-          {{- end }}
           env:
             - name: HOSTNAME
               valueFrom:
