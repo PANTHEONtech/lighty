@@ -30,7 +30,7 @@ spec:
               mountPath: {{ .Values.lighty.workdir }}/{{ .Values.lighty.configDirectoryName }}
           {{- if .Values.deploymentSecurity.useContainerSecurity }}
           securityContext:
-            allowPrivilegeEscalation: true
+            allowPrivilegeEscalation: false
             runAsUser: {{ .Values.deploymentSecurity.runAsUser }}
             capabilities:
               drop:
