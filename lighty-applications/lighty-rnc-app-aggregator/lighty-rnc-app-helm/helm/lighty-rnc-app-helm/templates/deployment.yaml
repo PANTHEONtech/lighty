@@ -37,7 +37,6 @@ spec:
             capabilities:
               drop:
                 - all
-              add: {{ .Values.deploymentSecurity.useCapabilities }}
           {{- end }}
           env:
             - name: HOSTNAME
