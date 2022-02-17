@@ -28,10 +28,6 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.lighty.core</groupId>
             <artifactId>lighty-common</artifactId>
         </dependency>
@@ -71,10 +67,7 @@
             <artifactId>metrics-api</artifactId>
         </dependency>
         <!--odl-yangtools-common-->
-        <dependency>
-            <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>util</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>concepts</artifactId>
@@ -93,18 +86,12 @@
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-parser-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>yang-parser-impl</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-model-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>yang-model-util</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-data-util</artifactId>
@@ -113,30 +100,11 @@
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-data-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4-runtime</artifactId>
-        </dependency>
         <!--odl-yangtools-yang-data-->
-        <dependency>
-            <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>yang-data-codec-gson</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-data-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>yang-data-codec-xml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.woodstox</groupId>
-            <artifactId>stax2-api</artifactId>
         </dependency>
         <!--odl-mdsal-binding-base-->
         <dependency>
@@ -147,51 +115,10 @@
             <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>yang-ext</artifactId>
         </dependency>
-        <!--odl-mdsal-binding-runtime-->
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-generator-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-generator-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-runtime-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-runtime-spi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-generator-util</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-dom-codec</artifactId>
-        </dependency>
         <!--odl-mdsal-binding-api-->
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-binding-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>general-entity</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-util</artifactId>
         </dependency>
         <!--odl-mdsal-dom-api-->
         <dependency>
@@ -213,14 +140,6 @@
             <artifactId>iana-if-type</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-            <artifactId>rfc6991</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-            <artifactId>rfc7223</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>opendaylight-l2-types</artifactId>
         </dependency>
@@ -228,33 +147,7 @@
             <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>ietf-topology</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>ietf-type-util</artifactId>
-        </dependency>
-        <!--odl-lmax-3-->
-        <dependency>
-            <groupId>com.lmax</groupId>
-            <artifactId>disruptor</artifactId>
-        </dependency>
-        <!--odl-mdsal-dom-broker-->
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-dom-broker</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-dom-inmemory-datastore</artifactId>
-        </dependency>
-        <!--odl-mdsal-eos-common-->
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-eos-common-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-eos-common-spi</artifactId>
-        </dependency>
+
         <!--odl-mdsal-eos-dom-->
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
@@ -269,49 +162,15 @@
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-eos-binding-adapter</artifactId>
         </dependency>
-        <!--odl-mdsal-singleton-common-->
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-singleton-common-api</artifactId>
-        </dependency>
         <!--odl-mdsal-singleton-dom-->
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-singleton-dom-impl</artifactId>
         </dependency>
-        <!--odl-akka-scala-2.12-->
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-reflect</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.scala-lang.modules</groupId>
-            <artifactId>scala-java8-compat_2.13</artifactId>
-        </dependency>
         <!--odl-akka-system-->
-        <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>repackaged-akka</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.typesafe</groupId>
             <artifactId>config</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.reactivestreams</groupId>
-            <artifactId>reactive-streams</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.typesafe</groupId>
-            <artifactId>ssl-config-core_2.13</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.scala-lang.modules</groupId>
-            <artifactId>scala-parser-combinators_2.13</artifactId>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
@@ -322,22 +181,6 @@
             <artifactId>netty-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-codec</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-codec-http</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-buffer</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-handler</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>threadpool-config-api</artifactId>
         </dependency>
@@ -345,47 +188,11 @@
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>threadpool-config-impl</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.aeron</groupId>
-            <artifactId>aeron-driver</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.aeron</groupId>
-            <artifactId>aeron-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.agrona</groupId>
-            <artifactId>agrona</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.fusesource.leveldbjni</groupId>
-            <artifactId>leveldbjni-all</artifactId>
-        </dependency>
 
         <!-- controller - akka-segmented-journal dependencies -->
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>sal-akka-segmented-journal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.esotericsoftware</groupId>
-            <artifactId>kryo</artifactId>
-            <version>4.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.esotericsoftware</groupId>
-            <artifactId>minlog</artifactId>
-            <version>1.3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.esotericsoftware</groupId>
-            <artifactId>reflectasm</artifactId>
-            <version>1.11.8</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm</artifactId>
-            <version>5.2</version>
         </dependency>
 
         <!--odl-mdsal-remoterpc-connector-->
@@ -393,26 +200,10 @@
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>sal-remoterpc-connector</artifactId>
         </dependency>
-        <!--odl-mdsal-distributed-datastore-->
-        <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>cds-access-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>cds-access-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>cds-dom-api</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>sal-distributed-datastore</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>sal-distributed-eos</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
@@ -421,11 +212,6 @@
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>sal-cluster-admin-impl</artifactId>
-        </dependency>
-        <!--NOT in mdsal-broker feature, but required for its actor-system-provider-service.yang-->
-        <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>sal-clustering-commons</artifactId>
         </dependency>
 
         <dependency>

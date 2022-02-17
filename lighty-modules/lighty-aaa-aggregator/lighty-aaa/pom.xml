@@ -42,12 +42,7 @@
             <groupId>org.opendaylight.aaa</groupId>
             <artifactId>aaa-encrypt-service-impl</artifactId>
         </dependency>
-        <dependency>
-            <!-- Required only for 3rd-party libraries (especially commons-beanutils), that expect to call the commons
-                 logging APIs -->
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-        </dependency>
+
 
         <!-- Jersey + Jetty for RESTCONF -->
         <dependency>
@@ -60,16 +55,9 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-webapp</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlets</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.core</groupId>
-            <artifactId>jersey-server</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet-core</artifactId>
@@ -78,25 +66,13 @@
             <groupId>org.glassfish.jersey.inject</groupId>
             <artifactId>jersey-hk2</artifactId>
         </dependency>
-        <dependency>
-            <groupId>javax.activation</groupId>
-            <artifactId>activation</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
         <!--Tests-->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>io.lighty.resources</groupId>
-            <artifactId>singlenode-configuration</artifactId>
-            <scope>test</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>

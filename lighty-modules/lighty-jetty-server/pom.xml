@@ -27,24 +27,8 @@
             <artifactId>jetty-server</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-webapp</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-servlets</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-server</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.aaa.web</groupId>
-            <artifactId>web-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.aaa.web</groupId>
