@@ -31,7 +31,6 @@
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-jetty-server</artifactId>
         </dependency>
-        
         <dependency>
             <groupId>org.opendaylight.netconf</groupId>
             <artifactId>restconf-nb-bierman02</artifactId>
