@@ -66,7 +66,7 @@ public class Main {
         LOG.info("|  |_|  / /_/  >   Y  \\  |  \\___  |    |  (  <_> )  /        \\ |    `   \\/    |    \\");
         LOG.info("|____/__\\___  /|___|  /__|  / ____| /\\ |__|\\____/  /_______  //_______  /\\____|__  /");
         LOG.info("        /_____/     \\/      \\/      \\/                     \\/         \\/         \\/");
-        LOG.info("Starting Lighty.io RESTCONF-ACTIONS example application ...");
+        LOG.info("Starting Lighty.io RESTCONF-REST example application ...");
         LOG.info("https://lighty.io/");
         LOG.info("https://github.com/PANTHEONtech/lighty");
         try {
