@@ -9,6 +9,7 @@ package io.lighty.examples.controllers.actions.binding;
 
 import io.lighty.core.controller.api.LightyController;
 import java.util.Set;
+import org.opendaylight.mdsal.binding.api.ActionSpec;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.Server;
 import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.ServerKey;
@@ -32,7 +33,8 @@ public final class ServerResetRegistrationUtil {
         final var actionProviderService = lightyController.getServices().getActionProviderService();
         final var validNode =
                 InstanceIdentifier.builder(Server.class, new ServerKey("server-earth")).build();
-        return actionProviderService.registerImplementation(Reset.class, new ServerResetActionImpl(),
+        final var actionSpec = ActionSpec.builder(Server.class).build(Reset.class);
+        return actionProviderService.registerImplementation(actionSpec, new ServerResetActionImpl(),
                 LogicalDatastoreType.OPERATIONAL, Set.of(validNode));
     }
 }
