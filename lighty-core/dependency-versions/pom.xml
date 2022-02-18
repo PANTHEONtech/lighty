@@ -46,15 +46,6 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <!-- Bundle parent brings dependency management for artifacts used by Akka: (scala, typesafe, aeron.. ).
-                This artifact dependency management was removed from odl-parent in Aluminium release. -->
-                <groupId>org.opendaylight.controller</groupId>
-                <artifactId>bundle-parent</artifactId>
-                <version>4.0.10</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.opendaylight.infrautils</groupId>
                 <artifactId>infrautils-artifacts</artifactId>
                 <version>2.0.13</version>
@@ -98,6 +89,11 @@
                 <groupId>com.google.inject</groupId>
                 <artifactId>guice</artifactId>
                 <version>4.2.3</version>
+            </dependency>
+            <dependency>
+                <groupId>com.typesafe</groupId>
+                <artifactId>config</artifactId>
+                <version>1.4.2</version>
             </dependency>
             <dependency>
                 <groupId>org.testng</groupId>
