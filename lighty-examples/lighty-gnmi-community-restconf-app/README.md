@@ -14,7 +14,7 @@ This application starts:
 * [Lighty.io Controller](../../lighty-core/lighty-controller) with modules:
   * [lighty.io RESTCONF module](../../lighty-modules/lighty-restconf-nb-community)
   * [lighty.io gNMI module](../../lighty-modules/lighty-gnmi/lighty-gnmi-sb)
-* [lighty.io gNMI device simulator](https://github.com/PANTHEONtech/lighty/tree/14.2.0/lighty-modules/lighty-gnmi/lighty-gnmi-device-simulator)
+* [lighty.io gNMI device simulator](https://github.com/PANTHEONtech/lighty/tree/15.2.0/lighty-modules/lighty-gnmi/lighty-gnmi-device-simulator)
 
 ![lighty.io gNMI / RESTCONF architecture](docs/lighty-gnmi-restconf-architecture.png)
 
@@ -42,22 +42,22 @@ cd lighty-examples/lighty-gnmi-community-restconf-app
 ### Start RCgNMI controller app
 Unzip lighty-rcgnmi-app to current location
 ```
-unzip ../../lighty-applications/lighty-rcgnmi-app-aggregator/lighty-rcgnmi-app/target/lighty-rcgnmi-app-15.1.1-SNAPSHOT-bin.zip
+unzip ../../lighty-applications/lighty-rcgnmi-app-aggregator/lighty-rcgnmi-app/target/lighty-rcgnmi-app-15.2.0-bin.zip
 ```
 Start application with pre-prepared configuration [example_config.json](example_config.json).
 ```
-java -jar lighty-rcgnmi-app-15.1.1-SNAPSHOT/lighty-rcgnmi-app-15.1.1-SNAPSHOT.jar -c example_config.json
+java -jar lighty-rcgnmi-app-15.2.0/lighty-rcgnmi-app-15.2.0.jar -c example_config.json
 ```
 
 ### Start lighty.io gNMI device simulator
 Unzip gNMI simulator app to current folder.
 ```
-unzip ../../lighty-modules/lighty-gnmi/lighty-gnmi-device-simulator/target/lighty-gnmi-device-simulator-15.1.1-SNAPSHOT-bin.zip
+unzip ../../lighty-modules/lighty-gnmi/lighty-gnmi-device-simulator/target/lighty-gnmi-device-simulator-15.2.0-bin.zip
 ```
 
 Start the application with pre-prepared configuration [simulator_config.json](simulator/simulator_config.json)
 ```
-java -jar lighty-gnmi-device-simulator-15.1.1-SNAPSHOT/lighty-gnmi-device-simulator-15.1.1-SNAPSHOT.jar  -c simulator/simulator_config.json 
+java -jar lighty-gnmi-device-simulator-15.2.0/lighty-gnmi-device-simulator-15.2.0.jar  -c simulator/simulator_config.json 
 ```
 
 ### Add client certificates to lighty.io gNMI keystore
