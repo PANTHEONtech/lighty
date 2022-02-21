@@ -14,6 +14,9 @@ spec:
       labels:
         {{- include "lighty-rcgnmi-app-helm.selectorLabels" . | nindent 8 }}
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: {{ .Values.deploymentSecurity.runAsUser }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.name }}:{{ .Values.image.version }}"
@@ -23,6 +26,12 @@ spec:
           volumeMounts:
             - name: config-volume
               mountPath: {{ .Values.lighty.workdir }}/{{ .Values.lighty.configDirectoryName }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: {{ .Values.deploymentSecurity.runAsUser }}
+            capabilities:
+              drop:
+                - all
           env:
             - name: HOSTNAME
               valueFrom:
