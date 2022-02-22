@@ -24,9 +24,9 @@ public class Arguments {
     private String loggerPath;
 
     @Parameter(names = {"-t", "--timeout-in-seconds"}, validateWith = ApplicationTimeoutValidator.class,
-               description = "Application timeout in seconds. This parameter specifies max time which application"
-                       + " will wait until a timeout exception will be thrown. Default value is 60. (15 - INT.MAX)")
-    private Integer applicationTimeout = 60;
+               description = "Lighty modules timeout in seconds. Timeout exception is thrown when lighty module fails "
+                       + "to start within the specified time. Default value is 30. (range: 15 - Integer.MAX_VALUE)")
+    private Integer applicationTimeout = 30;
 
     public String getConfigPath() {
         return configPath;
@@ -54,7 +54,7 @@ public class Arguments {
             }
             if (intValue < 15) {
                 throw new ParameterException("Provided application timeout " + value
-                        + " is not in range (15 - INT.MAX)");
+                        + " is not in range (15 - Integer.MAX_VALUE)");
             }
         }
     }

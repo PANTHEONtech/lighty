@@ -23,8 +23,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
@@ -37,7 +35,6 @@ public class RCgNMIApp {
     private static final String UNABLE_TO_START_APPLICATION = "Unable to start RCgNMI lighty.io application!";
     private static final String UNABLE_TO_STOP_APPLICATION
             = "Exception was thrown while shutting down RCgNMI lighty.io application!";
-    private static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.SECONDS;
 
     private RcGnmiAppModule rcgnmiLightyModule;
     private Integer lightyModuleTimeout;
@@ -101,7 +98,7 @@ public class RCgNMIApp {
                 100, "gnmi_executor", Logger.class);
         rcgnmiLightyModule = createRgnmiAppModule(rgnmiModuleConfig, executorService, null);
         try {
-            final boolean hasStarted = rcgnmiLightyModule.start().get(lightyModuleTimeout, DEFAULT_TIME_UNIT);
+            final boolean hasStarted = rcgnmiLightyModule.start().get();
             if (hasStarted) {
                 // Register shutdown hook for graceful shutdown
                 LOG.info("Registering ShutdownHook to gracefully shutdown application");
@@ -110,7 +107,7 @@ public class RCgNMIApp {
             } else {
                 throw new RcGnmiAppException(UNABLE_TO_START_APPLICATION);
             }
-        } catch (ExecutionException | TimeoutException e) {
+        } catch (ExecutionException  e) {
             throw new RcGnmiAppException(UNABLE_TO_START_APPLICATION, e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -135,9 +132,9 @@ public class RCgNMIApp {
         if (module != null) {
             try {
                 LOG.info("ShutdownHook triggered. Shutting down RCgNMI lighty.io application...");
-                module.shutdown().get(lightyModuleTimeout, DEFAULT_TIME_UNIT);
+                module.shutdown().get();
                 LOG.info("RCgNMI lighty.io application was shut down!");
-            } catch (ExecutionException | TimeoutException e) {
+            } catch (ExecutionException e) {
                 LOG.error(UNABLE_TO_STOP_APPLICATION, e);
             } catch (InterruptedException e) {
                 LOG.error(UNABLE_TO_STOP_APPLICATION, e);

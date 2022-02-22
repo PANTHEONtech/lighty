@@ -23,8 +23,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
@@ -41,7 +39,6 @@ import org.slf4j.LoggerFactory;
 public class Main {
 
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
-    private static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.SECONDS;
     private static final String UNABLE_TO_START_APPLICATION = "Unable to start RNC lighty.io application!";
     private static final String UNABLE_TO_STOP_APPLICATION
             = "Exception was thrown while shutting down RNC lighty.io application!";
@@ -112,7 +109,7 @@ public class Main {
 
         rncLightyModule = createRncLightyModule(rncModuleConfig);
         try {
-            Boolean hasStarted = rncLightyModule.start().get(lightyModuleTimeout, DEFAULT_TIME_UNIT);
+            Boolean hasStarted = rncLightyModule.start().get();
             if (hasStarted) {
                 LOG.info("Registering ShutdownHook to gracefully shutdown application");
                 registerShutdownHook(rncLightyModule);
@@ -120,7 +117,7 @@ public class Main {
             } else {
                 throw new RncLightyAppStartException(UNABLE_TO_START_APPLICATION);
             }
-        } catch (ExecutionException | TimeoutException e) {
+        } catch (ExecutionException e) {
             throw new RncLightyAppStartException(UNABLE_TO_START_APPLICATION, e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -142,9 +139,9 @@ public class Main {
         if (module != null) {
             try {
                 LOG.info("ShutdownHook triggered. Shutting down RNC lighty.io application...");
-                module.shutdown().get(lightyModuleTimeout, DEFAULT_TIME_UNIT);
+                module.shutdown().get();
                 LOG.info("RNC lighty.io application was shut down!");
-            } catch (ExecutionException | TimeoutException e) {
+            } catch (ExecutionException e) {
                 LOG.error(UNABLE_TO_STOP_APPLICATION, e);
             } catch (InterruptedException e) {
                 LOG.error(UNABLE_TO_STOP_APPLICATION, e);
