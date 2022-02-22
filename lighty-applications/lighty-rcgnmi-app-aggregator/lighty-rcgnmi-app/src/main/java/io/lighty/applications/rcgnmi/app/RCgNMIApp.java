@@ -37,7 +37,6 @@ public class RCgNMIApp {
             = "Exception was thrown while shutting down RCgNMI lighty.io application!";
 
     private RcGnmiAppModule rcgnmiLightyModule;
-    private Integer lightyModuleTimeout;
 
     // Using args is safe as we need only a configuration file location here
     @SuppressWarnings("squid:S4823")
@@ -69,8 +68,6 @@ public class RCgNMIApp {
                 .addObject(arguments)
                 .build()
                 .parse(args);
-
-        lightyModuleTimeout = arguments.getApplicationTimeout();
         if (arguments.getLoggerPath() != null) {
             LOG.debug("Argument for custom logging settings path is present: {} ", arguments.getLoggerPath());
             PropertyConfigurator.configure(arguments.getLoggerPath());
@@ -96,7 +93,8 @@ public class RCgNMIApp {
                 .getControllerConfig().getSchemaServiceConfig().getModels()));
         final ExecutorService executorService = SpecialExecutors.newBoundedCachedThreadPool(10,
                 100, "gnmi_executor", Logger.class);
-        rcgnmiLightyModule = createRgnmiAppModule(rgnmiModuleConfig, executorService, null);
+        rcgnmiLightyModule = createRgnmiAppModule(rgnmiModuleConfig, executorService, arguments.getApplicationTimeout(),
+                null);
         try {
             final boolean hasStarted = rcgnmiLightyModule.start().get();
             if (hasStarted) {
@@ -118,6 +116,7 @@ public class RCgNMIApp {
 
     public RcGnmiAppModule createRgnmiAppModule(final RcGnmiAppConfiguration rcGnmiAppConfiguration,
                                                 final ExecutorService gnmiExecutorService,
+                                                final Integer lightyModuleTimeout,
                                                 @Nullable final CrossSourceStatementReactor customReactor) {
         return new RcGnmiAppModule(rcGnmiAppConfiguration, gnmiExecutorService, lightyModuleTimeout, customReactor);
     }

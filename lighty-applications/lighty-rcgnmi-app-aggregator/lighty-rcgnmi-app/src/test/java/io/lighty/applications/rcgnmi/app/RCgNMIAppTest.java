@@ -8,10 +8,15 @@
 
 package io.lighty.applications.rcgnmi.app;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
+import com.beust.jcommander.ParameterException;
 import com.google.common.util.concurrent.Futures;
 import io.lighty.applications.rcgnmi.module.RcGnmiAppException;
 import io.lighty.applications.rcgnmi.module.RcGnmiAppModule;
@@ -26,9 +31,9 @@ public class RCgNMIAppTest {
         final RcGnmiAppModule appModule = Mockito.mock(RcGnmiAppModule.class);
         doReturn(Futures.immediateFuture(true)).when(appModule).start();
         doReturn(Futures.immediateFuture(true)).when(appModule).shutdown();
-        doReturn(appModule).when(app).createRgnmiAppModule(any(), any(), any());
+        doReturn(appModule).when(app).createRgnmiAppModule(any(), any(), eq(30), any());
         app.start(new String[]{});
-        verify(app, Mockito.times(1)).createRgnmiAppModule(any(), any(), any());
+        verify(app, Mockito.times(1)).createRgnmiAppModule(any(), any(), eq(30), any());
     }
 
     @Test
@@ -37,16 +42,22 @@ public class RCgNMIAppTest {
         final RcGnmiAppModule appModule = Mockito.mock(RcGnmiAppModule.class);
         doReturn(Futures.immediateFuture(true)).when(appModule).start();
         doReturn(Futures.immediateFuture(true)).when(appModule).shutdown();
-        doReturn(appModule).when(app).createRgnmiAppModule(any(), any(), any());
-        app.start(new String[]{"-c", "src/main/resources/example-config/example_config.json"});
-        verify(app, Mockito.times(1)).createRgnmiAppModule(any(), any(), any());
+        doReturn(appModule).when(app).createRgnmiAppModule(any(), any(), eq(90), any());
+        app.start(new String[]{"-c", "src/main/resources/example-config/example_config.json", "-t", "90"});
+        verify(app, Mockito.times(1)).createRgnmiAppModule(any(), any(), eq(90), any());
     }
 
     @Test
     public void testStartWithConfigFileNoSuchFile() throws RcGnmiAppException {
         final RCgNMIApp app = Mockito.spy(new RCgNMIApp());
         app.start(new String[]{"-c", "no_config.json"});
-        verify(app, Mockito.times(0)).createRgnmiAppModule(any(), any(), any());
+        verify(app, Mockito.times(0)).createRgnmiAppModule(any(), any(), eq(30), any());
     }
 
+    @Test
+    public void testStartWithWrongTimeOut() {
+        final RCgNMIApp app = spy(new RCgNMIApp());
+        verify(app, never()).createRgnmiAppModule(any(), any(), eq(30), any());
+        assertThrows(ParameterException.class, () -> app.start(new String[]{"-t", "WRONG_TIME_OUT"}));
+    }
 }

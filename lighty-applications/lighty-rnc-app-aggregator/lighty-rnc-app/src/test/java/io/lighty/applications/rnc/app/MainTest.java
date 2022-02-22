@@ -8,15 +8,18 @@
 package io.lighty.applications.rnc.app;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
+import com.beust.jcommander.ParameterException;
 import com.google.common.util.concurrent.Futures;
 import io.lighty.applications.rnc.module.RncLightyModule;
 import io.lighty.applications.rnc.module.exception.RncLightyAppStartException;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class MainTest {
@@ -27,7 +30,7 @@ public class MainTest {
         RncLightyModule lighty = mock(RncLightyModule.class);
         doReturn(Futures.immediateFuture(true)).when(lighty).start();
         doReturn(Futures.immediateFuture(true)).when(lighty).shutdown();
-        doReturn(lighty).when(app).createRncLightyModule(any());
+        doReturn(lighty).when(app).createRncLightyModule(any(), eq(30));
         app.start(new String[] {});
     }
 
@@ -37,14 +40,21 @@ public class MainTest {
         RncLightyModule lighty = mock(RncLightyModule.class);
         doReturn(Futures.immediateFuture(true)).when(lighty).start();
         doReturn(Futures.immediateFuture(true)).when(lighty).shutdown();
-        doReturn(lighty).when(app).createRncLightyModule(any());
-        app.start(new String[] {"-c","src/main/resources/configuration.json"});
+        doReturn(lighty).when(app).createRncLightyModule(any(), eq(90));
+        app.start(new String[] {"-c","src/main/resources/configuration.json", "-t", "90"});
     }
 
     @Test
     public void testStartWithConfigFileNoSuchFile() throws RncLightyAppStartException {
         Main app = spy(new Main());
-        verify(app, never()).createRncLightyModule(any());
+        verify(app, never()).createRncLightyModule(any(), eq(30));
         app.start(new String[] {"-c","no_config.json"});
+    }
+
+    @Test
+    public void testStartWithWrongTimeOut() {
+        final Main app = spy(new Main());
+        verify(app, never()).createRncLightyModule(any(), eq(30));
+        Assert.assertThrows(ParameterException.class, () -> app.start(new String[] {"-t", "WRONG_TIME_OUT"}));
     }
 }
