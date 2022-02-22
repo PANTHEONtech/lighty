@@ -44,7 +44,6 @@ public class Main {
             = "Exception was thrown while shutting down RNC lighty.io application!";
 
     private AbstractLightyModule rncLightyModule;
-    private Integer lightyModuleTimeout;
 
     // Using args is safe as we need only a configuration file location here
     @SuppressWarnings("squid:S4823")
@@ -76,7 +75,6 @@ public class Main {
                 .addObject(arguments)
                 .build()
                 .parse(args);
-        lightyModuleTimeout = arguments.getApplicationTimeout();
         if (arguments.getLoggerPath() != null) {
             LOG.debug("Argument for custom logging settings path is present: {} ", arguments.getLoggerPath());
             PropertyConfigurator.configure(arguments.getLoggerPath());
@@ -107,7 +105,7 @@ public class Main {
                 rncModuleConfig.getControllerConfig().getSchemaServiceConfig().getModels());
         LOG.info("Loaded YANG modules: {}", arrayNode);
 
-        rncLightyModule = createRncLightyModule(rncModuleConfig);
+        rncLightyModule = createRncLightyModule(rncModuleConfig, arguments.getApplicationTimeout());
         try {
             Boolean hasStarted = rncLightyModule.start().get();
             if (hasStarted) {
@@ -125,7 +123,8 @@ public class Main {
         }
     }
 
-    public RncLightyModule createRncLightyModule(final RncLightyModuleConfiguration rncModuleConfig) {
+    public RncLightyModule createRncLightyModule(final RncLightyModuleConfiguration rncModuleConfig,
+            final Integer lightyModuleTimeout) {
         return new RncLightyModule(rncModuleConfig, lightyModuleTimeout);
     }
 
