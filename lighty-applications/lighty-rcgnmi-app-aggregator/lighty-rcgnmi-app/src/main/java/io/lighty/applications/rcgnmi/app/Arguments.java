@@ -44,8 +44,14 @@ public class Arguments {
     public static final class ApplicationTimeoutValidator implements IParameterValidator {
 
         @Override
-        public void validate(String name, String value) throws ParameterException {
-            int intValue = Integer.parseInt(value);
+        public void validate(final String name, final String value) throws ParameterException {
+            final int intValue;
+            try {
+                intValue = Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                throw new ParameterException("Expected number after parameter \"-t\", \"--timeout-in-seconds\". "
+                        + "Provided: " + value, e);
+            }
             if (intValue < 15) {
                 throw new ParameterException("Provided application timeout " + value
                         + " is not in range (15 - INT.MAX)");
