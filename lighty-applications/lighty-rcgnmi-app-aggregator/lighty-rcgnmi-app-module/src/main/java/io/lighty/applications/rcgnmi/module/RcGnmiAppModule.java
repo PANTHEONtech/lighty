@@ -9,7 +9,6 @@
 package io.lighty.applications.rcgnmi.module;
 
 import io.lighty.aaa.encrypt.service.impl.AAAEncryptionServiceImpl;
-import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.api.LightyServices;
@@ -51,7 +50,7 @@ import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementR
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RcGnmiAppModule extends AbstractLightyModule {
+public class RcGnmiAppModule {
 
     private static final Logger LOG = LoggerFactory.getLogger(RcGnmiAppModule.class);
     private static final TimeUnit DEFAULT_LIGHTY_MODULE_TIME_UNIT = TimeUnit.SECONDS;
@@ -76,8 +75,7 @@ public class RcGnmiAppModule extends AbstractLightyModule {
         LOG.info("Instance of RCgNMI lighty.io module created!");
     }
 
-    @Override
-    protected boolean initProcedure() {
+    public boolean initModules() {
         LOG.info("Initializing RCgNMI lighty.io module...");
         try {
             this.lightyController = initController(this.appModuleConfig.getControllerConfig());
@@ -153,8 +151,7 @@ public class RcGnmiAppModule extends AbstractLightyModule {
         }
     }
 
-    @Override
-    protected boolean stopProcedure() {
+    public boolean close() {
         LOG.info("Stopping RCgNMI lighty.io application...");
         boolean success = true;
 
