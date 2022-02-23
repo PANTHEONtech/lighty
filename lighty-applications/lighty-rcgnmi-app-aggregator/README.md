@@ -29,16 +29,16 @@ To build and start the RCgNMI application in your local environment, follow thes
 4. To start the application with a custom lighty.io configuration, use the argument _-c_ and for a custom initial log4j configuration, use argument _-l_:  
    `java -jar lighty-rcgnmi-app-<version>.jar -c /path/to/config-file -l /path/to/log4j-config-file`  
 
-    To extend application time-out use the argument `-t/--timeout-in-seconds`. This argument override current default application time-out set to 60s.
-    `java -jar lighty-rcgnmi-app-<version>.jar -t 90`
-
    Example configuration files are located on following path:  
    `lighty-rcgnmi-app-docker/example-config/*`
 
-5. If the application was started successfully, then a log similar should be present in the console:  
+5. (Optional) To extend lighty modules time-out use the argument `-t/--timeout-in-seconds`. This argument increases the time after which the exception is thrown if the module is not successfully initialized by then. (Default 30)
+   `java -jar lighty-rcgnmi-app-<version>.jar -t 60`
+
+6. If the application was started successfully, then a log similar should be present in the console:  
   ` INFO [main] (RCgNMIApp.java:98) - RCgNMI lighty.io application started in 10.10 s`
 
-6. Test the RCgNMI lighty.io application. Default RESTCONF port is `8888`  
+7. Test the RCgNMI lighty.io application. Default RESTCONF port is `8888`  
    The default credential for http requests is login:`admin`, password: `admin`. 
 
 ## How to Use the RCgNMI Example App
