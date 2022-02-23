@@ -14,30 +14,24 @@ import static org.testng.Assert.assertFalse;
 import io.lighty.applications.rnc.module.config.RncLightyModuleConfigUtils;
 import io.lighty.applications.rnc.module.config.RncLightyModuleConfiguration;
 import io.lighty.core.controller.impl.config.ConfigurationException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.testng.annotations.Test;
 
 public class RncLightyModuleSmokeTest {
     private static final int MODULE_TIMEOUT = 60;
-    private static final TimeUnit MODULE_TIME_UNIT = TimeUnit.SECONDS;
 
     @Test
-    public void rncLightyModuleSmokeTest()
-            throws ConfigurationException, InterruptedException, ExecutionException, TimeoutException {
+    public void rncLightyModuleSmokeTest() throws ConfigurationException {
         RncLightyModule rncModule = new RncLightyModule(RncLightyModuleConfigUtils.loadDefaultConfig(), MODULE_TIMEOUT);
-        rncModule.start().get(MODULE_TIMEOUT, MODULE_TIME_UNIT);
-        rncModule.shutdown().get(MODULE_TIMEOUT, MODULE_TIME_UNIT);
+        rncModule.initModules();
+        rncModule.close();
     }
 
     @Test
-    public void rncLightyModuleStartFailed() throws InterruptedException, ExecutionException, TimeoutException,
-            ConfigurationException {
+    public void rncLightyModuleStartFailed() throws ConfigurationException {
         final RncLightyModuleConfiguration config = spy(RncLightyModuleConfigUtils.loadDefaultConfig());
         when(config.getControllerConfig()).thenReturn(null);
         RncLightyModule rncModule = new RncLightyModule(config, MODULE_TIMEOUT);
-        final Boolean isStarted = rncModule.start().get(MODULE_TIMEOUT, MODULE_TIME_UNIT);
+        final Boolean isStarted = rncModule.initModules();
 
         assertFalse(isStarted);
     }
