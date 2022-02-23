@@ -16,7 +16,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import com.beust.jcommander.ParameterException;
-import com.google.common.util.concurrent.Futures;
 import io.lighty.applications.rnc.module.RncLightyModule;
 import io.lighty.applications.rnc.module.exception.RncLightyAppStartException;
 import org.testng.Assert;
@@ -28,8 +27,8 @@ public class MainTest {
     public void testStartWithDefaultConfiguration() throws RncLightyAppStartException {
         Main app = spy(new Main());
         RncLightyModule lighty = mock(RncLightyModule.class);
-        doReturn(Futures.immediateFuture(true)).when(lighty).start();
-        doReturn(Futures.immediateFuture(true)).when(lighty).shutdown();
+        doReturn(true).when(lighty).initModules();
+        doReturn(true).when(lighty).close();
         doReturn(lighty).when(app).createRncLightyModule(any(), eq(30));
         app.start(new String[] {});
     }
@@ -38,8 +37,8 @@ public class MainTest {
     public void testStartWithConfigFile() throws RncLightyAppStartException {
         Main app = spy(new Main());
         RncLightyModule lighty = mock(RncLightyModule.class);
-        doReturn(Futures.immediateFuture(true)).when(lighty).start();
-        doReturn(Futures.immediateFuture(true)).when(lighty).shutdown();
+        doReturn(true).when(lighty).initModules();
+        doReturn(true).when(lighty).close();
         doReturn(lighty).when(app).createRncLightyModule(any(), eq(90));
         app.start(new String[] {"-c","src/main/resources/configuration.json", "-t", "90"});
     }
