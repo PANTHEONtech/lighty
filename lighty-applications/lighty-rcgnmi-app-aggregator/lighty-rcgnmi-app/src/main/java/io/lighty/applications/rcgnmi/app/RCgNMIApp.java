@@ -12,16 +12,13 @@ import com.beust.jcommander.JCommander;
 import com.google.common.base.Stopwatch;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.lighty.applications.rcgnmi.module.RcGnmiAppConfiguration;
-import io.lighty.applications.rcgnmi.module.RcGnmiAppException;
 import io.lighty.applications.rcgnmi.module.RcGnmiAppModule;
 import io.lighty.applications.rcgnmi.module.RcGnmiAppModuleConfigUtils;
 import io.lighty.core.common.models.YangModuleUtils;
-import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.jdt.annotation.Nullable;
@@ -32,26 +29,17 @@ import org.slf4j.LoggerFactory;
 
 public class RCgNMIApp {
     private static final Logger LOG = LoggerFactory.getLogger(RCgNMIApp.class);
-    private static final String UNABLE_TO_START_APPLICATION = "Unable to start RCgNMI lighty.io application!";
-    private static final String UNABLE_TO_STOP_APPLICATION
-            = "Exception was thrown while shutting down RCgNMI lighty.io application!";
-
     private RcGnmiAppModule rcgnmiLightyModule;
 
     // Using args is safe as we need only a configuration file location here
     @SuppressWarnings("squid:S4823")
     public static void main(final String[] args) {
         final RCgNMIApp app = new RCgNMIApp();
-        try {
-            app.start(args);
-        } catch (RcGnmiAppException e) {
-            LOG.error("Failed to initialize RcGNMI app. Closing application.", e);
-            app.stop();
-        }
+        app.start(args);
     }
 
     @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
-    public void start(final String[] args) throws RcGnmiAppException {
+    public void start(final String[] args) {
         final Stopwatch stopwatch = Stopwatch.createStarted();
         LOG.info(".__  .__       .__     __              .__           ");
         LOG.info("|  | |__| ____ |  |___/  |_ ___.__.    |__| ____     ");
@@ -93,23 +81,18 @@ public class RCgNMIApp {
                 .getControllerConfig().getSchemaServiceConfig().getModels()));
         final ExecutorService executorService = SpecialExecutors.newBoundedCachedThreadPool(10,
                 100, "gnmi_executor", Logger.class);
-        rcgnmiLightyModule = createRgnmiAppModule(rgnmiModuleConfig, executorService, arguments.getApplicationTimeout(),
-                null);
-        try {
-            final boolean hasStarted = rcgnmiLightyModule.start().get();
-            if (hasStarted) {
-                // Register shutdown hook for graceful shutdown
-                LOG.info("Registering ShutdownHook to gracefully shutdown application");
-                registerShutdownHook(rcgnmiLightyModule);
-                LOG.info("RCgNMI lighty.io application started in {}", stopwatch.stop());
-            } else {
-                throw new RcGnmiAppException(UNABLE_TO_START_APPLICATION);
-            }
-        } catch (ExecutionException  e) {
-            throw new RcGnmiAppException(UNABLE_TO_START_APPLICATION, e);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RcGnmiAppException(UNABLE_TO_START_APPLICATION, e);
+        rcgnmiLightyModule = createRgnmiAppModule(rgnmiModuleConfig, executorService,
+                arguments.getApplicationTimeout(), null);
+
+        // Initialize RcGNMI modules
+        if (rcgnmiLightyModule.initModules()) {
+            // Register shutdown hook for graceful shutdown
+            LOG.info("Registering ShutdownHook to gracefully shutdown application");
+            Runtime.getRuntime().addShutdownHook(new Thread(rcgnmiLightyModule::close));
+            LOG.info("RCgNMI lighty.io application started in {}", stopwatch.stop());
+        } else {
+            LOG.error("Failed to initialize RcGNMI app. Closing application.");
+            stop();
         }
 
     }
@@ -121,31 +104,11 @@ public class RCgNMIApp {
         return new RcGnmiAppModule(rcGnmiAppConfiguration, gnmiExecutorService, lightyModuleTimeout, customReactor);
     }
 
-    private void registerShutdownHook(final AbstractLightyModule application) {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            shutdownModule(application);
-        }));
-    }
-
-    private void shutdownModule(final AbstractLightyModule module) {
-        if (module != null) {
-            try {
-                LOG.info("ShutdownHook triggered. Shutting down RCgNMI lighty.io application...");
-                module.shutdown().get();
-                LOG.info("RCgNMI lighty.io application was shut down!");
-            } catch (ExecutionException e) {
-                LOG.error(UNABLE_TO_STOP_APPLICATION, e);
-            } catch (InterruptedException e) {
-                LOG.error(UNABLE_TO_STOP_APPLICATION, e);
-                Thread.currentThread().interrupt();
-            }
+    public void stop() {
+        if (rcgnmiLightyModule != null) {
+            LOG.info("Shutting down RcgNMI application!");
+            rcgnmiLightyModule.close();
+            LOG.info("RcgNMI application stopped!");
         }
     }
-
-    public void stop() {
-        LOG.info("Shutting down RcgNMI application!");
-        shutdownModule(rcgnmiLightyModule);
-        LOG.info("RcgNMI application stopped!");
-    }
-
 }
