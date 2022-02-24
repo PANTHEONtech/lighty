@@ -29,27 +29,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.lighty.resources</groupId>
-            <artifactId>singlenode-configuration</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.lighty.resources</groupId>
-            <artifactId>start-script</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.lighty.resources</groupId>
-            <artifactId>controller-application-assembly</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.lighty.core</groupId>
-            <artifactId>lighty-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.lighty.modules</groupId>
-            <artifactId>lighty-restconf-nb-community</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.lighty.applications.rcgnmi</groupId>
             <artifactId>lighty-rcgnmi-app-module</artifactId>
         </dependency>
