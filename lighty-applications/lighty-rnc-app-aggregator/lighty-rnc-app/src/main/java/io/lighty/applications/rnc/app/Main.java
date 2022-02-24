@@ -93,7 +93,7 @@ public class Main {
         LOG.info("Loaded YANG modules: {}", arrayNode);
 
         final RncLightyModule rncLightyModule
-                = createRncLightyModule(rncModuleConfig, arguments.getApplicationTimeout());
+                = createRncLightyModule(rncModuleConfig, arguments.getModuleTimeout());
         // Initialize RNC modules
         if (rncLightyModule.initModules()) {
             LOG.info("Registering ShutdownHook to gracefully shutdown application");

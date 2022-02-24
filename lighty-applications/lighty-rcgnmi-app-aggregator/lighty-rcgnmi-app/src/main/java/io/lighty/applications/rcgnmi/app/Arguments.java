@@ -22,10 +22,10 @@ public class Arguments {
             + " (If absent, will look on classpath for it")
     private String loggerPath;
 
-    @Parameter(names = {"-t", "--timeout-in-seconds"}, validateWith = ApplicationTimeoutValidator.class,
+    @Parameter(names = {"-t", "--timeout-in-seconds"}, validateWith = ModuleTimeoutValidator.class,
                description = "Lighty modules timeout in seconds. Timeout exception is thrown when lighty module fails "
                        + "to start within the specified time. Default value is 30. (range: 15 - Integer.MAX_VALUE)")
-    private Integer applicationTimeout = 30;
+    private Integer moduleTimeout = 30;
 
     public String getConfigPath() {
         return configPath;
@@ -35,13 +35,11 @@ public class Arguments {
         return loggerPath;
     }
 
-    public Integer getApplicationTimeout() {
-        return applicationTimeout;
+    public Integer getModuleTimeout() {
+        return moduleTimeout;
     }
 
-
-    public static final class ApplicationTimeoutValidator implements IParameterValidator {
-
+    public static final class ModuleTimeoutValidator implements IParameterValidator {
         @Override
         public void validate(final String name, final String value) throws ParameterException {
             final int intValue;
@@ -57,5 +55,4 @@ public class Arguments {
             }
         }
     }
-
 }
