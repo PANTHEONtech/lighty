@@ -82,7 +82,7 @@ public class RCgNMIApp {
         final ExecutorService executorService = SpecialExecutors.newBoundedCachedThreadPool(10,
                 100, "gnmi_executor", Logger.class);
         rcgnmiLightyModule = createRgnmiAppModule(rgnmiModuleConfig, executorService,
-                arguments.getApplicationTimeout(), null);
+                arguments.getModuleTimeout(), null);
 
         // Initialize RcGNMI modules
         if (rcgnmiLightyModule.initModules()) {
