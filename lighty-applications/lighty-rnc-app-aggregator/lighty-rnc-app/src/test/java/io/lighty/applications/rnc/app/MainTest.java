@@ -17,14 +17,13 @@ import static org.mockito.Mockito.verify;
 
 import com.beust.jcommander.ParameterException;
 import io.lighty.applications.rnc.module.RncLightyModule;
-import io.lighty.applications.rnc.module.exception.RncLightyAppStartException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class MainTest {
 
     @Test
-    public void testStartWithDefaultConfiguration() throws RncLightyAppStartException {
+    public void testStartWithDefaultConfiguration() {
         Main app = spy(new Main());
         RncLightyModule lighty = mock(RncLightyModule.class);
         doReturn(true).when(lighty).initModules();
@@ -34,7 +33,7 @@ public class MainTest {
     }
 
     @Test
-    public void testStartWithConfigFile() throws RncLightyAppStartException {
+    public void testStartWithConfigFile() {
         Main app = spy(new Main());
         RncLightyModule lighty = mock(RncLightyModule.class);
         doReturn(true).when(lighty).initModules();
@@ -44,7 +43,7 @@ public class MainTest {
     }
 
     @Test
-    public void testStartWithConfigFileNoSuchFile() throws RncLightyAppStartException {
+    public void testStartWithConfigFileNoSuchFile() {
         Main app = spy(new Main());
         verify(app, never()).createRncLightyModule(any(), eq(60));
         app.start(new String[] {"-c","no_config.json"});
