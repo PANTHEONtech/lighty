@@ -32,8 +32,8 @@ To build and start the RCgNMI application in your local environment, follow thes
    Example configuration files are located on following path:  
    `lighty-rcgnmi-app-docker/example-config/*`
 
-5. (Optional) To extend lighty modules time-out use the argument `-t/--timeout-in-seconds`. This argument increases the time after which the exception is thrown if the module is not successfully initialized by then. (Default 30)
-   `java -jar lighty-rcgnmi-app-<version>.jar -t 60`
+5. (Optional) To extend lighty modules time-out use the argument `-t/--timeout-in-seconds`. This argument increases the time after which the exception is thrown if the module is not successfully initialized by then. (Default 60)
+   `java -jar lighty-rcgnmi-app-<version>.jar -t 90`
 
 6. If the application was started successfully, then a log similar should be present in the console:  
   ` INFO [main] (RCgNMIApp.java:98) - RCgNMI lighty.io application started in 10.10 s`

@@ -29,7 +29,7 @@ public class MainTest {
         RncLightyModule lighty = mock(RncLightyModule.class);
         doReturn(true).when(lighty).initModules();
         doReturn(true).when(lighty).close();
-        doReturn(lighty).when(app).createRncLightyModule(any(), eq(30));
+        doReturn(lighty).when(app).createRncLightyModule(any(), eq(60));
         app.start(new String[] {});
     }
 
@@ -46,14 +46,14 @@ public class MainTest {
     @Test
     public void testStartWithConfigFileNoSuchFile() throws RncLightyAppStartException {
         Main app = spy(new Main());
-        verify(app, never()).createRncLightyModule(any(), eq(30));
+        verify(app, never()).createRncLightyModule(any(), eq(60));
         app.start(new String[] {"-c","no_config.json"});
     }
 
     @Test
     public void testStartWithWrongTimeOut() {
         final Main app = spy(new Main());
-        verify(app, never()).createRncLightyModule(any(), eq(30));
+        verify(app, never()).createRncLightyModule(any(), eq(60));
         Assert.assertThrows(ParameterException.class, () -> app.start(new String[] {"-t", "WRONG_TIME_OUT"}));
     }
 }

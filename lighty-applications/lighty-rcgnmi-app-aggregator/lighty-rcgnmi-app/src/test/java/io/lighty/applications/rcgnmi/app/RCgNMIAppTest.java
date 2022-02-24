@@ -29,9 +29,9 @@ public class RCgNMIAppTest {
         final RcGnmiAppModule appModule = Mockito.mock(RcGnmiAppModule.class);
         doReturn(true).when(appModule).initModules();
         doReturn(true).when(appModule).close();
-        doReturn(appModule).when(app).createRgnmiAppModule(any(), any(), eq(30), any());
+        doReturn(appModule).when(app).createRgnmiAppModule(any(), any(), eq(60), any());
         app.start(new String[]{});
-        verify(app, Mockito.times(1)).createRgnmiAppModule(any(), any(), eq(30), any());
+        verify(app, Mockito.times(1)).createRgnmiAppModule(any(), any(), eq(60), any());
     }
 
     @Test
@@ -49,13 +49,13 @@ public class RCgNMIAppTest {
     public void testStartWithConfigFileNoSuchFile() {
         final RCgNMIApp app = Mockito.spy(new RCgNMIApp());
         app.start(new String[]{"-c", "no_config.json"});
-        verify(app, Mockito.times(0)).createRgnmiAppModule(any(), any(), eq(30), any());
+        verify(app, Mockito.times(0)).createRgnmiAppModule(any(), any(), eq(60), any());
     }
 
     @Test
     public void testStartWithWrongTimeOut() {
         final RCgNMIApp app = spy(new RCgNMIApp());
-        verify(app, never()).createRgnmiAppModule(any(), any(), eq(30), any());
+        verify(app, never()).createRgnmiAppModule(any(), any(), eq(60), any());
         assertThrows(ParameterException.class, () -> app.start(new String[]{"-t", "WRONG_TIME_OUT"}));
     }
 }

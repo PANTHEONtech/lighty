@@ -24,8 +24,8 @@ public class Arguments {
 
     @Parameter(names = {"-t", "--timeout-in-seconds"}, validateWith = ModuleTimeoutValidator.class,
                description = "Lighty modules timeout in seconds. Timeout exception is thrown when lighty module fails "
-                       + "to start within the specified time. Default value is 30. (range: 15 - Integer.MAX_VALUE)")
-    private Integer moduleTimeout = 30;
+                       + "to start within the specified time. Default value is 60. (range: 15 - Integer.MAX_VALUE)")
+    private Integer moduleTimeout = 60;
 
     public String getConfigPath() {
         return configPath;
