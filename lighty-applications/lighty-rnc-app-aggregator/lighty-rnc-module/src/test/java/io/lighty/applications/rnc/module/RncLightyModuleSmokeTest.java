@@ -21,7 +21,8 @@ public class RncLightyModuleSmokeTest {
 
     @Test
     public void rncLightyModuleSmokeTest() throws ConfigurationException {
-        RncLightyModule rncModule = new RncLightyModule(RncLightyModuleConfigUtils.loadDefaultConfig(), MODULE_TIMEOUT);
+        final RncLightyModule rncModule = new RncLightyModule(RncLightyModuleConfigUtils.loadDefaultConfig(),
+                MODULE_TIMEOUT);
         rncModule.initModules();
         rncModule.close();
     }

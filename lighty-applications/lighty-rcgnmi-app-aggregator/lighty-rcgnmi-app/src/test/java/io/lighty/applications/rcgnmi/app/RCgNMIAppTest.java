@@ -55,7 +55,7 @@ public class RCgNMIAppTest {
     @Test
     public void testStartWithWrongTimeOut() {
         final RCgNMIApp app = spy(new RCgNMIApp());
-        verify(app, never()).createRgnmiAppModule(any(), any(), eq(60), any());
         assertThrows(ParameterException.class, () -> app.start(new String[]{"-t", "WRONG_TIME_OUT"}));
+        verify(app, never()).createRgnmiAppModule(any(), any(), eq(60), any());
     }
 }
