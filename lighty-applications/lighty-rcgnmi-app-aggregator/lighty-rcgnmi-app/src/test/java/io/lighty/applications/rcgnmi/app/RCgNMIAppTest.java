@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-
 package io.lighty.applications.rcgnmi.app;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -14,6 +13,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.beust.jcommander.ParameterException;
@@ -31,7 +31,7 @@ public class RCgNMIAppTest {
         doReturn(true).when(appModule).close();
         doReturn(appModule).when(app).createRgnmiAppModule(any(), any(), eq(60), any());
         app.start(new String[]{});
-        verify(app, Mockito.times(1)).createRgnmiAppModule(any(), any(), eq(60), any());
+        verify(app, times(1)).createRgnmiAppModule(any(), any(), eq(60), any());
     }
 
     @Test
@@ -42,20 +42,20 @@ public class RCgNMIAppTest {
         doReturn(true).when(appModule).close();
         doReturn(appModule).when(app).createRgnmiAppModule(any(), any(), eq(90), any());
         app.start(new String[]{"-c", "src/main/resources/example-config/example_config.json", "-t", "90"});
-        verify(app, Mockito.times(1)).createRgnmiAppModule(any(), any(), eq(90), any());
+        verify(app, times(1)).createRgnmiAppModule(any(), any(), eq(90), any());
     }
 
     @Test
     public void testStartWithConfigFileNoSuchFile() {
         final RCgNMIApp app = Mockito.spy(new RCgNMIApp());
         app.start(new String[]{"-c", "no_config.json"});
-        verify(app, Mockito.times(0)).createRgnmiAppModule(any(), any(), eq(60), any());
+        verify(app, never()).createRgnmiAppModule(any(), any(), any(), any());
     }
 
     @Test
     public void testStartWithWrongTimeOut() {
         final RCgNMIApp app = spy(new RCgNMIApp());
         assertThrows(ParameterException.class, () -> app.start(new String[]{"-t", "WRONG_TIME_OUT"}));
-        verify(app, never()).createRgnmiAppModule(any(), any(), eq(60), any());
+        verify(app, never()).createRgnmiAppModule(any(), any(), any(), any());
     }
 }
