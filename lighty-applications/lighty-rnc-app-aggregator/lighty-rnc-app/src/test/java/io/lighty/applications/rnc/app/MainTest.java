@@ -14,10 +14,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.testng.Assert.assertThrows;
 
 import com.beust.jcommander.ParameterException;
 import io.lighty.applications.rnc.module.RncLightyModule;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class MainTest {
@@ -45,14 +45,14 @@ public class MainTest {
     @Test
     public void testStartWithConfigFileNoSuchFile() {
         Main app = spy(new Main());
-        verify(app, never()).createRncLightyModule(any(), eq(60));
         app.start(new String[] {"-c","no_config.json"});
+        verify(app, never()).createRncLightyModule(any(), eq(60));
     }
 
     @Test
     public void testStartWithWrongTimeOut() {
         final Main app = spy(new Main());
+        assertThrows(ParameterException.class, () -> app.start(new String[] {"-t", "WRONG_TIME_OUT"}));
         verify(app, never()).createRncLightyModule(any(), eq(60));
-        Assert.assertThrows(ParameterException.class, () -> app.start(new String[] {"-t", "WRONG_TIME_OUT"}));
     }
 }
