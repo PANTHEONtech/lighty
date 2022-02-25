@@ -50,8 +50,8 @@ public class Arguments {
                         + "Provided: " + value, e);
             }
             if (intValue < 15) {
-                throw new ParameterException("Provided application timeout " + value
-                        + " is not in range (15 - Integer.MAX_VALUE)");
+                throw new ParameterException("Provided module timeout value: [" + value
+                        + "] is not in range (15 - Integer.MAX_VALUE)");
             }
         }
     }
