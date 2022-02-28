@@ -46,13 +46,13 @@ public class MainTest {
     public void testStartWithConfigFileNoSuchFile() {
         Main app = spy(new Main());
         app.start(new String[] {"-c","no_config.json"});
-        verify(app, never()).createRncLightyModule(any(), eq(60));
+        verify(app, never()).createRncLightyModule(any(), any());
     }
 
     @Test
     public void testStartWithWrongTimeOut() {
         final Main app = spy(new Main());
         assertThrows(ParameterException.class, () -> app.start(new String[] {"-t", "WRONG_TIME_OUT"}));
-        verify(app, never()).createRncLightyModule(any(), eq(60));
+        verify(app, never()).createRncLightyModule(any(), any());
     }
 }
