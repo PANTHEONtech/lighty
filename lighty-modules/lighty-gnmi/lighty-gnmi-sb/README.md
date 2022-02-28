@@ -96,7 +96,7 @@ Creating a device connection and CRUD operation, is performed by writing data di
 
 3. Wait until the gNMI device is successfully connected to gNMI-sb. The device is successfully connected, when the status is `NodeState.NodeStatus.READY`.
 
-Device [node-status](https://github.com/PANTHEONtech/lighty/blob/14.4.0/lighty-models/lighty-gnmi-models/lighty-gnmi-topology-model/src/main/yang/gnmi-topology.yang#L140) is available in operational memory, inside data store.
+Device [node-status](https://github.com/PANTHEONtech/lighty/blob/14.4.x/lighty-models/lighty-gnmi-models/lighty-gnmi-topology-model/src/main/yang/gnmi-topology.yang#L140) is available in operational memory, inside data store.
 
 4. Get DOM GnmiDataBroker registered for specific gNMI device. For each successfully registered gNMI device, a new GnmiDataBroker with a device specific schema context is created.
 
