@@ -91,17 +91,16 @@ do \
 ;done
 sleep 1
 
-# Pods healthcheck (:8888/restconf/operations)
-# TODO: Uncomment after bump to ODL netconf version 2.0.6 and yangtools 7.0.9. Where is this bug resolved https://jira.opendaylight.org/browse/NETCONF-822
+#Pods healthcheck (:8888/restconf/operations)
 
-#for pod_controller_ip in $POD_CONTROLLER_IPS; \
-#do \
-#  assertHttpStatusCode $(curl -o /dev/null -s -w "%{http_code} GET %{url_effective}\n" --user admin:admin -H "Content-Type: application/json" --insecure http://$pod_controller_ip:8888/restconf/operations) \
-#;done
-#sleep 1
-#
-## Service healthcheck (:30888/restconf/operations)
-#assertHttpStatusCode $(curl -o /dev/null -s -w "%{http_code} GET %{url_effective}\n" --user admin:admin -H "Content-Type: application/json" --insecure http://$MINIKUBE_IP:$CONTROLLER_PORT/restconf/operations)
+for pod_controller_ip in $POD_CONTROLLER_IPS; \
+do \
+  assertHttpStatusCode $(curl -o /dev/null -s -w "%{http_code} GET %{url_effective}\n" --user admin:admin -H "Content-Type: application/json" --insecure http://$pod_controller_ip:8888/restconf/operations) \
+;done
+sleep 1
+
+#Service healthcheck (:30888/restconf/operations)
+assertHttpStatusCode $(curl -o /dev/null -s -w "%{http_code} GET %{url_effective}\n" --user admin:admin -H "Content-Type: application/json" --insecure http://$MINIKUBE_IP:$CONTROLLER_PORT/restconf/operations)
 
 # add gNMI node into gNMI topology
 assertHttpStatusCode $(curl -X PUT -o /dev/null -s -w "%{http_code} PUT %{url_effective}\n" \

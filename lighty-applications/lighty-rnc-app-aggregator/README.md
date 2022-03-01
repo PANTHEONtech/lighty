@@ -40,12 +40,15 @@ To build and start the lighty.io RNC application in the local environment, follo
    Example configuration files are located on following path:  
    `lighty-rnc-app-docker/example-config/*`
 
-5. If the application was started successfully, then a log similar should be present in the console:  
+5. (Optional) To extend lighty modules time-out use the argument `-t/--timeout-in-seconds`. This argument increases the time after which the exception is thrown if the module is not successfully initialized by then. (Default 60)
+   `java -jar lighty-rcgnmi-app-<version>.jar -t 90`
+
+6. If the application was started successfully, then a log similar should be present in the console:  
    `INFO [main] (Main.java:80) - RNC lighty.io application started in 5989.108ms`
 
-6. Test the lighty.io RNC application. The default RESTCONF port is `8888`
+7. Test the lighty.io RNC application. The default RESTCONF port is `8888`
 
-7. The default credentials for http requests is login:`admin`, password: `admin`. 
+8. The default credentials for http requests is login:`admin`, password: `admin`. 
 To edit the user's credentials, [idmtool](https://docs.opendaylight.org/projects/aaa/en/stable-aluminium/user-guide.html#idmtool) can be used to:
     - create new `etc` directory and create there `org.ops4j.pax.web.cfg` file
     - add this two lines in the `org.ops4j.pax.web.cfg` file: 
@@ -73,7 +76,7 @@ To edit the user's credentials, [idmtool](https://docs.opendaylight.org/projects
     
     Also, it is possible to configure user's credentials via [REST](https://docs.opendaylight.org/projects/aaa/en/latest/user-guide.html#configuration-using-the-restful-web-service)
 
-8. For using a SSL connection, the correct certificate must be used.
+9. For using a SSL connection, the correct certificate must be used.
 By default, a test certificate is used (`lighty-rnc-module/src/main/resources/keystore/lightyio.jks`).
 For generating a JKS file `keytool` utility can be used. Example of command to regenerate keystore with self-signed certificate:
 

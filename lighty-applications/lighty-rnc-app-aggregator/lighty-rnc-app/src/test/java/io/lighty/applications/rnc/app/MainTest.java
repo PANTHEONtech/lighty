@@ -8,13 +8,15 @@
 package io.lighty.applications.rnc.app;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.testng.Assert.assertThrows;
 
-import com.google.common.util.concurrent.Futures;
+import com.beust.jcommander.ParameterException;
 import io.lighty.applications.rnc.module.RncLightyModule;
 import org.testng.annotations.Test;
 
@@ -24,9 +26,9 @@ public class MainTest {
     public void testStartWithDefaultConfiguration() {
         Main app = spy(new Main());
         RncLightyModule lighty = mock(RncLightyModule.class);
-        doReturn(Futures.immediateFuture(true)).when(lighty).start();
-        doReturn(Futures.immediateFuture(true)).when(lighty).shutdown();
-        doReturn(lighty).when(app).createRncLightyModule(any());
+        doReturn(true).when(lighty).initModules();
+        doReturn(true).when(lighty).close();
+        doReturn(lighty).when(app).createRncLightyModule(any(), eq(60));
         app.start(new String[] {});
     }
 
@@ -34,16 +36,23 @@ public class MainTest {
     public void testStartWithConfigFile() {
         Main app = spy(new Main());
         RncLightyModule lighty = mock(RncLightyModule.class);
-        doReturn(Futures.immediateFuture(true)).when(lighty).start();
-        doReturn(Futures.immediateFuture(true)).when(lighty).shutdown();
-        doReturn(lighty).when(app).createRncLightyModule(any());
-        app.start(new String[] {"-c","src/main/resources/configuration.json"});
+        doReturn(true).when(lighty).initModules();
+        doReturn(true).when(lighty).close();
+        doReturn(lighty).when(app).createRncLightyModule(any(), eq(90));
+        app.start(new String[] {"-c","src/main/resources/configuration.json", "-t", "90"});
     }
 
     @Test
     public void testStartWithConfigFileNoSuchFile() {
         Main app = spy(new Main());
-        verify(app, never()).createRncLightyModule(any());
         app.start(new String[] {"-c","no_config.json"});
+        verify(app, never()).createRncLightyModule(any(), eq(60));
+    }
+
+    @Test
+    public void testStartWithWrongTimeOut() {
+        final Main app = spy(new Main());
+        assertThrows(ParameterException.class, () -> app.start(new String[] {"-t", "WRONG_TIME_OUT"}));
+        verify(app, never()).createRncLightyModule(any(), eq(60));
     }
 }

@@ -15,6 +15,8 @@ lighty:
   configFilename: "lighty-config.json"
   # Name of the config file for initial logger configuration, must be same as property in configmap
   loggerConfigFilename: "log4j.properties"
+  # Time-out in seconds after which the exception is thrown if the module is not successfully initialized by then
+  moduleTimeOut: 60
   # If using cluster (not single-node deployment), don't forget to increase replica count
   replicaCount: 1
   restconf:
@@ -68,6 +70,10 @@ ingress:
   restconfHost: "restconf.lighty.io"
   exposeManagement: false
   managementHost: "management.lighty.io"
+
+deploymentSecurity:
+  # User with UID 1000 is set in RNC docker image
+  runAsUser: 1000
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

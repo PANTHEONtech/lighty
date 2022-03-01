@@ -9,7 +9,6 @@
 package io.lighty.applications.rcgnmi.module;
 
 import io.lighty.aaa.encrypt.service.impl.AAAEncryptionServiceImpl;
-import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.api.LightyServices;
@@ -51,12 +50,12 @@ import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementR
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RcGnmiAppModule extends AbstractLightyModule {
+public class RcGnmiAppModule {
 
     private static final Logger LOG = LoggerFactory.getLogger(RcGnmiAppModule.class);
-    private static final long DEFAULT_LIGHTY_MODULE_TIMEOUT = 60;
     private static final TimeUnit DEFAULT_LIGHTY_MODULE_TIME_UNIT = TimeUnit.SECONDS;
 
+    private final int lightyModuleTimeout;
     private final RcGnmiAppConfiguration appModuleConfig;
     private final ExecutorService gnmiExecutorService;
     private final CrossSourceStatementReactor customReactor;
@@ -66,16 +65,17 @@ public class RcGnmiAppModule extends AbstractLightyModule {
 
     public RcGnmiAppModule(final RcGnmiAppConfiguration appModuleConfig,
                            final ExecutorService gnmiExecutorService,
+                           final int lightyModuleTimeout,
                            @Nullable final CrossSourceStatementReactor customReactor) {
         LOG.info("Creating instance of RgNMI lighty.io module...");
         this.appModuleConfig = Objects.requireNonNull(appModuleConfig);
         this.gnmiExecutorService = Objects.requireNonNull(gnmiExecutorService);
+        this.lightyModuleTimeout = lightyModuleTimeout;
         this.customReactor = customReactor;
         LOG.info("Instance of RCgNMI lighty.io module created!");
     }
 
-    @Override
-    protected boolean initProcedure() {
+    public boolean initModules() {
         LOG.info("Initializing RCgNMI lighty.io module...");
         try {
             this.lightyController = initController(this.appModuleConfig.getControllerConfig());
@@ -132,7 +132,7 @@ public class RcGnmiAppModule extends AbstractLightyModule {
         try {
             LOG.info("Initializing lighty.io module ({})...", lightyModule.getClass());
             final boolean startSuccess = lightyModule.start()
-                    .get(DEFAULT_LIGHTY_MODULE_TIMEOUT, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
+                    .get(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
             if (startSuccess) {
                 LOG.info("lighty.io module ({}) initialized successfully!", lightyModule.getClass());
             } else {
@@ -151,8 +151,7 @@ public class RcGnmiAppModule extends AbstractLightyModule {
         }
     }
 
-    @Override
-    protected boolean stopProcedure() {
+    public boolean close() {
         LOG.info("Stopping RCgNMI lighty.io application...");
         boolean success = true;
 
@@ -162,7 +161,7 @@ public class RcGnmiAppModule extends AbstractLightyModule {
         if (this.lightyController != null && !stopAndWaitLightyModule(this.lightyController)) {
             success = false;
         }
-        if (this.lightyController != null && !stopAndWaitLightyModule(this.gnmiSouthboundModule)) {
+        if (this.gnmiSouthboundModule != null && !stopAndWaitLightyModule(this.gnmiSouthboundModule)) {
             success = false;
         }
 
@@ -180,7 +179,7 @@ public class RcGnmiAppModule extends AbstractLightyModule {
         try {
             LOG.info("Stopping lighty.io module ({})...", lightyModule.getClass());
             final boolean stopSuccess =
-                    lightyModule.shutdown().get(DEFAULT_LIGHTY_MODULE_TIMEOUT, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
+                    lightyModule.shutdown().get(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
             if (stopSuccess) {
                 LOG.info("lighty.io module ({}) stopped successfully!", lightyModule.getClass());
                 return true;
