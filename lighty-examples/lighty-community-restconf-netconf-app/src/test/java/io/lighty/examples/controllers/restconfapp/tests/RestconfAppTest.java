@@ -47,12 +47,8 @@ public class RestconfAppTest {
     @Test
     public void simpleApplicationTest() throws IOException, InterruptedException {
         HttpResponse<String> operations;
-        /*
-        TODO: Uncomment after bump to ODL netconf version 2.0.6 and yangtools 7.0.9.
-              Where is this bug resolved https://jira.opendaylight.org/browse/NETCONF-822
         operations = restClient.GET("restconf/operations");
         Assert.assertEquals(operations.statusCode(), 200);
-         */
         operations = restClient.GET("restconf/data/network-topology:network-topology?content=config");
         Assert.assertEquals(operations.statusCode(), 200);
         operations = restClient.GET("restconf/data/network-topology:network-topology?content=nonconfig");

@@ -14,7 +14,6 @@ import io.lighty.applications.rnc.module.config.RncLightyModuleConfiguration;
 import io.lighty.applications.rnc.module.config.RncRestConfConfiguration;
 import io.lighty.applications.rnc.module.config.util.RncRestConfConfigUtils;
 import io.lighty.applications.rnc.module.exception.RncLightyAppStartException;
-import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.api.LightyServices;
@@ -39,15 +38,14 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-public class RncLightyModule extends AbstractLightyModule {
-
+public class RncLightyModule {
+    
     private static final Logger LOG = LoggerFactory.getLogger(RncLightyModule.class);
-    private static final long DEFAULT_LIGHTY_MODULE_TIMEOUT = 60;
     private static final TimeUnit DEFAULT_LIGHTY_MODULE_TIME_UNIT = TimeUnit.SECONDS;
 
     private final RncLightyModuleConfiguration rncModuleConfig;
 
+    private final int lightyModuleTimeout;
     private LightyController lightyController;
     private CommunityRestConf lightyRestconf;
     private NetconfSBPlugin lightyNetconf;
@@ -55,14 +53,14 @@ public class RncLightyModule extends AbstractLightyModule {
     private LightyServerBuilder jettyServerBuilder;
     private SwaggerLighty swagger;
 
-    public RncLightyModule(RncLightyModuleConfiguration rncModuleConfig) {
+    public RncLightyModule(final RncLightyModuleConfiguration rncModuleConfig, final int lightyModuleTimeout) {
         LOG.info("Creating instance of RNC lighty.io module...");
         this.rncModuleConfig = rncModuleConfig;
+        this.lightyModuleTimeout = lightyModuleTimeout;
         LOG.info("Instance of RNC lighty.io module created!");
     }
 
-    @Override
-    protected boolean initProcedure() {
+    public boolean initModules() {
         LOG.info("Initializing RNC lighty.io module...");
         try {
             this.lightyController = initController(this.rncModuleConfig.getControllerConfig());
@@ -150,7 +148,7 @@ public class RncLightyModule extends AbstractLightyModule {
         try {
             LOG.info("Initializing lighty.io module ({})...", lightyModule.getClass());
             boolean startSuccess = lightyModule.start()
-                    .get(DEFAULT_LIGHTY_MODULE_TIMEOUT, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
+                    .get(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
             if (startSuccess) {
                 LOG.info("lighty.io module ({}) initialized successfully!", lightyModule.getClass());
             } else {
@@ -169,8 +167,7 @@ public class RncLightyModule extends AbstractLightyModule {
         }
     }
 
-    @Override
-    protected boolean stopProcedure() {
+    public boolean close() {
         LOG.info("Stopping RNC lighty.io application...");
         boolean success = true;
 
@@ -210,7 +207,7 @@ public class RncLightyModule extends AbstractLightyModule {
         try {
             LOG.info("Stopping lighty.io module ({})...", lightyModule.getClass());
             boolean stopSuccess =
-                    lightyModule.shutdown().get(DEFAULT_LIGHTY_MODULE_TIMEOUT, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
+                    lightyModule.shutdown().get(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
             if (stopSuccess) {
                 LOG.info("lighty.io module ({}) stopped successfully!", lightyModule.getClass());
                 return true;
