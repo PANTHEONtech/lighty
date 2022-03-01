@@ -20,7 +20,9 @@ public class SecurityConfig {
     private final SslContextFactory sslContextFactory;
     private final boolean isNeedClientAuth;
 
-    public SecurityConfig(final KeyStore keyStore, final String password, final KeyStore trustKeyStore, final String trustPassword, final boolean isNeedClientAuth) {
+    public SecurityConfig(final KeyStore keyStore, final String password, 
+                        final KeyStore trustKeyStore, final String trustPassword, 
+                        final boolean isNeedClientAuth) {
         this.keyStore = keyStore;
         this.password = password;
         this.trustKeyStore = trustKeyStore;
@@ -36,8 +38,9 @@ public class SecurityConfig {
         sslContextFactory.setKeyStore(keyStore);
         sslContextFactory.setKeyStorePassword(password);
         sslContextFactory.setCipherComparator(HTTP2Cipher.COMPARATOR);
-        if(isNeedClientAuth == true)
+        if (isNeedClientAuth == true) {
             sslContextFactory.setNeedClientAuth(true);
+        }
     }
 
     public SslConnectionFactory getSslConnectionFactory(final String protocol) {
