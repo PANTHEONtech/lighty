@@ -20,8 +20,8 @@ public class SecurityConfig {
     private final SslContextFactory sslContextFactory;
     private final boolean isNeedClientAuth;
 
-    public SecurityConfig(final KeyStore keyStore, final String password, 
-                        final KeyStore trustKeyStore, final String trustPassword, 
+    public SecurityConfig(final KeyStore keyStore, final String password,
+                        final KeyStore trustKeyStore, final String trustPassword,
                         final boolean isNeedClientAuth) {
         this.keyStore = keyStore;
         this.password = password;

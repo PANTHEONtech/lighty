@@ -115,6 +115,6 @@ public class RncRestConfConfiguration extends RestConfConfiguration {
     }
 
     public void setEnableSwagger(boolean enableSwagger) {
-       this.enableSwagger = enableSwagger;
-    }    
+        this.enableSwagger = enableSwagger;
+    }
 }
