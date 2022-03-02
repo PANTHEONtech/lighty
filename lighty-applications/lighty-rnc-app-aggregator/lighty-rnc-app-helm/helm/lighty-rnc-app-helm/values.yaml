@@ -23,10 +23,15 @@ lighty:
     restconfPort: 8888
     restconfPath: "/restconf"
     useHttps: false
+    needClientAuth: false
     keyStorePassword: "8pgETwat"
     keyStoreType: "JKS"
     keyStoreDirectory: "keystore"
     keyStoreFileName: "lightyio.jks"
+    trustKeyStorePassword: "8pgETwat"
+    trustKeyStoreDirectory: "keystore"
+    trustKeyStoreFileName: "lightyio.jks"
+    enableSwagger: false
 
   jmx:
     # Port on which JMX server in image is listening, should be same as defined in dockerfile
