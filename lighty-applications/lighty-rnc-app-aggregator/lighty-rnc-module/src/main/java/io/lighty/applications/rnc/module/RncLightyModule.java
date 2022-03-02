@@ -80,7 +80,9 @@ public class RncLightyModule {
             }
 
             if (rncModuleConfig.getRestconfConfig().isEnableSwagger()) {
-                this.swagger = initSwaggerLighty(this.rncModuleConfig.getRestconfConfig(), this.jettyServerBuilder, this.lightyController.getServices());
+                this.swagger = initSwaggerLighty(this.rncModuleConfig.getRestconfConfig(),
+                                                this.jettyServerBuilder,
+                                                this.lightyController.getServices());
                 startAndWaitLightyModule(this.swagger);
             }
 
@@ -139,9 +141,11 @@ public class RncLightyModule {
             this.jettyServerBuilder);
     }
 
-    private SwaggerLighty initSwaggerLighty(RncRestConfConfiguration config, LightyServerBuilder jettyServerBuilder, LightyServices services) {
+    private SwaggerLighty initSwaggerLighty(RncRestConfConfiguration config,
+                                            LightyServerBuilder jettySrvBuilder,
+                                            LightyServices services) {
         final RncRestConfConfiguration confConf = RncRestConfConfigUtils.getRestConfConfiguration(config, services);
-        return new SwaggerLighty(confConf, jettyServerBuilder, services);
+        return new SwaggerLighty(confConf, jettySrvBuilder, services);
     }
 
     private void startAndWaitLightyModule(LightyModule lightyModule) throws RncLightyAppStartException {
@@ -171,7 +175,7 @@ public class RncLightyModule {
         LOG.info("Stopping RNC lighty.io application...");
         boolean success = true;
 
-        if (rncModuleConfig.getRestconfConfig().isEnableSwagger() 
+        if (rncModuleConfig.getRestconfConfig().isEnableSwagger()
                 && this.swagger != null && !stopAndWaitLightyModule(this.swagger)) {
             success = false;
         }
