@@ -12,7 +12,6 @@ import java.util.List;
 
 public final class ClusteringConfigUtils {
 
-    public static final String MODULE_SHARDS_TMP_PATH = "/tmp/module-shards.conf";
     public static final String AKKA_DISCOVERY_METHOD_PATH = "akka.discovery.method";
     public static final String K8S_DISCOVERY_API_NAME = "kubernetes-api";
 

@@ -13,13 +13,9 @@ import com.google.common.util.concurrent.ListenableScheduledFuture;
 import com.google.common.util.concurrent.ListeningScheduledExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.typesafe.config.Config;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import com.typesafe.config.ConfigFactory;
 import io.lighty.core.cluster.ClusteringHandler;
 import io.lighty.core.cluster.config.ClusteringConfigUtils;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
@@ -41,7 +37,7 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
 
     private final Config akkaDeploymentConfig;
     private final ActorSystemProvider actorSystemProvider;
-    private Optional<String> moduleShardsConfig;
+    private Optional<Config> moduleShardsConfig;
 
     public KubernetesClusteringHandlerImpl(@NonNull ActorSystemProvider actorSystemProvider,
                                            @NonNull Config akkaDeploymentConfig) {
@@ -56,7 +52,6 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
      * default module-shards.conf will be used. In this case shards will not be created but received from leader
      * as snapshots and installed.
      */
-    @SuppressFBWarnings("DMI_HARDCODED_ABSOLUTE_FILENAME")
     @Override
     public void initClustering() {
         LOG.info("Starting ClusterBootstrap");
@@ -79,16 +74,10 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
         if (Cluster.get(actorSystemProvider.getActorSystem()).selfAddress()
                 .equals(Cluster.get(actorSystemProvider.getActorSystem()).state().getLeader())) {
             LOG.info("I am leader, generating custom module-shards.conf");
-            try {
-                List<String> memberRoles = akkaDeploymentConfig.getStringList("akka.cluster.roles");
-                String data = ClusteringConfigUtils.generateModuleShardsForMembers(memberRoles);
-                Files.write(Paths.get(ClusteringConfigUtils.MODULE_SHARDS_TMP_PATH),
-                        data.getBytes(StandardCharsets.UTF_8));
-                this.moduleShardsConfig = Optional.of(ClusteringConfigUtils.MODULE_SHARDS_TMP_PATH);
-                return;
-            } catch (IOException e) {
-                LOG.info("Tmp module-shards.conf file was not created - error received {}", e.getMessage());
-            }
+            List<String> memberRoles = akkaDeploymentConfig.getStringList("akka.cluster.roles");
+            String data = ClusteringConfigUtils.generateModuleShardsForMembers(memberRoles);
+            moduleShardsConfig = Optional.of(ConfigFactory.parseString(data));
+            return;
         }
         LOG.info("Using default module-shards.conf");
     }
@@ -101,7 +90,7 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
     }
 
     @Override
-    public Optional<String> getModuleConfig() {
+    public Optional<Config> getModuleShardsConfig() {
         return this.moduleShardsConfig;
     }
 
