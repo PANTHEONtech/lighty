@@ -107,8 +107,8 @@ public final class RncRestConfConfigUtils {
             trustKeyStore.load(trustKsFile.get(), config.getTrustKeyStorePassword().toCharArray());
 
             return new SecurityConfig(keyStore, config.getKeyStorePassword(),
-                                    trustKeyStore, config.getTrustKeyStorePassword(),
-                                    config.isNeedClientAuth());
+                                      trustKeyStore, config.getTrustKeyStorePassword(),
+                                      config.isNeedClientAuth());
         } catch (IOException | NoSuchAlgorithmException | CertificateException | KeyStoreException e) {
             throw new ConfigurationException("Unable to create KeyStore configuration", e);
         }

@@ -81,8 +81,8 @@ public class RncLightyModule {
 
             if (rncModuleConfig.getRestconfConfig().isEnableSwagger()) {
                 this.swagger = initSwaggerLighty(this.rncModuleConfig.getRestconfConfig(),
-                                                this.jettyServerBuilder,
-                                                this.lightyController.getServices());
+                                                 this.jettyServerBuilder,
+                                                 this.lightyController.getServices());
                 startAndWaitLightyModule(this.swagger);
             }
 
@@ -142,10 +142,10 @@ public class RncLightyModule {
     }
 
     private SwaggerLighty initSwaggerLighty(RncRestConfConfiguration config,
-                                            LightyServerBuilder jettySrvBuilder,
+                                            LightyServerBuilder serverBuilder,
                                             LightyServices services) {
         final RncRestConfConfiguration confConf = RncRestConfConfigUtils.getRestConfConfiguration(config, services);
-        return new SwaggerLighty(confConf, jettySrvBuilder, services);
+        return new SwaggerLighty(confConf, serverBuilder, services);
     }
 
     private void startAndWaitLightyModule(LightyModule lightyModule) throws RncLightyAppStartException {
