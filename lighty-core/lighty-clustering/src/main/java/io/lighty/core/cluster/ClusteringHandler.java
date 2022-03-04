@@ -7,6 +7,7 @@
  */
 package io.lighty.core.cluster;
 
+import com.typesafe.config.Config;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
@@ -17,5 +18,5 @@ public interface ClusteringHandler {
 
     void start(@NonNull ClusterAdminService clusterAdminRPCService);
 
-    Optional<String> getModuleConfig();
+    Optional<Config> getModuleShardsConfig();
 }

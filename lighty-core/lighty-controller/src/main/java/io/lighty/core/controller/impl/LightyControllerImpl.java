@@ -60,7 +60,9 @@ import org.opendaylight.controller.cluster.datastore.DefaultDatastoreSnapshotRes
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreFactory;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
+import org.opendaylight.controller.cluster.datastore.config.Configuration;
 import org.opendaylight.controller.cluster.datastore.config.ConfigurationImpl;
+import org.opendaylight.controller.cluster.datastore.config.HybridModuleShardConfigProvider;
 import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
 import org.opendaylight.controller.config.threadpool.ThreadPool;
 import org.opendaylight.controller.config.threadpool.util.FixedThreadPoolWrapper;
@@ -157,7 +159,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private final int mailboxCapacity;
     private final boolean metricCaptureEnabled;
 
-    private String moduleShardsConfig;
+    private Configuration clusterConfiguration;
     private ActorSystemProviderImpl actorSystemProvider;
     private DatastoreSnapshotRestore datastoreSnapshotRestore;
     private AbstractDataStore configDatastore;
@@ -228,7 +230,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.mailboxCapacity = mailboxCapacity;
         this.distributedEosProperties = distributedEosProperties;
         this.modulesConfig = modulesConfig;
-        this.moduleShardsConfig = moduleShardsConfig;
+        this.clusterConfiguration = new ConfigurationImpl(moduleShardsConfig, modulesConfig);
         this.configDatastoreContext = configDatastoreContext;
         this.operDatastoreContext = operDatastoreContext;
         this.datastoreProperties = datastoreProperties;
@@ -263,8 +265,10 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                 this.actorSystemConfig);
         this.clusteringHandler.ifPresent(handler -> {
             handler.initClustering();
-            if (handler.getModuleConfig().isPresent()) {
-                this.moduleShardsConfig = handler.getModuleConfig().get();
+            if (handler.getModuleShardsConfig().isPresent()) {
+                final HybridModuleShardConfigProvider shardConfigProvider = new HybridModuleShardConfigProvider(
+                        handler.getModuleShardsConfig().get(), this.modulesConfig);
+                this.clusterConfiguration = new ConfigurationImpl(shardConfigProvider);
             }
         });
 
@@ -294,11 +298,10 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.codec = new ConstantAdapterContext(bindingCodecContext);
 
         // CONFIG DATASTORE
-        this.configDatastore = prepareDataStore(this.configDatastoreContext, this.moduleShardsConfig,
-                this.modulesConfig, this.schemaService, this.datastoreSnapshotRestore,
-                this.actorSystemProvider);
+        this.configDatastore = prepareDataStore(this.configDatastoreContext, this.clusterConfiguration,
+                this.schemaService, this.datastoreSnapshotRestore, this.actorSystemProvider);
         // OPERATIONAL DATASTORE
-        this.operDatastore = prepareDataStore(this.operDatastoreContext, this.moduleShardsConfig, this.modulesConfig,
+        this.operDatastore = prepareDataStore(this.operDatastoreContext, this.clusterConfiguration,
                 this.schemaService, this.datastoreSnapshotRestore, this.actorSystemProvider);
 
         createConcurrentDOMDataBroker();
@@ -377,10 +380,9 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     private AbstractDataStore prepareDataStore(final DatastoreContext datastoreContext,
-            final String newModuleShardsConfig, final String newModulesConfig, final DOMSchemaService domSchemaService,
+            final Configuration configuration, final DOMSchemaService domSchemaService,
             final DatastoreSnapshotRestore newDatastoreSnapshotRestore,
             final ActorSystemProvider newActorSystemProvider) {
-        final ConfigurationImpl configuration = new ConfigurationImpl(newModuleShardsConfig, newModulesConfig);
         final DefaultDatastoreContextIntrospectorFactory introspectorFactory
                 = new DefaultDatastoreContextIntrospectorFactory(this.codec.currentSerializer());
         final DatastoreContextIntrospector introspector = introspectorFactory
