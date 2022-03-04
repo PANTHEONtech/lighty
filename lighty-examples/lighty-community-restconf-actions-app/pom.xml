@@ -12,7 +12,7 @@
     <parent>
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-app-parent</artifactId>
-        <version>15.1.1-SNAPSHOT</version>
+        <version>15.2.1-SNAPSHOT</version>
         <relativePath>../../lighty-core/lighty-app-parent</relativePath>
     </parent>
 
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>io.lighty.models.test</groupId>
             <artifactId>example-data-center</artifactId>
-            <version>15.1.1-SNAPSHOT</version>
+            <version>15.2.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

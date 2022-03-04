@@ -398,6 +398,15 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         if (this.timer != null) {
             this.timer.stop();
         }
+        if (this.threadPool != null && this.threadPool.getExecutor() != null) {
+            this.threadPool.getExecutor().shutdown();
+        }
+        if (this.scheduledThreadPool != null && this.scheduledThreadPool.getExecutor() != null) {
+            this.scheduledThreadPool.getExecutor().shutdown();
+        }
+        if (this.clusterSingletonServiceProvider != null) {
+            this.clusterSingletonServiceProvider.close();
+        }
         if (this.bindingDOMEntityOwnershipServiceAdapter != null) {
             this.bindingDOMEntityOwnershipServiceAdapter.close();
         }
@@ -408,6 +417,9 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                 LOG.error("Closing akka AkkaEntityOwnershipService failed!", e);
                 stopSuccessful = false;
             }
+        }
+        if (this.listenableFutureExecutor != null) {
+            this.listenableFutureExecutor.shutdown();
         }
         if (this.operDatastore != null) {
             this.operDatastore.close();

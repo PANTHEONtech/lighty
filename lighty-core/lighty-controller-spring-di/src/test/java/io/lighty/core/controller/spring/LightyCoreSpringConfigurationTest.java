@@ -8,6 +8,8 @@
 
 package io.lighty.core.controller.spring;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModuleRegistryService;
@@ -19,6 +21,7 @@ import io.netty.util.Timer;
 import io.netty.util.concurrent.EventExecutor;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
@@ -51,9 +54,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
 /**
  * Initializes Spring Boot application and check whether all the lighty.io beans has been correctly autowired.
@@ -63,7 +64,7 @@ import org.testng.annotations.Test;
  * can not create ApplicationContext properly.
  */
 @SpringBootTest
-public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringContextTests {
+public class LightyCoreSpringConfigurationTest extends AbstractJUnit4SpringContextTests {
 
     private static final Logger LOG = LoggerFactory.getLogger(LightyCoreSpringConfigurationTest.class);
 
@@ -171,40 +172,40 @@ public class LightyCoreSpringConfigurationTest extends AbstractTestNGSpringConte
     Timer timerTestProperty;
 
     @Test
-    void testLightyBeansExists() {
-        Assert.assertNotNull(lightyControllerTestProperty);
-        Assert.assertNotNull(lightyModuleRegistryServiceTestProperty);
-        Assert.assertNotNull(diagStatusServiceTestProperty);
-        Assert.assertNotNull(actorSystemProviderTestProperty);
-        Assert.assertNotNull(effectiveModelContextProvider);
-        Assert.assertNotNull(domSchemaServiceTestProperty);
-        Assert.assertNotNull(domYangTextSourceProviderTestProperty);
-        Assert.assertNotNull(domMountPointServiceTestProperty);
-        Assert.assertNotNull(domNotificationPublishServiceTestProperty);
-        Assert.assertNotNull(domNotificationServiceTestProperty);
-        Assert.assertNotNull(domNotificationSubscriptionListenerRegistryTestProperty);
-        Assert.assertNotNull(configDatastoreTestProperty);
-        Assert.assertNotNull(operationalDatastoreTestProperty);
-        Assert.assertNotNull(clusteredDOMDataBrokerTestProperty);
-        Assert.assertNotNull(domRpcServiceTestProperty);
-        Assert.assertNotNull(domRpcProviderServiceTestProperty);
-        Assert.assertNotNull(bindingNormalizedNodeSerializerTestProperty);
-        Assert.assertNotNull(bindingCodecTreeFactoryTestProperty);
-        Assert.assertNotNull(domEntityOwnershipServiceTestProperty);
-        Assert.assertNotNull(entityOwnershipServiceTestProperty);
-        Assert.assertNotNull(clusterAdminRPCServiceTestProperty);
-        Assert.assertNotNull(clusterSingletonServiceProviderTestProperty);
-        Assert.assertNotNull(rpcProviderRegistryTestProperty);
-        Assert.assertNotNull(bindingMountPointServiceTestProperty);
-        Assert.assertNotNull(notificationServiceTestProperty);
-        Assert.assertNotNull(bindingNotificationPublishServiceTestProperty);
-        Assert.assertNotNull(bindingDataBrokerTestProperty);
-        Assert.assertNotNull(eventExecutorTestProperty);
-        Assert.assertNotNull(bossGroupTestProperty);
-        Assert.assertNotNull(workerGroupTestProperty);
-        Assert.assertNotNull(threadPoolTestProperty);
-        Assert.assertNotNull(scheduledThreadPoolTestProperty);
-        Assert.assertNotNull(timerTestProperty);
+    public void testLightyBeansExists() {
+        assertNotNull(lightyControllerTestProperty);
+        assertNotNull(lightyModuleRegistryServiceTestProperty);
+        assertNotNull(diagStatusServiceTestProperty);
+        assertNotNull(actorSystemProviderTestProperty);
+        assertNotNull(effectiveModelContextProvider);
+        assertNotNull(domSchemaServiceTestProperty);
+        assertNotNull(domYangTextSourceProviderTestProperty);
+        assertNotNull(domMountPointServiceTestProperty);
+        assertNotNull(domNotificationPublishServiceTestProperty);
+        assertNotNull(domNotificationServiceTestProperty);
+        assertNotNull(domNotificationSubscriptionListenerRegistryTestProperty);
+        assertNotNull(configDatastoreTestProperty);
+        assertNotNull(operationalDatastoreTestProperty);
+        assertNotNull(clusteredDOMDataBrokerTestProperty);
+        assertNotNull(domRpcServiceTestProperty);
+        assertNotNull(domRpcProviderServiceTestProperty);
+        assertNotNull(bindingNormalizedNodeSerializerTestProperty);
+        assertNotNull(bindingCodecTreeFactoryTestProperty);
+        assertNotNull(domEntityOwnershipServiceTestProperty);
+        assertNotNull(entityOwnershipServiceTestProperty);
+        assertNotNull(clusterAdminRPCServiceTestProperty);
+        assertNotNull(clusterSingletonServiceProviderTestProperty);
+        assertNotNull(rpcProviderRegistryTestProperty);
+        assertNotNull(bindingMountPointServiceTestProperty);
+        assertNotNull(notificationServiceTestProperty);
+        assertNotNull(bindingNotificationPublishServiceTestProperty);
+        assertNotNull(bindingDataBrokerTestProperty);
+        assertNotNull(eventExecutorTestProperty);
+        assertNotNull(bossGroupTestProperty);
+        assertNotNull(workerGroupTestProperty);
+        assertNotNull(threadPoolTestProperty);
+        assertNotNull(scheduledThreadPoolTestProperty);
+        assertNotNull(timerTestProperty);
     }
 
     @TestConfiguration
