@@ -8,7 +8,6 @@
 package io.lighty.core.controller.impl.util;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.google.common.base.Preconditions;
 import io.lighty.codecs.util.JsonNodeConverter;
 import io.lighty.codecs.util.XmlNodeConverter;
 import io.lighty.codecs.util.exception.DeserializationException;
@@ -23,13 +22,9 @@ import java.util.concurrent.TimeoutException;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
-import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,14 +35,6 @@ public final class FileToDatastoreUtils {
 
     private FileToDatastoreUtils() {
         throw new UnsupportedOperationException("Init of utility class is forbidden");
-    }
-
-    private static NormalizedNode wrapNodesWithContainer(final NormalizedNode node, final QName containerName) {
-        Preconditions.checkState(node instanceof DataContainerChild, "Node is expected to be a DataContainerChild");
-        return ImmutableContainerNodeBuilder.create()
-                .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(containerName))
-                .addChild((DataContainerChild) node)
-                .build();
     }
 
     /**
@@ -73,28 +60,24 @@ public final class FileToDatastoreUtils {
             throws IOException, DeserializationException, InterruptedException, ExecutionException, TimeoutException {
 
         try (Reader inputReader = new InputStreamReader(inputStream, Charset.defaultCharset())) {
-            NormalizedNode deserializedNode;
             if (fileFormat == ImportFileFormat.JSON) {
                 // Json deserialization needs parent identifier
                 final YangInstanceIdentifier parentIdentifier = yangInstanceIdentifier.getParent() != null
                         ? yangInstanceIdentifier.getParent()
                         : YangInstanceIdentifier.empty();
-                deserializedNode = new JsonNodeConverter(effectiveModelContext)
+                final NormalizedNode deserializedNode = new JsonNodeConverter(effectiveModelContext)
                         .deserialize(parentIdentifier, inputReader);
-                // JSON parser doesn't wrap deserialized top level NormalizedNode in root node
-                // (urn:ietf:params:xml:ns:netconf:base:1.0)data as XML parser does, wrap it here
-                if (parentIdentifier.isEmpty()) {
-                    deserializedNode = wrapNodesWithContainer(deserializedNode, SchemaContext.NAME);
-                }
+                LOG.debug("Normalized nodes loaded from file {}: {}", inputStream, deserializedNode);
+                writeNodes(deserializedNode, parentIdentifier, dataBroker, override);
+
             } else if (fileFormat == ImportFileFormat.XML) {
-                deserializedNode = new XmlNodeConverter(effectiveModelContext)
+                final NormalizedNode deserializedNode = new XmlNodeConverter(effectiveModelContext)
                         .deserialize(yangInstanceIdentifier, inputReader);
+                LOG.debug("Normalized nodes loaded from file {}: {}", inputStream, deserializedNode);
+                writeNodes(deserializedNode, yangInstanceIdentifier, dataBroker, override);
             } else {
                 throw new UnsupportedOperationException("Format of config data file is not recognized");
             }
-
-            LOG.debug("Normalized nodes loaded from file {}: {}", inputStream, deserializedNode);
-            writeNodes(deserializedNode, yangInstanceIdentifier, dataBroker, override);
         }
     }
 
