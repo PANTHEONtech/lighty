@@ -1,4 +1,4 @@
 build = "maven"
 jdkVersion = "11"
 summaryComments = true
-disableTools = ["bill of materials", "open source vulnerabilities"]
+
