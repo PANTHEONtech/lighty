@@ -31,6 +31,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 
@@ -165,7 +166,7 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
     }
 
     private static NormalizedNode expectedToasterContainerNN() {
-        return Builders.containerBuilder()
+        return wrapWithBaseContainer(Builders.containerBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(Toaster.QNAME))
                 .withChild(Builders.leafBuilder()
                         .withNodeIdentifier(NodeIdentifier.create(qOfToasterModel("toasterManufacturer")))
@@ -179,7 +180,7 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
                         .withNodeIdentifier(NodeIdentifier.create(qOfToasterModel("darknessFactor")))
                         .withValue(Uint32.valueOf(201392110))
                         .build()))
-                .build();
+                .build());
     }
 
     private static NormalizedNode expectedRpcInputNN() {
@@ -210,10 +211,10 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
     }
 
     private static NormalizedNode expectedTopLevelContainerNN() {
-        return Builders.containerBuilder()
+        return wrapWithBaseContainer(Builders.containerBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(TopLevelContainer.QNAME))
                 .withChild(expectedInnerContainerNN())
-                .build();
+                .build());
     }
 
     private static DataContainerChild expectedInnerContainerNN() {
@@ -235,7 +236,7 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
     }
 
     private static NormalizedNode expectedListSingleEntryNN() {
-        return Builders.mapBuilder()
+        return wrapWithBaseContainer(Builders.mapBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(SampleList.QNAME))
                 .withChild(Builders.mapEntryBuilder()
                         .withNodeIdentifier(NodeIdentifierWithPredicates.of(SampleList.QNAME,
@@ -245,7 +246,7 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
                                 .withValue("test")
                                 .build())
                         .build())
-                .build();
+                .build());
     }
 
     private static NormalizedNode expectedTestListNN() {
@@ -263,7 +264,7 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
     }
 
     private static NormalizedNode expectedListMultipleEntriesNN() {
-        return Builders.mapBuilder()
+        return wrapWithBaseContainer(Builders.mapBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(SampleList.QNAME))
                 .withChild(Builders.mapEntryBuilder()
                         .withNodeIdentifier(NodeIdentifierWithPredicates.of(SampleList.QNAME,
@@ -281,6 +282,13 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
                                 .withValue("test2")
                                 .build())
                         .build())
+                .build());
+    }
+
+    private static NormalizedNode wrapWithBaseContainer(final DataContainerChild child) {
+        return Builders.containerBuilder()
+                .withNodeIdentifier(NodeIdentifier.create(SchemaContext.NAME))
+                .withChild(child)
                 .build();
     }
 }
