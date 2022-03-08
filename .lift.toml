@@ -1,4 +1,4 @@
 build = "maven"
 jdkVersion = "11"
 summaryComments = true
-tools = ["infer", "findsecbugs", "errorprone", "cobra", "gosec", "shellcheck", "semgrep"]
+disableTools = ["bill of materials", "open source vulnerabilities"]
