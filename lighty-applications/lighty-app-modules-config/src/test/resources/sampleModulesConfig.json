@@ -1,0 +1,15 @@
+{
+    "modules": {
+      "moduleTimeoutSeconds": 180
+    },
+    "controller":{
+    },
+    "restconf":{
+        "httpPort":8888,
+        "webSocketPort": 8185
+    },
+    "netconf-northbound":{
+    },
+    "netconf":{
+    }
+}
