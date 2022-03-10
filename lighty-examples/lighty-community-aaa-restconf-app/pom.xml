@@ -38,6 +38,10 @@
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-restconf-nb-community</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.lighty.applications</groupId>
+            <artifactId>lighty-app-modules-config</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>

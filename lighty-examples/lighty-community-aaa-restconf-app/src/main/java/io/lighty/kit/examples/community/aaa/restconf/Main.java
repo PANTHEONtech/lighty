@@ -12,6 +12,7 @@ import io.lighty.aaa.AAALighty;
 import io.lighty.aaa.config.AAAConfiguration;
 import io.lighty.aaa.config.CertificateManagerConfig;
 import io.lighty.aaa.util.AAAConfigUtils;
+import io.lighty.applications.util.ModulesConfig;
 import io.lighty.core.common.exceptions.ModuleStartupException;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
@@ -44,13 +45,13 @@ import org.slf4j.LoggerFactory;
 public final class Main {
 
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
-    private static final long DEFAULT_TIMEOUT_SECONDS = 30;
 
     private LightyController lightyController;
     private AAALighty aaaLighty;
     private CommunityRestConf restconf;
+    private ModulesConfig modulesConfig = ModulesConfig.getDefaultModulesConfig();
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         Main app = new Main();
         app.start(args, true);
     }
@@ -68,6 +69,7 @@ public final class Main {
                 singleNodeConfiguration = ControllerConfigUtils.getConfiguration(Files.newInputStream(configPath));
                 restconfConfiguration = RestConfConfigUtils.getRestConfConfiguration(Files.newInputStream(configPath));
                 aaaConfiguration = AAAConfigUtils.getAAAConfiguration(Files.newInputStream(configPath));
+                modulesConfig = ModulesConfig.getModulesConfig(Files.newInputStream(configPath));
             } else {
                 LOG.info("Lighty and Restconf starting, using default configuration ...");
                 final Set<YangModuleInfo> modelPaths = Stream.concat(RestConfConfigUtils.YANG_MODELS.stream(),
@@ -99,7 +101,8 @@ public final class Main {
         //1. Initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
         final LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
         this.lightyController = lightyControllerBuilder.from(controllerConfiguration).build();
-        final boolean controllerStartOk = this.lightyController.start().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        final boolean controllerStartOk = this.lightyController.start()
+                .get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
         if (!controllerStartOk) {
             throw new ModuleStartupException("Lighty.io Controller startup failed!");
         }
@@ -112,7 +115,8 @@ public final class Main {
                     this.lightyController.getServices()))
                 .withLightyServer(jettyServerBuilder)
                 .build();
-        final boolean restconfStartOk = this.restconf.start().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        final boolean restconfStartOk = this.restconf.start()
+                .get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
         if (!restconfStartOk) {
             throw new ModuleStartupException("Community Restconf startup failed!");
         }
@@ -122,7 +126,8 @@ public final class Main {
         Security.addProvider(new BouncyCastleProvider());
         aaaConfiguration.setCertificateManager(CertificateManagerConfig.getDefault(bindingDataBroker));
         this.aaaLighty = new AAALighty(bindingDataBroker,null, jettyServerBuilder, aaaConfiguration);
-        final boolean aaaLightyStartOk = this.aaaLighty.start().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        final boolean aaaLightyStartOk = this.aaaLighty.start().get(modulesConfig.getModuleTimeoutSeconds(),
+                TimeUnit.SECONDS);
         if (!aaaLightyStartOk) {
             throw new ModuleStartupException("AAA module startup failed!");
         }
@@ -132,10 +137,10 @@ public final class Main {
     }
 
     @SuppressWarnings("IllegalCatch")
-    private void closeLightyModule(LightyModule module) {
+    private void closeLightyModule(final LightyModule module) {
         if (module != null) {
             try {
-                module.shutdown().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+                module.shutdown().get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
             } catch (final Exception e) {
                 LOG.error("Exception while shutting down {} module: ", module.getClass().getSimpleName(), e);
                 if (e instanceof InterruptedException) {

@@ -12,6 +12,7 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.lighty.applications.util.ModulesConfig;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
@@ -39,11 +40,11 @@ import org.slf4j.LoggerFactory;
 public class Main {
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
     private static final int APP_FAILED_TO_START_SC = 500;
-    private static final long MODULE_STARTUP_WAIT_TIME = 20_000;
 
     private LightyController controller;
     private LightyModule restconf;
     private LightyModule bgpModule;
+    private ModulesConfig modulesConfig = ModulesConfig.getDefaultModulesConfig();
     private boolean running = false;
 
 
@@ -95,6 +96,7 @@ public class Main {
                     Iterables.concat(schemaServiceConfig.getModels(), minimalModelSet)));
 
             restConfConfiguration = RestConfConfigUtils.getRestConfConfiguration(Files.newInputStream(configPath));
+            modulesConfig = ModulesConfig.getModulesConfig(Files.newInputStream(configPath));
         } else {
             LOG.info("Using default configuration");
             controllerConfiguration = ControllerConfigUtils.getDefaultSingleNodeConfiguration(minimalModelSet);
@@ -104,15 +106,18 @@ public class Main {
         controller = new LightyControllerBuilder()
                 .from(controllerConfiguration)
                 .build();
-        Preconditions.checkState(startLightyModule(controller), "Unable to start controller");
+        Preconditions.checkState(startLightyModule(controller, modulesConfig.getModuleTimeoutSeconds()),
+                "Unable to start controller");
 
         restconf = CommunityRestConfBuilder
                 .from(RestConfConfigUtils.getRestConfConfiguration(restConfConfiguration, controller.getServices()))
                 .build();
-        Preconditions.checkState(startLightyModule(restconf), "Unable to start restconf module");
+        Preconditions.checkState(startLightyModule(restconf,  modulesConfig.getModuleTimeoutSeconds()),
+                "Unable to start restconf module");
 
         bgpModule = new BgpModule(controller.getServices());
-        Preconditions.checkState(startLightyModule(bgpModule), "Unable to start BGP module");
+        Preconditions.checkState(startLightyModule(bgpModule,  modulesConfig.getModuleTimeoutSeconds()),
+                "Unable to start BGP module");
 
         running = true;
         LOG.info("BGP lighty.io application started in {}", stopwatch.stop());
@@ -123,7 +128,7 @@ public class Main {
         LOG.info("Shutting down BGP application ...");
         try {
             if (restconf != null) {
-                restconf.shutdown().get();
+                restconf.shutdown().get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
             }
         } catch (InterruptedException e) {
             LOG.error("Interrupted while shutting down RESTCONF:", e);
@@ -134,7 +139,7 @@ public class Main {
 
         try {
             if (bgpModule != null) {
-                bgpModule.shutdown().get();
+                bgpModule.shutdown().get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
             }
         } catch (InterruptedException e) {
             LOG.error("Interrupted while shutting down BGP module:", e);
@@ -145,7 +150,7 @@ public class Main {
 
         try {
             if (controller != null) {
-                controller.shutdown().get();
+                controller.shutdown().get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
             }
         } catch (InterruptedException e) {
             LOG.error("Interrupted while shutting down controller:", e);
@@ -157,10 +162,10 @@ public class Main {
         running = false;
     }
 
-    private static boolean startLightyModule(final LightyModule lightyModule) throws InterruptedException,
-            ExecutionException, TimeoutException {
+    private static boolean startLightyModule(final LightyModule lightyModule, final long timeoutSeconds)
+            throws InterruptedException, ExecutionException, TimeoutException {
         LOG.info("Starting lighty module {}", lightyModule.getClass().getName());
-        return lightyModule.start().get(MODULE_STARTUP_WAIT_TIME, TimeUnit.MILLISECONDS);
+        return lightyModule.start().get(timeoutSeconds, TimeUnit.SECONDS);
     }
 
     public synchronized boolean isRunning() {
