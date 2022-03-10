@@ -8,15 +8,12 @@
 package io.lighty.applications.rnc.app;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.testng.Assert.assertThrows;
 
-import com.beust.jcommander.ParameterException;
 import io.lighty.applications.rnc.module.RncLightyModule;
 import org.testng.annotations.Test;
 
@@ -28,7 +25,7 @@ public class MainTest {
         RncLightyModule lighty = mock(RncLightyModule.class);
         doReturn(true).when(lighty).initModules();
         doReturn(true).when(lighty).close();
-        doReturn(lighty).when(app).createRncLightyModule(any(), eq(60));
+        doReturn(lighty).when(app).createRncLightyModule(any());
         app.start(new String[] {});
     }
 
@@ -38,21 +35,14 @@ public class MainTest {
         RncLightyModule lighty = mock(RncLightyModule.class);
         doReturn(true).when(lighty).initModules();
         doReturn(true).when(lighty).close();
-        doReturn(lighty).when(app).createRncLightyModule(any(), eq(90));
-        app.start(new String[] {"-c","src/main/resources/configuration.json", "-t", "90"});
+        doReturn(lighty).when(app).createRncLightyModule(any());
+        app.start(new String[] {"-c","src/main/resources/configuration.json"});
     }
 
     @Test
     public void testStartWithConfigFileNoSuchFile() {
         Main app = spy(new Main());
         app.start(new String[] {"-c","no_config.json"});
-        verify(app, never()).createRncLightyModule(any(), any());
-    }
-
-    @Test
-    public void testStartWithWrongTimeOut() {
-        final Main app = spy(new Main());
-        assertThrows(ParameterException.class, () -> app.start(new String[] {"-t", "WRONG_TIME_OUT"}));
-        verify(app, never()).createRncLightyModule(any(), any());
+        verify(app, never()).createRncLightyModule(any());
     }
 }

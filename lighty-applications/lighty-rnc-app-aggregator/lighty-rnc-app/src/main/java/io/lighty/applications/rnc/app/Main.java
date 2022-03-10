@@ -92,8 +92,7 @@ public class Main {
                 rncModuleConfig.getControllerConfig().getSchemaServiceConfig().getModels());
         LOG.info("Loaded YANG modules: {}", arrayNode);
 
-        final RncLightyModule rncLightyModule
-                = createRncLightyModule(rncModuleConfig, arguments.getModuleTimeout());
+        final RncLightyModule rncLightyModule = createRncLightyModule(rncModuleConfig);
         // Initialize RNC modules
         if (rncLightyModule.initModules()) {
             LOG.info("Registering ShutdownHook to gracefully shutdown application");
@@ -105,9 +104,8 @@ public class Main {
         }
     }
 
-    public RncLightyModule createRncLightyModule(final RncLightyModuleConfiguration rncModuleConfig,
-            final Integer lightyModuleTimeout) {
-        return new RncLightyModule(rncModuleConfig, lightyModuleTimeout);
+    public RncLightyModule createRncLightyModule(final RncLightyModuleConfiguration rncModuleConfig) {
+        return new RncLightyModule(rncModuleConfig);
     }
 
     /**

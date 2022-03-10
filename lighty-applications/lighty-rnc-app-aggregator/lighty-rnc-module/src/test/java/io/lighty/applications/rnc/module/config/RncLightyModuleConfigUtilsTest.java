@@ -11,6 +11,7 @@ import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
 
+import io.lighty.applications.util.ModulesConfig;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.DatastoreConfigurationUtils;
@@ -66,6 +67,9 @@ public class RncLightyModuleConfigUtilsTest {
         assertEquals(netconfConfig.getTopologyId(), "topology-netconf-test");
         assertEquals(netconfConfig.getWriteTxTimeout(), 0);
         assertFalse(netconfConfig.isClusterEnabled());
+
+        final ModulesConfig moduleConfig = rncConfig.getModuleConfig();
+        assertEquals(moduleConfig.getModuleTimeoutSeconds(), 180);
     }
 
     @Test
@@ -112,5 +116,8 @@ public class RncLightyModuleConfigUtilsTest {
         assertEquals(netconfConfig.getTopologyId(), "topology-netconf");
         assertEquals(netconfConfig.getWriteTxTimeout(), 0);
         assertFalse(netconfConfig.isClusterEnabled());
+
+        final ModulesConfig moduleConfig = rncConfig.getModuleConfig();
+        assertEquals(moduleConfig.getModuleTimeoutSeconds(), 60);
     }
 }

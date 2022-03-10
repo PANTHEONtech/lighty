@@ -8,6 +8,7 @@
 package io.lighty.applications.rnc.module.config;
 
 import io.lighty.aaa.config.AAAConfiguration;
+import io.lighty.applications.util.ModulesConfig;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
@@ -19,17 +20,20 @@ public class RncLightyModuleConfiguration {
     private final RestConfConfiguration restConfConfiguration;
     private final NetconfConfiguration netconfConfig;
     private final AAAConfiguration aaaConfig;
+    private final ModulesConfig moduleConfig;
 
     public RncLightyModuleConfiguration(final ControllerConfiguration controllerConfig,
                                         final LightyServerConfig serverConfig,
                                         final RestConfConfiguration restConfConfiguration,
                                         final NetconfConfiguration netconfConfig,
-                                        final AAAConfiguration aaaConfig) {
+                                        final AAAConfiguration aaaConfig,
+                                        final ModulesConfig moduleConfig) {
         this.controllerConfig = controllerConfig;
         this.serverConfig = serverConfig;
         this.restConfConfiguration = restConfConfiguration;
         this.netconfConfig = netconfConfig;
         this.aaaConfig = aaaConfig;
+        this.moduleConfig = moduleConfig;
     }
 
     public ControllerConfiguration getControllerConfig() {
@@ -50,5 +54,9 @@ public class RncLightyModuleConfiguration {
 
     public AAAConfiguration getAaaConfig() {
         return aaaConfig;
+    }
+
+    public ModulesConfig getModuleConfig() {
+        return moduleConfig;
     }
 }
