@@ -19,7 +19,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 public class RcGnmiAppModuleTest {
-    private static final int MODULE_TIMEOUT = 60;
 
     private RcGnmiAppModule rcgnmiModule;
 
@@ -31,7 +30,7 @@ public class RcGnmiAppModuleTest {
     @Test
     public void gnmiModuleSmokeTest() throws ConfigurationException {
         rcgnmiModule = new RcGnmiAppModule(RcGnmiAppModuleConfigUtils.loadDefaultConfig(),
-                Executors.newCachedThreadPool(), MODULE_TIMEOUT, null);
+                Executors.newCachedThreadPool(), null);
         assertTrue(rcgnmiModule.initModules());
     }
 
@@ -39,7 +38,7 @@ public class RcGnmiAppModuleTest {
     public void gnmiModuleStartFailedTest() throws ConfigurationException {
         final var config = spy(RcGnmiAppModuleConfigUtils.loadDefaultConfig());
         when(config.getControllerConfig()).thenReturn(null);
-        rcgnmiModule = new RcGnmiAppModule(config, Executors.newCachedThreadPool(), MODULE_TIMEOUT, null);
+        rcgnmiModule = new RcGnmiAppModule(config, Executors.newCachedThreadPool(), null);
         assertFalse(rcgnmiModule.initModules());
     }
 }

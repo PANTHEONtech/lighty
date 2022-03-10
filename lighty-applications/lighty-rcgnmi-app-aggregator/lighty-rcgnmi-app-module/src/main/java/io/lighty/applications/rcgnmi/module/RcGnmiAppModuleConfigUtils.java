@@ -9,6 +9,7 @@
 package io.lighty.applications.rcgnmi.module;
 
 import com.typesafe.config.Config;
+import io.lighty.applications.util.ModulesConfig;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
@@ -46,7 +47,9 @@ public final class RcGnmiAppModuleConfigUtils {
         restconfConfig.setInetAddress(new InetSocketAddress(restconfConfig.getHttpPort()).getAddress());
         LOG.debug("Loading default lighty.io gNMI module configuration...");
         final GnmiConfiguration gnmiConfiguration = GnmiConfigUtils.getDefaultGnmiConfiguration();
-        return new RcGnmiAppConfiguration(controllerConfig, restconfConfig, gnmiConfiguration);
+        LOG.debug("Loading default lighty.io app modules configuration...");
+        final ModulesConfig modulesConfig = ModulesConfig.getDefaultModulesConfig();
+        return new RcGnmiAppConfiguration(controllerConfig, restconfConfig, gnmiConfiguration, modulesConfig);
     }
 
     public static RcGnmiAppConfiguration loadConfiguration(final Path path) throws ConfigurationException, IOException {
@@ -64,9 +67,12 @@ public final class RcGnmiAppModuleConfigUtils {
             restconfConfig.setInetAddress(new InetSocketAddress(restconfConfig.getHttpPort()).getAddress());
         }
 
-        LOG.debug("Loading default lighty.io gNMI module configuration...");
+        LOG.debug("Loading lighty.io gNMI module configuration...");
         final GnmiConfiguration gnmiConfiguration = GnmiConfigUtils.getGnmiConfiguration(Files.newInputStream(path));
-        return new RcGnmiAppConfiguration(controllerConfig, restconfConfig, gnmiConfiguration);
+
+        LOG.debug("Loading lighty.io app modules configuration...");
+        final ModulesConfig modulesConfig = ModulesConfig.getModulesConfig(Files.newInputStream(path));
+        return new RcGnmiAppConfiguration(controllerConfig, restconfConfig, gnmiConfiguration, modulesConfig);
     }
 
     private static void defaultModels(final Set<YangModuleInfo> modelPaths) {

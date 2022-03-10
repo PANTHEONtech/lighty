@@ -8,6 +8,7 @@
 
 package io.lighty.applications.rcgnmi.module;
 
+import io.lighty.applications.util.ModulesConfig;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
@@ -16,13 +17,15 @@ public class RcGnmiAppConfiguration {
     private final ControllerConfiguration controllerConfig;
     private final RestConfConfiguration restconfConfig;
     private final GnmiConfiguration gnmiConfiguration;
+    private final ModulesConfig modulesConfig;
 
     public RcGnmiAppConfiguration(final ControllerConfiguration controllerConfig,
-                                  final RestConfConfiguration restconfConfig,
-                                  final GnmiConfiguration gnmiConfiguration) {
+            final RestConfConfiguration restconfConfig, final GnmiConfiguration gnmiConfiguration,
+            final ModulesConfig modulesConfig) {
         this.controllerConfig = controllerConfig;
         this.restconfConfig = restconfConfig;
         this.gnmiConfiguration = gnmiConfiguration;
+        this.modulesConfig = modulesConfig;
     }
 
     public ControllerConfiguration getControllerConfig() {
@@ -37,4 +40,7 @@ public class RcGnmiAppConfiguration {
         return gnmiConfiguration;
     }
 
+    public ModulesConfig getModulesConfig() {
+        return modulesConfig;
+    }
 }

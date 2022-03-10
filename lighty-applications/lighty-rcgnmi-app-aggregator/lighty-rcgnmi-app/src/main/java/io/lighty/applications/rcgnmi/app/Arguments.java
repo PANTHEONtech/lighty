@@ -8,9 +8,7 @@
 
 package io.lighty.applications.rcgnmi.app;
 
-import com.beust.jcommander.IParameterValidator;
 import com.beust.jcommander.Parameter;
-import com.beust.jcommander.ParameterException;
 
 public class Arguments {
 
@@ -22,37 +20,11 @@ public class Arguments {
             + " (If absent, will look on classpath for it")
     private String loggerPath;
 
-    @Parameter(names = {"-t", "--timeout-in-seconds"}, validateWith = ModuleTimeoutValidator.class,
-               description = "Lighty modules timeout in seconds. Timeout exception is thrown when lighty module fails "
-                       + "to start within the specified time. Default value is 60. (range: 15 - Integer.MAX_VALUE)")
-    private Integer moduleTimeout = 60;
-
     public String getConfigPath() {
         return configPath;
     }
 
     public String getLoggerPath() {
         return loggerPath;
-    }
-
-    public Integer getModuleTimeout() {
-        return moduleTimeout;
-    }
-
-    public static final class ModuleTimeoutValidator implements IParameterValidator {
-        @Override
-        public void validate(final String name, final String value) throws ParameterException {
-            final int intValue;
-            try {
-                intValue = Integer.parseInt(value);
-            } catch (NumberFormatException e) {
-                throw new ParameterException("Expected number after parameter \"-t\", \"--timeout-in-seconds\". "
-                        + "Provided: " + value, e);
-            }
-            if (intValue < 15) {
-                throw new ParameterException("Provided module timeout value: [" + value
-                        + "] is not in range (15 - Integer.MAX_VALUE)");
-            }
-        }
     }
 }
