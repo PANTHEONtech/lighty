@@ -10,6 +10,7 @@ package io.lighty.applications.rnc.module.config;
 import com.typesafe.config.Config;
 import io.lighty.aaa.config.AAAConfiguration;
 import io.lighty.aaa.util.AAAConfigUtils;
+import io.lighty.applications.util.ModulesConfig;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
@@ -43,6 +44,7 @@ public final class RncLightyModuleConfigUtils {
         final RestConfConfiguration restconfConfig;
         final NetconfConfiguration netconfConfig;
         final AAAConfiguration aaaConfig;
+        final ModulesConfig moduleConfig;
         try {
             LOG.debug("Loading lighty.io controller module configuration from file...");
             controllerConfig = ControllerConfigUtils.getConfiguration(Files.newInputStream(configPath));
@@ -66,11 +68,14 @@ public final class RncLightyModuleConfigUtils {
             LOG.debug("Loading lighty.io AAA module configuration from file...");
             aaaConfig = AAAConfigUtils.getAAAConfiguration(Files.newInputStream(configPath));
             LOG.debug("lighty.io AAA module configuration from file loaded!");
+            LOG.debug("Loading lighty.io app module configuration from file...");
+            moduleConfig = ModulesConfig.getModulesConfig(Files.newInputStream(configPath));
+            LOG.debug("lighty.io app module configuration from file loaded!");
         } catch (IOException e) {
             throw new ConfigurationException("Exception thrown while loading configuration!", e);
         }
         return new RncLightyModuleConfiguration(controllerConfig, lightyServerConfig, restconfConfig, netconfConfig,
-                aaaConfig);
+                aaaConfig, moduleConfig);
     }
 
     public static RncLightyModuleConfiguration loadDefaultConfig() throws ConfigurationException {
@@ -99,8 +104,11 @@ public final class RncLightyModuleConfigUtils {
         final AAAConfiguration aaaConfig = AAAConfigUtils.createDefaultAAAConfiguration();
         LOG.debug("Default lighty.io AAA module configuration loaded!");
 
+        LOG.debug("Loading default lighty.io app module configuration...");
+        final ModulesConfig modulesConfig = ModulesConfig.getDefaultModulesConfig();
+        LOG.debug("Default lighty.io app module configuration loaded!");
         return new RncLightyModuleConfiguration(controllerConfig, lightyServerConfig, restConfConfiguration,
-                netconfConfig, aaaConfig);
+                netconfConfig, aaaConfig, modulesConfig);
     }
 
     private static void addDefaultAppModels(final ControllerConfiguration controllerConfig) {

@@ -33,14 +33,13 @@ import org.testng.annotations.Test;
 
 public class RncLightyModuleSmokeTest {
 
-    private static final int MODULE_TIMEOUT = 60;
     private static final String HTTPS_URI = "https://127.0.0.1:8888";
     private static final String HTTP_URI = "http://127.0.0.1:8888";
     private static final String TOPOLOGY_PATH = "/restconf/data/network-topology:network-topology";
 
     @Test
     public void rncLightyModuleDefaultConfigTest() throws Exception {
-        final var rncModule = new RncLightyModule(RncLightyModuleConfigUtils.loadDefaultConfig(), MODULE_TIMEOUT);
+        final var rncModule = new RncLightyModule(RncLightyModuleConfigUtils.loadDefaultConfig());
         assertTrue(rncModule.initModules());
         final var httpResponse = HttpClient.newHttpClient()
                 .send(createGetRequest(HTTP_URI + TOPOLOGY_PATH), BodyHandlers.ofString());
@@ -52,7 +51,7 @@ public class RncLightyModuleSmokeTest {
     public void rncLightyModuleHttpsTest() throws Exception {
         final var resource = RncLightyModuleSmokeTest.class.getResource("/httpsConfig.json");
         final var rncConfig = RncLightyModuleConfigUtils.loadConfigFromFile(Paths.get(resource.getPath()));
-        final var rncModule = new RncLightyModule(rncConfig, MODULE_TIMEOUT);
+        final var rncModule = new RncLightyModule(rncConfig);
         assertTrue(rncModule.initModules());
         final var sslClient = getHttpClientWithSsl();
         final var httpResponse = sslClient.send(createGetRequest(HTTPS_URI + TOPOLOGY_PATH), BodyHandlers.ofString());
@@ -64,7 +63,7 @@ public class RncLightyModuleSmokeTest {
     public void rncLightyModuleHttp2Test() throws Exception {
         final var resource = RncLightyModuleSmokeTest.class.getResource("/http2Config.json");
         final var rncConfig = RncLightyModuleConfigUtils.loadConfigFromFile(Paths.get(resource.getPath()));
-        final var rncModule = new RncLightyModule(rncConfig, MODULE_TIMEOUT);
+        final var rncModule = new RncLightyModule(rncConfig);
         assertTrue(rncModule.initModules());
         final var sslClient = getHttpClientWithSsl();
         final var httpResponse = sslClient.send(createGetRequest(HTTPS_URI + TOPOLOGY_PATH), BodyHandlers.ofString());
@@ -76,7 +75,7 @@ public class RncLightyModuleSmokeTest {
     public void rncLightyModuleStartFailed() throws ConfigurationException {
         final var config = spy(RncLightyModuleConfigUtils.loadDefaultConfig());
         when(config.getControllerConfig()).thenReturn(null);
-        final var rncModule = new RncLightyModule(config, MODULE_TIMEOUT);
+        final var rncModule = new RncLightyModule(config);
         final var isStarted = rncModule.initModules();
         final var isClose = rncModule.close();
 
