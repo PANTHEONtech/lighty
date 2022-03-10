@@ -12,6 +12,7 @@ import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
 
+import io.lighty.applications.util.ModulesConfig;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.DatastoreConfigurationUtils;
@@ -53,6 +54,8 @@ public class RcGnmiAppModuleConfigUtilsTest {
         assertTrue(controllerConfig.getDistributedEosProperties().isEmpty());
         assertEquals(controllerConfig.getDatastoreProperties(),
                 DatastoreConfigurationUtils.getDefaultDatastoreProperties());
+        final ModulesConfig modulesConfig = rcGnmiAppConfiguration.getModulesConfig();
+        assertEquals(180, modulesConfig.getModuleTimeoutSeconds());
     }
 
     @Test
@@ -81,6 +84,8 @@ public class RcGnmiAppModuleConfigUtilsTest {
         assertTrue(controllerConfig.getDistributedEosProperties().isEmpty());
         assertEquals(controllerConfig.getDatastoreProperties(),
                 DatastoreConfigurationUtils.getDefaultDatastoreProperties());
+        final ModulesConfig modulesConfig = rcGnmiAppConfiguration.getModulesConfig();
+        assertEquals(60, modulesConfig.getModuleTimeoutSeconds());
     }
 
 
@@ -109,6 +114,8 @@ public class RcGnmiAppModuleConfigUtilsTest {
         assertTrue(controllerConfig.getDistributedEosProperties().isEmpty());
         assertEquals(controllerConfig.getDatastoreProperties(),
                 DatastoreConfigurationUtils.getDefaultDatastoreProperties());
+        final ModulesConfig modulesConfig = rcGnmiAppConfiguration.getModulesConfig();
+        assertEquals(60, modulesConfig.getModuleTimeoutSeconds());
     }
 
 }

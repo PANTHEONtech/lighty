@@ -56,7 +56,7 @@ public class RcGnmiAppModule {
     private static final TimeUnit DEFAULT_LIGHTY_MODULE_TIME_UNIT = TimeUnit.SECONDS;
     private static final SecureRandom RANDOM = new SecureRandom();
 
-    private final int lightyModuleTimeout;
+    private final long lightyModuleTimeout;
     private final RcGnmiAppConfiguration appModuleConfig;
     private final ExecutorService gnmiExecutorService;
     private final CrossSourceStatementReactor customReactor;
@@ -66,12 +66,11 @@ public class RcGnmiAppModule {
 
     public RcGnmiAppModule(final RcGnmiAppConfiguration appModuleConfig,
                            final ExecutorService gnmiExecutorService,
-                           final int lightyModuleTimeout,
                            @Nullable final CrossSourceStatementReactor customReactor) {
         LOG.info("Creating instance of RgNMI lighty.io module...");
         this.appModuleConfig = Objects.requireNonNull(appModuleConfig);
         this.gnmiExecutorService = Objects.requireNonNull(gnmiExecutorService);
-        this.lightyModuleTimeout = lightyModuleTimeout;
+        this.lightyModuleTimeout = appModuleConfig.getModulesConfig().getModuleTimeoutSeconds();
         this.customReactor = customReactor;
         LOG.info("Instance of RCgNMI lighty.io module created!");
     }
