@@ -10,6 +10,7 @@ package io.lighty.examples.controllers.restconfapp;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.base.Stopwatch;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.lighty.applications.util.ModulesConfig;
 import io.lighty.core.common.exceptions.ModuleStartupException;
 import io.lighty.core.common.models.YangModuleUtils;
 import io.lighty.core.controller.api.LightyController;
@@ -45,14 +46,14 @@ import org.slf4j.LoggerFactory;
 public class Main {
 
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
-    private static final long DEFAULT_TIMEOUT_SECONDS = 30;
 
     private LightyController lightyController;
     private SwaggerLighty swagger;
     private CommunityRestConf restconf;
     private LightyModule netconfSBPlugin;
+    private ModulesConfig modulesConfig = ModulesConfig.getDefaultModulesConfig();
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         Main app = new Main();
         app.start(args, true);
     }
@@ -63,7 +64,7 @@ public class Main {
 
     @SuppressWarnings("IllegalCatch")
     @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
-    public void start(String[] args, boolean registerShutdownHook) {
+    public void start(final String[] args, final boolean registerShutdownHook) {
         final Stopwatch stopwatch = Stopwatch.createStarted();
         LOG.info(".__  .__       .__     __              .__           _________________    _______");
         LOG.info("|  | |__| ____ |  |___/  |_ ___.__.    |__| ____    /   _____/\\______ \\   \\      \\");
@@ -88,6 +89,8 @@ public class Main {
                 //3. NETCONF SBP configuration
                 netconfSBPConfiguration =
                     NetconfConfigUtils.createNetconfConfiguration(Files.newInputStream(configPath));
+                //4. Load modules app configuration
+                modulesConfig = ModulesConfig.getModulesConfig(Files.newInputStream(configPath));
             } else {
                 LOG.info("using default configuration ...");
                 Set<YangModuleInfo> modelPaths = Stream.concat(RestConfConfigUtils.YANG_MODELS.stream(),
@@ -125,15 +128,16 @@ public class Main {
     }
 
     private void startLighty(final ControllerConfiguration controllerConfiguration,
-                                final RestConfConfiguration restconfConfiguration,
-                                NetconfConfiguration netconfSBPConfiguration)
+                             final RestConfConfiguration restconfConfiguration,
+                             NetconfConfiguration netconfSBPConfiguration)
         throws ConfigurationException, ExecutionException, InterruptedException, TimeoutException,
                ModuleStartupException {
 
         //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
         LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
         this.lightyController = lightyControllerBuilder.from(controllerConfiguration).build();
-        final boolean controllerStartOk = this.lightyController.start().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        final boolean controllerStartOk = this.lightyController.start()
+                .get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
         if (!controllerStartOk) {
             throw new ModuleStartupException("Lighty.io Controller startup failed!");
         }
@@ -150,11 +154,13 @@ public class Main {
         //3. start swagger and RestConf server
         this.swagger =
             new SwaggerLighty(restconfConfiguration, jettyServerBuilder, this.lightyController.getServices());
-        final boolean swaggerStartOk = this.swagger.start().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        final boolean swaggerStartOk = this.swagger.start()
+                .get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
         if (!swaggerStartOk) {
             throw new ModuleStartupException("Lighty.io Swagger startup failed!");
         }
-        final boolean restconfStartOk = this.restconf.start().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        final boolean restconfStartOk = this.restconf.start()
+                .get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
         if (!restconfStartOk) {
             throw new ModuleStartupException("Community Restconf startup failed!");
         }
@@ -166,17 +172,18 @@ public class Main {
         this.netconfSBPlugin = NetconfTopologyPluginBuilder
                 .from(netconfSBPConfiguration, this.lightyController.getServices())
                 .build();
-        final boolean netconfSBPStartOk = this.netconfSBPlugin.start().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        final boolean netconfSBPStartOk = this.netconfSBPlugin.start()
+                .get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
         if (!netconfSBPStartOk) {
             throw new ModuleStartupException("NetconfSB plugin startup failed!");
         }
     }
 
     @SuppressWarnings("IllegalCatch")
-    private void closeLightyModule(LightyModule module) {
+    private void closeLightyModule(final LightyModule module) {
         if (module != null) {
             try {
-                module.shutdown().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+                module.shutdown().get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
             } catch (final Exception e) {
                 LOG.error("Exception while shutting down {} module: ", module.getClass().getSimpleName(), e);
                 if (e instanceof InterruptedException) {

@@ -43,6 +43,10 @@
             <artifactId>lighty-bgp</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.lighty.applications</groupId>
+            <artifactId>lighty-app-modules-config</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-annotations</artifactId>
         </dependency>

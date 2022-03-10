@@ -1,4 +1,7 @@
 {
+    "modules": {
+      "moduleTimeoutSeconds":60
+    },
     "controller":{
         "restoreDirectoryPath":"./clustered-datastore-restore",
         "maxDataBrokerFutureCallbackQueueSize":1000,
