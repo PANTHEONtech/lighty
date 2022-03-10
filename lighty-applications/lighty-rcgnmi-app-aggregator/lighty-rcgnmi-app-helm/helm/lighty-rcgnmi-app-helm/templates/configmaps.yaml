@@ -6,6 +6,9 @@ kind: ConfigMap
 data:
   lighty-config.json: |
     {
+      "modules": {
+        "moduleTimeoutSeconds": {{ .Values.lighty.moduleTimeOut | quote }}
+      },
       "controller":{
         "restoreDirectoryPath":"./clustered-datastore-restore",
         "maxDataBrokerFutureCallbackQueueSize":1000,
