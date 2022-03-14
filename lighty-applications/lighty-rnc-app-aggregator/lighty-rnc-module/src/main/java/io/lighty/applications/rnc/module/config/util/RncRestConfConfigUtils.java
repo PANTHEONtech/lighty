@@ -92,8 +92,23 @@ public final class RncRestConfConfigUtils {
                         + " on path: " + config.getKeyStoreFilePath());
             }
 
+            final KeyStore.PasswordProtection trustPassProtection =
+                    new KeyStore.PasswordProtection(config.getTrustKeyStorePassword().toCharArray());
+            final KeyStore trustKeyStore =
+                    KeyStore.Builder.newInstance(config.getKeyStoreType(), null, trustPassProtection).getKeyStore();
+            final Optional<InputStream> trustKsFile = readKeyStoreFile(config.getTrustKeyStoreFilePath());
+
+            if (trustKsFile.isEmpty()) {
+                throw new ConfigurationException("Unable to create TrustKeyStore config: KeyStore file was not found"
+                        + " on path: " + config.getTrustKeyStoreFilePath());
+            }
+
             keyStore.load(ksFile.get(), config.getKeyStorePassword().toCharArray());
-            return new SecurityConfig(keyStore, config.getKeyStorePassword());
+            trustKeyStore.load(trustKsFile.get(), config.getTrustKeyStorePassword().toCharArray());
+
+            return new SecurityConfig(keyStore, config.getKeyStorePassword(),
+                                      trustKeyStore, config.getTrustKeyStorePassword(),
+                                      config.isNeedClientAuth());
         } catch (IOException | NoSuchAlgorithmException | CertificateException | KeyStoreException e) {
             throw new ConfigurationException("Unable to create KeyStore configuration", e);
         }
