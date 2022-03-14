@@ -84,9 +84,13 @@ data:
             "restconfServletContextPath":{{ .Values.lighty.restconf.restconfPath | quote}},
             "jsonRestconfServiceType": "DRAFT_18",
             "useHttps": {{ .Values.lighty.restconf.useHttps }},
+            "needClientAuth": {{ .Values.lighty.restconf.needClientAuth }},
             "keyStorePassword":{{ .Values.lighty.restconf.keyStorePassword | quote }},
             "keyStoreType":{{ .Values.lighty.restconf.keyStoreType | quote }},
-            "keyStoreFilePath":"{{ .Values.lighty.restconf.keyStoreDirectory }}/{{ .Values.lighty.restconf.keyStoreFileName }}"
+            "keyStoreFilePath":"{{ .Values.lighty.restconf.keyStoreDirectory }}/{{ .Values.lighty.restconf.keyStoreFileName }}",
+            "trustKeyStorePassword":{{ .Values.lighty.restconf.trustKeyStorePassword | quote }},
+            "trustKeyStoreFilePath":"{{ .Values.lighty.restconf.trustKeyStoreDirectory }}/{{ .Values.lighty.restconf.trustKeyStoreFileName }}",
+            "enableSwagger": {{ .Values.lighty.restconf.enableSwagger }}
         },
         "netconf-northbound":{
             "connectionTimeout":20000,
