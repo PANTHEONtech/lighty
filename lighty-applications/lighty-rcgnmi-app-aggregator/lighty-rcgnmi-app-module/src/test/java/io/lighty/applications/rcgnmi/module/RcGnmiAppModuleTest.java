@@ -8,32 +8,38 @@
 
 package io.lighty.applications.rcgnmi.module;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import java.util.concurrent.Executors;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 public class RcGnmiAppModuleTest {
     private static final int MODULE_TIMEOUT = 60;
 
+    private RcGnmiAppModule rcgnmiModule;
+
+    @AfterEach
+    public void tearDown() {
+        assertTrue(rcgnmiModule.close());
+    }
+
     @Test
     public void gnmiModuleSmokeTest() throws ConfigurationException {
-        final RcGnmiAppModule module = new RcGnmiAppModule(RcGnmiAppModuleConfigUtils.loadDefaultConfig(),
+        rcgnmiModule = new RcGnmiAppModule(RcGnmiAppModuleConfigUtils.loadDefaultConfig(),
                 Executors.newCachedThreadPool(), MODULE_TIMEOUT, null);
-        Assertions.assertTrue(module.initModules());
-        Assertions.assertTrue(module.close());
+        assertTrue(rcgnmiModule.initModules());
     }
 
     @Test
     public void gnmiModuleStartFailedTest() throws ConfigurationException {
-        final RcGnmiAppConfiguration config = spy(RcGnmiAppModuleConfigUtils.loadDefaultConfig());
+        final var config = spy(RcGnmiAppModuleConfigUtils.loadDefaultConfig());
         when(config.getControllerConfig()).thenReturn(null);
-        final RcGnmiAppModule rgnmiAppModule = new RcGnmiAppModule(config, Executors.newCachedThreadPool(),
-                MODULE_TIMEOUT, null);
-        Assertions.assertFalse(rgnmiAppModule.initModules());
+        rcgnmiModule = new RcGnmiAppModule(config, Executors.newCachedThreadPool(), MODULE_TIMEOUT, null);
+        assertFalse(rcgnmiModule.initModules());
     }
 }
-
