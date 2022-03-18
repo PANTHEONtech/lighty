@@ -19,22 +19,22 @@
         },
         "schemaServiceConfig":{
             "topLevelModels":[
-                { "usedBy": "CONTROLLER", "nameSpace": "urn:opendaylight:params:xml:ns:yang:mdsal:core:general-entity", "name": "odl-general-entity", "revision": "2015-09-30" },
-                { "usedBy": "CONTROLLER", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:entity-owners","name":"odl-entity-owners"},
-                { "usedBy": "CONTROLLER", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:cluster:admin", "name": "cluster-admin", "revision": "2015-10-13" },
-                { "usedBy": "CONTROLLER", "nameSpace": "urn:opendaylight:l2:types", "name": "opendaylight-l2-types", "revision": "2013-08-27" },
-                { "usedBy": "CONTROLLER", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:distributed-datastore-provider", "name": "distributed-datastore-provider", "revision": "2014-06-12" },
-                { "usedBy": "CONTROLLER", "nameSpace":"urn:ietf:params:xml:ns:yang:ietf-interfaces", "name":"ietf-interfaces", "revision":"2018-02-20"},
-                { "usedBy": "CONTROLLER","nameSpace": "urn:ietf:params:xml:ns:yang:iana-if-type","name":"iana-if-type","revision":"2017-01-19"},
-                { "usedBy": "RESTCONF", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-library", "name": "ietf-yang-library", "revision": "2019-01-04"},
-                { "usedBy": "RESTCONF", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-restconf-monitoring", "name": "ietf-restconf-monitoring", "revision": "2017-01-26" },
-                { "usedBy": "RESTCONF", "nameSpace": "subscribe:to:notification", "name": "subscribe-to-notification", "revision": "2016-10-28" },
-                { "usedBy": "RESTCONF", "nameSpace": "urn:sal:restconf:event:subscription", "name": "sal-remote-augment", "revision": "2014-07-08" },
-                { "usedBy": "RESTCONF", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-restconf", "name": "ietf-restconf", "revision": "2017-01-26" },
-                { "usedBy": "GNMI", "nameSpace": "urn:lighty:gnmi:topology", "name": "gnmi-topology", "revision": "2021-03-16"},
-                { "usedBy": "GNMI", "nameSpace": "urn:lighty:gnmi:yang:storage", "name": "gnmi-yang-storage", "revision": "2021-03-31"},
-                { "usedBy": "GNMI", "nameSpace": "urn:lighty:gnmi:certificate:storage", "name": "gnmi-certificate-storage", "revision": "2021-05-04"},
-                { "usedBy": "GNMI", "nameSpace": "urn:lighty:gnmi:force:capabilities", "name": "gnmi-force-capabilities", "revision": "2021-07-02"}
+                { "usedBy": "CONTROLLER", "name": "odl-general-entity", "revision": "2015-09-30", "nameSpace": "urn:opendaylight:params:xml:ns:yang:mdsal:core:general-entity"},
+                { "usedBy": "CONTROLLER", "name": "odl-entity-owners", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:entity-owners"},
+                { "usedBy": "CONTROLLER", "name": "cluster-admin", "revision": "2015-10-13", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:cluster:admin"},
+                { "usedBy": "CONTROLLER", "name": "opendaylight-l2-types", "revision": "2013-08-27", "nameSpace": "urn:opendaylight:l2:types"},
+                { "usedBy": "CONTROLLER", "name": "distributed-datastore-provider", "revision": "2014-06-12", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:distributed-datastore-provider"},
+                { "usedBy": "CONTROLLER", "name": "ietf-interfaces", "revision": "2018-02-20", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
+                { "usedBy": "CONTROLLER", "name": "iana-if-type","revision": "2021-06-21", "nameSpace": "urn:ietf:params:xml:ns:yang:iana-if-type"},
+                { "usedBy": "RESTCONF", "name": "ietf-yang-library", "revision": "2019-01-04", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-library"},
+                { "usedBy": "RESTCONF", "name": "ietf-restconf-monitoring", "revision": "2017-01-26", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-restconf-monitoring"},
+                { "usedBy": "RESTCONF", "name": "subscribe-to-notification", "revision": "2016-10-28", "nameSpace": "subscribe:to:notification"},
+                { "usedBy": "RESTCONF", "name": "sal-remote-augment", "revision": "2014-07-08", "nameSpace": "urn:sal:restconf:event:subscription"},
+                { "usedBy": "RESTCONF", "name": "ietf-restconf", "revision": "2017-01-26", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-restconf"},
+                { "usedBy": "GNMI", "name": "gnmi-topology", "revision": "2021-03-16", "nameSpace": "urn:lighty:gnmi:topology"},
+                { "usedBy": "GNMI", "name": "gnmi-yang-storage", "revision": "2021-03-31", "nameSpace": "urn:lighty:gnmi:yang:storage"},
+                { "usedBy": "GNMI", "name": "gnmi-certificate-storage", "revision": "2021-05-04", "nameSpace": "urn:lighty:gnmi:certificate:storage"},
+                { "usedBy": "GNMI", "name": "gnmi-force-capabilities", "revision": "2021-07-02", "nameSpace": "urn:lighty:gnmi:force:capabilities"}
             ]
         }
     },
@@ -50,9 +50,9 @@
           "../../lighty-models/openconfig-models/src/main/yang"
         ],
         "initialYangModels" : [
-            { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-interfaces", "name":"ietf-interfaces", "revision":"2018-02-20"},
-            { "nameSpace": "urn:ietf:params:xml:ns:yang:iana-if-type", "name": "iana-if-type", "revision": "2021-06-21" },
-            { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-types", "name": "ietf-yang-types", "revision": "2013-07-15" }
+            {"name": "ietf-interfaces", "revision": "2018-02-20", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
+            {"name": "iana-if-type", "revision": "2017-01-19", "nameSpace": "urn:ietf:params:xml:ns:yang:iana-if-type"},
+            {"name": "ietf-yang-types", "revision": "2013-07-15", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-types"}
         ]
     }
 }

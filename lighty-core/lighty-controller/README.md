@@ -108,17 +108,17 @@ or completely override it if required.
 ```
         "schemaServiceConfig":{
             "topLevelModels":[
-                { "usedBy": "CONTROLLER", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:cluster:admin", "name": "cluster-admin", "revision": "2015-10-13" },
-                { "usedBy": "CONTROLLER", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:distributed-datastore-provider", "name": "distributed-datastore-provider", "revision": "2014-06-12" },
-                { "usedBy": "CONTROLLER", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:entity-owners", "name": "odl-entity-owners" },
-                { "usedBy": "CONTROLLER", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-types", "name": "ietf-yang-types", "revision": "2013-07-15" },
-                { "usedBy": "CONTROLLER", "nameSpace": "urn:opendaylight:params:xml:ns:yang:mdsal:core:general-entity", "name": "odl-general-entity", "revision": "2015-09-30" },
-                { "usedBy": "CONTROLLER", "nameSpace": "urn:opendaylight:yang:extension:yang-ext", "name": "yang-ext", "revision": "2013-07-09" },
-                { "usedBy": "CONTROLLER", "nameSpace": "urn:opendaylight:l2:types", "name": "opendaylight-l2-types", "revision": "2013-08-27" },
-                { "usedBy": "CONTROLLER", "nameSpace": "urn:ietf:params:xml:ns:yang:iana-if-type", "name": "iana-if-type", "revision": "2017-01-19" },
-                { "usedBy": "CONTROLLER", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-interfaces", "name": "ietf-interfaces", "revision": "2018-02-20"},
-                { "usedBy": "CONTROLLER", "nameSpace": "urn:TBD:params:xml:ns:yang:network-topology", "name": "network-topology", "revision": "2013-10-21"},
-                { "usedBy": "CONTROLLER", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-inet-types", "name": "ietf-inet-types", "revision": "2021-06-21"}
+                { "usedBy": "CONTROLLER", "name": "cluster-admin", "revision": "2015-10-13", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:cluster:admin"},
+                { "usedBy": "CONTROLLER", "name": "distributed-datastore-provider", "revision": "2014-06-12", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:distributed-datastore-provider"},
+                { "usedBy": "CONTROLLER", "name": "odl-entity-owners", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:entity-owners"},
+                { "usedBy": "CONTROLLER", "name": "ietf-yang-types", "revision": "2013-07-15", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-types"},
+                { "usedBy": "CONTROLLER", "name": "odl-general-entity", "revision": "2015-09-30", "nameSpace": "urn:opendaylight:params:xml:ns:yang:mdsal:core:general-entity"},
+                { "usedBy": "CONTROLLER", "name": "yang-ext", "revision": "2013-07-09", "nameSpace": "urn:opendaylight:yang:extension:yang-ext"},
+                { "usedBy": "CONTROLLER", "name": "opendaylight-l2-types", "revision": "2013-08-27", "nameSpace": "urn:opendaylight:l2:types"},
+                { "usedBy": "CONTROLLER", "name": "iana-if-type", "revision": "2021-06-21", "nameSpace": "urn:ietf:params:xml:ns:yang:iana-if-type"},
+                { "usedBy": "CONTROLLER", "name": "ietf-interfaces", "revision": "2018-02-20", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
+                { "usedBy": "CONTROLLER", "name": "network-topology", "revision": "2013-10-21", "nameSpace": "urn:TBD:params:xml:ns:yang:network-topology"},
+                { "usedBy": "CONTROLLER", "name": "ietf-inet-types", "revision": "2013-07-15", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-inet-types"}
             ]
         }
     },
