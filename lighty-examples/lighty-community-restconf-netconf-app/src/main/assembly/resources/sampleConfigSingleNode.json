@@ -40,7 +40,8 @@
                 { "usedBy": "NETCONF","nameSpace":"urn:opendaylight:netconf-node-optional","name":"netconf-node-optional","revision":"2019-06-14"},
                 { "usedBy": "NETCONF","nameSpace":"urn:ietf:params:xml:ns:netconf:base:1.0","name":"ietf-netconf","revision":"2011-06-01"},
                 { "usedBy": "NETCONF","nameSpace":"urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring","name":"ietf-netconf-monitoring","revision":"2010-10-04"},
-                { "usedBy": "NETCONF","nameSpace":"urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring-extension","name":"ietf-netconf-monitoring-extension","revision":"2013-12-10"}
+                { "usedBy": "NETCONF","nameSpace":"urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring-extension","name":"ietf-netconf-monitoring-extension","revision":"2013-12-10"},
+                { "usedBy": "CONTROLLER", "nameSpace": "urn:opendaylight:params:xml:ns:yang:mdsal:core:general-entity", "name": "odl-general-entity", "revision": "2015-09-30" }
             ]
         }
     },

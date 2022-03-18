@@ -32,7 +32,9 @@
                 { "usedBy": "GNMI", "nameSpace": "urn:lighty:gnmi:topology", "name": "gnmi-topology", "revision": "2021-03-16"},
                 { "usedBy": "GNMI", "nameSpace": "urn:lighty:gnmi:yang:storage", "name": "gnmi-yang-storage", "revision": "2021-03-31"},
                 { "usedBy": "GNMI", "nameSpace": "urn:lighty:gnmi:certificate:storage", "name": "gnmi-certificate-storage", "revision": "2021-05-04"},
-                { "usedBy": "CONTROLLER", "nameSpace":"urn:ietf:params:xml:ns:yang:ietf-interfaces", "name":"ietf-interfaces", "revision":"2014-05-08"}
+                { "usedBy": "GNMI", "nameSpace": "urn:lighty:gnmi:force:capabilities", "name": "gnmi-force-capabilities", "revision": "2021-07-02"},
+                { "usedBy": "CONTROLLER", "nameSpace":"urn:ietf:params:xml:ns:yang:ietf-interfaces", "name":"ietf-interfaces", "revision":"2018-02-20"},
+                { "usedBy": "CONTROLLER","nameSpace": "urn:ietf:params:xml:ns:yang:iana-if-type","name":"iana-if-type","revision":"2017-01-19"}
             ]
         }
     },
