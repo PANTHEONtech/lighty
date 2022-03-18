@@ -7,6 +7,9 @@
  */
 package io.lighty.modules.southbound.netconf.tests;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
@@ -14,38 +17,42 @@ import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.testng.Assert;
-import org.testng.annotations.DataProvider;
+import java.util.concurrent.TimeUnit;
 import org.testng.annotations.Test;
 
 public class SampleConfigTest {
 
-    @DataProvider
-    private Object[] filenames() {
-        return new String[]{"sampleConfigSingleNode.json", "sampleConfigCluster.json"};
+    private static final long TIME_OUT = 30;
+
+    @Test
+    public void loadTopLevelSingleNodeModelsFromJsonConfig() throws Exception {
+        final LightyController lightyController = getLightyController("sampleConfigSingleNode.json");
+        assertTrue(lightyController.start().get(TIME_OUT, TimeUnit.SECONDS));
+
+        final int loadedModulesSize = lightyController.getServices().getEffectiveModelContextProvider()
+                .getEffectiveModelContext().getModules().size();
+        assertTrue(lightyController.shutdown().get(TIME_OUT, TimeUnit.SECONDS));
+
+        assertEquals(loadedModulesSize, 17);
     }
 
-    @Test(dataProvider = "filenames")
-    public void loadTopLevelModelsFromJsonConfig(String filename)
-            throws Exception {
-        final URL sampleConfigUrl =
-                SampleConfigTest.class.getClassLoader().getResource(filename);
+    @Test
+    public void loadTopLevelClusterModelsFromJsonConfig() throws Exception {
+        final LightyController lightyController = getLightyController("sampleConfigCluster.json");
+        assertTrue(lightyController.start().get(TIME_OUT, TimeUnit.SECONDS));
 
-        final ControllerConfiguration config =
-                ControllerConfigUtils.getConfiguration(Files.newInputStream(Path.of(sampleConfigUrl.toURI())));
+        final int loadedModulesSize = lightyController.getServices().getEffectiveModelContextProvider()
+                .getEffectiveModelContext().getModules().size();
+        assertTrue(lightyController.shutdown().get(TIME_OUT, TimeUnit.SECONDS));
 
-        final LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
-        final LightyController lightyController = lightyControllerBuilder
-                .from(config)
-                .build();
-        lightyController.start().get();
+        assertEquals(loadedModulesSize, 18);
+    }
 
-        final SchemaContext schemaContext =
-                lightyController.getServices().getEffectiveModelContextProvider().getEffectiveModelContext();
+    private LightyController getLightyController(final String resource) throws Exception {
+        final URL sampleConfigUrl = SampleConfigTest.class.getClassLoader().getResource(resource);
+        final ControllerConfiguration config = ControllerConfigUtils.getConfiguration(
+                Files.newInputStream(Path.of(sampleConfigUrl.toURI())));
 
-        Assert.assertEquals(schemaContext.getModules().size(), 9);
-
-        lightyController.shutdown().get();
+        return new LightyControllerBuilder().from(config).build();
     }
 }
