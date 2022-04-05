@@ -8,13 +8,16 @@
 
 package io.lighty.core.controller.springboot.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.lighty.core.controller.springboot.MainApp;
 import org.eclipse.jetty.client.api.ContentResponse;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -37,7 +40,7 @@ public class SpringBootAppTest {
     private static ConfigurableApplicationContext appContext;
     private static RestClient restClient;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         appContext = SpringApplication.run(MainApp.class, new String[]{});
         restClient = new RestClient("http://localhost:8888/");
@@ -51,50 +54,50 @@ public class SpringBootAppTest {
         String topologyId = "test-topology";
         String[] expectedTopologyIds = new String[] { netconfTopologyId, topologyId };
 
-        Assert.assertNotNull(appContext);
+        assertNotNull(appContext);
 
         //0. login as user with admin role
         //   only user with admin role is able to perform all operations
         String loginRequest = "{ \"username\": \"bob\", \"password\": \"secret\" }";
         contentResponse = restClient.POST("services/security/login", loginRequest);
-        Assert.assertEquals(200, contentResponse.getStatus());
+        assertEquals(200, contentResponse.getStatus());
 
         //1. get list of topology Ids
         //   only one topology ID "topology-netconf" is expected
         contentResponse = restClient.GET("services/data/topology/list");
-        Assert.assertEquals(200, contentResponse.getStatus());
+        assertEquals(200, contentResponse.getStatus());
         ArrayList<String> topologyIds = mapper.readValue(contentResponse.getContent(), ArrayList.class);
-        Assert.assertNotNull(topologyIds);
-        Assert.assertEquals(1, topologyIds.size(), 1);
-        Assert.assertEquals(netconfTopologyId, topologyIds.get(0));
+        assertNotNull(topologyIds);
+        assertEquals(1, topologyIds.size(), 1);
+        assertEquals(netconfTopologyId, topologyIds.get(0));
 
         //2. create new empty topology and check if it was created
         //   this step creates empty topology instance in global data store
         contentResponse = restClient.PUT("services/data/topology/id/" + topologyId);
-        Assert.assertEquals(200, contentResponse.getStatus());
+        assertEquals(200, contentResponse.getStatus());
         contentResponse = restClient.GET("services/data/topology/list");
         topologyIds = mapper.readValue(contentResponse.getContent(), ArrayList.class);
-        Assert.assertNotNull(topologyIds);
-        Assert.assertEquals(2, topologyIds.size());
-        Assert.assertTrue(topologyIds.containsAll(Arrays.asList(expectedTopologyIds)));
+        assertNotNull(topologyIds);
+        assertEquals(2, topologyIds.size());
+        assertTrue(topologyIds.containsAll(Arrays.asList(expectedTopologyIds)));
 
         //3. delete created topology and check if it was deleted
         //   this step removes created topology
         contentResponse = restClient.DELETE("services/data/topology/id/" + topologyId);
-        Assert.assertEquals(contentResponse.getStatus(), 200);
+        assertEquals(contentResponse.getStatus(), 200);
         contentResponse = restClient.GET("services/data/topology/list");
         topologyIds = mapper.readValue(contentResponse.getContent(), ArrayList.class);
-        Assert.assertNotNull(topologyIds);
-        Assert.assertEquals(1, topologyIds.size(), 1);
-        Assert.assertEquals(netconfTopologyId, topologyIds.get(0));
+        assertNotNull(topologyIds);
+        assertEquals(1, topologyIds.size(), 1);
+        assertEquals(netconfTopologyId, topologyIds.get(0));
 
         //4. user session logout
         contentResponse = restClient.GET("services/security/logout");
-        Assert.assertEquals(contentResponse.getStatus(), 200);
+        assertEquals(contentResponse.getStatus(), 200);
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
-    @AfterClass
+    @AfterAll
     public static void shutdown() {
         if (appContext != null) {
             appContext.stop();
