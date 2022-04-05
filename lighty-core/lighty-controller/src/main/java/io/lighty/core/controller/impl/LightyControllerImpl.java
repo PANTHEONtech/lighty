@@ -69,12 +69,7 @@ import org.opendaylight.controller.eos.akka.AkkaEntityOwnershipService;
 import org.opendaylight.controller.remote.rpc.RemoteOpsProvider;
 import org.opendaylight.controller.remote.rpc.RemoteOpsProviderConfig;
 import org.opendaylight.controller.remote.rpc.RemoteOpsProviderFactory;
-import org.opendaylight.infrautils.caches.CacheProvider;
-import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistryImpl;
-import org.opendaylight.infrautils.caches.guava.internal.GuavaCacheProvider;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
-import org.opendaylight.infrautils.metrics.MetricProvider;
-import org.opendaylight.infrautils.metrics.internal.MetricProviderImpl;
 import org.opendaylight.infrautils.ready.SystemReadyMonitor;
 import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.ActionService;
@@ -195,8 +190,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private ActionService actionService;
     private ActionProviderService actionProviderService;
     private final LightySystemReadyMonitorImpl systemReadyMonitor;
-    private final MetricProvider metricProvider;
-    private final CacheProvider cacheProvider;
     private List<ObjectRegistration<YangModuleInfo>> modelsRegistration = new ArrayList<>();
     private AkkaManagement akkaManagement;
     private Optional<ClusteringHandler> clusteringHandler;
@@ -235,8 +228,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.modelSet = modelSet;
         this.systemReadyMonitor = new LightySystemReadyMonitorImpl();
         this.lightyDiagStatusService = new LightyDiagStatusServiceImpl(systemReadyMonitor);
-        this.metricProvider = new MetricProviderImpl();
-        this.cacheProvider = new GuavaCacheProvider(new CacheManagersRegistryImpl());
         this.initialConfigData = Optional.ofNullable(initialConfigData);
     }
 
@@ -690,15 +681,5 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     public DOMActionProviderService getDOMActionProviderService() {
         return domActionProviderService;
-    }
-
-    @Override
-    public MetricProvider getMetricProvider() {
-        return this.metricProvider;
-    }
-
-    @Override
-    public CacheProvider getCacheProvider() {
-        return this.cacheProvider;
     }
 }

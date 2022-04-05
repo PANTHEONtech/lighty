@@ -15,9 +15,7 @@ import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
 import org.opendaylight.controller.config.threadpool.ThreadPool;
-import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
-import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.infrautils.ready.SystemReadyMonitor;
 import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.ActionService;
@@ -126,10 +124,6 @@ public interface LightyServices extends LightyModuleRegistryService {
     NotificationPublishService getBindingNotificationPublishService();
 
     DataBroker getBindingDataBroker();
-
-    MetricProvider getMetricProvider();
-
-    CacheProvider getCacheProvider();
 
     ConstantAdapterContext getAdapterContext();
 
