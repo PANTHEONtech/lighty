@@ -21,6 +21,7 @@ import static org.testng.Assert.assertTrue;
 import io.lighty.modules.southbound.netconf.impl.NetconfNmdaBaseServiceImpl;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.mockito.ArgumentCaptor;
@@ -48,22 +49,25 @@ import org.testng.annotations.Test;
 import org.w3c.dom.Element;
 
 public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
+    private static final Map<QName, Object> TEST_SCHEMA_KEYS = Map.of(
+            QName.create(Schema.QNAME, "identifier"), "listkeyvalue1",
+            QName.create(Schema.QNAME, "version"), "versionValue",
+            QName.create(Schema.QNAME, "format"), "formatValue");
+    private static final YangInstanceIdentifier TEST_SCHEMA_YIID = YangInstanceIdentifier.builder()
+            .node(NetconfState.QNAME)
+            .node(Schemas.QNAME)
+            .node(Schema.QNAME)
+            .nodeWithKey(Schema.QNAME, TEST_SCHEMA_KEYS)
+            .build();
 
     @Test
     public void testBaseServiceGetDataMock() {
-        YangInstanceIdentifier yangInstanceId = YangInstanceIdentifier.builder()
-                .node(NetconfState.QNAME)
-                .node(Schemas.QNAME)
-                .node(Schema.QNAME)
-                .nodeWithKey(Schema.QNAME, QName.create(Schema.QNAME, "identifier"), "listkeyvalue1")
-                .build();
-
         DOMRpcService domRpcService = mock(DOMRpcService.class);
 
         NetconfNmdaBaseServiceImpl baseService = new NetconfNmdaBaseServiceImpl(new NodeId("node1"), domRpcService,
                 effectiveModelContext);
 
-        baseService.getData(Operational.QNAME, Optional.of(yangInstanceId), Optional.empty(), Optional.empty(),
+        baseService.getData(Operational.QNAME, Optional.of(TEST_SCHEMA_YIID), Optional.empty(), Optional.empty(),
                 Optional.empty(), Optional.empty(), Optional.empty());
 
         ArgumentCaptor<NormalizedNode> capturedNN = ArgumentCaptor.forClass(NormalizedNode.class);
@@ -94,13 +98,6 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
 
     @Test
     public void testBaseServiceGetDataFullMock() {
-        YangInstanceIdentifier yangInstanceId = YangInstanceIdentifier.builder()
-                .node(NetconfState.QNAME)
-                .node(Schemas.QNAME)
-                .node(Schema.QNAME)
-                .nodeWithKey(Schema.QNAME, QName.create(Schema.QNAME, "identifier"), "listkeyvalue1")
-                .build();
-
         DOMRpcService domRpcService = mock(DOMRpcService.class);
 
         Set<QName> originFilter = new HashSet<>();
@@ -109,7 +106,7 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
 
         NetconfNmdaBaseServiceImpl baseService = new NetconfNmdaBaseServiceImpl(new NodeId("node1"), domRpcService,
                 effectiveModelContext);
-        baseService.getData(Operational.QNAME, Optional.of(yangInstanceId), Optional.of(true), Optional.of(42),
+        baseService.getData(Operational.QNAME, Optional.of(TEST_SCHEMA_YIID), Optional.of(true), Optional.of(42),
                 Optional.of(originFilter), Optional.empty(), Optional.of(true));
 
         ArgumentCaptor<NormalizedNode> capturedNN = ArgumentCaptor.forClass(NormalizedNode.class);
@@ -145,23 +142,16 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
 
     @Test
     public void testBaseServiceEditDataMock() {
-        YangInstanceIdentifier yangInstanceId = YangInstanceIdentifier.builder()
-                .node(NetconfState.QNAME)
-                .node(Schemas.QNAME)
-                .node(Schema.QNAME)
-                .nodeWithKey(Schema.QNAME, QName.create(Schema.QNAME, "identifier"), "listkeyvalue1")
-                .build();
-
         MapEntryNode schema = Builders.mapEntryBuilder()
                 .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifierWithPredicates
-                        .of(Schema.QNAME, QName.create(Schema.QNAME, "identifier"), "listkeyvalue1"))
+                        .of(Schema.QNAME, TEST_SCHEMA_KEYS))
                 .build();
 
         DOMRpcService domRpcService = mock(DOMRpcService.class);
 
         NetconfNmdaBaseServiceImpl baseService = new NetconfNmdaBaseServiceImpl(new NodeId("node1"), domRpcService,
                 effectiveModelContext);
-        baseService.editData(Running.QNAME, Optional.of(schema), yangInstanceId, Optional.of(ModifyAction.MERGE),
+        baseService.editData(Running.QNAME, Optional.of(schema), TEST_SCHEMA_YIID, Optional.of(ModifyAction.MERGE),
                 Optional.of(ModifyAction.CREATE));
 
         ArgumentCaptor<NormalizedNode> capturedNN = ArgumentCaptor.forClass(NormalizedNode.class);
@@ -187,5 +177,4 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
         assertNotNull(config);
         assertNotNull(getSpecificElementSubtree(config, NetconfState.QNAME, "netconf-state"));
     }
-
 }
