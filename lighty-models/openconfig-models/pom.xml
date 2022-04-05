@@ -31,7 +31,7 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
-            <artifactId>rfc7223</artifactId>
+            <artifactId>rfc8343</artifactId>
         </dependency>
     </dependencies>
 </project>
