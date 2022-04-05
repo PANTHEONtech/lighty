@@ -20,10 +20,10 @@
         "schemaServiceConfig":{
             "topLevelModels":[
                 { "nameSpace":"urn:ietf:params:xml:ns:yang:ietf-inet-types","name":"ietf-inet-types","revision":"2013-07-15"},
-                { "nameSpace":"urn:ietf:params:xml:ns:yang:ietf-interfaces","name":"ietf-interfaces","revision":"2014-05-08"},
+                { "nameSpace":"urn:ietf:params:xml:ns:yang:ietf-interfaces","name":"ietf-interfaces","revision":"2018-02-20"},
                 { "nameSpace":"urn:opendaylight:yang:extension:yang-ext","name":"yang-ext","revision":"2013-07-09"},
                 { "nameSpace":"urn:opendaylight:l2:types","name":"opendaylight-l2-types","revision":"2013-08-27"},
-                { "nameSpace":"urn:ietf:params:xml:ns:yang:iana-if-type","name":"iana-if-type","revision":"2017-01-19"},
+                { "nameSpace":"urn:ietf:params:xml:ns:yang:iana-if-type","name":"iana-if-type","revision":"2021-06-21"},
                 { "nameSpace":"urn:opendaylight:params:xml:ns:yang:controller:entity-owners","name":"odl-entity-owners"},
                 { "nameSpace":"urn:ietf:params:xml:ns:yang:ietf-access-control-list","name":"ietf-access-control-list","revision":"2016-02-18"},
                 { "nameSpace":"urn:ietf:params:xml:ns:yang:ietf-yang-types","name":"ietf-yang-types","revision":"2013-07-15"},

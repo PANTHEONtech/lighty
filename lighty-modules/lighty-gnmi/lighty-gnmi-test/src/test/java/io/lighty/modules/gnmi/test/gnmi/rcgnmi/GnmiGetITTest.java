@@ -44,13 +44,13 @@ public class GnmiGetITTest extends GnmiITBase {
     private static final String INTERFACES_PATH = GNMI_DEVICE_MOUNTPOINT + OPENCONFIG_INTERFACES;
     private static final String OPENFLOW_PATH = GNMI_DEVICE_MOUNTPOINT + OPENCONFIG_SYSTEM +  OPENCONFIG_OPENFLOW;
     private static final List<String> EXPECTED_CAPABILITIES = List.of(
-        "iana-if-type revision: 2017-01-19", "openconfig-alarm-types semver: 0.2.1", "openconfig-alarms semver: 0.3.2",
+        "iana-if-type revision: 2021-06-21", "openconfig-alarm-types semver: 0.2.1", "openconfig-alarms semver: 0.3.2",
         "openconfig-extensions revision: 2020-06-16", "openconfig-if-aggregate semver: 2.4.3",
         "openconfig-if-ethernet semver: 2.11.0", "openconfig-if-types semver: 0.2.1",
         "openconfig-inet-types semver: 0.4.0", "openconfig-interfaces semver: 2.5.0",
         "openconfig-platform semver: 0.13.0", "openconfig-platform-types semver: 1.1.0",
         "openconfig-vlan-types semver: 3.1.1", "openconfig-types semver: 0.6.0", "openconfig-vlan semver: 3.2.0",
-        "openconfig-yang-types semver: 0.3.0", "gnmi-test-model semver: 1.0.0", "ietf-interfaces revision: 2014-05-08",
+        "openconfig-yang-types semver: 0.3.0", "gnmi-test-model semver: 1.0.0", "ietf-interfaces revision: 2018-02-20",
         "ietf-yang-types revision: 2013-07-15", "openconfig-aaa semver: 0.5.0", "openconfig-aaa-types semver: 0.4.1",
         "openconfig-license semver: 0.2.0", "openconfig-messages semver: 0.0.1", "openconfig-procmon semver: 0.4.0",
         "openconfig-system semver: 0.10.0","openconfig-system-logging semver: 0.3.1",

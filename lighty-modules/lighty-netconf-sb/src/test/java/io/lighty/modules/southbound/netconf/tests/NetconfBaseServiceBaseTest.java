@@ -46,7 +46,7 @@ public abstract class NetconfBaseServiceBaseTest {
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.with.defaults.rev110601.$YangModuleInfoImpl.getInstance(),
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.monitoring.rev101004.$YangModuleInfoImpl.getInstance(),
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.nmda.rev190107.$YangModuleInfoImpl.getInstance(),
-                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.$YangModuleInfoImpl.getInstance()
+                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.$YangModuleInfoImpl.getInstance()
         );
         effectiveModelContext = getEffectiveModelContext(new ArrayList<>(yangModuleInfos));
         mountContext = new EmptyMountPointContext(effectiveModelContext);
