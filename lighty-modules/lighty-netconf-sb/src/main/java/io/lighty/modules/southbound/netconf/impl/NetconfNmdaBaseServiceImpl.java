@@ -14,6 +14,7 @@ import static org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTr
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -44,8 +45,12 @@ import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafSetEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedAnydata;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeWriter;
+import org.opendaylight.yangtools.yang.data.api.schema.stream.YangInstanceIdentifierWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
+import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
+import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableAnydataNodeBuilder;
 import org.opendaylight.yangtools.yang.data.util.ImmutableNormalizedAnydata;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
@@ -123,8 +128,20 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
                                                              YangInstanceIdentifier dataPath,
                                                              Optional<ModifyAction> dataModifyActionAttribute,
                                                              Optional<ModifyAction> defaultModifyAction) {
-        final NormalizedNode editNNContent = ImmutableNodes.fromInstanceId(getEffectiveModelContext(), dataPath,
-                data.orElseThrow(() -> new NoSuchElementException("Data is missing")));
+
+        final var parentPath = dataPath.isEmpty() ? dataPath : dataPath.coerceParent();
+        final var result = new NormalizedNodeResult();
+        try (var streamWriter = ImmutableNormalizedNodeStreamWriter.from(result)) {
+            try (var iidWriter = YangInstanceIdentifierWriter.open(streamWriter,
+                    getEffectiveModelContext(), parentPath);
+                 var nnWriter = NormalizedNodeWriter.forStreamWriter(streamWriter)) {
+                nnWriter.write(data.orElseThrow(() -> new NoSuchElementException("Data is missing")));
+            }
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Failed to convert " + dataPath, e);
+        }
+        final NormalizedNode editNNContent = result.getResult();
+
         final NormalizedMetadata metadata = dataModifyActionAttribute
                 .map(oper -> leafMetadata(dataPath, oper))
                 .orElse(null);
@@ -197,7 +214,7 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
 
     private DataContainerChild getWithOriginNode() {
         return Builders.leafBuilder().withNodeIdentifier(NETCONF_WITH_ORIGIN_NODEID)
-                .withValue(Empty.getInstance())
+                .withValue(Empty.value())
                 .build();
     }
 
