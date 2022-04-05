@@ -28,7 +28,8 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.$YangModuleInfoImpl;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.TopLevelContainer;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.container.group.SampleContainer;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.ChildOf;
+import org.opendaylight.yangtools.yang.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.testng.annotations.Test;
@@ -95,8 +96,8 @@ public class FileToDatastoreUtilsTest {
     }
 
 
-    private static <T extends DataObject> T readDataFromDatastore(final Class<T> clazz, final DataBroker dataBroker)
-            throws InterruptedException, ExecutionException, TimeoutException {
+    private static <T extends ChildOf<? extends DataRoot>> T readDataFromDatastore(final Class<T> clazz,
+            final DataBroker dataBroker) throws InterruptedException, ExecutionException, TimeoutException {
         try (ReadTransaction readTransaction = dataBroker.newReadOnlyTransaction()) {
             return readTransaction.read(LogicalDatastoreType.CONFIGURATION,
                     InstanceIdentifier.create(clazz))
@@ -115,6 +116,5 @@ public class FileToDatastoreUtilsTest {
                 services.getClusteredDOMDataBroker(),
                 true);
     }
-
 
 }
