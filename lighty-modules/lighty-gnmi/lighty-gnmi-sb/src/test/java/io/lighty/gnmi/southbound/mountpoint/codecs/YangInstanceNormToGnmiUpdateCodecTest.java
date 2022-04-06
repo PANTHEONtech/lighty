@@ -37,7 +37,7 @@ public class YangInstanceNormToGnmiUpdateCodecTest {
         codec = new YangInstanceNormToGnmiUpdateCodec(
                 testCases.getSchemaContextProvider(),
                 new YangInstanceIdentifierToPathCodec(testCases.getSchemaContextProvider(),
-                        false), new Gson());
+                        false), new Gson(), false);
     }
 
     @Test

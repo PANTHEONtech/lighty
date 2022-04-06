@@ -126,7 +126,7 @@ public class WriteTransactionTest {
                 = new YangInstanceIdentifierToPathCodec(deviceConnection, true);
         final GnmiSet gnmiSet = new GnmiSet(deviceConnection,
                 new GnmiSetRequestFactoryImpl(yiiToPathCodec, new YangInstanceNormToGnmiUpdateCodec(deviceConnection,
-                        yiiToPathCodec, new Gson())),
+                        yiiToPathCodec, new Gson(), false)),
                 deviceConnection.getIdentifier());
         this.gnmiDataBroker = new GnmiDataBroker(Mockito.mock(GnmiGet.class), gnmiSet);
     }

@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,38 +43,59 @@ public class YangInstanceIdentifierToPathCodec implements Codec<YangInstanceIden
         final PeekingIterator<YangInstanceIdentifier.PathArgument> iterator =
                 Iterators.peekingIterator(path.getPathArguments().iterator());
         Gnmi.PathElem.Builder previousElemBuilder = Gnmi.PathElem.newBuilder();
-
+        String previousNamespace = "";
         while (iterator.hasNext()) {
             final Gnmi.PathElem.Builder currentElemBuilder = Gnmi.PathElem.newBuilder();
             final YangInstanceIdentifier.PathArgument arg = iterator.next();
             if (doesDefineKeys(arg)) {
-                addKeysDefinitionNode((YangInstanceIdentifier.NodeIdentifierWithPredicates) arg,
-                        previousElemBuilder);
-                pathBuilder.addElem(previousElemBuilder.build());
+                if (arg instanceof YangInstanceIdentifier.NodeWithValue) {
+                    addKeysDefinitionNode((YangInstanceIdentifier.NodeWithValue) arg,
+                            previousElemBuilder);
+                } else {
+                    addKeysDefinitionNode((YangInstanceIdentifier.NodeIdentifierWithPredicates) arg,
+                            previousElemBuilder);
+                }
+                previousNamespace = getAndSetNamespaceToPath(previousElemBuilder, previousNamespace, arg);
+                pathBuilder.addElem(previousElemBuilder);
             } else {
                 addNonKeyDefinitionNode(arg, currentElemBuilder);
                 if (!doesDefineAugment(arg) && (!iterator.hasNext() || !doesDefineKeys(iterator.peek()))) {
                     /* Add this PathElem only when current path arg is not augment identifier and
                        next arg does not define key and value pairs */
-                    pathBuilder.addElem(currentElemBuilder.build());
+                    previousNamespace = getAndSetNamespaceToPath(currentElemBuilder, previousNamespace, arg);
+                    pathBuilder.addElem(currentElemBuilder);
                 }
             }
             previousElemBuilder = currentElemBuilder;
         }
-
-        // Add prefix to first path element, if requested
-        if (pathBuilder.getElemCount() > 0 && prefixFirstElement) {
-            final Gnmi.PathElem firstElement = pathBuilder.getElem(0);
-            final QName nodeType = path.getPathArguments().get(0).getNodeType();
-
-            final Optional<Module> firstElemModule = schemaContextProvider
-                    .getSchemaContext().findModule(nodeType.getNamespace(), nodeType.getRevision());
-            firstElemModule.ifPresent(module -> pathBuilder.setElem(0, firstElement.toBuilder()
-                    .setName(String.format("%s:%s", module.getName(), firstElement.getName()))));
-        }
         final Gnmi.Path resultingPath = pathBuilder.build();
         LOG.debug("Resulting gNMI Path of identifier {} is {}", path, resultingPath);
         return resultingPath;
+    }
+
+    private String getAndSetNamespaceToPath(final Gnmi.PathElem.Builder elemBuilder,
+                                            String previousNamespace,
+                                            final PathArgument pathArgument) {
+        // Add prefix to first path element, if requested
+        if (!prefixFirstElement) {
+            return previousNamespace;
+        }
+
+        if (pathArgument instanceof YangInstanceIdentifier.AugmentationIdentifier) {
+            return previousNamespace;
+        }
+
+        final QName module = pathArgument.getNodeType();
+        final Optional<Module> elemModule = schemaContextProvider.getSchemaContext()
+                .findModule(module.getNamespace(), module.getRevision());
+        String currentNamespace = elemModule.get().getName();
+
+        if (!previousNamespace.equals(currentNamespace)) {
+            elemBuilder.setName(String.format("%s:%s", elemModule.get().getName(), elemBuilder.getName()));
+            return currentNamespace;
+        } else {
+            return previousNamespace;
+        }
     }
 
     private static void addNonKeyDefinitionNode(final YangInstanceIdentifier.PathArgument identifier,
@@ -96,8 +118,14 @@ public class YangInstanceIdentifierToPathCodec implements Codec<YangInstanceIden
 
     }
 
+    private static void addKeysDefinitionNode(final YangInstanceIdentifier.NodeWithValue identifier,
+                                              final Gnmi.PathElem.Builder builder) {
+        builder.putKey(identifier.getNodeType().getLocalName(), identifier.getValue().toString());
+    }
+
     private static boolean doesDefineKeys(final YangInstanceIdentifier.PathArgument pathArgument) {
-        return pathArgument instanceof YangInstanceIdentifier.NodeIdentifierWithPredicates;
+        return pathArgument instanceof YangInstanceIdentifier.NodeIdentifierWithPredicates
+                || pathArgument instanceof YangInstanceIdentifier.NodeWithValue;
     }
 
     private static boolean doesDefineAugment(final YangInstanceIdentifier.PathArgument pathArgument) {

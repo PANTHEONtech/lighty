@@ -59,7 +59,11 @@ public final class DataConverter {
     public static String jsonStringFromNormalizedNodes(@NonNull final YangInstanceIdentifier identifier,
                                                        @NonNull final NormalizedNode data,
                                                        @NonNull final EffectiveModelContext context) {
-        return toJson(toSchemaPath(identifier), data, context);
+        if (identifier.getLastPathArgument() instanceof YangInstanceIdentifier.NodeWithValue) {
+            return toJson(toSchemaPath(identifier.getParent()), data, context);
+        } else {
+            return toJson(toSchemaPath(identifier), data, context);
+        }
     }
 
     public static NormalizedNode nodeFromJsonString(@NonNull final YangInstanceIdentifier yangInstanceIdentifier,

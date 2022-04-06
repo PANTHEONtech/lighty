@@ -85,11 +85,15 @@ public class YangInstanceIdentifiertoPathTestCases extends CodecTestCasesBase {
                         .setName("interface")
                         .putKey("name", "br0"))
                 .addElem(Gnmi.PathElem.newBuilder()
-                        .setName("ethernet"))
+                        .setName(addPrefixToTopElement
+                                ? makePrefixString(OC_IF_ETHERNET_ID, "ethernet")
+                                : "ethernet"))
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName("config"))
                 .addElem(Gnmi.PathElem.newBuilder()
-                        .setName("aggregate-id"))
+                        .setName(addPrefixToTopElement
+                                ? makePrefixString(OC_IF_AGGREGATE_ID, "aggregate-id")
+                                : "aggregate-id"))
                 .build();
         return Maps.immutableEntry(super.leafAgumentedCase().left, path);
     }

@@ -22,6 +22,8 @@ import java.util.Set;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
+import org.opendaylight.yangtools.yang.data.api.schema.LeafSetEntryNode;
+import org.opendaylight.yangtools.yang.data.api.schema.LeafSetNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.slf4j.Logger;
@@ -37,12 +39,16 @@ public class YangInstanceNormToGnmiUpdateCodec implements
     private final YangInstanceIdentifierToPathCodec toPathCodec;
     private final SchemaContextProvider schemaContextProvider;
     private final Gson gson;
+    private final boolean sendPrimitiveValAsJsonIetfVal; // needed for BroadCom Sonic 3.1.2
+
 
     public YangInstanceNormToGnmiUpdateCodec(final SchemaContextProvider schemaContextProvider,
-            final YangInstanceIdentifierToPathCodec toPathCodec, final Gson gson) {
+            final YangInstanceIdentifierToPathCodec toPathCodec, final Gson gson,
+                                             final boolean sendPrimitiveValAsJsonIetfVal) {
         this.schemaContextProvider = schemaContextProvider;
         this.toPathCodec = toPathCodec;
         this.gson = gson;
+        this.sendPrimitiveValAsJsonIetfVal = sendPrimitiveValAsJsonIetfVal;
     }
 
     @Override
@@ -66,23 +72,40 @@ public class YangInstanceNormToGnmiUpdateCodec implements
             updateBuilder.setVal(Gnmi.TypedValue.newBuilder()
                     .setJsonIetfVal(ByteString.copyFromUtf8(unwrapContainer(json))));
         } else if (isLeaf(node)) {
-            final JsonPrimitive jsonPrimitive = unwrapPrimitive(json);
-            // Boolean value case
-            if (jsonPrimitive.isBoolean()) {
+            if (sendPrimitiveValAsJsonIetfVal) {
                 updateBuilder.setVal(Gnmi.TypedValue.newBuilder()
-                        .setBoolVal(jsonPrimitive.getAsBoolean()));
-                // Number value case
-            } else if (jsonPrimitive.isNumber()) {
-                Number number = jsonPrimitive.getAsNumber();
-                Gnmi.TypedValue gnmiVal = isDecimal(number)
-                        ? Gnmi.TypedValue.newBuilder().setFloatVal(number.floatValue()).build()
-                        : Gnmi.TypedValue.newBuilder().setIntVal(number.intValue()).build();
-                updateBuilder.setVal(gnmiVal);
-                // String value case
-            } else if (jsonPrimitive.isString()) {
-                updateBuilder.setVal(Gnmi.TypedValue.newBuilder()
-                        .setStringVal(jsonPrimitive.getAsString()));
+                        .setJsonIetfVal(ByteString.copyFromUtf8(json)));
+            } else {
+                final JsonPrimitive jsonPrimitive = unwrapPrimitive(json);
+                // Boolean value case
+                if (jsonPrimitive.isBoolean()) {
+                    updateBuilder.setVal(Gnmi.TypedValue.newBuilder()
+                            .setBoolVal(jsonPrimitive.getAsBoolean()));
+                    // Number value case
+                } else if (jsonPrimitive.isNumber()) {
+                    Number number = jsonPrimitive.getAsNumber();
+                    Gnmi.TypedValue gnmiVal = isDecimal(number)
+                            ? Gnmi.TypedValue.newBuilder().setFloatVal(number.floatValue()).build()
+                            : Gnmi.TypedValue.newBuilder().setIntVal(number.intValue()).build();
+                    updateBuilder.setVal(gnmiVal);
+                    // String value case
+                } else if (jsonPrimitive.isString()) {
+                    updateBuilder.setVal(Gnmi.TypedValue.newBuilder()
+                            .setStringVal(jsonPrimitive.getAsString()));
+                }
             }
+        } else if (isLeafList(node)) {
+            if (!json.equals("{}")) {
+                if (sendPrimitiveValAsJsonIetfVal) {
+                    updateBuilder.setVal(Gnmi.TypedValue.newBuilder()
+                            .setJsonIetfVal(ByteString.copyFromUtf8(json)));
+                } else {
+                    throw new UnsupportedOperationException("unimplemented");
+                }
+            }
+        } else if (isLeafListEntry(node)) {
+            updateBuilder.setVal(Gnmi.TypedValue.newBuilder()
+                    .setJsonIetfVal(ByteString.copyFromUtf8(json)));
         } else {
             throw new GnmiCodecException(String.format("Unsupported type of node %s", node));
         }
@@ -139,6 +162,14 @@ public class YangInstanceNormToGnmiUpdateCodec implements
 
     private static boolean isListEntry(final NormalizedNode node) {
         return node instanceof MapEntryNode;
+    }
+
+    private static boolean isLeafList(final NormalizedNode node) {
+        return node instanceof LeafSetNode;
+    }
+
+    private static boolean isLeafListEntry(final NormalizedNode node) {
+        return node instanceof LeafSetEntryNode;
     }
 
     private static boolean isLeaf(final NormalizedNode node) {

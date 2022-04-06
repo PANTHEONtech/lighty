@@ -34,7 +34,8 @@ public class GnmiDataBrokerFactoryImpl implements GnmiDataBrokerFactory {
 
         final GnmiSet setOperation = new GnmiSet(deviceConnection,
                 new GnmiSetRequestFactoryImpl(yiiToPathCodec,
-                        new YangInstanceNormToGnmiUpdateCodec(deviceConnection, yiiToPathCodec, gson)),
+                        new YangInstanceNormToGnmiUpdateCodec(deviceConnection, yiiToPathCodec, gson,
+                                prefixFirstElement)),
                 deviceConnection.getIdentifier());
 
         return new GnmiDataBroker(getOperation, setOperation);
