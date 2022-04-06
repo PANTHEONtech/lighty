@@ -8,6 +8,9 @@
 
 package io.lighty.modules.gnmi.test.gnmi;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import gnmi.Gnmi;
@@ -31,8 +34,7 @@ import io.lighty.modules.gnmi.test.utils.TestUtils;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.ExecutionException;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,9 +83,9 @@ public class AuthenticationTest {
         // construct simple json
         final String expectedOriginalMtuJson = "{\"mtu\": " + expectedOriginalMtu + "}";
 
-        Assert.assertEquals(1, getResponse.getNotificationCount());
-        Assert.assertEquals(0, getResponse.getNotification(0).getDeleteCount());
-        Assert.assertEquals(1, getResponse.getNotification(0).getUpdateCount());
+        assertEquals(1, getResponse.getNotificationCount());
+        assertEquals(0, getResponse.getNotification(0).getDeleteCount());
+        assertEquals(1, getResponse.getNotification(0).getUpdateCount());
         JSONAssert.assertEquals(expectedOriginalMtuJson,
                 getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8(), false);
 
@@ -92,17 +94,17 @@ public class AuthenticationTest {
         LOG.info("Sending set request:\n{}", setRequest);
         SetResponse setResponse = sessionProvider.getGnmiSession().set(setRequest).get();
         LOG.info("Received set response:\n{}", setResponse);
-        Assert.assertEquals(1, setResponse.getResponseCount());
-        Assert.assertEquals(UpdateResult.Operation.UPDATE, setResponse.getResponse(0).getOp());
+        assertEquals(1, setResponse.getResponseCount());
+        assertEquals(UpdateResult.Operation.UPDATE, setResponse.getResponse(0).getOp());
 
         // Get mtu, should be UPDATE_MTU_VAL
         LOG.info("Sending get request:\n{}", getRequest);
         getResponse = sessionProvider.getGnmiSession().get(getRequest).get();
         LOG.info("Received get response:\n{}", getResponse);
 
-        Assert.assertEquals(1, getResponse.getNotificationCount());
-        Assert.assertEquals(0, getResponse.getNotification(0).getDeleteCount());
-        Assert.assertEquals(1, getResponse.getNotification(0).getUpdateCount());
+        assertEquals(1, getResponse.getNotificationCount());
+        assertEquals(0, getResponse.getNotification(0).getDeleteCount());
+        assertEquals(1, getResponse.getNotification(0).getUpdateCount());
         final String expectedChangedMtuJson = "{\"mtu\": " + UPDATE_MTU_VAL + "}";
         JSONAssert.assertEquals(expectedChangedMtuJson,
                 getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8(), false);
@@ -112,12 +114,12 @@ public class AuthenticationTest {
         LOG.info("Sending delete request:\n{}", deleteRequest);
         setResponse = sessionProvider.getGnmiSession().set(deleteRequest).get();
         LOG.info("Received delete response:\n{}", setResponse);
-        Assert.assertEquals(1, setResponse.getResponseCount());
-        Assert.assertEquals(UpdateResult.Operation.DELETE, setResponse.getResponse(0).getOp());
+        assertEquals(1, setResponse.getResponseCount());
+        assertEquals(UpdateResult.Operation.DELETE, setResponse.getResponse(0).getOp());
 
         // Get mtu, should throw exception
         LOG.info("Sending get request:\n{}", getRequest);
-        Assert.assertThrows(ExecutionException.class, () -> sessionProvider.getGnmiSession().get(getRequest).get());
+        assertThrows(ExecutionException.class, () -> sessionProvider.getGnmiSession().get(getRequest).get());
 
         device.stop();
         sessionProvider.close();
@@ -131,23 +133,23 @@ public class AuthenticationTest {
         // Should throw Unauthenticated exception
         LOG.info("Sending get request:\n{}", getRequest);
         final SessionProvider sessionProvider = getSessionWithAuth(WRONG_USERNAME, WRONG_PASSWORD);
-        final ExecutionException getResponseException = Assert.assertThrows(
+        final ExecutionException getResponseException = assertThrows(
                 ExecutionException.class, () -> sessionProvider.getGnmiSession().get(getRequest).get());
-        Assert.assertEquals(UNAUTHENTICATED_WRONG_USERNAME_OR_PASSWORD, getResponseException.getMessage());
+        assertEquals(UNAUTHENTICATED_WRONG_USERNAME_OR_PASSWORD, getResponseException.getMessage());
 
         // Should throw Unauthenticated exception
         final SetRequest setRequest = getSetRequest(pathToMtu);
         LOG.info("Sending set request:\n{}", setRequest);
-        final ExecutionException setResponseException = Assert.assertThrows(
+        final ExecutionException setResponseException = assertThrows(
                 ExecutionException.class, () -> sessionProvider.getGnmiSession().set(setRequest).get());
-        Assert.assertEquals(UNAUTHENTICATED_WRONG_USERNAME_OR_PASSWORD, setResponseException.getMessage());
+        assertEquals(UNAUTHENTICATED_WRONG_USERNAME_OR_PASSWORD, setResponseException.getMessage());
 
         // Should throw Unauthenticated exception
         final SetRequest deleteRequest = getDeleteRequest(pathToMtu);
         LOG.info("Sending delete request:\n{}", deleteRequest);
-        final ExecutionException deleteResponseException = Assert.assertThrows(
+        final ExecutionException deleteResponseException = assertThrows(
                 ExecutionException.class, () -> sessionProvider.getGnmiSession().set(deleteRequest).get());
-        Assert.assertEquals(UNAUTHENTICATED_WRONG_USERNAME_OR_PASSWORD, deleteResponseException.getMessage());
+        assertEquals(UNAUTHENTICATED_WRONG_USERNAME_OR_PASSWORD, deleteResponseException.getMessage());
 
         device.stop();
         sessionProvider.close();
@@ -178,9 +180,9 @@ public class AuthenticationTest {
         // construct simple json
         final String expectedOriginalMtuJson = "{\"mtu\": " + expectedOriginalMtu + "}";
 
-        Assert.assertEquals(1, getResponse.getNotificationCount());
-        Assert.assertEquals(0, getResponse.getNotification(0).getDeleteCount());
-        Assert.assertEquals(1, getResponse.getNotification(0).getUpdateCount());
+        assertEquals(1, getResponse.getNotificationCount());
+        assertEquals(0, getResponse.getNotification(0).getDeleteCount());
+        assertEquals(1, getResponse.getNotification(0).getUpdateCount());
         JSONAssert.assertEquals(expectedOriginalMtuJson,
                 getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8(), false);
 
@@ -189,17 +191,17 @@ public class AuthenticationTest {
         LOG.info("Sending set request:\n{}", setRequest);
         SetResponse setResponse = sessionProvider.getGnmiSession().set(setRequest).get();
         LOG.info("Received set response:\n{}", setResponse);
-        Assert.assertEquals(1, setResponse.getResponseCount());
-        Assert.assertEquals(UpdateResult.Operation.UPDATE, setResponse.getResponse(0).getOp());
+        assertEquals(1, setResponse.getResponseCount());
+        assertEquals(UpdateResult.Operation.UPDATE, setResponse.getResponse(0).getOp());
 
         // Get mtu, should be UPDATE_MTU_VAL
         LOG.info("Sending get request:\n{}", getRequest);
         getResponse = sessionProvider.getGnmiSession().get(getRequest).get();
         LOG.info("Received get response:\n{}", getResponse);
 
-        Assert.assertEquals(1, getResponse.getNotificationCount());
-        Assert.assertEquals(0, getResponse.getNotification(0).getDeleteCount());
-        Assert.assertEquals(1, getResponse.getNotification(0).getUpdateCount());
+        assertEquals(1, getResponse.getNotificationCount());
+        assertEquals(0, getResponse.getNotification(0).getDeleteCount());
+        assertEquals(1, getResponse.getNotification(0).getUpdateCount());
         final String expectedChangedMtuJson = "{\"mtu\": " + UPDATE_MTU_VAL + "}";
         JSONAssert.assertEquals(expectedChangedMtuJson,
                 getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8(), false);
@@ -209,12 +211,12 @@ public class AuthenticationTest {
         LOG.info("Sending delete request:\n{}", deleteRequest);
         setResponse = sessionProvider.getGnmiSession().set(deleteRequest).get();
         LOG.info("Received delete response:\n{}", setResponse);
-        Assert.assertEquals(1, setResponse.getResponseCount());
-        Assert.assertEquals(UpdateResult.Operation.DELETE, setResponse.getResponse(0).getOp());
+        assertEquals(1, setResponse.getResponseCount());
+        assertEquals(UpdateResult.Operation.DELETE, setResponse.getResponse(0).getOp());
 
         // Get mtu, should throw exception
         LOG.info("Sending get request:\n{}", getRequest);
-        Assert.assertThrows(ExecutionException.class, () -> sessionProvider.getGnmiSession().get(getRequest).get());
+        assertThrows(ExecutionException.class, () -> sessionProvider.getGnmiSession().get(getRequest).get());
 
         device.stop();
         sessionProvider.close();
@@ -228,7 +230,7 @@ public class AuthenticationTest {
         // Get mtu, should be 1500 from initial simulator data, load it from that initial config file
         LOG.info("Sending get request:\n{}", getRequest);
         final SessionProvider sessionProvider = getSessionWithAuth(USERNAME, PASSWORD);
-        Assert.assertThrows(ExecutionException.class, () -> sessionProvider.getGnmiSession().get(getRequest).get());
+        assertThrows(ExecutionException.class, () -> sessionProvider.getGnmiSession().get(getRequest).get());
 
         device.stop();
         sessionProvider.close();
