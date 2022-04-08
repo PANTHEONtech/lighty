@@ -24,15 +24,10 @@ import io.lighty.modules.gnmi.connector.session.api.SessionManager;
 import io.lighty.modules.gnmi.connector.session.api.SessionProvider;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
-import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
 import io.lighty.modules.gnmi.simulatordevice.utils.GnmiSimulatorConfUtils;
 import io.lighty.modules.gnmi.test.utils.TestUtils;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.URISyntaxException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.concurrent.ExecutionException;
 import org.json.JSONException;
 import org.junit.jupiter.api.AfterEach;
@@ -51,6 +46,8 @@ public class SimulatorCrudTest {
     private static final String INITIAL_DATA_PATH = "src/test/resources/json/initData";
     private static final String TEST_SCHEMA_PATH = "src/test/resources/additional/models";
     private static final String SIMULATOR_CONFIG = "/json/simulator_config.json";
+    private static final String SERVER_KEY = "src/test/resources/testUtilsCerts/server-pkcs8.key";
+    private static final String SERVER_CERT = "src/test/resources/testUtilsCerts/server.crt";
     private static final String INTERFACES_PREFIX = "openconfig-interfaces";
     private static final String OPENCONFIG_INTERFACES = INTERFACES_PREFIX + ":" + "interfaces";
     private static final String ETHRERNET_PREFIX = "openconfig-if-ethernet";
@@ -63,8 +60,7 @@ public class SimulatorCrudTest {
 
 
     @BeforeEach
-    public void setUp() throws NoSuchAlgorithmException, CertificateException, InvalidKeySpecException, IOException,
-            URISyntaxException, EffectiveModelContextBuilderException {
+    public void setUp() throws Exception {
 
         GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
                 .loadGnmiSimulatorConfiguration(this.getClass().getResourceAsStream(SIMULATOR_CONFIG));
@@ -72,6 +68,8 @@ public class SimulatorCrudTest {
         simulatorConfiguration.setTargetPort(TARGET_PORT);
         simulatorConfiguration.setInitialConfigDataPath(INITIAL_DATA_PATH + "/config.json");
         simulatorConfiguration.setInitialStateDataPath(INITIAL_DATA_PATH + "/state.json");
+        simulatorConfiguration.setCertKeyPath(SERVER_KEY);
+        simulatorConfiguration.setCertPath(SERVER_CERT);
 
         target = new SimulatedGnmiDevice(simulatorConfiguration);
         target.start();
