@@ -143,20 +143,21 @@ public class SimulatorCrudTest {
         Gnmi.GetResponse getResponse = sessionProvider.getGnmiSession().get(getRequest).get();
         LOG.info("Received get response:\n{}", getResponse);
 
-        final String originalInterfacesJson = TestUtils
-                .readFile(INITIAL_DATA_PATH + "/config.json");
-        JsonElement jsonElement = new JsonParser().parse(originalInterfacesJson).getAsJsonObject()
-                .get(OPENCONFIG_INTERFACES);
-        // Get mtu from config file
-        int expectedOriginalMtu = jsonElement.getAsJsonObject().getAsJsonArray(OPENCONFIG_INTERFACE)
-                .get(0)
-                .getAsJsonObject()
-                .getAsJsonObject("config")
-                .getAsJsonPrimitive("mtu").getAsInt();
         // construct simple json
         assertEquals(1, getResponse.getNotificationCount());
         assertEquals(0, getResponse.getNotification(0).getDeleteCount());
         assertEquals(1, getResponse.getNotification(0).getUpdateCount());
+
+        // Get mtu from config file
+        final String originalInterfacesJson = TestUtils
+                .readFile(INITIAL_DATA_PATH + "/config.json");
+        final JsonElement jsonElement = new JsonParser().parse(originalInterfacesJson).getAsJsonObject()
+                .get(OPENCONFIG_INTERFACES);
+        final int expectedOriginalMtu = jsonElement.getAsJsonObject().getAsJsonArray(OPENCONFIG_INTERFACE)
+                .get(0)
+                .getAsJsonObject()
+                .getAsJsonObject("config")
+                .getAsJsonPrimitive("mtu").getAsInt();
         final String expectedOriginalMtuJson = "{\"mtu\": " + expectedOriginalMtu + "}";
         JSONAssert.assertEquals(expectedOriginalMtuJson,
                 getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8(), false);
