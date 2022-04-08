@@ -92,7 +92,7 @@ public class CallhomePluginTest {
         netconfPlugin.start().get();
         // check, whether TCP server is running on port
         try (Socket socket = new Socket()) {
-            final SocketAddress endpoint = new InetSocketAddress(InetAddress.getLocalHost(), 6666);
+            final SocketAddress endpoint = new InetSocketAddress(InetAddress.getLocalHost(), 4334);
             socket.connect(endpoint);
         }
     }
