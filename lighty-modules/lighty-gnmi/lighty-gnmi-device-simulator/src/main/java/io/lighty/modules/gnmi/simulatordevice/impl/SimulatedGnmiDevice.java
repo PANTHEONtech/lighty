@@ -110,17 +110,17 @@ public class SimulatedGnmiDevice {
 
         if (plaintext) {
             serverBuilder.protocolNegotiator(InternalProtocolNegotiators.plaintext());
-        }
-
-        if (StringUtil.isNullOrEmpty(certificatePath) || StringUtil.isNullOrEmpty(keyPath)) {
-            // use default certificates
-            serverBuilder.useTransportSecurity(
-                    FileUtils.getResourceAsStream(DEFAULT_SERVER_CRT_FILE_PATH),
-                    FileUtils.getResourceAsStream(DEFAULT_SERVER_KEY_FILE_PATH)
-            );
-            LOG.info("Combination of server certificate and key not provided, using default ones.");
         } else {
-            serverBuilder.useTransportSecurity(new File(certificatePath), new File(keyPath));
+            if (StringUtil.isNullOrEmpty(certificatePath) || StringUtil.isNullOrEmpty(keyPath)) {
+                // Use default certificates for insecure mode
+                serverBuilder.useTransportSecurity(
+                        FileUtils.getResourceAsStream(DEFAULT_SERVER_CRT_FILE_PATH),
+                        FileUtils.getResourceAsStream(DEFAULT_SERVER_KEY_FILE_PATH)
+                );
+                LOG.info("Combination of server certificate and key not provided, using default ones.");
+            } else {
+                serverBuilder.useTransportSecurity(new File(certificatePath), new File(keyPath));
+            }
         }
 
         // Initialize schema context from yang models
