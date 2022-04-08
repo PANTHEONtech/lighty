@@ -8,6 +8,8 @@
 
 package io.lighty.modules.gnmi.test.utils;
 
+import com.google.common.io.CharStreams;
+import io.lighty.gnmi.southbound.device.session.security.SessionSecurityException;
 import io.lighty.modules.gnmi.connector.configuration.SecurityFactory;
 import io.lighty.modules.gnmi.connector.gnmi.session.impl.GnmiSessionFactoryImpl;
 import io.lighty.modules.gnmi.connector.security.Security;
@@ -15,14 +17,16 @@ import io.lighty.modules.gnmi.connector.session.SessionManagerFactory;
 import io.lighty.modules.gnmi.connector.session.SessionManagerFactoryImpl;
 import io.lighty.modules.gnmi.connector.session.api.SessionManager;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.NoSuchAlgorithmException;
+import java.security.KeyPair;
 import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
 import org.apache.commons.io.IOUtils;
+import org.opendaylight.aaa.encrypt.PKIUtil;
 
 public final class TestUtils {
 
@@ -30,22 +34,37 @@ public final class TestUtils {
         //Utility class
     }
 
-    private static final String CLIENT_KEY = "/testUtilsCerts/client_pkcs8.key";
+    private static final String CLIENT_KEY = "/testUtilsCerts/client.key";
     private static final String CLIENT_CERTS = "/testUtilsCerts/client.crt";
     private static final String CA_CERTS = "/testUtilsCerts/ca.crt";
+    private static final String PASSPHRASE = "";
     private static final SessionManagerFactory SESSION_MANAGER_FACTORY
             = new SessionManagerFactoryImpl(new GnmiSessionFactoryImpl());
 
-    public static SessionManager createSessionManagerWithCerts()
-            throws URISyntaxException, InvalidKeySpecException, CertificateException, NoSuchAlgorithmException,
-            IOException {
-        final Security gnmiSecurity = SecurityFactory.createGnmiSecurity(
-                Paths.get(TestUtils.class.getResource(CA_CERTS).toURI()),
-                Paths.get(TestUtils.class.getResource(CLIENT_CERTS).toURI()),
-                Paths.get(TestUtils.class.getResource(CLIENT_KEY).toURI())
-        );
+    public static SessionManager createSessionManagerWithCerts() throws IOException, SessionSecurityException,
+            CertificateException {
+        final KeyPair keyPair = getKeyPair(readResource(CLIENT_KEY));
+        final Security gnmiSecurity = SecurityFactory.createGnmiSecurity(readResource(CA_CERTS),
+                readResource(CLIENT_CERTS), keyPair.getPrivate());
 
         return SESSION_MANAGER_FACTORY.createSessionManager(gnmiSecurity);
+    }
+
+    private static KeyPair getKeyPair(final String clientKey) throws SessionSecurityException {
+        try {
+            return new PKIUtil().decodePrivateKey(new StringReader(clientKey), PASSPHRASE);
+        } catch (IOException e) {
+            throw new SessionSecurityException("Error while creating KeyPair from private key and passphrase", e);
+        }
+    }
+
+    private static String readResource(final String classPath) throws IOException {
+        String result;
+        try (InputStream inputStream = TestUtils.class.getResourceAsStream(classPath)) {
+            result = CharStreams.toString(new InputStreamReader(
+                    inputStream, StandardCharsets.UTF_8));
+        }
+        return result;
     }
 
     public static String readFile(final String filePath) throws IOException {

@@ -40,6 +40,8 @@ public class FileServiceTest {
 
     private static final String TEST_SCHEMA_PATH = "src/test/resources/additional/models";
     private static final String SIMULATOR_CONFIG = "/json/simulator_config.json";
+    private static final String SERVER_KEY = "src/test/resources/testUtilsCerts/server-pkcs8.key";
+    private static final String SERVER_CERT = "src/test/resources/testUtilsCerts/server.crt";
     private static final int  TARGET_PORT = 10161;
     private static final String TARGET_HOST = "127.0.0.1";
     private static final int DUMMYFILE_CHUNKS = 5;
@@ -55,6 +57,8 @@ public class FileServiceTest {
         simulatorConfiguration.setTargetAddress(TARGET_HOST);
         simulatorConfiguration.setTargetPort(TARGET_PORT);
         simulatorConfiguration.setYangsPath(TEST_SCHEMA_PATH);
+        simulatorConfiguration.setCertKeyPath(SERVER_KEY);
+        simulatorConfiguration.setCertPath(SERVER_CERT);
 
         target = new SimulatedGnmiDevice(simulatorConfiguration);
         target.start();
