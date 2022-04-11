@@ -162,9 +162,10 @@ module openconfig-platform {
         type boolean;
         type int64;
         type uint64;
-        type decimal64 {
-          fraction-digits 2;
-        }
+      // TODO: Uncomment when MDSAL 9.0.2 will be available https://jira.opendaylight.org/browse/MDSAL-738
+      //  type decimal64 {
+      //    fraction-digits 2;
+      //  }
       }
       description
         "Property values can take on a variety of types.  Signed and
