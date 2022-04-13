@@ -92,7 +92,6 @@ public class JsonNodeConverter implements NodeConverter {
      * @throws SerializationException if something goes wrong with serialization
      */
     @Override
-    @SuppressWarnings({"checkstyle:illegalCatch"})
     public Writer serializeData(final Inference inference,
             final NormalizedNode normalizedNode) throws SerializationException {
         final Writer writer = new StringWriter();
@@ -110,7 +109,7 @@ public class JsonNodeConverter implements NodeConverter {
         try (NormalizedNodeWriter nnWriter = NormalizedNodeWriter.forStreamWriter(nnStreamWriter)) {
             nnWriter.write(normalizedNode);
             return writer;
-        } catch (RuntimeException | IOException e) {
+        } catch (IOException e) {
             throw new SerializationException(e);
         } finally {
             if (useNested) {
@@ -124,7 +123,6 @@ public class JsonNodeConverter implements NodeConverter {
     }
 
     @Override
-    @SuppressWarnings({"checkstyle:illegalCatch"})
     public Writer serializeRpc(final Inference inference,
             final NormalizedNode normalizedNode) throws SerializationException {
         Preconditions.checkState(normalizedNode instanceof ContainerNode,
@@ -159,9 +157,8 @@ public class JsonNodeConverter implements NodeConverter {
      * @throws DeserializationException is thrown in case of an error during deserialization
      */
     @Override
-    @SuppressWarnings({"checkstyle:illegalCatch"})
-    public NormalizedNode deserialize(final Inference inference,
-            final Reader inputData) throws DeserializationException {
+    public NormalizedNode deserialize(final Inference inference, final Reader inputData)
+            throws DeserializationException {
         if (inference.statementPath().isEmpty()) {
             final DataContainerNodeBuilder<NodeIdentifier, ContainerNode> resultBuilder = Builders.containerBuilder()
                     .withNodeIdentifier(NodeIdentifier.create(SchemaContext.NAME));
@@ -180,7 +177,7 @@ public class JsonNodeConverter implements NodeConverter {
              JsonParserStream jsonParser = JsonParserStream.create(writer, this.jsonCodecFactory, inference)) {
 
             jsonParser.parse(reader);
-        } catch (RuntimeException | IOException e) {
+        } catch (IOException e) {
             throw new DeserializationException(e);
         }
     }
