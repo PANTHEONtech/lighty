@@ -30,8 +30,10 @@ import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.yang.gen.v1.http.openconfig.net.yang.network.instance.rev151018.OpenconfigNetworkInstanceData;
 import org.opendaylight.yang.gen.v1.http.openconfig.net.yang.network.instance.rev151018.network.instance.top.NetworkInstances;
 import org.opendaylight.yang.gen.v1.http.openconfig.net.yang.network.instance.rev151018.network.instance.top.network.instances.NetworkInstanceKey;
+import org.opendaylight.yang.gen.v1.http.openconfig.net.yang.routing.policy.rev151009.OpenconfigRoutingPolicyData;
 import org.opendaylight.yang.gen.v1.http.openconfig.net.yang.routing.policy.rev151009.routing.policy.top.RoutingPolicy;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -64,8 +66,10 @@ class ModuleInitTest {
     void routingPoliciesInDatastore() throws InterruptedException, ExecutionException, TimeoutException {
         final DataBroker bindingDataBroker = lightyServices.getBindingDataBroker();
         try (ReadTransaction readTransaction = bindingDataBroker.newReadOnlyTransaction()) {
+            final InstanceIdentifier<RoutingPolicy> routingPolicyIID = InstanceIdentifier.builderOfInherited(
+                    OpenconfigRoutingPolicyData.class, RoutingPolicy.class).build();
             final Optional<RoutingPolicy> routingPolicy = readTransaction.read(LogicalDatastoreType.CONFIGURATION,
-                    InstanceIdentifier.create(RoutingPolicy.class)).get(WAIT_TIME, TimeUnit.MILLISECONDS);
+                    routingPolicyIID).get(WAIT_TIME, TimeUnit.MILLISECONDS);
             assertTrue(routingPolicy.isPresent());
             // We are importing 2 routing policies (default-import + default-export)
             assertEquals(2, routingPolicy.get().getPolicyDefinitions().nonnullPolicyDefinition().size());
@@ -79,8 +83,10 @@ class ModuleInitTest {
     void networkInstanceInDatastore() throws InterruptedException, ExecutionException, TimeoutException {
         final DataBroker bindingDataBroker = lightyServices.getBindingDataBroker();
         try (ReadTransaction readTransaction = bindingDataBroker.newReadOnlyTransaction()) {
+            final InstanceIdentifier<NetworkInstances> networkInstancesIID = InstanceIdentifier.builderOfInherited(
+                    OpenconfigNetworkInstanceData.class, NetworkInstances.class).build();
             final Optional<NetworkInstances> networkInstance = readTransaction.read(LogicalDatastoreType.CONFIGURATION,
-                    InstanceIdentifier.create(NetworkInstances.class)).get(WAIT_TIME, TimeUnit.MILLISECONDS);
+                    networkInstancesIID).get(WAIT_TIME, TimeUnit.MILLISECONDS);
             assertTrue(networkInstance.isPresent());
             assertNotNull(networkInstance.get().nonnullNetworkInstance()
                     .get(new NetworkInstanceKey("global-bgp")));

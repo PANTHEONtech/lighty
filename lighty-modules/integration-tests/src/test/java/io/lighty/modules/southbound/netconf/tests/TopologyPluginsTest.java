@@ -8,7 +8,7 @@
 package io.lighty.modules.southbound.netconf.tests;
 
 import static io.lighty.modules.southbound.netconf.tests.LightyTestUtils.MAX_START_TIME_MILLIS;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

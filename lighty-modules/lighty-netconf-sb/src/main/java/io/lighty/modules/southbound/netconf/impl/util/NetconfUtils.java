@@ -140,7 +140,7 @@ public final class NetconfUtils {
         return Builders.containerBuilder().withNodeIdentifier(NETCONF_SOURCE_NODEID)
                 .withChild(Builders.choiceBuilder().withNodeIdentifier(CONFIG_SOURCE_NODEID).withChild(
                         Builders.leafBuilder().withNodeIdentifier(new NodeIdentifier(sourceDatastore))
-                                .withValue(Empty.getInstance()).build())
+                                .withValue(Empty.value()).build())
                         .build()).build();
     }
 
@@ -153,7 +153,7 @@ public final class NetconfUtils {
         return Builders.containerBuilder().withNodeIdentifier(NETCONF_TARGET_NODEID)
                 .withChild(Builders.choiceBuilder().withNodeIdentifier(CONFIG_TARGET_NODEID).withChild(
                         Builders.leafBuilder().withNodeIdentifier(new NodeIdentifier(targetDatastore))
-                                .withValue(Empty.getInstance()).build())
+                                .withValue(Empty.value()).build())
                         .build()).build();
     }
 

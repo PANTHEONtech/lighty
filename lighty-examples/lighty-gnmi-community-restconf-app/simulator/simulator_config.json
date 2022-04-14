@@ -11,7 +11,7 @@
     "password": "admin",
     "schemaServiceConfig": {
       "topLevelModels": [
-        { "nameSpace":"urn:ietf:params:xml:ns:yang:iana-if-type","name":"iana-if-type","revision":"2017-01-19"}
+        { "nameSpace":"urn:ietf:params:xml:ns:yang:iana-if-type","name":"iana-if-type","revision":"2021-06-21"}
       ]
     }
   }

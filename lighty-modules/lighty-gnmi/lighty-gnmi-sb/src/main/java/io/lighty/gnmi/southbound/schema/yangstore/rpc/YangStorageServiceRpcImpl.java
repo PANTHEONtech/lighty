@@ -20,7 +20,7 @@ import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.GnmiY
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.UploadYangModelInput;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.UploadYangModelOutput;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.UploadYangModelOutputBuilder;
-import org.opendaylight.yangtools.yang.common.RpcError;
+import org.opendaylight.yangtools.yang.common.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.slf4j.Logger;
@@ -49,7 +49,7 @@ public class YangStorageServiceRpcImpl implements GnmiYangStorageService {
                 LOG.info("Yang model {} with version {} added to operational datastore",
                         input.getName(), input.getVersion().getValue());
                 final RpcResult<UploadYangModelOutput> result =
-                        RpcResultBuilder.success(new UploadYangModelOutputBuilder()).build();
+                        RpcResultBuilder.success(new UploadYangModelOutputBuilder().build()).build();
                 rpcResultFuture.set(result);
             }
 
@@ -58,7 +58,7 @@ public class YangStorageServiceRpcImpl implements GnmiYangStorageService {
                 LOG.warn("Failed writing yang model {} with version {} to operational datastore",
                         input.getName(), input.getVersion().getValue());
                 final RpcResult<UploadYangModelOutput> result = RpcResultBuilder.<UploadYangModelOutput>failed()
-                        .withError(RpcError.ErrorType.APPLICATION, "Failed to write model", throwable)
+                        .withError(ErrorType.APPLICATION, "Failed to write model", throwable)
                         .build();
                 rpcResultFuture.set(result);
 

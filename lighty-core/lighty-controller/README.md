@@ -137,7 +137,7 @@ or completely override it if required.
                 { "nameSpace": "urn:opendaylight:aaa:app:config", "name": "aaa-app-config", "revision": "2017-06-19" },
                 { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-restconf", "name": "ietf-restconf", "revision": "2017-01-26" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:legacy-entity-ownership-service-provider", "name": "opendaylight-legacy-entity-ownership-service-provider", "revision": "2016-02-26" },
-                { "nameSpace": "urn:ietf:params:xml:ns:yang:iana-if-type", "name": "iana-if-type", "revision": "2014-05-08" },
+                { "nameSpace": "urn:ietf:params:xml:ns:yang:iana-if-type", "name": "iana-if-type", "revision": "2021-06-21" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:binding:impl", "name": "opendaylight-sal-binding-broker-impl", "revision": "2013-10-28" }
             ]
         }

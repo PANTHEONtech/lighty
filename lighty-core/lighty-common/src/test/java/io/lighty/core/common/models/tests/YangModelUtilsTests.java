@@ -28,9 +28,9 @@ public class YangModelUtilsTests {
     private static final String TEST_NAME = "ietf-inet-types";
     private static final String TEST_REVISION = "2013-07-15";
     private static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.$YangModuleInfoImpl
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev210621.$YangModuleInfoImpl
             .getInstance(),
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.$YangModuleInfoImpl
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.$YangModuleInfoImpl
             .getInstance(),
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.$YangModuleInfoImpl
             .getInstance()

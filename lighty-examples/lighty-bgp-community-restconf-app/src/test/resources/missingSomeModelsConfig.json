@@ -20,7 +20,7 @@
         "schemaServiceConfig":{
             "topLevelModels":[
                 { "nameSpace":"urn:ietf:params:xml:ns:yang:ietf-inet-types","name":"ietf-inet-types","revision":"2013-07-15"},
-                { "nameSpace":"urn:ietf:params:xml:ns:yang:ietf-interfaces","name":"ietf-interfaces","revision":"2014-05-08"}
+                { "nameSpace":"urn:ietf:params:xml:ns:yang:ietf-interfaces","name":"ietf-interfaces","revision":"2018-02-20"}
             ]
         }
     },

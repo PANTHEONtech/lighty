@@ -59,15 +59,16 @@ public class ByPathYangLoaderService implements YangLoaderService {
     public List<GnmiDeviceCapability> load(final YangDataStoreService storeService) throws YangLoadException {
         try (Stream<Path> pathStream = Files.walk(yangsPath)) {
             final List<GnmiDeviceCapability> loadedModels = new ArrayList<>();
-            final List<File> filesInFolder = pathStream
+            final List<Path> paths = pathStream
                     .filter(Files::isRegularFile)
                     .map(Path::toFile)
                     .filter(file -> file.getName().endsWith(YangConstants.RFC6020_YANG_FILE_EXTENSION))
+                    .map(File::toPath)
                     .collect(Collectors.toList());
 
-            for (File file : filesInFolder) {
-                try (InputStream bodyInputStream = Files.newInputStream(file.toPath())) {
-                    final YangTextSchemaSource yangTextSchemaSource = YangTextSchemaSource.forFile(file);
+            for (Path path : paths) {
+                try (InputStream bodyInputStream = Files.newInputStream(path)) {
+                    final YangTextSchemaSource yangTextSchemaSource = YangTextSchemaSource.forPath(path);
                     // This validates the yang
                     this.yangParser.addSource(yangTextSchemaSource);
                     final YangLoadModelUtil yangLoadModelUtil = new YangLoadModelUtil(yangTextSchemaSource,

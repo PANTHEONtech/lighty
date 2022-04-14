@@ -64,8 +64,9 @@ public class RestconfActionsAppTest {
 
     /**
      * Check if Swagger service and UI is responding.
+     * TODO: Enable test when "https://jira.opendaylight.org/browse/NETCONF-870" will be resolved.
      */
-    @Test
+    @Test(enabled = false)
     public void swaggerURLsTest() throws Exception {
         HttpResponse<String> operations;
         operations = restClient.GET("apidoc/openapi3/18/apis/single");
