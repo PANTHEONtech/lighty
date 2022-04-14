@@ -8,6 +8,11 @@
 
 package io.lighty.modules.gnmi.test.gnoi;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import gnoi.file.FileOuterClass;
 import io.grpc.stub.StreamObserver;
 import io.lighty.modules.gnmi.connector.configuration.SessionConfiguration;
@@ -15,24 +20,17 @@ import io.lighty.modules.gnmi.connector.session.api.SessionManager;
 import io.lighty.modules.gnmi.connector.session.api.SessionProvider;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
-import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
 import io.lighty.modules.gnmi.simulatordevice.utils.GnmiSimulatorConfUtils;
 import io.lighty.modules.gnmi.test.utils.TestUtils;
 import io.lighty.modules.gnmi.test.utils.TimeoutUtil;
-import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.URISyntaxException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +40,8 @@ public class FileServiceTest {
 
     private static final String TEST_SCHEMA_PATH = "src/test/resources/additional/models";
     private static final String SIMULATOR_CONFIG = "/json/simulator_config.json";
+    private static final String SERVER_KEY = "src/test/resources/testUtilsCerts/server-pkcs8.key";
+    private static final String SERVER_CERT = "src/test/resources/testUtilsCerts/server.crt";
     private static final int  TARGET_PORT = 10161;
     private static final String TARGET_HOST = "127.0.0.1";
     private static final int DUMMYFILE_CHUNKS = 5;
@@ -50,14 +50,15 @@ public class FileServiceTest {
     private static SimulatedGnmiDevice target;
 
 
-    @Before
-    public void setUp() throws NoSuchAlgorithmException, CertificateException, InvalidKeySpecException, IOException,
-            URISyntaxException, EffectiveModelContextBuilderException {
+    @BeforeEach
+    public void setUp() throws Exception {
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
                 .loadGnmiSimulatorConfiguration(this.getClass().getResourceAsStream(SIMULATOR_CONFIG));
         simulatorConfiguration.setTargetAddress(TARGET_HOST);
         simulatorConfiguration.setTargetPort(TARGET_PORT);
         simulatorConfiguration.setYangsPath(TEST_SCHEMA_PATH);
+        simulatorConfiguration.setCertKeyPath(SERVER_KEY);
+        simulatorConfiguration.setCertPath(SERVER_CERT);
 
         target = new SimulatedGnmiDevice(simulatorConfiguration);
         target.start();
@@ -67,7 +68,7 @@ public class FileServiceTest {
                 new SessionConfiguration(targetAddress, false));
     }
 
-    @After
+    @AfterEach
     public void after() throws Exception {
         sessionProvider.close();
         target.stop();
@@ -93,19 +94,18 @@ public class FileServiceTest {
 
             @Override
             public void onError(Throwable throwable) {
-                Assert.fail("Unexpected error received");
+                fail("Unexpected error received");
             }
 
             @Override
             public void onCompleted() {
-                Assert.assertEquals(DUMMYFILE_CHUNKS, chunks.size());
-                Assert.assertNotNull(hash.getHash());
+                assertEquals(DUMMYFILE_CHUNKS, chunks.size());
+                assertNotNull(hash.getHash());
                 syncLatch.countDown();
             }
         };
         sessionProvider.getGnoiSession().getFileInvoker().get(request,responseStreamObserver);
-        Assert.assertTrue(syncLatch.await(TimeoutUtil.TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
-
+        assertTrue(syncLatch.await(TimeoutUtil.TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
     }
 
 }

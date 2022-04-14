@@ -8,6 +8,10 @@
 
 package io.lighty.modules.gnmi.test.gnmi;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -20,21 +24,15 @@ import io.lighty.modules.gnmi.connector.session.api.SessionManager;
 import io.lighty.modules.gnmi.connector.session.api.SessionProvider;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
-import io.lighty.modules.gnmi.simulatordevice.utils.EffectiveModelContextBuilder.EffectiveModelContextBuilderException;
 import io.lighty.modules.gnmi.simulatordevice.utils.GnmiSimulatorConfUtils;
 import io.lighty.modules.gnmi.test.utils.TestUtils;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.URISyntaxException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.concurrent.ExecutionException;
 import org.json.JSONException;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +46,8 @@ public class SimulatorCrudTest {
     private static final String INITIAL_DATA_PATH = "src/test/resources/json/initData";
     private static final String TEST_SCHEMA_PATH = "src/test/resources/additional/models";
     private static final String SIMULATOR_CONFIG = "/json/simulator_config.json";
+    private static final String SERVER_KEY = "src/test/resources/testUtilsCerts/server-pkcs8.key";
+    private static final String SERVER_CERT = "src/test/resources/testUtilsCerts/server.crt";
     private static final String INTERFACES_PREFIX = "openconfig-interfaces";
     private static final String OPENCONFIG_INTERFACES = INTERFACES_PREFIX + ":" + "interfaces";
     private static final String ETHRERNET_PREFIX = "openconfig-if-ethernet";
@@ -59,9 +59,8 @@ public class SimulatorCrudTest {
     private static SimulatedGnmiDevice target;
 
 
-    @Before
-    public void setUp() throws NoSuchAlgorithmException, CertificateException, InvalidKeySpecException, IOException,
-            URISyntaxException, EffectiveModelContextBuilderException {
+    @BeforeEach
+    public void setUp() throws Exception {
 
         GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
                 .loadGnmiSimulatorConfiguration(this.getClass().getResourceAsStream(SIMULATOR_CONFIG));
@@ -69,6 +68,8 @@ public class SimulatorCrudTest {
         simulatorConfiguration.setTargetPort(TARGET_PORT);
         simulatorConfiguration.setInitialConfigDataPath(INITIAL_DATA_PATH + "/config.json");
         simulatorConfiguration.setInitialStateDataPath(INITIAL_DATA_PATH + "/state.json");
+        simulatorConfiguration.setCertKeyPath(SERVER_KEY);
+        simulatorConfiguration.setCertPath(SERVER_CERT);
 
         target = new SimulatedGnmiDevice(simulatorConfiguration);
         target.start();
@@ -78,7 +79,7 @@ public class SimulatorCrudTest {
                 new SessionConfiguration(targetAddress, false));
     }
 
-    @After
+    @AfterEach
     public void after() throws Exception {
         sessionProvider.close();
         target.stop();
@@ -106,9 +107,9 @@ public class SimulatorCrudTest {
         LOG.info("Sending get request:\n{}", getRequest);
         final Gnmi.GetResponse getResponse = sessionProvider.getGnmiSession().get(getRequest).get();
         LOG.info("Received get response:\n{}", getResponse);
-        Assert.assertEquals(1, getResponse.getNotificationCount());
-        Assert.assertEquals(0, getResponse.getNotification(0).getDeleteCount());
-        Assert.assertEquals(1, getResponse.getNotification(0).getUpdateCount());
+        assertEquals(1, getResponse.getNotificationCount());
+        assertEquals(0, getResponse.getNotification(0).getDeleteCount());
+        assertEquals(1, getResponse.getNotification(0).getUpdateCount());
         JSONAssert.assertEquals(getEthernetExpectedResponse(),
                 getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8(), false);
     }
@@ -142,20 +143,21 @@ public class SimulatorCrudTest {
         Gnmi.GetResponse getResponse = sessionProvider.getGnmiSession().get(getRequest).get();
         LOG.info("Received get response:\n{}", getResponse);
 
+        // construct simple json
+        assertEquals(1, getResponse.getNotificationCount());
+        assertEquals(0, getResponse.getNotification(0).getDeleteCount());
+        assertEquals(1, getResponse.getNotification(0).getUpdateCount());
+
+        // Get mtu from config file
         final String originalInterfacesJson = TestUtils
                 .readFile(INITIAL_DATA_PATH + "/config.json");
-        JsonElement jsonElement = new JsonParser().parse(originalInterfacesJson).getAsJsonObject()
+        final JsonElement jsonElement = new JsonParser().parse(originalInterfacesJson).getAsJsonObject()
                 .get(OPENCONFIG_INTERFACES);
-        // Get mtu from config file
-        int expectedOriginalMtu = jsonElement.getAsJsonObject().getAsJsonArray(OPENCONFIG_INTERFACE)
+        final int expectedOriginalMtu = jsonElement.getAsJsonObject().getAsJsonArray(OPENCONFIG_INTERFACE)
                 .get(0)
                 .getAsJsonObject()
                 .getAsJsonObject("config")
                 .getAsJsonPrimitive("mtu").getAsInt();
-        // construct simple json
-        Assert.assertEquals(1, getResponse.getNotificationCount());
-        Assert.assertEquals(0, getResponse.getNotification(0).getDeleteCount());
-        Assert.assertEquals(1, getResponse.getNotification(0).getUpdateCount());
         final String expectedOriginalMtuJson = "{\"mtu\": " + expectedOriginalMtu + "}";
         JSONAssert.assertEquals(expectedOriginalMtuJson,
                 getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8(), false);
@@ -174,17 +176,17 @@ public class SimulatorCrudTest {
         LOG.info("Sending set request:\n{}", setRequest);
         Gnmi.SetResponse setResponse = sessionProvider.getGnmiSession().set(setRequest).get();
         LOG.info("Received set response:\n{}", setResponse);
-        Assert.assertEquals(1, setResponse.getResponseCount());
-        Assert.assertEquals(Gnmi.UpdateResult.Operation.UPDATE, setResponse.getResponse(0).getOp());
+        assertEquals(1, setResponse.getResponseCount());
+        assertEquals(Gnmi.UpdateResult.Operation.UPDATE, setResponse.getResponse(0).getOp());
 
         // Get mtu, should be UPDATE_MTU_VAL
         LOG.info("Sending get request:\n{}", getRequest);
         getResponse = sessionProvider.getGnmiSession().get(getRequest).get();
         LOG.info("Received get response:\n{}", getResponse);
 
-        Assert.assertEquals(1, getResponse.getNotificationCount());
-        Assert.assertEquals(0, getResponse.getNotification(0).getDeleteCount());
-        Assert.assertEquals(1, getResponse.getNotification(0).getUpdateCount());
+        assertEquals(1, getResponse.getNotificationCount());
+        assertEquals(0, getResponse.getNotification(0).getDeleteCount());
+        assertEquals(1, getResponse.getNotification(0).getUpdateCount());
         final String expectedChangedMtuJson = "{\"mtu\": " + UPDATE_MTU_VAL + "}";
         JSONAssert.assertEquals(expectedChangedMtuJson,
                 getResponse.getNotification(0).getUpdate(0).getVal().getJsonIetfVal().toStringUtf8(), false);
@@ -197,13 +199,13 @@ public class SimulatorCrudTest {
         LOG.info("Sending delete request:\n{}", setRequest);
         setResponse = sessionProvider.getGnmiSession().set(setRequest).get();
         LOG.info("Received delete response:\n{}", setResponse);
-        Assert.assertEquals(1, setResponse.getResponseCount());
-        Assert.assertEquals(Gnmi.UpdateResult.Operation.DELETE, setResponse.getResponse(0).getOp());
+        assertEquals(1, setResponse.getResponseCount());
+        assertEquals(Gnmi.UpdateResult.Operation.DELETE, setResponse.getResponse(0).getOp());
 
         // Get mtu, should throw exception
         LOG.info("Sending get request:\n{}", getRequest);
 
-        Assert.assertThrows(ExecutionException.class, () -> sessionProvider.getGnmiSession().get(getRequest).get());
+        assertThrows(ExecutionException.class, () -> sessionProvider.getGnmiSession().get(getRequest).get());
 
     }
 
@@ -283,13 +285,13 @@ public class SimulatorCrudTest {
         LOG.info("Sending delete request:\n{}", setRequest);
         setResponse = sessionProvider.getGnmiSession().set(setRequest).get();
         LOG.info("Received delete response:\n{}", setResponse);
-        Assert.assertEquals(1, setResponse.getResponseCount());
-        Assert.assertEquals(Gnmi.UpdateResult.Operation.DELETE, setResponse.getResponse(0).getOp());
+        assertEquals(1, setResponse.getResponseCount());
+        assertEquals(Gnmi.UpdateResult.Operation.DELETE, setResponse.getResponse(0).getOp());
 
         //Get interfaces, should throw exception
         LOG.info("Sending get request:\n{}", getRequest);
 
-        Assert.assertThrows(ExecutionException.class, () -> sessionProvider.getGnmiSession().get(getRequest).get());
+        assertThrows(ExecutionException.class, () -> sessionProvider.getGnmiSession().get(getRequest).get());
     }
 
     @Test
@@ -340,7 +342,7 @@ public class SimulatorCrudTest {
                 .getAsJsonObject("config")
                 .getAsJsonPrimitive("enable-flow-control");
 
-        final String expectedOriginalFlowControl = "{\"enable-flow-control\": "
+        final String expectedOriginalFlowControl = "{\"openconfig-if-ethernet:enable-flow-control\": "
                 + originalJsonValue.getAsBoolean() + "}";
         JSONAssert.assertEquals(expectedOriginalFlowControl, responseJson, false);
 
@@ -369,7 +371,7 @@ public class SimulatorCrudTest {
                 .getJsonIetfVal()
                 .toStringUtf8();
 
-        final String expectedUpdatedFlowControl = "{\"enable-flow-control\": "
+        final String expectedUpdatedFlowControl = "{\"openconfig-if-ethernet:enable-flow-control\": "
                 + !originalJsonValue.getAsBoolean() + "}";
         JSONAssert.assertEquals(expectedUpdatedFlowControl, responseJson, false);
         // Delete interfaces
@@ -380,13 +382,13 @@ public class SimulatorCrudTest {
         LOG.info("Sending delete request:\n{}", setRequest);
         setResponse = sessionProvider.getGnmiSession().set(setRequest).get();
         LOG.info("Received delete response:\n{}", setResponse);
-        Assert.assertEquals(1, setResponse.getResponseCount());
-        Assert.assertEquals(Gnmi.UpdateResult.Operation.DELETE, setResponse.getResponse(0).getOp());
+        assertEquals(1, setResponse.getResponseCount());
+        assertEquals(Gnmi.UpdateResult.Operation.DELETE, setResponse.getResponse(0).getOp());
 
         //Get interfaces, should throw exception
         LOG.info("Sending get request:\n{}", getRequest);
 
-        Assert.assertThrows(ExecutionException.class, () -> sessionProvider.getGnmiSession().get(getRequest).get());
+        assertThrows(ExecutionException.class, () -> sessionProvider.getGnmiSession().get(getRequest).get());
     }
 
 
@@ -480,13 +482,13 @@ public class SimulatorCrudTest {
         LOG.info("Sending delete request:\n{}", setRequest);
         setResponse = sessionProvider.getGnmiSession().set(setRequest).get();
         LOG.info("Received delete response:\n{}", setResponse);
-        Assert.assertEquals(1, setResponse.getResponseCount());
-        Assert.assertEquals(Gnmi.UpdateResult.Operation.DELETE, setResponse.getResponse(0).getOp());
+        assertEquals(1, setResponse.getResponseCount());
+        assertEquals(Gnmi.UpdateResult.Operation.DELETE, setResponse.getResponse(0).getOp());
 
         //Get interfaces, should throw exception
         LOG.info("Sending get request:\n{}", getRequest);
 
-        Assert.assertThrows(ExecutionException.class, () -> sessionProvider.getGnmiSession().get(getRequest).get());
+        assertThrows(ExecutionException.class, () -> sessionProvider.getGnmiSession().get(getRequest).get());
     }
 
 
@@ -545,9 +547,9 @@ public class SimulatorCrudTest {
         final Gnmi.CapabilityResponse capabilityResponse = capabilityFuture.get();
         LOG.info("Received capabilities response:\n{}", capabilityResponse);
 
-        Assert.assertFalse(capabilityResponse.getSupportedEncodingsList().isEmpty());
-        Assert.assertFalse(capabilityResponse.getSupportedModelsList().isEmpty());
-        Assert.assertFalse(capabilityResponse.getGNMIVersion().isEmpty());
+        assertFalse(capabilityResponse.getSupportedEncodingsList().isEmpty());
+        assertFalse(capabilityResponse.getSupportedModelsList().isEmpty());
+        assertFalse(capabilityResponse.getGNMIVersion().isEmpty());
     }
 
     private static String getEthernetExpectedResponse() {
