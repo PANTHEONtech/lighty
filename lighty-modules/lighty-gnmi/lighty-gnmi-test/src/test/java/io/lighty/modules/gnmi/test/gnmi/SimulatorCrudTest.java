@@ -342,7 +342,7 @@ public class SimulatorCrudTest {
                 .getAsJsonObject("config")
                 .getAsJsonPrimitive("enable-flow-control");
 
-        final String expectedOriginalFlowControl = "{\"openconfig-if-ethernet:enable-flow-control\": "
+        final String expectedOriginalFlowControl = "{\"enable-flow-control\": "
                 + originalJsonValue.getAsBoolean() + "}";
         JSONAssert.assertEquals(expectedOriginalFlowControl, responseJson, false);
 
@@ -371,7 +371,7 @@ public class SimulatorCrudTest {
                 .getJsonIetfVal()
                 .toStringUtf8();
 
-        final String expectedUpdatedFlowControl = "{\"openconfig-if-ethernet:enable-flow-control\": "
+        final String expectedUpdatedFlowControl = "{\"enable-flow-control\": "
                 + !originalJsonValue.getAsBoolean() + "}";
         JSONAssert.assertEquals(expectedUpdatedFlowControl, responseJson, false);
         // Delete interfaces
