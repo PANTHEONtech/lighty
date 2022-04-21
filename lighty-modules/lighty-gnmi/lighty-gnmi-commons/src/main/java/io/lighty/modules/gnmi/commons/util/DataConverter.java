@@ -14,6 +14,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
@@ -34,11 +35,13 @@ import org.opendaylight.yangtools.yang.data.codec.gson.JSONNormalizedNodeStreamW
 import org.opendaylight.yangtools.yang.data.codec.gson.JsonParserStream;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
+import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
+import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack.Inference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,26 +57,25 @@ public final class DataConverter {
                                                        @NonNull final EffectiveModelContext context) {
         final JSONCodecFactory jsonCodecFactory = JSONCodecFactorySupplier.RFC7951.createSimple(context);
         if (isListEntry(data)) {
-            return createJsonWithNestedWriter(toStack(identifier, context), data, jsonCodecFactory);
+            return createJsonWithNestedWriter(toInference(identifier, context), data, jsonCodecFactory);
         } else {
-            return createJsonWithExclusiveWriter(getParentStack(toStack(identifier, context)), data, jsonCodecFactory);
+            return createJsonWithExclusiveWriter(toParentInference(identifier, context), data, jsonCodecFactory);
         }
     }
 
     public static NormalizedNode nodeFromJsonString(@NonNull final YangInstanceIdentifier yangInstanceIdentifier,
                                                     @NonNull final String inputJson,
                                                     @NonNull final EffectiveModelContext context) {
-        return fromJson(inputJson, getParentStack(toStack(yangInstanceIdentifier, context)));
+        return fromJson(inputJson, toParentInference(yangInstanceIdentifier, context));
     }
 
-    private static String createJsonWithExclusiveWriter(final SchemaInferenceStack stack, final NormalizedNode data,
+    private static String createJsonWithExclusiveWriter(final Inference inference, final NormalizedNode data,
                                                         final JSONCodecFactory jsonCodecFactory) {
         final Writer writer = new StringWriter();
         final JsonWriter jsonWriter = new JsonWriter(writer);
-        final XMLNamespace namespace = stack.isEmpty() ? null
-                : stack.currentModule().localQNameModule().getNamespace();
+        final XMLNamespace namespace = data.getIdentifier().getNodeType().getNamespace();
         final NormalizedNodeStreamWriter nodeWriter = JSONNormalizedNodeStreamWriter
-                .createExclusiveWriter(jsonCodecFactory, stack.toInference(), namespace, jsonWriter);
+                .createExclusiveWriter(jsonCodecFactory, inference, namespace, jsonWriter);
         final NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(nodeWriter);
         try {
             normalizedNodeWriter.write(data);
@@ -86,14 +88,13 @@ public final class DataConverter {
         return writer.toString();
     }
 
-    private static String createJsonWithNestedWriter(final SchemaInferenceStack stack, final NormalizedNode data,
+    private static String createJsonWithNestedWriter(final Inference inference, final NormalizedNode data,
                                                      final JSONCodecFactory jsonCodecFactory) {
         final Writer writer = new StringWriter();
         final JsonWriter jsonWriter = new JsonWriter(writer);
-        final XMLNamespace namespace = stack.isEmpty() ? null
-                : stack.currentModule().localQNameModule().getNamespace();
+        final XMLNamespace namespace = data.getIdentifier().getNodeType().getNamespace();
         final NormalizedNodeStreamWriter nodeWriter = JSONNormalizedNodeStreamWriter
-                .createNestedWriter(jsonCodecFactory, stack.toInference(), namespace, jsonWriter);
+                .createNestedWriter(jsonCodecFactory, inference, namespace, jsonWriter);
         final NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(nodeWriter);
         try {
             normalizedNodeWriter.write(data);
@@ -116,7 +117,7 @@ public final class DataConverter {
         }
     }
 
-    private static NormalizedNode fromJson(final String inputJson, final SchemaInferenceStack stack) {
+    private static NormalizedNode fromJson(final String inputJson, final Inference inference) {
         /*
          Write result into container builder with identifier (netconf:base)data. Makes possible to write multiple
           top level elements.
@@ -127,10 +128,10 @@ public final class DataConverter {
 
         final NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(resultBuilder);
         final JSONCodecFactory jsonCodecFactory =
-                JSONCodecFactorySupplier.RFC7951.createLazy(stack.getEffectiveModelContext());
+                JSONCodecFactorySupplier.RFC7951.createLazy(inference.getEffectiveModelContext());
 
         try (JsonParserStream jsonParser = JsonParserStream.create(streamWriter,
-                jsonCodecFactory, stack.toInference())) {
+                jsonCodecFactory, inference)) {
             final JsonReader reader = new JsonReader(new StringReader(inputJson));
             jsonParser.parse(reader);
         /*
@@ -146,21 +147,23 @@ public final class DataConverter {
         }
     }
 
-    private static SchemaInferenceStack getParentStack(final SchemaInferenceStack stack) {
+    private static Inference toParentInference(final YangInstanceIdentifier path, final EffectiveModelContext ctx) {
+        final SchemaInferenceStack stack = DataSchemaContextTree.from(ctx)
+                .enterPath(Objects.requireNonNull(path))
+                .orElseThrow()
+                .stack();
         if (!stack.isEmpty()) {
             stack.exit();
         }
-        return stack;
+        return stack.toInference();
     }
 
-    private static SchemaInferenceStack toStack(final YangInstanceIdentifier path,
-                                                final EffectiveModelContext ctx) {
-        final var stack = SchemaInferenceStack.of(ctx);
-        path.getPathArguments().stream()
-                .filter(arg -> !(arg instanceof YangInstanceIdentifier.NodeIdentifierWithPredicates))
-                .filter(arg -> !(arg instanceof YangInstanceIdentifier.AugmentationIdentifier))
-                .forEach(p -> stack.enterSchemaTree(p.getNodeType()));
-        return stack;
+    private static Inference toInference(final YangInstanceIdentifier path, final EffectiveModelContext ctx) {
+        return DataSchemaContextTree.from(ctx)
+                .enterPath(Objects.requireNonNull(path))
+                .orElseThrow()
+                .stack()
+                .toInference();
     }
 
     /**

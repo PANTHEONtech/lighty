@@ -11,13 +11,13 @@ import io.lighty.codecs.util.exception.DeserializationException;
 import io.lighty.codecs.util.exception.SerializationException;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.Optional;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
+import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack.Inference;
 
 /**
  * This interface may be useful when (de)serializing {@link NormalizedNode}s (from)into its XML or
@@ -28,7 +28,8 @@ public interface NodeConverter {
 
     default Writer serializeData(SchemaNodeIdentifier.Absolute schemaNodeIdentifier, NormalizedNode normalizedNode)
             throws SerializationException {
-        return serializeData(SchemaInferenceStack.of(getModelContext(), schemaNodeIdentifier), normalizedNode);
+        final Inference inference = SchemaInferenceStack.of(getModelContext(), schemaNodeIdentifier).toInference();
+        return serializeData(inference, normalizedNode);
     }
 
     default Writer serializeData(NormalizedNode normalizedNode, QName... schemaIdentifierPath)
@@ -37,19 +38,16 @@ public interface NodeConverter {
     }
 
     default Writer serializeData(NormalizedNode normalizedNode) throws SerializationException {
-        return serializeData(SchemaInferenceStack.of(getModelContext()), normalizedNode);
+        return serializeData(SchemaInferenceStack.of(getModelContext()).toInference(), normalizedNode);
     }
 
     default Writer serializeData(YangInstanceIdentifier yangInstanceIdentifier, NormalizedNode normalizedNode)
             throws SerializationException {
-        final Optional<SchemaNodeIdentifier.Absolute> schemaNodeIdentifier = ConverterUtils.toSchemaNodeIdentifier(
-                yangInstanceIdentifier);
-        return schemaNodeIdentifier.isPresent()
-                ? serializeData(schemaNodeIdentifier.get(), normalizedNode)
-                : serializeData(normalizedNode);
+        final Inference inference = ConverterUtils.toInference(yangInstanceIdentifier, getModelContext());
+        return serializeData(inference, normalizedNode);
     }
 
-    Writer serializeData(SchemaInferenceStack schemaInferenceStack, NormalizedNode normalizedNode)
+    Writer serializeData(Inference inference, NormalizedNode normalizedNode)
             throws SerializationException;
 
     default Writer serializeRpc(NormalizedNode normalizedNode, QName... schemaIdentifierPath)
@@ -59,27 +57,25 @@ public interface NodeConverter {
 
     default Writer serializeRpc(SchemaNodeIdentifier.Absolute schemaNodeIdentifier, NormalizedNode normalizedNode)
             throws SerializationException {
-        return serializeRpc(SchemaInferenceStack.of(getModelContext(), schemaNodeIdentifier), normalizedNode);
+        final Inference inference = SchemaInferenceStack.of(getModelContext(), schemaNodeIdentifier).toInference();
+        return serializeRpc(inference, normalizedNode);
     }
 
     default Writer serializeRpc(YangInstanceIdentifier yangInstanceIdentifier, NormalizedNode normalizedNode)
             throws SerializationException {
-        final Optional<SchemaNodeIdentifier.Absolute> schemaNodeIdentifier = ConverterUtils.toSchemaNodeIdentifier(
-                yangInstanceIdentifier);
-        return schemaNodeIdentifier.isPresent()
-                ? serializeRpc(schemaNodeIdentifier.get(), normalizedNode)
-                : serializeRpc(normalizedNode);
+        final Inference inference = ConverterUtils.toInference(yangInstanceIdentifier, getModelContext());
+        return serializeRpc(inference, normalizedNode);
     }
 
     /**
      * Serializes the input/output {@link NormalizedNode} of a RPC into its string representation.
      *
-     * @param schemaInferenceStack inference stack of input/output container of the RPC
+     * @param inference      {@link Inference} of input/output container of the RPC
      * @param normalizedNode normalized nodes to be serialized
      * @return string representation of the given nodes starting with input or output tag
      * @throws SerializationException thrown in case serialization fails.
      */
-    Writer serializeRpc(SchemaInferenceStack schemaInferenceStack, NormalizedNode normalizedNode)
+    Writer serializeRpc(Inference inference, NormalizedNode normalizedNode)
             throws SerializationException;
 
     default NormalizedNode deserialize(Reader inputData, QName... schemaIdentifierPath)
@@ -89,23 +85,20 @@ public interface NodeConverter {
 
     default NormalizedNode deserialize(SchemaNodeIdentifier.Absolute schemaNodeIdentifier, Reader inputData)
             throws DeserializationException {
-        return deserialize(SchemaInferenceStack.of(getModelContext(), schemaNodeIdentifier), inputData);
+        return deserialize(SchemaInferenceStack.of(getModelContext(), schemaNodeIdentifier).toInference(), inputData);
     }
 
     default NormalizedNode deserialize(Reader inputData) throws DeserializationException {
-        return deserialize(SchemaInferenceStack.of(getModelContext()), inputData);
+        return deserialize(SchemaInferenceStack.of(getModelContext()).toInference(), inputData);
     }
 
     default NormalizedNode deserialize(YangInstanceIdentifier yangInstanceIdentifier, Reader inputData)
             throws DeserializationException {
-        final Optional<SchemaNodeIdentifier.Absolute> schemaNodeIdentifier = ConverterUtils.toSchemaNodeIdentifier(
-                yangInstanceIdentifier);
-        return schemaNodeIdentifier.isPresent()
-                ? deserialize(schemaNodeIdentifier.get(), inputData)
-                : deserialize(inputData);
+        final Inference inference = ConverterUtils.toInference(yangInstanceIdentifier, getModelContext());
+        return deserialize(inference, inputData);
     }
 
-    NormalizedNode deserialize(SchemaInferenceStack schemaInferenceStack, Reader inputData)
+    NormalizedNode deserialize(Inference inference, Reader inputData)
             throws DeserializationException;
 
     EffectiveModelContext getModelContext();

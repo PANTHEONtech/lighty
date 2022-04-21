@@ -29,7 +29,7 @@ import org.opendaylight.yangtools.yang.data.codec.gson.JsonParserStream;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
+import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack.Inference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,28 +82,26 @@ public class JsonNodeConverter implements NodeConverter {
     /**
      * Serializes the given {@link NormalizedNode} into its {@link Writer} representation.
      *
-     * @param schemaInferenceStack schema inference stack pointing to normalizedNode's parent
+     * @param inference      {@link Inference} pointing to normalizedNode's parent
      * @param normalizedNode normalized node to serialize
      * @return {@link Writer}
      * @throws SerializationException if something goes wrong with serialization
      */
     @Override
     @SuppressWarnings({"checkstyle:illegalCatch"})
-    public Writer serializeData(final SchemaInferenceStack schemaInferenceStack,
+    public Writer serializeData(final Inference inference,
             final NormalizedNode normalizedNode) throws SerializationException {
         final Writer writer = new StringWriter();
-        final XMLNamespace initialNamespace = schemaInferenceStack.isEmpty()
-                ? normalizedNode.getIdentifier().getNodeType().getNamespace()
-                : schemaInferenceStack.currentModule().localQNameModule().getNamespace();
+        final XMLNamespace initialNamespace = normalizedNode.getIdentifier().getNodeType().getNamespace();
         // nnStreamWriter closes underlying JsonWriter, we don't need too
         final JsonWriter jsonWriter = new JsonWriter(writer);
         // Exclusive nnWriter closes underlying NormalizedNodeStreamWriter, we don't need too
         final boolean useNested = normalizedNode instanceof MapEntryNode;
         final NormalizedNodeStreamWriter nnStreamWriter = useNested
                 ? JSONNormalizedNodeStreamWriter.createNestedWriter(
-                        this.jsonCodecFactory, schemaInferenceStack.toInference(), initialNamespace, jsonWriter)
+                        this.jsonCodecFactory, inference, initialNamespace, jsonWriter)
                 : JSONNormalizedNodeStreamWriter.createExclusiveWriter(
-                        this.jsonCodecFactory, schemaInferenceStack.toInference(), initialNamespace, jsonWriter);
+                        this.jsonCodecFactory, inference, initialNamespace, jsonWriter);
 
         try (NormalizedNodeWriter nnWriter = NormalizedNodeWriter.forStreamWriter(nnStreamWriter)) {
             nnWriter.write(normalizedNode);
@@ -123,19 +121,19 @@ public class JsonNodeConverter implements NodeConverter {
 
     @Override
     @SuppressWarnings({"checkstyle:illegalCatch"})
-    public Writer serializeRpc(final SchemaInferenceStack schemaInferenceStack,
+    public Writer serializeRpc(final Inference inference,
             final NormalizedNode normalizedNode) throws SerializationException {
         Preconditions.checkState(normalizedNode instanceof ContainerNode,
                 "RPC input/output to serialize is expected to be a ContainerNode");
-        final XMLNamespace namespace = schemaInferenceStack.currentModule().localQNameModule().getNamespace();
+        final XMLNamespace namespace = normalizedNode.getIdentifier().getNodeType().getNamespace();
         // Input/output
-        final String localName = schemaInferenceStack.toSchemaNodeIdentifier().lastNodeIdentifier().getLocalName();
+        final String localName = normalizedNode.getIdentifier().getNodeType().getLocalName();
         final Writer writer = new StringWriter();
         // nnStreamWriter closes underlying JsonWriter, we don't need too
         final JsonWriter jsonWriter = new JsonWriter(writer);
         // nnWriter closes underlying NormalizedNodeStreamWriter, we don't need too
         final NormalizedNodeStreamWriter nnStreamWriter = JSONNormalizedNodeStreamWriter.createExclusiveWriter(
-                this.jsonCodecFactory, schemaInferenceStack.toInference(), namespace, jsonWriter);
+                this.jsonCodecFactory, inference, namespace, jsonWriter);
         try (NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(nnStreamWriter)) {
             jsonWriter.beginObject().name(localName);
             for (NormalizedNode child : ((ContainerNode) normalizedNode).body()) {
@@ -150,20 +148,20 @@ public class JsonNodeConverter implements NodeConverter {
 
     /**
      * Deserializes a given JSON input data into {@link NormalizedNode}.
-     * @param schemaInferenceStack schema inference stack pointing to a parent of the node to deserialize
+     *
+     * @param inference {@link Inference} pointing to a parent of the node to deserialize
      * @param inputData Reader containing input JSON data describing node to deserialize
      * @return deserialized {@link NormalizedNode}
      * @throws DeserializationException is thrown in case of an error during deserialization
      */
     @Override
     @SuppressWarnings({"checkstyle:illegalCatch"})
-    public NormalizedNode deserialize(final SchemaInferenceStack schemaInferenceStack,
+    public NormalizedNode deserialize(final Inference inference,
             final Reader inputData) throws DeserializationException {
         final NormalizedNodeResult result = new NormalizedNodeResult();
         try (JsonReader reader = new JsonReader(inputData);
              NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
-             JsonParserStream jsonParser = JsonParserStream.create(streamWriter, this.jsonCodecFactory,
-                     schemaInferenceStack.toInference())) {
+             JsonParserStream jsonParser = JsonParserStream.create(streamWriter, this.jsonCodecFactory, inference)) {
             jsonParser.parse(reader);
             return result.getResult();
         } catch (RuntimeException | IOException e) {

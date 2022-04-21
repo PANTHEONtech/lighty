@@ -32,7 +32,7 @@ import org.opendaylight.yangtools.yang.data.codec.xml.XmlParserStream;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
+import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack.Inference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -71,14 +71,14 @@ public class XmlNodeConverter implements NodeConverter {
     /**
      * Serializes the given {@link NormalizedNode} into its {@link Writer} representation.
      *
-     * @param schemaInferenceStack schema inference stack pointing to normalizedNode's parent
-     * @param normalizedNode       normalized node to serialize
+     * @param inference      {@link Inference} pointing to normalizedNode's parent
+     * @param normalizedNode normalized node to serialize
      * @return {@link Writer}
      * @throws SerializationException if something goes wrong with serialization
      */
     @Override
     @SuppressWarnings({"checkstyle:illegalCatch"})
-    public Writer serializeData(final SchemaInferenceStack schemaInferenceStack,
+    public Writer serializeData(final Inference inference,
             final NormalizedNode normalizedNode) throws SerializationException {
         final Writer writer = new StringWriter();
         XMLStreamWriter xmlStreamWriter;
@@ -88,7 +88,7 @@ public class XmlNodeConverter implements NodeConverter {
             throw new SerializationException(e);
         }
         final NormalizedNodeStreamWriter nnStreamWriter = XMLStreamNormalizedNodeStreamWriter
-                .create(xmlStreamWriter, schemaInferenceStack.toInference());
+                .create(xmlStreamWriter, inference);
         try (NormalizedNodeWriter nnWriter = NormalizedNodeWriter.forStreamWriter(nnStreamWriter)) {
             nnWriter.write(normalizedNode);
             return writer;
@@ -99,7 +99,7 @@ public class XmlNodeConverter implements NodeConverter {
 
     @Override
     @SuppressWarnings({"checkstyle:illegalCatch"})
-    public Writer serializeRpc(final SchemaInferenceStack schemaInferenceStack, final NormalizedNode normalizedNode)
+    public Writer serializeRpc(final Inference inference, final NormalizedNode normalizedNode)
             throws SerializationException {
         Preconditions.checkState(normalizedNode instanceof ContainerNode,
                 "RPC input/output to serialize is expected to be a ContainerNode");
@@ -110,11 +110,11 @@ public class XmlNodeConverter implements NodeConverter {
         } catch (XMLStreamException | FactoryConfigurationError e) {
             throw new SerializationException(e);
         }
-        final XMLNamespace namespace = schemaInferenceStack.currentModule().localQNameModule().getNamespace();
+        final XMLNamespace namespace = normalizedNode.getIdentifier().getNodeType().getNamespace();
         // Input/output
-        final String localName = schemaInferenceStack.toSchemaNodeIdentifier().lastNodeIdentifier().getLocalName();
+        final String localName = normalizedNode.getIdentifier().getNodeType().getLocalName();
         final NormalizedNodeStreamWriter nnStreamWriter = XMLStreamNormalizedNodeStreamWriter
-                .create(xmlStreamWriter, schemaInferenceStack.toInference());
+                .create(xmlStreamWriter, inference);
         try (NormalizedNodeWriter nnWriter = NormalizedNodeWriter.forStreamWriter(nnStreamWriter)) {
             xmlStreamWriter.writeStartElement(XMLConstants.DEFAULT_NS_PREFIX, localName, namespace.toString());
             xmlStreamWriter.writeDefaultNamespace(namespace.toString());
@@ -135,15 +135,15 @@ public class XmlNodeConverter implements NodeConverter {
      * In the case of deserializing multiple top level list entries, entries are expected to be wrapped in
      * {@code <data xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">}.
      *
-     * @param schemaInferenceStack schema inference stack pointing to a node we are trying to deserialize
-     * @param inputData            Reader containing input JSON data describing node to deserialize
+     * @param inference {@link Inference} pointing to a node we are trying to deserialize
+     * @param inputData Reader containing input JSON data describing node to deserialize
      * @return deserialized {@link NormalizedNode}
      * @throws DeserializationException is thrown in case of an error during deserialization
      */
     @Override
     @SuppressWarnings({"checkstyle:illegalCatch"})
-    public NormalizedNode deserialize(final SchemaInferenceStack schemaInferenceStack,
-            final Reader inputData) throws DeserializationException {
+    public NormalizedNode deserialize(final Inference inference, final Reader inputData)
+            throws DeserializationException {
         final XMLStreamReader reader;
         try {
             reader = XML_IN_FACTORY.createXMLStreamReader(inputData);
@@ -153,7 +153,7 @@ public class XmlNodeConverter implements NodeConverter {
 
         final NormalizedNodeResult result = new NormalizedNodeResult();
         final NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
-        try (XmlParserStream xmlParser = XmlParserStream.create(streamWriter, schemaInferenceStack.toInference())) {
+        try (XmlParserStream xmlParser = XmlParserStream.create(streamWriter, inference)) {
             xmlParser.parse(reader);
             return result.getResult();
         } catch (RuntimeException | XMLStreamException | URISyntaxException | SAXException | IOException e) {

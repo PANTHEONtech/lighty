@@ -11,6 +11,7 @@ import com.google.common.base.Strings;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
@@ -26,7 +27,7 @@ import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
-import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier;
+import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack.Inference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -223,19 +224,19 @@ public final class ConverterUtils {
     }
 
     /**
-     * Converts provided {@link YangInstanceIdentifier} to {@link SchemaNodeIdentifier.Absolute}.
+     * Converts provided {@link YangInstanceIdentifier} to {@link Inference}.
      *
      * @param yangInstanceIdentifier yang instance identifier
-     * @return optional of converted {@link SchemaNodeIdentifier.Absolute}, empty if provided
-     *         {@link YangInstanceIdentifier} is empty
+     * @param effectiveModelContext current model context
+     * @return {@link Inference}
      */
-    public static Optional<SchemaNodeIdentifier.Absolute> toSchemaNodeIdentifier(
-            final YangInstanceIdentifier yangInstanceIdentifier) {
-        final List<QName> filtered = yangInstanceIdentifier.getPathArguments().stream()
-                .filter(pa -> !(pa instanceof YangInstanceIdentifier.AugmentationIdentifier)
-                        && !(pa instanceof YangInstanceIdentifier.NodeIdentifierWithPredicates))
-                .map(YangInstanceIdentifier.PathArgument::getNodeType).collect(Collectors.toList());
-        return filtered.isEmpty() ? Optional.empty() : Optional.of(SchemaNodeIdentifier.Absolute.of(filtered));
+    public static Inference toInference(final YangInstanceIdentifier yangInstanceIdentifier,
+            final EffectiveModelContext effectiveModelContext) {
+        return DataSchemaContextTree.from(effectiveModelContext)
+                .enterPath(Objects.requireNonNull(yangInstanceIdentifier))
+                .orElseThrow()
+                .stack()
+                .toInference();
     }
 
     /**
