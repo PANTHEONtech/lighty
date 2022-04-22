@@ -24,6 +24,7 @@ import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.TopLevelContainer;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.container.group.SampleContainer;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 
 public class XmlNodeConverterTest extends AbstractCodecTest {
@@ -36,15 +37,15 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
 
     @Test
     public void testSerializeRpcLeafInput() throws SerializationException {
-        final Writer serializedRpc = bindingSerializer.serializeRpc(rpcLeafInputNode,
-                LEAF_RPC_QNAME, SimpleInputOutputRpcInput.QNAME);
+        final Writer serializedRpc = bindingSerializer.serializeRpc(Absolute.of(LEAF_RPC_QNAME,
+                SimpleInputOutputRpcInput.QNAME), rpcLeafInputNode);
         assertValidXML(serializedRpc.toString());
     }
 
     @Test
     public void testSerializeRpcLeafOutput() throws SerializationException {
-        final Writer serializedRpc = bindingSerializer.serializeRpc(rpcLeafOutputNode,
-                LEAF_RPC_QNAME, SimpleInputOutputRpcOutput.QNAME);
+        final Writer serializedRpc = bindingSerializer.serializeRpc(Absolute.of(LEAF_RPC_QNAME,
+                SimpleInputOutputRpcOutput.QNAME), rpcLeafOutputNode);
         assertValidXML(serializedRpc.toString());
     }
 
@@ -56,7 +57,8 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
 
     @Test
     public void testSerializeInnerContainer() throws SerializationException {
-        final Writer serializeData = bindingSerializer.serializeData(innerContainerNode, TopLevelContainer.QNAME);
+        final Writer serializeData = bindingSerializer.serializeData(Absolute.of(TopLevelContainer.QNAME),
+                innerContainerNode);
         assertValidXML(serializeData.toString());
     }
 
@@ -68,31 +70,28 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
 
     @Test
     public void testSerializeListEntry() throws SerializationException {
-        final Writer serializedData = bindingSerializer.serializeData(
-                listEntryNode, SampleList.QNAME);
+        final Writer serializedData = bindingSerializer.serializeData(Absolute.of(SampleList.QNAME), listEntryNode);
         assertNotNull(serializedData.toString());
     }
 
     @Test
     public void testDeserializeData() throws DeserializationException {
-        NormalizedNode deserializeData = bindingSerializer.deserialize(
-                new StringReader(loadResourceAsString("toaster-container.xml")), Toaster.QNAME);
+        NormalizedNode deserializeData = bindingSerializer.deserialize(Absolute.of(Toaster.QNAME),
+                new StringReader(loadResourceAsString("toaster-container.xml")));
         assertNotNull(deserializeData);
     }
 
     @Test
     public void testDeserializeRpcInput() throws DeserializationException {
-        final NormalizedNode deserializeRpc = bindingSerializer.deserialize(
-                new StringReader(loadResourceAsString("rpc-leaf-input.xml")), LEAF_RPC_QNAME,
-                SimpleInputOutputRpcInput.QNAME);
+        final NormalizedNode deserializeRpc = bindingSerializer.deserialize(Absolute.of(LEAF_RPC_QNAME,
+                SimpleInputOutputRpcInput.QNAME), new StringReader(loadResourceAsString("rpc-leaf-input.xml")));
         assertNotNull(deserializeRpc);
     }
 
     @Test
     public void testDeserializeRpcOutput() throws DeserializationException {
-        final NormalizedNode deserializeRpc = bindingSerializer.deserialize(
-                new StringReader(loadResourceAsString("rpc-leaf-output.xml")), LEAF_RPC_QNAME,
-                SimpleInputOutputRpcOutput.QNAME);
+        final NormalizedNode deserializeRpc = bindingSerializer.deserialize(Absolute.of(LEAF_RPC_QNAME,
+                SimpleInputOutputRpcOutput.QNAME), new StringReader(loadResourceAsString("rpc-leaf-output.xml")));
         assertNotNull(deserializeRpc);
     }
 
@@ -106,39 +105,37 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
 
     @Test
     public void testDeserializeContainerRpcInput() throws DeserializationException {
-        final NormalizedNode deserializeData = bindingSerializer.deserialize(
-                new StringReader(loadResourceAsString("rpc-container-input.xml")),
-                CONTAINER_RPC_QNAME, ContainerIoRpcInput.QNAME);
+        final NormalizedNode deserializeData = bindingSerializer.deserialize(Absolute.of(CONTAINER_RPC_QNAME,
+                ContainerIoRpcInput.QNAME), new StringReader(loadResourceAsString("rpc-container-input.xml")));
         assertNotNull(deserializeData);
     }
 
     @Test
     public void testDeserializeTopLevelContainer() throws DeserializationException {
-        final NormalizedNode result = bindingSerializer.deserialize(
-                new StringReader(loadResourceAsString("top-level-container.xml")), TopLevelContainer.QNAME);
+        final NormalizedNode result = bindingSerializer.deserialize(Absolute.of(TopLevelContainer.QNAME),
+                new StringReader(loadResourceAsString("top-level-container.xml")));
         assertNotNull(result);
     }
 
     @Test
     public void testDeserializeInnerContainer() throws DeserializationException {
-        final NormalizedNode result = bindingSerializer.deserialize(
-                new StringReader(loadResourceAsString("inner-container.xml")),
-                TopLevelContainer.QNAME, SampleContainer.QNAME);
+        final NormalizedNode result = bindingSerializer.deserialize(Absolute.of(TopLevelContainer.QNAME,
+                SampleContainer.QNAME), new StringReader(loadResourceAsString("inner-container.xml")));
         assertNotNull(result);
     }
 
     @Test
     public void testDeserializeInnerLeaf() throws DeserializationException {
-        final NormalizedNode result = bindingSerializer.deserialize(
-                new StringReader(loadResourceAsString("inner-leaf.xml")),
-                TopLevelContainer.QNAME, SampleContainer.QNAME, $YangModuleInfoImpl.qnameOf("name"));
+        final NormalizedNode result = bindingSerializer.deserialize(Absolute.of(TopLevelContainer.QNAME,
+                SampleContainer.QNAME, $YangModuleInfoImpl.qnameOf("name")),
+                new StringReader(loadResourceAsString("inner-leaf.xml")));
         assertNotNull(result);
     }
 
     @Test
     public void testDeserializeListSingleEntry() throws DeserializationException {
-        NormalizedNode result = bindingSerializer.deserialize(
-                new StringReader(loadResourceAsString("single-list-entry.xml")), SampleList.QNAME);
+        NormalizedNode result = bindingSerializer.deserialize(Absolute.of(SampleList.QNAME),
+                new StringReader(loadResourceAsString("single-list-entry.xml")));
         assertNotNull(result.toString());
     }
 
@@ -148,5 +145,4 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
                 new StringReader(loadResourceAsString("multiple-list-entries.xml")));
         assertNotNull(result.toString());
     }
-
 }

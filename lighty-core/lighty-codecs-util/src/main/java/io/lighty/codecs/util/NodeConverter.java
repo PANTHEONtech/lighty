@@ -15,7 +15,7 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack.Inference;
 
@@ -26,15 +26,23 @@ import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack.Inference
  */
 public interface NodeConverter {
 
-    default Writer serializeData(SchemaNodeIdentifier.Absolute schemaNodeIdentifier, NormalizedNode normalizedNode)
+    default Writer serializeData(Absolute schemaNodeIdentifier, NormalizedNode normalizedNode)
             throws SerializationException {
         final Inference inference = SchemaInferenceStack.of(getModelContext(), schemaNodeIdentifier).toInference();
         return serializeData(inference, normalizedNode);
     }
 
+    /**
+     * Serialize data.
+     *
+     * @deprecated This method can confuse its users. They have to realize that they have to provide all QNames
+     *     to build {@code Absolute} and/or {@code Inference}. Thus, it's better for them to have just those methods
+     *     that require {@code Absolute} and/or {@code Inference} available.
+     */
+    @Deprecated(forRemoval = true)
     default Writer serializeData(NormalizedNode normalizedNode, QName... schemaIdentifierPath)
             throws SerializationException {
-        return serializeData(SchemaNodeIdentifier.Absolute.of(schemaIdentifierPath), normalizedNode);
+        return serializeData(Absolute.of(schemaIdentifierPath), normalizedNode);
     }
 
     default Writer serializeData(NormalizedNode normalizedNode) throws SerializationException {
@@ -50,12 +58,20 @@ public interface NodeConverter {
     Writer serializeData(Inference inference, NormalizedNode normalizedNode)
             throws SerializationException;
 
+    /**
+     * Serialize RPC.
+     *
+     * @deprecated This method can confuse its users. They have to realize that they have to provide all QNames
+     *     to build {@code Absolute} and/or {@code Inference}. Thus, it's better for them to have just those methods
+     *     that require {@code Absolute} and/or {@code Inference} available.
+     */
+    @Deprecated(forRemoval = true)
     default Writer serializeRpc(NormalizedNode normalizedNode, QName... schemaIdentifierPath)
             throws SerializationException {
-        return serializeRpc(SchemaNodeIdentifier.Absolute.of(schemaIdentifierPath), normalizedNode);
+        return serializeRpc(Absolute.of(schemaIdentifierPath), normalizedNode);
     }
 
-    default Writer serializeRpc(SchemaNodeIdentifier.Absolute schemaNodeIdentifier, NormalizedNode normalizedNode)
+    default Writer serializeRpc(Absolute schemaNodeIdentifier, NormalizedNode normalizedNode)
             throws SerializationException {
         final Inference inference = SchemaInferenceStack.of(getModelContext(), schemaNodeIdentifier).toInference();
         return serializeRpc(inference, normalizedNode);
@@ -78,12 +94,20 @@ public interface NodeConverter {
     Writer serializeRpc(Inference inference, NormalizedNode normalizedNode)
             throws SerializationException;
 
+    /**
+     * Deserialize data.
+     *
+     * @deprecated This method can confuse its users. They have to realize that they have to provide all QNames
+     *     to build {@code Absolute} and/or {@code Inference}. Thus, it's better for them to have just those methods
+     *     that require {@code Absolute} and/or {@code Inference} available.
+     */
+    @Deprecated(forRemoval = true)
     default NormalizedNode deserialize(Reader inputData, QName... schemaIdentifierPath)
             throws DeserializationException {
-        return deserialize(SchemaNodeIdentifier.Absolute.of(schemaIdentifierPath), inputData);
+        return deserialize(Absolute.of(schemaIdentifierPath), inputData);
     }
 
-    default NormalizedNode deserialize(SchemaNodeIdentifier.Absolute schemaNodeIdentifier, Reader inputData)
+    default NormalizedNode deserialize(Absolute schemaNodeIdentifier, Reader inputData)
             throws DeserializationException {
         return deserialize(SchemaInferenceStack.of(getModelContext(), schemaNodeIdentifier).toInference(), inputData);
     }

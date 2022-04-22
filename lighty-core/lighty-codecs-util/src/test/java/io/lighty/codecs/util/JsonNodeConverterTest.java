@@ -20,6 +20,7 @@ import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.TopLevelContainer;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.container.group.SampleContainer;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 
 public class JsonNodeConverterTest extends AbstractCodecTest {
@@ -32,15 +33,15 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
 
     @Test
     public void testSerializeRpcLeafInput() throws SerializationException {
-        final Writer serializedRpc = bindingSerializer.serializeRpc(rpcLeafInputNode,
-                LEAF_RPC_QNAME, SimpleInputOutputRpcInput.QNAME);
+        final Writer serializedRpc = bindingSerializer.serializeRpc(Absolute.of(LEAF_RPC_QNAME,
+                SimpleInputOutputRpcInput.QNAME), rpcLeafInputNode);
         assertValidJson(serializedRpc.toString());
     }
 
     @Test
     public void testSerializeRpcLeafOutput() throws SerializationException {
-        final Writer serializedRpc = bindingSerializer.serializeRpc(rpcLeafOutputNode,
-                LEAF_RPC_QNAME, SimpleInputOutputRpcOutput.QNAME);
+        final Writer serializedRpc = bindingSerializer.serializeRpc(Absolute.of(LEAF_RPC_QNAME,
+                SimpleInputOutputRpcOutput.QNAME), rpcLeafOutputNode);
         assertValidJson(serializedRpc.toString());
     }
 
@@ -52,7 +53,8 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
 
     @Test
     public void testSerializeInnerContainer() throws SerializationException {
-        final Writer serializeData = bindingSerializer.serializeData(innerContainerNode, TopLevelContainer.QNAME);
+        final Writer serializeData = bindingSerializer.serializeData(Absolute.of(TopLevelContainer.QNAME),
+                innerContainerNode);
         assertValidJson(serializeData.toString());
     }
 
@@ -64,7 +66,7 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
 
     @Test
     public void testSerializeListEntry() throws SerializationException {
-        final Writer serializedData = bindingSerializer.serializeData(listEntryNode, SampleList.QNAME);
+        final Writer serializedData = bindingSerializer.serializeData(Absolute.of(SampleList.QNAME), listEntryNode);
         assertValidJson(serializedData.toString());
     }
 
@@ -77,22 +79,22 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
 
     @Test
     public void testDeserializeRpcInput() throws DeserializationException {
-        final NormalizedNode deserializeRpc = bindingSerializer.deserialize(
-                new StringReader(loadResourceAsString("rpc-leaf-Input.json")), LEAF_RPC_QNAME);
+        final NormalizedNode deserializeRpc = bindingSerializer.deserialize(Absolute.of(LEAF_RPC_QNAME),
+                new StringReader(loadResourceAsString("rpc-leaf-Input.json")));
         assertNotNull(deserializeRpc);
     }
 
     @Test
     public void testDeserializeRpcOutput() throws DeserializationException {
-        final NormalizedNode deserializeRpc = bindingSerializer.deserialize(
-                new StringReader(loadResourceAsString("rpc-leaf-output.json")), LEAF_RPC_QNAME);
+        final NormalizedNode deserializeRpc = bindingSerializer.deserialize(Absolute.of(LEAF_RPC_QNAME),
+                new StringReader(loadResourceAsString("rpc-leaf-output.json")));
         assertNotNull(deserializeRpc);
     }
 
     @Test
     public void testDeserializeRpcContainerInput() throws DeserializationException {
-        final NormalizedNode deserializeData = bindingSerializer.deserialize(
-                new StringReader(loadResourceAsString("rpc-container-input.json")), CONTAINER_RPC_QNAME);
+        final NormalizedNode deserializeData = bindingSerializer.deserialize(Absolute.of(CONTAINER_RPC_QNAME),
+                new StringReader(loadResourceAsString("rpc-container-input.json")));
         assertNotNull(deserializeData);
     }
 
@@ -105,16 +107,15 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
 
     @Test
     public void testDeserializeInnerContainer() throws DeserializationException {
-        final NormalizedNode deserializeContainer = bindingSerializer.deserialize(
-                new StringReader(loadResourceAsString("inner-container.json")), TopLevelContainer.QNAME);
+        final NormalizedNode deserializeContainer = bindingSerializer.deserialize(Absolute.of(TopLevelContainer.QNAME),
+                new StringReader(loadResourceAsString("inner-container.json")));
         assertNotNull(deserializeContainer);
     }
 
     @Test
     public void testDeserializeInnerLeaf() throws DeserializationException {
-        final NormalizedNode result = bindingSerializer.deserialize(
-                new StringReader(loadResourceAsString("inner-leaf.json")),
-                TopLevelContainer.QNAME, SampleContainer.QNAME);
+        final NormalizedNode result = bindingSerializer.deserialize(Absolute.of(TopLevelContainer.QNAME,
+                SampleContainer.QNAME), new StringReader(loadResourceAsString("inner-leaf.json")));
         assertNotNull(result);
     }
 
@@ -131,6 +132,4 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
                 new StringReader(loadResourceAsString("multiple-list-entries.json")));
         assertNotNull(result);
     }
-
-
 }
