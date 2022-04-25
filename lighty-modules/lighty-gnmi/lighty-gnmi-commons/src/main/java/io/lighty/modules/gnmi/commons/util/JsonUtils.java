@@ -16,7 +16,10 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 
 public final class JsonUtils {
 
@@ -28,8 +31,13 @@ public final class JsonUtils {
         return "{\"" + key + "\":" + value + "}";
     }
 
-    public static String wrapJsonWithArray(final String jsonString, final String wrapper, final Gson gson) {
-        final JsonObject innerJson = new JsonParser().parse(jsonString).getAsJsonObject();
+    public static String wrapJsonWithArray(final String jsonString, final String wrapper, final Gson gson,
+            final NodeIdentifierWithPredicates predicates) {
+        final JsonObject innerJson = JsonParser.parseString(jsonString).getAsJsonObject();
+        for (final Entry<QName, Object> key : predicates.entrySet()) {
+            innerJson.add(key.getKey().getLocalName(), gson.toJsonTree(key.getValue()));
+        }
+
         final JsonObject result = new JsonObject();
         final JsonArray array = new JsonArray();
         array.add(innerJson);

@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.schema.AugmentationNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
@@ -101,9 +102,13 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
 
                     final String wrapWith = String.format("%s:%s", moduleByQName.getName(),
                             lastName.getLocalName());
-                    responseJson = isMapEntryPath(identifier)
-                            ? JsonUtils.wrapJsonWithArray(responseJson, wrapWith, gson)
-                            : JsonUtils.wrapJsonWithObject(responseJson, wrapWith, gson);
+                    if (identifier.getLastPathArgument() instanceof NodeIdentifierWithPredicates) {
+                        final NodeIdentifierWithPredicates lastPathArgument
+                                = (NodeIdentifierWithPredicates) identifier.getLastPathArgument();
+                        responseJson = JsonUtils.wrapJsonWithArray(responseJson, wrapWith, gson, lastPathArgument);
+                    } else {
+                        responseJson = JsonUtils.wrapJsonWithObject(responseJson, wrapWith, gson);
+                    }
                 }
                 return resolveJsonResponse(identifier, responseJson);
                 /*
@@ -168,9 +173,4 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
                     inputJson), e);
         }
     }
-
-    private static boolean isMapEntryPath(final YangInstanceIdentifier yid) {
-        return yid.getLastPathArgument() instanceof YangInstanceIdentifier.NodeIdentifierWithPredicates;
-    }
-
 }
