@@ -34,6 +34,7 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
@@ -198,10 +199,13 @@ public class GnmiCrudService {
                             Iterables.getLast(identifier.getPathArguments()).getNodeType().getLocalName()), gson);
             node = DataConverter.nodeFromJsonString(identifier, json, context);
         } else {
+            final NodeIdentifierWithPredicates lastPathArgument
+                    = (NodeIdentifierWithPredicates) identifier.getLastPathArgument();
             json = JsonUtils.wrapJsonWithArray(update.getVal().getJsonIetfVal().toStringUtf8(),
                     String.format("%s:%s",
                             module.getName(),
-                            Iterables.getLast(identifier.getPathArguments()).getNodeType().getLocalName()), gson);
+                            Iterables.getLast(identifier.getPathArguments()).getNodeType().getLocalName()), gson,
+                    lastPathArgument);
             node = DataConverter.nodeFromJsonString(identifier, json, context);
             // In case of list entry, point to the list itself
             resultingIdentifier = identifier.getParent();
