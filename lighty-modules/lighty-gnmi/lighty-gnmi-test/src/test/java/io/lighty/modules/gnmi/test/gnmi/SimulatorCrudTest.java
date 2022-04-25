@@ -210,6 +210,32 @@ public class SimulatorCrudTest {
     }
 
     @Test
+    public void setContainerInsideList() throws Exception {
+        final Gnmi.Path path = Gnmi.Path.newBuilder()
+                .addElem(Gnmi.PathElem.newBuilder()
+                        .setName(OPENCONFIG_INTERFACES)
+                        .build())
+                .addElem(Gnmi.PathElem.newBuilder()
+                        .setName("interface")
+                        .putKey("name", "eth5")
+                        .build())
+                .build();
+        final Gnmi.Update update = Gnmi.Update.newBuilder()
+                .setPath(path)
+                .setVal(Gnmi.TypedValue.newBuilder()
+                        .setJsonIetfVal(ByteString.copyFromUtf8(getConfigData()))
+                        .build())
+                .build();
+        final Gnmi.SetRequest setRequest = Gnmi.SetRequest.newBuilder()
+                .addUpdate(update)
+                .build();
+        LOG.info("Sending set request:\n{}", setRequest);
+
+        final Gnmi.SetResponse setResponse = sessionProvider.getGnmiSession().set(setRequest).get();
+        assertEquals("UPDATE", setResponse.getResponse(0).getOp().toString());
+    }
+
+    @Test
     public void crudComplexValueTest() throws ExecutionException, InterruptedException, IOException, JSONException {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
@@ -569,5 +595,15 @@ public class SimulatorCrudTest {
                        + "}"
                    + "}"
                + "}";
+    }
+
+    private static String getConfigData() {
+        return "{\n"
+                + "    \"config\": {\n"
+                + "      \"name\": \"Vlan10\",\n"
+                + "      \"type\": \"iana-if-type:l2vlan\",\n"
+                + "      \"mtu\": 1550\n"
+                + "    }\n"
+                + "}";
     }
 }
