@@ -46,8 +46,7 @@ public final class DatastoreConfigurationUtils {
                 .shardBatchedModificationCount(configNode.path("shardBatchedModificationCount").asInt())
                 .shardCommitQueueExpiryTimeoutInMillis(configNode.path("shardCommitQueueExpiryTimeoutInMillis").asInt())
                 .transactionDebugContextEnabled(configNode.path("transactionDebugContextEnabled").booleanValue())
-                // TODO: Workaround for bug: https://jira.opendaylight.org/browse/CONTROLLER-2040. Revert when this will be resolved
-                .useTellBasedProtocol(configNode.path("useTellBasedProtocol").asBoolean(true))
+                .useTellBasedProtocol(configNode.path("useTellBasedProtocol").booleanValue())
                 .customRaftPolicyImplementation(NO_CUSTOM_POLICY)
                 .maximumMessageSliceSize(configNode.path("maximumMessageSliceSize").asInt())
                 .tempFileDirectory(TEMP_FILE_DIRECTORY)
@@ -65,8 +64,6 @@ public final class DatastoreConfigurationUtils {
         return DatastoreContext.newBuilder()
                 .logicalStoreType(LogicalDatastoreType.OPERATIONAL)
                 .tempFileDirectory(TEMP_FILE_DIRECTORY)
-                // TODO: Workaround for bug: https://jira.opendaylight.org/browse/CONTROLLER-2040. Remove when this will be resolved
-                .useTellBasedProtocol(true)
                 .persistent(false)
                 .build();
     }
@@ -74,8 +71,6 @@ public final class DatastoreConfigurationUtils {
     public static DatastoreContext createDefaultConfigDatastoreContext() {
         return DatastoreContext.newBuilder()
                 .logicalStoreType(LogicalDatastoreType.CONFIGURATION)
-                // TODO: Workaround for bug: https://jira.opendaylight.org/browse/CONTROLLER-2040. Remove when this will be resolved
-                .useTellBasedProtocol(true)
                 .tempFileDirectory(TEMP_FILE_DIRECTORY)
                 .build();
     }
