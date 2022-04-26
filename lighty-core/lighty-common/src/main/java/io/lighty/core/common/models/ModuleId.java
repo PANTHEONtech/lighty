@@ -22,21 +22,32 @@ import org.opendaylight.yangtools.yang.common.XMLNamespace;
  */
 public final class ModuleId {
 
+    // (Optional) Description to current element in JSON format e.g. "usedBy":"RESTCONF" or "usedBy":"NETCONF/RESTCONF"
+    private final String usedBy;
     private final XMLNamespace nameSpace;
     private final String name;
     private final Revision revision;
 
     @JsonCreator
-    public ModuleId(@JsonProperty("nameSpace") final String nameSpace, @JsonProperty("name") final String name,
-            @JsonProperty("revision") final String revision) {
+    public ModuleId(@JsonProperty("usedBy") final String usedBy, @JsonProperty("nameSpace") final String nameSpace,
+            @JsonProperty("name") final String name, @JsonProperty("revision") final String revision) {
+        this(usedBy, nameSpace, name, Revision.ofNullable(revision).orElse(null));
+    }
+
+    public ModuleId(final String nameSpace, final String name, final String revision) {
         this(nameSpace, name, Revision.ofNullable(revision).orElse(null));
     }
 
-    public ModuleId(final String nameSpace, final String name, final Revision revision) {
-        this(XMLNamespace.of(nameSpace), name, revision);
+    public ModuleId(final String usedBy, final String nameSpace, final String name, final Revision revision) {
+        this(usedBy, XMLNamespace.of(nameSpace), name, revision);
     }
 
-    public ModuleId(final XMLNamespace nameSpace, final String name, final Revision revision) {
+    public ModuleId(final String nameSpace, final String name, final Revision revision) {
+        this(null, XMLNamespace.of(nameSpace), name, revision);
+    }
+
+    public ModuleId(final String usedBy, final XMLNamespace nameSpace, final String name, final Revision revision) {
+        this.usedBy = usedBy;
         this.nameSpace = nameSpace;
         this.name = name;
         this.revision = revision;
@@ -52,6 +63,10 @@ public final class ModuleId {
 
     public XMLNamespace getNameSpace() {
         return this.nameSpace;
+    }
+
+    public String getUsedBy() {
+        return usedBy;
     }
 
     public QName getQName() {

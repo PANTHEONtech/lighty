@@ -38,8 +38,8 @@ public class YangModelUtilsTests {
 
     @DataProvider(name = "equalsTestData")
     public static Object[][] gatEqualsTestData() {
-        ModuleId moduleIdx = new ModuleId("namespace","modulex", "2018-04-23");
-        ModuleId moduleIdy = new ModuleId("namespace","modulex", "2018-04-23");
+        ModuleId moduleIdx = new ModuleId("Test","namespace","modulex", "2018-04-23");
+        ModuleId moduleIdy = new ModuleId("Test", "namespace","modulex", "2018-04-23");
         ModuleId moduleIdz = new ModuleId("namespace","modulex", "2018-04-23");
         ModuleId moduleIdw = new ModuleId("namespace","modulew", "2018-04-23");
         return new Object[][] {
@@ -72,12 +72,14 @@ public class YangModelUtilsTests {
         return new Object[][] {
             {
                 new HashSet<>(Arrays.asList(
-                    new ModuleId("urn:TBD:params:xml:ns:yang:network-topology", "network-topology", "2013-10-21"))),
+                    new ModuleId("CONTROLLER","urn:TBD:params:xml:ns:yang:network-topology", "network-topology",
+                            "2013-10-21"))),
                 new HashSet<>(Arrays.asList("network-topology", "ietf-inet-types"))
             },
             {
                 new HashSet<>(Arrays.asList(
-                    new ModuleId("urn:ietf:params:xml:ns:yang:ietf-yang-types", "ietf-yang-types", "2013-07-15"))),
+                    new ModuleId("CONTROLLER", "urn:ietf:params:xml:ns:yang:ietf-yang-types", "ietf-yang-types",
+                            "2013-07-15"))),
                 new HashSet<>(Arrays.asList("ietf-yang-types"))
             },
             {

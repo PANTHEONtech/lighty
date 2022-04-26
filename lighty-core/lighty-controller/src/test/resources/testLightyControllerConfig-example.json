@@ -65,8 +65,8 @@
     },
     "schemaServiceConfig": {
       "topLevelModels": [
-        { "nameSpace": "urn:TBD:params:xml:ns:yang:network-topology", "name": "network-topology", "revision": "2013-10-21" },
-        { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-restconf", "name": "ietf-restconf", "revision": "2013-10-19" }
+        {"name": "network-topology", "revision": "2013-10-21", "nameSpace": "urn:TBD:params:xml:ns:yang:network-topology"},
+        {"name": "ietf-restconf", "revision": "2017-01-26", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-restconf"}
       ]
     }
   }
