@@ -17,18 +17,22 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import org.opendaylight.yangtools.yang.common.XMLNamespace;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.builder.DataContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeWriter;
 import org.opendaylight.yangtools.yang.data.codec.gson.JSONCodecFactory;
 import org.opendaylight.yangtools.yang.data.codec.gson.JSONCodecFactorySupplier;
 import org.opendaylight.yangtools.yang.data.codec.gson.JSONNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.codec.gson.JsonParserStream;
+import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,13 +163,25 @@ public class JsonNodeConverter implements NodeConverter {
     @SuppressWarnings({"checkstyle:illegalCatch"})
     public NormalizedNode deserialize(final SchemaInferenceStack schemaInferenceStack,
             final Reader inputData) throws DeserializationException {
-        final NormalizedNodeResult result = new NormalizedNodeResult();
-        try (JsonReader reader = new JsonReader(inputData);
-             NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
-             JsonParserStream jsonParser = JsonParserStream.create(streamWriter, this.jsonCodecFactory,
-                     schemaInferenceStack.toInference())) {
-            jsonParser.parse(reader);
+        if (schemaInferenceStack.isEmpty()) {
+            final DataContainerNodeBuilder<NodeIdentifier, ContainerNode> resultBuilder = Builders.containerBuilder()
+                    .withNodeIdentifier(NodeIdentifier.create(SchemaContext.NAME));
+            parseToResult(ImmutableNormalizedNodeStreamWriter.from(resultBuilder), inputData, schemaInferenceStack);
+            return resultBuilder.build();
+        } else {
+            final NormalizedNodeResult result = new NormalizedNodeResult();
+            parseToResult(ImmutableNormalizedNodeStreamWriter.from(result), inputData, schemaInferenceStack);
             return result.getResult();
+        }
+    }
+
+    private void parseToResult(final NormalizedNodeStreamWriter writer, final Reader data,
+            final SchemaInferenceStack stack) throws DeserializationException {
+        try (JsonReader reader = new JsonReader(data);
+             JsonParserStream jsonParser = JsonParserStream.create(writer, this.jsonCodecFactory,
+                     stack.toInference())) {
+
+            jsonParser.parse(reader);
         } catch (RuntimeException | IOException e) {
             throw new DeserializationException(e);
         }
