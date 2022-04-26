@@ -45,6 +45,21 @@ module test-models {
         }
     }
 
+    container container-with-list {
+        list test-list {
+            description
+                "This is a sample list used for testing";
+            key "test-name";
+
+            leaf test-name {
+                type string;
+            }
+            leaf test-value {
+                type uint8;
+            }
+        }
+    }
+
     list sample-list {
         description
             "This is a sample list used for testing";
