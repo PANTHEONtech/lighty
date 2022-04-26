@@ -92,7 +92,6 @@ public class JsonNodeConverter implements NodeConverter {
      * @throws SerializationException if something goes wrong with serialization
      */
     @Override
-    @SuppressWarnings({"checkstyle:illegalCatch"})
     public Writer serializeData(final SchemaInferenceStack schemaInferenceStack,
             final NormalizedNode normalizedNode) throws SerializationException {
         final Writer writer = new StringWriter();
@@ -112,7 +111,7 @@ public class JsonNodeConverter implements NodeConverter {
         try (NormalizedNodeWriter nnWriter = NormalizedNodeWriter.forStreamWriter(nnStreamWriter)) {
             nnWriter.write(normalizedNode);
             return writer;
-        } catch (RuntimeException | IOException e) {
+        } catch (IOException e) {
             throw new SerializationException(e);
         } finally {
             if (useNested) {
@@ -126,7 +125,6 @@ public class JsonNodeConverter implements NodeConverter {
     }
 
     @Override
-    @SuppressWarnings({"checkstyle:illegalCatch"})
     public Writer serializeRpc(final SchemaInferenceStack schemaInferenceStack,
             final NormalizedNode normalizedNode) throws SerializationException {
         Preconditions.checkState(normalizedNode instanceof ContainerNode,
@@ -160,7 +158,6 @@ public class JsonNodeConverter implements NodeConverter {
      * @throws DeserializationException is thrown in case of an error during deserialization
      */
     @Override
-    @SuppressWarnings({"checkstyle:illegalCatch"})
     public NormalizedNode deserialize(final SchemaInferenceStack schemaInferenceStack,
             final Reader inputData) throws DeserializationException {
         if (schemaInferenceStack.isEmpty()) {
@@ -182,7 +179,7 @@ public class JsonNodeConverter implements NodeConverter {
                      stack.toInference())) {
 
             jsonParser.parse(reader);
-        } catch (RuntimeException | IOException e) {
+        } catch (IOException e) {
             throw new DeserializationException(e);
         }
     }
