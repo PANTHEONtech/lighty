@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.opendaylight.controller.cluster.datastore.DatastoreContext;
+import org.opendaylight.controller.cluster.datastore.DatastoreContext.Builder;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 
 public final class DatastoreConfigurationUtils {
@@ -26,47 +27,77 @@ public final class DatastoreConfigurationUtils {
 
     public static DatastoreContext createDatastoreContext(final JsonNode configNode,
             final LogicalDatastoreType logicalDatastoreType) {
-        return DatastoreContext.newBuilder()
-                .shardTransactionIdleTimeout(configNode.path("shardTransactionIdleTimeout").asLong(),
-                    TimeUnit.MILLISECONDS)
-                .operationTimeoutInMillis(configNode.path("operationTimeoutInMillis").asLong())
+        final Builder builder = DatastoreContext.newBuilder()
+                .operationTimeoutInMillis(configNode.path("operationTimeoutInMillis")
+                        .asLong(DatastoreContext.DEFAULT_OPERATION_TIMEOUT_IN_MS))
                 .shardTransactionCommitTimeoutInSeconds(configNode.path("shardTransactionCommitTimeoutInSeconds")
-                    .asInt())
-                .shardJournalRecoveryLogBatchSize(configNode.path("shardJournalRecoveryLogBatchSize").asInt())
-                .shardSnapshotBatchCount(configNode.path("shardSnapshotBatchCount").asInt())
-                .shardSnapshotDataThresholdPercentage(configNode.path("shardSnapshotDataThresholdPercentage").asInt())
-                .shardHeartbeatIntervalInMillis(configNode.path("shardHeartbeatIntervalInMillis").asInt())
-                .shardTransactionCommitQueueCapacity(configNode.path("shardTransactionCommitQueueCapacity").asInt())
-                .shardInitializationTimeout(configNode.path("shardInitializationTimeout").asLong(),
-                    TimeUnit.MILLISECONDS)
-                .shardLeaderElectionTimeout(configNode.path("shardLeaderElectionTimeout").asLong(),
-                    TimeUnit.MILLISECONDS)
-                .persistent(configNode.path("persistent").asBoolean())
+                        .asInt(DatastoreContext.DEFAULT_SHARD_TX_COMMIT_TIMEOUT_IN_SECONDS))
+                .shardJournalRecoveryLogBatchSize(configNode.path("shardJournalRecoveryLogBatchSize")
+                        .asInt(DatastoreContext.DEFAULT_JOURNAL_RECOVERY_BATCH_SIZE))
+                .shardSnapshotBatchCount(configNode.path("shardSnapshotBatchCount")
+                        .asInt(DatastoreContext.DEFAULT_SNAPSHOT_BATCH_COUNT))
+                .shardSnapshotDataThresholdPercentage(configNode.path("shardSnapshotDataThresholdPercentage")
+                        .asInt(DatastoreContext.DEFAULT_SHARD_SNAPSHOT_DATA_THRESHOLD_PERCENTAGE))
+                .shardHeartbeatIntervalInMillis(configNode.path("shardHeartbeatIntervalInMillis")
+                        .asInt(DatastoreContext.DEFAULT_HEARTBEAT_INTERVAL_IN_MILLIS))
+                .shardTransactionCommitQueueCapacity(configNode.path("shardTransactionCommitQueueCapacity")
+                        .asInt(DatastoreContext.DEFAULT_SHARD_TX_COMMIT_QUEUE_CAPACITY))
+                .persistent(configNode.path("persistent").asBoolean(DatastoreContext.DEFAULT_PERSISTENT))
                 .logicalStoreType(logicalDatastoreType)
-                .shardBatchedModificationCount(configNode.path("shardBatchedModificationCount").asInt())
-                .shardCommitQueueExpiryTimeoutInMillis(configNode.path("shardCommitQueueExpiryTimeoutInMillis").asInt())
-                .transactionDebugContextEnabled(configNode.path("transactionDebugContextEnabled").booleanValue())
-                // TODO: Workaround for bug: https://jira.opendaylight.org/browse/CONTROLLER-2040. Revert when this will be resolved
-                .useTellBasedProtocol(configNode.path("useTellBasedProtocol").asBoolean(true))
+                .shardBatchedModificationCount(configNode.path("shardBatchedModificationCount")
+                        .asInt(DatastoreContext.DEFAULT_SHARD_BATCHED_MODIFICATION_COUNT))
+                .shardCommitQueueExpiryTimeoutInMillis(configNode.path("shardCommitQueueExpiryTimeoutInMillis")
+                        .asLong(DatastoreContext.DEFAULT_SHARD_COMMIT_QUEUE_EXPIRY_TIMEOUT_IN_MS))
                 .customRaftPolicyImplementation(NO_CUSTOM_POLICY)
-                .maximumMessageSliceSize(configNode.path("maximumMessageSliceSize").asInt())
+                .maximumMessageSliceSize(configNode.path("maximumMessageSliceSize")
+                        .asInt(DatastoreContext.DEFAULT_MAX_MESSAGE_SLICE_SIZE))
                 .tempFileDirectory(TEMP_FILE_DIRECTORY)
-                .fileBackedStreamingThresholdInMegabytes(configNode.path("fileBackedStreamingThresholdInMegabytes")
-                    .asInt())
-                .syncIndexThreshold(configNode.path("syncIndexThreshold").asInt())
-                .backendAlivenessTimerIntervalInSeconds(configNode.path("backendAlivenessTimerIntervalInSeconds")
-                    .asInt())
-                .frontendRequestTimeoutInSeconds(configNode.path("frontendRequestTimeoutInSeconds").asLong())
-                .frontendNoProgressTimeoutInSeconds(configNode.path("frontendNoProgressTimeoutInSeconds").asLong())
-                .build();
+                .syncIndexThreshold(configNode.path("syncIndexThreshold")
+                        .asLong(DatastoreContext.DEFAULT_SYNC_INDEX_THRESHOLD));
+
+        return setNotNullElementWithoutDefaultConstant(configNode, builder).build();
+    }
+
+    private static Builder setNotNullElementWithoutDefaultConstant(final JsonNode configNode, final Builder builder) {
+        if (!configNode.path("transactionDebugContextEnabled").asText().isBlank()) {
+            builder.transactionDebugContextEnabled(configNode.path("transactionDebugContextEnabled").asBoolean());
+        }
+        if (!configNode.path("useTellBasedProtocol").asText().isBlank()) {
+            builder.useTellBasedProtocol(configNode.path("useTellBasedProtocol").asBoolean());
+        }
+        if (!configNode.path("fileBackedStreamingThresholdInMegabytes").asText().isBlank()) {
+            builder.fileBackedStreamingThresholdInMegabytes(
+                    configNode.path("fileBackedStreamingThresholdInMegabytes").asInt());
+        }
+        if (!configNode.path("backendAlivenessTimerIntervalInSeconds").asText().isBlank()) {
+            builder.backendAlivenessTimerIntervalInSeconds(
+                    configNode.path("backendAlivenessTimerIntervalInSeconds").asLong());
+        }
+        if (!configNode.path("frontendRequestTimeoutInSeconds").asText().isBlank()) {
+            builder.frontendRequestTimeoutInSeconds(configNode.path("frontendRequestTimeoutInSeconds").asLong());
+        }
+        if (!configNode.path("frontendNoProgressTimeoutInSeconds").asText().isBlank()) {
+            builder.frontendNoProgressTimeoutInSeconds(configNode.path("frontendNoProgressTimeoutInSeconds").asLong());
+        }
+        if (!configNode.path("shardTransactionIdleTimeout").asText().isBlank()) {
+            builder.shardTransactionIdleTimeout(configNode.path("shardTransactionIdleTimeout").asLong(),
+                    TimeUnit.MILLISECONDS);
+        }
+        if (!configNode.path("shardInitializationTimeout").asText().isBlank()) {
+            builder.shardInitializationTimeout(configNode.path("shardInitializationTimeout").asLong(),
+                    TimeUnit.MILLISECONDS);
+        }
+        if (!configNode.path("shardLeaderElectionTimeout").asText().isBlank()) {
+            builder.shardLeaderElectionTimeout(configNode.path("shardLeaderElectionTimeout").asLong(),
+                    TimeUnit.MILLISECONDS);
+        }
+        return builder;
     }
 
     public static DatastoreContext createDefaultOperationalDatastoreContext() {
         return DatastoreContext.newBuilder()
                 .logicalStoreType(LogicalDatastoreType.OPERATIONAL)
                 .tempFileDirectory(TEMP_FILE_DIRECTORY)
-                // TODO: Workaround for bug: https://jira.opendaylight.org/browse/CONTROLLER-2040. Remove when this will be resolved
-                .useTellBasedProtocol(true)
                 .persistent(false)
                 .build();
     }
@@ -74,8 +105,6 @@ public final class DatastoreConfigurationUtils {
     public static DatastoreContext createDefaultConfigDatastoreContext() {
         return DatastoreContext.newBuilder()
                 .logicalStoreType(LogicalDatastoreType.CONFIGURATION)
-                // TODO: Workaround for bug: https://jira.opendaylight.org/browse/CONTROLLER-2040. Remove when this will be resolved
-                .useTellBasedProtocol(true)
                 .tempFileDirectory(TEMP_FILE_DIRECTORY)
                 .build();
     }
