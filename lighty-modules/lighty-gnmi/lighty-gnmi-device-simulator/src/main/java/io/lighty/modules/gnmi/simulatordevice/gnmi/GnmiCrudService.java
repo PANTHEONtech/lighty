@@ -35,10 +35,13 @@ import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -310,17 +313,21 @@ public class GnmiCrudService {
         YangInstanceIdentifier identifier = null;
         for (final Gnmi.PathElem pathElem : path.getElemList()) {
             final String pathElemName = ElementNameWithModuleName.parseFromString(pathElem.getName()).getElementName();
-            if (qname == null) {
+            if (identifier == null) {
                 qname = QName.create(rootModule, pathElemName);
                 identifier = YangInstanceIdentifier.of(qname);
             } else {
-                final Optional<? extends DataSchemaNode> augmentationDataNode
-                        = DataConverter.findAugmentationDataNode(pathElemName, context);
-                if (augmentationDataNode.isPresent()) {
-                    identifier = addAugmentationNodeToIdentifier(identifier, augmentationDataNode.get());
+                // Find yang node by local-name (pathElemName) and parent (identifier) namespace/revision
+                final Optional<YangInstanceIdentifier> elementYIID = getIdentifierByElementFromParentModel(identifier,
+                        pathElemName);
+                if (elementYIID.isPresent()) {
+                    identifier = elementYIID.get();
                 } else {
-                    qname = QName.create(identifier.getLastPathArgument().getNodeType(), pathElemName);
-                    identifier = identifier.node(qname);
+                    // If element by name is not found inside parent yang model.
+                    final Optional<? extends DataSchemaNode> foundAug = findAugmentationFromOuterModel(pathElemName,
+                            identifier);
+                    final DataSchemaNode augmentation = foundAug.orElseThrow();
+                    identifier = addAugmentationNodeToIdentifier(identifier, augmentation);
                 }
             }
             if (!pathElem.getKeyMap().isEmpty()) {
@@ -335,13 +342,49 @@ public class GnmiCrudService {
         return identifier;
     }
 
-    private YangInstanceIdentifier addAugmentationNodeToIdentifier(final YangInstanceIdentifier identifier,
-                                                                   final DataSchemaNode augmentationDataNode) {
-        final HashSet<QName> augmentationQname = new HashSet<>();
-        augmentationQname.add(augmentationDataNode.getQName());
-        return identifier
-                .node(AugmentationIdentifier.create(augmentationQname))
-                .node(augmentationDataNode.getQName());
+    private Optional<YangInstanceIdentifier> getIdentifierByElementFromParentModel(final YangInstanceIdentifier id,
+            final String element) {
+        final QName expectedQname = QName.create(id.getLastPathArgument().getNodeType(), element);
+        final YangInstanceIdentifier expectedYIID = id.node(expectedQname);
+        final var foundNode = DataSchemaContextTree.from(context).enterPath(expectedYIID);
+        if (foundNode.isPresent()) {
+            PathArgument identifier = foundNode.get().node().getIdentifier();
+            if (identifier instanceof AugmentationIdentifier) {
+                return Optional.of(addAugmentationNodeToIdentifier(id, expectedQname));
+            } else {
+                return Optional.of(expectedYIID);
+            }
+        }
+        return Optional.empty();
     }
 
+    private Optional<DataSchemaNode> findAugmentationFromOuterModel(final String element,
+            final YangInstanceIdentifier parentYIID) {
+        final Absolute parentPath = DataSchemaContextTree.from(context)
+                .enterPath(parentYIID)
+                .orElseThrow()
+                .stack()
+                .toSchemaNodeIdentifier();
+        return context.getModules()
+                .stream()
+                .flatMap(module -> module.getAugmentations().stream())
+                .filter(aug -> aug.getTargetPath().equals(parentPath))
+                .flatMap(augmentation -> augmentation.getChildNodes().stream())
+                .filter(childNode -> childNode.getQName().getLocalName().equals(element))
+                .map(DataSchemaNode.class::cast)
+                .findFirst();
+    }
+
+    private static YangInstanceIdentifier addAugmentationNodeToIdentifier(final YangInstanceIdentifier identifier,
+            final DataSchemaNode augmentationDataNode) {
+        return addAugmentationNodeToIdentifier(identifier, augmentationDataNode.getQName());
+    }
+
+    private static YangInstanceIdentifier addAugmentationNodeToIdentifier(final YangInstanceIdentifier identifier,
+            final QName augmentation) {
+        final HashSet<QName> augmentationQname = new HashSet<>();
+        augmentationQname.add(augmentation);
+        return identifier.node(AugmentationIdentifier.create(augmentationQname))
+                .node(augmentation);
+    }
 }
