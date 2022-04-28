@@ -36,7 +36,6 @@ import org.opendaylight.yangtools.yang.data.codec.gson.JsonParserStream;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
-import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
@@ -229,17 +228,6 @@ public final class DataConverter {
     public static Optional<Module> findModuleByQName(@NonNull final QName element,
                                                      @NonNull final EffectiveModelContext context) {
         return context.findModule(element.getModule());
-    }
-
-    public static Optional<DataSchemaNode> findAugmentationDataNode(@NonNull final String element,
-                                                                    @NonNull final EffectiveModelContext context) {
-        return context.getModules()
-                .stream()
-                .flatMap(module -> module.getAugmentations().stream())
-                .flatMap(augmentation -> augmentation.getChildNodes().stream())
-                .filter(childNode -> childNode.getQName().getLocalName().equals(element))
-                .map(DataSchemaNode.class::cast)
-                .findFirst();
     }
 
     private static boolean isListEntry(final NormalizedNode node) {
