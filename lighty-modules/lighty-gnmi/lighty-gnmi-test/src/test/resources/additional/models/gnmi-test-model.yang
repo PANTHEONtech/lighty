@@ -19,6 +19,11 @@ module gnmi-test-model {
             type string;
         }
     }
+    container nested-container {
+        leaf nc-leaf {
+            type string;
+        }
+    }
   }
 
   list base-list {

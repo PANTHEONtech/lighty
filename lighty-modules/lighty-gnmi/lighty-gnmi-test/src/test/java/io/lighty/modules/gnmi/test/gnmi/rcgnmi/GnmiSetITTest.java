@@ -44,6 +44,8 @@ public class GnmiSetITTest extends GnmiITBase {
     private static final String GNMI_TEST_BASE_LIST_PATH = GNMI_DEVICE_MOUNTPOINT + "/gnmi-test-model:base-list=datO";
     private static final String WRONG_BASE_LIST_PATH = GNMI_DEVICE_MOUNTPOINT + "/gnmi-test-model:base-list=WRONG";
     private static final String NESTED_LIST_PATH = GNMI_TEST_BASE_LIST_PATH + "/nested-list=dat21";
+    private static final String AUGMENTER_TEST_INTEFACE_ETH10_PATH =
+            GNMI_DEVICE_MOUNTPOINT + "/gnmi-test-model:test-data/nested-container/gnmi-test-aug:interface=eth10";
     private static final String WRONG_NESTED_LIST_PATH = WRONG_BASE_LIST_PATH + "/nested-list=dat21";
     private static final String TEST_LEAF_LIST = "test-leaf-list";
     private static final String TEST_LIST = "test-list";
@@ -146,6 +148,15 @@ public class GnmiSetITTest extends GnmiITBase {
                      eth3ConfigContainerJSONObject.getJSONObject("openconfig-interfaces:config").toString(), false);
 
         restoreDeviceToOriginalState();
+    }
+
+    @Test
+    public void setAugmentedTestInterfaceList() throws Exception {
+        final String payload = getAugmentedTestInterfaceBody();
+        //Set request
+        final HttpResponse<String> setAugResponse = sendPutRequestJSON(AUGMENTER_TEST_INTEFACE_ETH10_PATH, payload);
+        // Assertion
+        assertEquals(HttpURLConnection.HTTP_CREATED, setAugResponse.statusCode());
     }
 
     @Test
@@ -425,7 +436,7 @@ public class GnmiSetITTest extends GnmiITBase {
         }
     }
 
-    private String getBaseListBody() {
+    private static String getBaseListBody() {
         return "{\n"
               + "    \"gnmi-test-model:base-list\": [\n"
               + "        {\n"
@@ -443,7 +454,7 @@ public class GnmiSetITTest extends GnmiITBase {
               + "}";
     }
 
-    private String getNestedListBody() {
+    private static String getNestedListBody() {
         return "{\n"
               + "      \"gnmi-test-model:nested-list\": [\n"
               + "          {\n"
@@ -453,7 +464,7 @@ public class GnmiSetITTest extends GnmiITBase {
               + "}";
     }
 
-    private String getNestedListBodyResponse() {
+    private static String getNestedListBodyResponse() {
         return "{\n"
               + "    \"gnmi-test-model:base-list\": [\n"
               + "        {\n"
@@ -468,7 +479,7 @@ public class GnmiSetITTest extends GnmiITBase {
               + "}";
     }
 
-    private String getNestedListUpdateBodyResponse() {
+    private static String getNestedListUpdateBodyResponse() {
         return "{\n"
               + "    \"gnmi-test-model:base-list\": [\n"
               + "        {\n"
@@ -489,7 +500,7 @@ public class GnmiSetITTest extends GnmiITBase {
               + "}";
     }
 
-    private String getInterfaceContainerListBody(final String name) {
+    private static String getInterfaceContainerListBody(final String name) {
         return String.format("{\n"
               + "  \"openconfig-interfaces:interfaces\": {\n"
               + "    \"interface\": [\n"
@@ -508,7 +519,7 @@ public class GnmiSetITTest extends GnmiITBase {
               + "}", name);
     }
 
-    private String getSimpleListData(final String keyId) {
+    private static String getSimpleListData(final String keyId) {
         return String.format("{\n"
               + "  \"gnmi-test-model:test-list\": [\n"
               + "    {\n"
@@ -518,7 +529,7 @@ public class GnmiSetITTest extends GnmiITBase {
               + "}", keyId);
     }
 
-    private String getSimpleListEntryResultData() {
+    private static String getSimpleListEntryResultData() {
         return "{\n"
                 + "    \"gnmi-test-model:test-data\" : {\n"
                 + "        \"test-list\" : [\n"
@@ -533,7 +544,7 @@ public class GnmiSetITTest extends GnmiITBase {
                 + "}";
     }
 
-    private String getNewListInContainerData() {
+    private static String getNewListInContainerData() {
         return "{\n"
               + "    \"gnmi-test-model:test-data\" : {\n"
               + "        \"test-list\" : [\n"
@@ -548,7 +559,7 @@ public class GnmiSetITTest extends GnmiITBase {
               + "}";
     }
 
-    private String getUpdateListInContainerData() {
+    private static String getUpdateListInContainerData() {
         return "{\n"
               + "    \"gnmi-test-model:test-data\" : {\n"
               + "        \"test-list\" : [\n"
@@ -563,7 +574,7 @@ public class GnmiSetITTest extends GnmiITBase {
               + "}";
     }
 
-    private String getUpdatedListInContainerResultData() {
+    private static String getUpdatedListInContainerResultData() {
         return "{\n"
               + "    \"gnmi-test-model:test-data\" : {\n"
               + "        \"test-list\" : [\n"
@@ -581,7 +592,7 @@ public class GnmiSetITTest extends GnmiITBase {
               + "}";
     }
 
-    private String getInterfaceListUpdateResponse(final String firstNameId, final String secondNameId) {
+    private static String getInterfaceListUpdateResponse(final String firstNameId, final String secondNameId) {
         return String.format("{\n"
               + "    \"openconfig-interfaces:interfaces\": {\n"
               + "        \"interface\": [\n"
@@ -608,5 +619,20 @@ public class GnmiSetITTest extends GnmiITBase {
               + "        ]\n"
               + "    }\n"
               + "}", firstNameId, secondNameId);
+    }
+
+    private static String getAugmentedTestInterfaceBody() {
+        return "{\n"
+                + "    \"gnmi-test-aug:interface\": [\n"
+                + "        {\n"
+                + "            \"name\": \"eth10\",\n"
+                + "            \"config\": {\n"
+                + "                \"mtu\": 1550,\n"
+                + "                \"type\": \"iana-if-type:l2vlan\",\n"
+                + "                \"name\": \"Vlan10\"\n"
+                + "            }\n"
+                + "        }\n"
+                + "    ]\n"
+                + "}";
     }
 }
