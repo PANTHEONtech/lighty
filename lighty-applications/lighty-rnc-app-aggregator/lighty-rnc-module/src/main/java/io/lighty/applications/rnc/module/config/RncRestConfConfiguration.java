@@ -29,7 +29,7 @@ public class RncRestConfConfiguration extends RestConfConfiguration {
     public RncRestConfConfiguration() {
         super();
         // by default listen on any IP address (0.0.0.0) not only on loopback
-        this.setInetAddress(new InetSocketAddress(this.getHttpPort()).getAddress());
+        this.setInetAddress(new InetSocketAddress(super.getHttpPort()).getAddress());
     }
 
     public RncRestConfConfiguration(final RncRestConfConfiguration rncRestConfConfiguration) {

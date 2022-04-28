@@ -54,6 +54,7 @@ public class RcGnmiAppModule {
 
     private static final Logger LOG = LoggerFactory.getLogger(RcGnmiAppModule.class);
     private static final TimeUnit DEFAULT_LIGHTY_MODULE_TIME_UNIT = TimeUnit.SECONDS;
+    private static final SecureRandom RANDOM = new SecureRandom();
 
     private final int lightyModuleTimeout;
     private final RcGnmiAppConfiguration appModuleConfig;
@@ -226,9 +227,8 @@ public class RcGnmiAppModule {
     }
 
     private AaaEncryptServiceConfig getDefaultAaaEncryptServiceConfig() {
-        final SecureRandom random = new SecureRandom();
         final byte[] bytes = new byte[16];
-        random.nextBytes(bytes);
+        RANDOM.nextBytes(bytes);
         final String salt = new String(Base64.getEncoder().encode(bytes), StandardCharsets.UTF_8);
         return new AaaEncryptServiceConfigBuilder().setEncryptKey("V1S1ED4OMeEh")
                 .setPasswordLength(12).setEncryptSalt(salt)

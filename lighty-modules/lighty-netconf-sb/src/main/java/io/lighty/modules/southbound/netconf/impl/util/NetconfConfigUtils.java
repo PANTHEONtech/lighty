@@ -70,6 +70,7 @@ public final class NetconfConfigUtils {
                     .$YangModuleInfoImpl.getInstance()
     );
     private static final Logger LOG = LoggerFactory.getLogger(NetconfConfigUtils.class);
+    private static final SecureRandom RANDOM = new SecureRandom();
 
     private NetconfConfigUtils() {
     }
@@ -157,9 +158,8 @@ public final class NetconfConfigUtils {
      * @return default configuration.
      */
     public static AaaEncryptServiceConfig getDefaultAaaEncryptServiceConfig() {
-        final SecureRandom random = new SecureRandom();
         final byte[] bytes = new byte[16];
-        random.nextBytes(bytes);
+        RANDOM.nextBytes(bytes);
         final String salt = new String(Base64.getEncoder().encode(bytes), StandardCharsets.UTF_8);
         return new AaaEncryptServiceConfigBuilder().setEncryptKey("V1S1ED4OMeEh")
                 .setPasswordLength(12).setEncryptSalt(salt)
