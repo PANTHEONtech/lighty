@@ -1,5 +1,6 @@
 {
   "gnmi_simulator": {
+    "yangsPath": "src/test/resources/additional/models",
     "schemaServiceConfig": {
       "topLevelModels": [
         { "nameSpace":"http://openconfig.net/yang/aaa","name":"openconfig-aaa","revision":"2020-07-30"},

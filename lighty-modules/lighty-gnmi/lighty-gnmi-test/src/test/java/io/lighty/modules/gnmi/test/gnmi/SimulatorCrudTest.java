@@ -206,7 +206,6 @@ public class SimulatorCrudTest {
         LOG.info("Sending get request:\n{}", getRequest);
 
         assertThrows(ExecutionException.class, () -> sessionProvider.getGnmiSession().get(getRequest).get());
-
     }
 
     @Test
@@ -214,6 +213,35 @@ public class SimulatorCrudTest {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName(OPENCONFIG_INTERFACES)
+                        .build())
+                .addElem(Gnmi.PathElem.newBuilder()
+                        .setName("interface")
+                        .putKey("name", "eth5")
+                        .build())
+                .build();
+        final Gnmi.Update update = Gnmi.Update.newBuilder()
+                .setPath(path)
+                .setVal(Gnmi.TypedValue.newBuilder()
+                        .setJsonIetfVal(ByteString.copyFromUtf8(getConfigData()))
+                        .build())
+                .build();
+        final Gnmi.SetRequest setRequest = Gnmi.SetRequest.newBuilder()
+                .addUpdate(update)
+                .build();
+        LOG.info("Sending set request:\n{}", setRequest);
+
+        final Gnmi.SetResponse setResponse = sessionProvider.getGnmiSession().set(setRequest).get();
+        assertEquals("UPDATE", setResponse.getResponse(0).getOp().toString());
+    }
+
+    @Test
+    public void setAugmentedTestInterfaceConfigTest() throws Exception {
+        final Gnmi.Path path = Gnmi.Path.newBuilder()
+                .addElem(Gnmi.PathElem.newBuilder()
+                        .setName("gnmi-test-model:test-data")
+                        .build())
+                .addElem(Gnmi.PathElem.newBuilder()
+                        .setName("nested-container")
                         .build())
                 .addElem(Gnmi.PathElem.newBuilder()
                         .setName("interface")
@@ -416,7 +444,6 @@ public class SimulatorCrudTest {
 
         assertThrows(ExecutionException.class, () -> sessionProvider.getGnmiSession().get(getRequest).get());
     }
-
 
     @Test
     public void crudComplexAugmentedValue() throws ExecutionException, InterruptedException, IOException,

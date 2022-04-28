@@ -55,7 +55,7 @@ public class GnmiGetITTest extends GnmiITBase {
         "openconfig-license semver: 0.2.0", "openconfig-messages semver: 0.0.1", "openconfig-procmon semver: 0.4.0",
         "openconfig-system semver: 0.10.0","openconfig-system-logging semver: 0.3.1",
         "openconfig-system-terminal semver: 0.3.1", "openconfig-openflow semver: 0.1.2",
-        "openconfig-openflow-types semver: 0.1.3");
+        "openconfig-openflow-types semver: 0.1.3", "gnmi-test-aug semver: 1.0.0");
 
     private static final String OC_INTERFACES_CONTAINER_EXPECTED_JSON_OBJ =
         "{\"openconfig-interfaces:interfaces\":"
