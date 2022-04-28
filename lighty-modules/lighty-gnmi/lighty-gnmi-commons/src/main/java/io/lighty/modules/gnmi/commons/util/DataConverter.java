@@ -36,6 +36,7 @@ import org.opendaylight.yangtools.yang.data.codec.gson.JsonParserStream;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
@@ -232,14 +233,24 @@ public final class DataConverter {
     }
 
     public static Optional<DataSchemaNode> findAugmentationDataNode(@NonNull final String element,
-                                                                    @NonNull final EffectiveModelContext context) {
+            @NonNull final EffectiveModelContext context, @NonNull final YangInstanceIdentifier parentYIID) {
         return context.getModules()
                 .stream()
                 .flatMap(module -> module.getAugmentations().stream())
+                .filter(aug -> comparePathArgWithQnames(aug, parentYIID, context))
                 .flatMap(augmentation -> augmentation.getChildNodes().stream())
                 .filter(childNode -> childNode.getQName().getLocalName().equals(element))
                 .map(DataSchemaNode.class::cast)
                 .findFirst();
+    }
+
+    private static boolean comparePathArgWithQnames(final AugmentationSchemaNode node,
+            final YangInstanceIdentifier parentYIID, final EffectiveModelContext context) {
+        SchemaInferenceStack schemaInferenceStack = DataSchemaContextTree.from(context)
+                .enterPath(parentYIID)
+                .orElseThrow()
+                .stack();
+        return schemaInferenceStack.toSchemaNodeIdentifier().equals(node.getTargetPath());
     }
 
     private static boolean isListEntry(final NormalizedNode node) {

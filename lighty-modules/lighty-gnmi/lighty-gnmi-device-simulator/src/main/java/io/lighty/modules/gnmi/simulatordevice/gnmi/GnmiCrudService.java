@@ -310,12 +310,12 @@ public class GnmiCrudService {
         YangInstanceIdentifier identifier = null;
         for (final Gnmi.PathElem pathElem : path.getElemList()) {
             final String pathElemName = ElementNameWithModuleName.parseFromString(pathElem.getName()).getElementName();
-            if (qname == null) {
+            if (identifier == null) {
                 qname = QName.create(rootModule, pathElemName);
                 identifier = YangInstanceIdentifier.of(qname);
             } else {
                 final Optional<? extends DataSchemaNode> augmentationDataNode
-                        = DataConverter.findAugmentationDataNode(pathElemName, context);
+                        = DataConverter.findAugmentationDataNode(pathElemName, context, identifier);
                 if (augmentationDataNode.isPresent()) {
                     identifier = addAugmentationNodeToIdentifier(identifier, augmentationDataNode.get());
                 } else {
