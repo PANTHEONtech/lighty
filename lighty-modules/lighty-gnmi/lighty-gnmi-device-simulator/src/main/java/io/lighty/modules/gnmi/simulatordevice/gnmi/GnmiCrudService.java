@@ -211,6 +211,10 @@ public class GnmiCrudService {
             resultingIdentifier = identifier.getParent();
         }
 
+        if (node.getIdentifier() instanceof AugmentationIdentifier && resultingIdentifier != null) {
+            resultingIdentifier = resultingIdentifier.getParent();
+        }
+
         if (isReplace) {
             dataService.writeDataByPath(DatastoreType.CONFIGURATION, resultingIdentifier,
                     node);
