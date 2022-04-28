@@ -306,12 +306,11 @@ public class GnmiCrudService {
 
     private YangInstanceIdentifier instanceIdentifierFromPath(final QNameModule rootModule,
                                                               final Gnmi.Path path) {
-        QName qname = null;
         YangInstanceIdentifier identifier = null;
         for (final Gnmi.PathElem pathElem : path.getElemList()) {
             final String pathElemName = ElementNameWithModuleName.parseFromString(pathElem.getName()).getElementName();
             if (identifier == null) {
-                qname = QName.create(rootModule, pathElemName);
+                final QName qname = QName.create(rootModule, pathElemName);
                 identifier = YangInstanceIdentifier.of(qname);
             } else {
                 final Optional<? extends DataSchemaNode> augmentationDataNode
@@ -319,28 +318,25 @@ public class GnmiCrudService {
                 if (augmentationDataNode.isPresent()) {
                     identifier = addAugmentationNodeToIdentifier(identifier, augmentationDataNode.get());
                 } else {
-                    qname = QName.create(identifier.getLastPathArgument().getNodeType(), pathElemName);
+                    final QName qname = QName.create(identifier.getLastPathArgument().getNodeType(), pathElemName);
                     identifier = identifier.node(qname);
                 }
             }
             if (!pathElem.getKeyMap().isEmpty()) {
-                final QName finalQname = qname;
-                final Map<QName, Object> keysMap = pathElem.getKeyMap().entrySet().stream().collect(
-                        Collectors.toMap(e -> QName.create(finalQname, e.getKey()), Map.Entry::getValue)
-                );
-                identifier = identifier.node(YangInstanceIdentifier.NodeIdentifierWithPredicates.of(qname,
-                        keysMap));
+                final QName qname = identifier.getLastPathArgument().getNodeType();
+                final Map<QName, Object> keysMap = pathElem.getKeyMap().entrySet().stream()
+                        .collect(Collectors.toMap(e -> QName.create(qname, e.getKey()), Map.Entry::getValue));
+                identifier = identifier.node(NodeIdentifierWithPredicates.of(qname, keysMap));
             }
         }
         return identifier;
     }
 
-    private YangInstanceIdentifier addAugmentationNodeToIdentifier(final YangInstanceIdentifier identifier,
-                                                                   final DataSchemaNode augmentationDataNode) {
+    private static YangInstanceIdentifier addAugmentationNodeToIdentifier(final YangInstanceIdentifier identifier,
+                                                                          final DataSchemaNode augmentationDataNode) {
         final HashSet<QName> augmentationQname = new HashSet<>();
         augmentationQname.add(augmentationDataNode.getQName());
-        return identifier
-                .node(AugmentationIdentifier.create(augmentationQname))
+        return identifier.node(AugmentationIdentifier.create(augmentationQname))
                 .node(augmentationDataNode.getQName());
     }
 
