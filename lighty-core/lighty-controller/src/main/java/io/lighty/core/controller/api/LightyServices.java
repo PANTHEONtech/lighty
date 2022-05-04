@@ -127,8 +127,25 @@ public interface LightyServices extends LightyModuleRegistryService {
 
     DataBroker getBindingDataBroker();
 
+    /**
+     * Get {@link MetricProvider}.
+     *
+     * @return {@link MetricProvider}
+     * @deprecated Moved to ServiceUtils https://git.opendaylight.org/gerrit/c/infrautils/+/97759
+     *     It is not used in lighty and will be removed in the next release.
+     *
+     */
+    @Deprecated(forRemoval = true)
     MetricProvider getMetricProvider();
 
+    /**
+     * Get {@link CacheProvider}.
+     *
+     * @return {@link CacheProvider}
+     * @deprecated Removed from upstream https://git.opendaylight.org/gerrit/c/infrautils/+/97758
+     *      It is not used in lighty and will be removed in the next release.
+     */
+    @Deprecated(forRemoval = true)
     CacheProvider getCacheProvider();
 
     ConstantAdapterContext getAdapterContext();
