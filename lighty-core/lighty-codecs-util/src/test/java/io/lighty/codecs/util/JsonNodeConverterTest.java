@@ -7,6 +7,7 @@
  */
 package io.lighty.codecs.util;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import io.lighty.codecs.util.exception.DeserializationException;
@@ -14,12 +15,23 @@ import io.lighty.codecs.util.exception.SerializationException;
 import java.io.StringReader;
 import java.io.Writer;
 import org.junit.Test;
+import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster;
+import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.ContainerIoRpcInput;
+import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.ContainerWithList;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SampleList;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SimpleInputOutputRpcInput;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SimpleInputOutputRpcOutput;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.TopLevelContainer;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.container.group.SampleContainer;
+import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.container.with.list.TestList;
+import org.opendaylight.yangtools.yang.common.Uint32;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
+import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 
 public class JsonNodeConverterTest extends AbstractCodecTest {
@@ -69,10 +81,11 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
     }
 
     @Test
-    public void testDeserializeData() throws DeserializationException {
+    public void testDeserializeContainerData() throws DeserializationException {
         final NormalizedNode deserializeData = bindingSerializer.deserialize(
                 new StringReader(loadResourceAsString("toaster-container.json")));
         assertNotNull(deserializeData);
+        assertEquals(expectedToasterContainerNN(), deserializeData);
     }
 
     @Test
@@ -80,6 +93,7 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
         final NormalizedNode deserializeRpc = bindingSerializer.deserialize(
                 new StringReader(loadResourceAsString("rpc-leaf-Input.json")), LEAF_RPC_QNAME);
         assertNotNull(deserializeRpc);
+        assertEquals(expectedRpcInputNN(), deserializeRpc);
     }
 
     @Test
@@ -87,6 +101,7 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
         final NormalizedNode deserializeRpc = bindingSerializer.deserialize(
                 new StringReader(loadResourceAsString("rpc-leaf-output.json")), LEAF_RPC_QNAME);
         assertNotNull(deserializeRpc);
+        assertEquals(expectedRpcOutputNN(), deserializeRpc);
     }
 
     @Test
@@ -94,6 +109,7 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
         final NormalizedNode deserializeData = bindingSerializer.deserialize(
                 new StringReader(loadResourceAsString("rpc-container-input.json")), CONTAINER_RPC_QNAME);
         assertNotNull(deserializeData);
+        assertEquals(expectedRpcContainerInputNN(), deserializeData);
     }
 
     @Test
@@ -101,6 +117,7 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
         final NormalizedNode deserializeContainer = bindingSerializer.deserialize(
                 new StringReader(loadResourceAsString("top-level-container.json")));
         assertNotNull(deserializeContainer);
+        assertEquals(expectedTopLevelContainerNN(), deserializeContainer);
     }
 
     @Test
@@ -108,6 +125,7 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
         final NormalizedNode deserializeContainer = bindingSerializer.deserialize(
                 new StringReader(loadResourceAsString("inner-container.json")), TopLevelContainer.QNAME);
         assertNotNull(deserializeContainer);
+        assertEquals(expectedInnerContainerNN(), deserializeContainer);
     }
 
     @Test
@@ -116,6 +134,7 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
                 new StringReader(loadResourceAsString("inner-leaf.json")),
                 TopLevelContainer.QNAME, SampleContainer.QNAME);
         assertNotNull(result);
+        assertEquals(expectedInnerLeafNN(), result);
     }
 
     @Test
@@ -123,6 +142,18 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
         final NormalizedNode result = bindingSerializer.deserialize(
                 new StringReader(loadResourceAsString("single-list-entry.json")));
         assertNotNull(result);
+        assertEquals(expectedListSingleEntryNN(), result);
+    }
+
+    @Test
+    public void testDeserializeTestList() throws DeserializationException {
+        final YangInstanceIdentifier testData = YangInstanceIdentifier.builder()
+                .node(ContainerWithList.QNAME)
+                .build();
+        final StringReader stringReader = new StringReader(loadResourceAsString("test-list.json"));
+        final NormalizedNode result = bindingSerializer.deserialize(testData, stringReader);
+        assertNotNull(result);
+        assertEquals(expectedTestListNN(), result);
     }
 
     @Test
@@ -130,7 +161,133 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
         final NormalizedNode result = bindingSerializer.deserialize(
                 new StringReader(loadResourceAsString("multiple-list-entries.json")));
         assertNotNull(result);
+        assertEquals(expectedListMultipleEntriesNN(), result);
     }
 
+    private static NormalizedNode expectedToasterContainerNN() {
+        return wrapWithBaseContainer(Builders.containerBuilder()
+                .withNodeIdentifier(NodeIdentifier.create(Toaster.QNAME))
+                .withChild(Builders.leafBuilder()
+                        .withNodeIdentifier(NodeIdentifier.create(qOfToasterModel("toasterManufacturer")))
+                        .withValue("manufacturer")
+                        .build())
+                .withChild((Builders.leafBuilder()
+                        .withNodeIdentifier(NodeIdentifier.create(qOfToasterModel("toasterStatus")))
+                        .withValue("up")
+                        .build()))
+                .withChild((Builders.leafBuilder()
+                        .withNodeIdentifier(NodeIdentifier.create(qOfToasterModel("darknessFactor")))
+                        .withValue(Uint32.valueOf(201392110))
+                        .build()))
+                .build());
+    }
 
+    private static NormalizedNode expectedRpcInputNN() {
+        return Builders.containerBuilder()
+                .withNodeIdentifier(NodeIdentifier.create(SimpleInputOutputRpcInput.QNAME))
+                .withChild(Builders.leafBuilder()
+                        .withNodeIdentifier(NodeIdentifier.create(qOfTestModel("input-obj")))
+                        .withValue("a")
+                        .build())
+                .build();
+    }
+
+    private static NormalizedNode expectedRpcOutputNN() {
+        return Builders.containerBuilder()
+                .withNodeIdentifier(NodeIdentifier.create(SimpleInputOutputRpcOutput.QNAME))
+                .withChild(Builders.leafBuilder()
+                        .withNodeIdentifier(NodeIdentifier.create(qOfTestModel("output-obj")))
+                        .withValue("a")
+                        .build())
+                .build();
+    }
+
+    private static NormalizedNode expectedRpcContainerInputNN() {
+        return Builders.containerBuilder()
+                .withNodeIdentifier(NodeIdentifier.create(ContainerIoRpcInput.QNAME))
+                .withChild(expectedInnerContainerNN())
+                .build();
+    }
+
+    private static NormalizedNode expectedTopLevelContainerNN() {
+        return wrapWithBaseContainer(Builders.containerBuilder()
+                .withNodeIdentifier(NodeIdentifier.create(TopLevelContainer.QNAME))
+                .withChild(expectedInnerContainerNN())
+                .build());
+    }
+
+    private static DataContainerChild expectedInnerContainerNN() {
+        return Builders.containerBuilder()
+                .withNodeIdentifier(NodeIdentifier.create(SampleContainer.QNAME))
+                .withChild(expectedInnerLeafNN())
+                .withChild((Builders.leafBuilder()
+                        .withNodeIdentifier(NodeIdentifier.create(qOfTestModel("value")))
+                        .withValue(Uint32.valueOf(1))
+                        .build()))
+                .build();
+    }
+
+    private static DataContainerChild expectedInnerLeafNN() {
+        return Builders.leafBuilder()
+                .withNodeIdentifier(NodeIdentifier.create(qOfTestModel("name")))
+                .withValue("name")
+                .build();
+    }
+
+    private static NormalizedNode expectedListSingleEntryNN() {
+        return wrapWithBaseContainer(Builders.mapBuilder()
+                .withNodeIdentifier(NodeIdentifier.create(SampleList.QNAME))
+                .withChild(Builders.mapEntryBuilder()
+                        .withNodeIdentifier(NodeIdentifierWithPredicates.of(SampleList.QNAME,
+                                qOfTestModel("name"), "test"))
+                        .withChild(Builders.leafBuilder()
+                                .withNodeIdentifier(NodeIdentifier.create(qOfTestModel("name")))
+                                .withValue("test")
+                                .build())
+                        .build())
+                .build());
+    }
+
+    private static NormalizedNode expectedTestListNN() {
+        return Builders.mapBuilder()
+                .withNodeIdentifier(NodeIdentifier.create(TestList.QNAME))
+                .withChild(Builders.mapEntryBuilder()
+                        .withNodeIdentifier(NodeIdentifierWithPredicates.of(TestList.QNAME,
+                                qOfTestModel("test-name"), "test"))
+                        .withChild(Builders.leafBuilder()
+                                .withNodeIdentifier(NodeIdentifier.create(qOfTestModel("test-name")))
+                                .withValue("test")
+                                .build())
+                        .build())
+                .build();
+    }
+
+    private static NormalizedNode expectedListMultipleEntriesNN() {
+        return wrapWithBaseContainer(Builders.mapBuilder()
+                .withNodeIdentifier(NodeIdentifier.create(SampleList.QNAME))
+                .withChild(Builders.mapEntryBuilder()
+                        .withNodeIdentifier(NodeIdentifierWithPredicates.of(SampleList.QNAME,
+                                qOfTestModel("name"), "test"))
+                        .withChild(Builders.leafBuilder()
+                                .withNodeIdentifier(NodeIdentifier.create(qOfTestModel("name")))
+                                .withValue("test")
+                                .build())
+                        .build())
+                .withChild(Builders.mapEntryBuilder()
+                        .withNodeIdentifier(NodeIdentifierWithPredicates.of(SampleList.QNAME,
+                                qOfTestModel("name"), "test2"))
+                        .withChild(Builders.leafBuilder()
+                                .withNodeIdentifier(NodeIdentifier.create(qOfTestModel("name")))
+                                .withValue("test2")
+                                .build())
+                        .build())
+                .build());
+    }
+
+    private static NormalizedNode wrapWithBaseContainer(final DataContainerChild child) {
+        return Builders.containerBuilder()
+                .withNodeIdentifier(NodeIdentifier.create(SchemaContext.NAME))
+                .withChild(child)
+                .build();
+    }
 }

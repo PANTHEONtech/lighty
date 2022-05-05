@@ -13,6 +13,7 @@ import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import java.io.InputStream;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
@@ -99,8 +100,8 @@ public class DataInitTest {
         lightyController = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getConfiguration(configStream))
                 .build();
-        boolean result = lightyController.start().get(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-        Assert.assertEquals(result,false);
+        Assert.assertThrows(ExecutionException.class,
+                () -> lightyController.start().get(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
     }
 
     @Test

@@ -77,7 +77,6 @@ public class XmlNodeConverter implements NodeConverter {
      * @throws SerializationException if something goes wrong with serialization
      */
     @Override
-    @SuppressWarnings({"checkstyle:illegalCatch"})
     public Writer serializeData(final SchemaInferenceStack schemaInferenceStack,
             final NormalizedNode normalizedNode) throws SerializationException {
         final Writer writer = new StringWriter();
@@ -92,13 +91,12 @@ public class XmlNodeConverter implements NodeConverter {
         try (NormalizedNodeWriter nnWriter = NormalizedNodeWriter.forStreamWriter(nnStreamWriter)) {
             nnWriter.write(normalizedNode);
             return writer;
-        } catch (RuntimeException | IOException e) {
+        } catch (IOException e) {
             throw new SerializationException(e);
         }
     }
 
     @Override
-    @SuppressWarnings({"checkstyle:illegalCatch"})
     public Writer serializeRpc(final SchemaInferenceStack schemaInferenceStack, final NormalizedNode normalizedNode)
             throws SerializationException {
         Preconditions.checkState(normalizedNode instanceof ContainerNode,
@@ -123,7 +121,7 @@ public class XmlNodeConverter implements NodeConverter {
             }
             xmlStreamWriter.writeEndElement();
             return writer;
-        } catch (RuntimeException | XMLStreamException | IOException e) {
+        } catch (XMLStreamException | IOException e) {
             throw new SerializationException(e);
         }
     }
@@ -141,7 +139,6 @@ public class XmlNodeConverter implements NodeConverter {
      * @throws DeserializationException is thrown in case of an error during deserialization
      */
     @Override
-    @SuppressWarnings({"checkstyle:illegalCatch"})
     public NormalizedNode deserialize(final SchemaInferenceStack schemaInferenceStack,
             final Reader inputData) throws DeserializationException {
         final XMLStreamReader reader;
@@ -156,7 +153,7 @@ public class XmlNodeConverter implements NodeConverter {
         try (XmlParserStream xmlParser = XmlParserStream.create(streamWriter, schemaInferenceStack.toInference())) {
             xmlParser.parse(reader);
             return result.getResult();
-        } catch (RuntimeException | XMLStreamException | URISyntaxException | SAXException | IOException e) {
+        } catch (XMLStreamException | URISyntaxException | SAXException | IOException e) {
             throw new DeserializationException(e);
         } finally {
             try {
