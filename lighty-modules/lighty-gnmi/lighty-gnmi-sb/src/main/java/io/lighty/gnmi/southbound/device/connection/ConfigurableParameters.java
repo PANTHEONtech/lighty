@@ -10,6 +10,7 @@ package io.lighty.gnmi.southbound.device.connection;
 
 import gnmi.Gnmi;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.force.capabilities.rev210702.ForceCapabilities;
@@ -65,7 +66,7 @@ public class ConfigurableParameters {
             return Optional.of(forceCapabilities.getForceCapability()
                 .entrySet()
                 .stream()
-                .map(model -> model.getValue())
+                .map(Entry::getValue)
                 .map(model -> Gnmi.ModelData.newBuilder()
                     .setName(model.getName())
                     .setVersion(model.getVersion().getValue()).build())

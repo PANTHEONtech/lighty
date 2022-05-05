@@ -50,12 +50,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
+                    <version>3.10.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -105,7 +105,7 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.7</version>
+                    <version>0.8.8</version>
                     <executions>
                         <execution>
                             <id>jacoco-prepare-agent</id>
@@ -137,12 +137,12 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.3.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.1.1</version>
+                    <version>3.4.0</version>
                     <configuration combine.children="append">
                         <!-- Keep things quiet except for warnings/errors -->
                         <quiet>true</quiet>
@@ -164,12 +164,12 @@
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
                             <!-- This should match the dependency management on com.puppycrawl.tools:checkstyle above -->
-                            <version>8.45.1</version>
+                            <version>9.2.1</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>
                             <artifactId>sevntu-checks</artifactId>
-                            <version>1.40.0</version>
+                            <version>1.41.0</version>
                         </dependency>
                         <dependency>
                             <groupId>org.opendaylight.odlparent</groupId>
@@ -181,12 +181,12 @@
                 <plugin>
                     <groupId>com.github.spotbugs</groupId>
                     <artifactId>spotbugs-maven-plugin</artifactId>
-                    <version>3.1.12.2</version>
+                    <version>4.5.3.0</version>
                     <dependencies>
                         <dependency>
                             <groupId>com.github.spotbugs</groupId>
                             <artifactId>spotbugs</artifactId>
-                            <version>3.1.12</version>
+                            <version>4.5.3</version>
                         </dependency>
                         <dependency>
                             <groupId>org.opendaylight.odlparent</groupId>
@@ -194,10 +194,10 @@
                             <version>10.0.0</version>
                         </dependency>
                         <dependency>
-                            <!-- The SpotBugs Maven plugin uses SLF4J 1.8 beta 2 -->
+                            <!-- The SpotBugs Maven plugin uses SLF4J 1.8 beta 4 -->
                             <groupId>org.slf4j</groupId>
                             <artifactId>slf4j-simple</artifactId>
-                            <version>1.8.0-beta2</version>
+                            <version>1.8.0-beta4</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -265,7 +265,7 @@
                                 <plugin>
                                     <groupId>jp.skypencil.findbugs.slf4j</groupId>
                                     <artifactId>bug-pattern</artifactId>
-                                    <version>1.4.2</version>
+                                    <version>1.5.0</version>
                                 </plugin>
                             </plugins>
                             <!--
