@@ -7,15 +7,15 @@ lighty version contains 3 numbers representing MAJOR.MINOR.PATCH (X.Y.Z) levels.
 MAJOR number is mapped to major OpenDaylight release
 | lighty | OpenDaylight    |
 |--------|-----------------|
+| 16.Y.Z | Sulfur (16)     |
 | 15.Y.Z | Phosphorus (15) |
-| 14.Y.Z | Silicon (14)    |
 | ...    |                 |
 
 MINOR number is mapped to OpenDaylight service release (SR1, SR2, SR3, ..)
 | lighty | OpenDaylight    |
 |--------|-----------------|
-| 15.1.Z | Phosphorus SR1  |
-| 15.2.Z | Phosphorus SR2  |
+| 16.1.Z | Sulfur SR1      |
+| 16.2.Z | Sulfur SR2      |
 | ...    |                 |
 
 PATCH number represents lighty release, usually security & bug fixes.
