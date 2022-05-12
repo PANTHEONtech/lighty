@@ -60,47 +60,16 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Env docker image name
-        run: |
-          DOCKER_IMAGE_NAME=$(echo ghcr.io/pantheontech/${{ github.event.inputs.image-name }})
-          DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME:${{ github.event.inputs.version }})
-          echo "DOCKER_IMAGE_NAME=$(echo $DOCKER_IMAGE_NAME)" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME_TAG)" >> $GITHUB_ENV
-      - name: Build docker image
-        run: mvn install -B -pl ${{ github.event.inputs.app-modules }} -P docker
-      - name: Tag image
-        run: |
-          image_name=$(mvn help:evaluate -f ${{ github.event.inputs.app-docker-pom-path }} -Dexpression=image.name -q -DforceStdout)
-          docker tag $image_name $DOCKER_IMAGE_NAME_TAG
-          if [ "${{ github.event.inputs.image-tag-latest }}" = 'true' ]; then
-            docker tag $image_name $DOCKER_IMAGE_NAME:latest
-          fi
-          docker images | grep $image_name
-      - name: List docker images
-        run: |
-          docker images
-      - name: Docker log in (ghcr.io)
-        run: |
-          echo ${{ env.PUBLISH_ACCESS_KEY}} | docker login  --username ${{ github.actor }} --password-stdin ghcr.io
-      - name: Publish docker image (ghcr.io)
-        run: |
-          docker push $DOCKER_IMAGE_NAME_TAG
-          if [ "${{ github.event.inputs.image-tag-latest }}" = 'true' ]; then
-            docker push $DOCKER_IMAGE_NAME:latest
-          fi
-      - name: Check if docker image is pullable  (ghcr.io)
-        run: |
-          docker rmi $DOCKER_IMAGE_NAME_TAG
-          docker pull $DOCKER_IMAGE_NAME_TAG
-      - name: Install yq (yaml processor)
-        run: |
-          sudo snap install yq
-      - name: Set image.name, image.version in values.yaml of helm chart
-        run: |
-          yq eval '.image.name="ghcr.io/pantheontech/${{ github.event.inputs.image-name }}" | .image.version="${{ github.event.inputs.version }}"' ${{ github.event.inputs.app-helm-values-path }} -i
-      - name: Print values.yaml
-        run: |
-          cat -A ${{ github.event.inputs.app-helm-values-path }}
+      - name: "Publish docker and prepare helm-charts"
+        uses: ./.github/workflows/publish-action
+        with:
+          app-modules: ${{ github.event.inputs.app-modules }}
+          app-docker-pom-path: ${{ github.event.inputs.app-docker-pom-path }}
+          app-helm-values-path: ${{ github.event.inputs.app-helm-values-path }}
+          image-name: ${{ github.event.inputs.image-name }}
+          version: ${{ github.event.inputs.version }})
+          image-tag-latest: ${{ github.event.inputs.image-tag-latest }}
+          publish-access-key: ${{ env.PUBLISH_ACCESS_KEY }}
       - name: "Publish Helm chart to Helm repository (Version: ${{ github.event.inputs.version }} )"
         if: ${{ github.event.inputs.version != '' }}
         uses: stefanprodan/helm-gh-pages@master
