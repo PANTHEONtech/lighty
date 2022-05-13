@@ -11,7 +11,6 @@ import io.lighty.codecs.util.exception.DeserializationException;
 import io.lighty.codecs.util.exception.SerializationException;
 import java.io.Reader;
 import java.io.Writer;
-import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
@@ -32,19 +31,6 @@ public interface NodeConverter {
         return serializeData(inference, normalizedNode);
     }
 
-    /**
-     * Serialize data.
-     *
-     * @deprecated This method can confuse its users. They have to realize that they have to provide all QNames
-     *     to build {@code Absolute} and/or {@code Inference}. Thus, it's better for them to have just those methods
-     *     that require {@code Absolute} and/or {@code Inference} available.
-     */
-    @Deprecated(forRemoval = true)
-    default Writer serializeData(NormalizedNode normalizedNode, QName... schemaIdentifierPath)
-            throws SerializationException {
-        return serializeData(Absolute.of(schemaIdentifierPath), normalizedNode);
-    }
-
     default Writer serializeData(NormalizedNode normalizedNode) throws SerializationException {
         return serializeData(SchemaInferenceStack.of(getModelContext()).toInference(), normalizedNode);
     }
@@ -57,19 +43,6 @@ public interface NodeConverter {
 
     Writer serializeData(Inference inference, NormalizedNode normalizedNode)
             throws SerializationException;
-
-    /**
-     * Serialize RPC.
-     *
-     * @deprecated This method can confuse its users. They have to realize that they have to provide all QNames
-     *     to build {@code Absolute} and/or {@code Inference}. Thus, it's better for them to have just those methods
-     *     that require {@code Absolute} and/or {@code Inference} available.
-     */
-    @Deprecated(forRemoval = true)
-    default Writer serializeRpc(NormalizedNode normalizedNode, QName... schemaIdentifierPath)
-            throws SerializationException {
-        return serializeRpc(Absolute.of(schemaIdentifierPath), normalizedNode);
-    }
 
     default Writer serializeRpc(Absolute schemaNodeIdentifier, NormalizedNode normalizedNode)
             throws SerializationException {
@@ -93,19 +66,6 @@ public interface NodeConverter {
      */
     Writer serializeRpc(Inference inference, NormalizedNode normalizedNode)
             throws SerializationException;
-
-    /**
-     * Deserialize data.
-     *
-     * @deprecated This method can confuse its users. They have to realize that they have to provide all QNames
-     *     to build {@code Absolute} and/or {@code Inference}. Thus, it's better for them to have just those methods
-     *     that require {@code Absolute} and/or {@code Inference} available.
-     */
-    @Deprecated(forRemoval = true)
-    default NormalizedNode deserialize(Reader inputData, QName... schemaIdentifierPath)
-            throws DeserializationException {
-        return deserialize(Absolute.of(schemaIdentifierPath), inputData);
-    }
 
     default NormalizedNode deserialize(Absolute schemaNodeIdentifier, Reader inputData)
             throws DeserializationException {
