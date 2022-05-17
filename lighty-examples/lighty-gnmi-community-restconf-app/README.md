@@ -46,7 +46,7 @@ unzip ../../lighty-applications/lighty-rcgnmi-app-aggregator/lighty-rcgnmi-app/t
 ```
 Start application with pre-prepared configuration [example_config.json](example_config.json).
 ```
-java -jar lighty-rcgnmi-app-15.3.0/lighty-rcgnmi-app-15.3.0.jar -c example_config.json
+java -jar lighty-rcgnmi-app-15.3.0/lighty-rcgnmi-app-15.4.0-SNAPSHOT.jar -c example_config.json
 ```
 
 ### Start lighty.io gNMI device simulator
@@ -57,7 +57,7 @@ unzip ../../lighty-modules/lighty-gnmi/lighty-gnmi-device-simulator/target/light
 
 Start the application with pre-prepared configuration [simulator_config.json](simulator/simulator_config.json)
 ```
-java -jar lighty-gnmi-device-simulator-15.3.0/lighty-gnmi-device-simulator-15.3.0.jar  -c simulator/simulator_config.json 
+java -jar lighty-gnmi-device-simulator-15.3.0/lighty-gnmi-device-simulator-15.4.0-SNAPSHOT.jar  -c simulator/simulator_config.json 
 ```
 
 ### Add client certificates to lighty.io gNMI keystore
