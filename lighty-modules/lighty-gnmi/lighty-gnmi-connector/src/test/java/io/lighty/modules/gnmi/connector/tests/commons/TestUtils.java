@@ -23,7 +23,7 @@ import java.security.spec.InvalidKeySpecException;
 
 public final class TestUtils {
 
-    private static final String CLIENT_KEY = "/certs/client_pkcs8.key";
+    private static final String CLIENT_KEY = "/certs/client_key.der";
     private static final String CLIENT_CERTS = "/certs/client.crt";
     private static final String CA_CERTS = "/certs/ca.crt";
     private static final SessionManagerFactory SESSION_MANAGER_FACTORY
