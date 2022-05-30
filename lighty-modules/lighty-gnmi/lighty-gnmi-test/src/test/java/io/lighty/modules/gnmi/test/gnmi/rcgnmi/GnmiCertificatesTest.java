@@ -37,8 +37,8 @@ public class GnmiCertificatesTest extends GnmiITBase {
     private static final Logger LOG = LoggerFactory.getLogger(GnmiCertificatesTest.class);
     private static final TestCertificates TEST_CERTIFICATES = new TestCertificates();
 
-    private static final String KEY_PATH = "src/test/resources/genCert/server-pkcs8.key";
-    private static final String CERTIFICATE_PATH = "src/test/resources/genCert/server.crt";
+    private static final String KEY_PATH = "src/test/resources/certs/server-pkcs8.key";
+    private static final String CERTIFICATE_PATH = "src/test/resources/certs/server.crt";
 
     private static final String ADD_CERTIFICATE_PATH
             = "http://localhost:8888/restconf/operations/gnmi-certificate-storage:add-keystore-certificate";
@@ -367,14 +367,14 @@ public class GnmiCertificatesTest extends GnmiITBase {
     }
 
     private static class TestCertificates {
-        private static final String CLIENT_CERT = "/genCert/client.crt";
-        private static final String CA = "/genCert/ca.crt";
-        private static final String CLIENT_KEY = "/genCert/client.key";
-        private static final String PASSPHRASE = "/genCert/client_key_passphrase.txt";
-        private static final String CLIENT_ENC_KEY = "/genCert/client.encrypted.key";
-        private static final String CLIENT_ENC_CERT = "/genCert/client.encrypted.crt";
+        private static final String CLIENT_CERT = "/certs/client.crt";
+        private static final String CA = "/certs/ca.crt";
+        private static final String CLIENT_KEY = "/certs/client.key";
+        private static final String PASSPHRASE = "/certs/client_key_passphrase.txt";
+        private static final String CLIENT_ENC_KEY = "/certs/client.encrypted.key";
+        private static final String CLIENT_ENC_CERT = "/certs/client.encrypted.crt";
 
-        private static final String PK8_CA = "/testUtilsCerts/ca.crt";
+        private static final String PK8_CA = "/certs/wrong_ca.crt";
 
         private final String clientCert;
         private final String caCert;

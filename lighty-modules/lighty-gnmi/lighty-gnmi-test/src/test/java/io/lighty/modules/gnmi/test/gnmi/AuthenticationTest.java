@@ -58,8 +58,8 @@ public class AuthenticationTest {
     private static final String INTERFACES_PREFIX = "openconfig-interfaces";
     private static final String OPENCONFIG_INTERFACES = INTERFACES_PREFIX + ":" + "interfaces";
     private static final String OPENCONFIG_INTERFACE = "interface";
-    private static final String SERVER_KEY = "src/test/resources/testUtilsCerts/server-pkcs8.key";
-    private static final String SERVER_CERT = "src/test/resources/testUtilsCerts/server.crt";
+    private static final String SERVER_KEY = "src/test/resources/certs/server-pkcs8.key";
+    private static final String SERVER_CERT = "src/test/resources/certs/server.crt";
     private static final int UPDATE_MTU_VAL = 500;
     private static final int TARGET_PORT = 10161;
 
