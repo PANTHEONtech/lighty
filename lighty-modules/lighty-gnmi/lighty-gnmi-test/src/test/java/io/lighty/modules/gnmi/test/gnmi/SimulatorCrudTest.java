@@ -46,8 +46,8 @@ public class SimulatorCrudTest {
     private static final String INITIAL_DATA_PATH = "src/test/resources/json/initData";
     private static final String TEST_SCHEMA_PATH = "src/test/resources/additional/models";
     private static final String SIMULATOR_CONFIG = "/json/simulator_config.json";
-    private static final String SERVER_KEY = "src/test/resources/testUtilsCerts/server-pkcs8.key";
-    private static final String SERVER_CERT = "src/test/resources/testUtilsCerts/server.crt";
+    private static final String SERVER_KEY = "src/test/resources/certs/server-pkcs8.key";
+    private static final String SERVER_CERT = "src/test/resources/certs/server.crt";
     private static final String INTERFACES_PREFIX = "openconfig-interfaces";
     private static final String OPENCONFIG_INTERFACES = INTERFACES_PREFIX + ":" + "interfaces";
     private static final String ETHRERNET_PREFIX = "openconfig-if-ethernet";

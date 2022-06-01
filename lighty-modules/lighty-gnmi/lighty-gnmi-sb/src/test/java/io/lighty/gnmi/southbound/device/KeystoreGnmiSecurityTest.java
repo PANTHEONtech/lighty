@@ -88,6 +88,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Uint16;
 
 public class KeystoreGnmiSecurityTest {
+
     private static final String KEYSTORE_PASSPHRASE_ID_1 = "KeystoreID_1";
     private static final String KEYSTORE_ID_2 = "KeystoreID_2";
     private static final int PORT = 9001;
@@ -97,6 +98,12 @@ public class KeystoreGnmiSecurityTest {
     private static final String ADDRESS = "127.0.0.1";
 
     private static final AAAEncryptionServiceImpl AAA_ENCRYPTION_SERVICE = createEncryptionServiceWithErrorHandling();
+    private static final String CA_CRT = "/certs/ca.crt";
+    private static final String CLIENT_ENCRYPTED_CRT = "/certs/client.encrypted.crt";
+    private static final String CLIENT_ENCRYPTED_KEY = "/certs/client.encrypted.key";
+    private static final String PASSPHRASE = "password";
+    private static final String CLIENT_CRT = "/certs/client.crt";
+    private static final String CLIENT_KEY = "/certs/client.key";
     private DeviceConnectionInitializer connectionInitializer;
 
     @Spy
@@ -406,19 +413,19 @@ public class KeystoreGnmiSecurityTest {
 
     private static Keystore getKeystore1WithPassResponse() {
         return new KeystoreBuilder()
-                .setCaCertificate(getResource("/certs/ca.crt"))
-                .setClientCert(getResource("/certs/client.crypted.cert.pem"))
-                .setClientKey(AAA_ENCRYPTION_SERVICE.encrypt(getResource("/certs/client.crypted.key.pem")))
-                .setPassphrase(AAA_ENCRYPTION_SERVICE.encrypt("secret"))
+                .setCaCertificate(getResource(CA_CRT))
+                .setClientCert(getResource(CLIENT_ENCRYPTED_CRT))
+                .setClientKey(AAA_ENCRYPTION_SERVICE.encrypt(getResource(CLIENT_ENCRYPTED_KEY)))
+                .setPassphrase(AAA_ENCRYPTION_SERVICE.encrypt(PASSPHRASE))
                 .setKeystoreId(KEYSTORE_PASSPHRASE_ID_1)
                 .build();
     }
 
     private static Keystore getKeystore2Response() {
         return new KeystoreBuilder()
-                .setCaCertificate(getResource("/certs/ca.crt"))
-                .setClientCert(getResource("/certs/client.cert.pem"))
-                .setClientKey(AAA_ENCRYPTION_SERVICE.encrypt(getResource("/certs/client.key.pem")))
+                .setCaCertificate(getResource(CA_CRT))
+                .setClientCert(getResource(CLIENT_CRT))
+                .setClientKey(AAA_ENCRYPTION_SERVICE.encrypt(getResource(CLIENT_KEY)))
                 .setKeystoreId(KEYSTORE_ID_2)
                 .build();
     }

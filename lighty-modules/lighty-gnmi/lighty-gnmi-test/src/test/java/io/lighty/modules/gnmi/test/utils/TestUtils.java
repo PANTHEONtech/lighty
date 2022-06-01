@@ -34,9 +34,9 @@ public final class TestUtils {
         //Utility class
     }
 
-    private static final String CLIENT_KEY = "/testUtilsCerts/client.key";
-    private static final String CLIENT_CERTS = "/testUtilsCerts/client.crt";
-    private static final String CA_CERTS = "/testUtilsCerts/ca.crt";
+    private static final String CLIENT_KEY = "/certs/client.key";
+    private static final String CLIENT_CERTS = "/certs/client.crt";
+    private static final String CA_CERTS = "/certs/ca.crt";
     private static final String PASSPHRASE = "";
     private static final SessionManagerFactory SESSION_MANAGER_FACTORY
             = new SessionManagerFactoryImpl(new GnmiSessionFactoryImpl());
