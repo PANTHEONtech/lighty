@@ -48,7 +48,7 @@ public class SimulatedGnmiDevice {
     private static final Logger LOG = LoggerFactory.getLogger(SimulatedGnmiDevice.class);
 
     private static final String DEFAULT_SERVER_CRT_FILE_PATH = "certs/server.crt";
-    private static final String DEFAULT_SERVER_KEY_FILE_PATH = "certs/server.key";
+    private static final String DEFAULT_SERVER_KEY_FILE_PATH = "certs/server-pkcs8.key";
 
     private final EventLoopGroup bossGroup;
     private final EventLoopGroup workerGroup;
