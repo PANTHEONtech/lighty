@@ -17,7 +17,7 @@ SUBJ="/C=NZ/ST=Test/L=Test/O=Test/OU=Test/CN=ca"
 openssl genrsa -out ca.key 4096
 
 # Generate Req
-openssl req -new -x509 -days 365 -subj $SUBJ -key ca.key -out ca.crt
+openssl req -new -x509 -days 3650 -subj $SUBJ -key ca.key -out ca.crt
 
 SUBJ="/C=NZ/ST=Test/L=Test/O=Test/OU=Test/CN=localhost"
 
@@ -37,7 +37,7 @@ openssl x509 \
         -CA ca.crt \
         -CAkey ca.key \
         -CAcreateserial \
-        -days 365 \
+        -days 3650 \
         -sha256 \
         -extensions req_ext \
         -extfile ../server_cert_ext.cfg \
@@ -48,6 +48,9 @@ SUBJ="/C=NZ/ST=Test/L=Test/O=Test/OU=Test/CN=client.com"
 # Generate Client Private Key
 openssl genrsa -out client.key 4096
 
+# Transform client key to binary form
+openssl pkcs8 -topk8 -inform PEM -outform DER -nocrypt -in client.key -out client_key.der
+
 # Generate Req
 openssl req -new -key client.key -out client.csr -subj $SUBJ
 
@@ -57,7 +60,7 @@ openssl x509 \
         -in client.csr \
         -CA ca.crt \
         -CAkey ca.key \
-        -days 365 \
+        -days 3650 \
         -sha256 \
         -extfile ../client_cert_ext.cfg \
         -out client.crt \
@@ -75,7 +78,7 @@ openssl x509 \
         -in client.encrypted.csr \
         -CA ca.crt \
         -CAkey ca.key \
-        -days 365 \
+        -days 3650 \
         -sha256 \
         -extfile ../client_cert_ext.cfg \
         -out client.encrypted.crt \

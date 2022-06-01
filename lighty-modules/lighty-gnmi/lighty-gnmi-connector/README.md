@@ -15,7 +15,7 @@ Notable classes are:
 
 ### gNMI certificates
 For proper gNMI functionality, the valid SSl certificates are necessary. The certificates used for testing purposes are
-valid for 1 year. The script [generate_certs.sh](src/main/scripts/generate_certs.sh)
+valid for 3650 days (approx 10 years). The script [generate_certs.sh](src/main/scripts/generate_certs.sh)
 can help with generating new certificates, in case the expiration passed.
 The generated certificates then can be used for clients & servers in this project.
 
