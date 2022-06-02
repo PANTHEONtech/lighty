@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Set JAVA_HOME to point to a specific Java 11+ JDK
-#export JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64
+# Set JAVA_HOME to point to a specific Java 17+ JDK
+#export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
 # If JAVA_HOME is not set, try to find it using java itself
 if [ -z ${JAVA_HOME} ]; then
@@ -9,10 +9,10 @@ if [ -z ${JAVA_HOME} ]; then
 	JAVA_HOME=`java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home' | sed -e 's/^.*java.home = \(.*\)$/\1/'`
 fi;
 
-# Make sure we are using Java 11+
+# Make sure we are using Java 17+
 JAVA_VERSION=`${JAVA_HOME}/bin/java -version 2>&1 | head -1 | cut -d'"' -f2 | sed '/^1\./s///' | cut -d'.' -f1`
-if [ -z ${JAVA_VERSION} ] || [ ${JAVA_VERSION} -lt 11 ]; then
-        echo "Java 11+ is required to run this application!"
+if [ -z ${JAVA_VERSION} ] || [ ${JAVA_VERSION} -lt 17 ]; then
+        echo "Java 17+ is required to run this application!"
         exit -1
 fi;
 
