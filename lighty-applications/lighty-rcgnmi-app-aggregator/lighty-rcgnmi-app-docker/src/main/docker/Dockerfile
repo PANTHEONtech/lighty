@@ -1,6 +1,6 @@
 FROM alpine:3.15.0
 
-RUN apk add openjdk11-jre
+RUN apk add openjdk17-jre-headless
 
 WORKDIR /lighty-rcgnmi
 
