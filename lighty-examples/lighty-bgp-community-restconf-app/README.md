@@ -8,7 +8,7 @@ Application starts the following components:
 ## Prerequisites
 
 In order to build and start the application locally, you need:
-* Java 11 or later 
+* Java 17 or later 
 * Maven 3.8.3 or later
 
 ## Build
