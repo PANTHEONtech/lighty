@@ -9,8 +9,6 @@
 package io.lighty.gnmi.southbound.mountpoint.codecs;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import gnmi.Gnmi;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.gnmi.southbound.mountpoint.codecs.testcases.YangInstanceNormToGnmiUpdateTestCases;
@@ -24,6 +22,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.Assert;
 
 public class YangInstanceNormToGnmiUpdateCodecTest {
@@ -41,7 +40,7 @@ public class YangInstanceNormToGnmiUpdateCodecTest {
     }
 
     @Test
-    public void topLevelElementTest() throws GnmiCodecException {
+    public void topLevelElementTest() throws Exception {
         final Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> prepared =
                 testCases.topElementTestCase();
         final Gnmi.Update result = codec.apply(prepared.getKey().left, prepared.getKey().right);
@@ -49,7 +48,7 @@ public class YangInstanceNormToGnmiUpdateCodecTest {
     }
 
     @Test
-    public void listEntryCase() throws GnmiCodecException {
+    public void listEntryCase() throws Exception {
         final Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> prepared =
                 testCases.listEntryTestCase();
         final Gnmi.Update result = codec.apply(prepared.getKey().left, prepared.getKey().right);
@@ -57,7 +56,7 @@ public class YangInstanceNormToGnmiUpdateCodecTest {
     }
 
     @Test
-    public void containerCase() throws GnmiCodecException {
+    public void containerCase() throws Exception {
         Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> prepared =
                 testCases.containerTestCase();
         Gnmi.Update result = codec.apply(prepared.getKey().left, prepared.getKey().right);
@@ -70,7 +69,7 @@ public class YangInstanceNormToGnmiUpdateCodecTest {
     }
 
     @Test
-    public void simpleValuesTest() throws GnmiCodecException {
+    public void simpleValuesTest() throws Exception {
         // ------Boolean case:----------
         Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> prepared =
                 testCases.leafBooleanTestCase();
@@ -90,12 +89,12 @@ public class YangInstanceNormToGnmiUpdateCodecTest {
         assertUpdateEquals(prepared.getValue(), result);
     }
 
-    private static void assertUpdateEquals(Gnmi.Update expected, Gnmi.Update result) {
+    private static void assertUpdateEquals(Gnmi.Update expected, Gnmi.Update result) throws Exception {
         Assertions.assertEquals(expected.getPath(), result.getPath());
         assertValueMatch(expected.getVal(), result.getVal());
     }
 
-    private static void assertValueMatch(Gnmi.TypedValue first, Gnmi.TypedValue second) {
+    private static void assertValueMatch(Gnmi.TypedValue first, Gnmi.TypedValue second) throws Exception {
         switch (first.getValueCase()) {
             case STRING_VAL:
                 Assertions.assertEquals(first.getStringVal(), second.getStringVal());
@@ -110,19 +109,11 @@ public class YangInstanceNormToGnmiUpdateCodecTest {
                 Assertions.assertEquals(first.getBoolVal(), second.getBoolVal());
                 break;
             case JSON_IETF_VAL:
-                Assertions.assertTrue(jsonMatch(first.getJsonIetfVal().toStringUtf8(),
-                        second.getJsonIetfVal().toStringUtf8()));
+                JSONAssert.assertEquals(first.getJsonIetfVal().toStringUtf8(),
+                        second.getJsonIetfVal().toStringUtf8(), true);
                 break;
             default:
                 Assert.fail("Unexpected value");
         }
-
     }
-
-    public static boolean jsonMatch(final String first, final String second) {
-        final JsonElement jsonA = JsonParser.parseString(first);
-        final JsonElement jsonB = JsonParser.parseString(second);
-        return jsonA.equals(jsonB);
-    }
-
 }
