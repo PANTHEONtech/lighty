@@ -151,7 +151,7 @@ public class SimulatorCrudTest {
         // Get mtu from config file
         final String originalInterfacesJson = TestUtils
                 .readFile(INITIAL_DATA_PATH + "/config.json");
-        final JsonElement jsonElement = new JsonParser().parse(originalInterfacesJson).getAsJsonObject()
+        final JsonElement jsonElement = JsonParser.parseString(originalInterfacesJson).getAsJsonObject()
                 .get(OPENCONFIG_INTERFACES);
         final int expectedOriginalMtu = jsonElement.getAsJsonObject().getAsJsonArray(OPENCONFIG_INTERFACE)
                 .get(0)
@@ -261,7 +261,7 @@ public class SimulatorCrudTest {
         // Should get initial interfaces data, NOT wrapped in top level element: openconfig-interfaces:interfaces
         final String originalInterfacesJson = TestUtils
                 .readFile(INITIAL_DATA_PATH + "/config.json");
-        final JsonObject jsonElement = new JsonParser().parse(originalInterfacesJson).getAsJsonObject();
+        final JsonObject jsonElement = JsonParser.parseString(originalInterfacesJson).getAsJsonObject();
         JSONAssert.assertEquals(responseJson, jsonElement.toString(), false);
 
         // Set MTU of 0 index interface to 1499
@@ -359,7 +359,7 @@ public class SimulatorCrudTest {
 
         final String originalInterfacesJson = TestUtils
                 .readFile(INITIAL_DATA_PATH + "/config.json");
-        final JsonPrimitive originalJsonValue = new JsonParser().parse(originalInterfacesJson).getAsJsonObject()
+        final JsonPrimitive originalJsonValue = JsonParser.parseString(originalInterfacesJson).getAsJsonObject()
                 .getAsJsonObject(OPENCONFIG_INTERFACES)
                 .getAsJsonArray(OPENCONFIG_INTERFACE)
                 .get(1)
@@ -455,7 +455,7 @@ public class SimulatorCrudTest {
 
         final String originalInterfacesJson = TestUtils
                 .readFile(INITIAL_DATA_PATH + "/config.json");
-        JsonObject expectedJson = new JsonParser().parse(originalInterfacesJson).getAsJsonObject()
+        JsonObject expectedJson = JsonParser.parseString(originalInterfacesJson).getAsJsonObject()
                 .getAsJsonObject(OPENCONFIG_INTERFACES)
                 .getAsJsonArray(OPENCONFIG_INTERFACE)
                 .get(1)
@@ -546,7 +546,7 @@ public class SimulatorCrudTest {
 
         final String originalInterfacesJson = TestUtils
                 .readFile(INITIAL_DATA_PATH + "/config.json");
-        final JsonElement jsonElement = new JsonParser().parse(originalInterfacesJson).getAsJsonObject()
+        final JsonElement jsonElement = JsonParser.parseString(originalInterfacesJson).getAsJsonObject()
                 .get(OPENCONFIG_INTERFACES).getAsJsonObject().getAsJsonArray(OPENCONFIG_INTERFACE)
                 .get(0)
                 .getAsJsonObject();

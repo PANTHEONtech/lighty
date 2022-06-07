@@ -42,14 +42,14 @@ public final class JsonUtils {
     }
 
     public static String wrapJsonWithObject(final String jsonString, final String wrapper, final Gson gson) {
-        final JsonElement innerJson = new JsonParser().parse(jsonString);
+        final JsonElement innerJson = JsonParser.parseString(jsonString);
         final JsonObject result = new JsonObject();
         result.add(wrapper, innerJson);
         return gson.toJson(result);
     }
 
     public static String addModuleNamePrefixToJson(final String jsonString, final String moduleName, final Gson gson) {
-        final JsonObject outerJson = new JsonParser().parse(jsonString).getAsJsonObject();
+        final JsonObject outerJson = JsonParser.parseString(jsonString).getAsJsonObject();
         final Set<Map.Entry<String, JsonElement>> outerMap = outerJson.entrySet();
 
         if (outerMap.isEmpty()) {

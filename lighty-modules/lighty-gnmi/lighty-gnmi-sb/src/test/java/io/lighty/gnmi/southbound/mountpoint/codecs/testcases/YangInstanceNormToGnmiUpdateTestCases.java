@@ -47,7 +47,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
     public Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> topElementTestCase() {
 
         final JsonObject jsonInterfaces =
-                new JsonParser().parse(baseJson)
+                JsonParser.parseString(baseJson)
                         .getAsJsonObject()
                         .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"));
         final Gnmi.Path path = Gnmi.Path.newBuilder()
@@ -76,7 +76,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
                 .build();
 
         final JsonObject jsonInterfaceEth3 =
-                new JsonParser().parse(baseJson).getAsJsonObject()
+                JsonParser.parseString(baseJson).getAsJsonObject()
                         .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"))
                         .getAsJsonArray("interface").get(0).getAsJsonObject();
 
@@ -104,7 +104,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
                 .build();
 
         final JsonObject jsonInterfaceEthConfig =
-                new JsonParser().parse(baseJson).getAsJsonObject()
+                JsonParser.parseString(baseJson).getAsJsonObject()
                         .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"))
                         .getAsJsonArray("interface")
                         .get(0).getAsJsonObject().getAsJsonObject("config");
@@ -137,7 +137,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
 
 
         final JsonObject jsonInterfaceEthConfig =
-                new JsonParser().parse(baseJson).getAsJsonObject()
+                JsonParser.parseString(baseJson).getAsJsonObject()
                         .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"))
                         .getAsJsonArray("interface")
                         .get(1).getAsJsonObject().getAsJsonObject(makePrefixString(OC_IF_ETHERNET_ID, "ethernet"))
@@ -170,7 +170,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
                 .build();
 
         final JsonElement jsonMtu =
-                new JsonParser().parse(baseJson).getAsJsonObject()
+                JsonParser.parseString(baseJson).getAsJsonObject()
                         .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"))
                         .getAsJsonArray("interface").get(0)
                         .getAsJsonObject().getAsJsonObject("config").getAsJsonPrimitive("mtu");
@@ -202,7 +202,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
                 .build();
 
         final JsonElement jsonConfigName =
-                new JsonParser().parse(baseJson).getAsJsonObject()
+                JsonParser.parseString(baseJson).getAsJsonObject()
                         .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"))
                         .getAsJsonArray("interface").get(0)
                         .getAsJsonObject().getAsJsonObject("config").getAsJsonPrimitive("name");
@@ -234,7 +234,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
                 .build();
 
         final JsonElement jsonLoopbackMode =
-                new JsonParser().parse(baseJson).getAsJsonObject()
+                JsonParser.parseString(baseJson).getAsJsonObject()
                         .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"))
                         .getAsJsonArray("interface").get(0)
                         .getAsJsonObject().getAsJsonObject("config").getAsJsonPrimitive("loopback-mode");
@@ -269,7 +269,7 @@ public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
                 .build();
 
         final JsonElement jsonAggregateId =
-                new JsonParser().parse(baseJson).getAsJsonObject()
+                JsonParser.parseString(baseJson).getAsJsonObject()
                         .getAsJsonObject(makePrefixString(OC_INTERFACES_ID, "interfaces"))
                         .getAsJsonArray("interface").get(1)
                         .getAsJsonObject().getAsJsonObject(makePrefixString(OC_IF_ETHERNET_ID, "ethernet"))
