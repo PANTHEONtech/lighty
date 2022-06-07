@@ -102,7 +102,7 @@ public class YangInstanceNormToGnmiUpdateCodec implements
     }
 
     private String unwrapContainer(final String json) throws GnmiCodecException {
-        final JsonElement jsonElement = new JsonParser().parse(json);
+        final JsonElement jsonElement = JsonParser.parseString(json);
         if (!jsonElement.isJsonObject()) {
             throw new GnmiCodecException("Can't unwrap non json object");
         }
@@ -118,7 +118,7 @@ public class YangInstanceNormToGnmiUpdateCodec implements
     }
 
     private static JsonPrimitive unwrapPrimitive(final String json) throws GnmiCodecException {
-        final JsonElement jsonElement = new JsonParser().parse(json);
+        final JsonElement jsonElement = JsonParser.parseString(json);
         if (!jsonElement.isJsonObject()) {
             throw new GnmiCodecException(String.format("Json %s is not a json object", json));
         }

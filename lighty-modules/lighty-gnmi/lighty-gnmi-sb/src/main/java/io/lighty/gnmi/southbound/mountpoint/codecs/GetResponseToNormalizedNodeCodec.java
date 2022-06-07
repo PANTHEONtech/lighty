@@ -144,7 +144,7 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
     private static boolean isResponseJsonDeeperThanRequested(final YangInstanceIdentifier identifier,
                                                              final String responseJson) {
         final String lastPathArgName = identifier.getLastPathArgument().getNodeType().getLocalName();
-        final JsonElement jsonObject = new JsonParser().parse(responseJson);
+        final JsonElement jsonObject = JsonParser.parseString(responseJson);
         if (!jsonObject.isJsonObject()) {
             return true;
         }

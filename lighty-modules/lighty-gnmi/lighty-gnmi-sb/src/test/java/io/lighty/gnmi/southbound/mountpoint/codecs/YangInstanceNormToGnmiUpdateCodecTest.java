@@ -120,9 +120,8 @@ public class YangInstanceNormToGnmiUpdateCodecTest {
     }
 
     public static boolean jsonMatch(final String first, final String second) {
-        final JsonParser parser = new JsonParser();
-        final JsonElement jsonA = parser.parse(first);
-        final JsonElement jsonB = parser.parse(second);
+        final JsonElement jsonA = JsonParser.parseString(first);
+        final JsonElement jsonB = JsonParser.parseString(second);
         return jsonA.equals(jsonB);
     }
 
