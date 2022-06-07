@@ -76,9 +76,8 @@ public class AuthenticationTest {
 
         final String originalInterfacesJson = TestUtils
                 .readFile(INITIAL_DATA_PATH + "/config.json");
-        final JsonParser parser = new JsonParser();
         final JsonElement jsonElement
-                = parser.parse(originalInterfacesJson).getAsJsonObject().get(OPENCONFIG_INTERFACES);
+                = JsonParser.parseString(originalInterfacesJson).getAsJsonObject().get(OPENCONFIG_INTERFACES);
         // Get mtu from config file
         final int expectedOriginalMtu = jsonElement.getAsJsonObject().getAsJsonArray(OPENCONFIG_INTERFACE)
                 .get(0)
@@ -173,9 +172,8 @@ public class AuthenticationTest {
 
         final String originalInterfacesJson = TestUtils
                 .readFile(INITIAL_DATA_PATH + "/config.json");
-        final JsonParser parser = new JsonParser();
         final JsonElement jsonElement
-                = parser.parse(originalInterfacesJson).getAsJsonObject().get(OPENCONFIG_INTERFACES);
+                = JsonParser.parseString(originalInterfacesJson).getAsJsonObject().get(OPENCONFIG_INTERFACES);
         // Get mtu from config file
         final int expectedOriginalMtu = jsonElement.getAsJsonObject().getAsJsonArray(OPENCONFIG_INTERFACE)
                 .get(0)
