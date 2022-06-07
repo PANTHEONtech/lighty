@@ -27,10 +27,6 @@ public final class JsonUtils {
         // Utility class
     }
 
-    public static String jsonFromSimpleType(String key, Object value) {
-        return "{\"" + key + "\":" + value + "}";
-    }
-
     public static String wrapJsonWithArray(final String jsonString, final String wrapper, final Gson gson,
             final NodeIdentifierWithPredicates predicates) {
         final JsonObject innerJson = JsonParser.parseString(jsonString).getAsJsonObject();
