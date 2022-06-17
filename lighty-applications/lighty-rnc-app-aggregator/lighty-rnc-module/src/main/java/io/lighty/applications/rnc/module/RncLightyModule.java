@@ -11,8 +11,6 @@ import io.lighty.aaa.AAALighty;
 import io.lighty.aaa.config.AAAConfiguration;
 import io.lighty.aaa.config.CertificateManagerConfig;
 import io.lighty.applications.rnc.module.config.RncLightyModuleConfiguration;
-import io.lighty.applications.rnc.module.config.RncRestConfConfiguration;
-import io.lighty.applications.rnc.module.config.util.RncRestConfConfigUtils;
 import io.lighty.applications.rnc.module.exception.RncLightyAppStartException;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
@@ -22,11 +20,15 @@ import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
+import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
+import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import io.lighty.modules.southbound.netconf.impl.NetconfSBPlugin;
 import io.lighty.modules.southbound.netconf.impl.NetconfTopologyPluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
+import io.lighty.server.HttpsLightyServerBuilder;
 import io.lighty.server.LightyServerBuilder;
+import io.lighty.server.config.LightyServerConfig;
 import io.lighty.swagger.SwaggerLighty;
 import java.net.InetSocketAddress;
 import java.security.Security;
@@ -66,7 +68,7 @@ public class RncLightyModule {
             startAndWaitLightyModule(this.lightyController);
 
             this.lightyRestconf = initRestconf(this.rncModuleConfig.getRestconfConfig(),
-                    this.lightyController.getServices());
+                    this.rncModuleConfig.getServerConfig(), this.lightyController.getServices());
             startAndWaitLightyModule(this.lightyRestconf);
 
             this.lightyNetconf = initNetconf(this.rncModuleConfig.getNetconfConfig(),
@@ -78,7 +80,7 @@ public class RncLightyModule {
                 startAndWaitLightyModule(this.aaaLighty);
             }
 
-            if (rncModuleConfig.getRestconfConfig().isEnableSwagger()) {
+            if (rncModuleConfig.getServerConfig().isEnableSwagger()) {
                 this.swagger = initSwaggerLighty(this.rncModuleConfig.getRestconfConfig(),
                                                  this.jettyServerBuilder,
                                                  this.lightyController.getServices());
@@ -94,19 +96,18 @@ public class RncLightyModule {
         return true;
     }
 
-    private LightyController initController(ControllerConfiguration config) throws RncLightyAppStartException {
-        LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
+    private LightyController initController(final ControllerConfiguration config) throws RncLightyAppStartException {
         try {
-            return lightyControllerBuilder.from(config).build();
+            return new LightyControllerBuilder().from(config).build();
         } catch (ConfigurationException e) {
             throw new RncLightyAppStartException("Unable to initialize lighty.io controller module!", e);
         }
     }
 
-    private NetconfSBPlugin initNetconf(NetconfConfiguration config, LightyServices services)
+    private NetconfSBPlugin initNetconf(final NetconfConfiguration config, final LightyServices services)
             throws RncLightyAppStartException {
         try {
-            NetconfConfiguration configWithServices =
+            final NetconfConfiguration configWithServices =
                     NetconfConfigUtils.injectServicesToTopologyConfig(config, services);
             return NetconfTopologyPluginBuilder.from(configWithServices, services).build();
         } catch (ConfigurationException e) {
@@ -114,36 +115,36 @@ public class RncLightyModule {
         }
     }
 
-    private CommunityRestConf initRestconf(RncRestConfConfiguration config, LightyServices services) {
-        final RncRestConfConfiguration confConf = RncRestConfConfigUtils.getRestConfConfiguration(config, services);
+    private CommunityRestConf initRestconf(final RestConfConfiguration config, final LightyServerConfig serverConfig,
+            final LightyServices services) {
+        final RestConfConfiguration restConfConfiguration = RestConfConfigUtils.getRestConfConfiguration(config,
+                services);
         final InetSocketAddress inetSocketAddress =
-                new InetSocketAddress(confConf.getInetAddress(), confConf.getHttpPort());
+                new InetSocketAddress(config.getInetAddress(), config.getHttpPort());
 
-        if (confConf.isUseHttps()) {
-            this.jettyServerBuilder = new HttpsLightyServerBuilder(inetSocketAddress, config.getSecurityConfig());
+        if (serverConfig.isUseHttps()) {
+            this.jettyServerBuilder = new HttpsLightyServerBuilder(inetSocketAddress, serverConfig.getSecurityConfig());
         } else {
             this.jettyServerBuilder = new LightyServerBuilder(inetSocketAddress);
         }
 
-        return CommunityRestConfBuilder.from(confConf)
+        return CommunityRestConfBuilder.from(restConfConfiguration)
             .withLightyServer(jettyServerBuilder)
             .build();
     }
 
-    private AAALighty initAAA(AAAConfiguration config, LightyServices services) {
+    private AAALighty initAAA(final AAAConfiguration config, final LightyServices services) {
         Security.addProvider(new BouncyCastleProvider());
         config.setCertificateManager(CertificateManagerConfig.getDefault(services.getBindingDataBroker()));
-        return new AAALighty(services.getBindingDataBroker(),null, this.jettyServerBuilder, config);
+        return new AAALighty(services.getBindingDataBroker(), null, this.jettyServerBuilder, config);
     }
 
-    private SwaggerLighty initSwaggerLighty(RncRestConfConfiguration config,
-                                            LightyServerBuilder serverBuilder,
-                                            LightyServices services) {
-        final RncRestConfConfiguration confConf = RncRestConfConfigUtils.getRestConfConfiguration(config, services);
-        return new SwaggerLighty(confConf, serverBuilder, services);
+    private SwaggerLighty initSwaggerLighty(final RestConfConfiguration config, final LightyServerBuilder serverBuilder,
+            final LightyServices services) {
+        return new SwaggerLighty(config, serverBuilder, services);
     }
 
-    private void startAndWaitLightyModule(LightyModule lightyModule) throws RncLightyAppStartException {
+    private void startAndWaitLightyModule(final LightyModule lightyModule) throws RncLightyAppStartException {
         try {
             LOG.info("Initializing lighty.io module ({})...", lightyModule.getClass());
             boolean startSuccess = lightyModule.start()
@@ -170,7 +171,7 @@ public class RncLightyModule {
         LOG.info("Stopping RNC lighty.io application...");
         boolean success = true;
 
-        if (rncModuleConfig.getRestconfConfig().isEnableSwagger()
+        if (rncModuleConfig.getServerConfig().isEnableSwagger()
                 && this.swagger != null && !stopAndWaitLightyModule(this.swagger)) {
             success = false;
         }
@@ -202,10 +203,10 @@ public class RncLightyModule {
     }
 
     @SuppressWarnings({"checkstyle:illegalCatch"})
-    private boolean stopAndWaitLightyModule(LightyModule lightyModule) {
+    private boolean stopAndWaitLightyModule(final LightyModule lightyModule) {
         try {
             LOG.info("Stopping lighty.io module ({})...", lightyModule.getClass());
-            boolean stopSuccess =
+            final boolean stopSuccess =
                     lightyModule.shutdown().get(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
             if (stopSuccess) {
                 LOG.info("lighty.io module ({}) stopped successfully!", lightyModule.getClass());

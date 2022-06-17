@@ -38,10 +38,6 @@
             <artifactId>lighty-aaa</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.jetty.http2</groupId>
-            <artifactId>http2-server</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-swagger</artifactId>
         </dependency>        

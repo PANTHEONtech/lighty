@@ -28,7 +28,7 @@ spec:
             - name: config-volume
               mountPath: {{ .Values.lighty.workdir }}/{{ .Values.lighty.configDirectoryName }}
             - name: secrets-volume
-              mountPath: {{ .Values.lighty.workdir }}/{{ .Values.lighty.restconf.keyStoreDirectory }}
+              mountPath: {{ .Values.lighty.workdir }}/{{ .Values.lighty.server.keyStoreDirectory }}
           securityContext:
             allowPrivilegeEscalation: false
             runAsUser: {{ .Values.deploymentSecurity.runAsUser }}
@@ -83,4 +83,4 @@ spec:
             secretName: {{ include "lighty-rnc-app-helm.fullname" . }}
             items:
               - key: keystore.jks
-                path: {{ .Values.lighty.restconf.keyStoreFileName }}
+                path: {{ .Values.lighty.server.keyStoreFileName }}

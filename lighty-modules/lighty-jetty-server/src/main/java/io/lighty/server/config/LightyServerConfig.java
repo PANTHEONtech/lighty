@@ -5,18 +5,13 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-package io.lighty.applications.rnc.module.config;
+package io.lighty.server.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
-import java.net.InetSocketAddress;
 
-public class RncRestConfConfiguration extends RestConfConfiguration {
+public class LightyServerConfig {
     @JsonIgnore
     private SecurityConfig securityConfig;
-
-    // These are default configuration and that should be rewritten
-    @SuppressWarnings("squid:S2068")
     private String keyStorePassword = "8pgETwat";
     private String keyStoreType = "JKS";
     private String keyStoreFilePath = "keystore/lightyio.jks";
@@ -26,25 +21,6 @@ public class RncRestConfConfiguration extends RestConfConfiguration {
     private boolean needClientAuth = false;
     private boolean enableSwagger = false;
 
-    public RncRestConfConfiguration() {
-        super();
-        // by default listen on any IP address (0.0.0.0) not only on loopback
-        this.setInetAddress(new InetSocketAddress(super.getHttpPort()).getAddress());
-    }
-
-    public RncRestConfConfiguration(final RncRestConfConfiguration rncRestConfConfiguration) {
-        super(rncRestConfConfiguration);
-        this.keyStorePassword = rncRestConfConfiguration.getKeyStorePassword();
-        this.keyStoreType = rncRestConfConfiguration.getKeyStoreType();
-        this.keyStoreFilePath = rncRestConfConfiguration.getKeyStoreFilePath();
-        this.trustKeyStorePassword = rncRestConfConfiguration.getTrustKeyStorePassword();
-        this.trustKeyStoreFilePath = rncRestConfConfiguration.getTrustKeyStoreFilePath();
-        this.useHttps = rncRestConfConfiguration.isUseHttps();
-        this.needClientAuth = rncRestConfConfiguration.isNeedClientAuth();
-        this.enableSwagger = rncRestConfConfiguration.isEnableSwagger();
-
-        setSecurityConfig(rncRestConfConfiguration.getSecurityConfig());
-    }
 
     public void setSecurityConfig(final SecurityConfig securityConfig) {
         this.securityConfig = securityConfig;
