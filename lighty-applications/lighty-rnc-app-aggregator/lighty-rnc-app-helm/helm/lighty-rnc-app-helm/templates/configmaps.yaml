@@ -59,15 +59,17 @@ data:
             "httpPort":{{ .Values.lighty.restconf.restconfPort }},
             "webSocketPort": 8185,
             "restconfServletContextPath":{{ .Values.lighty.restconf.restconfPath | quote}},
-            "jsonRestconfServiceType": "DRAFT_18",
-            "useHttps": {{ .Values.lighty.restconf.useHttps }},
-            "needClientAuth": {{ .Values.lighty.restconf.needClientAuth }},
-            "keyStorePassword":{{ .Values.lighty.restconf.keyStorePassword | quote }},
-            "keyStoreType":{{ .Values.lighty.restconf.keyStoreType | quote }},
-            "keyStoreFilePath":"{{ .Values.lighty.restconf.keyStoreDirectory }}/{{ .Values.lighty.restconf.keyStoreFileName }}",
-            "trustKeyStorePassword":{{ .Values.lighty.restconf.trustKeyStorePassword | quote }},
-            "trustKeyStoreFilePath":"{{ .Values.lighty.restconf.trustKeyStoreDirectory }}/{{ .Values.lighty.restconf.trustKeyStoreFileName }}",
-            "enableSwagger": {{ .Values.lighty.restconf.enableSwagger }}
+            "jsonRestconfServiceType": "DRAFT_18"
+        },
+        "lighty-server":{
+            "useHttps": {{ .Values.lighty.server.useHttps }},
+            "needClientAuth": {{ .Values.lighty.server.needClientAuth }},
+            "keyStorePassword": {{ .Values.lighty.server.keyStorePassword | quote }},
+            "keyStoreType": {{ .Values.lighty.server.keyStoreType | quote }},
+            "keyStoreFilePath": "{{ .Values.lighty.server.keyStoreDirectory }}/{{ .Values.lighty.server.keyStoreFileName }}",
+            "trustKeyStorePassword": {{ .Values.lighty.server.trustKeyStorePassword | quote }},
+            "trustKeyStoreFilePath": "{{ .Values.lighty.server.trustKeyStoreDirectory }}/{{ .Values.lighty.server.trustKeyStoreFileName }}",
+            "enableSwagger": {{ .Values.lighty.server.enableSwagger }}
         },
         "netconf-northbound":{
             "connectionTimeout":20000,

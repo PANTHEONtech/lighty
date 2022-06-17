@@ -9,20 +9,25 @@ package io.lighty.applications.rnc.module.config;
 
 import io.lighty.aaa.config.AAAConfiguration;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
+import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
+import io.lighty.server.config.LightyServerConfig;
 
 public class RncLightyModuleConfiguration {
     private final ControllerConfiguration controllerConfig;
-    private final RncRestConfConfiguration restconfConfig;
+    private final LightyServerConfig serverConfig;
+    private final RestConfConfiguration restConfConfiguration;
     private final NetconfConfiguration netconfConfig;
     private final AAAConfiguration aaaConfig;
 
-    public RncLightyModuleConfiguration(ControllerConfiguration controllerConfig,
-                                        RncRestConfConfiguration restconfConfig,
-                                        NetconfConfiguration netconfConfig,
-                                        AAAConfiguration aaaConfig) {
+    public RncLightyModuleConfiguration(final ControllerConfiguration controllerConfig,
+                                        final LightyServerConfig serverConfig,
+                                        final RestConfConfiguration restConfConfiguration,
+                                        final NetconfConfiguration netconfConfig,
+                                        final AAAConfiguration aaaConfig) {
         this.controllerConfig = controllerConfig;
-        this.restconfConfig = restconfConfig;
+        this.serverConfig = serverConfig;
+        this.restConfConfiguration = restConfConfiguration;
         this.netconfConfig = netconfConfig;
         this.aaaConfig = aaaConfig;
     }
@@ -31,8 +36,12 @@ public class RncLightyModuleConfiguration {
         return controllerConfig;
     }
 
-    public RncRestConfConfiguration getRestconfConfig() {
-        return restconfConfig;
+    public LightyServerConfig getServerConfig() {
+        return serverConfig;
+    }
+
+    public RestConfConfiguration getRestconfConfig() {
+        return restConfConfiguration;
     }
 
     public NetconfConfiguration getNetconfConfig() {

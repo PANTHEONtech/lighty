@@ -23,6 +23,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>io.lighty.core</groupId>
+            <artifactId>lighty-controller</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
         </dependency>
@@ -33,6 +37,10 @@
         <dependency>
             <groupId>org.opendaylight.aaa.web</groupId>
             <artifactId>web-jetty-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty.http2</groupId>
+            <artifactId>http2-server</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

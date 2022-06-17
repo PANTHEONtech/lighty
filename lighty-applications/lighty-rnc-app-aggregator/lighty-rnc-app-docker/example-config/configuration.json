@@ -51,15 +51,17 @@
         "httpPort":8888,
         "webSocketPort": 8185,
         "restconfServletContextPath":"/restconf",
-        "jsonRestconfServiceType": "DRAFT_18",
-        "useHttps": false,
-        "needClientAuth": false,
-        "keyStorePassword":"8pgETwat",
-        "keyStoreType":"JKS",
-        "keyStoreFilePath":"keystore/lightyio.jks",
-        "trustKeyStorePassword":"8pgETwat",
-        "trustKeyStoreFilePath":"keystore/lightyio.jks",
-        "enableSwagger": false        
+        "jsonRestconfServiceType": "DRAFT_18"
+    },
+    "lighty-server": {
+      "useHttps": false,
+      "needClientAuth": false,
+      "keyStorePassword":"8pgETwat",
+      "keyStoreType":"JKS",
+      "keyStoreFilePath":"keystore/lightyio.jks",
+      "trustKeyStorePassword":"8pgETwat",
+      "trustKeyStoreFilePath":"keystore/lightyio.jks",
+      "enableSwagger": false
     },
     "netconf-northbound":{
         "connectionTimeout":20000,

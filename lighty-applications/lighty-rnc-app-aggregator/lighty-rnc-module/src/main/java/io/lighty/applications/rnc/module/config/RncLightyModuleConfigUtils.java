@@ -10,13 +10,15 @@ package io.lighty.applications.rnc.module.config;
 import com.typesafe.config.Config;
 import io.lighty.aaa.config.AAAConfiguration;
 import io.lighty.aaa.util.AAAConfigUtils;
-import io.lighty.applications.rnc.module.config.util.RncRestConfConfigUtils;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
+import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
+import io.lighty.server.config.LightyServerConfig;
+import io.lighty.server.util.LightyServerConfigUtils;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,27 +36,28 @@ public final class RncLightyModuleConfigUtils {
         throw new UnsupportedOperationException();
     }
 
-    public static RncLightyModuleConfiguration loadConfigFromFile(Path configPath) throws ConfigurationException {
+    public static RncLightyModuleConfiguration loadConfigFromFile(final Path configPath) throws ConfigurationException {
         LOG.info("Loading RNC lighty.io configuration from file {} ...", configPath);
-
-        ControllerConfiguration controllerConfig;
-        RncRestConfConfiguration restconfConfig;
-        NetconfConfiguration netconfConfig;
-        AAAConfiguration aaaConfig;
-
+        final ControllerConfiguration controllerConfig;
+        final LightyServerConfig lightyServerConfig;
+        final RestConfConfiguration restconfConfig;
+        final NetconfConfiguration netconfConfig;
+        final AAAConfiguration aaaConfig;
         try {
             LOG.debug("Loading lighty.io controller module configuration from file...");
             controllerConfig = ControllerConfigUtils.getConfiguration(Files.newInputStream(configPath));
             addDefaultAppModels(controllerConfig);
-            Config akkaConfig = controllerConfig.getActorSystemConfig().getConfig().resolve();
+            final Config akkaConfig = controllerConfig.getActorSystemConfig().getConfig().resolve();
             controllerConfig.getActorSystemConfig().setConfig(akkaConfig);
             LOG.debug("lighty.io controller module configuration from file loaded!");
 
             LOG.debug("Loading lighty.io RESTCONF module configuration from file...");
-            restconfConfig = new RncRestConfConfiguration(RncRestConfConfigUtils
-                    .getRestConfConfiguration(Files.newInputStream(configPath)));
-            restconfConfig.setSecurityConfig(RncRestConfConfigUtils.createSecurityConfig(restconfConfig));
+            restconfConfig = RestConfConfigUtils.getRestConfConfiguration(Files.newInputStream(configPath));
             LOG.debug("lighty.io RESTCONF module configuration from file loaded!");
+
+            LOG.debug("Loading lighty.io Jetty server module configuration from file...");
+            lightyServerConfig = LightyServerConfigUtils.getServerConfiguration(Files.newInputStream(configPath));
+            LOG.debug("lighty.io Jetty server module configuration from file loaded!");
 
             LOG.debug("Loading lighty.io NETCONF module configuration from file...");
             netconfConfig = NetconfConfigUtils.createNetconfConfiguration(Files.newInputStream(configPath));
@@ -66,47 +69,48 @@ public final class RncLightyModuleConfigUtils {
         } catch (IOException e) {
             throw new ConfigurationException("Exception thrown while loading configuration!", e);
         }
-
-        return new RncLightyModuleConfiguration(controllerConfig, restconfConfig, netconfConfig, aaaConfig);
+        return new RncLightyModuleConfiguration(controllerConfig, lightyServerConfig, restconfConfig, netconfConfig,
+                aaaConfig);
     }
 
-    @SuppressWarnings({"VariableDeclarationUsageDistance"})
     public static RncLightyModuleConfiguration loadDefaultConfig() throws ConfigurationException {
         LOG.info("Loading default RNC lighty.io configuration ...");
-
-        LOG.debug("Loading default lighty.io controller module configuration...");
-
-        Set<YangModuleInfo> modelPaths = new HashSet<>();
+        final Set<YangModuleInfo> modelPaths = new HashSet<>();
         defaultModels(modelPaths);
 
-        ControllerConfiguration controllerConfig = ControllerConfigUtils.getDefaultSingleNodeConfiguration(modelPaths);
+        LOG.debug("Loading default lighty.io controller module configuration...");
+        final ControllerConfiguration controllerConfig = ControllerConfigUtils
+                .getDefaultSingleNodeConfiguration(modelPaths);
         LOG.debug("Default lighty.io controller module configuration!");
 
         LOG.debug("Loading default lighty.io RESTCONF module configuration...");
-        RncRestConfConfiguration restconfConfig =
-                new RncRestConfConfiguration(RncRestConfConfigUtils.getDefaultRestConfConfiguration());
-        restconfConfig.setSecurityConfig(RncRestConfConfigUtils.createSecurityConfig(restconfConfig));
+        final RestConfConfiguration restConfConfiguration = RestConfConfigUtils.getDefaultRestConfConfiguration();
         LOG.debug("Default lighty.io RESTCONF module configuration loaded!");
 
+        LOG.debug("Loading default lighty.io Jetty server module configuration...");
+        final LightyServerConfig lightyServerConfig = LightyServerConfigUtils.getDefaultLightyServerConfig();
+        LOG.debug("Default lighty.io Jetty server module configuration loaded!");
+
         LOG.debug("Loading default lighty.io NETCONF module configuration...");
-        NetconfConfiguration netconfConfig = NetconfConfigUtils.createDefaultNetconfConfiguration();
+        final NetconfConfiguration netconfConfig = NetconfConfigUtils.createDefaultNetconfConfiguration();
         LOG.debug("Default lighty.io NETCONF module configuration loaded!");
 
         LOG.debug("Loading default lighty.io AAA module configuration...");
-        AAAConfiguration aaaConfig = AAAConfigUtils.createDefaultAAAConfiguration();
+        final AAAConfiguration aaaConfig = AAAConfigUtils.createDefaultAAAConfiguration();
         LOG.debug("Default lighty.io AAA module configuration loaded!");
 
-        return new RncLightyModuleConfiguration(controllerConfig, restconfConfig, netconfConfig, aaaConfig);
+        return new RncLightyModuleConfiguration(controllerConfig, lightyServerConfig, restConfConfiguration,
+                netconfConfig, aaaConfig);
     }
 
-    private static void addDefaultAppModels(ControllerConfiguration controllerConfig) {
+    private static void addDefaultAppModels(final ControllerConfiguration controllerConfig) {
         LOG.debug("Adding minimal needed yang models if they are not present...");
         final Set<YangModuleInfo> modelPaths = new HashSet<>(controllerConfig.getSchemaServiceConfig().getModels());
         defaultModels(modelPaths);
         controllerConfig.getSchemaServiceConfig().setModels(Collections.unmodifiableSet(modelPaths));
     }
 
-    private static void defaultModels(Set<YangModuleInfo> modelPaths) {
+    private static void defaultModels(final Set<YangModuleInfo> modelPaths) {
         modelPaths.addAll(RestConfConfigUtils.YANG_MODELS);
         modelPaths.addAll(NetconfConfigUtils.NETCONF_TOPOLOGY_MODELS);
         modelPaths.addAll(AAAConfigUtils.YANG_MODELS);

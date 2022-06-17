@@ -47,11 +47,13 @@
         "httpPort":8181,
         "webSocketPort": 8181,
         "restconfServletContextPath":"/rests",
-        "jsonRestconfServiceType": "DRAFT_02",
-        "useHttps": false,
-        "keyStorePassword":"keystore",
-        "keyStoreType":"JKS",
-        "keyStoreFilePath":"src/test/resources/keystore/KeyStore.jks"
+        "jsonRestconfServiceType": "DRAFT_02"
+    },
+    "lighty-server" : {
+      "useHttps": false,
+      "keyStorePassword":"keystore",
+      "keyStoreType":"JKS",
+      "keyStoreFilePath":"src/test/resources/keystore/KeyStore.jks"
     },
     "netconf-northbound":{
         "connectionTimeout":20000,

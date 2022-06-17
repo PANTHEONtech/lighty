@@ -5,10 +5,9 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-package io.lighty.applications.rnc.module;
+package io.lighty.server;
 
-import io.lighty.applications.rnc.module.config.SecurityConfig;
-import io.lighty.server.LightyServerBuilder;
+import io.lighty.server.config.SecurityConfig;
 import java.net.InetSocketAddress;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.HttpConfiguration;
@@ -21,7 +20,7 @@ import org.eclipse.jetty.server.SslConnectionFactory;
 public class HttpsLightyServerBuilder extends LightyServerBuilder {
     private final SecurityConfig securityConfig;
 
-    public HttpsLightyServerBuilder(InetSocketAddress inetSocketAddress, SecurityConfig securityConfig) {
+    public HttpsLightyServerBuilder(final InetSocketAddress inetSocketAddress, final SecurityConfig securityConfig) {
         super(inetSocketAddress);
         this.server = new Server();
         this.securityConfig = securityConfig;
