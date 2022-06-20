@@ -23,6 +23,7 @@ lighty:
     restconfPort: 8888
     restconfPath: "/restconf"
   server:
+    useHttp2: false
     useHttps: false
     needClientAuth: false
     keyStorePassword: "8pgETwat"
