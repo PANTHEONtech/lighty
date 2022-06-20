@@ -55,6 +55,7 @@
     },
     "lighty-server": {
       "useHttps": false,
+      "useHttp2": false,
       "needClientAuth": false,
       "keyStorePassword":"8pgETwat",
       "keyStoreType":"JKS",

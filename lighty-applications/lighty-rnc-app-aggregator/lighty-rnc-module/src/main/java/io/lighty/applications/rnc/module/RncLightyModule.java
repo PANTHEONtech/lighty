@@ -26,6 +26,7 @@ import io.lighty.modules.southbound.netconf.impl.NetconfSBPlugin;
 import io.lighty.modules.southbound.netconf.impl.NetconfTopologyPluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
+import io.lighty.server.Http2LightyServerBuilder;
 import io.lighty.server.HttpsLightyServerBuilder;
 import io.lighty.server.LightyServerBuilder;
 import io.lighty.server.config.LightyServerConfig;
@@ -115,17 +116,17 @@ public class RncLightyModule {
         }
     }
 
-    private CommunityRestConf initRestconf(final RestConfConfiguration config, final LightyServerConfig serverConfig,
+    private CommunityRestConf initRestconf(final RestConfConfiguration rcConfig, final LightyServerConfig serverConfig,
             final LightyServices services) {
-        final RestConfConfiguration restConfConfiguration = RestConfConfigUtils.getRestConfConfiguration(config,
-                services);
-        final InetSocketAddress inetSocketAddress =
-                new InetSocketAddress(config.getInetAddress(), config.getHttpPort());
+        final var restConfConfiguration = RestConfConfigUtils.getRestConfConfiguration(rcConfig, services);
+        final var inetSocketAddress = new InetSocketAddress(rcConfig.getInetAddress(), rcConfig.getHttpPort());
 
-        if (serverConfig.isUseHttps()) {
-            this.jettyServerBuilder = new HttpsLightyServerBuilder(inetSocketAddress, serverConfig.getSecurityConfig());
+        if (serverConfig.isUseHttp2()) {
+            jettyServerBuilder = new Http2LightyServerBuilder(inetSocketAddress, serverConfig.getSecurityConfig());
+        } else if (serverConfig.isUseHttps()) {
+            jettyServerBuilder = new HttpsLightyServerBuilder(inetSocketAddress, serverConfig.getSecurityConfig());
         } else {
-            this.jettyServerBuilder = new LightyServerBuilder(inetSocketAddress);
+            jettyServerBuilder = new LightyServerBuilder(inetSocketAddress);
         }
 
         return CommunityRestConfBuilder.from(restConfConfiguration)
@@ -170,29 +171,23 @@ public class RncLightyModule {
     public boolean close() {
         LOG.info("Stopping RNC lighty.io application...");
         boolean success = true;
-
         if (rncModuleConfig.getServerConfig().isEnableSwagger()
                 && this.swagger != null && !stopAndWaitLightyModule(this.swagger)) {
             success = false;
         }
-
         if (this.rncModuleConfig.getAaaConfig().isEnableAAA()
                 && this.aaaLighty != null && !stopAndWaitLightyModule(this.aaaLighty)) {
             success = false;
         }
-
         if (this.lightyRestconf != null && !stopAndWaitLightyModule(this.lightyRestconf)) {
             success = false;
         }
-
         if (this.lightyNetconf != null && !stopAndWaitLightyModule(this.lightyNetconf)) {
             success = false;
         }
-
         if (this.lightyController != null && !stopAndWaitLightyModule(this.lightyController)) {
             success = false;
         }
-
         if (success) {
             LOG.info("RNC lighty.io module stopped successfully!");
             return true;

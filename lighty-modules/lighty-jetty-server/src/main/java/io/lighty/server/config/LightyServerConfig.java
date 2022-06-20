@@ -18,6 +18,7 @@ public class LightyServerConfig {
     private String trustKeyStorePassword = "8pgETwat";
     private String trustKeyStoreFilePath = "keystore/lightyio.jks";
     private boolean useHttps = false;
+    private boolean useHttp2 = false;
     private boolean needClientAuth = false;
     private boolean enableSwagger = false;
 
@@ -91,5 +92,13 @@ public class LightyServerConfig {
 
     public void setEnableSwagger(boolean enableSwagger) {
         this.enableSwagger = enableSwagger;
+    }
+
+    public boolean isUseHttp2() {
+        return useHttp2;
+    }
+
+    public void setUseHttp2(boolean useHttp2) {
+        this.useHttp2 = useHttp2;
     }
 }

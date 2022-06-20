@@ -62,6 +62,7 @@ data:
             "jsonRestconfServiceType": "DRAFT_18"
         },
         "lighty-server":{
+            "useHttp2": {{ .Values.lighty.server.useHttp2 }},
             "useHttps": {{ .Values.lighty.server.useHttps }},
             "needClientAuth": {{ .Values.lighty.server.needClientAuth }},
             "keyStorePassword": {{ .Values.lighty.server.keyStorePassword | quote }},
