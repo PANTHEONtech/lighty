@@ -62,7 +62,7 @@
             <dependency>
                 <groupId>org.opendaylight.netconf</groupId>
                 <artifactId>netconf-artifacts</artifactId>
-                <version>3.0.3</version>
+                <version>3.0.5</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -76,7 +76,7 @@
             <dependency>
                 <groupId>org.opendaylight.bgpcep</groupId>
                 <artifactId>bgpcep-artifacts</artifactId>
-                <version>0.17.3</version>
+                <version>0.17.5</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
