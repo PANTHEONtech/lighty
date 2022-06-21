@@ -1,0 +1,7 @@
+{
+  "lighty-server": {
+    "useHttps": true,
+    "needClientAuth": true,
+    "enableSwagger": true
+  }
+}

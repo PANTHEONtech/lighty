@@ -37,6 +37,7 @@ public class RncLightyModuleConfigUtilsTest {
         // Test Server configuration
         final var serverConfig = rncConfig.getServerConfig();
         assertFalse(serverConfig.isUseHttps());
+        assertTrue(serverConfig.isUseHttp2());
         assertEquals(serverConfig.getKeyStoreFilePath(), "src/test/resources/keystore/KeyStore.jks");
         assertFalse(serverConfig.getKeyStorePassword().isEmpty());
         assertEquals(serverConfig.getKeyStoreType(), "JKS");

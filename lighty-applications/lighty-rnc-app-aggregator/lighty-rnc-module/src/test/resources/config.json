@@ -51,6 +51,7 @@
     },
     "lighty-server" : {
       "useHttps": false,
+      "useHttp2": true,
       "keyStorePassword":"keystore",
       "keyStoreType":"JKS",
       "keyStoreFilePath":"src/test/resources/keystore/KeyStore.jks"
