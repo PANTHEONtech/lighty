@@ -1,0 +1,10 @@
+{
+  "lighty-server": {
+    "useHttp2": true,
+    "keyStorePassword": "ksPassword",
+    "keyStoreType": "JKS",
+    "keyStoreFilePath": "keystore/keyStore.jks",
+    "trustKeyStorePassword": "trustKsPassword",
+    "trustKeyStoreFilePath": "keystore/trustedKeyStore.jks"
+  }
+}
