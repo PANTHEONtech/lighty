@@ -10,39 +10,127 @@ package io.lighty.applications.rnc.module;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertEquals;
 
 import io.lighty.applications.rnc.module.config.RncLightyModuleConfigUtils;
-import io.lighty.applications.rnc.module.config.RncLightyModuleConfiguration;
 import io.lighty.core.controller.impl.config.ConfigurationException;
+import java.net.Socket;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse.BodyHandlers;
+import java.nio.file.Paths;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+import java.time.Duration;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509ExtendedTrustManager;
+import org.eclipse.jetty.http.HttpStatus;
 import org.testng.annotations.Test;
 
 public class RncLightyModuleSmokeTest {
+
     private static final int MODULE_TIMEOUT = 60;
+    private static final String HTTPS_URI = "https://127.0.0.1:8888";
+    private static final String HTTP_URI = "http://127.0.0.1:8888";
+    private static final String TOPOLOGY_PATH = "/restconf/data/network-topology:network-topology";
 
     @Test
-    public void rncLightyModuleSmokeTest() throws ConfigurationException {
-        final RncLightyModule rncModule = new RncLightyModule(RncLightyModuleConfigUtils.loadDefaultConfig(),
-                MODULE_TIMEOUT);
-        rncModule.initModules();
-        rncModule.close();
+    public void rncLightyModuleDefaultConfigTest() throws Exception {
+        final var rncModule = new RncLightyModule(RncLightyModuleConfigUtils.loadDefaultConfig(), MODULE_TIMEOUT);
+        assertTrue(rncModule.initModules());
+        final var httpResponse = HttpClient.newHttpClient()
+                .send(createGetRequest(HTTP_URI + TOPOLOGY_PATH), BodyHandlers.ofString());
+        assertEquals(HttpStatus.OK_200, httpResponse.statusCode());
+        assertTrue(rncModule.close());
     }
 
     @Test
-    public void rncLightyModuleHttpsSmokeTest() throws Exception {
-        final var rncLightyModuleConfiguration = RncLightyModuleConfigUtils.loadDefaultConfig();
-        rncLightyModuleConfiguration.getServerConfig().setUseHttps(true);
-        final var rncModule = new RncLightyModule(rncLightyModuleConfiguration, MODULE_TIMEOUT);
-        rncModule.initModules();
-        rncModule.close();
+    public void rncLightyModuleHttpsTest() throws Exception {
+        final var resource = RncLightyModuleSmokeTest.class.getResource("/httpsConfig.json");
+        final var rncConfig = RncLightyModuleConfigUtils.loadConfigFromFile(Paths.get(resource.getPath()));
+        final var rncModule = new RncLightyModule(rncConfig, MODULE_TIMEOUT);
+        assertTrue(rncModule.initModules());
+        final var sslClient = getHttpClientWithSsl();
+        final var httpResponse = sslClient.send(createGetRequest(HTTPS_URI + TOPOLOGY_PATH), BodyHandlers.ofString());
+        assertEquals(HttpStatus.OK_200, httpResponse.statusCode());
+        assertTrue(rncModule.close());
+    }
+
+    @Test
+    public void rncLightyModuleHttp2Test() throws Exception {
+        final var resource = RncLightyModuleSmokeTest.class.getResource("/http2Config.json");
+        final var rncConfig = RncLightyModuleConfigUtils.loadConfigFromFile(Paths.get(resource.getPath()));
+        final var rncModule = new RncLightyModule(rncConfig, MODULE_TIMEOUT);
+        assertTrue(rncModule.initModules());
+        final var sslClient = getHttpClientWithSsl();
+        final var httpResponse = sslClient.send(createGetRequest(HTTPS_URI + TOPOLOGY_PATH), BodyHandlers.ofString());
+        assertEquals(HttpStatus.OK_200, httpResponse.statusCode());
+        assertTrue(rncModule.close());
     }
 
     @Test
     public void rncLightyModuleStartFailed() throws ConfigurationException {
-        final RncLightyModuleConfiguration config = spy(RncLightyModuleConfigUtils.loadDefaultConfig());
+        final var config = spy(RncLightyModuleConfigUtils.loadDefaultConfig());
         when(config.getControllerConfig()).thenReturn(null);
-        RncLightyModule rncModule = new RncLightyModule(config, MODULE_TIMEOUT);
-        final Boolean isStarted = rncModule.initModules();
+        final var rncModule = new RncLightyModule(config, MODULE_TIMEOUT);
+        final var isStarted = rncModule.initModules();
+        final var isClose = rncModule.close();
 
         assertFalse(isStarted);
+        assertTrue(isClose);
+    }
+
+    private static HttpClient getHttpClientWithSsl() throws Exception {
+        final var ssl = SSLContext.getInstance("SSL");
+        ssl.init(null, getTrustedAll(), new SecureRandom());
+        return HttpClient.newBuilder()
+                .sslContext(ssl)
+                .build();
+    }
+
+    private static HttpRequest createGetRequest(final String path) {
+        return HttpRequest.newBuilder()
+                .uri(URI.create(path))
+                .timeout(Duration.ofMinutes(1))
+                .build();
+    }
+
+    private static TrustManager[] getTrustedAll() {
+        return new TrustManager[]{
+            new X509ExtendedTrustManager() {
+                @Override
+                public void checkClientTrusted(X509Certificate[] x509Certificates, String data, Socket socket) {
+                }
+
+                @Override
+                public void checkClientTrusted(X509Certificate[] x509Certificates, String data, SSLEngine sslEngine) {
+                }
+
+                @Override
+                public void checkClientTrusted(X509Certificate[] certs, final String authType) {
+                }
+
+                @Override
+                public void checkServerTrusted(X509Certificate[] x509Certificates, String data, Socket socket) {
+                }
+
+                @Override
+                public void checkServerTrusted(X509Certificate[] x509Certificates, String data, SSLEngine sslEngine) {
+                }
+
+                @Override
+                public void checkServerTrusted(X509Certificate[] certs, final String authType) {
+                }
+
+                @Override
+                public X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+            }
+        };
     }
 }
