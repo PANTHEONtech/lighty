@@ -9,9 +9,9 @@ package io.lighty.kit.examples.community.aaa.restconf;
 
 import com.google.common.base.Stopwatch;
 import io.lighty.aaa.AAALighty;
+import io.lighty.aaa.config.AAAConfiguration;
 import io.lighty.aaa.config.CertificateManagerConfig;
-import io.lighty.aaa.config.DatastoreConfigurationConfig;
-import io.lighty.aaa.config.ShiroConfigurationConfig;
+import io.lighty.aaa.util.AAAConfigUtils;
 import io.lighty.core.common.exceptions.ModuleStartupException;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
@@ -44,8 +44,6 @@ import org.slf4j.LoggerFactory;
 public final class Main {
 
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
-    private static final String PASS = "bar";
-    private static final String USER = "foo";
     private static final long DEFAULT_TIMEOUT_SECONDS = 30;
 
     private LightyController lightyController;
@@ -63,23 +61,26 @@ public final class Main {
         try {
             final ControllerConfiguration singleNodeConfiguration;
             final RestConfConfiguration restconfConfiguration;
+            final AAAConfiguration aaaConfiguration;
             if (args.length > 0) {
                 final Path configPath = Paths.get(args[0]);
                 LOG.info("Lighty and Restconf starting, using configuration from file {} ...", configPath);
                 singleNodeConfiguration = ControllerConfigUtils.getConfiguration(Files.newInputStream(configPath));
                 restconfConfiguration = RestConfConfigUtils.getRestConfConfiguration(Files.newInputStream(configPath));
+                aaaConfiguration = AAAConfigUtils.getAAAConfiguration(Files.newInputStream(configPath));
             } else {
                 LOG.info("Lighty and Restconf starting, using default configuration ...");
                 final Set<YangModuleInfo> modelPaths = Stream.concat(RestConfConfigUtils.YANG_MODELS.stream(),
                         AAALighty.YANG_MODELS.stream()).collect(Collectors.toSet());
                 singleNodeConfiguration = ControllerConfigUtils.getDefaultSingleNodeConfiguration(modelPaths);
                 restconfConfiguration = RestConfConfigUtils.getDefaultRestConfConfiguration();
+                aaaConfiguration = AAAConfigUtils.createDefaultAAAConfiguration();
             }
             //Register shutdown hook for graceful shutdown.
             if (registerShutdownHook) {
                 Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
             }
-            startLighty(singleNodeConfiguration, restconfConfiguration);
+            startLighty(singleNodeConfiguration, restconfConfiguration, aaaConfiguration);
             LOG.info("Lighty.io, Restconf and AAA module started in {}", stopwatch.stop());
         } catch (final Throwable cause) {
             LOG.error("Lighty.io, Restconf and AAA module main application exception: ", cause);
@@ -91,11 +92,11 @@ public final class Main {
     }
 
     private void startLighty(final ControllerConfiguration controllerConfiguration,
-                             final RestConfConfiguration restconfConfiguration)
+            final RestConfConfiguration restconfConfiguration, final AAAConfiguration aaaConfiguration)
         throws ConfigurationException, ExecutionException, InterruptedException, TimeoutException,
                ModuleStartupException {
 
-        //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
+        //1. Initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
         final LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
         this.lightyController = lightyControllerBuilder.from(controllerConfiguration).build();
         final boolean controllerStartOk = this.lightyController.start().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
@@ -103,7 +104,7 @@ public final class Main {
             throw new ModuleStartupException("Lighty.io Controller startup failed!");
         }
 
-        // 2. start Restconf server
+        // 2. Initialize and start Restconf server
         final LightyServerBuilder jettyServerBuilder = new LightyServerBuilder(new InetSocketAddress(
                 restconfConfiguration.getInetAddress(), restconfConfiguration.getHttpPort()));
         this.restconf = CommunityRestConfBuilder
@@ -115,19 +116,18 @@ public final class Main {
         if (!restconfStartOk) {
             throw new ModuleStartupException("Community Restconf startup failed!");
         }
-        Security.addProvider(new BouncyCastleProvider());
 
+        // 3. Initialize and start Lighty AAA
         final DataBroker bindingDataBroker = this.lightyController.getServices().getBindingDataBroker();
-        final String moonEndpointPath = "/moon";
-        // this is example only real application should not use hardcoded credentials.
-        this.aaaLighty = new AAALighty(bindingDataBroker, CertificateManagerConfig.getDefault(bindingDataBroker),
-                null, ShiroConfigurationConfig.getDefault(), moonEndpointPath,
-                DatastoreConfigurationConfig.getDefault(), USER, PASS, jettyServerBuilder);
+        Security.addProvider(new BouncyCastleProvider());
+        aaaConfiguration.setCertificateManager(CertificateManagerConfig.getDefault(bindingDataBroker));
+        this.aaaLighty = new AAALighty(bindingDataBroker,null, jettyServerBuilder, aaaConfiguration);
         final boolean aaaLightyStartOk = this.aaaLighty.start().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
         if (!aaaLightyStartOk) {
             throw new ModuleStartupException("AAA module startup failed!");
         }
 
+        // 4. Start Lighty jetty server
         this.restconf.startServer();
     }
 

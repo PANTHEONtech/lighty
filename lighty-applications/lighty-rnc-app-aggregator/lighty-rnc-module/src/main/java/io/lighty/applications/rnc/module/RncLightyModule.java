@@ -34,7 +34,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -133,12 +132,8 @@ public class RncLightyModule {
 
     private AAALighty initAAA(AAAConfiguration config, LightyServices services) {
         Security.addProvider(new BouncyCastleProvider());
-        final DataBroker dataBroker = services.getBindingDataBroker();
         config.setCertificateManager(CertificateManagerConfig.getDefault(services.getBindingDataBroker()));
-
-        return new AAALighty(dataBroker, config.getCertificateManager(), null, config.getShiroConf(),
-            config.getMoonEndpointPath(), config.getDatastoreConf(), config.getDbUsername(), config.getDbPassword(),
-            this.jettyServerBuilder);
+        return new AAALighty(services.getBindingDataBroker(),null, this.jettyServerBuilder, config);
     }
 
     private SwaggerLighty initSwaggerLighty(RncRestConfConfiguration config,
