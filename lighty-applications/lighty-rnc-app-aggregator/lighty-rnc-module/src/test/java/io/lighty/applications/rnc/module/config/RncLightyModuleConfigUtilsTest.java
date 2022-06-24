@@ -12,6 +12,7 @@ import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
 
+import io.lighty.aaa.config.AAAConfiguration;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.DatastoreConfigurationUtils;
@@ -101,7 +102,7 @@ public class RncLightyModuleConfigUtilsTest {
     }
 
     private void checkDefaultAAAconfig(RncLightyModuleConfiguration config) {
-        final RncAAAConfiguration aaaConfig = config.getAaaConfig();
+        final AAAConfiguration aaaConfig = config.getAaaConfig();
 
         assertEquals(aaaConfig.getMoonEndpointPath(), "/moon");
         assertEquals(aaaConfig.getDbPassword(), "bar");

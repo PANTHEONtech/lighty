@@ -8,8 +8,8 @@
 package io.lighty.applications.rnc.module;
 
 import io.lighty.aaa.AAALighty;
+import io.lighty.aaa.config.AAAConfiguration;
 import io.lighty.aaa.config.CertificateManagerConfig;
-import io.lighty.applications.rnc.module.config.RncAAAConfiguration;
 import io.lighty.applications.rnc.module.config.RncLightyModuleConfiguration;
 import io.lighty.applications.rnc.module.config.RncRestConfConfiguration;
 import io.lighty.applications.rnc.module.config.util.RncRestConfConfigUtils;
@@ -131,7 +131,7 @@ public class RncLightyModule {
             .build();
     }
 
-    private AAALighty initAAA(RncAAAConfiguration config, LightyServices services) {
+    private AAALighty initAAA(AAAConfiguration config, LightyServices services) {
         Security.addProvider(new BouncyCastleProvider());
         final DataBroker dataBroker = services.getBindingDataBroker();
         config.setCertificateManager(CertificateManagerConfig.getDefault(services.getBindingDataBroker()));
