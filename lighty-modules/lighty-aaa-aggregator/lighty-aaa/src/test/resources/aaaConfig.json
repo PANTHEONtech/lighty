@@ -1,0 +1,8 @@
+{
+  "aaa": {
+    "enableAAA": true,
+    "moonEndpointPath": "/moon",
+    "dbPassword": "Password",
+    "dbUsername": "Username"
+  }
+}
