@@ -8,6 +8,7 @@
 package io.lighty.aaa;
 
 import com.google.common.collect.ImmutableSet;
+import io.lighty.aaa.config.AAAConfiguration;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.server.LightyServerBuilder;
 import java.util.Set;
@@ -42,18 +43,16 @@ public final class AAALighty extends AbstractLightyModule {
     private final ICertificateManager certificateManager;
     private final DataBroker dataBroker;
 
-    public AAALighty(final DataBroker dataBroker, final ICertificateManager certificateManager, final CredentialAuth<
-            PasswordCredentials> credentialAuth, final ShiroConfiguration shiroConfiguration,
-            final String moonEndpointPath, final DatastoreConfig datastoreConfig,
-            final String dbUsername, final String dbPassword, final LightyServerBuilder server) {
+    public AAALighty(final DataBroker dataBroker, final CredentialAuth<PasswordCredentials> credentialAuth,
+            final LightyServerBuilder server, final AAAConfiguration config) {
         this.dataBroker = dataBroker;
-        this.certificateManager = certificateManager;
+        this.certificateManager = config.getCertificateManager();
         this.credentialAuth = credentialAuth;
-        this.shiroConfiguration = shiroConfiguration;
-        this.moonEndpointPath = moonEndpointPath;
-        this.datastoreConfig = datastoreConfig;
-        this.dbUsername = dbUsername;
-        this.dbPassword = dbPassword;
+        this.shiroConfiguration = config.getShiroConf();
+        this.moonEndpointPath = config.getMoonEndpointPath();
+        this.datastoreConfig = config.getDatastoreConf();
+        this.dbUsername = config.getDbUsername();
+        this.dbPassword = config.getDbPassword();
         this.server = server;
         this.aaaShiroProviderHandler = new AAAShiroProviderHandler();
     }
