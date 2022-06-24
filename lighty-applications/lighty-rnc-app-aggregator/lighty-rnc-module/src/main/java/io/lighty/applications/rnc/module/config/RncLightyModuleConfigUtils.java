@@ -9,7 +9,8 @@ package io.lighty.applications.rnc.module.config;
 
 import com.typesafe.config.Config;
 import io.lighty.aaa.AAALighty;
-import io.lighty.applications.rnc.module.config.util.AAAConfigUtils;
+import io.lighty.aaa.config.AAAConfiguration;
+import io.lighty.aaa.util.AAAConfigUtils;
 import io.lighty.applications.rnc.module.config.util.RncRestConfConfigUtils;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
@@ -40,7 +41,7 @@ public final class RncLightyModuleConfigUtils {
         ControllerConfiguration controllerConfig;
         RncRestConfConfiguration restconfConfig;
         NetconfConfiguration netconfConfig;
-        RncAAAConfiguration aaaConfig;
+        AAAConfiguration aaaConfig;
 
         try {
             LOG.debug("Loading lighty.io controller module configuration from file...");
@@ -93,7 +94,7 @@ public final class RncLightyModuleConfigUtils {
         LOG.debug("Default lighty.io NETCONF module configuration loaded!");
 
         LOG.debug("Loading default lighty.io AAA module configuration...");
-        RncAAAConfiguration aaaConfig = AAAConfigUtils.createDefaultAAAConfiguration();
+        AAAConfiguration aaaConfig = AAAConfigUtils.createDefaultAAAConfiguration();
         LOG.debug("Default lighty.io AAA module configuration loaded!");
 
         return new RncLightyModuleConfiguration(controllerConfig, restconfConfig, netconfConfig, aaaConfig);
