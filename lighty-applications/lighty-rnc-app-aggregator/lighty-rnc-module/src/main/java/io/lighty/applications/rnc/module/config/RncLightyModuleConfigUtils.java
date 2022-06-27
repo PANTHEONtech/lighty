@@ -8,7 +8,6 @@
 package io.lighty.applications.rnc.module.config;
 
 import com.typesafe.config.Config;
-import io.lighty.aaa.AAALighty;
 import io.lighty.aaa.config.AAAConfiguration;
 import io.lighty.aaa.util.AAAConfigUtils;
 import io.lighty.applications.rnc.module.config.util.RncRestConfConfigUtils;
@@ -110,6 +109,6 @@ public final class RncLightyModuleConfigUtils {
     private static void defaultModels(Set<YangModuleInfo> modelPaths) {
         modelPaths.addAll(RestConfConfigUtils.YANG_MODELS);
         modelPaths.addAll(NetconfConfigUtils.NETCONF_TOPOLOGY_MODELS);
-        modelPaths.addAll(AAALighty.YANG_MODELS);
+        modelPaths.addAll(AAAConfigUtils.YANG_MODELS);
     }
 }
