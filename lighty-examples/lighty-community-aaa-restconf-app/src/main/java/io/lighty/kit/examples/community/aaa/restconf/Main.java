@@ -71,7 +71,7 @@ public final class Main {
             } else {
                 LOG.info("Lighty and Restconf starting, using default configuration ...");
                 final Set<YangModuleInfo> modelPaths = Stream.concat(RestConfConfigUtils.YANG_MODELS.stream(),
-                        AAALighty.YANG_MODELS.stream()).collect(Collectors.toSet());
+                        AAAConfigUtils.YANG_MODELS.stream()).collect(Collectors.toSet());
                 singleNodeConfiguration = ControllerConfigUtils.getDefaultSingleNodeConfiguration(modelPaths);
                 restconfConfiguration = RestConfConfigUtils.getDefaultRestConfConfiguration();
                 aaaConfiguration = AAAConfigUtils.createDefaultAAAConfiguration();
