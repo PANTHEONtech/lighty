@@ -14,34 +14,22 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import org.opendaylight.aaa.api.CredentialAuth;
 import org.opendaylight.aaa.api.PasswordCredentials;
-import org.opendaylight.aaa.cert.api.ICertificateManager;
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.DatastoreConfig;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.ShiroConfiguration;
 
 public final class AAALighty extends AbstractLightyModule {
 
     private final AAAShiroProviderHandler aaaShiroProviderHandler;
     private final LightyServerBuilder server;
-    private final String dbPassword;
-    private final String dbUsername;
-    private final DatastoreConfig datastoreConfig;
-    private final String moonEndpointPath;
-    private final ShiroConfiguration shiroConfiguration;
     private final CredentialAuth<PasswordCredentials> credentialAuth;
-    private final ICertificateManager certificateManager;
     private final DataBroker dataBroker;
+
+    private final AAAConfiguration aaaConfiguration;
 
     public AAALighty(final DataBroker dataBroker, final CredentialAuth<PasswordCredentials> credentialAuth,
             final LightyServerBuilder server, final AAAConfiguration config) {
         this.dataBroker = dataBroker;
-        this.certificateManager = config.getCertificateManager();
+        this.aaaConfiguration = config;
         this.credentialAuth = credentialAuth;
-        this.shiroConfiguration = config.getShiroConf();
-        this.moonEndpointPath = config.getMoonEndpointPath();
-        this.datastoreConfig = config.getDatastoreConf();
-        this.dbUsername = config.getDbUsername();
-        this.dbPassword = config.getDbPassword();
         this.server = server;
         this.aaaShiroProviderHandler = new AAAShiroProviderHandler();
     }
@@ -49,8 +37,7 @@ public final class AAALighty extends AbstractLightyModule {
     @Override
     protected boolean initProcedure() throws InterruptedException {
         final CompletableFuture<AAALightyShiroProvider> newInstance = AAALightyShiroProvider.newInstance(
-                this.dataBroker, this.certificateManager, this.credentialAuth, this.shiroConfiguration,
-                this.moonEndpointPath, this.datastoreConfig, this.dbUsername, this.dbPassword, this.server);
+                this.dataBroker, this.aaaConfiguration, this.credentialAuth, this.server);
         final CountDownLatch cdl = new CountDownLatch(1);
         newInstance.whenComplete((t, u) -> {
             AAALighty.this.aaaShiroProviderHandler.setAaaLightyShiroProvider(t);

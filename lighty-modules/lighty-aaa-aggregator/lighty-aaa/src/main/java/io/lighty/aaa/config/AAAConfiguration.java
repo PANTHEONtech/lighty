@@ -21,15 +21,41 @@ public class AAAConfiguration {
     private DatastoreConfig datastoreConf;
 
     private boolean enableAAA = false;
-
+    // These are default configuration and that should be rewritten
     private String moonEndpointPath = "/moon";
-    @SuppressWarnings("squid:S2068")
     private String dbPassword = "bar";
     private String dbUsername = "foo";
+    private String dbPath = "./data";
+    private String password = "admin";
+    private String username = "admin";
 
     public AAAConfiguration() {
         this.shiroConf = ShiroConfigurationConfig.getDefault();
         this.datastoreConf = DatastoreConfigurationConfig.getDefault();
+    }
+
+    public String getDbPath() {
+        return dbPath;
+    }
+
+    public void setDbPath(String dbPath) {
+        this.dbPath = dbPath;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public ShiroConfiguration getShiroConf() {
