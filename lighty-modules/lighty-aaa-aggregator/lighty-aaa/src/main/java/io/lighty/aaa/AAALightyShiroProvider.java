@@ -7,6 +7,7 @@
  */
 package io.lighty.aaa;
 
+import io.lighty.aaa.config.AAAConfiguration;
 import io.lighty.server.LightyServerBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +61,6 @@ public final class AAALightyShiroProvider {
     private static final Logger LOG = LoggerFactory.getLogger(AAALightyShiroProvider.class);
 
     private static AAALightyShiroProvider INSTANCE;
-    private IIDMStore iidmStore;
 
     private final List<Handler> handlers;
     private final DataBroker dataBroker;
@@ -68,32 +68,32 @@ public final class AAALightyShiroProvider {
     private final ShiroConfiguration shiroConfiguration;
     private final AuthenticationService authenticationService;
     private final DefaultPasswordHashService defaultPasswordHashService;
+    private final H2TokenStore tokenStore;
     private TokenAuthenticators tokenAuthenticators;
     private CredentialAuth<PasswordCredentials> credentialAuth;
     private ClaimCache claimCache;
     private PasswordHashService passwordHashService;
-    private H2TokenStore tokenStore;
+    private IIDMStore iidmStore;
 
     private ShiroWebEnvironmentLoaderListener shiroWebEnvironmentLoaderListener;
 
     private AAALightyShiroProvider(final DataBroker dataBroker,
-                                   final ICertificateManager certificateManager,
+                                   final AAAConfiguration aaaConfiguration,
                                    final CredentialAuth<PasswordCredentials> credentialAuth,
-                                   final ShiroConfiguration shiroConfiguration,
-                                   final String moonEndpointPath,
-                                   final DatastoreConfig datastoreConfig,
-                                   final String dbUsername,
-                                   final String dbPassword,
                                    final LightyServerBuilder server) {
         this.dataBroker = dataBroker;
-        this.certificateManager = certificateManager;
+        this.certificateManager = aaaConfiguration.getCertificateManager();
         this.credentialAuth = credentialAuth;
-        this.shiroConfiguration = shiroConfiguration;
+        this.shiroConfiguration = aaaConfiguration.getShiroConf();
         this.handlers = new ArrayList<>();
         this.authenticationService = new AuthenticationManager();
+        final DatastoreConfig datastoreConfig = aaaConfiguration.getDatastoreConf();
 
         if (datastoreConfig != null && datastoreConfig.getStore().equals(DatastoreConfig.Store.H2DataStore)) {
-            final IdmLightConfig config = new IdmLightConfigBuilder().dbUser(dbUsername).dbPwd(dbPassword).build();
+            final IdmLightConfig config = new IdmLightConfigBuilder()
+                    .dbDirectory(aaaConfiguration.getDbPath())
+                    .dbUser(aaaConfiguration.getUsername())
+                    .dbPwd(aaaConfiguration.getDbPassword()).build();
             final PasswordServiceConfig passwordServiceConfig = new PasswordServiceConfigBuilder().setAlgorithm(
                     "SHA-512").setIterations(20000).build();
             this.defaultPasswordHashService = new DefaultPasswordHashService(passwordServiceConfig);
@@ -115,12 +115,18 @@ public final class AAALightyShiroProvider {
         }
         this.tokenAuthenticators = buildTokenAuthenticators(this.credentialAuth);
         try {
-            new StoreBuilder(iidmStore).initWithDefaultUsers(IIDMStore.DEFAULT_DOMAIN);
+            final StoreBuilder storeBuilder = new StoreBuilder(iidmStore);
+            final String domain = storeBuilder.initDomainAndRolesWithoutUsers(IIDMStore.DEFAULT_DOMAIN);
+            if (domain != null) {
+                // If is not exist. If domain already exist on path, will be used instead
+                storeBuilder.createUser(domain, aaaConfiguration.getUsername(), aaaConfiguration.getPassword(), true);
+            }
+
         } catch (final IDMStoreException e) {
             LOG.error("Failed to initialize data in store", e);
         }
         final LocalHttpServer httpService = new LocalHttpServer(server);
-        registerServletContexts(httpService, moonEndpointPath);
+        registerServletContexts(httpService, aaaConfiguration.getMoonEndpointPath());
 
         initAAAonServer(server);
     }
@@ -163,13 +169,10 @@ public final class AAALightyShiroProvider {
     }
 
     public static CompletableFuture<AAALightyShiroProvider> newInstance(final DataBroker dataBroker,
-            final ICertificateManager certificateManager, final CredentialAuth<PasswordCredentials> credentialAuth,
-            final ShiroConfiguration shiroConfiguration, final String moonEndpointPath,
-            final DatastoreConfig datastoreConfig, final String dbUsername, final String dbPassword,
+            final AAAConfiguration aaaConfig, final CredentialAuth<PasswordCredentials> credentialAuth,
             final LightyServerBuilder server) {
         final CompletableFuture<AAALightyShiroProvider> completableFuture = new CompletableFuture<>();
-        INSTANCE = new AAALightyShiroProvider(dataBroker, certificateManager, credentialAuth,
-                shiroConfiguration, moonEndpointPath, datastoreConfig, dbUsername, dbPassword, server);
+        INSTANCE = new AAALightyShiroProvider(dataBroker, aaaConfig, credentialAuth, server);
         completableFuture.complete(INSTANCE);
         return completableFuture;
     }
