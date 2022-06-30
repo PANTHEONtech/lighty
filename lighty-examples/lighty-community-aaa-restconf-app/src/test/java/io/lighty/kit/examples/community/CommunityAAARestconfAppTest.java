@@ -10,6 +10,7 @@ package io.lighty.kit.examples.community;
 
 import io.lighty.kit.examples.community.aaa.restconf.Main;
 import java.net.URI;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -27,17 +28,19 @@ public class CommunityAAARestconfAppTest {
 
     private static final String TEST_ADDRESS = "http://localhost:8888/restconf/data/ietf-yang-library:modules-state";
     private static final String BASIC_AUTH =
-            "Basic " + Base64.getEncoder().encodeToString(("admin:admin").getBytes(StandardCharsets.UTF_8));
+            "Basic " + Base64.getEncoder().encodeToString(("Admin:Admin123").getBytes(StandardCharsets.UTF_8));
     private static final String BASIC_AUTH_WRONG =
-            "Basic " + Base64.getEncoder().encodeToString(("wrong:admin").getBytes(StandardCharsets.UTF_8));
+            "Basic " + Base64.getEncoder().encodeToString(("Admin:wrong").getBytes(StandardCharsets.UTF_8));
     private static final String AUTH = "Authorization";
+    private static final String TEST_CONFIG_JSON = "/testConfig.json";
     private static HttpClient httpClient;
     private static Main main;
 
     @BeforeClass
     public static void startUp() {
+        final URL config = CommunityAAARestconfAppTest.class.getResource(TEST_CONFIG_JSON);
         main = new Main();
-        main.start(new String[]{}, false);
+        main.start(new String[]{config.getPath()}, false);
         httpClient = HttpClient.newHttpClient();
     }
 
