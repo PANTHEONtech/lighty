@@ -85,9 +85,12 @@ data:
         },
         "aaa": {
             "enableAAA": {{ .Values.lighty.aaa.enableAAA }},
-            "moonEndpointPath" : "/moon",
-            "dbPassword" : "bar",
-            "dbUsername" : "foo"
+            "moonEndpointPath" : {{ .Values.lighty.aaa.moonEndpointPath | quote }},
+            "dbUsername" : {{ .Values.lighty.aaa.dbUsername | quote }},
+            "dbPassword" : {{ .Values.lighty.aaa.dbPassword | quote }},
+            "dbPath": {{ .Values.lighty.aaa.dbPath | quote }},
+            "username": {{ .Values.lighty.aaa.username | quote }},
+            "password": {{ .Values.lighty.aaa.password | quote }}
         }
     }
 

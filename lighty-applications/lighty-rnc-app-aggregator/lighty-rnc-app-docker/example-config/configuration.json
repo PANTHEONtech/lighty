@@ -78,7 +78,10 @@
     "aaa": {
         "enableAAA": false,
         "moonEndpointPath" : "/moon",
+        "dbUsername" : "foo",
         "dbPassword" : "bar",
-        "dbUsername" : "foo"
+        "dbPath": "./data",
+        "username": "admin",
+        "password": "admin"
     }
 }

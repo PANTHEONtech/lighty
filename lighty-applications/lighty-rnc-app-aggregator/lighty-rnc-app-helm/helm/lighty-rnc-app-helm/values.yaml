@@ -62,6 +62,12 @@ lighty:
   aaa:
     # If true, AAA lighty.io component will be enabled
     enableAAA: false
+    moonEndpointPath: "/moon"
+    dbUsername: "foo"
+    dbPassword: "bar"
+    dbPath: "./data"
+    username: "admin"
+    password: "admin"
 
 nodePort:
   # If switched to "true", NodePort service will be created; If switched to "false", ClusterIp service will be created
