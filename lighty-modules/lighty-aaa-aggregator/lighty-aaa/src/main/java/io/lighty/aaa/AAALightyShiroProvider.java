@@ -142,6 +142,7 @@ public final class AAALightyShiroProvider {
         mainHandler.addServlet(idmLightServlet, "/*");
         server.addContextHandler(contexts);
         this.handlers.add(contexts);
+        this.handlers.add(mainHandler);
         this.shiroWebEnvironmentLoaderListener = new ShiroWebEnvironmentLoaderListener(shiroConfiguration,
                 dataBroker,
                 certificateManager,
@@ -242,10 +243,20 @@ public final class AAALightyShiroProvider {
         INSTANCE.iidmStore = store;
     }
 
+    @SuppressWarnings("IllegalCatch")
     public void close() {
         this.handlers.forEach((handler) -> {
-            handler.destroy();
+            try {
+                handler.stop();
+            } catch (Exception e) {
+                LOG.error("Failed to close AAA handler [{}]", handler, e);
+            } finally {
+                handler.destroy();
+            }
         });
+        if (this.tokenStore != null) {
+            this.tokenStore.close();
+        }
     }
 
     private static TokenAuthenticators buildTokenAuthenticators(
