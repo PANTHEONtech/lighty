@@ -36,6 +36,9 @@ public class AAAConfigUtilsTest {
         assertEquals(rncAaaConfiguration.getMoonEndpointPath(), "/moon");
         assertEquals(rncAaaConfiguration.getDbPassword(), "bar");
         assertEquals(rncAaaConfiguration.getDbUsername(), "foo");
+        assertEquals(rncAaaConfiguration.getDbPath(), "./data");
+        assertEquals(rncAaaConfiguration.getUsername(), "admin");
+        assertEquals(rncAaaConfiguration.getPassword(), "admin");
     }
 
     @Test
@@ -47,5 +50,8 @@ public class AAAConfigUtilsTest {
         assertEquals(rncAaaConfiguration.getMoonEndpointPath(), "/moon");
         assertEquals(rncAaaConfiguration.getDbPassword(), "Password");
         assertEquals(rncAaaConfiguration.getDbUsername(), "Username");
+        assertEquals(rncAaaConfiguration.getDbPath(), "./testData");
+        assertEquals(rncAaaConfiguration.getUsername(), "Admin");
+        assertEquals(rncAaaConfiguration.getPassword(), "Admin");
     }
 }
