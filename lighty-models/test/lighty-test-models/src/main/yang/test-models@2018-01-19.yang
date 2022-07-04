@@ -33,6 +33,28 @@ module test-models {
         }
     }
 
+    container choice-container {
+        choice snack {
+            case sports-arena {
+                container inner-case {
+                   uses container-group;
+                   leaf foo {
+                       type string;
+                   }
+                }
+            }
+            case late-night {
+                leaf chocolate {
+                    type enumeration {
+                        enum dark;
+                        enum milk;
+                        enum first-available;
+                    }
+                }
+            }
+        }
+    }
+
     container top-level-container {
         uses container-group;
     }

@@ -22,14 +22,19 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.$YangModuleInfoImpl;
+import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.ChoiceContainer;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SampleList;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SampleListKey;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.TopLevelContainer;
+import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.choice.container.Snack;
+import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.choice.container.snack.SportsArena;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.container.group.SampleContainer;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -37,6 +42,7 @@ import org.testng.annotations.Test;
 public class FileToDatastoreUtilsTest {
 
     private static final String INITIAL_CONTAINER_PATH = "/data/container-value-1.json";
+    private static final String CASE_CONTAINER_PATH = "/data/case-container-value.json";
     private static final String OVERRIDE_CONTAINER_PATH = "/data/container-value-2.xml";
     private static final String OVERRIDE_VALUE_JSON_PATH = "/data/leaf-value-3.json";
     private static final String OVERRIDE_VALUE_XML_PATH = "/data/leaf-value-4.xml";
@@ -50,10 +56,18 @@ public class FileToDatastoreUtilsTest {
             = InstanceIdentifier.builder(SampleList.class, new SampleListKey("ID2")).build();
 
     private static final YangInstanceIdentifier ROOT_YII = YangInstanceIdentifier.empty();
+
+    private static final InstanceIdentifier<ChoiceContainer> CHOICE_CONTAINER_IID
+            = InstanceIdentifier.builder(ChoiceContainer.class).build();
+
+    private static final YangInstanceIdentifier INNER_CASE_YIID = YangInstanceIdentifier.create(
+            NodeIdentifier.create(ChoiceContainer.QNAME),
+            NodeIdentifier.create(Snack.QNAME));
+
     private static final YangInstanceIdentifier INNER_VALUE_YII = YangInstanceIdentifier.create(
-            YangInstanceIdentifier.NodeIdentifier.create(TopLevelContainer.QNAME),
-            YangInstanceIdentifier.NodeIdentifier.create(SampleContainer.QNAME),
-            YangInstanceIdentifier.NodeIdentifier.create($YangModuleInfoImpl.qnameOf("value")));
+            NodeIdentifier.create(TopLevelContainer.QNAME),
+            NodeIdentifier.create(SampleContainer.QNAME),
+            NodeIdentifier.create($YangModuleInfoImpl.qnameOf("value")));
 
     private static final long TIMEOUT_MILLIS = 20_000;
 
@@ -77,6 +91,15 @@ public class FileToDatastoreUtilsTest {
 
     @Test
     public void testTopLevelNode() throws Exception {
+        // Import inner-case and test choice node
+        importFile(CASE_CONTAINER_PATH, INNER_CASE_YIID, ImportFileFormat.JSON);
+        ChoiceContainer choiceContainer = readDataFromDatastore(CHOICE_CONTAINER_IID);
+        assertEquals(((SportsArena) choiceContainer.getSnack()).getInnerCase().getFoo(), "data");
+        assertEquals(((SportsArena) choiceContainer.getSnack()).getInnerCase()
+                .getSampleContainer().getValue(), Uint32.ONE);
+        assertEquals(((SportsArena) choiceContainer.getSnack()).getInnerCase()
+                .getSampleContainer().getName(), "name");
+
         // Import first JSON file, new top level container, expecting value = 1
         importFile(INITIAL_CONTAINER_PATH, ROOT_YII, ImportFileFormat.JSON);
         TopLevelContainer topLevelContainer = readDataFromDatastore(TOP_LEVEL_CONTAINER_IID);
