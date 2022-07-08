@@ -34,7 +34,7 @@ public class LightyServerBuilder {
     protected Server server;
 
     /**
-     * Init new jetty server on specifc port and address wrapped into {@link InetSocketAddress}.
+     * Init new jetty server on specific port and address wrapped into {@link InetSocketAddress}.
      *
      * @param inetSocketAddress - port and address of server
      */
@@ -49,7 +49,7 @@ public class LightyServerBuilder {
     /**
      * Init jetty server with existing ones.
      *
-     * @param server - jetty servevr
+     * @param server - jetty server
      */
     public LightyServerBuilder(final Server server) {
         this(new InetSocketAddress(0));
@@ -105,7 +105,7 @@ public class LightyServerBuilder {
     /**
      * Build jetty server with specific settings (filters, init params, event listeners, handlers).
      *
-     * @return instance of jetty servevr
+     * @return instance of jetty server
      */
     public Server build() {
         if (this.server == null) {
@@ -113,9 +113,7 @@ public class LightyServerBuilder {
         }
         final ContextHandlerCollection contextHandlerCollection = new ContextHandlerCollection();
         this.contexts.forEach((contextHandler) -> {
-            if (true) {
-                addFilters(contextHandler);
-            }
+            addFilters(contextHandler);
             contextHandlerCollection.addHandler(contextHandler);
         });
         this.server.setHandler(contextHandlerCollection);
@@ -143,8 +141,6 @@ public class LightyServerBuilder {
         EventListener[] array = new EventListener[this.listeners.size()];
         array = this.listeners.toArray(array);
         ch.setEventListeners(array);
-        this.parameters.forEach((key, value) -> {
-            ch.setInitParameter(key, value);
-        });
+        this.parameters.forEach(ch::setInitParameter);
     }
 }
