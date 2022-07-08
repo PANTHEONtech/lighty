@@ -25,5 +25,6 @@
         <module>lighty-controller-springboot-netconf</module>
         <module>lighty-community-restconf-actions-app</module>
         <module>lighty-bgp-community-restconf-app</module>
+        <module>lighty-guice-app</module>
     </modules>
 </project>
