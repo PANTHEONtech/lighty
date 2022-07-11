@@ -48,9 +48,6 @@ SUBJ="/C=NZ/ST=Test/L=Test/O=Test/OU=Test/CN=client.com"
 # Generate Client Private Key
 openssl genrsa -out client.key 4096
 
-# Transform client key to binary form
-openssl pkcs8 -topk8 -inform PEM -outform DER -nocrypt -in client.key -out client_key.der
-
 # Generate Req
 openssl req -new -key client.key -out client.csr -subj $SUBJ
 
