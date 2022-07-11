@@ -25,10 +25,6 @@ import io.lighty.modules.gnmi.connector.tests.commons.TestUtils;
 import io.lighty.modules.gnmi.connector.tests.commons.TimeoutUtil;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.URISyntaxException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +48,7 @@ public class GnmiTest {
     private Server server;
 
     @Before
-    public void before() throws IOException, InterruptedException {
+    public void before() throws IOException {
         service = new TestGrpcServiceImpl();
         server = ServerBuilder
                 .forPort(DEFAULT_SERVER_ADDRESS.getPort())
@@ -102,8 +98,7 @@ public class GnmiTest {
 
     @Test
     @SuppressWarnings("IllegalCatch")
-    public void lightyGnmiSessionTest() throws InvalidKeySpecException, CertificateException, NoSuchAlgorithmException,
-            IOException, URISyntaxException {
+    public void lightyGnmiSessionTest() throws Exception {
         final SessionManager sessionManager = TestUtils.createSessionManagerWithCerts();
         try (SessionProvider session =
                      sessionManager.createSession(new SessionConfiguration(DEFAULT_SERVER_ADDRESS, true))) {
