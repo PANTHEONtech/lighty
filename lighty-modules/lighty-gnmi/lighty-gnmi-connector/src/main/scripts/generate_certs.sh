@@ -64,7 +64,7 @@ openssl x509 \
         -CAcreateserial
 
 # Generate Client Private Key with passphrase
-openssl genrsa -des3 -passout file:../client_key_passphrase.txt -out client.encrypted.key 4096
+openssl genrsa -aes256 -passout file:../client_key_passphrase.txt -out client.encrypted.key 4096
 
 # Generate Req
 openssl req -new -passin pass:password -key client.encrypted.key -out client.encrypted.csr -subj $SUBJ
