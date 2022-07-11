@@ -25,10 +25,6 @@ import io.lighty.modules.gnmi.connector.tests.commons.TimeoutUtil;
 import io.lighty.modules.gnmi.connector.tests.gnmi.GnmiTest;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.URISyntaxException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
@@ -78,8 +74,7 @@ public class GnoiTest {
 
     @SuppressWarnings({"checkstyle:illegalCatch"})
     @Test
-    public void gnoiServicesInitiatedTest() throws NoSuchAlgorithmException, CertificateException,
-            InvalidKeySpecException, IOException, URISyntaxException {
+    public void gnoiServicesInitiatedTest() throws Exception {
         final SessionManager sessionManager = TestUtils.createSessionManagerWithCerts();
         try (SessionProvider session =
                      sessionManager.createSession(new SessionConfiguration(DEFAULT_SERVER_ADDRESS, true))) {
@@ -97,8 +92,7 @@ public class GnoiTest {
 
     @SuppressWarnings({"checkstyle:illegalCatch"})
     @Test
-    public void gnoiFileServiceTest() throws NoSuchAlgorithmException, CertificateException, InvalidKeySpecException,
-            IOException, URISyntaxException {
+    public void gnoiFileServiceTest() throws Exception {
         final SessionManager sessionManager = TestUtils.createSessionManagerWithCerts();
 
         try (SessionProvider session =

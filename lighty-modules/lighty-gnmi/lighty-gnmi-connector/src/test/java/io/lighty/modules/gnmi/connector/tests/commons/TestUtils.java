@@ -8,40 +8,44 @@
 
 package io.lighty.modules.gnmi.connector.tests.commons;
 
+import com.google.common.io.CharStreams;
 import io.lighty.modules.gnmi.connector.configuration.SecurityFactory;
 import io.lighty.modules.gnmi.connector.gnmi.session.impl.GnmiSessionFactoryImpl;
 import io.lighty.modules.gnmi.connector.security.Security;
 import io.lighty.modules.gnmi.connector.session.SessionManagerFactory;
 import io.lighty.modules.gnmi.connector.session.SessionManagerFactoryImpl;
 import io.lighty.modules.gnmi.connector.session.api.SessionManager;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyPair;
+import org.opendaylight.aaa.encrypt.PKIUtil;
 
 public final class TestUtils {
 
-    private static final String CLIENT_KEY = "/certs/client_key.der";
+    private static final String CLIENT_KEY = "/certs/client.key";
     private static final String CLIENT_CERTS = "/certs/client.crt";
     private static final String CA_CERTS = "/certs/ca.crt";
+    private static final String PASSPHRASE = "";
     private static final SessionManagerFactory SESSION_MANAGER_FACTORY
             = new SessionManagerFactoryImpl(new GnmiSessionFactoryImpl());
 
     private TestUtils() {
-        throw new UnsupportedOperationException("Utility classes should not be instantiated!");
+        //Utility class
     }
 
-    public static SessionManager createSessionManagerWithCerts()
-            throws URISyntaxException, InvalidKeySpecException, CertificateException, NoSuchAlgorithmException,
-            IOException {
-        final Security security = SecurityFactory.createGnmiSecurity(
-                Paths.get(TestUtils.class.getResource(CA_CERTS).toURI()),
-                Paths.get(TestUtils.class.getResource(CLIENT_CERTS).toURI()),
-                Paths.get(TestUtils.class.getResource(CLIENT_KEY).toURI())
-        );
+    public static SessionManager createSessionManagerWithCerts() throws Exception {
+        final KeyPair keyPair = new PKIUtil().decodePrivateKey(new StringReader(readResource(CLIENT_KEY)), PASSPHRASE);
+        final Security gnmiSecurity = SecurityFactory.createGnmiSecurity(readResource(CA_CERTS),
+                readResource(CLIENT_CERTS), keyPair.getPrivate());
 
-        return SESSION_MANAGER_FACTORY.createSessionManager(security);
+        return SESSION_MANAGER_FACTORY.createSessionManager(gnmiSecurity);
+    }
+
+    private static String readResource(final String classPath) throws Exception {
+        try (InputStream inputStream = TestUtils.class.getResourceAsStream(classPath)) {
+            return CharStreams.toString(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+        }
     }
 }
