@@ -138,9 +138,7 @@ public class LightyServerBuilder {
         this.filters.forEach((filterHolder, path) -> {
             ch.addFilter(filterHolder, path, EnumSet.of(DispatcherType.REQUEST));
         });
-        EventListener[] array = new EventListener[this.listeners.size()];
-        array = this.listeners.toArray(array);
-        ch.setEventListeners(array);
+        ch.setEventListeners(this.listeners);
         this.parameters.forEach(ch::setInitParameter);
     }
 }
