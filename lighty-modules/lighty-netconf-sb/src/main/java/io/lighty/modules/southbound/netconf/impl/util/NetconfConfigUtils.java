@@ -10,7 +10,6 @@ package io.lighty.modules.southbound.netconf.impl.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableSet;
 import io.lighty.aaa.encrypt.service.impl.AAAEncryptionServiceImpl;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.core.controller.impl.config.ConfigurationException;
@@ -45,7 +44,7 @@ import org.slf4j.LoggerFactory;
 public final class NetconfConfigUtils {
 
     public static final String NETCONF_CONFIG_ROOT_ELEMENT_NAME = "netconf";
-    public static final Set<YangModuleInfo> NETCONF_TOPOLOGY_MODELS = ImmutableSet.of(
+    public static final Set<YangModuleInfo> NETCONF_TOPOLOGY_MODELS = Set.of(
             org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.keystore.rev171017.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114
                     .$YangModuleInfoImpl.getInstance(),
@@ -63,7 +62,7 @@ public final class NetconfConfigUtils {
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104
                     .$YangModuleInfoImpl.getInstance()
     );
-    public static final Set<YangModuleInfo> NETCONF_CALLHOME_MODELS = ImmutableSet.of(
+    public static final Set<YangModuleInfo> NETCONF_CALLHOME_MODELS = Set.of(
             org.opendaylight.yang.gen.v1.urn.opendaylight.callhome.device.status.rev170112
                     .$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.netconf.callhome.server.rev201015

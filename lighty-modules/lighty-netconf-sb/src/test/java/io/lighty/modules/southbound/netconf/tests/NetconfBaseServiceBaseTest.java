@@ -8,10 +8,10 @@
 
 package io.lighty.modules.southbound.netconf.tests;
 
-import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import org.opendaylight.mdsal.binding.runtime.spi.ModuleInfoSnapshotBuilder;
 import org.opendaylight.netconf.sal.connect.netconf.schema.mapping.BaseSchema;
 import org.opendaylight.netconf.sal.connect.netconf.schema.mapping.DefaultBaseNetconfSchemas;
@@ -38,7 +38,7 @@ public abstract class NetconfBaseServiceBaseTest {
     @BeforeClass
     public void beforeTest() throws YangParserException {
         @SuppressWarnings("checkstyle:LineLength")  /* Lines kept long for brevity. */
-        final ImmutableSet<YangModuleInfo> yangModuleInfos = ImmutableSet.of(
+        final Set<YangModuleInfo> yangModuleInfos = Set.of(
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.$YangModuleInfoImpl.getInstance(),
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.metadata.rev160805.$YangModuleInfoImpl.getInstance(),
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.origin.rev180214.$YangModuleInfoImpl.getInstance(),

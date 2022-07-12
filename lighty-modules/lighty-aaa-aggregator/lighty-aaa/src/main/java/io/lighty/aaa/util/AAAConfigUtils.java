@@ -10,7 +10,6 @@ package io.lighty.aaa.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableSet;
 import io.lighty.aaa.config.AAAConfiguration;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import java.io.IOException;
@@ -24,7 +23,7 @@ public final class AAAConfigUtils {
     private static final Logger LOG = LoggerFactory.getLogger(AAAConfigUtils.class);
     private static final String AAA_ROOT_ELEMENT_NAME = "aaa";
 
-    public static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
+    public static final Set<YangModuleInfo> YANG_MODELS = Set.of(
             org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.$YangModuleInfoImpl
                     .getInstance(),
             org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321.$YangModuleInfoImpl
