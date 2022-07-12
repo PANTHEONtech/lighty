@@ -16,8 +16,6 @@ import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigU
 import io.lighty.server.LightyServerBuilder;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.util.concurrent.ExecutorService;
-import javax.ws.rs.core.Application;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -30,17 +28,9 @@ import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
-import org.opendaylight.netconf.sal.rest.impl.RestconfApplication;
-import org.opendaylight.netconf.sal.restconf.impl.BrokerFacade;
-import org.opendaylight.netconf.sal.restconf.impl.ControllerContext;
-import org.opendaylight.netconf.sal.restconf.impl.RestconfImpl;
-import org.opendaylight.netconf.sal.restconf.impl.RestconfProviderImpl;
-import org.opendaylight.netconf.sal.restconf.impl.StatisticsRestconfServiceWrapper;
+import org.opendaylight.restconf.nb.rfc8040.RestconfApplication;
 import org.opendaylight.restconf.nb.rfc8040.handlers.SchemaContextHandler;
 import org.opendaylight.restconf.nb.rfc8040.streams.Configuration;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
-import org.opendaylight.yangtools.yang.common.Uint16;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,12 +57,12 @@ public class CommunityRestConf extends AbstractLightyModule {
     private LightyServerBuilder lightyServerBuilder;
     private SchemaContextHandler schemaCtxHandler;
 
-    public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMSchemaService schemaService,
-            final DOMRpcService domRpcService, final DOMActionService domActionService,
-            final DOMNotificationService domNotificationService, final DOMMountPointService domMountPointService,
+    public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMRpcService domRpcService,
+            final DOMActionService domActionService, final DOMNotificationService domNotificationService,
+            final DOMMountPointService domMountPointService,
             final int webSocketPort, final JsonRestConfServiceType jsonRestconfServiceType,
-            final DOMSchemaService domSchemaService, final InetAddress inetAddress, final int httpPort,
-            final String restconfServletContextPath, final ExecutorService executorService,
+            final DOMSchemaService domSchemaService, final InetAddress inetAddress,
+            final int httpPort, final String restconfServletContextPath,
             final LightyServerBuilder serverBuilder) {
         this.domDataBroker = domDataBroker;
         this.domRpcService = domRpcService;
@@ -94,15 +84,15 @@ public class CommunityRestConf extends AbstractLightyModule {
          */
     }
 
-    public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMSchemaService schemaService,
+    public CommunityRestConf(final DOMDataBroker domDataBroker,
             final DOMRpcService domRpcService, final DOMActionService domActionService,
             final DOMNotificationService domNotificationService, final DOMMountPointService domMountPointService,
             final int webSocketPort, final JsonRestConfServiceType jsonRestconfServiceType,
             final DOMSchemaService domSchemaService, final InetAddress inetAddress, final int httpPort,
-            final String restconfServletContextPath, final ExecutorService executorService) {
-        this(domDataBroker, schemaService, domRpcService, domActionService, domNotificationService,
-            domMountPointService, webSocketPort, jsonRestconfServiceType, domSchemaService, inetAddress, httpPort,
-            restconfServletContextPath, executorService, null);
+            final String restconfServletContextPath) {
+        this(domDataBroker, domRpcService, domActionService, domNotificationService,
+                domMountPointService, webSocketPort, jsonRestconfServiceType, domSchemaService, inetAddress, httpPort,
+                restconfServletContextPath, null);
     }
 
     @Override
