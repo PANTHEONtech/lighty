@@ -9,7 +9,6 @@ package io.lighty.modules.northbound.restconf.community.impl;
 
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.server.LightyServerBuilder;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Builder for {@link CommunityRestConf}.
@@ -17,7 +16,6 @@ import java.util.concurrent.ExecutorService;
 public final class CommunityRestConfBuilder {
 
     private RestConfConfiguration restconfConfiguration = null;
-    private ExecutorService executorService = null;
     private LightyServerBuilder lightyServerBuilder = null;
 
 
@@ -34,15 +32,6 @@ public final class CommunityRestConfBuilder {
         return new CommunityRestConfBuilder(configuration);
     }
 
-    /**
-     * Inject executor service to execute futures.
-     * @param service input executor service.
-     * @return instance of {@link CommunityRestConfBuilder}.
-     */
-    public CommunityRestConfBuilder withExecutorService(final ExecutorService service) {
-        this.executorService = service;
-        return this;
-    }
 
     /**
      * Inject lighty server builder.
@@ -61,11 +50,11 @@ public final class CommunityRestConfBuilder {
      */
     public CommunityRestConf build() {
         return new CommunityRestConf(this.restconfConfiguration.getDomDataBroker(),
-            this.restconfConfiguration.getDomSchemaService(), this.restconfConfiguration.getDomRpcService(),
+            this.restconfConfiguration.getDomRpcService(),
             this.restconfConfiguration.getDomActionService(), this.restconfConfiguration.getDomNotificationService(),
-            this.restconfConfiguration.getDomMountPointService(), this.restconfConfiguration.getWebSocketPort(),
-            this.restconfConfiguration.getJsonRestconfServiceType(), this.restconfConfiguration.getDomSchemaService(),
+            this.restconfConfiguration.getDomMountPointService(),
+            this.restconfConfiguration.getDomSchemaService(),
             this.restconfConfiguration.getInetAddress(), this.restconfConfiguration.getHttpPort(),
-            this.restconfConfiguration.getRestconfServletContextPath(), this.executorService, this.lightyServerBuilder);
+            this.restconfConfiguration.getRestconfServletContextPath(), this.lightyServerBuilder);
     }
 }
