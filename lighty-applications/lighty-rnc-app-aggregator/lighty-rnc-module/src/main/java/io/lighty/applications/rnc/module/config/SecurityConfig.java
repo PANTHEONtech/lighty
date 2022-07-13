@@ -10,14 +10,14 @@ package io.lighty.applications.rnc.module.config;
 import java.security.KeyStore;
 import org.eclipse.jetty.http2.HTTP2Cipher;
 import org.eclipse.jetty.server.SslConnectionFactory;
-import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.eclipse.jetty.util.ssl.SslContextFactory.Server;
 
 public class SecurityConfig {
     private final KeyStore keyStore;
     private final KeyStore trustKeyStore;
     private final String password;
     private final String trustPassword;
-    private final SslContextFactory sslContextFactory;
+    private final Server server;
     private final boolean isNeedClientAuth;
 
     public SecurityConfig(final KeyStore keyStore, final String password, final KeyStore trustKeyStore,
@@ -27,22 +27,20 @@ public class SecurityConfig {
         this.trustKeyStore = trustKeyStore;
         this.trustPassword = trustPassword;
         this.isNeedClientAuth = isNeedClientAuth;
-        sslContextFactory = new SslContextFactory.Server();
+        server = new Server();
         initFactoryCtx();
     }
 
     private void initFactoryCtx() {
-        sslContextFactory.setTrustStore(trustKeyStore);
-        sslContextFactory.setTrustStorePassword(trustPassword);
-        sslContextFactory.setKeyStore(keyStore);
-        sslContextFactory.setKeyStorePassword(password);
-        sslContextFactory.setCipherComparator(HTTP2Cipher.COMPARATOR);
-        if (isNeedClientAuth == true) {
-            sslContextFactory.setNeedClientAuth(true);
-        }
+        server.setTrustStore(trustKeyStore);
+        server.setTrustStorePassword(trustPassword);
+        server.setKeyStore(keyStore);
+        server.setKeyStorePassword(password);
+        server.setCipherComparator(HTTP2Cipher.COMPARATOR);
+        server.setNeedClientAuth(isNeedClientAuth);
     }
 
     public SslConnectionFactory getSslConnectionFactory(final String protocol) {
-        return new SslConnectionFactory(sslContextFactory, protocol);
+        return new SslConnectionFactory(server, protocol);
     }
 }
