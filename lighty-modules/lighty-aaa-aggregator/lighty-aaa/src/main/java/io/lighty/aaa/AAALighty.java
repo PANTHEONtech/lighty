@@ -23,12 +23,12 @@ import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 public final class AAALighty extends AbstractLightyModule {
 
     public static final Set<YangModuleInfo> YANG_MODELS = Set.of(
-            org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.$YangModuleInfoImpl
-            .getInstance(),
-            org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321.$YangModuleInfoImpl
-            .getInstance(),
-            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.aaa.rev161214.$YangModuleInfoImpl
-            .getInstance());
+            org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915
+                    .$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321
+                    .$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.aaa.rev161214
+                    .$YangModuleInfoImpl.getInstance());
 
     private final AAAShiroProviderHandler aaaShiroProviderHandler;
     private final LightyServerBuilder server;
