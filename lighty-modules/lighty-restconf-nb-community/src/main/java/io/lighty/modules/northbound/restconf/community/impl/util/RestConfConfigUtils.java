@@ -10,7 +10,6 @@ package io.lighty.modules.northbound.restconf.community.impl.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableSet;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
@@ -27,7 +26,7 @@ public final class RestConfConfigUtils {
     private static final Logger LOG = LoggerFactory.getLogger(RestConfConfigUtils.class);
 
     public static final String RESTCONF_CONFIG_ROOT_ELEMENT_NAME = "restconf";
-    public static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
+    public static final Set<YangModuleInfo> YANG_MODELS = Set.of(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104
                     .$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126
