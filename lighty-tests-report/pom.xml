@@ -89,6 +89,10 @@
             <groupId>io.lighty.kit.examples.controllers</groupId>
             <artifactId>lighty-bgp-community-restconf-app</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.lighty.kit.examples.controllers</groupId>
+            <artifactId>lighty-guice-app</artifactId>
+        </dependency>
 
         <!-- Modules -->
         <dependency>
