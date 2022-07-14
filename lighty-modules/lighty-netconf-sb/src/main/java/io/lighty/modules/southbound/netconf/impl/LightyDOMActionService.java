@@ -9,13 +9,13 @@ package io.lighty.modules.southbound.netconf.impl;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MutableClassToInstanceMap;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
+import java.util.Set;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMActionServiceExtension;
@@ -68,7 +68,7 @@ public final class LightyDOMActionService implements DOMActionService {
 
             @Override
             public void onFailure(final Throwable cause) {
-                settableFuture.set(new SimpleDOMActionResult(ImmutableSet.of(new ActionRpcError(cause))));
+                settableFuture.set(new SimpleDOMActionResult(Set.of(new ActionRpcError(cause))));
             }
         }, MoreExecutors.directExecutor());
         return settableFuture;

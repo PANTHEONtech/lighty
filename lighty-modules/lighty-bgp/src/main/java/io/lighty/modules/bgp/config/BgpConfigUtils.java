@@ -8,9 +8,10 @@
 
 package io.lighty.modules.bgp.config;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
+import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 
 public final class BgpConfigUtils {
@@ -19,7 +20,7 @@ public final class BgpConfigUtils {
         //Util class
     }
 
-    private static final Set<YangModuleInfo> BASE_MODELS = ImmutableSet.of(
+    private static final Set<YangModuleInfo> BASE_MODELS = Set.of(
             org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.bgp.rib
                     .rev180329.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.bgp.peer.rpc
@@ -61,7 +62,7 @@ public final class BgpConfigUtils {
             org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.odl.bgp._default.policy
                     .rev200120.$YangModuleInfoImpl.getInstance());
 
-    private static final Set<YangModuleInfo> TOPOLOGY_MODELS = ImmutableSet.of(
+    private static final Set<YangModuleInfo> TOPOLOGY_MODELS = Set.of(
             org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.odl.bgp.topology.config
                     .rev180329.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.odl.bgp.topology.types
@@ -78,7 +79,7 @@ public final class BgpConfigUtils {
                     .rev130819.$YangModuleInfoImpl.getInstance()
     );
 
-    private static final Set<YangModuleInfo> EXTENSIONS_MODELS = ImmutableSet.of(
+    private static final Set<YangModuleInfo> EXTENSIONS_MODELS = Set.of(
             org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.bgp.evpn
                     .rev200120.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.bgp.flowspec
@@ -101,6 +102,8 @@ public final class BgpConfigUtils {
                     .rev191125.$YangModuleInfoImpl.getInstance()
     );
 
-    public static final Set<YangModuleInfo> ALL_BGP_MODELS =
-            ImmutableSet.copyOf(Iterables.concat(BASE_MODELS, EXTENSIONS_MODELS, TOPOLOGY_MODELS));
+    public static final Set<YangModuleInfo> ALL_BGP_MODELS = Set.copyOf(
+            Stream.of(BASE_MODELS, EXTENSIONS_MODELS, TOPOLOGY_MODELS)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toSet()));
 }
