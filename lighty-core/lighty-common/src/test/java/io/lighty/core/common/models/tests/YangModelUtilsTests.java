@@ -8,7 +8,6 @@
 package io.lighty.core.common.models.tests;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.google.common.collect.ImmutableSet;
 import io.lighty.core.common.models.ModuleId;
 import io.lighty.core.common.models.YangModuleUtils;
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ public class YangModelUtilsTests {
     private static final String TEST_NAMESPACE = "urn:ietf:params:xml:ns:yang:ietf-inet-types";
     private static final String TEST_NAME = "ietf-inet-types";
     private static final String TEST_REVISION = "2013-07-15";
-    private static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
+    private static final Set<YangModuleInfo> YANG_MODELS = Set.of(
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev210621.$YangModuleInfoImpl
             .getInstance(),
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.$YangModuleInfoImpl
