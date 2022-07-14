@@ -11,7 +11,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigException;
 import com.typesafe.config.ConfigFactory;
@@ -39,7 +38,7 @@ public final class ControllerConfigUtils {
      * {@code mvn:org.opendaylight.mdsal.model/features-mdsal-model} and various controller artifacts containing core
      * YANG files. This is also recommended default model set for majority of Lighty controller applications.
      */
-    public static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
+    public static final Set<YangModuleInfo> YANG_MODELS = Set.of(
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev210621.$YangModuleInfoImpl
             .getInstance(),
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.$YangModuleInfoImpl
@@ -191,7 +190,7 @@ public final class ControllerConfigUtils {
      */
     public static ControllerConfiguration getDefaultSingleNodeConfiguration()
             throws ConfigurationException {
-        return getDefaultSingleNodeConfiguration(ImmutableSet.of());
+        return getDefaultSingleNodeConfiguration(Set.of());
     }
 
     /**

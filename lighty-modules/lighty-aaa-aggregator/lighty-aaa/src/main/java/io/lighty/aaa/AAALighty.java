@@ -7,7 +7,6 @@
  */
 package io.lighty.aaa;
 
-import com.google.common.collect.ImmutableSet;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.server.LightyServerBuilder;
 import java.util.Set;
@@ -23,7 +22,7 @@ import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 
 public final class AAALighty extends AbstractLightyModule {
 
-    public static final Set<YangModuleInfo> YANG_MODELS = ImmutableSet.of(
+    public static final Set<YangModuleInfo> YANG_MODELS = Set.of(
             org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.$YangModuleInfoImpl
             .getInstance(),
             org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321.$YangModuleInfoImpl
