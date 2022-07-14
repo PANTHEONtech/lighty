@@ -37,8 +37,8 @@ public final class RestConfConfigUtils {
                     .$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.sal.restconf.event.subscription.rev140708
                     .$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.subscribe.to.notification.rev161028.$YangModuleInfoImpl
-                    .getInstance()
+            org.opendaylight.yang.gen.v1.subscribe.to.notification.rev161028
+                    .$YangModuleInfoImpl.getInstance()
             );
     public static final int MAXIMUM_FRAGMENT_LENGTH = 0;
     public static final int IDLE_TIMEOUT =  30000;
