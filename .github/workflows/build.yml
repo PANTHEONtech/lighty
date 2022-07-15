@@ -58,70 +58,13 @@ jobs:
           name: Surefire-Test-Results
           path: ~/**/surefire-reports/**/*.txt
   lighty_rnc_app_test:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - name: Clone Repository
-        uses: actions/checkout@v2
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: 'zulu'
-      - name: Cache Maven packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-      - name: Setup Minikube
-        uses: manusa/actions-setup-minikube@v2.4.2
-        with:
-          minikube version: 'v1.24.0'
-          kubernetes version: 'v1.22.4'
-      - name: Start Minikube cluster
-        run: minikube start
-      - name: Install helm v3.6.2
-        uses: azure/setup-helm@v1.1
-        with:
-          version: '3.7.1'
-      - name: "Setup, Install and Test. App: lighty_rnc_app"
-        uses: ./.github/workflows/test-lighty-app-action
-        with:
-          app-name: lighty-rnc-app
+    uses: ./.github/workflows/test-lighty-app.yml
+    with:
+      app-name: lighty-rnc-app
+      test-script-file: ${GITHUB_WORKSPACE}/.github/workflows/lighty-rnc-app/tests-lighty-rnc-app.sh
   lighty_rcgnmi_app_test:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - name: Clone Repository
-        uses: actions/checkout@v2
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: 'zulu'
-      - name: Cache Maven packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-      - name: Setup Minikube
-        uses: manusa/actions-setup-minikube@v2.4.2
-        with:
-          minikube version: 'v1.24.0'
-          kubernetes version: 'v1.22.4'
-      - name: Start Minikube cluster
-        run: minikube start
-      - name: Install helm v3.6.2
-        uses: azure/setup-helm@v1.1
-        with:
-          version: '3.7.1'
-      - name: "Setup, Install and Test. App: lighty_rcgnmi_app"
-        uses: ./.github/workflows/test-lighty-app-action
-        with:
-          app-name: lighty-rcgnmi-app
+    uses: ./.github/workflows/test-lighty-app.yml
+    with:
+      app-name: lighty-rcgnmi-app
+      test-script-file: ${GITHUB_WORKSPACE}/.github/workflows/lighty-rcgnmi-app/tests-lighty-rcgnmi-app.sh
+
