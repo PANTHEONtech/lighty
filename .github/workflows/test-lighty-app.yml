@@ -9,6 +9,9 @@ on:
       test-script-file:
         required: true
         type: string
+      override-helm-values:
+        required: false
+        type: string
 
 jobs:
   build:
@@ -65,7 +68,14 @@ jobs:
         shell: bash
       - name: Install app helm chart
         run: |
-          helm install ${{ inputs.app-name }} lighty-applications/${{ inputs.app-name }}-aggregator/${{ inputs.app-name }}-helm/helm/${{ inputs.app-name }}-helm
+          if [ "${{ inputs.override-helm-values }}" == "" ]; then
+              echo "Use default helm values"
+              helm install ${{ inputs.app-name }} lighty-applications/${{ inputs.app-name }}-aggregator/${{ inputs.app-name }}-helm/helm/${{ inputs.app-name }}-helm
+          else
+              echo "Set helm values to: ${{ inputs.override-helm-values }}"
+              helm install ${{ inputs.app-name }} lighty-applications/${{ inputs.app-name }}-aggregator/${{ inputs.app-name }}-helm/helm/${{ inputs.app-name }}-helm \
+                  --set ${{ inputs.override-helm-values }}
+          fi
           sleep 35 # Wait for app to start
         shell: bash
       - name: Run apps testing scripts
