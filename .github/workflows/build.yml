@@ -67,4 +67,9 @@ jobs:
     with:
       app-name: lighty-rcgnmi-app
       test-script-file: ${GITHUB_WORKSPACE}/.github/workflows/lighty-rcgnmi-app/tests-lighty-rcgnmi-app.sh
-
+  lighty_rnc_cluster_app_test:
+    uses: ./.github/workflows/test-lighty-app.yml
+    with:
+      app-name: lighty-rnc-app
+      test-script-file: ${GITHUB_WORKSPACE}/.github/workflows/lighty-rnc-app/test-lighty-rnc-app-cluster.sh
+      override-helm-values: lighty.replicaCount=3,lighty.akka.isSingleNode=false,nodePort.useNodePort=false,lighty.moduleTimeOut=120,resources=null
