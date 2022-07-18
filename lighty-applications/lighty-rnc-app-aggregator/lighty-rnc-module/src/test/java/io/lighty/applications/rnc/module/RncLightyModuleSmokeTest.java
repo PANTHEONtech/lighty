@@ -28,6 +28,15 @@ public class RncLightyModuleSmokeTest {
     }
 
     @Test
+    public void rncLightyModuleHttpsSmokeTest() throws Exception {
+        final var rncLightyModuleConfiguration = RncLightyModuleConfigUtils.loadDefaultConfig();
+        rncLightyModuleConfiguration.getServerConfig().setUseHttps(true);
+        final var rncModule = new RncLightyModule(rncLightyModuleConfiguration, MODULE_TIMEOUT);
+        rncModule.initModules();
+        rncModule.close();
+    }
+
+    @Test
     public void rncLightyModuleStartFailed() throws ConfigurationException {
         final RncLightyModuleConfiguration config = spy(RncLightyModuleConfigUtils.loadDefaultConfig());
         when(config.getControllerConfig()).thenReturn(null);
