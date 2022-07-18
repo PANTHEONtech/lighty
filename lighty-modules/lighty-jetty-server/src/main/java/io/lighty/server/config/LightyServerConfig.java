@@ -21,7 +21,6 @@ public class LightyServerConfig {
     private boolean needClientAuth = false;
     private boolean enableSwagger = false;
 
-
     public void setSecurityConfig(final SecurityConfig securityConfig) {
         this.securityConfig = securityConfig;
     }
