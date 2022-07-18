@@ -32,7 +32,7 @@ public final class LightyServerConfigUtils {
     private static final Logger LOG = LoggerFactory.getLogger(LightyServerConfigUtils.class);
 
     private LightyServerConfigUtils() {
-        throw new UnsupportedOperationException();
+        // Hide on purpose
     }
 
     public static LightyServerConfig getServerConfiguration(final InputStream jsonConfigIS)
