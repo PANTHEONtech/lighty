@@ -8,7 +8,6 @@
 
 package io.lighty.swagger;
 
-import io.lighty.modules.northbound.restconf.community.impl.config.JsonRestConfServiceType;
 import java.net.URI;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
@@ -16,17 +15,11 @@ import javax.ws.rs.core.UriInfo;
 import org.mockito.Mockito;
 import org.testng.Assert;
 
-/**
- * Base class for lighty-swagger tests for different versions of {@link JsonRestConfServiceType}.
- */
 public abstract class SwaggerLightyTest extends SwaggerLightyTestBase {
 
     protected static final String DEFAULT_MODEL_NAME = "ietf-yang-library";
     protected static final String DEFAULT_REVISION_DATE = "2019-01-04";
 
-    protected SwaggerLightyTest(JsonRestConfServiceType restConfServiceType) {
-        super(restConfServiceType);
-    }
 
     public void simpleSwaggerModuleTest() {
         Assert.assertNotNull(getLightyController());
