@@ -9,7 +9,6 @@
 package io.lighty.modules.northbound.restconf.community.impl.tests;
 
 import io.lighty.core.controller.impl.config.ConfigurationException;
-import io.lighty.modules.northbound.restconf.community.impl.config.JsonRestConfServiceType;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import java.io.InputStream;
@@ -28,9 +27,7 @@ public class RestConfConfigurationTest {
         Assert.assertTrue(defaultRestConfConfiguration.hashCode() == restConfConfiguration.hashCode());
 
         restConfConfiguration.setHttpPort(3333);
-        restConfConfiguration.setJsonRestconfServiceType(JsonRestConfServiceType.DRAFT_02);
         restConfConfiguration.setInetAddress(InetAddress.getLoopbackAddress());
-        restConfConfiguration.setWebSocketPort(4444);
 
         Assert.assertNotEquals(defaultRestConfConfiguration, restConfConfiguration);
         Assert.assertFalse(defaultRestConfConfiguration.hashCode() == restConfConfiguration.hashCode());
@@ -42,8 +39,6 @@ public class RestConfConfigurationTest {
         RestConfConfiguration restConfConfiguration = RestConfConfigUtils.getRestConfConfiguration(resourceAsStream);
         Assert.assertNotNull(restConfConfiguration);
         Assert.assertTrue(restConfConfiguration.getHttpPort() == 5555);
-        Assert.assertTrue(restConfConfiguration.getWebSocketPort() == 4444);
-        Assert.assertEquals(restConfConfiguration.getJsonRestconfServiceType(), JsonRestConfServiceType.DRAFT_18);
         Assert.assertEquals(restConfConfiguration.getInetAddress().getHostAddress(), "127.0.0.3");
     }
 

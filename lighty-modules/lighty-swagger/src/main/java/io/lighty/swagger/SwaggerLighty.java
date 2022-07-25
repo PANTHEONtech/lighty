@@ -56,7 +56,7 @@ public class SwaggerLighty extends AbstractLightyModule {
 
     @Override
     protected boolean initProcedure() {
-        LOG.info("initializing swagger {}", restConfConfiguration.getJsonRestconfServiceType());
+        LOG.info("initializing swagger");
 
         //replace all slash characters from the beginning of the string
         String basePathString = restConfConfiguration.getRestconfServletContextPath().replaceAll("^/+", "");

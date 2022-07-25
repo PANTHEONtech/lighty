@@ -10,7 +10,6 @@ package io.lighty.modules.northbound.restconf.community.impl;
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Throwables;
 import io.lighty.core.controller.api.AbstractLightyModule;
-import io.lighty.modules.northbound.restconf.community.impl.config.JsonRestConfServiceType;
 import io.lighty.modules.northbound.restconf.community.impl.root.resource.discovery.RootFoundApplication;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import io.lighty.server.LightyServerBuilder;
@@ -43,16 +42,10 @@ public class CommunityRestConf extends AbstractLightyModule {
     private final DOMNotificationService domNotificationService;
     private final DOMMountPointService domMountPointService;
     private final DOMActionService domActionService;
-    private final PortNumber webSocketPort;
-    private final JsonRestConfServiceType jsonRestconfServiceType;
     private final DOMSchemaService domSchemaService;
     private final int httpPort;
     private final InetAddress inetAddress;
     private final String restconfServletContextPath;
-    private RestconfImpl restconfImpl;
-    private BrokerFacade brokerFacade;
-    private ControllerContext controllerContext;
-    private RestconfProviderImpl restconfProvider;
     private Server jettyServer;
     private LightyServerBuilder lightyServerBuilder;
     private SchemaContextHandler schemaCtxHandler;
@@ -60,7 +53,6 @@ public class CommunityRestConf extends AbstractLightyModule {
     public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMRpcService domRpcService,
             final DOMActionService domActionService, final DOMNotificationService domNotificationService,
             final DOMMountPointService domMountPointService,
-            final int webSocketPort, final JsonRestConfServiceType jsonRestconfServiceType,
             final DOMSchemaService domSchemaService, final InetAddress inetAddress,
             final int httpPort, final String restconfServletContextPath,
             final LightyServerBuilder serverBuilder) {
@@ -70,73 +62,40 @@ public class CommunityRestConf extends AbstractLightyModule {
         this.domNotificationService = domNotificationService;
         this.domMountPointService = domMountPointService;
         this.lightyServerBuilder = serverBuilder;
-        this.webSocketPort = new PortNumber(Uint16.valueOf(webSocketPort));
-        this.jsonRestconfServiceType = jsonRestconfServiceType;
         this.domSchemaService = domSchemaService;
         this.httpPort = httpPort;
         this.inetAddress = inetAddress;
         this.restconfServletContextPath = restconfServletContextPath;
-
-        /* In standard Oxygen ODL Restconf blueprints there are exposed two additional services:
-           - jsonRestconfServiceDraft02 (for bierman implementation)
-           - jsonRestconfService (for RFC8040 implementation)
-           Those services are not expected to be required thus they are not here.
-         */
     }
 
     public CommunityRestConf(final DOMDataBroker domDataBroker,
             final DOMRpcService domRpcService, final DOMActionService domActionService,
             final DOMNotificationService domNotificationService, final DOMMountPointService domMountPointService,
-            final int webSocketPort, final JsonRestConfServiceType jsonRestconfServiceType,
             final DOMSchemaService domSchemaService, final InetAddress inetAddress, final int httpPort,
             final String restconfServletContextPath) {
         this(domDataBroker, domRpcService, domActionService, domNotificationService,
-                domMountPointService, webSocketPort, jsonRestconfServiceType, domSchemaService, inetAddress, httpPort,
+                domMountPointService, domSchemaService, inetAddress, httpPort,
                 restconfServletContextPath, null);
     }
 
     @Override
     protected boolean initProcedure() {
         final Stopwatch stopwatch = Stopwatch.createStarted();
-        LOG.info("Starting RestConfProvider websocket port: {}", this.webSocketPort);
-        this.controllerContext = new ControllerContext(this.domSchemaService,
-                this.domMountPointService, this.domSchemaService);
-        this.brokerFacade = new BrokerFacade(this.domRpcService, this.domDataBroker,
-                this.domNotificationService, controllerContext);
-        this.restconfImpl = new RestconfImpl(this.brokerFacade, controllerContext);
-        final StatisticsRestconfServiceWrapper stats = new StatisticsRestconfServiceWrapper(this.restconfImpl);
-        this.restconfProvider = new RestconfProviderImpl(stats, IpAddressBuilder.getDefaultInstance(this.inetAddress
-                .getHostAddress()), this.webSocketPort);
-        this.restconfProvider.start();
 
         this.schemaCtxHandler
                 = new SchemaContextHandler(this.domDataBroker, this.domSchemaService);
         this.schemaCtxHandler.init();
         final Configuration streamsConfiguration = RestConfConfigUtils.getStreamsConfiguration();
 
-        ServletHolder jaxrs = null;
+        LOG.info("Starting RestconfApplication with configuration {}", streamsConfiguration);
 
-        LOG.info("Starting jsonRestconfService {}", this.jsonRestconfServiceType.name());
-        switch (this.jsonRestconfServiceType) {
-            case DRAFT_02:
-                final Application restconfApplication = new RestconfApplication(controllerContext, stats);
-                final ServletContainer servletContainer = new ServletContainer(ResourceConfig
-                    .forApplication(restconfApplication));
-                jaxrs = new ServletHolder(servletContainer);
-                break;
-            case DRAFT_18:
-                final Application restconfApplication8040 =
-                    new org.opendaylight.restconf.nb.rfc8040.RestconfApplication(schemaCtxHandler,
-                            this.domMountPointService, this.domDataBroker, this.domRpcService, this.domActionService,
-                            this.domNotificationService, this.domSchemaService, streamsConfiguration);
-                final ServletContainer servletContainer8040 = new ServletContainer(ResourceConfig
-                    .forApplication(restconfApplication8040));
-                jaxrs = new ServletHolder(servletContainer8040);
-                break;
-            default:
-                throw new UnsupportedOperationException("unsupported restconf service type: "
-                    + this.jsonRestconfServiceType.name());
-        }
+        final RestconfApplication restconfApplication = new RestconfApplication(schemaCtxHandler,
+                this.domMountPointService, this.domDataBroker, this.domRpcService, this.domActionService,
+                this.domNotificationService, this.domSchemaService, streamsConfiguration);
+        final ServletContainer servletContainer8040 = new ServletContainer(ResourceConfig
+                .forApplication(restconfApplication));
+        final ServletHolder jaxrs = new ServletHolder(servletContainer8040);
+
         LOG.info("RestConf init complete, starting Jetty");
         LOG.info("http address:port {}:{}, url prefix: {}", this.inetAddress.toString(), this.httpPort,
                 this.restconfServletContextPath);
@@ -148,18 +107,11 @@ public class CommunityRestConf extends AbstractLightyModule {
                     new ServletContextHandler(contexts, this.restconfServletContextPath, true, false);
             mainHandler.addServlet(jaxrs, "/*");
 
-            // FIXME resource registering should be supported also for other resources, not only for RESTCONF 8040
-            switch (this.jsonRestconfServiceType) {
-                case DRAFT_18:
-                    final ServletContextHandler rrdHandler =
-                            new ServletContextHandler(contexts, "/.well-known", true, false);
-                    final RootFoundApplication rootDiscoveryApp = new RootFoundApplication(restconfServletContextPath);
-                    rrdHandler.addServlet(new ServletHolder(new ServletContainer(ResourceConfig
-                            .forApplication(rootDiscoveryApp))), "/*");
-                    break;
-                default:
-                    LOG.info("Resource Discovery skipped for RESTCONF service type {}", jsonRestconfServiceType);
-            }
+            final ServletContextHandler rrdHandler =
+                    new ServletContextHandler(contexts, "/.well-known", true, false);
+            final RootFoundApplication rootDiscoveryApp = new RootFoundApplication(restconfServletContextPath);
+            rrdHandler.addServlet(new ServletHolder(new ServletContainer(ResourceConfig
+                    .forApplication(rootDiscoveryApp))), "/*");
 
             boolean startDefault = false;
             if (this.lightyServerBuilder == null) {
@@ -184,10 +136,6 @@ public class CommunityRestConf extends AbstractLightyModule {
         if (this.schemaCtxHandler != null) {
             this.schemaCtxHandler.close();
             LOG.info("Schema context handler closed");
-        }
-        if (this.restconfProvider != null) {
-            this.restconfProvider.close();
-            LOG.info("RestconfProvider closed");
         }
         if (this.jettyServer != null) {
             try {
@@ -217,18 +165,6 @@ public class CommunityRestConf extends AbstractLightyModule {
             throw new IllegalStateException("Failed to start jetty!", e);
         }
         LOG.info("Jetty started");
-    }
-
-    public RestconfImpl getRestconfImpl() {
-        return restconfImpl;
-    }
-
-    public BrokerFacade getBrokerFacade() {
-        return brokerFacade;
-    }
-
-    public ControllerContext getControllerContext() {
-        return controllerContext;
     }
 
 }

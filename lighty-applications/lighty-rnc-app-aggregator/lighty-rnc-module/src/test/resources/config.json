@@ -45,9 +45,7 @@
     "restconf":{
         "inetAddress":"0.0.0.1",
         "httpPort":8181,
-        "webSocketPort": 8181,
-        "restconfServletContextPath":"/rests",
-        "jsonRestconfServiceType": "DRAFT_02"
+        "restconfServletContextPath":"/rests"
     },
     "lighty-server" : {
       "useHttps": false,

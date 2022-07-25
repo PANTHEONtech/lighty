@@ -14,7 +14,6 @@ import static org.testng.AssertJUnit.assertTrue;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.DatastoreConfigurationUtils;
-import io.lighty.modules.northbound.restconf.community.impl.config.JsonRestConfServiceType;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import org.testng.annotations.Test;
@@ -29,10 +28,8 @@ public class RncLightyModuleConfigUtilsTest {
         // Test Restconf configuration
         final var restconfConfig = rncConfig.getRestconfConfig();
         assertEquals(restconfConfig.getInetAddress().getCanonicalHostName(), "0.0.0.1");
-        assertEquals(restconfConfig.getWebSocketPort(), 8181);
         assertEquals(restconfConfig.getHttpPort(), 8181);
         assertEquals(restconfConfig.getRestconfServletContextPath(), "/rests");
-        assertEquals(restconfConfig.getJsonRestconfServiceType(), JsonRestConfServiceType.DRAFT_02);
 
         // Test Server configuration
         final var serverConfig = rncConfig.getServerConfig();
@@ -78,10 +75,8 @@ public class RncLightyModuleConfigUtilsTest {
         // Test Restconf configuration
         final var restconfConfig = rncConfig.getRestconfConfig();
         assertEquals(restconfConfig.getInetAddress().getCanonicalHostName(), "localhost");
-        assertEquals(restconfConfig.getWebSocketPort(), 8185);
         assertEquals(restconfConfig.getHttpPort(), 8888);
         assertEquals(restconfConfig.getRestconfServletContextPath(), "/restconf");
-        assertEquals(restconfConfig.getJsonRestconfServiceType(), JsonRestConfServiceType.DRAFT_18);
 
         // Test Server configuration
         final var serverConfig = rncConfig.getServerConfig();
