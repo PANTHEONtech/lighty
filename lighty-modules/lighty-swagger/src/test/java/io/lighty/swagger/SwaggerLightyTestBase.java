@@ -12,7 +12,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
-import io.lighty.modules.northbound.restconf.community.impl.config.JsonRestConfServiceType;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import io.lighty.server.LightyServerBuilder;
@@ -40,11 +39,6 @@ public abstract class SwaggerLightyTestBase {
 
     private LightyController lightyController;
     private SwaggerLighty swaggerModule;
-    private final JsonRestConfServiceType restConfServiceType;
-
-    protected SwaggerLightyTestBase(JsonRestConfServiceType restConfServiceType) {
-        this.restConfServiceType = restConfServiceType;
-    }
 
     @BeforeClass(timeOut = 60_000)
     public void startControllerAndRestConf() throws Exception {
@@ -61,9 +55,6 @@ public abstract class SwaggerLightyTestBase {
         final RestConfConfiguration restConfConfiguration = RestConfConfigUtils
                 .getDefaultRestConfConfiguration(lightyController.getServices());
 
-        if (restConfServiceType != null) {
-            restConfConfiguration.setJsonRestconfServiceType(restConfServiceType);
-        }
 
         final LightyServerBuilder jettyServerBuilder = new LightyServerBuilder(new InetSocketAddress(
                 restConfConfiguration.getInetAddress(), restConfConfiguration.getHttpPort()));
