@@ -88,8 +88,7 @@ No data are modified during the execution. The implementation is using binding A
 ##### Swagger UI
 This application example has active [Swagger](https://swagger.io/) UI for RESTCONF.
 
-URLs for Swagger (choose RESTCONF [draft18](https://tools.ietf.org/html/draft-ietf-netconf-restconf-18) or
-[draft02](https://tools.ietf.org/html/draft-bierman-netconf-restconf-02) in upper right corner):
+URL for Swagger: https://tools.ietf.org/html/draft-ietf-netconf-restconf-18
 * __Swagger UI__ ``http://localhost:8888/apidoc/18/explorer/index.html``
 
 ### Use custom config files
