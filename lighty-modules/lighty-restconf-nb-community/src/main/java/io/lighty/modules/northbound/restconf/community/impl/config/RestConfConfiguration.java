@@ -35,8 +35,6 @@ public class RestConfConfiguration {
     private DOMSchemaService domSchemaService;
 
     private InetAddress inetAddress = InetAddress.getLoopbackAddress();
-    private int webSocketPort = 8185;
-    private JsonRestConfServiceType jsonRestconfServiceType = JsonRestConfServiceType.DRAFT_18;
     private int httpPort = 8888;
     private String restconfServletContextPath = "/restconf";
 
@@ -45,7 +43,6 @@ public class RestConfConfiguration {
 
     public RestConfConfiguration(final RestConfConfiguration restConfConfiguration) {
         this.inetAddress = restConfConfiguration.getInetAddress();
-        this.webSocketPort = restConfConfiguration.getWebSocketPort();
         this.httpPort = restConfConfiguration.getHttpPort();
         this.restconfServletContextPath = restConfConfiguration.getRestconfServletContextPath();
         this.domDataBroker = restConfConfiguration.getDomDataBroker();
@@ -55,7 +52,6 @@ public class RestConfConfiguration {
         this.domNotificationService = restConfConfiguration.getDomNotificationService();
         this.domMountPointService = restConfConfiguration.getDomMountPointService();
         this.domSchemaService = restConfConfiguration.getDomSchemaService();
-        this.jsonRestconfServiceType = restConfConfiguration.getJsonRestconfServiceType();
     }
 
     public RestConfConfiguration(final DOMDataBroker domDataBroker, final DOMSchemaService schemaService,
@@ -127,22 +123,6 @@ public class RestConfConfiguration {
         this.domMountPointService = domMountPointService;
     }
 
-    public int getWebSocketPort() {
-        return this.webSocketPort;
-    }
-
-    public void setWebSocketPort(final int webSocketPort) {
-        this.webSocketPort = webSocketPort;
-    }
-
-    public JsonRestConfServiceType getJsonRestconfServiceType() {
-        return this.jsonRestconfServiceType;
-    }
-
-    public void setJsonRestconfServiceType(final JsonRestConfServiceType jsonRestconfServiceType) {
-        this.jsonRestconfServiceType = jsonRestconfServiceType;
-    }
-
     public int getHttpPort() {
         return this.httpPort;
     }
@@ -176,8 +156,7 @@ public class RestConfConfiguration {
             return false;
         }
         RestConfConfiguration that = (RestConfConfiguration) obj;
-        return webSocketPort == that.webSocketPort
-                && httpPort == that.httpPort
+        return httpPort == that.httpPort
                 && Objects.equals(domDataBroker, that.domDataBroker)
                 && Objects.equals(schemaService, that.schemaService)
                 && Objects.equals(domRpcService, that.domRpcService)
@@ -185,15 +164,13 @@ public class RestConfConfiguration {
                 && Objects.equals(domMountPointService, that.domMountPointService)
                 && Objects.equals(domSchemaService, that.domSchemaService)
                 && Objects.equals(inetAddress, that.inetAddress)
-                && jsonRestconfServiceType == that.jsonRestconfServiceType
                 && Objects.equals(restconfServletContextPath, that.restconfServletContextPath);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(domDataBroker, schemaService, domRpcService, domNotificationService,
-                domMountPointService, domSchemaService, inetAddress, webSocketPort, jsonRestconfServiceType,
-                httpPort, restconfServletContextPath);
+                domMountPointService, domSchemaService, inetAddress, httpPort, restconfServletContextPath);
     }
 
 }

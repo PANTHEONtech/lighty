@@ -57,9 +57,7 @@ data:
         "restconf":{
             "inetAddress":"0.0.0.0",
             "httpPort":{{ .Values.lighty.restconf.restconfPort }},
-            "webSocketPort": 8185,
-            "restconfServletContextPath":{{ .Values.lighty.restconf.restconfPath | quote}},
-            "jsonRestconfServiceType": "DRAFT_18"
+            "restconfServletContextPath":{{ .Values.lighty.restconf.restconfPath | quote}}
         },
         "lighty-server":{
             "useHttp2": {{ .Values.lighty.server.useHttp2 }},

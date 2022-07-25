@@ -42,9 +42,7 @@
   "restconf":{
     "inetAddress":"0.0.0.0",
     "httpPort":8888,
-    "webSocketPort": 8181,
-    "restconfServletContextPath":"/restconf",
-    "jsonRestconfServiceType": "DRAFT_18"
+    "restconfServletContextPath":"/restconf"
   },
   "gnmi": {
     "initialYangsPaths" : [
