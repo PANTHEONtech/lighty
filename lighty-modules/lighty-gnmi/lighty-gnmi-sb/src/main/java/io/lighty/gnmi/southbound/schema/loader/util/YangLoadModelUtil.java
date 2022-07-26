@@ -11,15 +11,22 @@ package io.lighty.gnmi.southbound.schema.loader.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.Optional;
 import org.apache.commons.io.IOUtils;
 import org.opendaylight.yangtools.concepts.SemVer;
+import org.opendaylight.yangtools.openconfig.model.api.OpenConfigStatements;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.opendaylight.yangtools.yang.parser.api.YangSyntaxErrorException;
+import org.opendaylight.yangtools.yang.parser.rfc7950.ir.IRArgument.Single;
+import org.opendaylight.yangtools.yang.parser.rfc7950.ir.IRStatement;
+import org.opendaylight.yangtools.yang.parser.rfc7950.repo.TextToIRTransformer;
 import org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangModelDependencyInfo;
 
 public class YangLoadModelUtil {
 
+    private static final String OPENCONFIG_VERSION = OpenConfigStatements.OPENCONFIG_VERSION.getStatementName()
+            .getLocalName();
     private final Revision modelRevision;
     private final SemVer modelSemVer;
     private final String modelBody;
@@ -27,12 +34,15 @@ public class YangLoadModelUtil {
 
     public YangLoadModelUtil(final YangTextSchemaSource yangTextSchemaSource, final InputStream yangTextStream)
             throws YangSyntaxErrorException, IOException {
+        final var irSchemaSource = TextToIRTransformer.transformText(yangTextSchemaSource);
+        final var semanticVersion = getSemVer(irSchemaSource.getRootStatement());
+
         final YangModelDependencyInfo yangModelDependencyInfo =
                 YangModelDependencyInfo.forYangText(yangTextSchemaSource);
         // If revision is present in fileName, prefer that
         this.modelRevision = yangTextSchemaSource.getIdentifier().getRevision()
                 .or(yangModelDependencyInfo::getRevision).orElse(null);
-        this.modelSemVer = yangModelDependencyInfo.getSemanticVersion().orElse(null);
+        this.modelSemVer = semanticVersion.orElse(null);
         this.modelBody = IOUtils.toString(yangTextStream, Charset.defaultCharset());
         this.modelName = yangModelDependencyInfo.getName();
     }
@@ -62,5 +72,16 @@ public class YangLoadModelUtil {
     public String getModelName() {
         return modelName;
     }
-}
 
+    private static Optional<SemVer> getSemVer(final IRStatement stmt) {
+        for (final var substatement : stmt.statements()) {
+            if (OPENCONFIG_VERSION.equals(substatement.keyword().identifier())) {
+                final var argument = substatement.argument();
+                if (argument instanceof Single) {
+                    return Optional.of(SemVer.valueOf(((Single) argument).string()));
+                }
+            }
+        }
+        return Optional.empty();
+    }
+}
