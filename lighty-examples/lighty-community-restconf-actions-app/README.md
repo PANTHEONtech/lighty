@@ -89,7 +89,7 @@ No data are modified during the execution. The implementation is using binding A
 This application example has active [Swagger](https://swagger.io/) UI for RESTCONF.
 
 URL for Swagger: https://tools.ietf.org/html/draft-ietf-netconf-restconf-18
-* __Swagger UI__ ``http://localhost:8888/apidoc/18/explorer/index.html``
+* __Swagger UI__ ``http://localhost:8888/apidoc/explorer/index.html``
 
 ### Use custom config files
 There are two separated config files: for NETCONF SBP single node and for cluster.

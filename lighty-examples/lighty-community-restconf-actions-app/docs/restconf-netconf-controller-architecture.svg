@@ -98,7 +98,7 @@
       <path d="M692.1875 249.0178 L687.1875 261.0178 L692.1875 258.0178 L697.1875 261.0178 Z" clip-path="url(#clipPath2)" stroke="none"/>
       <path d="M692.1875 359.0096 L697.1875 347.0096 L692.1875 350.0096 L687.1875 347.0096 Z" clip-path="url(#clipPath2)" stroke="none"/>
       <text x="676.7275" xml:space="preserve" y="285.1699" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">HTTP</text>
-      <text x="597.9746" xml:space="preserve" y="299.1387" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">http://localhost:8888/apidoc/18</text>
+      <text x="597.9746" xml:space="preserve" y="299.1387" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">http://localhost:8888/apidoc</text>
       <path fill="none" d="M818.5 625.9979 L818.5 676.9781" clip-path="url(#clipPath2)"/>
       <path d="M818.5 617.9979 L813.5 629.9979 L818.5 626.9979 L823.5 629.9979 Z" clip-path="url(#clipPath2)" stroke="none"/>
       <path d="M818.5 684.9781 L823.5 672.9781 L818.5 675.9781 L813.5 672.9781 Z" clip-path="url(#clipPath2)" stroke="none"/>
