@@ -31,12 +31,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import javax.annotation.Nullable;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.gnmi.yang.models.GnmiYangModel;
-import org.opendaylight.yangtools.concepts.SemVer;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.ModuleImport;
 import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
-import org.opendaylight.yangtools.yang.model.repo.api.SemVerSourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.opendaylight.yangtools.yang.parser.api.YangSyntaxErrorException;
 import org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangModelDependencyInfo;
@@ -230,10 +228,7 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
     }
 
     private YangTextSchemaSource makeTextSchemaSource(final GnmiYangModel model) {
-        if (model.getVersion().getValue().matches(SchemaConstants.SEMVER_REGEX)) {
-            return YangTextSchemaSource.delegateForByteSource(SemVerSourceIdentifier.create(model.getName(),
-                    SemVer.valueOf(model.getVersion().getValue())), bodyByteSource(model.getBody()));
-        } else if (model.getVersion().getValue().matches(SchemaConstants.REVISION_REGEX)) {
+        if (model.getVersion().getValue().matches(SchemaConstants.REVISION_REGEX)) {
             return YangTextSchemaSource.delegateForByteSource(RevisionSourceIdentifier.create(model.getName(),
                     Revision.of(model.getVersion().getValue())), bodyByteSource(model.getBody()));
         } else {
