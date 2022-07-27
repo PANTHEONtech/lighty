@@ -177,8 +177,7 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
         for (ModuleImport moduleImport : dependencyInfo.getDependencies()) {
             if (!processedModuleNames.contains(moduleImport.getModuleName())) {
                 final GnmiDeviceCapability importedCapability = new GnmiDeviceCapability(moduleImport.getModuleName(),
-                        moduleImport.getSemanticVersion().orElse(null),
-                        moduleImport.getRevision().orElse(null));
+                        null, moduleImport.getRevision().orElse(null));
                 final Optional<GnmiYangModel> gnmiYangModel = tryToReadModel(importedCapability);
                 if (gnmiYangModel.isPresent()) {
                     models.add(gnmiYangModel.get());
