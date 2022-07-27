@@ -11,7 +11,7 @@ on:
         required: true
       image-tag-latest:
         description: Should be this docker labeled with tag latest? Enter `true` if the tag `latest` should be added for image.
-        default: "false"
+        default: "true"
         required: true
 
 jobs:
