@@ -8,7 +8,6 @@
 
 package io.lighty.swagger;
 
-import org.opendaylight.restconf.common.util.SimpleUriInfo;
 import org.testng.annotations.Test;
 
 public class SwaggerLightyRFC8040Test extends SwaggerLightyTest {
@@ -23,12 +22,12 @@ public class SwaggerLightyRFC8040Test extends SwaggerLightyTest {
 
     @Test
     public void testGetListOfMountsSwagger2() {
-        super.testGetListOfMounts(new SimpleUriInfo(SWAGGER2_BASE_URI + "/mounts"));
+        super.testGetListOfMounts(mockUriInfo(SWAGGER2_BASE_URI + "/mounts"));
     }
 
     @Test
     public void testGetListOfMountsOpenApi3() {
-        super.testGetListOfMounts(new SimpleUriInfo(OPENAPI3_BASE_URI + "/mounts"));
+        super.testGetListOfMounts(mockUriInfo(OPENAPI3_BASE_URI + "/mounts"));
     }
 
     @Test
@@ -55,11 +54,11 @@ public class SwaggerLightyRFC8040Test extends SwaggerLightyTest {
 
     @Test
     public void testGetApiExplorerSwagger2() {
-        super.testGetApiExplorer(new SimpleUriInfo(SWAGGER2_BASE_URI + "/ui"));
+        super.testGetApiExplorer(mockUriInfo(SWAGGER2_BASE_URI + "/ui"));
     }
 
     @Test
     public void testGetApiExplorerOpenApi3() {
-        super.testGetApiExplorer(new SimpleUriInfo(OPENAPI3_BASE_URI + "/ui"));
+        super.testGetApiExplorer(mockUriInfo(OPENAPI3_BASE_URI + "/ui"));
     }
 }
