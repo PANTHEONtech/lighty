@@ -44,10 +44,11 @@ import org.opendaylight.aaa.shiro.filters.AAAShiroFilter;
 import org.opendaylight.aaa.shiro.idm.IdmLightApplication;
 import org.opendaylight.aaa.shiro.idm.IdmLightProxy;
 import org.opendaylight.aaa.shiro.moon.MoonTokenEndpoint;
-import org.opendaylight.aaa.shiro.web.env.ShiroWebEnvironmentLoaderListener;
+import org.opendaylight.aaa.shiro.web.env.AAAWebEnvironment;
 import org.opendaylight.aaa.tokenauthrealm.auth.AuthenticationManager;
 import org.opendaylight.aaa.tokenauthrealm.auth.HttpBasicAuth;
 import org.opendaylight.aaa.tokenauthrealm.auth.TokenAuthenticators;
+import org.opendaylight.aaa.web.servlet.jersey2.JerseyServletSupport;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.DatastoreConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.ShiroConfiguration;
@@ -75,7 +76,7 @@ public final class AAALightyShiroProvider {
     private PasswordHashService passwordHashService;
     private IIDMStore iidmStore;
 
-    private ShiroWebEnvironmentLoaderListener shiroWebEnvironmentLoaderListener;
+    private AAAWebEnvironment aaaWebEnvironment;
 
     private AAALightyShiroProvider(final DataBroker dataBroker,
                                    final AAAConfiguration aaaConfiguration,
@@ -143,14 +144,14 @@ public final class AAALightyShiroProvider {
         server.addContextHandler(contexts);
         this.handlers.add(contexts);
         this.handlers.add(mainHandler);
-        this.shiroWebEnvironmentLoaderListener = new ShiroWebEnvironmentLoaderListener(shiroConfiguration,
+        this.aaaWebEnvironment = AAAWebEnvironment.create(shiroConfiguration,
                 dataBroker,
                 certificateManager,
                 authenticationService,
                 tokenAuthenticators,
                 tokenStore,
-                passwordHashService);
-        server.addCommonEventListener(shiroWebEnvironmentLoaderListener);
+                passwordHashService,
+                new JerseyServletSupport());
 
         final Map<String, String> properties = new HashMap<>();
         final CustomFilterAdapterConfigurationImpl customFilterAdapterConfig =
@@ -159,7 +160,7 @@ public final class AAALightyShiroProvider {
         final FilterHolder customFilterAdapter = new FilterHolder(new CustomFilterAdapter(customFilterAdapterConfig));
         server.addCommonFilter(customFilterAdapter, "/*");
 
-        final FilterHolder shiroFilter = new FilterHolder(new AAAShiroFilter());
+        final FilterHolder shiroFilter = new FilterHolder(new AAAShiroFilter(aaaWebEnvironment));
         server.addCommonFilter(shiroFilter, "/*");
 
         final FilterHolder crossOriginFilter = new FilterHolder(new CrossOriginFilter());
@@ -209,8 +210,8 @@ public final class AAALightyShiroProvider {
         return this.shiroConfiguration;
     }
 
-    public ShiroWebEnvironmentLoaderListener getShiroWebEnvironmentLoaderListener() {
-        return shiroWebEnvironmentLoaderListener;
+    public AAAWebEnvironment getAaaWebEnvironment() {
+        return aaaWebEnvironment;
     }
 
     public TokenAuthenticators getTokenAuthenticators() {
