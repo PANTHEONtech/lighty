@@ -27,6 +27,14 @@ spec:
           volumeMounts:
             - name: config-volume
               mountPath: {{ .Values.lighty.workdir }}/{{ .Values.lighty.configDirectoryName }}
+          readinessProbe:
+            httpGet:
+              path: /restconf/data/network-topology:network-topology
+              port: {{ .Values.lighty.restconf.restconfPort }}
+            initialDelaySeconds: 20
+            periodSeconds: 15
+            failureThreshold: 3
+            timeoutSeconds: 1
           securityContext:
             allowPrivilegeEscalation: false
             runAsUser: {{ .Values.deploymentSecurity.runAsUser }}
