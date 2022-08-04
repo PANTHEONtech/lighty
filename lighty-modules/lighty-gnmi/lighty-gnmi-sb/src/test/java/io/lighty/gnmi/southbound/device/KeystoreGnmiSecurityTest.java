@@ -67,7 +67,8 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.AaaEncryptServiceConfig;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.AaaEncryptServiceConfigBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Host;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.Keystore;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.KeystoreBuilder;
@@ -376,7 +377,7 @@ public class KeystoreGnmiSecurityTest {
     static Node createNode(final String nameOfNode, final int port, final SecurityChoice securityChoice,
                            final Credentials credentials) {
         ConnectionParametersBuilder connectionParametersBuilder = new ConnectionParametersBuilder()
-                .setHost(new Host(IpAddressBuilder.getDefaultInstance(ADDRESS)))
+                .setHost(new Host(new IpAddress(Ipv4Address.getDefaultInstance(ADDRESS))))
                 .setPort(new PortNumber(Uint16.valueOf(port)))
                 .setSecurityChoice(securityChoice);
 
