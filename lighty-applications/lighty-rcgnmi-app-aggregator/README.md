@@ -386,7 +386,7 @@ Once the deployment is started and all pods and services are ready, [save-logs-s
 
 To ***uninstall** the deployment, run the command:  
 
-`microk8s del --purge lighty-rcgnmi-app`
+`microk8s helm3 uninstall lighty-rcgnmi-app`
 
 ### Providing Startup Configuration
 
