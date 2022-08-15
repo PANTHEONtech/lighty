@@ -32,9 +32,10 @@ import java.util.concurrent.TimeoutException;
 import javax.annotation.Nullable;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.gnmi.yang.models.GnmiYangModel;
 import org.opendaylight.yangtools.yang.common.Revision;
+import org.opendaylight.yangtools.yang.common.UnresolvedQName;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.ModuleImport;
-import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
+import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.opendaylight.yangtools.yang.parser.api.YangSyntaxErrorException;
 import org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangModelDependencyInfo;
@@ -175,16 +176,17 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
             throws InterruptedException, ExecutionException, TimeoutException {
         Set<GnmiYangModel> models = new HashSet<>();
         for (ModuleImport moduleImport : dependencyInfo.getDependencies()) {
-            if (!processedModuleNames.contains(moduleImport.getModuleName())) {
-                final GnmiDeviceCapability importedCapability = new GnmiDeviceCapability(moduleImport.getModuleName(),
-                        null, moduleImport.getRevision().orElse(null));
+            if (!processedModuleNames.contains(moduleImport.getModuleName().getLocalName())) {
+                final GnmiDeviceCapability importedCapability = new GnmiDeviceCapability(
+                        moduleImport.getModuleName().getLocalName(), null,
+                        moduleImport.getRevision().orElse(null));
                 final Optional<GnmiYangModel> gnmiYangModel = tryToReadModel(importedCapability);
                 if (gnmiYangModel.isPresent()) {
                     models.add(gnmiYangModel.get());
                 } else {
                     schemaException.addMissingModel(importedCapability);
                 }
-                processedModuleNames.add(moduleImport.getModuleName());
+                processedModuleNames.add(moduleImport.getModuleName().toString());
             }
         }
         return models;
@@ -228,10 +230,11 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
 
     private YangTextSchemaSource makeTextSchemaSource(final GnmiYangModel model) {
         if (model.getVersion().getValue().matches(SchemaConstants.REVISION_REGEX)) {
-            return YangTextSchemaSource.delegateForByteSource(RevisionSourceIdentifier.create(model.getName(),
-                    Revision.of(model.getVersion().getValue())), bodyByteSource(model.getBody()));
+            return YangTextSchemaSource.delegateForByteSource(
+                    new SourceIdentifier(UnresolvedQName.Unqualified.of(model.getName()),
+                            Revision.of(model.getVersion().getValue())), bodyByteSource(model.getBody()));
         } else {
-            return YangTextSchemaSource.delegateForByteSource(RevisionSourceIdentifier.create(model.getName()),
+            return YangTextSchemaSource.delegateForByteSource(new SourceIdentifier(model.getName()),
                     bodyByteSource(model.getBody()));
         }
 
