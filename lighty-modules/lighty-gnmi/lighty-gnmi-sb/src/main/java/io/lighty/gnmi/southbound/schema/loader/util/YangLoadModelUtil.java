@@ -40,7 +40,7 @@ public class YangLoadModelUtil {
         final YangModelDependencyInfo yangModelDependencyInfo =
                 YangModelDependencyInfo.forYangText(yangTextSchemaSource);
         // If revision is present in fileName, prefer that
-        this.modelRevision = yangTextSchemaSource.getIdentifier().getRevision()
+        this.modelRevision = Optional.ofNullable(yangTextSchemaSource.getIdentifier().revision())
                 .or(yangModelDependencyInfo::getRevision).orElse(null);
         this.modelSemVer = semanticVersion.orElse(null);
         this.modelBody = IOUtils.toString(yangTextStream, Charset.defaultCharset());
