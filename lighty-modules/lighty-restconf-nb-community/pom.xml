@@ -33,7 +33,7 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.netconf</groupId>
-            <artifactId>restconf-nb-rfc8040</artifactId>
+            <artifactId>restconf-nb</artifactId>
         </dependency>
 
         <!-- Jersey + Jetty for RESTCONF -->
