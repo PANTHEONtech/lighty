@@ -29,11 +29,18 @@ spec:
               mountPath: {{ .Values.lighty.workdir }}/{{ .Values.lighty.configDirectoryName }}
             - name: secrets-volume
               mountPath: {{ .Values.lighty.workdir }}/{{ .Values.lighty.server.keyStoreDirectory }}
+          startupProbe:
+            httpGet:
+              path: /restconf/data/network-topology:network-topology
+              port: {{ .Values.lighty.restconf.restconfPort }}
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            failureThreshold: 20
+            timeoutSeconds: 1
           readinessProbe:
             httpGet:
               path: /restconf/data/network-topology:network-topology
               port: {{ .Values.lighty.restconf.restconfPort }}
-            initialDelaySeconds: 20
             periodSeconds: 15
             failureThreshold: 3
             timeoutSeconds: 1
@@ -41,7 +48,6 @@ spec:
             httpGet:
               path: /restconf/data/network-topology:network-topology
               port: {{ .Values.lighty.restconf.restconfPort }}
-            initialDelaySeconds: 30
             periodSeconds: 15
             failureThreshold: 3
             timeoutSeconds: 1
