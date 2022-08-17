@@ -67,7 +67,7 @@ public class GnmiCapabilitiesService {
             .build();
     }
 
-    private Optional<SemVer> getSemVer(final Module module) {
+    private static Optional<SemVer> getSemVer(final Module module) {
         final var decStmt = module.asEffectiveStatement().getDeclared().declaredSubstatements();
         return decStmt.stream()
                 .filter(UnrecognizedStatementImpl.class::isInstance)
