@@ -54,11 +54,6 @@
             <artifactId>rfc6022</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.netconf</groupId>
-            <artifactId>odl-netconf-monitoring</artifactId>
-            <version>1.5.3</version>
-        </dependency>
-        <dependency>
             <groupId>org.opendaylight.netconf.model</groupId>
             <artifactId>rfc8526</artifactId>
         </dependency>
