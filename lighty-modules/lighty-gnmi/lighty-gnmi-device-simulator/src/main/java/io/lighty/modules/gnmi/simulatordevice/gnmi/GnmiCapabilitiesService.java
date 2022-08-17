@@ -21,7 +21,6 @@ import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.meta.DeclaredStatement;
 import org.opendaylight.yangtools.yang.model.ri.stmt.impl.decl.UnrecognizedStatementImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,12 +68,12 @@ public class GnmiCapabilitiesService {
     }
 
     private Optional<SemVer> getSemVer(final Module module) {
-            final var decStmt = module.asEffectiveStatement().getDeclared().declaredSubstatements();
-            return ((List<? extends DeclaredStatement<?>>) decStmt).stream()
-                    .filter(UnrecognizedStatementImpl.class::isInstance)
-                    .map(UnrecognizedStatementImpl.class::cast)
-                    .filter(t -> t.statementDefinition().getStatementName().equals(OC_VERSION))
-                    .findAny()
-                    .map(stmt -> SemVer.valueOf(stmt.argument().toString()));
-        }
+        final var decStmt = module.asEffectiveStatement().getDeclared().declaredSubstatements();
+        return decStmt.stream()
+                .filter(UnrecognizedStatementImpl.class::isInstance)
+                .map(UnrecognizedStatementImpl.class::cast)
+                .filter(t -> t.statementDefinition().getStatementName().equals(OC_VERSION))
+                .findAny()
+                .map(stmt -> SemVer.valueOf(stmt.argument().toString()));
+    }
 }
