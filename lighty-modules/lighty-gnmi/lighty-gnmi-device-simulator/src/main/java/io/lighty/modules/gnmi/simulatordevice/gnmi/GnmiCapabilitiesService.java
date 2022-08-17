@@ -8,6 +8,8 @@
 
 package io.lighty.modules.gnmi.simulatordevice.gnmi;
 
+import static org.opendaylight.yangtools.openconfig.model.api.OpenConfigStatements.OPENCONFIG_VERSION;
+
 import gnmi.Gnmi;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -16,9 +18,6 @@ import java.util.Objects;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.concepts.SemVer;
-import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.common.Revision;
-import org.opendaylight.yangtools.yang.common.XMLNamespace;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.ri.stmt.impl.decl.UnrecognizedStatementImpl;
@@ -29,8 +28,6 @@ public class GnmiCapabilitiesService {
 
     private static final Logger LOG = LoggerFactory.getLogger(GnmiCapabilitiesService.class);
     private static final String GNMI_VERSION = "0.7.0";
-    private static final XMLNamespace OC_NS = XMLNamespace.of("http://openconfig.net/yang/openconfig-ext").intern();
-    private static final QName OC_VERSION = QName.create(OC_NS, Revision.of("2020-06-16"), "openconfig-version");
 
     private final EffectiveModelContext schemaContext;
     private final EnumSet<Gnmi.Encoding> supportedEncodings;
@@ -68,12 +65,15 @@ public class GnmiCapabilitiesService {
     }
 
     private static Optional<SemVer> getSemVer(final Module module) {
-        final var decStmt = module.asEffectiveStatement().getDeclared().declaredSubstatements();
-        return decStmt.stream()
-                .filter(UnrecognizedStatementImpl.class::isInstance)
-                .map(UnrecognizedStatementImpl.class::cast)
-                .filter(t -> t.statementDefinition().getStatementName().equals(OC_VERSION))
-                .findAny()
+        final var declared = module.asEffectiveStatement().getDeclared();
+        if (declared == null) {
+            return Optional.empty();
+        }
+
+        return declared.declaredSubstatements(UnrecognizedStatementImpl.class).stream()
+                .filter(t -> OPENCONFIG_VERSION.getStatementName()
+                        .equals(t.statementDefinition().getStatementName().withoutRevision()))
+                .findFirst()
                 .map(stmt -> SemVer.valueOf(stmt.argument().toString()));
     }
 }
