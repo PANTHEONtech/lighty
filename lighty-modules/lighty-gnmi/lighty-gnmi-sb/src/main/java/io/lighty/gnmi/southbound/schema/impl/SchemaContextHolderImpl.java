@@ -186,7 +186,7 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
                 } else {
                     schemaException.addMissingModel(importedCapability);
                 }
-                processedModuleNames.add(moduleImport.getModuleName().toString());
+                processedModuleNames.add(moduleImport.getModuleName().getLocalName());
             }
         }
         return models;
