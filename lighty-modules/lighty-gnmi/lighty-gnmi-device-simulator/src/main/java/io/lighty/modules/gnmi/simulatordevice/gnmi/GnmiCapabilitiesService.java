@@ -13,7 +13,9 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.yangtools.concepts.SemVer;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.slf4j.Logger;
@@ -43,8 +45,9 @@ public class GnmiCapabilitiesService {
             final Gnmi.ModelData.Builder builder = Gnmi.ModelData.newBuilder()
                 .setOrganization(module.getOrganization().orElse("UNKNOWN-ORGANIZATION"))
                 .setName(module.getName());
-            if (module.getSemanticVersion().isPresent()) {
-                builder.setVersion(module.getSemanticVersion().get().toString());
+            final Optional<SemVer> semVer = module.getSemanticVersion();
+            if (semVer.isPresent()) {
+                builder.setVersion(semVer.get().toString());
             } else if (module.getRevision().isPresent()) {
                 builder.setVersion(module.getRevision().get().toString());
             }
