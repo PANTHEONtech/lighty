@@ -61,7 +61,7 @@ public class RestconfAppTest {
     @Test
     public void swaggerURLsTest() throws IOException, InterruptedException {
         HttpResponse<String> operations;
-        operations = restClient.GET("apidoc/openapi3/18/apis/single");
+        operations = restClient.GET("apidoc/openapi3/apis/single");
         Assert.assertEquals(operations.statusCode(), 200);
         operations = restClient.GET("apidoc/explorer/index.html");
         Assert.assertEquals(operations.statusCode(), 200);

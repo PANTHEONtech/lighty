@@ -12,8 +12,8 @@ import org.testng.annotations.Test;
 
 public class SwaggerLightyRFC8040Test extends SwaggerLightyTest {
 
-    private static final String SWAGGER2_BASE_URI = "http://localhost:8888/apidoc/swagger2/18/apis";
-    private static final String OPENAPI3_BASE_URI = "http://localhost:8888/apidoc/openapi3/18/apis";
+    private static final String SWAGGER2_BASE_URI = "http://localhost:8888/apidoc/swagger2/apis";
+    private static final String OPENAPI3_BASE_URI = "http://localhost:8888/apidoc/openapi3/apis";
 
     @Test
     public void simpleSwaggerModuleTest() {
