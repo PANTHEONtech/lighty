@@ -68,7 +68,7 @@ public class RestconfActionsAppTest {
     @Test
     public void swaggerURLsTest() throws Exception {
         HttpResponse<String> operations;
-        operations = restClient.GET("apidoc/openapi3/18/apis/single");
+        operations = restClient.GET("apidoc/openapi3/apis/single");
         assertEquals(operations.statusCode(), 200);
         operations = restClient.GET("apidoc/explorer/index.html");
         assertEquals(operations.statusCode(), 200);
