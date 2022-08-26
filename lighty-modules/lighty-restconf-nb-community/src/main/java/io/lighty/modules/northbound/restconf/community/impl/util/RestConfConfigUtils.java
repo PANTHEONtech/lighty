@@ -38,6 +38,8 @@ public final class RestConfConfigUtils {
             org.opendaylight.yang.gen.v1.urn.sal.restconf.event.subscription.rev140708
                     .$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.subscribe.to.notification.rev161028
+                    .$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.instance.identifier.patch.module.rev151121
                     .$YangModuleInfoImpl.getInstance()
             );
     public static final int MAXIMUM_FRAGMENT_LENGTH = 0;
