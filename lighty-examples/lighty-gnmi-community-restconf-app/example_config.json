@@ -50,7 +50,7 @@
         ],
         "initialYangModels" : [
             {"name": "ietf-interfaces", "revision": "2018-02-20", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
-            {"name": "iana-if-type", "revision": "2017-01-19", "nameSpace": "urn:ietf:params:xml:ns:yang:iana-if-type"},
+            {"name": "iana-if-type", "revision": "2021-06-21", "nameSpace": "urn:ietf:params:xml:ns:yang:iana-if-type"},
             {"name": "ietf-yang-types", "revision": "2013-07-15", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-types"}
         ]
     }
