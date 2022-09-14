@@ -11,7 +11,7 @@
 
     <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-modules-aggregator</artifactId>
-    <version>16.1.1</version>
+    <version>16.1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
 
