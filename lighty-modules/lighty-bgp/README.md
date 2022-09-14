@@ -11,7 +11,7 @@ To use lighty BGP plugin in your project:
   <dependency>
     <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-bgp</artifactId>
-    <version>16.1.1-SNAPSHOT</version>
+    <version>16.1.1</version>
   </dependency>
 ```
 * Initialize and start BgpModule instance:
