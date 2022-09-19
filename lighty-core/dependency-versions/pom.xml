@@ -53,14 +53,14 @@
             <dependency>
                 <groupId>org.opendaylight.aaa</groupId>
                 <artifactId>aaa-artifacts</artifactId>
-                <version>0.16.1</version>
+                <version>0.16.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.controller</groupId>
                 <artifactId>controller-artifacts</artifactId>
-                <version>6.0.1</version>
+                <version>6.0.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -74,7 +74,7 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-artifacts</artifactId>
-                <version>10.0.1</version>
+                <version>10.0.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
