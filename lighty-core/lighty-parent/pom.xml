@@ -169,7 +169,7 @@
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>
                             <artifactId>sevntu-checks</artifactId>
-                            <version>1.41.0</version>
+                            <version>1.42.0</version>
                         </dependency>
                         <dependency>
                             <groupId>org.opendaylight.odlparent</groupId>
