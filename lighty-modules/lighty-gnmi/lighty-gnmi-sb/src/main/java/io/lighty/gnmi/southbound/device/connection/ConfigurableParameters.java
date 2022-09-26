@@ -34,7 +34,7 @@ public class ConfigurableParameters {
             gnmiParameters = null;
             forceCapabilities = null;
         }
-        modelDataList = loadModelDataList();
+        modelDataList = loadModelDataList(forceCapabilities);
         useModelNamePrefix = loadUseModelNamePrefix();
         overwriteDataType = loadOverwriteDataType();
         pathTarget = loadPathTarget();
@@ -61,7 +61,7 @@ public class ConfigurableParameters {
         return Optional.empty();
     }
 
-    private Optional<List<Gnmi.ModelData>> loadModelDataList() {
+    private static Optional<List<Gnmi.ModelData>> loadModelDataList(final ForceCapabilities forceCapabilities) {
         if (forceCapabilities != null && forceCapabilities.getForceCapability() != null) {
             return Optional.of(forceCapabilities.getForceCapability()
                 .entrySet()
