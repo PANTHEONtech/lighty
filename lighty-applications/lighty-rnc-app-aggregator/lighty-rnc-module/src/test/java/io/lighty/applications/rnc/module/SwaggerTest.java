@@ -26,7 +26,6 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class SwaggerTest {
-    private static final int MODULE_TIMEOUT = 60;
     private static final String BASE_URL = "http://localhost:8888";
     private static final String PRIMARY_NAME = "urls.primaryName";
     private static final String APIDOC_INDEX = "/apidoc/explorer/index.html";
@@ -48,7 +47,7 @@ public class SwaggerTest {
     public void startUp() throws Exception {
         final var configPath = Paths.get(Objects.requireNonNull(this.getClass()
                 .getResource("/swagger_config.json")).toURI());
-        rncModule = new RncLightyModule(RncLightyModuleConfigUtils.loadConfigFromFile(configPath), MODULE_TIMEOUT);
+        rncModule = new RncLightyModule(RncLightyModuleConfigUtils.loadConfigFromFile(configPath));
         assertTrue(rncModule.initModules());
     }
 
