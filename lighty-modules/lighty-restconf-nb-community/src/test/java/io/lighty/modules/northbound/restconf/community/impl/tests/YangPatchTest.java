@@ -8,6 +8,8 @@
 package io.lighty.modules.northbound.restconf.community.impl.tests;
 
 import static org.opendaylight.restconf.common.patch.PatchEditOperation.REPLACE;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
 
 import java.util.Collections;
@@ -33,27 +35,25 @@ import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.SystemMapNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapNodeBuilder;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class YangPatchTest extends CommunityRestConfTestBase {
 
     private static final QName BASE_Q_NAME = QName.create("instance:identifier:patch:module",
-            "instance-identifier-patch-module", Revision.of("2015-11-21"));
-    private static final QName EXAMPLE_LIST = QName.create(BASE_Q_NAME, "my-list1");
-    private static final QName EXAMPLE_LIST_NAME =  QName.create(BASE_Q_NAME, "name");
-    private static final NodeIdentifierWithPredicates NODE_WITH_KEY = NodeIdentifierWithPredicates.of((EXAMPLE_LIST));
-    private static final QName MY_LEAF_11 =  QName.create(EXAMPLE_LIST, "my-leaf11");
-    private static final QName MY_LEAF_12 = QName.create(EXAMPLE_LIST, "my-leaf12");
-    private static final QName CONTAINER_ID = QName.create(EXAMPLE_LIST, "patch-cont");
+            "instance-identifier-patch-module", Revision.of("2015-11-21")).intern();
+    private static final QName EXAMPLE_LIST = QName.create(BASE_Q_NAME, "my-list1").intern();
+    private static final QName EXAMPLE_LIST_NAME =  QName.create(BASE_Q_NAME, "name").intern();
+    private static final QName MY_LEAF_11 =  QName.create(EXAMPLE_LIST, "my-leaf11").intern();
+    private static final QName MY_LEAF_12 = QName.create(EXAMPLE_LIST, "my-leaf12").intern();
+    private static final QName CONTAINER_ID = QName.create(EXAMPLE_LIST, "patch-cont").intern();
     private static final String MY_LIST_1_A = "my-list1 - A";
     private static final String I_AM_LEAF_11_0 = "I am leaf11-0";
     private static final String I_AM_LEAF_12_1 = "I am leaf12-1";
 
     @Test
     public void patchDataReplaceTest() throws Exception {
-        Assert.assertNotNull(getLightyController());
-        Assert.assertNotNull(getCommunityRestConf());
+        assertNotNull(getLightyController());
+        assertNotNull(getCommunityRestConf());
 
         final ContainerNode patchContainerNode = getContainerWithData();
         final YangInstanceIdentifier targetNodeMerge = YangInstanceIdentifier.builder()
@@ -76,35 +76,35 @@ public class YangPatchTest extends CommunityRestConfTestBase {
         final ContainerNode response = (ContainerNode) getLightyController().getServices().getClusteredDOMDataBroker()
                 .newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, iidContext.getInstanceIdentifier())
-                .get(5000, TimeUnit.MILLISECONDS).get();
+                .get(5000, TimeUnit.MILLISECONDS).orElseThrow();
 
         final DataContainerChild bodyOfResponse = response.body().iterator().next();
-        Assert.assertEquals(bodyOfResponse, getContainerWithData());
+        assertEquals(bodyOfResponse, getContainerWithData());
     }
 
     private static ContainerNode getContainerWithData() {
         final LeafNode<?> nameLeafA = Builders.leafBuilder()
-                .withNodeIdentifier(new NodeIdentifier(EXAMPLE_LIST_NAME))
+                .withNodeIdentifier(NodeIdentifier.create(EXAMPLE_LIST_NAME))
                 .withValue(MY_LIST_1_A)
                 .build();
         final LeafNode<?> buildLeaf1 = Builders.leafBuilder()
-                .withNodeIdentifier(new NodeIdentifier(MY_LEAF_11))
+                .withNodeIdentifier(NodeIdentifier.create(MY_LEAF_11))
                 .withValue(I_AM_LEAF_11_0)
                 .build();
         final LeafNode<?> buildLeaf2 = Builders.leafBuilder()
-                .withNodeIdentifier(new NodeIdentifier(MY_LEAF_12))
+                .withNodeIdentifier(NodeIdentifier.create(MY_LEAF_12))
                 .withValue(I_AM_LEAF_12_1)
                 .build();
         final MapEntryNode mapEntryNode = Builders.mapEntryBuilder()
-                .withNodeIdentifier(NODE_WITH_KEY)
+                .withNodeIdentifier(NodeIdentifierWithPredicates.of(EXAMPLE_LIST))
                 .withValue(List.of(nameLeafA, buildLeaf1, buildLeaf2))
                 .build();
         final SystemMapNode myList = ImmutableMapNodeBuilder.create()
-                .withNodeIdentifier(new NodeIdentifier(EXAMPLE_LIST))
+                .withNodeIdentifier(NodeIdentifier.create(EXAMPLE_LIST))
                 .withValue(Collections.singletonList(mapEntryNode))
                 .build();
         return Builders.containerBuilder()
-                .withNodeIdentifier(new NodeIdentifier(CONTAINER_ID))
+                .withNodeIdentifier(NodeIdentifier.create(CONTAINER_ID))
                 .withValue(Collections.singletonList(myList))
                 .build();
     }
