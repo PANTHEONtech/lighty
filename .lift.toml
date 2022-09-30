@@ -1,4 +1,5 @@
 build = "maven"
 jdkVersion = "17"
 summaryComments = true
+disableTools = ["refactor-first"]
 
