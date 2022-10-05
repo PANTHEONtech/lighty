@@ -80,15 +80,12 @@ public class ModulesConfig {
         if (!(obj instanceof ModulesConfig)) {
             return false;
         }
-        if (!super.equals(obj)) {
-            return false;
-        }
         final ModulesConfig that = (ModulesConfig) obj;
         return moduleTimeoutSeconds == that.moduleTimeoutSeconds;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), moduleTimeoutSeconds);
+        return Objects.hash(moduleTimeoutSeconds);
     }
 }
