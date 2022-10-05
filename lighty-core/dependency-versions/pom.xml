@@ -23,15 +23,6 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <!-- Override odlparent version to fix: https://www.cve.org/CVERecord?id=CVE-2020-36518
-                     Remove when this will be fixed in upstream -->
-                <groupId>com.fasterxml.jackson</groupId>
-                <artifactId>jackson-bom</artifactId>
-                <version>2.13.3</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
                 <!-- Override odlparent version to fix: https://www.cve.org/CVERecord?id=CVE-2022-2048
                      Remove when this will be fixed in upstream -->
                 <groupId>org.eclipse.jetty</groupId>
