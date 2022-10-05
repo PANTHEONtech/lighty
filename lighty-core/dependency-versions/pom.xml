@@ -31,15 +31,6 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
-            <dependency>
-                <!-- Override odlparent version to fix: https://www.cve.org/CVERecord?id=CVE-2022-2048
-                     Remove when this will be fixed in upstream -->
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-bom</artifactId>
-                <version>9.4.48.v20220622</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
 
             <dependency>
                 <groupId>org.opendaylight.odlparent</groupId>
