@@ -97,6 +97,10 @@
             <groupId>io.lighty.kit.examples.controllers</groupId>
             <artifactId>lighty-guice-app</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.lighty.kit.examples.controllers</groupId>
+            <artifactId>lighty-community-restconf-actions-app</artifactId>
+        </dependency>
 
         <!-- Modules -->
         <dependency>
