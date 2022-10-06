@@ -56,11 +56,6 @@
             <groupId>io.lighty.models.test</groupId>
             <artifactId>lighty-toaster</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-
         <!-- Test scoped dependencies -->
         <dependency>
             <groupId>junit</groupId>

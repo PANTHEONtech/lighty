@@ -22,6 +22,10 @@
     <name>${project.groupId}:${project.artifactId}</name>
     <url>https://github.com/PANTHEONtech/lighty</url>
 
+    <properties>
+        <slf4j.version>2.0.0</slf4j.version>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -46,11 +50,6 @@
         <dependency>
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.lighty.resources</groupId>
-            <artifactId>log4j2-config</artifactId>
         </dependency>
         <dependency>
             <groupId>io.lighty.resources</groupId>

@@ -26,10 +26,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>io.lighty.resources</groupId>
-            <artifactId>log4j2-config</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>
