@@ -29,8 +29,9 @@
 
     <properties>
         <maven.compiler.release>17</maven.compiler.release>
-        <!-- Overrides also spring-boot log4j2 dependency -->
+        <!-- Overrides also spring-boot log4j2 and slf4j dependency -->
         <log4j2.version>2.19.0</log4j2.version>
+        <slf4j.version>2.0.0</slf4j.version>
     </properties>
 
     <dependencies>
@@ -43,6 +44,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.resources</groupId>
@@ -224,12 +226,12 @@
                         <dependency>
                             <groupId>org.slf4j</groupId>
                             <artifactId>slf4j-api</artifactId>
-                            <version>2.0.0</version>
+                            <version>${slf4j.version}</version>
                         </dependency>
                         <dependency>
                             <groupId>org.slf4j</groupId>
                             <artifactId>slf4j-simple</artifactId>
-                            <version>2.0.0</version>
+                            <version>${slf4j.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
