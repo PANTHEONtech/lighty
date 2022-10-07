@@ -62,7 +62,6 @@ public class TopologyPluginsTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(TopologyPluginsTest.class);
     public static final long SHUTDOWN_TIMEOUT_MILLIS = 60_000;
-    public static final long SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS = 3_000;
 
     private LightyController lightyController;
     private CommunityRestConf restConf;
@@ -110,7 +109,6 @@ public class TopologyPluginsTest {
             LOG.info("Shutting down CommunityRestConf");
             try {
                 this.restConf.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-                Thread.sleep(SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS);
             } catch (InterruptedException e) {
                 LOG.error("Interrupted while shutting down CommunityRestConf", e);
             } catch (TimeoutException e) {
@@ -123,7 +121,6 @@ public class TopologyPluginsTest {
             LOG.info("Shutting down LightyController");
             try {
                 this.lightyController.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-                Thread.sleep(SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS);
             } catch (Exception e) {
                 LOG.error("Shutdown of LightyController failed", e);
             }

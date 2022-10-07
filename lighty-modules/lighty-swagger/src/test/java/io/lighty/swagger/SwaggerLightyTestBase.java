@@ -35,7 +35,6 @@ public abstract class SwaggerLightyTestBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(SwaggerLightyTestBase.class);
     public static final long SHUTDOWN_TIMEOUT_MILLIS = 60_000;
-    public static final long SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS = 3_000;
 
     private LightyController lightyController;
     private SwaggerLighty swaggerModule;
@@ -84,7 +83,6 @@ public abstract class SwaggerLightyTestBase {
             LOG.info("Shutting down Lighty Swagger");
             try {
                 swaggerModule.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-                Thread.sleep(SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS);
             } catch (InterruptedException e) {
                 LOG.error("Interrupted while shutting down Lighty Swagger", e);
             } catch (TimeoutException e) {
@@ -96,7 +94,6 @@ public abstract class SwaggerLightyTestBase {
                 LOG.info("Shutting down LightyController");
                 try {
                     lightyController.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-                    Thread.sleep(SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS);
                 } catch (Exception e) {
                     LOG.error("Shutdown of LightyController failed", e);
                 }
