@@ -71,6 +71,9 @@ spec:
                       -Dcom.sun.management.jmxremote.port={{ .Values.lighty.jmx.jmxPort }}
                       -Dcom.sun.management.jmxremote.rmi.port={{ .Values.lighty.jmx.jmxPort }}
                       -Djava.rmi.server.hostname=127.0.0.1"
+            {{ else }}
+            - name: JAVA_OPTS
+              value: "-Dlog4j2.disable.jmx=true"
             {{- end }}
           ports:
             # akka remoting
