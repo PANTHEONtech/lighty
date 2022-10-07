@@ -62,11 +62,20 @@ data:
       }
     }
 
-  log4j.properties: |
-    log4j.rootLogger=INFO, STDOUT
-    log4j.appender.STDOUT=org.apache.log4j.ConsoleAppender
-    log4j.appender.STDOUT.layout=org.apache.log4j.PatternLayout
-    log4j.appender.STDOUT.layout.ConversionPattern=%5p %d{HH:mm:ss} [%c] (%F:%L) - %m%n
+  log4j2.xml: |
+    <Configuration status="INFO">
+        <Appenders>
+            <Console name="ConsoleAppender" target="SYSTEM_OUT">
+                <PatternLayout pattern="%5p [%t] (%F:%L) - %m%n" />
+            </Console>
+        </Appenders>
+    
+        <Loggers>
+            <Root level="INFO">
+                <AppenderRef ref="ConsoleAppender"/>
+            </Root>
+        </Loggers>
+    </Configuration>  
 
   akka-node-k8s.conf: |
     akka {
