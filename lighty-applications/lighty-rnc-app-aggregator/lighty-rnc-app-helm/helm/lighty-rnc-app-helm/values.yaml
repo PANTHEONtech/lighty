@@ -14,7 +14,7 @@ lighty:
   # Name of the config file must be same as property in configmap
   configFilename: "lighty-config.json"
   # Name of the config file for initial logger configuration, must be same as property in configmap
-  loggerConfigFilename: "log4j.properties"
+  loggerConfigFilename: "log4j2.xml"
   # Time-out in seconds after which the exception is thrown if the module is not successfully initialized by then
   moduleTimeOut: 60
   # If using cluster (not single-node deployment), don't forget to increase replica count
