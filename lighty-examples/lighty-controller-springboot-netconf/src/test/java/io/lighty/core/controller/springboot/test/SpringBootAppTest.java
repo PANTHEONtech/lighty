@@ -35,7 +35,6 @@ import java.util.Arrays;
 public class SpringBootAppTest {
 
     final private static Logger LOG = LoggerFactory.getLogger(SpringBootAppTest.class);
-    public static final long SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS = 1_000;
 
     private static ConfigurableApplicationContext appContext;
     private static RestClient restClient;
@@ -105,7 +104,6 @@ public class SpringBootAppTest {
         if (restClient != null) {
             try {
                 restClient.close();
-                Thread.sleep(SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS);
             } catch (Exception e) {
                 LOG.error("Shutdown of restClient failed", e);
             }
