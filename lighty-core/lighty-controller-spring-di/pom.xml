@@ -50,10 +50,6 @@
 
         <dependency>
             <groupId>io.lighty.resources</groupId>
-            <artifactId>log4j-properties</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.lighty.resources</groupId>
             <artifactId>singlenode-configuration</artifactId>
             <scope>test</scope>
         </dependency>
