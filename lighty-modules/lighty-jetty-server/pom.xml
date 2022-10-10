@@ -50,10 +50,6 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-alpn-java-server</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
         <!--Tests-->
         <dependency>
             <groupId>org.testng</groupId>
