@@ -29,12 +29,27 @@
 
     <properties>
         <maven.compiler.release>17</maven.compiler.release>
+        <slf4j-reload4j.version>2.0.0</slf4j-reload4j.version>
+        <!-- Overrides Spring Boot slf4j dependency version -->
+        <slf4j.version>2.0.0</slf4j.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
+        </dependency>
+
+        <!-- Loggers dependencies used in lighty project -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-reload4j</artifactId>
+            <version>${slf4j-reload4j.version}</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.resources</groupId>
@@ -201,12 +216,12 @@
                         <dependency>
                             <groupId>org.slf4j</groupId>
                             <artifactId>slf4j-api</artifactId>
-                            <version>2.0.0</version>
+                            <version>${slf4j.version}</version>
                         </dependency>
                         <dependency>
                             <groupId>org.slf4j</groupId>
                             <artifactId>slf4j-simple</artifactId>
-                            <version>2.0.0</version>
+                            <version>${slf4j.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>

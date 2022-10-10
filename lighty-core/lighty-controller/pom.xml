@@ -24,10 +24,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.lighty.core</groupId>
             <artifactId>lighty-common</artifactId>
         </dependency>
