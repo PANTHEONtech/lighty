@@ -86,7 +86,26 @@ public class NetconfTopologyPlugin extends AbstractLightyModule implements Netco
 
     @Override
     public Optional<NetconfBaseService> getNetconfBaseService(final NodeId nodeId) {
+        final Optional<NetconfBaseServiceImpl> netconfBaseServiceImpl =
+                getNetconfBaseServiceImpl(nodeId);
+        return netconfBaseServiceImpl.isPresent() ? Optional.of((NetconfBaseService) netconfBaseServiceImpl.get())
+                : Optional.empty();
+    }
 
+    @Override
+    public Optional<NetconfNmdaBaseService> getNetconfNmdaBaseService(final NodeId nodeId) {
+        final Optional<NetconfBaseServiceImpl> netconfBaseServiceImpl =
+                getNetconfBaseServiceImpl(nodeId);
+        return netconfBaseServiceImpl.isPresent() ? Optional.of((NetconfNmdaBaseService) netconfBaseServiceImpl.get())
+                : Optional.empty();
+    }
+
+    private Optional<DOMMountPoint> getNetconfDOMMountPoint(final NodeId nodeId) {
+        final YangInstanceIdentifier yangInstanceIdentifier = NetconfUtils.createNetConfNodeMountPointYII(nodeId);
+        return this.domMountPointService.getMountPoint(yangInstanceIdentifier);
+    }
+
+    public Optional<NetconfBaseServiceImpl> getNetconfBaseServiceImpl(NodeId nodeId) {
         final Optional<DOMMountPoint> domMountPointOptional = getNetconfDOMMountPoint(nodeId);
         if (domMountPointOptional.isPresent()) {
             final DOMMountPoint domMountPoint = domMountPointOptional.get();
@@ -98,25 +117,5 @@ public class NetconfTopologyPlugin extends AbstractLightyModule implements Netco
             }
         }
         return Optional.empty();
-    }
-
-    @Override
-    public Optional<NetconfNmdaBaseService> getNetconfNmdaBaseService(NodeId nodeId) {
-        final Optional<DOMMountPoint> domMountPointOptional = getNetconfDOMMountPoint(nodeId);
-        if (domMountPointOptional.isPresent()) {
-            final DOMMountPoint domMountPoint = domMountPointOptional.get();
-            Optional<DOMSchemaService> service = domMountPoint.getService(DOMSchemaService.class);
-            final Optional<DOMRpcService> domRpcServiceOptional = domMountPoint.getService(DOMRpcService.class);
-            if (domRpcServiceOptional.isPresent()) {
-                return Optional.of(new NetconfNmdaBaseServiceImpl(nodeId, domRpcServiceOptional.get(),
-                        service.orElseThrow().getGlobalContext()));
-            }
-        }
-        return Optional.empty();
-    }
-
-    private Optional<DOMMountPoint> getNetconfDOMMountPoint(NodeId nodeId) {
-        final YangInstanceIdentifier yangInstanceIdentifier = NetconfUtils.createNetConfNodeMountPointYII(nodeId);
-        return this.domMountPointService.getMountPoint(yangInstanceIdentifier);
     }
 }
