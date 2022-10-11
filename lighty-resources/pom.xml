@@ -20,9 +20,9 @@
     </properties>
 
     <modules>
-        <module>log4j-properties</module>
         <module>singlenode-configuration</module>
         <module>controller-application-assembly</module>
         <module>start-script</module>
+        <module>log4j2-config</module>
     </modules>
 </project>
