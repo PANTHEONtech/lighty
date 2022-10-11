@@ -339,8 +339,8 @@ To build and start the RCgNMI lighty.io application using Docker in a local envi
   ```
    docker run -it --name lighty-rcgnmi --network host
    -v /absolute_path/to/config-file/configuration.json:/lighty-rcgnmi/configuration.json
-   -v /absolute_path/to/log4j-file/log4j.properties:/lighty-rcgnmi/log4j.properties
-   --rm lighty-rcgnmi -c configuration.json -l log4j.properties
+   -v /absolute_path/to/log4j-file/log4j2.xml:/lighty-rcgnmi/log4j2.xml
+   --rm lighty-rcgnmi -c configuration.json -l log4j2.xml
   ```
 
 If your _configuration.json_ file specifies a path to the initial configuration data to load on start up (for more information, check the [lighty-controller](../../lighty-core/lighty-controller)), you need to mount the JSON/XML file as well:

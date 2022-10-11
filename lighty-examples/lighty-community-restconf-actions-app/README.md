@@ -98,7 +98,7 @@ There are two separated config files: for NETCONF SBP single node and for cluste
 Example configuration for single node is [here](src/main/assembly/resources/sampleConfigSingleNode.json)
 
 ## Setup Logging
-Default loging configuration may be overwritten by JVM option
-```-Dlog4j.configuration=/path/to/log4j.properties```
+Default logging configuration may be overwritten by JVM option
+```-Dlog4j.configurationFile=path/to/log4j2.xml```
 
-Content of ```log4j.properties``` is described [here](https://logging.apache.org/log4j/2.x/manual/configuration.html).
+Content of ```log4j2.xml``` is described [here](https://logging.apache.org/log4j/2.x/manual/configuration.html).
