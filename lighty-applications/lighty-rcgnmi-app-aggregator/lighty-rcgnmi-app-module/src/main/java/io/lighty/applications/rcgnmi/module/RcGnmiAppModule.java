@@ -29,6 +29,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -154,16 +155,11 @@ public class RcGnmiAppModule {
     public boolean close() {
         LOG.info("Stopping RCgNMI lighty.io application...");
         boolean success = true;
-
-        if (this.lightyRestconf != null && !stopAndWaitLightyModule(this.lightyRestconf)) {
-            success = false;
-        }
-        if (this.lightyController != null && !stopAndWaitLightyModule(this.lightyController)) {
-            success = false;
-        }
-        if (this.gnmiSouthboundModule != null && !stopAndWaitLightyModule(this.gnmiSouthboundModule)) {
-            success = false;
-        }
+        final LightyModule[] lightyModuleList = new LightyModule[]{lightyRestconf, lightyController,
+                gnmiSouthboundModule};
+        success = !Arrays.stream(lightyModuleList)
+                .anyMatch((lightyModule) -> lightyModule != null
+                        && !stopAndWaitLightyModule(lightyModule));
 
         if (success) {
             LOG.info("RCgNMI lighty.io module stopped successfully!");

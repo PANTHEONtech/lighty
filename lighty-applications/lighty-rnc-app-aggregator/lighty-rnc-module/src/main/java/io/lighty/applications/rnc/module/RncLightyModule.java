@@ -33,6 +33,7 @@ import io.lighty.server.config.LightyServerConfig;
 import io.lighty.swagger.SwaggerLighty;
 import java.net.InetSocketAddress;
 import java.security.Security;
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -179,15 +180,12 @@ public class RncLightyModule {
                 && this.aaaLighty != null && !stopAndWaitLightyModule(this.aaaLighty)) {
             success = false;
         }
-        if (this.lightyRestconf != null && !stopAndWaitLightyModule(this.lightyRestconf)) {
-            success = false;
-        }
-        if (this.lightyNetconf != null && !stopAndWaitLightyModule(this.lightyNetconf)) {
-            success = false;
-        }
-        if (this.lightyController != null && !stopAndWaitLightyModule(this.lightyController)) {
-            success = false;
-        }
+
+        final LightyModule[] lightyModuleList = new LightyModule[]{lightyRestconf, lightyNetconf, lightyController};
+        success = !Arrays.stream(lightyModuleList)
+                .anyMatch((lightyModule) -> lightyModule != null
+                        && !stopAndWaitLightyModule(lightyModule));
+
         if (success) {
             LOG.info("RNC lighty.io module stopped successfully!");
             return true;
