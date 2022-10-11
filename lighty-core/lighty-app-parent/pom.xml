@@ -37,7 +37,7 @@
     <dependencies>
         <dependency>
             <groupId>io.lighty.resources</groupId>
-            <artifactId>log4j-properties</artifactId>
+            <artifactId>log4j2-config</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -117,7 +117,7 @@
                                 <phase>generate-resources</phase>
                                 <configuration>
                                     <includeGroupIds>io.lighty.resources</includeGroupIds>
-                                    <includeArtifactIds>log4j-properties</includeArtifactIds>
+                                    <includeArtifactIds>log4j2-config</includeArtifactIds>
                                     <excludes>META-INF\/**</excludes>
                                     <excludeTransitive>true</excludeTransitive>
                                     <outputDirectory>${project.build.directory}/classes</outputDirectory>

@@ -63,7 +63,7 @@
         </dependency>
         <dependency>
             <groupId>io.lighty.resources</groupId>
-            <artifactId>log4j-properties</artifactId>
+            <artifactId>log4j2-config</artifactId>
             <scope>test</scope>
         </dependency>
         <!-- ODL components are using JDT annotations quite widely -->
