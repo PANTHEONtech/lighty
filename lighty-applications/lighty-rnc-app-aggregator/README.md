@@ -34,8 +34,8 @@ To build and start the lighty.io RNC application in the local environment, follo
 3. Start the application by running it's _.jar_ file:  
    `java -jar lighty-rnc-app-<version>.jar`
    
-4. To start the application with custom lighty configuration, use arg -c and for custom initial log4j configuration use argument -l:  
-   `java -jar lighty-rnc-app-<version>.jar -c /path/to/config-file -l /path/to/log4j-config-file`  
+4. To start the application with custom lighty configuration, use arg `-c`:
+   `java -jar lighty-rnc-app-<version>.jar -c /path/to/config-file`
 
    To extend lighty modules time-out use `"modules": { "moduleTimeoutSeconds": SECONDS },` property inside JSON configuration. This property increases the time after which the exception is thrown if the module is not successfully initialized by then (Default 60).
    Example configuration files are located on following folder [example-config](lighty-rnc-app-docker/example-config).
@@ -177,6 +177,13 @@ For example, if your initial json data contains node in netconf topology:
 and the device is running, the connection should be established upon startup.
 For testing purposes, you can use [lighty-netconf-simulator](https://github.com/PANTHEONtech/lighty-netconf-simulator)
 as a netconf device.
+
+## Setup Logging
+Default logging configuration may be overwritten by JVM option
+```-Dlog4j.configurationFile=path/to/log4j2.xml```
+
+Content of ```log4j2.xml``` is described [here](https://logging.apache.org/log4j/2.x/manual/configuration.html).
+
 
 ## Update logger with JMX
 Java Management Extensions is a tool enabled by default which makes it easy to change runtime

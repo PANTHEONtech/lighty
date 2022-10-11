@@ -21,8 +21,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.name }}:{{ .Values.image.version }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args: [ "-c","{{ .Values.lighty.configDirectoryName }}/{{ .Values.lighty.configFilename }}",
-                  "-l","{{ .Values.lighty.configDirectoryName }}/{{ .Values.lighty.loggerConfigFilename }}"]
+          args: [ "-c","{{ .Values.lighty.configDirectoryName }}/{{ .Values.lighty.configFilename }}"]
           volumeMounts:
             - name: config-volume
               mountPath: {{ .Values.lighty.workdir }}/{{ .Values.lighty.configDirectoryName }}
@@ -68,10 +67,12 @@ spec:
                       -Dcom.sun.management.jmxremote.local.only=false
                       -Dcom.sun.management.jmxremote.port={{ .Values.lighty.jmx.jmxPort }}
                       -Dcom.sun.management.jmxremote.rmi.port={{ .Values.lighty.jmx.jmxPort }}
-                      -Djava.rmi.server.hostname=127.0.0.1"
+                      -Djava.rmi.server.hostname=127.0.0.1
+                      -Dlog4j.configurationFile={{ .Values.lighty.configDirectoryName }}/{{ .Values.lighty.loggerConfigFilename }}"
             {{ else }}
             - name: JAVA_OPTS
-              value: "-Dlog4j2.disable.jmx=true"
+              value: "-Dlog4j2.disable.jmx=true
+                      -Dlog4j.configurationFile={{ .Values.lighty.configDirectoryName }}/{{ .Values.lighty.loggerConfigFilename }}"
             {{- end }}
           ports:
             # akka remoting
