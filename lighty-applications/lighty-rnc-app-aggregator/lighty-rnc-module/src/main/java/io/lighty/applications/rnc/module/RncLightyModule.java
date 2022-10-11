@@ -18,6 +18,7 @@ import io.lighty.core.controller.api.LightyServices;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
+import io.lighty.core.controller.impl.util.LightyModuleUtils;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
@@ -172,49 +173,22 @@ public class RncLightyModule {
         LOG.info("Stopping RNC lighty.io application...");
         boolean success = true;
         if (rncModuleConfig.getServerConfig().isEnableSwagger()
-                && this.swagger != null && !stopAndWaitLightyModule(this.swagger)) {
+                && this.swagger != null && !LightyModuleUtils.stopAndWaitLightyModule(lightyModuleTimeout,
+                DEFAULT_LIGHTY_MODULE_TIME_UNIT, this.swagger)) {
             success = false;
         }
         if (this.rncModuleConfig.getAaaConfig().isEnableAAA()
-                && this.aaaLighty != null && !stopAndWaitLightyModule(this.aaaLighty)) {
+                && this.aaaLighty != null && !LightyModuleUtils.stopAndWaitLightyModule(lightyModuleTimeout,
+                DEFAULT_LIGHTY_MODULE_TIME_UNIT, this.aaaLighty)) {
             success = false;
         }
-        if (this.lightyRestconf != null && !stopAndWaitLightyModule(this.lightyRestconf)) {
-            success = false;
-        }
-        if (this.lightyNetconf != null && !stopAndWaitLightyModule(this.lightyNetconf)) {
-            success = false;
-        }
-        if (this.lightyController != null && !stopAndWaitLightyModule(this.lightyController)) {
-            success = false;
-        }
+        success = LightyModuleUtils.stopMultipleModules(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT,
+                lightyRestconf, lightyNetconf, lightyController);
         if (success) {
             LOG.info("RNC lighty.io module stopped successfully!");
             return true;
         } else {
             LOG.error("Some components of RNC lighty.io module were not stopped successfully!");
-            return false;
-        }
-    }
-
-    @SuppressWarnings({"checkstyle:illegalCatch"})
-    private boolean stopAndWaitLightyModule(final LightyModule lightyModule) {
-        try {
-            LOG.info("Stopping lighty.io module ({})...", lightyModule.getClass());
-            final boolean stopSuccess =
-                    lightyModule.shutdown().get(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
-            if (stopSuccess) {
-                LOG.info("lighty.io module ({}) stopped successfully!", lightyModule.getClass());
-                return true;
-            } else {
-                LOG.error("Unable to stop lighty.io module ({})!", lightyModule.getClass());
-                return false;
-            }
-        } catch (Exception e) {
-            LOG.error("Exception was thrown while stopping the lighty.io module ({})!", lightyModule.getClass(), e);
-            if (e instanceof InterruptedException) {
-                Thread.currentThread().interrupt();
-            }
             return false;
         }
     }

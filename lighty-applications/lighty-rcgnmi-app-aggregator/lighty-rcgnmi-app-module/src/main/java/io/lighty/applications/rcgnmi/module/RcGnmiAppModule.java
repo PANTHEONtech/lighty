@@ -15,6 +15,7 @@ import io.lighty.core.controller.api.LightyServices;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
+import io.lighty.core.controller.impl.util.LightyModuleUtils;
 import io.lighty.gnmi.southbound.lightymodule.GnmiSouthboundModule;
 import io.lighty.gnmi.southbound.lightymodule.GnmiSouthboundModuleBuilder;
 import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
@@ -154,6 +155,9 @@ public class RcGnmiAppModule {
     public boolean close() {
         LOG.info("Stopping RCgNMI lighty.io application...");
         boolean success = true;
+
+        success = LightyModuleUtils.stopMultipleModules(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT,
+                this.lightyRestconf, this.lightyController, this.gnmiSouthboundModule);
 
         if (this.lightyRestconf != null && !stopAndWaitLightyModule(this.lightyRestconf)) {
             success = false;
