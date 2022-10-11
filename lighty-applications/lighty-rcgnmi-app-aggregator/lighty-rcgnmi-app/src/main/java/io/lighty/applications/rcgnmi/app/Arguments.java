@@ -16,15 +16,7 @@ public class Arguments {
             + " (If absent, the default will be used)")
     private String configPath;
 
-    @Parameter(names = {"-l", "--logger-config-path"}, description = "Path to custom xml log4j properties file. "
-            + " (If absent, will look on classpath for it")
-    private String loggerPath;
-
     public String getConfigPath() {
         return configPath;
-    }
-
-    public String getLoggerPath() {
-        return loggerPath;
     }
 }

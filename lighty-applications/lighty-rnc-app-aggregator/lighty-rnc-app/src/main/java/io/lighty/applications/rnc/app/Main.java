@@ -16,11 +16,8 @@ import io.lighty.applications.rnc.module.config.RncLightyModuleConfigUtils;
 import io.lighty.applications.rnc.module.config.RncLightyModuleConfiguration;
 import io.lighty.core.common.models.YangModuleUtils;
 import io.lighty.core.controller.impl.config.ConfigurationException;
-import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,11 +50,6 @@ public class Main {
                 .addObject(arguments)
                 .build()
                 .parse(args);
-        if (arguments.getLoggerPath() != null) {
-            LOG.debug("Argument for custom logging settings path is present: {} ", arguments.getLoggerPath());
-            ((LoggerContext) LogManager.getContext(false)).setConfigLocation(URI.create(arguments.getLoggerPath()));
-            LOG.info("Custom logger properties loaded successfully");
-        }
 
         try {
             if (arguments.getConfigPath() != null) {

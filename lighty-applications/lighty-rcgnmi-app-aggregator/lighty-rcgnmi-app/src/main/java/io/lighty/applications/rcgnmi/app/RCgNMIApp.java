@@ -17,12 +17,9 @@ import io.lighty.applications.rcgnmi.module.RcGnmiAppModuleConfigUtils;
 import io.lighty.core.common.models.YangModuleUtils;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
@@ -58,11 +55,6 @@ public class RCgNMIApp {
                 .addObject(arguments)
                 .build()
                 .parse(args);
-        if (arguments.getLoggerPath() != null) {
-            LOG.debug("Argument for custom logging settings path is present: {} ", arguments.getLoggerPath());
-            ((LoggerContext) LogManager.getContext(false)).setConfigLocation(URI.create(arguments.getLoggerPath()));
-            LOG.info("Custom logger properties loaded successfully");
-        }
         try {
             if (arguments.getConfigPath() != null) {
                 final Path configPath = Paths.get(arguments.getConfigPath());
