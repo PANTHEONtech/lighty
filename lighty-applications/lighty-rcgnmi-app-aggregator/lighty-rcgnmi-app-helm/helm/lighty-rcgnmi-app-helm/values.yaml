@@ -22,6 +22,12 @@ lighty:
   restconf:
     restconfPort: 8888
 
+  jmx:
+    # Port on which JMX server in image is listening, should be same as defined in dockerfile
+    # If true, allow remote connections to JMX server running in container image, useful for debugging
+    enableJmxRemoting: true
+    jmxPort: 1099
+
   akka:
     # If true, overrides akka cluster configuration with default single-node
     isSingleNode: true
