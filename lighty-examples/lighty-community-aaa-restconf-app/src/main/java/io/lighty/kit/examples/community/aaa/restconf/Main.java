@@ -15,11 +15,11 @@ import io.lighty.aaa.util.AAAConfigUtils;
 import io.lighty.applications.util.ModulesConfig;
 import io.lighty.core.common.exceptions.ModuleStartupException;
 import io.lighty.core.controller.api.LightyController;
-import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
+import io.lighty.core.controller.impl.util.LightyModuleUtils;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
@@ -136,26 +136,11 @@ public final class Main {
         this.restconf.startServer();
     }
 
-    @SuppressWarnings("IllegalCatch")
-    private void closeLightyModule(final LightyModule module) {
-        if (module != null) {
-            try {
-                module.shutdown().get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
-            } catch (final Exception e) {
-                LOG.error("Exception while shutting down {} module: ", module.getClass().getSimpleName(), e);
-                if (e instanceof InterruptedException) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-    }
-
     public void shutdown() {
         LOG.info("Lighty.io, Restconf and AAA module shutting down ...");
         final Stopwatch stopwatch = Stopwatch.createStarted();
-        closeLightyModule(this.aaaLighty);
-        closeLightyModule(this.restconf);
-        closeLightyModule(this.lightyController);
+        LightyModuleUtils.stopMultipleModules(this.modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS,
+                this.aaaLighty, this.restconf, this.lightyController);
         LOG.info("Lighty.io, Restconf and AAA module stopped in {}", stopwatch.stop());
     }
 }
