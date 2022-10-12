@@ -15,6 +15,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -184,5 +185,18 @@ public abstract class AbstractLightyModule implements LightyModule {
 
         return shutdownFuture;
     }
-}
 
+    @SuppressWarnings("IllegalCatch")
+    @Override
+    public final boolean shutdown(final long duration, final TimeUnit unit) {
+        try {
+            return shutdown().get(duration, unit);
+        } catch (final InterruptedException e) {
+            LOG.error("Interrupted while shutting down {}:", getClass().getSimpleName(), e);
+            Thread.currentThread().interrupt();
+        } catch (final Exception e) {
+            LOG.error("Exception while shutting down {}:", getClass().getSimpleName(), e);
+        }
+        return false;
+    }
+}
