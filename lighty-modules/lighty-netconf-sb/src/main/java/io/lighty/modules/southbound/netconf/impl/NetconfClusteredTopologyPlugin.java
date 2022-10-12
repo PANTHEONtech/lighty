@@ -43,6 +43,8 @@ public class NetconfClusteredTopologyPlugin extends AbstractLightyModule impleme
     private final Integer writeTxIdleTimeout;
     private final AAAEncryptionService encryptionService;
 
+    private NetconfTopologyManager topology;
+
     public NetconfClusteredTopologyPlugin(final LightyServices lightyServices, final String topologyId,
             final NetconfClientDispatcher clientDispatcher, final Integer writeTxIdleTimeout,
             final ExecutorService executorService, final AAAEncryptionService encryptionService) {
@@ -69,7 +71,7 @@ public class NetconfClusteredTopologyPlugin extends AbstractLightyModule impleme
         }
         final SchemaResourceManager schemaResourceManager
                 = new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
-        NetconfTopologyManager topology = new NetconfTopologyManager(defaultBaseNetconfSchemas,
+        topology = new NetconfTopologyManager(defaultBaseNetconfSchemas,
                 lightyServices.getBindingDataBroker(),
                 lightyServices.getDOMRpcProviderService(), lightyServices.getDOMActionProviderService(),
                 lightyServices.getClusterSingletonServiceProvider(), lightyServices.getScheduledThreadPool(),
@@ -83,6 +85,9 @@ public class NetconfClusteredTopologyPlugin extends AbstractLightyModule impleme
 
     @Override
     protected boolean stopProcedure() {
+        if (topology != null) {
+            topology.close();
+        }
         return true;
     }
 
