@@ -73,8 +73,8 @@ If you want to completely disable logger JMX option, run application with follow
 `java -Dlog4j2.disable.jmx=true -jar lighty-rnc-app-<version> ...`
 
 ### Update Logger level in runtime with JMX
-After successful start of lighty example application is possible to update logger information in runtime.
-[Log4j2 JMX](https://logging.apache.org/log4j/2.0/manual/jmx.html) provides more configuration but, for this example, we show how to change logger lever.
+After successful start of lighty example application is able to update logger information in runtime.
+[Log4j2 JMX](https://logging.apache.org/log4j/2.0/manual/jmx.html) provides more configuration but, for this example, we show how to change logger level.
 1) Start `jconsole` (part of the standard Java JRE)
 2) Chose lighty example application in local process application
 3) Open `MBeans` window and chose `org.apache.logging.log4j2`
