@@ -8,6 +8,7 @@
 package io.lighty.core.controller.api;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This is common interface for all Lighty modules.
@@ -40,4 +41,12 @@ public interface LightyModule {
      */
     ListenableFuture<Boolean> shutdown() throws Exception;
 
+    /**
+     * Shutdown module and wait for completion for specified amount of time.
+     *
+     * @param duration duration of time to wait for completion
+     * @param unit unit of time duration
+     * @return true if module shutdown was successful in specified time, false otherwise.
+     */
+    boolean shutdown(long duration, TimeUnit unit);
 }
