@@ -225,8 +225,8 @@ In Kubernetes, this is done via `kubectl port-forward` command.
 2. Connect JMX client, run `jconsole <pod-ip>:<JMX-port>`
 
 ### Update Logger level in runtime with JMX
-After successful connection, JMX client to lighty app is possible to update logger information in runtime.
-[Log4j2 JMX](https://logging.apache.org/log4j/2.0/manual/jmx.html) provides more configuration but, for this example we show how to change logger lever.
+After successful connection, JMX client to lighty app is able to update logger information in runtime.
+[Log4j2 JMX](https://logging.apache.org/log4j/2.0/manual/jmx.html) provides more configuration but, for this example we show how to change logger level.
 1) Open `MBeans` window and chose `org.apache.logging.log4j2`
 3) Chose from dropdown  `loggers` than `StatusLogger` and `level`
 4) By double-clicking on level value, can be updated to desire [state](https://logging.apache.org/log4j/2.x/manual/customloglevels.html).
