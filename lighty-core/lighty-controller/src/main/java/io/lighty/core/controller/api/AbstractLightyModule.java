@@ -190,7 +190,13 @@ public abstract class AbstractLightyModule implements LightyModule {
     @Override
     public final boolean shutdown(final long duration, final TimeUnit unit) {
         try {
-            return shutdown().get(duration, unit);
+            final var stopSuccess = shutdown().get(duration, unit);
+            if (stopSuccess) {
+                LOG.info("lighty.io module ({}) stopped successfully!", this.getClass().getSimpleName());
+            } else {
+                LOG.error("Unable to stop lighty.io module ({})!", this.getClass().getSimpleName());
+            }
+            return stopSuccess;
         } catch (final InterruptedException e) {
             LOG.error("Interrupted while shutting down {}:", getClass().getSimpleName(), e);
             Thread.currentThread().interrupt();
