@@ -2,27 +2,27 @@
 
 ## Versioning 
 
-lighty version contains 3 numbers representing MAJOR.MINOR.PATCH (X.Y.Z) levels.
+Lighty.io version contains 3 numbers representing MAJOR.MINOR.PATCH (X.Y.Z) levels.
 
 MAJOR number is mapped to major OpenDaylight release
-| lighty | OpenDaylight    |
-|--------|-----------------|
-| 16.Y.Z | Sulfur (16)     |
-| 15.Y.Z | Phosphorus (15) |
-| ...    |                 |
+| Lighty.io | OpenDaylight    |
+|-----------|-----------------|
+| 17.Y.Z    | Chlorine (17)   |
+| 16.Y.Z    | Sulfur (16)     |
+| ...       |                 |
 
 MINOR number is mapped to OpenDaylight service release (SR1, SR2, SR3, ..)
-| lighty | OpenDaylight    |
-|--------|-----------------|
-| 16.1.Z | Sulfur SR1      |
-| 16.2.Z | Sulfur SR2      |
-| ...    |                 |
+| Lighty.io | OpenDaylight    |
+|-----------|-----------------|
+| 17.1.Z    | Chlorine SR1    |
+| 17.2.Z    | Chlorine SR2    |
+| ...       |                 |
 
-PATCH number represents lighty release, usually security & bug fixes.
+PATCH number represents Lighty.io release, usually security & bug fixes.
 
 ## Supported Versions
 
-Two most recent OpenDaylight versions (MAJOR) are supported by lighty, always with the latest OpenDaylight service release (MINOR)
+Two most recent OpenDaylight versions (MAJOR) are supported by Lighty.io, always with the latest OpenDaylight service release (MINOR)
 | Version              | Supported          |
 | ------------------   | -------------------|
 | MAJOR.MINOR          | :white_check_mark: |
@@ -34,4 +34,3 @@ Two most recent OpenDaylight versions (MAJOR) are supported by lighty, always wi
 ## Reporting a Vulnerability
 
 Please report any discovered or suspected security vulnerabilities to PANTHEON.tech product security team at secalert@pantheon.tech.
-
