@@ -12,6 +12,8 @@ import com.google.common.collect.Iterables;
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 import gnmi.Gnmi;
+import gnmi.Gnmi.Path;
+import gnmi.Gnmi.PathElem;
 import io.grpc.Metadata;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
@@ -310,37 +312,32 @@ public class GnmiCrudService {
         return resultMap;
     }
 
-
-    private YangInstanceIdentifier instanceIdentifierFromPath(final QNameModule rootModule,
-                                                              final Gnmi.Path path) {
-        YangInstanceIdentifier identifier = null;
-        for (final Gnmi.PathElem pathElem : path.getElemList()) {
-            final String pathElemName = ElementNameWithModuleName.parseFromString(pathElem.getName()).getElementName();
-            if (identifier == null) {
-                final QName qname = QName.create(rootModule, pathElemName);
-                identifier = YangInstanceIdentifier.of(qname);
+    private YangInstanceIdentifier instanceIdentifierFromPath(final QNameModule rootModule, final Path path) {
+        var resultIdentifier = YangInstanceIdentifier.empty();
+        for (final PathElem pathElem : path.getElemList()) {
+            final var pathElemName = ElementNameWithModuleName.parseFromString(pathElem.getName()).getElementName();
+            if (resultIdentifier.isEmpty()) {
+                resultIdentifier = YangInstanceIdentifier.of(QName.create(rootModule, pathElemName));
             } else {
-                // Find yang node by local-name (pathElemName) and parent (identifier) namespace/revision
-                final Optional<YangInstanceIdentifier> elementYIID = getIdentifierByElementFromParentModel(identifier,
-                        pathElemName);
-                if (elementYIID.isPresent()) {
-                    identifier = elementYIID.get();
-                } else {
-                    // If element by name is not found inside parent yang model.
-                    final Optional<? extends DataSchemaNode> foundAug = findAugmentationFromOuterModel(pathElemName,
-                            identifier);
-                    final DataSchemaNode augmentation = foundAug.orElseThrow();
-                    identifier = addAugmentationNodeToIdentifier(identifier, augmentation);
-                }
+                resultIdentifier = getYIIDWithNewNode(resultIdentifier, pathElemName);
             }
             if (!pathElem.getKeyMap().isEmpty()) {
-                final QName qname = identifier.getLastPathArgument().getNodeType();
-                final Map<QName, Object> keysMap = pathElem.getKeyMap().entrySet().stream()
-                        .collect(Collectors.toMap(e -> QName.create(qname, e.getKey()), Map.Entry::getValue));
-                identifier = identifier.node(NodeIdentifierWithPredicates.of(qname, keysMap));
+                resultIdentifier = getYIIDWithNewPredicateNode(resultIdentifier, pathElem);
             }
         }
-        return identifier;
+        return resultIdentifier;
+    }
+
+    private YangInstanceIdentifier getYIIDWithNewNode(final YangInstanceIdentifier identifier,
+            final String pathElement) {
+        final var elementYIID = getIdentifierByElementFromParentModel(identifier, pathElement);
+        if (elementYIID.isPresent()) {
+            return elementYIID.get();
+        } else {
+            // If an element by name is not found inside parent yang model, then is augmented from other YANG model.
+            final var foundAug = findAugmentationFromOuterModel(pathElement, identifier);
+            return addAugmentationNodeToIdentifier(identifier, foundAug.orElseThrow());
+        }
     }
 
     private Optional<YangInstanceIdentifier> getIdentifierByElementFromParentModel(final YangInstanceIdentifier id,
@@ -374,6 +371,14 @@ public class GnmiCrudService {
                 .filter(childNode -> childNode.getQName().getLocalName().equals(element))
                 .map(DataSchemaNode.class::cast)
                 .findFirst();
+    }
+
+    private static YangInstanceIdentifier getYIIDWithNewPredicateNode(final YangInstanceIdentifier resultIdentifier,
+            final PathElem currentElement) {
+        final var qname = resultIdentifier.getLastPathArgument().getNodeType();
+        final Map<QName, Object> keysMap = currentElement.getKeyMap().entrySet().stream()
+                .collect(Collectors.toMap(e -> QName.create(qname, e.getKey()), Map.Entry::getValue));
+        return resultIdentifier.node(NodeIdentifierWithPredicates.of(qname, keysMap));
     }
 
     private static YangInstanceIdentifier addAugmentationNodeToIdentifier(final YangInstanceIdentifier identifier,
