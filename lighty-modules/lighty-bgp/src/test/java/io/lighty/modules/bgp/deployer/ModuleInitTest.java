@@ -101,14 +101,8 @@ class ModuleInitTest {
         assertTrue(controllerShutdown);
     }
 
-    @SuppressWarnings({"checkstyle:illegalCatch"})
     private static boolean shutdownModule(final LightyModule module) {
-        try {
-            return module.shutdown().get(WAIT_TIME, TimeUnit.MILLISECONDS);
-        } catch (Exception e) {
-            LOG.error("Shutdown of {} module failed", module.getClass().getName(), e);
-            return false;
-        }
+        return module.shutdown(WAIT_TIME, TimeUnit.MILLISECONDS);
     }
 
 }

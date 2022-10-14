@@ -51,16 +51,11 @@ public abstract class LightyControllerTestBase {
                 result.getName(), parseTestNGStatus(result.getStatus()), result.getThrowable());
     }
 
-    @SuppressWarnings("checkstyle:illegalCatch")
     @AfterClass
     public void shutdownLighty() {
         if (lightyController != null) {
             LOG.info("Shutting down Lighty controller");
-            try {
-                lightyController.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-            } catch (Exception e) {
-                LOG.error("Shutdown of LightyController failed", e);
-            }
+            lightyController.shutdown(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         }
     }
 

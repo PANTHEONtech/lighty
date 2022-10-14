@@ -152,11 +152,7 @@ public class LightyModuleTest {
         }
     }
 
-    private void shutDownLightyModuleAndFailIfTimedOut() throws Exception {
-        try {
-            this.moduleUnderTest.shutdown().get(MAX_SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
-        } catch (TimeoutException e) {
-            Assert.fail("Shutdown timed out.", e);
-        }
+    private void shutDownLightyModuleAndFailIfTimedOut() {
+        this.moduleUnderTest.shutdown(MAX_SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
     }
 }

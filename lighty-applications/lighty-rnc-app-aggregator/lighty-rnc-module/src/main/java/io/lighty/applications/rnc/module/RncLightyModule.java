@@ -197,25 +197,10 @@ public class RncLightyModule {
         }
     }
 
-    @SuppressWarnings({"checkstyle:illegalCatch"})
     private boolean stopAndWaitLightyModule(final LightyModule lightyModule) {
-        try {
-            LOG.info("Stopping lighty.io module ({})...", lightyModule.getClass());
-            final boolean stopSuccess =
-                    lightyModule.shutdown().get(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
-            if (stopSuccess) {
-                LOG.info("lighty.io module ({}) stopped successfully!", lightyModule.getClass());
-                return true;
-            } else {
-                LOG.error("Unable to stop lighty.io module ({})!", lightyModule.getClass());
-                return false;
-            }
-        } catch (Exception e) {
-            LOG.error("Exception was thrown while stopping the lighty.io module ({})!", lightyModule.getClass(), e);
-            if (e instanceof InterruptedException) {
-                Thread.currentThread().interrupt();
-            }
-            return false;
+        if (lightyModule != null) {
+            return lightyModule.shutdown(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
         }
+        return true;
     }
 }

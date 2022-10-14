@@ -94,36 +94,16 @@ public class TopologyPluginsTest {
         this.netconfPlugin.start().get(MAX_START_TIME_MILLIS, TimeUnit.MILLISECONDS);
     }
 
-    @SuppressWarnings("checkstyle:illegalCatch")
     @AfterClass
     public void afterClass() {
         if (this.netconfPlugin != null) {
-            LOG.info("Shutting down Netconf topology Plugin");
-            try {
-                this.netconfPlugin.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-            } catch (Exception e) {
-                LOG.error("Shutdown of Netconf topology Plugin failed", e);
-            }
+            this.netconfPlugin.shutdown(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         }
         if (this.restConf != null) {
-            LOG.info("Shutting down CommunityRestConf");
-            try {
-                this.restConf.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException e) {
-                LOG.error("Interrupted while shutting down CommunityRestConf", e);
-            } catch (TimeoutException e) {
-                LOG.error("Timeout while shutting down CommunityRestConf", e);
-            } catch (ExecutionException e) {
-                LOG.error("Execution of CommunityRestConf shutdown failed", e);
-            }
+            this.restConf.shutdown(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         }
         if (this.lightyController != null) {
-            LOG.info("Shutting down LightyController");
-            try {
-                this.lightyController.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-            } catch (Exception e) {
-                LOG.error("Shutdown of LightyController failed", e);
-            }
+            this.lightyController.shutdown(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         }
     }
 

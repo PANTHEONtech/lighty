@@ -114,14 +114,9 @@ public class DataInitTest {
         Assert.assertEquals(result,false);
     }
 
-    @SuppressWarnings("checkstyle:illegalCatch")
     @AfterMethod
     public void shutdownLighty() {
-        try {
-            lightyController.shutdown().get(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-        } catch (Exception e) {
-            LOG.error("Shutdown of lightyController failed", e);
-        }
+        lightyController.shutdown(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
     }
 
     private ToasterListener registerToasterListener(DataBroker dataBroker,
