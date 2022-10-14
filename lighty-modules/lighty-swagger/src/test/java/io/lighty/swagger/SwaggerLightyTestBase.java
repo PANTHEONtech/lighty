@@ -17,9 +17,7 @@ import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigU
 import io.lighty.server.LightyServerBuilder;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
@@ -76,28 +74,13 @@ public abstract class SwaggerLightyTestBase {
                 result.getName(), parseTestNGStatus(result.getStatus()), result.getThrowable());
     }
 
-    @SuppressWarnings("checkstyle:illegalCatch")
     @AfterClass
     public void shutdownLighty() {
         if (swaggerModule != null) {
-            LOG.info("Shutting down Lighty Swagger");
-            try {
-                swaggerModule.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException e) {
-                LOG.error("Interrupted while shutting down Lighty Swagger", e);
-            } catch (TimeoutException e) {
-                LOG.error("Timeout while shutting down Lighty Swagger", e);
-            } catch (ExecutionException e) {
-                LOG.error("Execution of Lighty Swagger shutdown failed", e);
-            }
-            if (lightyController != null) {
-                LOG.info("Shutting down LightyController");
-                try {
-                    lightyController.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-                } catch (Exception e) {
-                    LOG.error("Shutdown of LightyController failed", e);
-                }
-            }
+            swaggerModule.shutdown(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+        }
+        if (lightyController != null) {
+            lightyController.shutdown(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         }
     }
 

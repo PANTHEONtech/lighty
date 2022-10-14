@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.lighty.core.controller.api.LightyController;
-import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.config.ConfigurationException;
@@ -36,12 +35,8 @@ import org.opendaylight.yang.gen.v1.http.openconfig.net.yang.network.instance.re
 import org.opendaylight.yang.gen.v1.http.openconfig.net.yang.routing.policy.rev151009.OpenconfigRoutingPolicyData;
 import org.opendaylight.yang.gen.v1.http.openconfig.net.yang.routing.policy.rev151009.routing.policy.top.RoutingPolicy;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 class ModuleInitTest {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ModuleInitTest.class);
     private static final long WAIT_TIME = 20_000;
 
     private static BgpModule bgpModule;
@@ -95,20 +90,9 @@ class ModuleInitTest {
 
     @AfterAll
     static void shutdown() {
-        final boolean bgpShutdown = shutdownModule(bgpModule);
-        final boolean controllerShutdown = shutdownModule(controller);
+        final boolean bgpShutdown = bgpModule.shutdown(WAIT_TIME, TimeUnit.MILLISECONDS);
+        final boolean controllerShutdown = controller.shutdown(WAIT_TIME, TimeUnit.MILLISECONDS);
         assertTrue(bgpShutdown);
         assertTrue(controllerShutdown);
     }
-
-    @SuppressWarnings({"checkstyle:illegalCatch"})
-    private static boolean shutdownModule(final LightyModule module) {
-        try {
-            return module.shutdown().get(WAIT_TIME, TimeUnit.MILLISECONDS);
-        } catch (Exception e) {
-            LOG.error("Shutdown of {} module failed", module.getClass().getName(), e);
-            return false;
-        }
-    }
-
 }

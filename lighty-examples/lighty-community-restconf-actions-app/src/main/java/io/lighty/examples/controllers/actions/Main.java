@@ -188,17 +188,9 @@ public class Main {
         }
     }
 
-    @SuppressWarnings("IllegalCatch")
     private void closeLightyModule(final LightyModule module) {
         if (module != null) {
-            try {
-                module.shutdown().get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
-            } catch (final Exception e) {
-                LOG.error("Exception while shutting down {} module: ", module.getClass().getSimpleName(), e);
-                if (e instanceof InterruptedException) {
-                    Thread.currentThread().interrupt();
-                }
-            }
+            module.shutdown(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
         }
     }
 

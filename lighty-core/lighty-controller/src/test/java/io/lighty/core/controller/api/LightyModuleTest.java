@@ -57,7 +57,7 @@ public class LightyModuleTest {
         this.moduleUnderTest = getModuleUnderTest(getExecutorService());
         startLightyModuleAndFailIfTimedOut();
         Mockito.verify(executorService, Mockito.times(1)).execute(Mockito.any());
-        shutDownLightyModuleAndFailIfTimedOut();
+        this.moduleUnderTest.shutdown(MAX_SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
         Mockito.verify(executorService, Mockito.times(2)).execute(Mockito.any());
     }
 
@@ -81,7 +81,7 @@ public class LightyModuleTest {
     @Test
     public void testShutdown_before_start() throws Exception {
         this.moduleUnderTest = getModuleUnderTest(getExecutorService());
-        shutDownLightyModuleAndFailIfTimedOut();
+        this.moduleUnderTest.shutdown(MAX_SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
 
         Mockito.verify(executorService, Mockito.times(0)).execute(Mockito.any());
     }
@@ -108,7 +108,7 @@ public class LightyModuleTest {
         //test if thread which invokes startBlocking method is still running (it should be)
         Assert.assertFalse(startBlockingFuture.isDone());
 
-        shutDownLightyModuleAndFailIfTimedOut();
+        this.moduleUnderTest.shutdown(MAX_SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
         try {
             //test if thread which invokes startBlocking method is done after shutdown was called
             //(after small timeout due to synchronization);
@@ -149,14 +149,6 @@ public class LightyModuleTest {
             this.moduleUnderTest.start().get(MAX_INIT_TIMEOUT, TimeUnit.MILLISECONDS);
         } catch (TimeoutException e) {
             Assert.fail("Init timed out.", e);
-        }
-    }
-
-    private void shutDownLightyModuleAndFailIfTimedOut() throws Exception {
-        try {
-            this.moduleUnderTest.shutdown().get(MAX_SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
-        } catch (TimeoutException e) {
-            Assert.fail("Shutdown timed out.", e);
         }
     }
 }

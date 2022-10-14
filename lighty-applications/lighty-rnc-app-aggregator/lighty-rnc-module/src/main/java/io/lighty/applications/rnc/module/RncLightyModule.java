@@ -171,50 +171,26 @@ public class RncLightyModule {
     public boolean close() {
         LOG.info("Stopping RNC lighty.io application...");
         boolean success = true;
-        if (rncModuleConfig.getServerConfig().isEnableSwagger()
-                && this.swagger != null && !stopAndWaitLightyModule(this.swagger)) {
-            success = false;
+        if (rncModuleConfig.getServerConfig().isEnableSwagger() && this.swagger != null) {
+            success &= swagger.shutdown(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
         }
-        if (this.rncModuleConfig.getAaaConfig().isEnableAAA()
-                && this.aaaLighty != null && !stopAndWaitLightyModule(this.aaaLighty)) {
-            success = false;
+        if (this.rncModuleConfig.getAaaConfig().isEnableAAA() && this.aaaLighty != null) {
+            success &= aaaLighty.shutdown(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
         }
-        if (this.lightyRestconf != null && !stopAndWaitLightyModule(this.lightyRestconf)) {
-            success = false;
+        if (this.lightyRestconf != null) {
+            success &= lightyRestconf.shutdown(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
         }
-        if (this.lightyNetconf != null && !stopAndWaitLightyModule(this.lightyNetconf)) {
-            success = false;
+        if (this.lightyNetconf != null) {
+            success &= lightyNetconf.shutdown(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
         }
-        if (this.lightyController != null && !stopAndWaitLightyModule(this.lightyController)) {
-            success = false;
+        if (this.lightyController != null) {
+            success &= lightyController.shutdown(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
         }
         if (success) {
             LOG.info("RNC lighty.io module stopped successfully!");
             return true;
         } else {
             LOG.error("Some components of RNC lighty.io module were not stopped successfully!");
-            return false;
-        }
-    }
-
-    @SuppressWarnings({"checkstyle:illegalCatch"})
-    private boolean stopAndWaitLightyModule(final LightyModule lightyModule) {
-        try {
-            LOG.info("Stopping lighty.io module ({})...", lightyModule.getClass());
-            final boolean stopSuccess =
-                    lightyModule.shutdown().get(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
-            if (stopSuccess) {
-                LOG.info("lighty.io module ({}) stopped successfully!", lightyModule.getClass());
-                return true;
-            } else {
-                LOG.error("Unable to stop lighty.io module ({})!", lightyModule.getClass());
-                return false;
-            }
-        } catch (Exception e) {
-            LOG.error("Exception was thrown while stopping the lighty.io module ({})!", lightyModule.getClass(), e);
-            if (e instanceof InterruptedException) {
-                Thread.currentThread().interrupt();
-            }
             return false;
         }
     }
