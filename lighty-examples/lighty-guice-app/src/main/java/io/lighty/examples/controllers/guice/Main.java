@@ -110,17 +110,9 @@ public class Main {
         return service.writeData(InstanceIdentifier.create(NetworkTopology.class), networkTopology);
     }
 
-    @SuppressWarnings("IllegalCatch")
     private void closeLightyModule(final LightyModule module) {
         if (module != null) {
-            try {
-                module.shutdown().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-            } catch (final Exception e) {
-                LOG.error("Exception while shutting down {} module: ", module.getClass().getSimpleName(), e);
-                if (e instanceof InterruptedException) {
-                    Thread.currentThread().interrupt();
-                }
-            }
+            module.shutdown(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
         }
     }
 

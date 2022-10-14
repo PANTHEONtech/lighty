@@ -123,40 +123,16 @@ public class Main {
         LOG.info("BGP lighty.io application started in {}", stopwatch.stop());
     }
 
-    @SuppressWarnings({"checkstyle:illegalCatch"})
     public synchronized void stop() {
         LOG.info("Shutting down BGP application ...");
-        try {
-            if (restconf != null) {
-                restconf.shutdown().get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
-            }
-        } catch (InterruptedException e) {
-            LOG.error("Interrupted while shutting down RESTCONF:", e);
-            Thread.currentThread().interrupt();
-        } catch (Exception e) {
-            LOG.error("Exception while shutting down RESTCONF:", e);
+        if (restconf != null) {
+            restconf.shutdown(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
         }
-
-        try {
-            if (bgpModule != null) {
-                bgpModule.shutdown().get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
-            }
-        } catch (InterruptedException e) {
-            LOG.error("Interrupted while shutting down BGP module:", e);
-            Thread.currentThread().interrupt();
-        } catch (Exception e) {
-            LOG.error("Exception while shutting down BGP module:", e);
+        if (bgpModule != null) {
+            bgpModule.shutdown(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
         }
-
-        try {
-            if (controller != null) {
-                controller.shutdown().get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
-            }
-        } catch (InterruptedException e) {
-            LOG.error("Interrupted while shutting down controller:", e);
-            Thread.currentThread().interrupt();
-        } catch (Exception e) {
-            LOG.error("Exception while shutting down controller:", e);
+        if (controller != null) {
+            controller.shutdown(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
         }
 
         running = false;

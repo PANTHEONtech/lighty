@@ -15,9 +15,7 @@ import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import java.lang.reflect.Method;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
@@ -71,29 +69,13 @@ public abstract class CommunityRestConfTestBase {
                 result.getName(), parseTestNGStatus(result.getStatus()), result.getThrowable());
     }
 
-    @SuppressWarnings("checkstyle:illegalCatch")
     @AfterClass
     public void shutdownLighty() {
         if (communityRestConf != null) {
-            LOG.info("Shutting down CommunityRestConf");
-            try {
-                communityRestConf.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException e) {
-                LOG.error("Interrupted while shutting down CommunityRestConf ", e);
-            } catch (TimeoutException e) {
-                LOG.error("Timeout while shutting down CommunityRestConf ", e);
-            } catch (ExecutionException e) {
-                LOG.error("Execution of CommunityRestConf shutdown failed", e);
-            }
-
+            communityRestConf.shutdown(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         }
         if (lightyController != null) {
-            LOG.info("Shutting down LightyController");
-            try {
-                lightyController.shutdown().get(SHUTDOWN_TIMEOUT_MILLIS,TimeUnit.MILLISECONDS);
-            } catch (Exception e) {
-                LOG.error("Shutdown of LightyController failed", e);
-            }
+            lightyController.shutdown(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         }
     }
 

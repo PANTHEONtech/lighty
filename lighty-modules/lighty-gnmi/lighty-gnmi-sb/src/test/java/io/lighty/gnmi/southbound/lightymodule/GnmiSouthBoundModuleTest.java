@@ -52,8 +52,8 @@ public class GnmiSouthBoundModuleTest {
                 Executors.newCachedThreadPool(), createEncryptionService(),
                 GnmiConfigUtils.getDefaultGnmiConfiguration(), null);
         Assertions.assertTrue(gnmiModule.start().get(MODULE_TIMEOUT, MODULE_TIME_UNIT));
-        Assertions.assertTrue(gnmiModule.shutdown().get(MODULE_TIMEOUT, MODULE_TIME_UNIT));
-        Assertions.assertTrue(services.shutdown().get(MODULE_TIMEOUT, MODULE_TIME_UNIT));
+        Assertions.assertTrue(gnmiModule.shutdown(MODULE_TIMEOUT, MODULE_TIME_UNIT));
+        Assertions.assertTrue(services.shutdown(MODULE_TIMEOUT, MODULE_TIME_UNIT));
     }
 
     @Test
@@ -67,7 +67,7 @@ public class GnmiSouthBoundModuleTest {
         final GnmiSouthboundModule gnmiModule = new GnmiSouthboundModule(services.getServices(),
                 Executors.newCachedThreadPool(), createEncryptionService(), defaultGnmiConfiguration, null);
         Assertions.assertFalse(gnmiModule.start().get(MODULE_TIMEOUT, MODULE_TIME_UNIT));
-        Assertions.assertTrue(services.shutdown().get(MODULE_TIMEOUT, MODULE_TIME_UNIT));
+        Assertions.assertTrue(services.shutdown(MODULE_TIMEOUT, MODULE_TIME_UNIT));
     }
 
     private static AAAEncryptionServiceImpl createEncryptionService() throws NoSuchPaddingException,

@@ -187,32 +187,10 @@ public class GnmiWithoutRestconfTest {
     }
 
     @AfterAll
-    @SuppressWarnings("checkstyle:illegalCatch")
     public static void tearDown() {
-        StringBuilder exceptionMessage = new StringBuilder();
-        boolean successfullyClosedResources = true;
         gnmiDevice.stop();
-        try {
-            Boolean closedSbMod = gnmiSouthboundModule.shutdown().get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
-            if (!closedSbMod) {
-                successfullyClosedResources = false;
-                exceptionMessage.append("GnmSouthbound failed at closing");
-            }
-        } catch (Exception e) {
-            successfullyClosedResources = false;
-            exceptionMessage.append(e.getMessage()).append("\n");
-        }
-        try {
-            Boolean closedController = lightyController.shutdown().get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
-            if (!closedController) {
-                successfullyClosedResources = false;
-                exceptionMessage.append("Lighty controller failed at closing");
-            }
-        } catch (Exception e) {
-            successfullyClosedResources = false;
-            exceptionMessage.append(e.getMessage()).append("\n");
-        }
-        assertTrue(successfullyClosedResources, exceptionMessage.toString());
+        assertTrue(gnmiSouthboundModule.shutdown(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
+        assertTrue(lightyController.shutdown(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
     }
 
     @Test

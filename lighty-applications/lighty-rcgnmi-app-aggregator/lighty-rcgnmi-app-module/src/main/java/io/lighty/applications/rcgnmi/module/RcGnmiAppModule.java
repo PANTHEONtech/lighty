@@ -154,44 +154,20 @@ public class RcGnmiAppModule {
     public boolean close() {
         LOG.info("Stopping RCgNMI lighty.io application...");
         boolean success = true;
-
-        if (this.lightyRestconf != null && !stopAndWaitLightyModule(this.lightyRestconf)) {
-            success = false;
+        if (this.lightyRestconf != null) {
+            success &= lightyRestconf.shutdown(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
         }
-        if (this.lightyController != null && !stopAndWaitLightyModule(this.lightyController)) {
-            success = false;
+        if (this.lightyController != null) {
+            success &= lightyController.shutdown(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
         }
-        if (this.gnmiSouthboundModule != null && !stopAndWaitLightyModule(this.gnmiSouthboundModule)) {
-            success = false;
+        if (this.gnmiSouthboundModule != null) {
+            success &= gnmiSouthboundModule.shutdown(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
         }
-
         if (success) {
             LOG.info("RCgNMI lighty.io module stopped successfully!");
             return true;
         } else {
             LOG.error("Some components of RCgNMI lighty.io module were not stopped successfully!");
-            return false;
-        }
-    }
-
-    @SuppressWarnings({"checkstyle:illegalCatch"})
-    private boolean stopAndWaitLightyModule(final LightyModule lightyModule) {
-        try {
-            LOG.info("Stopping lighty.io module ({})...", lightyModule.getClass());
-            final boolean stopSuccess =
-                    lightyModule.shutdown().get(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
-            if (stopSuccess) {
-                LOG.info("lighty.io module ({}) stopped successfully!", lightyModule.getClass());
-                return true;
-            } else {
-                LOG.error("Unable to stop lighty.io module ({})!", lightyModule.getClass());
-                return false;
-            }
-        } catch (Exception e) {
-            LOG.error("Exception was thrown while stopping the lighty.io module ({})!", lightyModule.getClass(), e);
-            if (e instanceof InterruptedException) {
-                Thread.currentThread().interrupt();
-            }
             return false;
         }
     }

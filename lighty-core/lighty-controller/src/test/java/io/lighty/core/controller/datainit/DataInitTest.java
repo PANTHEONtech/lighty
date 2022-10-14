@@ -20,16 +20,11 @@ import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
 public class DataInitTest {
-
-    private static final Logger LOG = LoggerFactory.getLogger(DataInitTest.class);
-
     // value from .xml/.json file
     private static int EXPECTED_DARKNESS_FACTOR = 200;
     private static final String PATH_TO_JSON_INIT_CONFIG = "/DataInitJsonConfig.json";
@@ -114,14 +109,9 @@ public class DataInitTest {
         Assert.assertEquals(result,false);
     }
 
-    @SuppressWarnings("checkstyle:illegalCatch")
     @AfterMethod
     public void shutdownLighty() {
-        try {
-            lightyController.shutdown().get(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-        } catch (Exception e) {
-            LOG.error("Shutdown of lightyController failed", e);
-        }
+        lightyController.shutdown(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
     }
 
     private ToasterListener registerToasterListener(DataBroker dataBroker,
@@ -133,6 +123,4 @@ public class DataInitTest {
                 listener);
         return listener;
     }
-
-
 }
