@@ -92,8 +92,8 @@ public class CommunityRestConf extends AbstractLightyModule {
         final RestconfApplication restconfApplication = new RestconfApplication(schemaCtxHandler,
                 this.domMountPointService, this.domDataBroker, this.domRpcService, this.domActionService,
                 this.domNotificationService, this.domSchemaService, streamsConfiguration);
-        final ServletContainer servletContainer8040 = new ServletContainer(ResourceConfig
-                .forApplication(restconfApplication));
+        final ServletContainer servletContainer8040 = new ServletContainer(
+                new ResourceConfig().registerClasses(restconfApplication.getClasses()));
         final ServletHolder jaxrs = new ServletHolder(servletContainer8040);
 
         LOG.info("RestConf init complete, starting Jetty");
@@ -110,8 +110,8 @@ public class CommunityRestConf extends AbstractLightyModule {
             final ServletContextHandler rrdHandler =
                     new ServletContextHandler(contexts, "/.well-known", true, false);
             final RootFoundApplication rootDiscoveryApp = new RootFoundApplication(restconfServletContextPath);
-            rrdHandler.addServlet(new ServletHolder(new ServletContainer(ResourceConfig
-                    .forApplication(rootDiscoveryApp))), "/*");
+            rrdHandler.addServlet(new ServletHolder(new ServletContainer(new ResourceConfig()
+                    .registerClasses(rootDiscoveryApp.getClasses()))), "/*");
 
             boolean startDefault = false;
             if (this.lightyServerBuilder == null) {

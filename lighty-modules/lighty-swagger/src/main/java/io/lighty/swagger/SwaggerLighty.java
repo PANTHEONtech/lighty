@@ -72,7 +72,8 @@ public class SwaggerLighty extends AbstractLightyModule {
 
         ApiDocApplication apiDocApplication = new ApiDocApplication(apiDocService);
 
-        ServletContainer restServletContainer = new ServletContainer(ResourceConfig.forApplication(apiDocApplication));
+        ServletContainer restServletContainer = new ServletContainer(
+                new ResourceConfig().registerClasses(apiDocApplication.getClasses()));
         ServletHolder restServletHolder = new ServletHolder(restServletContainer);
 
         ContextHandlerCollection contexts = new ContextHandlerCollection();

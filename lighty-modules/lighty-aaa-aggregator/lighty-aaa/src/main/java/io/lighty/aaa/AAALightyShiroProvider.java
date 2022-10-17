@@ -136,8 +136,8 @@ public final class AAALightyShiroProvider {
         final ContextHandlerCollection contexts = new ContextHandlerCollection();
         final ServletContextHandler mainHandler = new ServletContextHandler(contexts, "/auth", true, false);
         final IdmLightApplication idmLightApplication = new IdmLightApplication(iidmStore, claimCache);
-        final ServletHolder idmLightServlet = new ServletHolder(new ServletContainer(ResourceConfig.forApplication(
-                idmLightApplication)));
+        final ServletHolder idmLightServlet = new ServletHolder(
+                new ServletContainer(new ResourceConfig().registerClasses(idmLightApplication.getClasses())));
         idmLightServlet.setInitParameter("jersey.config.server.provider.packages",
                 "org.opendaylight.aaa.impl.provider");
         mainHandler.addServlet(idmLightServlet, "/*");
