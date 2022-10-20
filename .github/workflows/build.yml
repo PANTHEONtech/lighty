@@ -43,7 +43,7 @@ jobs:
       - name: Maven test + SonarCloud
         if: ${{ env.SONAR_TOKEN != 0 }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
-          -Dsonar.java.source=1.11
+          -Dsonar.java.source=17
           -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
           -Dsonar.organization=${{ env.SONAR_ORGANIZATION }}
           -Dsonar.host.url=https://sonarcloud.io
