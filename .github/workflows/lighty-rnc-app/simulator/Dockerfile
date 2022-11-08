@@ -1,6 +1,6 @@
 FROM alpine/git as clone
 WORKDIR /netconf-simulator
-RUN git clone https://github.com/PANTHEONtech/lighty-netconf-simulator.git -b 16.2.0
+RUN git clone https://github.com/PANTHEONtech/lighty-netconf-simulator.git -b 17.0.1
 
 FROM maven:3.8.5-openjdk-17-slim as build
 WORKDIR /lighty-netconf-simulator
@@ -14,4 +14,4 @@ COPY --from=build /lighty-netconf-simulator/examples/devices/lighty-network-topo
 
 EXPOSE 17380
 
-ENTRYPOINT ["java", "-jar", "/lighty-netconf-simulator/target/lighty-network-topology-device-16.2.0.jar"]
+ENTRYPOINT ["java", "-jar", "/lighty-netconf-simulator/target/lighty-network-topology-device-17.0.1.jar"]
