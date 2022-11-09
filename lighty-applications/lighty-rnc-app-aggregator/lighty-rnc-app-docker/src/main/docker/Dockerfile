@@ -1,6 +1,4 @@
-FROM alpine:3.16.2
-
-RUN apk add openjdk17-jre-headless
+FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /lighty-rnc
 
