@@ -30,7 +30,7 @@ In most cases the client initiates a connection to a NETCONF server, running on 
 plugin allows the server(device) side to initiate a connection to a client(Lighty). Lighty must be configured
 to accept device connection. It is done in the odl-netconf-callhome-server.yang module. Device public key is
 added there together with credentials, which the plugin uses to authenticate the device. Call home server runs
-on a port 6666, by default.
+on a port 4334, by default.
 
 This plugin can be used together with one of the topology plugins.
 
