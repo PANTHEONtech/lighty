@@ -88,9 +88,16 @@ Also you need to provide file type for this certificate (`restconf.keyStoreType`
 ## Build & Start w/ Docker
 To build and start the lighty.io RNC application using Docker in a local environment, follow these steps:
 
-1. Build the application using this maven command:  
-   `mvn clean install -P docker`
-
+1. Build the application using this maven command: <br><br>
+   For Alpine Based Image Creation<br>
+   `mvn clean install -P docker` <br><br>
+   For Debian Based Image Creation<br>
+   `mvn clean install -P docker -Dimage.dockerfile.name=Dockerfile.debian` <br><br>
+   To use specific version of debian please see following mvn command <br>
+   ```
+    mvn clean install -P docker -Dimage.dockerfile.name=Dockerfile.debian -Dimage.java.home.path="/usr/lib/jvm/java-17-openjdk-amd64" 
+   -Dimage.eclipse.temurin.version="17-jdk-jammy" -Dimage.debian.version="bullseye-20221114
+   ```
 2. Start the application using following docker command.   
    `docker run -it --name lighty-rnc --network host --rm lighty-rnc`
 
