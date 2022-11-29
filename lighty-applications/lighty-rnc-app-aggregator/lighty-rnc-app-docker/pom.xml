@@ -18,6 +18,10 @@
         <lighty.app.name>lighty-rnc-app-${project.version}</lighty.app.name>
         <lighty.app.zip>${lighty.app.name}-bin.zip</lighty.app.zip>
         <lighty.app.jar>${lighty.app.name}.jar</lighty.app.jar>
+        <image.java.home.path>/usr/lib/jvm/java-17-openjdk-amd64</image.java.home.path>
+        <image.dockerfile.name>Dockerfile.alpine</image.dockerfile.name>
+        <image.debian.version>bullseye-20221114</image.debian.version>
+        <image.eclipse.temurin.version>17-jdk-jammy</image.eclipse.temurin.version>
     </properties>
 
     <dependencies>
@@ -46,7 +50,7 @@
                                 <resource>
                                     <directory>src/main/docker</directory>
                                     <includes>
-                                        <include>Dockerfile</include>
+                                        <include>${image.dockerfile.name}</include>
                                     </includes>
                                 </resource>
                                 <resource>
@@ -99,7 +103,12 @@
                             <build>
                                 <cleanup>try</cleanup>
                                 <contextDir>${basedir}/target/docker-stage</contextDir>
-                                <dockerFile>Dockerfile</dockerFile>
+                                <dockerFile>${image.dockerfile.name}</dockerFile>
+                                <args>
+                                    <DEBIAN_VERSION>${image.debian.version}</DEBIAN_VERSION>
+                                    <ECLIPSE_TEMURIN_VERSION>${image.eclipse.temurin.version}</ECLIPSE_TEMURIN_VERSION>
+                                    <JAVA_HOME_PATH>${image.java.home.path}</JAVA_HOME_PATH>
+                                </args>
                             </build>
                         </image>
                     </images>
