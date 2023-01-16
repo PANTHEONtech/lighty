@@ -11,15 +11,17 @@ package io.lighty.core.controller.springboot.config;
 import io.lighty.core.controller.springboot.services.UserAccessService;
 import org.casbin.jcasbin.main.Enforcer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @EnableWebSecurity
 @Configuration
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration {
 
     private final Enforcer enforcer;
     private final UserAccessService userAccessService;
@@ -30,13 +32,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.userAccessService = userAccessService;
     }
 
-    @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
+    @Bean
+    @Order(1)
+    protected SecurityFilterChain auth0FilterChain(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity
                 .addFilterBefore(new JCasBinFilter(enforcer, userAccessService), BasicAuthenticationFilter.class)
-                .antMatcher("/services/data/**")
+                .securityMatcher("/services/data/**")
                 .csrf()
-                .disable();
+                .disable()
+                .build();
     }
 
 }
