@@ -30,7 +30,7 @@
     <properties>
         <maven.compiler.release>17</maven.compiler.release>
         <!-- Overrides Spring Boot slf4j and log4j2 dependency version -->
-        <slf4j.version>2.0.0</slf4j.version>
+        <slf4j.version>2.0.6</slf4j.version>
         <log4j2.version>2.19.0</log4j2.version>
     </properties>
 
@@ -193,12 +193,12 @@
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
                             <!-- This should match the dependency management on com.puppycrawl.tools:checkstyle above -->
-                            <version>10.3.3</version>
+                            <version>10.4</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>
                             <artifactId>sevntu-checks</artifactId>
-                            <version>1.42.0</version>
+                            <version>1.43.0</version>
                         </dependency>
                         <dependency>
                             <groupId>org.opendaylight.odlparent</groupId>
