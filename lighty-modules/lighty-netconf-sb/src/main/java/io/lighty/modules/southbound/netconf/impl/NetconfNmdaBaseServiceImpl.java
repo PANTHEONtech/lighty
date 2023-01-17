@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
-import org.opendaylight.netconf.api.ModifyAction;
+import org.opendaylight.netconf.api.EffectiveOperation;
 import org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Running;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.nmda.rev190107.edit.data.input.EditContent;
@@ -126,8 +126,8 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
     public ListenableFuture<? extends DOMRpcResult> editData(QName targetDatastore,
                                                              Optional<NormalizedNode> data,
                                                              YangInstanceIdentifier dataPath,
-                                                             Optional<ModifyAction> dataModifyActionAttribute,
-                                                             Optional<ModifyAction> defaultModifyAction) {
+                                                             Optional<EffectiveOperation> dataEffectiveOperation,
+                                                             Optional<EffectiveOperation> defaultEffectiveOperation) {
 
         final var parentPath = dataPath.isEmpty() ? dataPath : dataPath.coerceParent();
         final var result = new NormalizedNodeResult();
@@ -142,7 +142,7 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
         }
         final NormalizedNode editNNContent = result.getResult();
 
-        final NormalizedMetadata metadata = dataModifyActionAttribute
+        final NormalizedMetadata metadata = dataEffectiveOperation
                 .map(oper -> leafMetadata(dataPath, oper))
                 .orElse(null);
         final SchemaInferenceStack stack = SchemaInferenceStack.of(getEffectiveModelContext());
@@ -159,7 +159,7 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
         return getDOMRpcService().invokeRpc(NETCONF_EDIT_DATA_QNAME,
                 NetconfMessageTransformUtil.wrap(NETCONF_EDIT_DATA_QNAME,
                         getDatastoreNode(requireNonNull(targetDatastore)),
-                        getDefaultOperationNode(defaultModifyAction.orElseThrow(() ->
+                        getDefaultOperationNode(defaultEffectiveOperation.orElseThrow(() ->
                                 new NoSuchElementException("Default Modify Action is missing"))), editStructure));
     }
 
@@ -218,13 +218,13 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
                 .build();
     }
 
-    private DataContainerChild getDefaultOperationNode(ModifyAction defaultModifyAction) {
-        final String opString = defaultModifyAction.name().toLowerCase(Locale.US);
+    private DataContainerChild getDefaultOperationNode(EffectiveOperation defaultEffectiveOperation) {
+        final String opString = defaultEffectiveOperation.name().toLowerCase(Locale.US);
         return Builders.leafBuilder().withNodeIdentifier(NETCONF_DEFAULT_OPERATION_NODEID)
                 .withValue(opString).build();
     }
 
-    private NormalizedMetadata leafMetadata(YangInstanceIdentifier path, final ModifyAction oper) {
+    private NormalizedMetadata leafMetadata(YangInstanceIdentifier path, final EffectiveOperation oper) {
         final List<PathArgument> args = path.getPathArguments();
         final Deque<ImmutableNormalizedMetadata.Builder> builders = new ArrayDeque<>(args.size());
 

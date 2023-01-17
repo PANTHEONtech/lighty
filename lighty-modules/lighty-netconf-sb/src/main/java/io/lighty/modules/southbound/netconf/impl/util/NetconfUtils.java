@@ -26,7 +26,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Locale;
 import java.util.Optional;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
-import org.opendaylight.netconf.api.ModifyAction;
+import org.opendaylight.netconf.api.EffectiveOperation;
 import org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil;
 import org.opendaylight.netconf.util.NetconfUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.copy.config.input.target.ConfigTarget;
@@ -103,7 +103,7 @@ public final class NetconfUtils {
 
     public static DataContainerChild createEditConfigStructure(final EffectiveModelContext effectiveModelContext,
                                                              final Optional<NormalizedNode> lastChild,
-                                                             final Optional<ModifyAction> operation,
+                                                             final Optional<EffectiveOperation> operation,
                                                              final YangInstanceIdentifier dataPath) {
         final AnyxmlNode<?> configContent = NetconfMessageTransformUtil
                 .createEditConfigAnyxml(effectiveModelContext, dataPath, operation, lastChild);
@@ -112,7 +112,7 @@ public final class NetconfUtils {
 
     public static ContainerNode getEditConfigContent(
             final QName targetDatastore, final DataContainerChild editStructure,
-            final Optional<ModifyAction> defaultOperation, final boolean rollback) {
+            final Optional<EffectiveOperation> defaultOperation, final boolean rollback) {
         final DataContainerNodeBuilder<YangInstanceIdentifier.NodeIdentifier, ContainerNode> editBuilder =
                 Builders.containerBuilder().withNodeIdentifier(NETCONF_EDIT_CONFIG_NODEID);
 

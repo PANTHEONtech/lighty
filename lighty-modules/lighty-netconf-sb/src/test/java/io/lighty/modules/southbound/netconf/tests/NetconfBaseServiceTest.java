@@ -22,7 +22,7 @@ import java.util.Optional;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
-import org.opendaylight.netconf.api.ModifyAction;
+import org.opendaylight.netconf.api.EffectiveOperation;
 import org.opendaylight.netconf.api.NetconfMessage;
 import org.opendaylight.netconf.sal.connect.netconf.schema.mapping.NetconfMessageTransformer;
 import org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil;
@@ -156,8 +156,8 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
 
         NetconfBaseService baseService = new NetconfBaseServiceImpl(new NodeId("node1"), domRpcService,
                 effectiveModelContext);
-        baseService.editConfig(RUNNING_DATASTORE, Optional.of(schema), yangInstanceId, Optional.of(ModifyAction.MERGE),
-                Optional.of(ModifyAction.CREATE), true);
+        baseService.editConfig(RUNNING_DATASTORE, Optional.of(schema), yangInstanceId, Optional.of(EffectiveOperation.MERGE),
+                Optional.of(EffectiveOperation.CREATE), true);
 
         ArgumentCaptor<NormalizedNode> capturedNN = ArgumentCaptor.forClass(NormalizedNode.class);
         Mockito.verify(domRpcService, times(1)).invokeRpc(

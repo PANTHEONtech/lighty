@@ -11,7 +11,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Optional;
 import java.util.Set;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
-import org.opendaylight.netconf.api.ModifyAction;
+import org.opendaylight.netconf.api.EffectiveOperation;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -46,13 +46,13 @@ public interface NetconfNmdaBaseService extends NetconfBaseService {
      * @param targetDatastore type of the configuration datastore being edited
      * @param data configuration data
      * @param dataPath YangInstanceIdentifier for the configuration data
-     * @param dataModifyActionAttribute may contain operation attribute for the configuration data
-     * @param defaultModifyAction may contain default operation
+     * @param dataEffectiveOperationAttribute may contain operation attribute for the configuration data
+     * @param defaultEffectiveOperation may contain default operation
      * @return future with RPC result
      */
     ListenableFuture<? extends DOMRpcResult> editData(QName targetDatastore,
                                                       Optional<NormalizedNode> data,
                                                       YangInstanceIdentifier dataPath,
-                                                      Optional<ModifyAction> dataModifyActionAttribute,
-                                                      Optional<ModifyAction> defaultModifyAction);
+                                                      Optional<EffectiveOperation> dataEffectiveOperationAttribute,
+                                                      Optional<EffectiveOperation> defaultEffectiveOperation);
 }
