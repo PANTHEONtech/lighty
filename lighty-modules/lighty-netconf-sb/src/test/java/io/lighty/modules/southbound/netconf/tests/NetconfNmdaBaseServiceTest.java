@@ -27,7 +27,7 @@ import java.util.Set;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
-import org.opendaylight.netconf.api.ModifyAction;
+import org.opendaylight.netconf.api.EffectiveOperation;
 import org.opendaylight.netconf.api.NetconfMessage;
 import org.opendaylight.netconf.sal.connect.netconf.schema.mapping.NetconfMessageTransformer;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Operational;
@@ -151,8 +151,8 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
 
         NetconfNmdaBaseServiceImpl baseService = new NetconfNmdaBaseServiceImpl(new NodeId("node1"), domRpcService,
                 effectiveModelContext);
-        baseService.editData(Running.QNAME, Optional.of(schema), TEST_SCHEMA_YIID, Optional.of(ModifyAction.MERGE),
-                Optional.of(ModifyAction.CREATE));
+        baseService.editData(Running.QNAME, Optional.of(schema), TEST_SCHEMA_YIID, Optional.of(EffectiveOperation.MERGE),
+                Optional.of(EffectiveOperation.CREATE));
 
         ArgumentCaptor<NormalizedNode> capturedNN = ArgumentCaptor.forClass(NormalizedNode.class);
         Mockito.verify(domRpcService, times(1))
