@@ -20,7 +20,7 @@ import io.lighty.modules.southbound.netconf.impl.util.NetconfUtils;
 import java.util.Optional;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
-import org.opendaylight.netconf.api.ModifyAction;
+import org.opendaylight.netconf.api.EffectiveOperation;
 import org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -75,17 +75,17 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
     @Override
     public ListenableFuture<? extends DOMRpcResult> editConfig(final QName targetDatastore,
             final Optional<NormalizedNode> data, final YangInstanceIdentifier dataPath,
-            final Optional<ModifyAction> dataModifyActionAttribute,
-            final Optional<ModifyAction> defaultModifyAction, final boolean rollback) {
+            final Optional<EffectiveOperation> dataEffectiveOperationAttribute,
+            final Optional<EffectiveOperation> defaultEffectiveOperation, final boolean rollback) {
         Preconditions.checkNotNull(targetDatastore);
 
         DataContainerChild editStructure = NetconfUtils.createEditConfigStructure(effectiveModelContext, data,
-                dataModifyActionAttribute, dataPath);
+                dataEffectiveOperationAttribute, dataPath);
 
         Preconditions.checkNotNull(editStructure);
 
         return domRpcService.invokeRpc(NETCONF_EDIT_CONFIG_QNAME,
-                NetconfUtils.getEditConfigContent(targetDatastore, editStructure, defaultModifyAction, rollback));
+                NetconfUtils.getEditConfigContent(targetDatastore, editStructure, defaultEffectiveOperation, rollback));
     }
 
     @Override

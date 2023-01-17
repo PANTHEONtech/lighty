@@ -12,7 +12,7 @@ import java.util.Optional;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMService;
-import org.opendaylight.netconf.api.ModifyAction;
+import org.opendaylight.netconf.api.EffectiveOperation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -53,14 +53,14 @@ public interface NetconfBaseService extends DOMService {
      * @param targetDatastore type of the configuration datastore being edited
      * @param data configuration data
      * @param dataPath YangInstanceIdentifier for the configuration data
-     * @param dataModifyActionAttribute may contain operation attribute for the configuration data
-     * @param defaultModifyAction may contain default operation
+     * @param dataEffectiveOperationAttribute may contain operation attribute for the configuration data
+     * @param defaultEffectiveOperation may contain default operation
      * @param rollback if true, rollback on error option is added to the edit-config message
      * @return future with RPC result
      */
     ListenableFuture<? extends DOMRpcResult> editConfig(QName targetDatastore, Optional<NormalizedNode> data,
-            YangInstanceIdentifier dataPath, Optional<ModifyAction> dataModifyActionAttribute,
-            Optional<ModifyAction> defaultModifyAction, boolean rollback);
+            YangInstanceIdentifier dataPath, Optional<EffectiveOperation> dataEffectiveOperationAttribute,
+            Optional<EffectiveOperation> defaultEffectiveOperation, boolean rollback);
 
     /**
      * Netconf protocol operation copy-config.
