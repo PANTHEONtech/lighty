@@ -65,7 +65,7 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
                 effectiveModelContext);
 
         baseService.get(Optional.of(yangInstanceId));
-        ArgumentCaptor<NormalizedNode> capturedNN = ArgumentCaptor.forClass(NormalizedNode.class);
+        ArgumentCaptor<ContainerNode> capturedNN = ArgumentCaptor.forClass(ContainerNode.class);
 
         Mockito.verify(domRpcService, times(1))
                 .invokeRpc(any(QName.class), capturedNN.capture());
@@ -105,7 +105,7 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
 
         baseService.getConfig(RUNNING_DATASTORE, Optional.of(yangInstanceId));
 
-        ArgumentCaptor<NormalizedNode> capturedNN = ArgumentCaptor.forClass(NormalizedNode.class);
+        ArgumentCaptor<ContainerNode> capturedNN = ArgumentCaptor.forClass(ContainerNode.class);
         Mockito.verify(domRpcService, times(1))
                 .invokeRpc(any(QName.class), capturedNN.capture());
         assertTrue(capturedNN.getValue() instanceof ContainerNode);
@@ -159,7 +159,7 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
                 Optional.of(EffectiveOperation.MERGE),
                 Optional.of(EffectiveOperation.CREATE), true);
 
-        ArgumentCaptor<NormalizedNode> capturedNN = ArgumentCaptor.forClass(NormalizedNode.class);
+        ArgumentCaptor<ContainerNode> capturedNN = ArgumentCaptor.forClass(ContainerNode.class);
         Mockito.verify(domRpcService, times(1)).invokeRpc(
                 any(QName.class), capturedNN.capture());
 
