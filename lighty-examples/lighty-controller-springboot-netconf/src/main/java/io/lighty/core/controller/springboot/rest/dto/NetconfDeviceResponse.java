@@ -10,19 +10,19 @@ package io.lighty.core.controller.springboot.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.NetconfNode;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.NetconfNodeConnectionStatus.ConnectionStatus;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.device.rev221225.ConnectionOper;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev221225.NetconfNode;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 
 public class NetconfDeviceResponse {
 
     private final String nodeId;
-    private final ConnectionStatus connectionStatus;
+    private final ConnectionOper.ConnectionStatus connectionStatus;
     private final Long darknessFactor;
 
     @JsonCreator
     private NetconfDeviceResponse(@JsonProperty("nodeId") String nodeId,
-                                  @JsonProperty("connectionStatus") ConnectionStatus connectionStatus,
+                                  @JsonProperty("connectionStatus") ConnectionOper.ConnectionStatus connectionStatus,
                                   @JsonProperty("darknessFactor") Long darknessFactor) {
         this.nodeId = nodeId;
         this.connectionStatus = connectionStatus;
@@ -33,7 +33,7 @@ public class NetconfDeviceResponse {
         return nodeId;
     }
 
-    public ConnectionStatus getConnectionStatus() {
+    public ConnectionOper.ConnectionStatus getConnectionStatus() {
         return connectionStatus;
     }
 
@@ -43,13 +43,13 @@ public class NetconfDeviceResponse {
 
     public static NetconfDeviceResponse from(final Node node, Long darknessFactor) {
         final NetconfNode netconfNode = node.augmentation(NetconfNode.class);
-        final ConnectionStatus connectionStatus = netconfNode != null ? netconfNode.getConnectionStatus() : null;
+        final ConnectionOper.ConnectionStatus connectionStatus = netconfNode != null ? netconfNode.getConnectionStatus() : null;
         return new NetconfDeviceResponse(node.getNodeId().getValue(), connectionStatus, darknessFactor);
     }
 
     public static NetconfDeviceResponse from(final Node node) {
         final NetconfNode netconfNode = node.augmentation(NetconfNode.class);
-        final ConnectionStatus connectionStatus = netconfNode != null ? netconfNode.getConnectionStatus() : null;
+        final ConnectionOper.ConnectionStatus connectionStatus = netconfNode != null ? netconfNode.getConnectionStatus() : null;
         return new NetconfDeviceResponse(node.getNodeId().getValue(), connectionStatus, new Long(0));
     }
 
