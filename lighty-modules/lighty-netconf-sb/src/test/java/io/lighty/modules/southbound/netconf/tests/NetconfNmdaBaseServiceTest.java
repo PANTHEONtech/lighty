@@ -69,7 +69,7 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
         baseService.getData(Operational.QNAME, Optional.of(TEST_SCHEMA_YIID), Optional.empty(), Optional.empty(),
                 Optional.empty(), Optional.empty(), Optional.empty());
 
-        ArgumentCaptor<NormalizedNode> capturedNN = ArgumentCaptor.forClass(NormalizedNode.class);
+        ArgumentCaptor<ContainerNode> capturedNN = ArgumentCaptor.forClass(ContainerNode.class);
         Mockito.verify(domRpcService, times(1))
                 .invokeRpc(any(QName.class), capturedNN.capture());
         assertTrue(capturedNN.getValue() instanceof ContainerNode);
@@ -108,7 +108,7 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
         baseService.getData(Operational.QNAME, Optional.of(TEST_SCHEMA_YIID), Optional.of(true), Optional.of(42),
                 Optional.of(originFilter), Optional.empty(), Optional.of(true));
 
-        ArgumentCaptor<NormalizedNode> capturedNN = ArgumentCaptor.forClass(NormalizedNode.class);
+        ArgumentCaptor<ContainerNode> capturedNN = ArgumentCaptor.forClass(ContainerNode.class);
         Mockito.verify(domRpcService, times(1))
                 .invokeRpc(any(QName.class), capturedNN.capture());
         assertTrue(capturedNN.getValue() instanceof ContainerNode);
@@ -154,7 +154,7 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
                 Optional.of(EffectiveOperation.MERGE),
                 Optional.of(EffectiveOperation.CREATE));
 
-        ArgumentCaptor<NormalizedNode> capturedNN = ArgumentCaptor.forClass(NormalizedNode.class);
+        ArgumentCaptor<ContainerNode> capturedNN = ArgumentCaptor.forClass(ContainerNode.class);
         Mockito.verify(domRpcService, times(1))
                 .invokeRpc(any(QName.class), capturedNN.capture());
         assertTrue(capturedNN.getValue() instanceof ContainerNode);

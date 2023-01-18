@@ -157,22 +157,22 @@ public final class NetconfUtils {
                         .build()).build();
     }
 
-    public static NormalizedNode getCopyConfigContent(final QName sourceDatastore, final QName targetDatastore) {
+    public static ContainerNode getCopyConfigContent(final QName sourceDatastore, final QName targetDatastore) {
         return Builders.containerBuilder().withNodeIdentifier(NETCONF_COPY_CONFIG_NODEID)
                 .withChild(getTargetNode(targetDatastore)).withChild(getSourceNode(sourceDatastore)).build();
     }
 
-    public static NormalizedNode getDeleteConfigContent(final QName targetDatastore) {
+    public static ContainerNode getDeleteConfigContent(final QName targetDatastore) {
         return Builders.containerBuilder().withNodeIdentifier(NETCONF_DELETE_CONFIG_NODEID)
                 .withChild(getTargetNode(targetDatastore)).build();
     }
 
-    public static NormalizedNode getValidateContent(final QName sourceDatastore) {
+    public static ContainerNode getValidateContent(final QName sourceDatastore) {
         return Builders.containerBuilder().withNodeIdentifier(NETCONF_VALIDATE_NODEID)
                 .withChild(getSourceNode(sourceDatastore)).build();
     }
 
-    public static NormalizedNode getUnLockContent(final QName targetDatastore) {
+    public static ContainerNode getUnLockContent(final QName targetDatastore) {
         return Builders.containerBuilder().withNodeIdentifier(NETCONF_UNLOCK_NODEID)
                 .withChild(getTargetNode(targetDatastore)).build();
     }
