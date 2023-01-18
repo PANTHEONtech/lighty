@@ -291,9 +291,10 @@ public class GnmiWithoutRestconfTest {
     @Test
     public void testRegisterCertificateToKeystore() throws ExecutionException, InterruptedException, TimeoutException {
         // Invoke RPC for registering certificates
-        final NormalizedNode certificateInput
+        final ContainerNode certificateInput
                 = getCertificateInput(CERT_ID, CA_VALUE, CLIENT_CERT, CLIENT_KEY, PASSPHRASE);
-        lightyController.getServices().getDOMRpcService().invokeRpc(ADD_KEYSTORE_RPC_QN, certificateInput)
+        lightyController.getServices().getDOMRpcService().invokeRpc(ADD_KEYSTORE_RPC_QN,
+                        certificateInput)
                 .get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
 
         //Test if certificates was added
@@ -316,7 +317,7 @@ public class GnmiWithoutRestconfTest {
     @Test
     public void testUpdatingYangModels() throws ExecutionException, InterruptedException, TimeoutException {
         // Invoke RPC for uploading yang models
-        final NormalizedNode yangModelInput = getYangModelInput(YANG_NAME, YANG_BODY, YANG_VERSION);
+        final ContainerNode yangModelInput = getYangModelInput(YANG_NAME, YANG_BODY, YANG_VERSION);
         lightyController.getServices().getDOMRpcService().invokeRpc(UPLOAD_YANG_RPC_QN, yangModelInput)
                 .get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
 
@@ -335,7 +336,7 @@ public class GnmiWithoutRestconfTest {
         deleteOperData(bindingDataBroker, yangModelII);
     }
 
-    private NormalizedNode getYangModelInput(final String yangName, final String yangBody,
+    private ContainerNode getYangModelInput(final String yangName, final String yangBody,
                                                   final String yangVersion) {
         return ImmutableContainerNodeBuilder.create()
                 .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(UPLOAD_YANG_INPUT_QN))
@@ -354,7 +355,7 @@ public class GnmiWithoutRestconfTest {
                 .build();
     }
 
-    private NormalizedNode getCertificateInput(final String certId, final String ca, final String clientCert,
+    private ContainerNode getCertificateInput(final String certId, final String ca, final String clientCert,
                                                     final String certKey, final String passphrase) {
         return ImmutableContainerNodeBuilder.create()
                 .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(ADD_KEYSTORE_INPUT_QN))
