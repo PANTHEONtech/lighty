@@ -22,7 +22,7 @@ import org.opendaylight.mdsal.dom.api.DOMActionServiceExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
 import org.opendaylight.netconf.api.NetconfMessage;
-import org.opendaylight.netconf.sal.connect.api.MessageTransformer;
+import org.opendaylight.netconf.sal.connect.api.ActionTransformer;
 import org.opendaylight.netconf.sal.connect.api.RemoteDeviceCommunicator;
 import org.opendaylight.yangtools.yang.common.ErrorSeverity;
 import org.opendaylight.yangtools.yang.common.ErrorTag;
@@ -30,16 +30,15 @@ import org.opendaylight.yangtools.yang.common.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 public final class LightyDOMActionService implements DOMActionService {
 
-    private final MessageTransformer<NetconfMessage> messageTransformer;
-    private final RemoteDeviceCommunicator<NetconfMessage> communicator;
+    private final ActionTransformer messageTransformer;
+    private final RemoteDeviceCommunicator communicator;
 
-    public LightyDOMActionService(final MessageTransformer<NetconfMessage> messageTransformer,
-            final RemoteDeviceCommunicator<NetconfMessage> communicator, final SchemaContext schemaContext) {
+    public LightyDOMActionService(final ActionTransformer messageTransformer,
+            final RemoteDeviceCommunicator communicator) {
         this.messageTransformer = messageTransformer;
         this.communicator = communicator;
     }

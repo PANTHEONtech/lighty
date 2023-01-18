@@ -96,7 +96,7 @@ public final class NetconfUtils {
             Preconditions.checkArgument(
                     result.getErrors().isEmpty(), "Unable to read data: %s, errors: %s", path, result.getErrors());
             final DataContainerChild dataNode =
-                    ((ContainerNode) result.getResult()).getChildByArg(NETCONF_DATA_NODEID);
+                    result.getResult().getChildByArg(NETCONF_DATA_NODEID);
             return NormalizedNodes.findNode(dataNode, path.get().getPathArguments());
         }, MoreExecutors.directExecutor());
     }

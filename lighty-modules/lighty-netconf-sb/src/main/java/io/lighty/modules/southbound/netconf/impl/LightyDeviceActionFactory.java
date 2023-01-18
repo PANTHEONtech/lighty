@@ -7,19 +7,19 @@
  */
 package io.lighty.modules.southbound.netconf.impl;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
-import org.opendaylight.netconf.api.NetconfMessage;
+import org.opendaylight.netconf.sal.connect.api.ActionTransformer;
 import org.opendaylight.netconf.sal.connect.api.DeviceActionFactory;
-import org.opendaylight.netconf.sal.connect.api.MessageTransformer;
 import org.opendaylight.netconf.sal.connect.api.RemoteDeviceCommunicator;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 public class LightyDeviceActionFactory implements DeviceActionFactory {
 
+
     @Override
-    public DOMActionService createDeviceAction(final MessageTransformer<NetconfMessage> messageTransformer,
-            final RemoteDeviceCommunicator<NetconfMessage> listener, final SchemaContext schemaContext) {
-        return new LightyDOMActionService(messageTransformer, listener, schemaContext);
+    public DOMActionService createDeviceAction(ActionTransformer messageTransformer,
+            RemoteDeviceCommunicator listener) {
+        return new LightyDOMActionService(messageTransformer, listener);
     }
 }
 
