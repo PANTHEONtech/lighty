@@ -36,7 +36,6 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLeafNodeBuilder;
 import org.testng.annotations.Test;
@@ -156,7 +155,8 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
 
         NetconfBaseService baseService = new NetconfBaseServiceImpl(new NodeId("node1"), domRpcService,
                 effectiveModelContext);
-        baseService.editConfig(RUNNING_DATASTORE, Optional.of(schema), yangInstanceId, Optional.of(EffectiveOperation.MERGE),
+        baseService.editConfig(RUNNING_DATASTORE, Optional.of(schema), yangInstanceId,
+                Optional.of(EffectiveOperation.MERGE),
                 Optional.of(EffectiveOperation.CREATE), true);
 
         ArgumentCaptor<NormalizedNode> capturedNN = ArgumentCaptor.forClass(NormalizedNode.class);
