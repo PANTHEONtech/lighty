@@ -54,6 +54,15 @@ public class RestconfActionsAppTest {
     @Test
     public void simpleApplicationTest() throws Exception {
         HttpResponse<String> operations;
+        restClient.POST("restconf/data/network-topology:network-topology/topology=topology-netconf",
+            """
+                    {
+                        "netconf-topology:node": [
+                            {
+                                "node-id": "new-node"
+                            }
+                        ]
+                    }""");
         operations = restClient.GET("restconf/operations");
         assertEquals(operations.statusCode(), 200);
         operations = restClient.GET("restconf/data/network-topology:network-topology?content=config");
