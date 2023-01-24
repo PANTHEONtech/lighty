@@ -28,11 +28,11 @@ import java.util.Optional;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.netconf.api.EffectiveOperation;
 import org.opendaylight.netconf.sal.connect.netconf.util.NetconfMessageTransformUtil;
+import org.opendaylight.netconf.topology.spi.NetconfNodeUtils;
 import org.opendaylight.netconf.util.NetconfUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.copy.config.input.target.ConfigTarget;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.edit.config.input.EditContent;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.get.config.input.source.ConfigSource;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.network.topology.topology.topology.types.TopologyNetconf;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
@@ -73,7 +73,7 @@ public final class NetconfUtils {
     public static InstanceIdentifier<Node> createNetConfNodeMountPointII(final NodeId nodeId) {
         KeyedInstanceIdentifier<Topology, TopologyKey> instanceIdentifier =
                 InstanceIdentifier.create(NetworkTopology.class).child(Topology.class,
-                        new TopologyKey(new TopologyId(TopologyNetconf.QNAME.getLocalName())));
+                        new TopologyKey(new TopologyId(NetconfNodeUtils.DEFAULT_TOPOLOGY_NAME)));
         InstanceIdentifier<Node> netconfNodeIID =
                 instanceIdentifier.child(Node.class, new NodeKey(nodeId));
         return netconfNodeIID;
