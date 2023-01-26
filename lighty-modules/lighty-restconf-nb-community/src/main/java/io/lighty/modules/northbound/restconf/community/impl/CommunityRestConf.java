@@ -28,6 +28,8 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.restconf.nb.rfc8040.RestconfApplication;
+import org.opendaylight.restconf.nb.rfc8040.databind.DatabindProvider;
+import org.opendaylight.restconf.nb.rfc8040.databind.mdsal.DOMDatabindProvider;
 import org.opendaylight.restconf.nb.rfc8040.handlers.SchemaContextHandler;
 import org.opendaylight.restconf.nb.rfc8040.streams.Configuration;
 import org.slf4j.Logger;
@@ -48,7 +50,6 @@ public class CommunityRestConf extends AbstractLightyModule {
     private final String restconfServletContextPath;
     private Server jettyServer;
     private LightyServerBuilder lightyServerBuilder;
-    private SchemaContextHandler schemaCtxHandler;
 
     public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMRpcService domRpcService,
             final DOMActionService domActionService, final DOMNotificationService domNotificationService,
@@ -81,15 +82,12 @@ public class CommunityRestConf extends AbstractLightyModule {
     @Override
     protected boolean initProcedure() {
         final Stopwatch stopwatch = Stopwatch.createStarted();
-
-        this.schemaCtxHandler
-                = new SchemaContextHandler(this.domDataBroker, this.domSchemaService);
-        this.schemaCtxHandler.init();
         final Configuration streamsConfiguration = RestConfConfigUtils.getStreamsConfiguration();
+        new SchemaContextHandler(this.domDataBroker, this.domSchemaService);
+        final DatabindProvider databindProvider = new DOMDatabindProvider(domSchemaService);
 
         LOG.info("Starting RestconfApplication with configuration {}", streamsConfiguration);
-
-        final RestconfApplication restconfApplication = new RestconfApplication(schemaCtxHandler,
+        final RestconfApplication restconfApplication = new RestconfApplication(databindProvider,
                 this.domMountPointService, this.domDataBroker, this.domRpcService, this.domActionService,
                 this.domNotificationService, this.domSchemaService, streamsConfiguration);
         final ServletContainer servletContainer8040 = new ServletContainer(ResourceConfig
@@ -133,10 +131,6 @@ public class CommunityRestConf extends AbstractLightyModule {
     @Override
     protected boolean stopProcedure() {
         boolean stopFailed = false;
-        if (this.schemaCtxHandler != null) {
-            this.schemaCtxHandler.close();
-            LOG.info("Schema context handler closed");
-        }
         if (this.jettyServer != null) {
             try {
                 this.jettyServer.stop();
