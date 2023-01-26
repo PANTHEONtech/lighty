@@ -28,6 +28,8 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.restconf.nb.rfc8040.RestconfApplication;
+import org.opendaylight.restconf.nb.rfc8040.databind.DatabindProvider;
+import org.opendaylight.restconf.nb.rfc8040.databind.mdsal.DOMDatabindProvider;
 import org.opendaylight.restconf.nb.rfc8040.handlers.SchemaContextHandler;
 import org.opendaylight.restconf.nb.rfc8040.streams.Configuration;
 import org.slf4j.Logger;
@@ -84,12 +86,11 @@ public class CommunityRestConf extends AbstractLightyModule {
 
         this.schemaCtxHandler
                 = new SchemaContextHandler(this.domDataBroker, this.domSchemaService);
-        this.schemaCtxHandler.init();
         final Configuration streamsConfiguration = RestConfConfigUtils.getStreamsConfiguration();
 
         LOG.info("Starting RestconfApplication with configuration {}", streamsConfiguration);
-
-        final RestconfApplication restconfApplication = new RestconfApplication(schemaCtxHandler,
+        final DatabindProvider provider = new DOMDatabindProvider(domSchemaService);
+        final RestconfApplication restconfApplication = new RestconfApplication(provider,
                 this.domMountPointService, this.domDataBroker, this.domRpcService, this.domActionService,
                 this.domNotificationService, this.domSchemaService, streamsConfiguration);
         final ServletContainer servletContainer8040 = new ServletContainer(ResourceConfig
