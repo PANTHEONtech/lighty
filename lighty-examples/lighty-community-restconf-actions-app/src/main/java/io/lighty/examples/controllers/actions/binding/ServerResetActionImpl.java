@@ -11,9 +11,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.Server;
 import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.ServerKey;
 import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.server.Reset;
-import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.server.reset.Input;
-import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.server.reset.Output;
-import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.server.reset.OutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.server.ResetInput;
+import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.server.ResetOutput;
+import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.server.ResetOutputBuilder;
 import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
@@ -23,9 +23,9 @@ import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
  */
 public final class ServerResetActionImpl implements Reset {
     @Override
-    public ListenableFuture<RpcResult<Output>> invoke(final KeyedInstanceIdentifier<Server, ServerKey> path,
-            final Input input) {
-        final var value = new OutputBuilder().setResetFinishedAt(input.getResetAt()).build();
+    public ListenableFuture<RpcResult<ResetOutput>> invoke(final KeyedInstanceIdentifier<Server, ServerKey> path,
+            final ResetInput input) {
+        final var value = new ResetOutputBuilder().setResetFinishedAt(input.getResetAt()).build();
         return RpcResultBuilder.success(value).buildFuture();
     }
 }

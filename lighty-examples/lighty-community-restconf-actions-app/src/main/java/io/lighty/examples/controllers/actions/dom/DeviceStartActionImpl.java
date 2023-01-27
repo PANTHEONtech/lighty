@@ -13,8 +13,8 @@ import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
-import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.device.start.Input;
-import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.device.start.Output;
+import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.device.StartInput;
+import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.device.StartOutput;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -26,8 +26,8 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absol
  * The example DOM implementation of action 'start' from 'example-data-center' module.
  */
 public final class DeviceStartActionImpl implements DOMActionImplementation {
-    private static final QName INPUT_LEAF_QNAME = QName.create(Input.QNAME, "start-at").intern();
-    private static final QName OUTPUT_LEAF_QNAME = QName.create(Output.QNAME, "start-finished-at").intern();
+    private static final QName INPUT_LEAF_QNAME = QName.create(StartInput.QNAME, "start-at").intern();
+    private static final QName OUTPUT_LEAF_QNAME = QName.create(StartOutput.QNAME, "start-finished-at").intern();
 
     @Override
     public ListenableFuture<? extends DOMActionResult> invokeAction(final Absolute type,
@@ -35,7 +35,7 @@ public final class DeviceStartActionImpl implements DOMActionImplementation {
         final var inputValue = input.findChildByArg(NodeIdentifier.create(INPUT_LEAF_QNAME))
                 .map(NormalizedNode::body).orElseThrow();
         return Futures.immediateFuture(new SimpleDOMActionResult(Builders.containerBuilder()
-                .withNodeIdentifier(NodeIdentifier.create(Output.QNAME))
+                .withNodeIdentifier(NodeIdentifier.create(StartOutput.QNAME))
                 .withChild(Builders.leafBuilder().withNodeIdentifier(NodeIdentifier.create(OUTPUT_LEAF_QNAME))
                         .withValue(inputValue)
                         .build())
