@@ -21,18 +21,18 @@ public class ElementNameWithModuleName {
     private final String elementName;
     private final String moduleName;
 
-    public ElementNameWithModuleName(final String elementName, final String moduleName) {
+    public ElementNameWithModuleName(String elementName, String moduleName) {
         this.elementName = elementName;
         this.moduleName = moduleName;
     }
 
-    public ElementNameWithModuleName(final String elementName) {
+    public ElementNameWithModuleName(String elementName) {
         this.elementName = elementName;
         this.moduleName = null;
     }
 
-    public static ElementNameWithModuleName parseFromString(final String element) {
-        final String[] elementWithModule = element.split(":", 2);
+    public static ElementNameWithModuleName parseFromString(String element) {
+        String[] elementWithModule = element.split(":", 2);
         if (elementWithModule.length > 1) {
             return new ElementNameWithModuleName(elementWithModule[1], elementWithModule[0]);
         } else {
@@ -60,7 +60,7 @@ public class ElementNameWithModuleName {
      * @return true only if the element has same name as provided QName and same module-name as provided Module name
      *     (if any module-name is present), otherwise false.
      */
-    public boolean equals(final QName quName, final Module module) {
+    public boolean equals(QName quName, Module module) {
         if (quName.getLocalName().equals(this.elementName)) {
             // check module name also
             if (this.hasModuleName() && !module.getName().equals(this.moduleName)) {

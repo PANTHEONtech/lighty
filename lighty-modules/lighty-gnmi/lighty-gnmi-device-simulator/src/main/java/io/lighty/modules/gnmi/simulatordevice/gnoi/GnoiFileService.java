@@ -19,79 +19,74 @@ import java.io.InputStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class GnoiFileService extends FileGrpc.FileImplBase {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GnoiFileService.class);
-
     public static final String PATH_TO_DATA = "fileservice/dummy-file";
-    // When changing, don't forget to change expected number of chunks in it tests
-    private static final int CHUNK_SIZE = 48000;
-
     public static final long LAST_MODIFIED = 1598429919;
     public static final int PERMISSIONS = 0444;
     public static final int UMASK = 0755;
     public static final long SIZE = 192000;
-
+    private static final Logger LOG = LoggerFactory.getLogger(GnoiFileService.class);
+    // When changing, don't forget to change expected number of chunks in it tests
+    private static final int CHUNK_SIZE = 48000;
 
     @Override
-    public void get(final FileOuterClass.GetRequest request,
-                    final StreamObserver<FileOuterClass.GetResponse> responseObserver) {
+    public void get(FileOuterClass.GetRequest request,
+            StreamObserver<FileOuterClass.GetResponse> responseObserver) {
         LOG.info("Received get rpc: {}", request);
         try {
-            final MessageDigest md = MessageDigest.getInstance("SHA-512");
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
             readFileAndCompleteObserver(md, responseObserver);
-        } catch (final NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             responseObserver.onError(e);
         }
     }
 
-    private void readFileAndCompleteObserver(final MessageDigest md,
-                                             final StreamObserver<FileOuterClass.GetResponse> responseObserver) {
+    private void readFileAndCompleteObserver(MessageDigest md,
+            StreamObserver<FileOuterClass.GetResponse> responseObserver) {
         try (InputStream is = new BufferedInputStream(Objects.requireNonNull(getClass().getClassLoader()
-            .getResourceAsStream(PATH_TO_DATA)));
-            DigestInputStream dis = new DigestInputStream(is, md)) {
+                .getResourceAsStream(PATH_TO_DATA)));
+                DigestInputStream dis = new DigestInputStream(is, md)) {
             while (true) {
-                final byte[] bytes = dis.readNBytes(CHUNK_SIZE);
+                byte[] bytes = dis.readNBytes(CHUNK_SIZE);
 
                 if (bytes.length == 0) {
                     break;
                 }
 
                 responseObserver.onNext(FileOuterClass.GetResponse.newBuilder()
-                    .setContents(ByteString.copyFrom(bytes)).build());
+                        .setContents(ByteString.copyFrom(bytes)).build());
             }
 
             responseObserver.onNext(FileOuterClass.GetResponse.newBuilder()
-                .setHash(Types.HashType.newBuilder()
-                    .setMethod(Types.HashType.HashMethod.MD5)
-                    .setHash(ByteString.copyFrom(md.digest())).build())
-                .build());
+                    .setHash(Types.HashType.newBuilder()
+                            .setMethod(Types.HashType.HashMethod.MD5)
+                            .setHash(ByteString.copyFrom(md.digest())).build())
+                    .build());
             responseObserver.onCompleted();
 
-        } catch (final IOException e) {
+        } catch (IOException e) {
             responseObserver.onError(e);
         }
     }
 
     @Override
     public StreamObserver<FileOuterClass.PutRequest> put(
-            final StreamObserver<FileOuterClass.PutResponse> responseObserver) {
-        final List<FileOuterClass.PutRequest> requests = new ArrayList<>();
+            StreamObserver<FileOuterClass.PutResponse> responseObserver) {
+
         return new StreamObserver<>() {
             @Override
-            public void onNext(final FileOuterClass.PutRequest value) {
+            public void onNext(FileOuterClass.PutRequest value) {
                 LOG.info("Received file chunk");
-                requests.add(value);
+
             }
 
             @Override
-            public void onError(final Throwable throwable) {
+            public void onError(Throwable throwable) {
                 LOG.error("Put rpc failed.", throwable);
             }
 
@@ -104,17 +99,17 @@ public class GnoiFileService extends FileGrpc.FileImplBase {
     }
 
     @Override
-    public void stat(final FileOuterClass.StatRequest request,
-                     final StreamObserver<FileOuterClass.StatResponse> responseObserver) {
+    public void stat(FileOuterClass.StatRequest request,
+            StreamObserver<FileOuterClass.StatResponse> responseObserver) {
         LOG.info("Received stat rpc: {}", request);
 
-        final FileOuterClass.StatResponse response = FileOuterClass.StatResponse.newBuilder().addStats(
-                FileOuterClass.StatInfo.newBuilder().setPath(request.getPath() + "/" + PATH_TO_DATA)
-                        .setLastModified(LAST_MODIFIED)
-                        .setPermissions(PERMISSIONS)
-                        .setSize(SIZE)
-                        .setUmask(UMASK)
-                        .build())
+        var response = FileOuterClass.StatResponse.newBuilder().addStats(
+                        FileOuterClass.StatInfo.newBuilder().setPath(request.getPath() + "/" + PATH_TO_DATA)
+                                .setLastModified(LAST_MODIFIED)
+                                .setPermissions(PERMISSIONS)
+                                .setSize(SIZE)
+                                .setUmask(UMASK)
+                                .build())
                 .build();
 
         responseObserver.onNext(response);
@@ -122,8 +117,8 @@ public class GnoiFileService extends FileGrpc.FileImplBase {
     }
 
     @Override
-    public void remove(final FileOuterClass.RemoveRequest request,
-                       final StreamObserver<FileOuterClass.RemoveResponse> responseObserver) {
+    public void remove(FileOuterClass.RemoveRequest request,
+            StreamObserver<FileOuterClass.RemoveResponse> responseObserver) {
         LOG.info("Received remove rpc: {}", request);
         responseObserver.onNext(FileOuterClass.RemoveResponse.getDefaultInstance());
         responseObserver.onCompleted();

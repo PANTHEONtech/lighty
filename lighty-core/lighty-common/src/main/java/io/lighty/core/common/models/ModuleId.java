@@ -29,24 +29,24 @@ public final class ModuleId {
     private final Revision revision;
 
     @JsonCreator
-    public ModuleId(@JsonProperty("usedBy") final String usedBy, @JsonProperty("nameSpace") final String nameSpace,
-            @JsonProperty("name") final String name, @JsonProperty("revision") final String revision) {
+    public ModuleId(@JsonProperty("usedBy") String usedBy, @JsonProperty("nameSpace") String nameSpace,
+            @JsonProperty("name") String name, @JsonProperty("revision") String revision) {
         this(usedBy, nameSpace, name, Revision.ofNullable(revision).orElse(null));
     }
 
-    public ModuleId(final String nameSpace, final String name, final String revision) {
+    public ModuleId(String nameSpace, String name, String revision) {
         this(nameSpace, name, Revision.ofNullable(revision).orElse(null));
     }
 
-    public ModuleId(final String usedBy, final String nameSpace, final String name, final Revision revision) {
+    public ModuleId(String usedBy, String nameSpace, String name, Revision revision) {
         this(usedBy, XMLNamespace.of(nameSpace), name, revision);
     }
 
-    public ModuleId(final String nameSpace, final String name, final Revision revision) {
+    public ModuleId(String nameSpace, String name, Revision revision) {
         this(null, XMLNamespace.of(nameSpace), name, revision);
     }
 
-    public ModuleId(final String usedBy, final XMLNamespace nameSpace, final String name, final Revision revision) {
+    public ModuleId(String usedBy, XMLNamespace nameSpace, String name, Revision revision) {
         this.usedBy = usedBy;
         this.nameSpace = nameSpace;
         this.name = name;
@@ -74,14 +74,14 @@ public final class ModuleId {
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
         if (!(obj instanceof ModuleId)) {
             return false;
         }
-        final ModuleId moduleId = (ModuleId) obj;
+        var moduleId = (ModuleId) obj;
         return Objects.equals(this.name, moduleId.name) && Objects.equals(this.revision, moduleId.revision)
                 && Objects.equals(this.nameSpace, moduleId.nameSpace);
     }
@@ -91,12 +91,12 @@ public final class ModuleId {
         return Objects.hash(this.nameSpace, this.name, this.revision);
     }
 
-    public static ModuleId from(final String nameSpace, final String name, final String revision) {
+    public static ModuleId from(String nameSpace, String name, String revision) {
         return new ModuleId(nameSpace, name, revision);
     }
 
-    public static ModuleId from(final YangModuleInfo yangModuleInfo) {
-        final QName name = yangModuleInfo.getName();
+    public static ModuleId from(YangModuleInfo yangModuleInfo) {
+        QName name = yangModuleInfo.getName();
         return new ModuleId(name.getNamespace().toString(), name.getLocalName(), name.getRevision().orElse(null));
     }
 

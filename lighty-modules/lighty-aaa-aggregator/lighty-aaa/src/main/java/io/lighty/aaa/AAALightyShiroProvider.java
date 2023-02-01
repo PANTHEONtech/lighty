@@ -78,24 +78,24 @@ public final class AAALightyShiroProvider {
 
     private AAAWebEnvironment aaaWebEnvironment;
 
-    private AAALightyShiroProvider(final DataBroker dataBroker,
-                                   final AAAConfiguration aaaConfiguration,
-                                   final CredentialAuth<PasswordCredentials> credentialAuth,
-                                   final LightyServerBuilder server) {
+    private AAALightyShiroProvider(DataBroker dataBroker,
+                                   AAAConfiguration aaaConfiguration,
+                                   CredentialAuth<PasswordCredentials> credentialAuth,
+                                   LightyServerBuilder server) {
         this.dataBroker = dataBroker;
         this.certificateManager = aaaConfiguration.getCertificateManager();
         this.credentialAuth = credentialAuth;
         this.shiroConfiguration = aaaConfiguration.getShiroConf();
         this.handlers = new ArrayList<>();
         this.authenticationService = new AuthenticationManager();
-        final DatastoreConfig datastoreConfig = aaaConfiguration.getDatastoreConf();
+        DatastoreConfig datastoreConfig = aaaConfiguration.getDatastoreConf();
 
         if (datastoreConfig != null && datastoreConfig.getStore().equals(DatastoreConfig.Store.H2DataStore)) {
-            final IdmLightConfig config = new IdmLightConfigBuilder()
+            IdmLightConfig config = new IdmLightConfigBuilder()
                     .dbDirectory(aaaConfiguration.getDbPath())
                     .dbUser(aaaConfiguration.getUsername())
                     .dbPwd(aaaConfiguration.getDbPassword()).build();
-            final PasswordServiceConfig passwordServiceConfig = new PasswordServiceConfigBuilder().setAlgorithm(
+            PasswordServiceConfig passwordServiceConfig = new PasswordServiceConfigBuilder().setAlgorithm(
                     "SHA-512").setIterations(20000).build();
             this.defaultPasswordHashService = new DefaultPasswordHashService(passwordServiceConfig);
             iidmStore = new H2Store(new IdmLightSimpleConnectionProvider(config), defaultPasswordHashService);
@@ -110,33 +110,69 @@ public final class AAALightyShiroProvider {
         }
         this.passwordHashService = defaultPasswordHashService;
         if (credentialAuth == null) {
-            IdmLightProxy idmLightProxy = new IdmLightProxy(iidmStore, defaultPasswordHashService);
+            var idmLightProxy = new IdmLightProxy(iidmStore, defaultPasswordHashService);
             this.credentialAuth = idmLightProxy;
             this.claimCache = idmLightProxy;
         }
         this.tokenAuthenticators = buildTokenAuthenticators(this.credentialAuth);
         try {
-            final StoreBuilder storeBuilder = new StoreBuilder(iidmStore);
-            final String domain = storeBuilder.initDomainAndRolesWithoutUsers(IIDMStore.DEFAULT_DOMAIN);
+            var storeBuilder = new StoreBuilder(iidmStore);
+            String domain = storeBuilder.initDomainAndRolesWithoutUsers(IIDMStore.DEFAULT_DOMAIN);
             if (domain != null) {
                 // If is not exist. If domain already exist on path, will be used instead
                 storeBuilder.createUser(domain, aaaConfiguration.getUsername(), aaaConfiguration.getPassword(), true);
             }
 
-        } catch (final IDMStoreException e) {
+        } catch (IDMStoreException e) {
             LOG.error("Failed to initialize data in store", e);
         }
-        final LocalHttpServer httpService = new LocalHttpServer(server);
+        var httpService = new LocalHttpServer(server);
         registerServletContexts(httpService, aaaConfiguration.getMoonEndpointPath());
 
         initAAAonServer(server);
     }
 
-    private void initAAAonServer(final LightyServerBuilder server) {
-        final ContextHandlerCollection contexts = new ContextHandlerCollection();
-        final ServletContextHandler mainHandler = new ServletContextHandler(contexts, "/auth", true, false);
-        final IdmLightApplication idmLightApplication = new IdmLightApplication(iidmStore, claimCache);
-        final ServletHolder idmLightServlet = new ServletHolder(new ServletContainer(ResourceConfig.forApplication(
+    public static CompletableFuture<AAALightyShiroProvider> newInstance(DataBroker dataBroker,
+            AAAConfiguration aaaConfig, CredentialAuth<PasswordCredentials> credentialAuth,
+            LightyServerBuilder server) {
+        CompletableFuture<AAALightyShiroProvider> completableFuture = new CompletableFuture<>();
+        INSTANCE = new AAALightyShiroProvider(dataBroker, aaaConfig, credentialAuth, server);
+        completableFuture.complete(INSTANCE);
+        return completableFuture;
+    }
+
+    public static AAALightyShiroProvider getInstance() {
+        return INSTANCE;
+    }
+
+    /**
+     * Get IDM data store.
+     *
+     * @return IIDMStore data store
+     */
+    public static IIDMStore getIdmStore() {
+        return INSTANCE.iidmStore;
+    }
+
+    /**
+     * Set IDM data store, only used for test.
+     *
+     * @param store data store
+     */
+    public static void setIdmStore(IIDMStore store) {
+        INSTANCE.iidmStore = store;
+    }
+
+    private static TokenAuthenticators buildTokenAuthenticators(
+            CredentialAuth<PasswordCredentials> credentialAuth) {
+        return new TokenAuthenticators(new HttpBasicAuth(credentialAuth));
+    }
+
+    private void initAAAonServer(LightyServerBuilder server) {
+        var contexts = new ContextHandlerCollection();
+        var mainHandler = new ServletContextHandler(contexts, "/auth", true, false);
+        var idmLightApplication = new IdmLightApplication(iidmStore, claimCache);
+        var idmLightServlet = new ServletHolder(new ServletContainer(ResourceConfig.forApplication(
                 idmLightApplication)));
         idmLightServlet.setInitParameter("jersey.config.server.provider.packages",
                 "org.opendaylight.aaa.impl.provider");
@@ -153,34 +189,21 @@ public final class AAALightyShiroProvider {
                 passwordHashService,
                 new JerseyServletSupport());
 
-        final Map<String, String> properties = new HashMap<>();
-        final CustomFilterAdapterConfigurationImpl customFilterAdapterConfig =
+        Map<String, String> properties = new HashMap<>();
+        var customFilterAdapterConfig =
                 new CustomFilterAdapterConfigurationImpl();
         customFilterAdapterConfig.update(properties);
-        final FilterHolder customFilterAdapter = new FilterHolder(new CustomFilterAdapter(customFilterAdapterConfig));
+        var customFilterAdapter = new FilterHolder(new CustomFilterAdapter(customFilterAdapterConfig));
         server.addCommonFilter(customFilterAdapter, "/*");
 
-        final FilterHolder shiroFilter = new FilterHolder(new AAAShiroFilter(aaaWebEnvironment));
+        var shiroFilter = new FilterHolder(new AAAShiroFilter(aaaWebEnvironment));
         server.addCommonFilter(shiroFilter, "/*");
 
-        final FilterHolder crossOriginFilter = new FilterHolder(new CrossOriginFilter());
+        var crossOriginFilter = new FilterHolder(new CrossOriginFilter());
         crossOriginFilter.setInitParameter("allowedMethods", "GET,POST,OPTIONS,DELETE,PUT,HEAD");
         crossOriginFilter.setInitParameter("allowedHeaders",
                 "origin, content-type, accept, authorization, Authorization");
         server.addCommonFilter(crossOriginFilter, "/*");
-    }
-
-    public static CompletableFuture<AAALightyShiroProvider> newInstance(final DataBroker dataBroker,
-            final AAAConfiguration aaaConfig, final CredentialAuth<PasswordCredentials> credentialAuth,
-            final LightyServerBuilder server) {
-        final CompletableFuture<AAALightyShiroProvider> completableFuture = new CompletableFuture<>();
-        INSTANCE = new AAALightyShiroProvider(dataBroker, aaaConfig, credentialAuth, server);
-        completableFuture.complete(INSTANCE);
-        return completableFuture;
-    }
-
-    public static AAALightyShiroProvider getInstance() {
-        return INSTANCE;
     }
 
     /**
@@ -226,24 +249,6 @@ public final class AAALightyShiroProvider {
         return defaultPasswordHashService;
     }
 
-    /**
-     * Get IDM data store.
-     *
-     * @return IIDMStore data store
-     */
-    public static IIDMStore getIdmStore() {
-        return INSTANCE.iidmStore;
-    }
-
-    /**
-     * Set IDM data store, only used for test.
-     *
-     * @param store data store
-     */
-    public static void setIdmStore(final IIDMStore store) {
-        INSTANCE.iidmStore = store;
-    }
-
     @SuppressWarnings("IllegalCatch")
     public void close() {
         this.handlers.forEach((handler) -> {
@@ -260,12 +265,7 @@ public final class AAALightyShiroProvider {
         }
     }
 
-    private static TokenAuthenticators buildTokenAuthenticators(
-            final CredentialAuth<PasswordCredentials> credentialAuth) {
-        return new TokenAuthenticators(new HttpBasicAuth(credentialAuth));
-    }
-
-    private void registerServletContexts(final LocalHttpServer httpService, final String moonEndpointPath) {
+    private void registerServletContexts(LocalHttpServer httpService, String moonEndpointPath) {
         LOG.info("attempting registration of AAA moon and auth servlets");
 
         Preconditions.checkNotNull(httpService, "httpService cannot be null");

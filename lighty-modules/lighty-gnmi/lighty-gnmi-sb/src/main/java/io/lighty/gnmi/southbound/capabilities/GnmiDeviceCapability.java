@@ -23,20 +23,20 @@ public class GnmiDeviceCapability implements Serializable {
     private final SemVer semanticVersion;
     private final Revision revision;
 
-    public GnmiDeviceCapability(final String name, @Nullable final SemVer semVer, @Nullable final Revision revision) {
+    public GnmiDeviceCapability(String name, @Nullable SemVer semVer, @Nullable Revision revision) {
         this.name = name;
         this.semanticVersion = semVer;
         this.revision = revision;
     }
 
-    public GnmiDeviceCapability(final String name, @Nullable final String semver, @Nullable final String revision) {
+    public GnmiDeviceCapability(String name, @Nullable String semver, @Nullable String revision) {
         this.name = name;
         this.semanticVersion = semver == null ? null : SemVer.valueOf(semver);
         this.revision = revision == null ? null : Revision.of(revision);
 
     }
 
-    public GnmiDeviceCapability(final String name) {
+    public GnmiDeviceCapability(String name) {
         this.name = name;
         this.revision = null;
         this.semanticVersion = null;
@@ -77,7 +77,7 @@ public class GnmiDeviceCapability implements Serializable {
         if (!(obj instanceof GnmiDeviceCapability)) {
             return false;
         }
-        GnmiDeviceCapability other = (GnmiDeviceCapability) obj;
+        var other = (GnmiDeviceCapability) obj;
         return Objects.equals(this.name, other.name)
                 && Objects.equals(this.semanticVersion, other.semanticVersion)
                 && Objects.equals(this.revision, other.revision);

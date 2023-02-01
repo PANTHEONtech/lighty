@@ -9,6 +9,7 @@
 package io.lighty.modules.gnmi.commons.util;
 
 import com.google.common.io.ByteSource;
+import com.google.errorprone.annotations.Var;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
@@ -21,10 +22,6 @@ import java.util.regex.Pattern;
  */
 public final class YangModelSanitizer {
 
-    private YangModelSanitizer() {
-        // Utility class
-    }
-
     /*
      *  Match patterns and add them to regex group.
      *  e.q.
@@ -32,6 +29,10 @@ public final class YangModelSanitizer {
      *  oc-ext:posix-pattern '^REGEX$';
      */
     private static final Pattern YANG_REGEX_PATTERN = Pattern.compile("(.*|\n*)pattern '\\^(?<regex>.+)\\$'(.*|\n*)");
+
+    private YangModelSanitizer() {
+        // Utility class
+    }
 
     /**
      * Sanitize regex posix ['^','$'] from YANG model.
@@ -43,9 +44,9 @@ public final class YangModelSanitizer {
      * @return Sanitized regex posix inside YANG model regex patterns.
      * @throws IOException Throw when is execute {@link ByteSource#read()}
      */
-    public static ByteSource removeRegexpPosix(final ByteSource data) throws IOException {
-        final String textModel = new String(data.read(), StandardCharsets.UTF_8);
-        final String sanitizedModel = removeRegexpPosix(textModel);
+    public static ByteSource removeRegexpPosix(ByteSource data) throws IOException {
+        var textModel = new String(data.read(), StandardCharsets.UTF_8);
+        String sanitizedModel = removeRegexpPosix(textModel);
         return ByteSource.wrap(sanitizedModel.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -58,9 +59,9 @@ public final class YangModelSanitizer {
      * @param yangModel {@link String} yang model body.
      * @return Sanitized regex posix inside YANG model regex patterns.
      */
-    public static String removeRegexpPosix(final String yangModel) {
-        String result = yangModel;
-        final Matcher matcher = YANG_REGEX_PATTERN.matcher(yangModel);
+    public static String removeRegexpPosix(String yangModel) {
+        @Var String result = yangModel;
+        Matcher matcher = YANG_REGEX_PATTERN.matcher(yangModel);
         while (matcher.find()) {
             String regex = matcher.group("regex");
             result = result.replace("^" + regex + "$", regex);

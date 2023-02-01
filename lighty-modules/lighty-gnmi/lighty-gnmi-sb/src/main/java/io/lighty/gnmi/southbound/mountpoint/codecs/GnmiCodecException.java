@@ -10,11 +10,11 @@ package io.lighty.gnmi.southbound.mountpoint.codecs;
 
 public class GnmiCodecException extends Exception {
 
-    public GnmiCodecException(final String message, final Exception ex) {
+    public GnmiCodecException(String message, Exception ex) {
         super(message, ex);
     }
 
-    public GnmiCodecException(final String message) {
+    public GnmiCodecException(String message) {
         super(message);
     }
 }

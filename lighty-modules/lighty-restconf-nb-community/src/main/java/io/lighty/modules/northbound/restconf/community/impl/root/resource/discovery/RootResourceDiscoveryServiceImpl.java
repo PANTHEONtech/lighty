@@ -18,7 +18,7 @@ public final class RootResourceDiscoveryServiceImpl implements RootResourceDisco
 
     private final String restconfServletContextPath;
 
-    public RootResourceDiscoveryServiceImpl(final String restconfServletContextPath) {
+    public RootResourceDiscoveryServiceImpl(String restconfServletContextPath) {
         if (restconfServletContextPath.charAt(0) == '/') {
             this.restconfServletContextPath = restconfServletContextPath.substring(1);
         } else {

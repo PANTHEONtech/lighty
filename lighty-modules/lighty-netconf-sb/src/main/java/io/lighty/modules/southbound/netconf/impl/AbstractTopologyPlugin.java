@@ -21,32 +21,32 @@ abstract class AbstractTopologyPlugin extends AbstractLightyModule implements Ne
 
     private final DOMMountPointService domMountPointService;
 
-    AbstractTopologyPlugin(final ExecutorService executorService, final DOMMountPointService domMountPointService) {
+    AbstractTopologyPlugin(ExecutorService executorService, DOMMountPointService domMountPointService) {
         super(executorService);
         this.domMountPointService = domMountPointService;
     }
 
     @Override
-    public Optional<NetconfBaseService> getNetconfBaseService(final NodeId nodeId) {
-        final var mountPoint = getNetconfDOMMountPoint(nodeId);
-        final var schemaService = mountPoint.flatMap(t -> t.getService(DOMSchemaService.class));
-        final var rpcService = mountPoint.flatMap(t -> t.getService(DOMRpcService.class));
+    public Optional<NetconfBaseService> getNetconfBaseService(NodeId nodeId) {
+        var mountPoint = getNetconfDOMMountPoint(nodeId);
+        var schemaService = mountPoint.flatMap(t -> t.getService(DOMSchemaService.class));
+        var rpcService = mountPoint.flatMap(t -> t.getService(DOMRpcService.class));
 
         return rpcService.map(t -> new NetconfBaseServiceImpl(nodeId, t, schemaService
                 .orElseThrow().getGlobalContext()));
     }
 
     @Override
-    public Optional<NetconfNmdaBaseService> getNetconfNmdaBaseService(final NodeId nodeId) {
-        final var mountPoint = getNetconfDOMMountPoint(nodeId);
-        final var schemaService = mountPoint.flatMap(t -> t.getService(DOMSchemaService.class));
-        final var rpcService = mountPoint.flatMap(t -> t.getService(DOMRpcService.class));
+    public Optional<NetconfNmdaBaseService> getNetconfNmdaBaseService(NodeId nodeId) {
+        var mountPoint = getNetconfDOMMountPoint(nodeId);
+        var schemaService = mountPoint.flatMap(t -> t.getService(DOMSchemaService.class));
+        var rpcService = mountPoint.flatMap(t -> t.getService(DOMRpcService.class));
         return rpcService.map(t -> new NetconfNmdaBaseServiceImpl(nodeId, t, schemaService
                 .orElseThrow().getGlobalContext()));
     }
 
-    private Optional<DOMMountPoint> getNetconfDOMMountPoint(final NodeId nodeId) {
-        final var instanceIdentifier = NetconfUtils.createNetConfNodeMountPointYII(nodeId);
+    private Optional<DOMMountPoint> getNetconfDOMMountPoint(NodeId nodeId) {
+        var instanceIdentifier = NetconfUtils.createNetConfNodeMountPointYII(nodeId);
         return domMountPointService.getMountPoint(instanceIdentifier);
     }
 }

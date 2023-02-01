@@ -32,23 +32,23 @@ public class GnmiCapabilitiesService {
     private final EffectiveModelContext schemaContext;
     private final EnumSet<Gnmi.Encoding> supportedEncodings;
 
-    public GnmiCapabilitiesService(final EffectiveModelContext schemaContext,
-                                   @Nullable final EnumSet<Gnmi.Encoding> supportedEncodings) {
+    public GnmiCapabilitiesService(EffectiveModelContext schemaContext,
+                                   @Nullable EnumSet<Gnmi.Encoding> supportedEncodings) {
         this.schemaContext = schemaContext;
         this.supportedEncodings = Objects.requireNonNullElse(supportedEncodings,
                 EnumSet.of(Gnmi.Encoding.JSON, Gnmi.Encoding.JSON_IETF));
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    public Gnmi.CapabilityResponse getResponse(final Gnmi.CapabilityRequest request) {
+    public Gnmi.CapabilityResponse getResponse(Gnmi.CapabilityRequest request) {
         LOG.debug("Received capabilities request {}", request);
-        final List<Module> modules = new ArrayList<>(schemaContext.getModules());
-        final List<Gnmi.ModelData> modelDataList = new ArrayList<>();
-        for (final Module module : modules) {
-            final Gnmi.ModelData.Builder builder = Gnmi.ModelData.newBuilder()
-                .setOrganization(module.getOrganization().orElse("UNKNOWN-ORGANIZATION"))
-                .setName(module.getName());
-            final Optional<SemVer> optSemVer = getSemVer(module);
+        List<Module> modules = new ArrayList<>(schemaContext.getModules());
+        List<Gnmi.ModelData> modelDataList = new ArrayList<>();
+        for (Module module : modules) {
+            Gnmi.ModelData.Builder builder = Gnmi.ModelData.newBuilder()
+                    .setOrganization(module.getOrganization().orElse("UNKNOWN-ORGANIZATION"))
+                    .setName(module.getName());
+            Optional<SemVer> optSemVer = getSemVer(module);
             if (optSemVer.isPresent()) {
                 builder.setVersion(optSemVer.get().toString());
             } else if (module.getRevision().isPresent()) {
@@ -58,14 +58,14 @@ public class GnmiCapabilitiesService {
         }
 
         return Gnmi.CapabilityResponse.newBuilder()
-            .addAllSupportedModels(modelDataList)
-            .addAllSupportedEncodings(supportedEncodings)
-            .setGNMIVersion(GNMI_VERSION)
-            .build();
+                .addAllSupportedModels(modelDataList)
+                .addAllSupportedEncodings(supportedEncodings)
+                .setGNMIVersion(GNMI_VERSION)
+                .build();
     }
 
-    private static Optional<SemVer> getSemVer(final Module module) {
-        final var declared = module.asEffectiveStatement().getDeclared();
+    private static Optional<SemVer> getSemVer(Module module) {
+        var declared = module.asEffectiveStatement().getDeclared();
         if (declared == null) {
             return Optional.empty();
         }

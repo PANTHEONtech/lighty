@@ -20,8 +20,8 @@ public class SecurityConfig {
     private final Server server;
     private final boolean isNeedClientAuth;
 
-    public SecurityConfig(final KeyStore keyStore, final String ksPassword, final KeyStore trustKeyStore,
-                          final String trustKsPassword, final boolean isNeedClientAuth) {
+    public SecurityConfig(KeyStore keyStore, String ksPassword, KeyStore trustKeyStore,
+                          String trustKsPassword, boolean isNeedClientAuth) {
         this.keyStore = keyStore;
         this.ksPassword = ksPassword;
         this.trustKeyStore = trustKeyStore;
@@ -40,7 +40,7 @@ public class SecurityConfig {
         server.setNeedClientAuth(isNeedClientAuth);
     }
 
-    public SslConnectionFactory getSslConnectionFactory(final String protocol) {
+    public SslConnectionFactory getSslConnectionFactory(String protocol) {
         return new SslConnectionFactory(server, protocol);
     }
 }

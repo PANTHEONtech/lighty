@@ -62,21 +62,21 @@ public class SwaggerLighty extends AbstractLightyModule {
         this.mountPointSwaggerGeneratorRFC8040 = new MountPointSwaggerGeneratorRFC8040(
                 lightyServices.getDOMSchemaService(), lightyServices.getDOMMountPointService(),basePathString);
 
-        ApiDocGeneratorRFC8040 apiDocGeneratorRFC8040 = new ApiDocGeneratorRFC8040(
+        var apiDocGeneratorRFC8040 = new ApiDocGeneratorRFC8040(
                 lightyServices.getDOMSchemaService(), basePathString);
-        AllModulesDocGenerator allModulesDocGenerator =
+        var allModulesDocGenerator =
                 new AllModulesDocGenerator(apiDocGeneratorRFC8040);
 
         this.apiDocService = new ApiDocServiceImpl(mountPointSwaggerGeneratorRFC8040,
                 apiDocGeneratorRFC8040, allModulesDocGenerator);
 
-        ApiDocApplication apiDocApplication = new ApiDocApplication(apiDocService);
+        var apiDocApplication = new ApiDocApplication(apiDocService);
 
-        ServletContainer restServletContainer = new ServletContainer(ResourceConfig.forApplication(apiDocApplication));
-        ServletHolder restServletHolder = new ServletHolder(restServletContainer);
+        var restServletContainer = new ServletContainer(ResourceConfig.forApplication(apiDocApplication));
+        var restServletHolder = new ServletHolder(restServletContainer);
 
-        ContextHandlerCollection contexts = new ContextHandlerCollection();
-        ServletContextHandler mainHandler =   new ServletContextHandler(contexts, APIDOC_PATH, true, false);
+        var contexts = new ContextHandlerCollection();
+        var mainHandler =   new ServletContextHandler(contexts, APIDOC_PATH, true, false);
         mainHandler.addServlet(restServletHolder, "/swagger2/apis/*");
         mainHandler.addServlet(restServletHolder, "/openapi3/apis/*");
 
@@ -100,8 +100,8 @@ public class SwaggerLighty extends AbstractLightyModule {
         LOG.info("initializing swagger UI at: http(s)://{hostname:port}{}{}/index.html", APIDOC_PATH, path);
         String externalResource = SwaggerLighty.class.getResource(path).toExternalForm();
         LOG.info("externalResource: {}", externalResource);
-        DefaultServlet defaultServlet = new DefaultServlet();
-        ServletHolder holderPwd = new ServletHolder(servletName, defaultServlet);
+        var defaultServlet = new DefaultServlet();
+        var holderPwd = new ServletHolder(servletName, defaultServlet);
         holderPwd.setInitParameter("resourceBase", externalResource);
         holderPwd.setInitParameter("dirAllowed", TRUE);
         holderPwd.setInitParameter("pathInfoOnly", TRUE);

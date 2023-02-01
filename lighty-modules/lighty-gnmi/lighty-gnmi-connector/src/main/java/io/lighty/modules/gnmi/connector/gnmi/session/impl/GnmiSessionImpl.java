@@ -30,38 +30,38 @@ public class GnmiSessionImpl implements GnmiSession {
     private final gNMIFutureStub futureStub;
     private final gNMIStub stub;
 
-    GnmiSessionImpl(final gNMIFutureStub futureStub, final gNMIStub stub) {
+    GnmiSessionImpl(gNMIFutureStub futureStub, gNMIStub stub) {
         this.futureStub = futureStub;
         this.stub = stub;
     }
 
-    public GnmiSessionImpl(final Channel channel) {
+    public GnmiSessionImpl(Channel channel) {
         this(gNMIGrpc.newFutureStub(channel), gNMIGrpc.newStub(channel));
     }
 
-    public GnmiSessionImpl(final Channel channel, final CallCredentials credentials) {
+    public GnmiSessionImpl(Channel channel, CallCredentials credentials) {
         this(gNMIGrpc.newFutureStub(channel).withCallCredentials(credentials),
                 gNMIGrpc.newStub(channel).withCallCredentials(credentials));
     }
 
     @Override
-    public synchronized ListenableFuture<GetResponse> get(final GetRequest getRequest) {
+    public synchronized ListenableFuture<GetResponse> get(GetRequest getRequest) {
         return futureStub.get(getRequest);
     }
 
     @Override
-    public synchronized ListenableFuture<SetResponse> set(final SetRequest setRequest) {
+    public synchronized ListenableFuture<SetResponse> set(SetRequest setRequest) {
         return futureStub.set(setRequest);
     }
 
     @Override
-    public synchronized ListenableFuture<CapabilityResponse> capabilities(final CapabilityRequest capabilityRequest) {
+    public synchronized ListenableFuture<CapabilityResponse> capabilities(CapabilityRequest capabilityRequest) {
         return futureStub.capabilities(capabilityRequest);
     }
 
     @Override
     public synchronized StreamObserver<SubscribeRequest> subscribe(
-            final StreamObserver<SubscribeResponse> responseObserver) {
+            StreamObserver<SubscribeResponse> responseObserver) {
         return stub.subscribe(responseObserver);
     }
 }

@@ -64,7 +64,7 @@ public class XmlNodeConverter implements NodeConverter {
      *
      * @param effectiveModelContext initial effective model context
      */
-    public XmlNodeConverter(final EffectiveModelContext effectiveModelContext) {
+    public XmlNodeConverter(EffectiveModelContext effectiveModelContext) {
         this.effectiveModelContext = effectiveModelContext;
     }
 
@@ -77,16 +77,16 @@ public class XmlNodeConverter implements NodeConverter {
      * @throws SerializationException if something goes wrong with serialization
      */
     @Override
-    public Writer serializeData(final Inference inference,
-            final NormalizedNode normalizedNode) throws SerializationException {
-        final Writer writer = new StringWriter();
+    public Writer serializeData(Inference inference,
+            NormalizedNode normalizedNode) throws SerializationException {
+        Writer writer = new StringWriter();
         XMLStreamWriter xmlStreamWriter;
         try {
             xmlStreamWriter = XML_OUT_FACTORY.createXMLStreamWriter(writer);
         } catch (XMLStreamException | FactoryConfigurationError e) {
             throw new SerializationException(e);
         }
-        final NormalizedNodeStreamWriter nnStreamWriter = XMLStreamNormalizedNodeStreamWriter
+        NormalizedNodeStreamWriter nnStreamWriter = XMLStreamNormalizedNodeStreamWriter
                 .create(xmlStreamWriter, inference);
         try (NormalizedNodeWriter nnWriter = NormalizedNodeWriter.forStreamWriter(nnStreamWriter)) {
             nnWriter.write(normalizedNode);
@@ -97,21 +97,21 @@ public class XmlNodeConverter implements NodeConverter {
     }
 
     @Override
-    public Writer serializeRpc(final Inference inference, final NormalizedNode normalizedNode)
+    public Writer serializeRpc(Inference inference, NormalizedNode normalizedNode)
             throws SerializationException {
         Preconditions.checkState(normalizedNode instanceof ContainerNode,
                 "RPC input/output to serialize is expected to be a ContainerNode");
-        final Writer writer = new StringWriter();
+        Writer writer = new StringWriter();
         XMLStreamWriter xmlStreamWriter;
         try {
             xmlStreamWriter = XML_OUT_FACTORY.createXMLStreamWriter(writer);
         } catch (XMLStreamException | FactoryConfigurationError e) {
             throw new SerializationException(e);
         }
-        final XMLNamespace namespace = normalizedNode.getIdentifier().getNodeType().getNamespace();
+        XMLNamespace namespace = normalizedNode.getIdentifier().getNodeType().getNamespace();
         // Input/output
-        final String localName = normalizedNode.getIdentifier().getNodeType().getLocalName();
-        final NormalizedNodeStreamWriter nnStreamWriter = XMLStreamNormalizedNodeStreamWriter
+        String localName = normalizedNode.getIdentifier().getNodeType().getLocalName();
+        NormalizedNodeStreamWriter nnStreamWriter = XMLStreamNormalizedNodeStreamWriter
                 .create(xmlStreamWriter, inference);
         try (NormalizedNodeWriter nnWriter = NormalizedNodeWriter.forStreamWriter(nnStreamWriter)) {
             xmlStreamWriter.writeStartElement(XMLConstants.DEFAULT_NS_PREFIX, localName, namespace.toString());
@@ -139,17 +139,17 @@ public class XmlNodeConverter implements NodeConverter {
      * @throws DeserializationException is thrown in case of an error during deserialization
      */
     @Override
-    public NormalizedNode deserialize(final Inference inference, final Reader inputData)
+    public NormalizedNode deserialize(Inference inference, Reader inputData)
             throws DeserializationException {
-        final XMLStreamReader reader;
+        XMLStreamReader reader;
         try {
             reader = XML_IN_FACTORY.createXMLStreamReader(inputData);
         } catch (XMLStreamException e) {
             throw new DeserializationException(e);
         }
 
-        final NormalizedNodeResult result = new NormalizedNodeResult();
-        final NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
+        var result = new NormalizedNodeResult();
+        NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
         try (XmlParserStream xmlParser = XmlParserStream.create(streamWriter, inference)) {
             xmlParser.parse(reader);
             return result.getResult();

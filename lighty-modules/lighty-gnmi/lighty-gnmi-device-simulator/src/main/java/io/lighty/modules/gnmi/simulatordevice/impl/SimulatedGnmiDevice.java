@@ -76,7 +76,7 @@ public class SimulatedGnmiDevice {
     private YangDataService dataService;
 
 
-    public SimulatedGnmiDevice(final GnmiSimulatorConfiguration simulatorConfig) {
+    public SimulatedGnmiDevice(GnmiSimulatorConfiguration simulatorConfig) {
         this.bossGroup = Objects.requireNonNullElseGet(simulatorConfig.getBossGroup(),
                 () -> new NioEventLoopGroup(1));
         this.workerGroup = Objects.requireNonNullElseGet(simulatorConfig.getWorkerGroup(), NioEventLoopGroup::new);
@@ -97,7 +97,7 @@ public class SimulatedGnmiDevice {
     }
 
     public void start() throws IOException, EffectiveModelContextBuilderException {
-        final NettyServerBuilder serverBuilder = NettyServerBuilder.forAddress(new InetSocketAddress(host, port))
+        NettyServerBuilder serverBuilder = NettyServerBuilder.forAddress(new InetSocketAddress(host, port))
                 .bossEventLoopGroup(bossGroup)
                 .workerEventLoopGroup(workerGroup)
                 .channelType(NioServerSocketChannel.class)
@@ -164,7 +164,7 @@ public class SimulatedGnmiDevice {
             try {
                 server.shutdown();
                 server.awaitTermination();
-            } catch (final InterruptedException e) {
+            } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 throw new SimulatedGnmiDeviceException("Shutdown interrupted", e);
             }

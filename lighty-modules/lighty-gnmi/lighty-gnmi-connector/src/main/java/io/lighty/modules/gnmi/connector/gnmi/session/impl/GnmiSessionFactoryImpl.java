@@ -28,9 +28,9 @@ public class GnmiSessionFactoryImpl implements GnmiSessionFactory {
      * @return {@link GnmiSession}
      */
     @Override
-    public GnmiSession createGnmiSession(final SessionConfiguration configuration, final ManagedChannel channel) {
+    public GnmiSession createGnmiSession(SessionConfiguration configuration, ManagedChannel channel) {
         if (configuration.getUsername() != null && configuration.getPassword() != null) {
-            final GnmiCallCredentials gnmiCallCredentials
+            var gnmiCallCredentials
                     = new GnmiCallCredentials(configuration.getUsername(), configuration.getPassword());
             return createGnmiSession(channel, gnmiCallCredentials);
         }
@@ -38,13 +38,13 @@ public class GnmiSessionFactoryImpl implements GnmiSessionFactory {
     }
 
     @VisibleForTesting
-    public GnmiSessionImpl createGnmiSession(final ManagedChannel channel) {
+    public GnmiSessionImpl createGnmiSession(ManagedChannel channel) {
         return new GnmiSessionImpl(channel);
     }
 
     @VisibleForTesting
-    public GnmiSessionImpl createGnmiSession(final ManagedChannel channel,
-        final GnmiCallCredentials gnmiCallCredentials) {
+    public GnmiSessionImpl createGnmiSession(ManagedChannel channel,
+            GnmiCallCredentials gnmiCallCredentials) {
 
         return new GnmiSessionImpl(channel, gnmiCallCredentials);
     }

@@ -8,6 +8,7 @@
 
 package io.lighty.core.controller.springboot.rest;
 
+import com.google.errorprone.annotations.Var;
 import io.lighty.core.controller.springboot.rest.dto.NetconfDeviceRequest;
 import io.lighty.core.controller.springboot.rest.dto.NetconfDeviceResponse;
 import io.lighty.core.controller.springboot.utils.Utils;
@@ -64,8 +65,8 @@ public class NetconfDeviceRestService {
     private static final Logger LOG = LoggerFactory.getLogger(NetconfDeviceRestService.class);
 
     private static final InstanceIdentifier<Topology> NETCONF_TOPOLOGY_IID = InstanceIdentifier
-        .create(NetworkTopology.class)
-        .child(Topology.class, new TopologyKey(new TopologyId("topology-netconf")));
+            .create(NetworkTopology.class)
+            .child(Topology.class, new TopologyKey(new TopologyId("topology-netconf")));
     private static final long TIMEOUT = 1;
     private static final InstanceIdentifier<Toaster> TOASTER_IID = InstanceIdentifier.create(Toaster.class);
 
@@ -81,8 +82,8 @@ public class NetconfDeviceRestService {
     public ResponseEntity getNetconfDevicesIds(Authentication authentication) throws InterruptedException,
             ExecutionException, TimeoutException {
         Utils.logUserData(LOG, authentication);
-        final Optional<Topology> netconfTopoOptional;
-        try (final ReadTransaction tx = dataBroker.newReadOnlyTransaction()) {
+        Optional<Topology> netconfTopoOptional;
+        try (ReadTransaction tx = dataBroker.newReadOnlyTransaction()) {
             netconfTopoOptional = tx.read(LogicalDatastoreType.OPERATIONAL, NETCONF_TOPOLOGY_IID)
                     .get(TIMEOUT, TimeUnit.SECONDS);
         }
@@ -93,23 +94,23 @@ public class NetconfDeviceRestService {
         return ResponseEntity.ok(Collections.emptyList());
     }
 
-    private List<NetconfDeviceResponse> getNetconfDevices(final Topology netconfTopology)
+    private List<NetconfDeviceResponse> getNetconfDevices(Topology netconfTopology)
             throws InterruptedException, TimeoutException, ExecutionException {
-        final List<NetconfDeviceResponse> devices = new ArrayList<>();
-        final Map<NodeKey, Node> netconfNodes =
+        List<NetconfDeviceResponse> devices = new ArrayList<>();
+        Map<NodeKey, Node> netconfNodes =
                 Optional.ofNullable(netconfTopology.getNode())
                         .orElse(Collections.emptyMap());
 
         for (Node node : netconfNodes.values()) {
-            NetconfDeviceResponse nodeResponse = NetconfDeviceResponse.from(node);
-            final Optional<MountPoint> netconfMountPoint = mountPointService.getMountPoint(NETCONF_TOPOLOGY_IID
+            @Var NetconfDeviceResponse nodeResponse = NetconfDeviceResponse.from(node);
+            Optional<MountPoint> netconfMountPoint = mountPointService.getMountPoint(NETCONF_TOPOLOGY_IID
                     .child(Node.class, new NodeKey(node.getNodeId())));
             if (netconfMountPoint.isPresent()) {
-                final Optional<DataBroker> netconfDataBroker = netconfMountPoint.get().getService(DataBroker.class);
+                Optional<DataBroker> netconfDataBroker = netconfMountPoint.get().getService(DataBroker.class);
 
                 if (netconfDataBroker.isPresent()) {
-                    final Optional<Toaster> toasterData;
-                    try (final ReadTransaction netconfReadTx = netconfDataBroker.get().newReadOnlyTransaction()) {
+                    Optional<Toaster> toasterData;
+                    try (ReadTransaction netconfReadTx = netconfDataBroker.get().newReadOnlyTransaction()) {
                         toasterData = netconfReadTx.read(LogicalDatastoreType.OPERATIONAL, TOASTER_IID)
                                 .get(TIMEOUT, TimeUnit.SECONDS);
                     }
@@ -126,27 +127,27 @@ public class NetconfDeviceRestService {
 
     @Secured({"ROLE_ADMIN"})
     @PutMapping(path = "/id/{netconfDeviceId}")
-    public ResponseEntity connectNetconfDevice(@PathVariable final String netconfDeviceId,
-                                               @RequestBody final NetconfDeviceRequest deviceInfo, Authentication authentication)
-        throws InterruptedException, ExecutionException, TimeoutException {
+    public ResponseEntity connectNetconfDevice(@PathVariable String netconfDeviceId,
+            @RequestBody NetconfDeviceRequest deviceInfo, Authentication authentication)
+            throws InterruptedException, ExecutionException, TimeoutException {
         Utils.logUserData(LOG, authentication);
-        final WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-        final NodeId nodeId = new NodeId(netconfDeviceId);
-        final InstanceIdentifier<Node> netconfDeviceIID = NETCONF_TOPOLOGY_IID
-            .child(Node.class, new NodeKey(nodeId));
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        NodeId nodeId = new NodeId(netconfDeviceId);
+        InstanceIdentifier<Node> netconfDeviceIID = NETCONF_TOPOLOGY_IID
+                .child(Node.class, new NodeKey(nodeId));
 
-        final Node netconfDeviceData = new NodeBuilder()
-            .setNodeId(nodeId)
-            .addAugmentation(new NetconfNodeBuilder()
-                .setHost(new Host(new IpAddress(new Ipv4Address(deviceInfo.getAddress()))))
-                .setPort(new PortNumber(Uint16.valueOf(deviceInfo.getPort())))
-                .setCredentials(new LoginPasswordBuilder()
-                        .setUsername(deviceInfo.getUsername())
-                        .setPassword(deviceInfo.getPassword())
+        Node netconfDeviceData = new NodeBuilder()
+                .setNodeId(nodeId)
+                .addAugmentation(new NetconfNodeBuilder()
+                        .setHost(new Host(new IpAddress(new Ipv4Address(deviceInfo.getAddress()))))
+                        .setPort(new PortNumber(Uint16.valueOf(deviceInfo.getPort())))
+                        .setCredentials(new LoginPasswordBuilder()
+                                .setUsername(deviceInfo.getUsername())
+                                .setPassword(deviceInfo.getPassword())
+                                .build())
+                        .setTcpOnly(false)
                         .build())
-                .setTcpOnly(false)
-                .build())
-            .build();
+                .build();
         tx.put(LogicalDatastoreType.CONFIGURATION, netconfDeviceIID, netconfDeviceData);
 
         tx.commit().get(TIMEOUT, TimeUnit.SECONDS);
@@ -156,13 +157,13 @@ public class NetconfDeviceRestService {
 
     @Secured({"ROLE_ADMIN"})
     @DeleteMapping(path = "/id/{netconfDeviceId}")
-    public ResponseEntity disconnectNetconfDevice(@PathVariable final String netconfDeviceId, Authentication authentication)
-        throws InterruptedException, ExecutionException, TimeoutException {
+    public ResponseEntity disconnectNetconfDevice(@PathVariable String netconfDeviceId, Authentication authentication)
+            throws InterruptedException, ExecutionException, TimeoutException {
         Utils.logUserData(LOG, authentication);
-        final WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-        final NodeId nodeId = new NodeId(netconfDeviceId);
-        final InstanceIdentifier<Node> netconfDeviceIID = NETCONF_TOPOLOGY_IID
-            .child(Node.class, new NodeKey(nodeId));
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        NodeId nodeId = new NodeId(netconfDeviceId);
+        InstanceIdentifier<Node> netconfDeviceIID = NETCONF_TOPOLOGY_IID
+                .child(Node.class, new NodeKey(nodeId));
 
         tx.delete(LogicalDatastoreType.CONFIGURATION, netconfDeviceIID);
 

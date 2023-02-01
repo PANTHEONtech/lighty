@@ -22,7 +22,7 @@ public class Http2LightyServerBuilder extends LightyServerBuilder {
 
     private final SecurityConfig securityConfig;
 
-    public Http2LightyServerBuilder(final InetSocketAddress inetSocketAddress, final SecurityConfig config) {
+    public Http2LightyServerBuilder(InetSocketAddress inetSocketAddress, SecurityConfig config) {
         super(inetSocketAddress);
         this.securityConfig = config;
     }
@@ -32,7 +32,7 @@ public class Http2LightyServerBuilder extends LightyServerBuilder {
         super.server = new Server();
         final var server = super.build();
         // HTTPS Configuration
-        final var httpsConfig = new HttpConfiguration();
+        var httpsConfig = new HttpConfiguration();
         httpsConfig.setSecureScheme(HttpScheme.HTTPS.asString());
         httpsConfig.setSecurePort(this.inetSocketAddress.getPort());
         httpsConfig.setSendXPoweredBy(true);
@@ -40,15 +40,15 @@ public class Http2LightyServerBuilder extends LightyServerBuilder {
         httpsConfig.addCustomizer(new SecureRequestCustomizer());
 
         // HTTP/2 Connection Factory
-        final var h2 = new HTTP2ServerConnectionFactory(httpsConfig);
-        final var alpn = new ALPNServerConnectionFactory();
+        var h2 = new HTTP2ServerConnectionFactory(httpsConfig);
+        var alpn = new ALPNServerConnectionFactory();
         alpn.setDefaultProtocol(h2.getProtocol());
 
         // SSL Connection Factory
-        final var ssl = securityConfig.getSslConnectionFactory(alpn.getProtocol());
+        var ssl = securityConfig.getSslConnectionFactory(alpn.getProtocol());
 
         // HTTP/2 Connector
-        final var sslConnector = new ServerConnector(server, ssl, alpn, h2, new HttpConnectionFactory(httpsConfig));
+        var sslConnector = new ServerConnector(server, ssl, alpn, h2, new HttpConnectionFactory(httpsConfig));
         sslConnector.setPort(this.inetSocketAddress.getPort());
         server.addConnector(sslConnector);
         return server;

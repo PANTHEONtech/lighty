@@ -33,6 +33,7 @@ public final class YangModuleUtils {
 
     /**
      * Get all Yang modules from classpath using ServiceLoader scanning.
+     *
      * @return Complete list of models found on classpath.
      */
     public static Set<YangModuleInfo> getAllModelsFromClasspath() {
@@ -46,14 +47,15 @@ public final class YangModuleUtils {
     }
 
     /**
-     * Filter top-level models from given entry set.
-     * Top level model is considered the model which is never used as dependency for other model.
+     * Filter top-level models from given entry set. Top level model is considered the model which is never used as
+     * dependency for other model.
+     *
      * @param models Unfiltered entry set of models.
      * @return Filtered set of top-level models only.
      */
-    public static Set<YangModuleInfo> filterTopLevelModels(final Set<YangModuleInfo> models) {
+    public static Set<YangModuleInfo> filterTopLevelModels(Set<YangModuleInfo> models) {
         Set<YangModuleInfo> result = new HashSet<>();
-        for (YangModuleInfo yangModuleInfo: models) {
+        for (YangModuleInfo yangModuleInfo : models) {
             if (!isDependentModel(models, yangModuleInfo)) {
                 result.add(yangModuleInfo);
             }
@@ -62,14 +64,15 @@ public final class YangModuleUtils {
     }
 
     /**
-     * Filter unique models from given entry set.
-     * This filter scans recursively dependencies and returns minimal set of models that are unique.
+     * Filter unique models from given entry set. This filter scans recursively dependencies and returns minimal set of
+     * models that are unique.
+     *
      * @param models Unfiltered entry set of models.
      * @return Filtered set of unique models only.
      */
-    public static Set<YangModuleInfo> filterUniqueModels(final Collection<YangModuleInfo> models) {
+    public static Set<YangModuleInfo> filterUniqueModels(Collection<YangModuleInfo> models) {
         Map<ModuleId, YangModuleInfo> result = new HashMap<>();
-        for (YangModuleInfo yangModuleInfo: models) {
+        for (YangModuleInfo yangModuleInfo : models) {
             result.put(ModuleId.from(yangModuleInfo), yangModuleInfo);
             for (YangModuleInfo yangModuleInfoDep : filterUniqueModels(yangModuleInfo.getImportedModules())) {
                 result.put(ModuleId.from(yangModuleInfoDep), yangModuleInfoDep);
@@ -85,10 +88,10 @@ public final class YangModuleUtils {
      * @return Collection top-level modules and all of imported yang module dependencies recursively.
      *         Empty collection is returned if no suitable modules are found.
      */
-    public static Set<YangModuleInfo> getModelsFromClasspath(final Set<ModuleId> filter) {
+    public static Set<YangModuleInfo> getModelsFromClasspath(Set<ModuleId> filter) {
         Map<ModuleId, YangModuleInfo> resolvedModules = new HashMap<>();
         ServiceLoader<YangModelBindingProvider> yangProviderLoader = ServiceLoader.load(YangModelBindingProvider.class);
-        for (ModuleId moduleId: filter) {
+        for (ModuleId moduleId : filter) {
             Set<YangModuleInfo> filteredSet = filterYangModelBindingProviders(moduleId, yangProviderLoader);
             for (YangModuleInfo yangModuleInfo : filteredSet) {
                 resolvedModules.put(ModuleId.from(yangModuleInfo), yangModuleInfo);
@@ -100,8 +103,8 @@ public final class YangModuleUtils {
     }
 
 
-    private static void addDependencies(final Map<ModuleId, YangModuleInfo> resolvedModules,
-            final Collection<YangModuleInfo> importedModules) {
+    private static void addDependencies(Map<ModuleId, YangModuleInfo> resolvedModules,
+            Collection<YangModuleInfo> importedModules) {
         for (YangModuleInfo yangModuleInfo : importedModules) {
             resolvedModules.put(ModuleId.from(yangModuleInfo), yangModuleInfo);
             LOG.info(ADDING_MODULE_INTO_KNOWN_MODULES, yangModuleInfo);
@@ -109,8 +112,8 @@ public final class YangModuleUtils {
         }
     }
 
-    private static Set<YangModuleInfo> filterYangModelBindingProviders(final ModuleId moduleId,
-            final ServiceLoader<YangModelBindingProvider> yangProviderLoader) {
+    private static Set<YangModuleInfo> filterYangModelBindingProviders(ModuleId moduleId,
+            ServiceLoader<YangModelBindingProvider> yangProviderLoader) {
         Set<YangModuleInfo> filteredSet = new HashSet<>();
         for (YangModelBindingProvider yangModelBindingProvider : yangProviderLoader) {
             if (moduleId.getQName().equals(yangModelBindingProvider.getModuleInfo().getName())) {
@@ -120,8 +123,8 @@ public final class YangModuleUtils {
         return filteredSet;
     }
 
-    private static boolean isDependentModel(final Set<YangModuleInfo> models, final YangModuleInfo yangModuleInfo) {
-        for (YangModuleInfo moduleInfo: models) {
+    private static boolean isDependentModel(Set<YangModuleInfo> models, YangModuleInfo yangModuleInfo) {
+        for (YangModuleInfo moduleInfo : models) {
             if (hasDependency(moduleInfo, yangModuleInfo)) {
                 return true;
             }
@@ -129,8 +132,8 @@ public final class YangModuleUtils {
         return false;
     }
 
-    private static boolean hasDependency(final YangModuleInfo superiorModel, final YangModuleInfo dependency) {
-        for (YangModuleInfo moduleInfo:  superiorModel.getImportedModules()) {
+    private static boolean hasDependency(YangModuleInfo superiorModel, YangModuleInfo dependency) {
+        for (YangModuleInfo moduleInfo : superiorModel.getImportedModules()) {
             if (moduleInfo.getName().equals(dependency.getName())) {
                 return true;
             }
@@ -142,13 +145,14 @@ public final class YangModuleUtils {
 
     /**
      * Generate JSON configuration snippet containing list of models from set of {@link YangModuleInfo}.
+     *
      * @param models input set of models.
      * @return JSON configuration snippet as {@link ArrayNode}.
      */
-    public static ArrayNode generateJSONModelSetConfiguration(final Set<YangModuleInfo> models) {
-        ObjectMapper mapper = new ObjectMapper();
+    public static ArrayNode generateJSONModelSetConfiguration(Set<YangModuleInfo> models) {
+        var mapper = new ObjectMapper();
         ArrayNode arrayNode = mapper.createArrayNode();
-        for (YangModuleInfo yangModuleInfo: models) {
+        for (YangModuleInfo yangModuleInfo : models) {
             ObjectNode modelObject = mapper.createObjectNode();
             ModuleId moduleId = ModuleId.from(yangModuleInfo);
             modelObject.put("nameSpace", moduleId.getNameSpace().toString());

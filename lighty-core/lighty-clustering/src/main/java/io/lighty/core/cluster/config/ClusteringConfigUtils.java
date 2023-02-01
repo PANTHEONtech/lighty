@@ -25,7 +25,7 @@ public final class ClusteringConfigUtils {
      * @param memberRoles - roles (members) to which the module shards should be replicated to
      * @return generated content
      */
-    public static String generateModuleShardsForMembers(final List<String> memberRoles) {
+    public static String generateModuleShardsForMembers(List<String> memberRoles) {
         return String.format("module-shards = [%n%s]", String.join(",\n",
                 new String[]{generateShard("default", memberRoles),
                         generateShard("topology", memberRoles),
@@ -33,12 +33,12 @@ public final class ClusteringConfigUtils {
                 }));
     }
 
-    public static boolean isKubernetesDeployment(final Config actorSystemConfig) {
+    public static boolean isKubernetesDeployment(Config actorSystemConfig) {
         return actorSystemConfig.hasPath(AKKA_DISCOVERY_METHOD_PATH)
                 && actorSystemConfig.getString(AKKA_DISCOVERY_METHOD_PATH).equalsIgnoreCase(K8S_DISCOVERY_API_NAME);
     }
 
-    private static String generateShard(final String name, final List<String> replicas) {
+    private static String generateShard(String name, List<String> replicas) {
         return "    {"
                 + "        name = \"" + name + "\"\n"
                 + "        shards = [\n"

@@ -20,7 +20,7 @@ public final class SessionManagerFactoryImpl implements SessionManagerFactory {
 
     private final GnmiSessionFactory gnmiSessionFactory;
 
-    public SessionManagerFactoryImpl(final GnmiSessionFactory gnmiSessionFactory) {
+    public SessionManagerFactoryImpl(GnmiSessionFactory gnmiSessionFactory) {
 
         this.gnmiSessionFactory = gnmiSessionFactory;
     }
@@ -31,7 +31,7 @@ public final class SessionManagerFactoryImpl implements SessionManagerFactory {
      * @return instance of {@link SessionManager}
      */
     @Override
-    public SessionManager createSessionManager(final Security security) {
+    public SessionManager createSessionManager(Security security) {
         return new SessionManagerImpl(security, gnmiSessionFactory);
     }
 

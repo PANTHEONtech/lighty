@@ -8,6 +8,7 @@
 
 package io.lighty.modules.gnmi.commons.util;
 
+import com.google.errorprone.annotations.Var;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -27,41 +28,41 @@ public final class JsonUtils {
         // Utility class
     }
 
-    public static String wrapJsonWithArray(final String jsonString, final String wrapper, final Gson gson,
-            final NodeIdentifierWithPredicates predicates) {
-        final JsonObject innerJson = JsonParser.parseString(jsonString).getAsJsonObject();
-        for (final Entry<QName, Object> key : predicates.entrySet()) {
+    public static String wrapJsonWithArray(String jsonString, String wrapper, Gson gson,
+            NodeIdentifierWithPredicates predicates) {
+        JsonObject innerJson = JsonParser.parseString(jsonString).getAsJsonObject();
+        for (Entry<QName, Object> key : predicates.entrySet()) {
             innerJson.add(key.getKey().getLocalName(), gson.toJsonTree(key.getValue()));
         }
 
-        final JsonObject result = new JsonObject();
-        final JsonArray array = new JsonArray();
+        var result = new JsonObject();
+        var array = new JsonArray();
         array.add(innerJson);
         result.add(wrapper, array);
         return gson.toJson(result);
     }
 
-    public static String wrapJsonWithObject(final String jsonString, final String wrapper, final Gson gson) {
-        final JsonElement innerJson = JsonParser.parseString(jsonString);
-        final JsonObject result = new JsonObject();
+    public static String wrapJsonWithObject(String jsonString, String wrapper, Gson gson) {
+        JsonElement innerJson = JsonParser.parseString(jsonString);
+        var result = new JsonObject();
         result.add(wrapper, innerJson);
         return gson.toJson(result);
     }
 
-    public static String addModuleNamePrefixToJson(final String jsonString, final String moduleName, final Gson gson) {
-        final JsonObject outerJson = JsonParser.parseString(jsonString).getAsJsonObject();
-        final Set<Map.Entry<String, JsonElement>> outerMap = outerJson.entrySet();
+    public static String addModuleNamePrefixToJson(String jsonString, String moduleName, Gson gson) {
+        JsonObject outerJson = JsonParser.parseString(jsonString).getAsJsonObject();
+        Set<Map.Entry<String, JsonElement>> outerMap = outerJson.entrySet();
 
         if (outerMap.isEmpty()) {
             return jsonString;
         }
         // Append moduleName to each outer json
-        final Map<String, JsonElement> resultMapWithPrefix = new HashMap<>();
+        Map<String, JsonElement> resultMapWithPrefix = new HashMap<>();
         for (Map.Entry<String, JsonElement> elem : outerMap) {
-            final JsonElement jsonElement = elem.getValue();
+            JsonElement jsonElement = elem.getValue();
             // apply moduleName only to top level objects
             if (moduleName != null && jsonElement.isJsonObject()) {
-                String topLevelModuleName = elem.getKey();
+                @Var String topLevelModuleName = elem.getKey();
                 // Apply moduleName, if it is not already applied
                 if (!elem.getKey().contains(":")) {
                     topLevelModuleName = String.format("%s:%s", moduleName, elem.getKey());
@@ -75,20 +76,20 @@ public final class JsonUtils {
         return gson.toJson(resultMapWithPrefix);
     }
 
-    public static String wrapPrimitive(final String identifier, final String toWrap, final Gson gson) {
-        final JsonObject result = new JsonObject();
+    public static String wrapPrimitive(String identifier, String toWrap, Gson gson) {
+        var result = new JsonObject();
         result.add(identifier, new JsonPrimitive(toWrap));
         return gson.toJson(result);
     }
 
-    public static String wrapPrimitive(final String identifier, final Boolean toWrap, final Gson gson) {
-        final JsonObject result = new JsonObject();
+    public static String wrapPrimitive(String identifier, Boolean toWrap, Gson gson) {
+        var result = new JsonObject();
         result.add(identifier, new JsonPrimitive(toWrap));
         return gson.toJson(result);
     }
 
-    public static String wrapPrimitive(final String identifier, final Number toWrap, final Gson gson) {
-        final JsonObject result = new JsonObject();
+    public static String wrapPrimitive(String identifier, Number toWrap, Gson gson) {
+        var result = new JsonObject();
         result.add(identifier, new JsonPrimitive(toWrap));
         return gson.toJson(result);
     }

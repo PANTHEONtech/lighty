@@ -8,6 +8,7 @@
 
 package io.lighty.gnmi.southbound.mountpoint.codecs;
 
+import com.google.errorprone.annotations.Var;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -80,14 +81,14 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
         return Optional.empty();
     }
 
-    private NormalizedNode updateToNormalizedNode(final Update update, final YangInstanceIdentifier identifier)
-        throws GnmiCodecException {
+    private NormalizedNode updateToNormalizedNode(Update update, YangInstanceIdentifier identifier)
+            throws GnmiCodecException {
         switch (update.getVal().getValueCase()) {
             case JSON_VAL:
             case JSON_IETF_VAL:
-                String responseJson = update.getVal().getValueCase() == Gnmi.TypedValue.ValueCase.JSON_VAL
-                    ? update.getVal().getJsonVal().toStringUtf8()
-                    : update.getVal().getJsonIetfVal().toStringUtf8();
+                @Var String responseJson = update.getVal().getValueCase() == Gnmi.TypedValue.ValueCase.JSON_VAL
+                        ? update.getVal().getJsonVal().toStringUtf8()
+                        : update.getVal().getJsonIetfVal().toStringUtf8();
 
                 /*
                  Check if response is rooted deeper than requested, if yes, wrap it so it is rooted at
@@ -117,32 +118,32 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
                 */
             case STRING_VAL:
                 return resolveJsonResponse(identifier, JsonUtils.wrapPrimitive(
-                    identifier.getLastPathArgument().getNodeType().getLocalName(),
-                    update.getVal().getStringVal(), gson));
+                        identifier.getLastPathArgument().getNodeType().getLocalName(),
+                        update.getVal().getStringVal(), gson));
             case UINT_VAL:
                 return resolveJsonResponse(identifier, JsonUtils.wrapPrimitive(
-                    identifier.getLastPathArgument().getNodeType().getLocalName(),
-                    update.getVal().getUintVal(), gson));
+                        identifier.getLastPathArgument().getNodeType().getLocalName(),
+                        update.getVal().getUintVal(), gson));
             case INT_VAL:
                 return resolveJsonResponse(identifier, JsonUtils.wrapPrimitive(
-                    identifier.getLastPathArgument().getNodeType().getLocalName(),
-                    update.getVal().getIntVal(), gson));
+                        identifier.getLastPathArgument().getNodeType().getLocalName(),
+                        update.getVal().getIntVal(), gson));
             case FLOAT_VAL:
                 return resolveJsonResponse(identifier, JsonUtils.wrapPrimitive(
-                    identifier.getLastPathArgument().getNodeType().getLocalName(),
-                    update.getVal().getFloatVal(), gson));
+                        identifier.getLastPathArgument().getNodeType().getLocalName(),
+                        update.getVal().getFloatVal(), gson));
             case BOOL_VAL:
                 return resolveJsonResponse(identifier, JsonUtils.wrapPrimitive(
-                    identifier.getLastPathArgument().getNodeType().getLocalName(),
-                    update.getVal().getBoolVal(), gson));
+                        identifier.getLastPathArgument().getNodeType().getLocalName(),
+                        update.getVal().getBoolVal(), gson));
             default:
                 throw new GnmiCodecException(String.format("Unsupported response type %s of response %s",
-                    update.getVal().getValueCase(), update));
+                        update.getVal().getValueCase(), update));
         }
     }
 
     private static boolean isResponseJsonDeeperThanRequested(final YangInstanceIdentifier identifier,
-                                                             final String responseJson) {
+            final String responseJson) {
         final String lastPathArgName = identifier.getLastPathArgument().getNodeType().getLocalName();
         final JsonElement jsonObject = JsonParser.parseString(responseJson);
         if (!jsonObject.isJsonObject()) {
@@ -166,7 +167,7 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
     private NormalizedNode resolveJsonResponse(YangInstanceIdentifier identifier, String inputJson)
             throws GnmiCodecException {
         try {
-            return DataConverter.nodeFromJsonString(identifier,inputJson,
+            return DataConverter.nodeFromJsonString(identifier, inputJson,
                     schemaContextProvider.getSchemaContext());
         } catch (Exception e) {
             throw new GnmiCodecException(String.format("Failed to deserialize json response %s",

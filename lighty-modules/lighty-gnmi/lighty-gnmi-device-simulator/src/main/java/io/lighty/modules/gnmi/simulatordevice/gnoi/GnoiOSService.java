@@ -15,14 +15,14 @@ import io.grpc.stub.StreamObserver;
 public class GnoiOSService extends OSGrpc.OSImplBase {
 
     @Override
-    public StreamObserver<Os.InstallRequest> install(final StreamObserver<Os.InstallResponse> responseObserver) {
+    public StreamObserver<Os.InstallRequest> install(StreamObserver<Os.InstallResponse> responseObserver) {
         return new StreamObserver<>() {
             Os.InstallRequest transferRequest = null;
             Os.InstallRequest content = null;
             Os.InstallRequest transferEnd = null;
 
             @Override
-            public void onNext(final Os.InstallRequest value) {
+            public void onNext(Os.InstallRequest value) {
                 if (transferRequest == null) {
                     if (!value.hasTransferRequest()) {
                         responseObserver.onError(new IllegalArgumentException("TransferRequest needs to be the first"
@@ -56,7 +56,7 @@ public class GnoiOSService extends OSGrpc.OSImplBase {
             }
 
             @Override
-            public void onError(final Throwable throwable) {
+            public void onError(Throwable throwable) {
                 responseObserver.onError(throwable);
             }
 

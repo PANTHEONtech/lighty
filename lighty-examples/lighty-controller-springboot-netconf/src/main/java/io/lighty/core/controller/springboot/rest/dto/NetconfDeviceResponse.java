@@ -22,11 +22,25 @@ public class NetconfDeviceResponse {
 
     @JsonCreator
     private NetconfDeviceResponse(@JsonProperty("nodeId") String nodeId,
-                                  @JsonProperty("connectionStatus") ConnectionOper.ConnectionStatus connectionStatus,
-                                  @JsonProperty("darknessFactor") Long darknessFactor) {
+            @JsonProperty("connectionStatus") ConnectionOper.ConnectionStatus connectionStatus,
+            @JsonProperty("darknessFactor") Long darknessFactor) {
         this.nodeId = nodeId;
         this.connectionStatus = connectionStatus;
         this.darknessFactor = darknessFactor;
+    }
+
+    public static NetconfDeviceResponse from(Node node, Long darknessFactor) {
+        NetconfNode netconfNode = node.augmentation(NetconfNode.class);
+        ConnectionOper.ConnectionStatus connectionStatus =
+                netconfNode != null ? netconfNode.getConnectionStatus() : null;
+        return new NetconfDeviceResponse(node.getNodeId().getValue(), connectionStatus, darknessFactor);
+    }
+
+    public static NetconfDeviceResponse from(Node node) {
+        NetconfNode netconfNode = node.augmentation(NetconfNode.class);
+        ConnectionOper.ConnectionStatus connectionStatus =
+                netconfNode != null ? netconfNode.getConnectionStatus() : null;
+        return new NetconfDeviceResponse(node.getNodeId().getValue(), connectionStatus, (long) 0);
     }
 
     public String getNodeId() {
@@ -39,18 +53,6 @@ public class NetconfDeviceResponse {
 
     public Long getDarknessFactor() {
         return darknessFactor;
-    }
-
-    public static NetconfDeviceResponse from(final Node node, Long darknessFactor) {
-        final NetconfNode netconfNode = node.augmentation(NetconfNode.class);
-        final ConnectionOper.ConnectionStatus connectionStatus = netconfNode != null ? netconfNode.getConnectionStatus() : null;
-        return new NetconfDeviceResponse(node.getNodeId().getValue(), connectionStatus, darknessFactor);
-    }
-
-    public static NetconfDeviceResponse from(final Node node) {
-        final NetconfNode netconfNode = node.augmentation(NetconfNode.class);
-        final ConnectionOper.ConnectionStatus connectionStatus = netconfNode != null ? netconfNode.getConnectionStatus() : null;
-        return new NetconfDeviceResponse(node.getNodeId().getValue(), connectionStatus, new Long(0));
     }
 
 }

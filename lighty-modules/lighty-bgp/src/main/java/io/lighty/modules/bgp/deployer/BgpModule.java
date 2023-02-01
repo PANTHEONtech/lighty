@@ -8,6 +8,7 @@
 
 package io.lighty.modules.bgp.deployer;
 
+import com.google.errorprone.annotations.Var;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.modules.bgp.config.InitialBgpConfigLoader;
@@ -67,20 +68,20 @@ public class BgpModule extends AbstractLightyModule {
     private final ConnectedGraphServer graphServer;
     private final LinkstateGraphProvider linkstateGraphProvider;
 
-    public BgpModule(final EffectiveModelContext modelContext, final DataBroker dataBroker,
-            final DOMDataBroker domDataBroker, final BindingCodecTree codecTree, final RpcProviderService rpcProvider,
-            final ClusterSingletonServiceProvider cssProvider, final BindingNormalizedNodeSerializer serializer,
-            final EventLoopGroup bossGroup, final EventLoopGroup workerGroup) {
+    public BgpModule(EffectiveModelContext modelContext, DataBroker dataBroker,
+            DOMDataBroker domDataBroker, BindingCodecTree codecTree, RpcProviderService rpcProvider,
+            ClusterSingletonServiceProvider cssProvider, BindingNormalizedNodeSerializer serializer,
+            EventLoopGroup bossGroup, EventLoopGroup workerGroup) {
         initialConfigLoader = new InitialBgpConfigLoader(domDataBroker, modelContext);
         peerRegistry = new StrictBGPPeerRegistry();
         bgpDispatcher = new BGPDispatcherImpl(createBgpExtensions(), bossGroup, workerGroup, peerRegistry);
         simpleStatementRegistry = createStatementRegistry(dataBroker);
-        final DefaultBGPRibRoutingPolicyFactory routingPolicyFactory = new DefaultBGPRibRoutingPolicyFactory(
+        var routingPolicyFactory = new DefaultBGPRibRoutingPolicyFactory(
                 dataBroker, simpleStatementRegistry);
-        final ConstantCodecsRegistry codecsRegistry = new ConstantCodecsRegistry(codecTree);
-        final BGPTableTypeRegistryConsumer tableTypeRegistryConsumer = createBgpTableTypes();
-        final BGPStateCollector stateCollector = new BGPStateCollector();
-        final RIBExtensionConsumerContext ribExtensionConsumerContext = createRibExtensions(serializer);
+        var codecsRegistry = new ConstantCodecsRegistry(codecTree);
+        BGPTableTypeRegistryConsumer tableTypeRegistryConsumer = createBgpTableTypes();
+        var stateCollector = new BGPStateCollector();
+        RIBExtensionConsumerContext ribExtensionConsumerContext = createRibExtensions(serializer);
         stateProvider = new StateProviderImpl(dataBroker, 5, tableTypeRegistryConsumer, stateCollector,
                 DEFAULT_BGP_NETWORK_INSTANCE_NAME);
         bgpDeployer = new DefaultBgpDeployer(DEFAULT_BGP_NETWORK_INSTANCE_NAME, cssProvider, rpcProvider,
@@ -95,16 +96,16 @@ public class BgpModule extends AbstractLightyModule {
         linkstateGraphProvider = new LinkstateGraphProvider(bgpTopologyDeployer, graphServer);
     }
 
-    public BgpModule(final EffectiveModelContext modelContext, final DataBroker dataBroker,
-            final DOMDataBroker domDataBroker, final BindingCodecTreeFactory codecTreeFactory,
-            final BindingRuntimeContext runtimeContext, final RpcProviderService rpcProvider,
-            final ClusterSingletonServiceProvider cssProvider, final BindingNormalizedNodeSerializer serializer,
-            final EventLoopGroup bossGroup, final EventLoopGroup workerGroup) {
+    public BgpModule(EffectiveModelContext modelContext, DataBroker dataBroker,
+            DOMDataBroker domDataBroker, BindingCodecTreeFactory codecTreeFactory,
+            BindingRuntimeContext runtimeContext, RpcProviderService rpcProvider,
+            ClusterSingletonServiceProvider cssProvider, BindingNormalizedNodeSerializer serializer,
+            EventLoopGroup bossGroup, EventLoopGroup workerGroup) {
         this(modelContext, dataBroker, domDataBroker, codecTreeFactory.create(runtimeContext),
                 rpcProvider, cssProvider, serializer, bossGroup, workerGroup);
     }
 
-    public BgpModule(final LightyServices lightyServices) {
+    public BgpModule(LightyServices lightyServices) {
         this(lightyServices.getEffectiveModelContextProvider().getEffectiveModelContext(),
                 lightyServices.getBindingDataBroker(), lightyServices.getClusteredDOMDataBroker(),
                 lightyServices.getBindingCodecTreeFactory(),
@@ -133,7 +134,7 @@ public class BgpModule extends AbstractLightyModule {
     @Override
     @SuppressWarnings({"checkstyle:illegalCatch"})
     protected boolean stopProcedure() {
-        boolean closeSuccess = true;
+        @Var boolean closeSuccess = true;
         try {
             simpleStatementRegistry.close();
         } catch (Exception e) {
@@ -174,13 +175,12 @@ public class BgpModule extends AbstractLightyModule {
             closeSuccess = false;
         }
 
-
         return closeSuccess;
     }
 
     @SuppressWarnings({"checkstyle:illegalCatch"})
     private boolean closeTopologies() {
-        boolean closeSuccess = true;
+        @Var boolean closeSuccess = true;
         try {
             ipv4TopologyProvider.close();
         } catch (Exception e) {
@@ -214,7 +214,7 @@ public class BgpModule extends AbstractLightyModule {
         return closeSuccess;
     }
 
-    private static RIBExtensionConsumerContext createRibExtensions(final BindingNormalizedNodeSerializer serializer) {
+    private static RIBExtensionConsumerContext createRibExtensions(BindingNormalizedNodeSerializer serializer) {
         return new DefaultRIBExtensionConsumerContext(serializer, List.of(
                 new org.opendaylight.protocol.bgp.inet.RIBActivator(),
                 new org.opendaylight.protocol.bgp.route.targetcontrain.impl.activators.RIBActivator(),
@@ -236,7 +236,7 @@ public class BgpModule extends AbstractLightyModule {
                 new org.opendaylight.protocol.bgp.linkstate.impl.TableTypeActivator()));
     }
 
-    private static SimpleStatementRegistry createStatementRegistry(final DataBroker dataBroker) {
+    private static SimpleStatementRegistry createStatementRegistry(DataBroker dataBroker) {
         return new SimpleStatementRegistry(
                 List.of(new StatementActivator(dataBroker),
                         new org.opendaylight.protocol.bgp.route.targetcontrain.impl.activators.StatementActivator()));

@@ -19,7 +19,7 @@ public final class CommunityRestConfBuilder {
     private LightyServerBuilder lightyServerBuilder = null;
 
 
-    private CommunityRestConfBuilder(final RestConfConfiguration configuration) {
+    private CommunityRestConfBuilder(RestConfConfiguration configuration) {
         this.restconfConfiguration = configuration;
     }
 
@@ -28,7 +28,7 @@ public final class CommunityRestConfBuilder {
      * @param configuration input RestConf configuration.
      * @return instance of {@link CommunityRestConfBuilder}.
      */
-    public static CommunityRestConfBuilder from(final RestConfConfiguration configuration) {
+    public static CommunityRestConfBuilder from(RestConfConfiguration configuration) {
         return new CommunityRestConfBuilder(configuration);
     }
 
@@ -39,7 +39,7 @@ public final class CommunityRestConfBuilder {
      * @param serverBuilder input server builder.
      * @return instance of {@link CommunityRestConfBuilder}.
      */
-    public CommunityRestConfBuilder withLightyServer(final LightyServerBuilder serverBuilder) {
+    public CommunityRestConfBuilder withLightyServer(LightyServerBuilder serverBuilder) {
         this.lightyServerBuilder = serverBuilder;
         return this;
     }
@@ -50,11 +50,12 @@ public final class CommunityRestConfBuilder {
      */
     public CommunityRestConf build() {
         return new CommunityRestConf(this.restconfConfiguration.getDomDataBroker(),
-            this.restconfConfiguration.getDomRpcService(),
-            this.restconfConfiguration.getDomActionService(), this.restconfConfiguration.getDomNotificationService(),
-            this.restconfConfiguration.getDomMountPointService(),
-            this.restconfConfiguration.getDomSchemaService(),
-            this.restconfConfiguration.getInetAddress(), this.restconfConfiguration.getHttpPort(),
-            this.restconfConfiguration.getRestconfServletContextPath(), this.lightyServerBuilder);
+                this.restconfConfiguration.getDomRpcService(),
+                this.restconfConfiguration.getDomActionService(),
+                this.restconfConfiguration.getDomNotificationService(),
+                this.restconfConfiguration.getDomMountPointService(),
+                this.restconfConfiguration.getDomSchemaService(),
+                this.restconfConfiguration.getInetAddress(), this.restconfConfiguration.getHttpPort(),
+                this.restconfConfiguration.getRestconfServletContextPath(), this.lightyServerBuilder);
     }
 }

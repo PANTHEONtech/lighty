@@ -32,13 +32,13 @@ public class SessionConfiguration {
         this.usePlainText = false;
     }
 
-    public SessionConfiguration(final InetSocketAddress address, final boolean usePlainText) {
+    public SessionConfiguration(InetSocketAddress address, boolean usePlainText) {
         this.address = address;
         this.usePlainText = usePlainText;
     }
 
-    public SessionConfiguration(final InetSocketAddress address, final boolean usePlainText, final String username,
-                                final String password) {
+    public SessionConfiguration(InetSocketAddress address, boolean usePlainText, String username,
+                                String password) {
         this.address = address;
         this.usePlainText = usePlainText;
         this.username = username;
@@ -50,11 +50,11 @@ public class SessionConfiguration {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof SessionConfiguration)) {
             return false;
         }
 
-        SessionConfiguration that = (SessionConfiguration) obj;
+        var that = (SessionConfiguration) obj;
 
         if (usePlainText != that.usePlainText) {
             return false;

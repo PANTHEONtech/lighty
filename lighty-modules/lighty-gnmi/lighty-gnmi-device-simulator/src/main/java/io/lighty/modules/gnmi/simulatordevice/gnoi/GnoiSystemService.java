@@ -23,14 +23,14 @@ public class GnoiSystemService extends SystemGrpc.SystemImplBase {
     private static final Logger LOG = LoggerFactory.getLogger(GnoiSystemService.class);
 
     @Override
-    public void time(final SystemOuterClass.TimeRequest request,
-                     final StreamObserver<SystemOuterClass.TimeResponse> responseObserver) {
+    public void time(SystemOuterClass.TimeRequest request,
+            StreamObserver<SystemOuterClass.TimeResponse> responseObserver) {
         LOG.info("Received time rpc: {}", request);
 
-        final long millis = System.currentTimeMillis();
-        final SystemOuterClass.TimeResponse response = SystemOuterClass.TimeResponse.newBuilder()
+        long millis = System.currentTimeMillis();
+        var response = SystemOuterClass.TimeResponse.newBuilder()
                 .setTime(millis).build();
-        final LocalDate date =
+        LocalDate date =
                 Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate();
 
         LOG.info("Current time in millis: {}", date.format(DateTimeFormatter.BASIC_ISO_DATE));
@@ -39,11 +39,11 @@ public class GnoiSystemService extends SystemGrpc.SystemImplBase {
     }
 
     @Override
-    public void reboot(final SystemOuterClass.RebootRequest request,
-                       final StreamObserver<SystemOuterClass.RebootResponse> responseObserver) {
+    public void reboot(SystemOuterClass.RebootRequest request,
+            StreamObserver<SystemOuterClass.RebootResponse> responseObserver) {
         LOG.info("Received reboot rpc: {}", request);
 
-        final SystemOuterClass.RebootResponse response = SystemOuterClass.RebootResponse.getDefaultInstance();
+        SystemOuterClass.RebootResponse response = SystemOuterClass.RebootResponse.getDefaultInstance();
         LOG.info("Reboot response: {}", response);
 
         responseObserver.onNext(response);

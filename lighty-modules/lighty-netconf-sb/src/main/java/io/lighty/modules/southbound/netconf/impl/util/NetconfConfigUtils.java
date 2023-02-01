@@ -82,9 +82,9 @@ public final class NetconfConfigUtils {
      *                                tree nodes or cannot bind JSON tree node to type.
      */
     public static NetconfConfiguration createNetconfConfiguration(
-            final InputStream jsonConfigInputStream) throws ConfigurationException {
-        final ObjectMapper mapper = new ObjectMapper();
-        final JsonNode configNode;
+            InputStream jsonConfigInputStream) throws ConfigurationException {
+        var mapper = new ObjectMapper();
+        JsonNode configNode;
         try {
             configNode = mapper.readTree(jsonConfigInputStream);
         } catch (IOException e) {
@@ -96,9 +96,9 @@ public final class NetconfConfigUtils {
                     NETCONF_CONFIG_ROOT_ELEMENT_NAME);
             return createDefaultNetconfConfiguration();
         }
-        final JsonNode netconfNode = configNode.path(NETCONF_CONFIG_ROOT_ELEMENT_NAME);
+        JsonNode netconfNode = configNode.path(NETCONF_CONFIG_ROOT_ELEMENT_NAME);
 
-        final NetconfConfiguration netconfConfiguration;
+        NetconfConfiguration netconfConfiguration;
         try {
             netconfConfiguration = mapper.treeToValue(netconfNode, NetconfConfiguration.class);
         } catch (JsonProcessingException e) {
@@ -126,8 +126,8 @@ public final class NetconfConfigUtils {
      * @throws ConfigurationException in case provided configuration is not valid.
      */
     public static NetconfConfiguration injectServicesToConfig(
-            final NetconfConfiguration configuration) throws ConfigurationException {
-        final AAAEncryptionService aaa = NetconfConfigUtils.createAAAEncryptionService(
+            NetconfConfiguration configuration) throws ConfigurationException {
+        AAAEncryptionService aaa = NetconfConfigUtils.createAAAEncryptionService(
                 getDefaultAaaEncryptServiceConfig());
         configuration.setAaaService(aaa);
         return configuration;
@@ -142,7 +142,7 @@ public final class NetconfConfigUtils {
      * @throws ConfigurationException in case provided configuration is not valid.
      */
     public static NetconfConfiguration injectServicesToTopologyConfig(
-            final NetconfConfiguration configuration, final LightyServices lightyServices) throws
+            NetconfConfiguration configuration, LightyServices lightyServices) throws
             ConfigurationException {
         injectServicesToConfig(configuration);
         injectClient(lightyServices, configuration);
@@ -155,9 +155,9 @@ public final class NetconfConfigUtils {
      * @return default configuration.
      */
     public static AaaEncryptServiceConfig getDefaultAaaEncryptServiceConfig() {
-        final byte[] bytes = new byte[16];
+        byte[] bytes = new byte[16];
         RANDOM.nextBytes(bytes);
-        final String salt = new String(Base64.getEncoder().encode(bytes), StandardCharsets.UTF_8);
+        var salt = new String(Base64.getEncoder().encode(bytes), StandardCharsets.UTF_8);
         return new AaaEncryptServiceConfigBuilder().setEncryptKey("V1S1ED4OMeEh")
                 .setPasswordLength(12).setEncryptSalt(salt)
                 .setEncryptMethod("PBKDF2WithHmacSHA1").setEncryptType("AES")
@@ -174,14 +174,14 @@ public final class NetconfConfigUtils {
      */
     public static AAAEncryptionService createAAAEncryptionService(AaaEncryptServiceConfig encrySrvConfig) throws
             ConfigurationException {
-        final byte[] encryptionKeySalt = Base64.getDecoder().decode(encrySrvConfig.getEncryptSalt());
+        byte[] encryptionKeySalt = Base64.getDecoder().decode(encrySrvConfig.getEncryptSalt());
         try {
-            final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(encrySrvConfig.getEncryptMethod());
-            final KeySpec keySpec = new PBEKeySpec(encrySrvConfig.getEncryptKey().toCharArray(), encryptionKeySalt,
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(encrySrvConfig.getEncryptMethod());
+            KeySpec keySpec = new PBEKeySpec(encrySrvConfig.getEncryptKey().toCharArray(), encryptionKeySalt,
                     encrySrvConfig.getEncryptIterationCount(), encrySrvConfig.getEncryptKeyLength());
             SecretKey key = new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(),
                     encrySrvConfig.getEncryptType());
-            IvParameterSpec ivParameterSpec = new IvParameterSpec(encryptionKeySalt);
+            var ivParameterSpec = new IvParameterSpec(encryptionKeySalt);
 
             Cipher encryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
             encryptCipher.init(Cipher.ENCRYPT_MODE, key, ivParameterSpec);
@@ -192,7 +192,7 @@ public final class NetconfConfigUtils {
             return new AAAEncryptionServiceImpl(encryptCipher, decryptCipher);
 
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException
-                | InvalidAlgorithmParameterException | InvalidKeyException e) {
+                 | InvalidAlgorithmParameterException | InvalidKeyException e) {
             throw new ConfigurationException(e);
         }
     }
@@ -204,9 +204,9 @@ public final class NetconfConfigUtils {
      * @param configuration Netconf southbound configuration where should be services injected.
      * @return Netconf southbound configuration with injected services from Lighty core.
      */
-    private static NetconfConfiguration injectClient(final LightyServices services,
-                                                     final NetconfConfiguration configuration) {
-        final NetconfClientDispatcher client =
+    private static NetconfConfiguration injectClient(LightyServices services,
+            NetconfConfiguration configuration) {
+        NetconfClientDispatcher client =
                 new NetconfClientDispatcherImpl(services.getBossGroup(), services.getWorkerGroup(),
                         services.getTimer());
         configuration.setClientDispatcher(client);

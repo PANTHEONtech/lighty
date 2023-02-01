@@ -26,9 +26,9 @@ public class GnoiSonicService extends SonicServiceGrpc.SonicServiceImplBase {
             SonicGnoi.TechsupportRequest request,
             StreamObserver<SonicGnoi.TechsupportResponse> responseObserver) {
         LOG.info("Received showTechsupport rpc request {}", request);
-        final SonicGnoi.TechsupportResponse response = SonicGnoi.TechsupportResponse.newBuilder().setOutput(
-                SonicGnoi.TechsupportResponse.Output.newBuilder()
-                        .setOutputFilename(String.format(SIMULATED_RESPONSE, "showTechsupport")))
+        var response = SonicGnoi.TechsupportResponse.newBuilder().setOutput(
+                        SonicGnoi.TechsupportResponse.Output.newBuilder()
+                                .setOutputFilename(String.format(SIMULATED_RESPONSE, "showTechsupport")))
                 .build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
@@ -36,9 +36,9 @@ public class GnoiSonicService extends SonicServiceGrpc.SonicServiceImplBase {
 
     @Override
     public void copyConfig(SonicGnoi.CopyConfigRequest request,
-                           StreamObserver<SonicGnoi.CopyConfigResponse> responseObserver) {
+            StreamObserver<SonicGnoi.CopyConfigResponse> responseObserver) {
         LOG.info("Received copyConfig rpc request {}", request);
-        final SonicGnoi.CopyConfigResponse response = SonicGnoi.CopyConfigResponse.newBuilder()
+        var response = SonicGnoi.CopyConfigResponse.newBuilder()
                 .setOutput(buildSimulatedSonicOutput("copyConfig"))
                 .build();
         responseObserver.onNext(response);
@@ -47,9 +47,9 @@ public class GnoiSonicService extends SonicServiceGrpc.SonicServiceImplBase {
 
     @Override
     public void imageInstall(SonicGnoi.ImageInstallRequest request,
-                             StreamObserver<SonicGnoi.ImageInstallResponse> responseObserver) {
+            StreamObserver<SonicGnoi.ImageInstallResponse> responseObserver) {
         LOG.info("Received imageInstall rpc request {}", request);
-        final SonicGnoi.ImageInstallResponse response = SonicGnoi.ImageInstallResponse.newBuilder()
+        var response = SonicGnoi.ImageInstallResponse.newBuilder()
                 .setOutput(buildSimulatedSonicOutput("imageInstall"))
                 .build();
         responseObserver.onNext(response);
@@ -61,16 +61,16 @@ public class GnoiSonicService extends SonicServiceGrpc.SonicServiceImplBase {
      */
     @Override
     public void imageRemove(SonicGnoi.ImageRemoveRequest request,
-                            StreamObserver<SonicGnoi.ImageRemoveResponse> responseObserver) {
+            StreamObserver<SonicGnoi.ImageRemoveResponse> responseObserver) {
         LOG.info("Received imageRemove rpc request {}", request);
         responseObserver.onError(new StatusRuntimeException(Status.UNKNOWN));
     }
 
     @Override
     public void imageDefault(SonicGnoi.ImageDefaultRequest request,
-                             StreamObserver<SonicGnoi.ImageDefaultResponse> responseObserver) {
+            StreamObserver<SonicGnoi.ImageDefaultResponse> responseObserver) {
         LOG.info("Received imageDefault rpc request {}", request);
-        final SonicGnoi.ImageDefaultResponse response = SonicGnoi.ImageDefaultResponse.newBuilder()
+        var response = SonicGnoi.ImageDefaultResponse.newBuilder()
                 .setOutput(buildSimulatedSonicOutput("imageDefault"))
                 .build();
         responseObserver.onNext(response);
@@ -82,7 +82,7 @@ public class GnoiSonicService extends SonicServiceGrpc.SonicServiceImplBase {
             SonicGnoi.ClearNeighborsRequest request,
             StreamObserver<SonicGnoi.ClearNeighborsResponse> responseObserver) {
         LOG.info("Received clearNeighbors rpc request {}", request);
-        final SonicGnoi.ClearNeighborsResponse response = SonicGnoi.ClearNeighborsResponse.newBuilder()
+        var response = SonicGnoi.ClearNeighborsResponse.newBuilder()
                 .setOutput(SonicGnoi.ClearNeighborsResponse.Output.newBuilder()
                         .setResponse(String.format(SIMULATED_RESPONSE, "clearNeighbors")))
                 .build();
@@ -90,7 +90,7 @@ public class GnoiSonicService extends SonicServiceGrpc.SonicServiceImplBase {
         responseObserver.onCompleted();
     }
 
-    private static SonicGnoi.SonicOutput buildSimulatedSonicOutput(final String rpcName) {
+    private static SonicGnoi.SonicOutput buildSimulatedSonicOutput(String rpcName) {
         return SonicGnoi.SonicOutput.newBuilder()
                 .setStatusDetail(String.format(SIMULATED_RESPONSE, rpcName))
                 .setStatus(200).build();

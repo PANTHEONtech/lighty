@@ -22,12 +22,12 @@ public class RncLightyModuleConfiguration {
     private final AAAConfiguration aaaConfig;
     private final ModulesConfig moduleConfig;
 
-    public RncLightyModuleConfiguration(final ControllerConfiguration controllerConfig,
-                                        final LightyServerConfig serverConfig,
-                                        final RestConfConfiguration restConfConfiguration,
-                                        final NetconfConfiguration netconfConfig,
-                                        final AAAConfiguration aaaConfig,
-                                        final ModulesConfig moduleConfig) {
+    public RncLightyModuleConfiguration(ControllerConfiguration controllerConfig,
+                                        LightyServerConfig serverConfig,
+                                        RestConfConfiguration restConfConfiguration,
+                                        NetconfConfiguration netconfConfig,
+                                        AAAConfiguration aaaConfig,
+                                        ModulesConfig moduleConfig) {
         this.controllerConfig = controllerConfig;
         this.serverConfig = serverConfig;
         this.restConfConfiguration = restConfConfiguration;

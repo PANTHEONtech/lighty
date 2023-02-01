@@ -30,7 +30,7 @@ public class MemberRemovedListener extends AbstractActor {
     private final Cluster cluster;
     private final ClusterAdminService clusterAdminRPCService;
 
-    public MemberRemovedListener(final ClusterAdminService clusterAdminRPCService) {
+    public MemberRemovedListener(ClusterAdminService clusterAdminRPCService) {
         LOG.info("{} created", this.getClass());
         this.cluster = Cluster.get(super.getContext().getSystem());
         this.clusterAdminRPCService = clusterAdminRPCService;

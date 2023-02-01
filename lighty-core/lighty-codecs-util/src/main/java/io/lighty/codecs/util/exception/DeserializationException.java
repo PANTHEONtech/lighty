@@ -13,7 +13,7 @@ package io.lighty.codecs.util.exception;
  */
 public class DeserializationException extends Exception {
 
-    public DeserializationException(final Throwable cause) {
+    public DeserializationException(Throwable cause) {
         super(cause);
     }
 }

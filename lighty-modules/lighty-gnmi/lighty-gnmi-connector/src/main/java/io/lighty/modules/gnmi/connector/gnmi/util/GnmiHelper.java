@@ -9,11 +9,11 @@
 package io.lighty.modules.gnmi.connector.gnmi.util;
 
 import com.google.common.base.Strings;
+import com.google.errorprone.annotations.Var;
 import com.google.protobuf.ByteString;
 import gnmi.Gnmi.Encoding;
 import gnmi.Gnmi.GetRequest;
 import gnmi.Gnmi.Path;
-import gnmi.Gnmi.Path.Builder;
 import gnmi.Gnmi.PathElem;
 import gnmi.Gnmi.SetRequest;
 import gnmi.Gnmi.TypedValue;
@@ -37,18 +37,18 @@ public final class GnmiHelper {
         throw new UnsupportedOperationException("Instances of this class should not be created!");
     }
 
-    public static GetRequest buildGetRequest(final String gnmiPath) {
+    public static GetRequest buildGetRequest(String gnmiPath) {
 
-        GetRequest request = null;
-        Builder builder = pathBuilder(gnmiPath);
+        @Var GetRequest request = null;
+        Path.Builder builder = pathBuilder(gnmiPath);
         if (builder != null) {
             request = GetRequest.newBuilder().setEncoding(Encoding.JSON_IETF).addPath(builder.build()).build();
         }
         return request;
     }
 
-    public static SetRequest buildSetRequest(final String gnmiPath, final String val, final Type type) {
-        final Path path = pathBuilder(gnmiPath).build();
+    public static SetRequest buildSetRequest(String gnmiPath, String val, Type type) {
+        Path path = pathBuilder(gnmiPath).build();
         switch (type) {
             case REPLACE:
                 return getReplaceSetRequest(val, path);
@@ -60,25 +60,25 @@ public final class GnmiHelper {
         }
     }
 
-    private static SetRequest getUpdateSetRequest(final String val, final Path path) {
+    private static SetRequest getUpdateSetRequest(String val, Path path) {
         return SetRequest.newBuilder()
                 .addUpdate(getBuilderForValue(val, path))
                 .build();
     }
 
-    private static SetRequest getReplaceSetRequest(final String val, final Path path) {
+    private static SetRequest getReplaceSetRequest(String val, Path path) {
         return SetRequest.newBuilder()
                 .addReplace(getBuilderForValue(val, path))
                 .build();
     }
 
-    private static SetRequest getDeleteSetRequest(final Path path) {
+    private static SetRequest getDeleteSetRequest(Path path) {
         return SetRequest.newBuilder()
                 .addDelete(path)
                 .build();
     }
 
-    private static Update.Builder getBuilderForValue(final String val, final Path path) {
+    private static Update.Builder getBuilderForValue(String val, Path path) {
         return Update.newBuilder()
                 .setPath(path)
                 .setVal(TypedValue.newBuilder()
@@ -86,28 +86,28 @@ public final class GnmiHelper {
                         .build());
     }
 
-    public static Builder pathBuilder(final String xpath) {
-        final Builder pathBuilder = Path.newBuilder();
+    public static Path.Builder pathBuilder(String xpath) {
+        Path.Builder pathBuilder = Path.newBuilder();
         if (Strings.isNullOrEmpty(xpath)) {
             return pathBuilder;
         }
         String[] tokens = xpath.split(REGEX_SLASH);
         Arrays.stream(tokens)
-            .filter(token -> !StringUtils.isBlank(token))
-            .forEach(token -> processToken(token, pathBuilder));
+                .filter(token -> !StringUtils.isBlank(token))
+                .forEach(token -> processToken(token, pathBuilder));
         return pathBuilder;
     }
 
-    private static void processToken(final String token, final Builder pathBuilder) {
+    private static void processToken(String token, Path.Builder pathBuilder) {
         String elem;
         Map<String, String> keys = new HashMap<>();
-        final int beginKey = token.indexOf(REGEX_BEGIN_KEY);
-        final int endKey = token.indexOf(REGEX_END_KEY);
+        int beginKey = token.indexOf(REGEX_BEGIN_KEY);
+        int endKey = token.indexOf(REGEX_END_KEY);
         if (beginKey > 0) {
             elem = token.substring(0, beginKey);
             String keyPeers = token.substring(beginKey + 1, endKey);
             for (String keyValPair : keyPeers.split(REGEX_SEMICOLON)) {
-                final Matcher matcher = KEY_VAL_PAIR.matcher(keyValPair);
+                Matcher matcher = KEY_VAL_PAIR.matcher(keyValPair);
                 if (matcher.matches()) {
                     keys.put(matcher.group("key"), matcher.group("val"));
                 }
@@ -115,7 +115,7 @@ public final class GnmiHelper {
         } else {
             elem = token;
         }
-        gnmi.Gnmi.PathElem.Builder elemBuilder = PathElem.newBuilder().setName(elem);
+        PathElem.Builder elemBuilder = PathElem.newBuilder().setName(elem);
         if (!keys.isEmpty()) {
             elemBuilder.putAllKey(keys);
         }

@@ -29,9 +29,9 @@ public final class CertificateManagerConfig {
 
     }
 
-    public static ICertificateManager getDefault(final DataBroker bindingDataBroker) {
-        final List<CipherSuites> cipherSuites = new ArrayList<>();
-        final CtlKeystore ctlKeystore = new CtlKeystoreBuilder()
+    public static ICertificateManager getDefault(DataBroker bindingDataBroker) {
+        List<CipherSuites> cipherSuites = new ArrayList<>();
+        CtlKeystore ctlKeystore = new CtlKeystoreBuilder()
                 .setName("ctl.jks")
                 .setAlias("controller")
                 .setDname("CN=ODL, OU=Dev, O=LinuxFoundation, L=QC Montreal, C=CA")
@@ -42,17 +42,17 @@ public final class CertificateManagerConfig {
                 .setStorePassword("")
                 .setKeysize(1024)
                 .build();
-        final TrustKeystore trustKeystore = new TrustKeystoreBuilder()
+        TrustKeystore trustKeystore = new TrustKeystoreBuilder()
                 .setName("truststore.jks")
                 .build();
-        final AaaCertServiceConfig aaaCertServiceConfig = new AaaCertServiceConfigBuilder()
+        AaaCertServiceConfig aaaCertServiceConfig = new AaaCertServiceConfigBuilder()
                 .setUseConfig(true)
                 .setUseMdsal(true)
                 .setBundleName("opendaylight")
                 .setCtlKeystore(ctlKeystore)
                 .setTrustKeystore(trustKeystore)
                 .build();
-        final AaaEncryptServiceConfig encrySrvConfig = new AaaEncryptServiceConfigBuilder()
+        AaaEncryptServiceConfig encrySrvConfig = new AaaEncryptServiceConfigBuilder()
                 .setEncryptKey("V1S1ED4OMeEh")
                 .setPasswordLength(12)
                 .setEncryptSalt("TdtWeHbch/7xP52/rp3Usw==")
@@ -62,7 +62,7 @@ public final class CertificateManagerConfig {
                 .setEncryptKeyLength(128)
                 .setCipherTransforms("AES/CBC/PKCS5Padding")
                 .build();
-        final AAAEncryptionService encryptionSrv = new AAAEncryptionServiceImpl(encrySrvConfig, bindingDataBroker);
+        AAAEncryptionService encryptionSrv = new AAAEncryptionServiceImpl(encrySrvConfig, bindingDataBroker);
 
         return new CertificateManagerService(aaaCertServiceConfig, bindingDataBroker, encryptionSrv);
     }

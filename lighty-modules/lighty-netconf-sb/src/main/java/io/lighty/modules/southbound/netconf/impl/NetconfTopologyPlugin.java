@@ -28,9 +28,9 @@ public final class NetconfTopologyPlugin extends AbstractTopologyPlugin {
     private final AAAEncryptionService encryptionService;
     private final LightyServices lightyServices;
 
-    NetconfTopologyPlugin(final LightyServices lightyServices, final String topologyId,
-            final NetconfClientDispatcher clientDispatcher, final ExecutorService executorService,
-            final AAAEncryptionService encryptionService) {
+    NetconfTopologyPlugin(LightyServices lightyServices, String topologyId,
+            NetconfClientDispatcher clientDispatcher, ExecutorService executorService,
+            AAAEncryptionService encryptionService) {
         super(executorService, lightyServices.getDOMMountPointService());
         this.lightyServices = lightyServices;
         this.topologyId = topologyId;
@@ -40,14 +40,14 @@ public final class NetconfTopologyPlugin extends AbstractTopologyPlugin {
 
     @Override
     protected boolean initProcedure() {
-        final DefaultBaseNetconfSchemas defaultBaseNetconfSchemas;
+        DefaultBaseNetconfSchemas defaultBaseNetconfSchemas;
         try {
             defaultBaseNetconfSchemas = new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
         } catch (YangParserException e) {
             LOG.error("Failed to create DefaultBaseNetconfSchema, cause: ", e);
             return false;
         }
-        final SchemaResourceManager schemaResourceManager =
+        SchemaResourceManager schemaResourceManager =
                 new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
         netconfTopologyImpl = new NetconfTopologyImpl(topologyId, clientDispatcher,
                 lightyServices.getEventExecutor(), lightyServices.getScheduledThreadPool(),

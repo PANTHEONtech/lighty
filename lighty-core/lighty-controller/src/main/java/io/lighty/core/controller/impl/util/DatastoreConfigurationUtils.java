@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.opendaylight.controller.cluster.datastore.DatastoreContext;
-import org.opendaylight.controller.cluster.datastore.DatastoreContext.Builder;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 
 public final class DatastoreConfigurationUtils {
@@ -25,9 +24,9 @@ public final class DatastoreConfigurationUtils {
     private DatastoreConfigurationUtils() {
     }
 
-    public static DatastoreContext createDatastoreContext(final JsonNode configNode,
-            final LogicalDatastoreType logicalDatastoreType) {
-        final Builder builder = DatastoreContext.newBuilder()
+    public static DatastoreContext createDatastoreContext(JsonNode configNode,
+            LogicalDatastoreType logicalDatastoreType) {
+        DatastoreContext.Builder builder = DatastoreContext.newBuilder()
                 .operationTimeoutInMillis(configNode.path("operationTimeoutInMillis")
                         .asLong(DatastoreContext.DEFAULT_OPERATION_TIMEOUT_IN_MS))
                 .shardTransactionCommitTimeoutInSeconds(configNode.path("shardTransactionCommitTimeoutInSeconds")
@@ -58,7 +57,8 @@ public final class DatastoreConfigurationUtils {
         return setNotNullElementWithoutDefaultConstant(configNode, builder).build();
     }
 
-    private static Builder setNotNullElementWithoutDefaultConstant(final JsonNode configNode, final Builder builder) {
+    private static DatastoreContext.Builder setNotNullElementWithoutDefaultConstant(JsonNode configNode,
+            DatastoreContext.Builder builder) {
         if (!configNode.path("transactionDebugContextEnabled").asText().isBlank()) {
             builder.transactionDebugContextEnabled(configNode.path("transactionDebugContextEnabled").asBoolean());
         }

@@ -9,6 +9,7 @@
 package io.lighty.modules.gnmi.connector.session;
 
 import com.google.common.base.Preconditions;
+import com.google.errorprone.annotations.Var;
 import io.grpc.ManagedChannel;
 import io.grpc.netty.NettyChannelBuilder;
 import io.lighty.modules.gnmi.connector.configuration.SessionConfiguration;
@@ -36,7 +37,7 @@ public class SessionManagerImpl implements SessionCloseDelegate, SessionManager 
     private final HashMap<SessionConfiguration, Integer> openSessionsCounter;
     private final GnmiSessionFactory gnmiSessionFactory;
 
-    public SessionManagerImpl(final Security security, final GnmiSessionFactory gnmiSessionFactory) {
+    public SessionManagerImpl(Security security, GnmiSessionFactory gnmiSessionFactory) {
         this.security = Objects.requireNonNull(security, "Missing certificates configuration!");
         this.gnmiSessionFactory = gnmiSessionFactory;
         this.channelCache = new HashMap<>();
@@ -44,20 +45,20 @@ public class SessionManagerImpl implements SessionCloseDelegate, SessionManager 
     }
 
     @Override
-    public synchronized SessionProvider createSession(final SessionConfiguration sessionConfiguration) {
+    public synchronized SessionProvider createSession(SessionConfiguration sessionConfiguration) {
         Preconditions.checkArgument(Objects.nonNull(sessionConfiguration));
 
         // look for channel in cache
-        ManagedChannel channel = channelCache.get(sessionConfiguration);
+        @Var ManagedChannel channel = channelCache.get(sessionConfiguration);
         if (channel == null) {
             // create new channel if is not cached
-            final NettyChannelBuilder builder = NettyChannelBuilder.forAddress(sessionConfiguration.getAddress());
+            NettyChannelBuilder builder = NettyChannelBuilder.forAddress(sessionConfiguration.getAddress());
             if (sessionConfiguration.isUsePlainText()) {
                 builder.usePlaintext();
             } else {
                 try {
                     builder.sslContext(this.security.getSslContext());
-                } catch (final SSLException e) {
+                } catch (SSLException e) {
                     throw new RuntimeException("Failed to create SSL Context!", e);
                 }
             }
@@ -68,7 +69,7 @@ public class SessionManagerImpl implements SessionCloseDelegate, SessionManager 
         }
 
         // increase counter for channel
-        final Integer sessionCount = openSessionsCounter.getOrDefault(sessionConfiguration, 0);
+        Integer sessionCount = openSessionsCounter.getOrDefault(sessionConfiguration, 0);
         openSessionsCounter.put(sessionConfiguration, sessionCount + 1);
 
         return new SessionProviderImpl(sessionConfiguration, this, channel,
@@ -76,16 +77,16 @@ public class SessionManagerImpl implements SessionCloseDelegate, SessionManager 
     }
 
     @Override
-    public synchronized void closeSession(final SessionProvider session) throws InterruptedException {
+    public synchronized void closeSession(SessionProvider session) throws InterruptedException {
         // decrease number of sessions per channel
         // if no session is open for channel then close channel
-        final Integer sessionCount = openSessionsCounter.get(session.getConfiguration());
+        Integer sessionCount = openSessionsCounter.get(session.getConfiguration());
         if (sessionCount > 1) {
             openSessionsCounter.put(session.getConfiguration(), sessionCount - 1);
         } else {
             openSessionsCounter.remove(session.getConfiguration());
-            final ManagedChannel channel = channelCache.remove(session.getConfiguration());
-            final boolean res = channel.shutdown().awaitTermination(CHANNEL_TERMINATION_MILLIS, TimeUnit.MILLISECONDS);
+            ManagedChannel channel = channelCache.remove(session.getConfiguration());
+            boolean res = channel.shutdown().awaitTermination(CHANNEL_TERMINATION_MILLIS, TimeUnit.MILLISECONDS);
             if (!res) {
                 throw new RuntimeException(String.format("Shutdown of session to server %s failed",
                         session.getConfiguration().getAddress()));

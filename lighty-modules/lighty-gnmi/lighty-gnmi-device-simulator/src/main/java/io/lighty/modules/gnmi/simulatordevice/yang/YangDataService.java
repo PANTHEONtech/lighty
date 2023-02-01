@@ -40,17 +40,17 @@ public class YangDataService {
 
     private final EnumMap<DatastoreType, InMemoryDOMDataStore> datastoreMap;
 
-    public YangDataService(final EffectiveModelContext schemaContext, final String initialConfigDataPath,
-                           final String initialStateDataPath) throws IOException {
+    public YangDataService(EffectiveModelContext schemaContext, String initialConfigDataPath,
+                           String initialStateDataPath) throws IOException {
         this.datastoreMap = createDatastoreMap(schemaContext);
         initializeDataStore(initialConfigDataPath, initialStateDataPath, schemaContext);
     }
 
-    public Optional<NormalizedNode> readDataByPath(final DatastoreType datastoreType,
-                                                         final YangInstanceIdentifier path) {
+    public Optional<NormalizedNode> readDataByPath(DatastoreType datastoreType,
+                                                   YangInstanceIdentifier path) {
         try (DOMStoreReadTransaction tx = datastoreMap.get(datastoreType).newReadOnlyTransaction()) {
             return tx.read(path).get();
-        } catch (final ExecutionException e) {
+        } catch (ExecutionException e) {
             LOG.error("Unable to fetch data from DataStore", e);
         } catch (InterruptedException e) {
             LOG.error("Interrupted while fetching data from DataStore", e);

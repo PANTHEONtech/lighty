@@ -30,9 +30,9 @@ public class Security {
 
     private SslContext sslContext;
 
-    public Security(final Collection<X509Certificate> caCertificates,
-                    final Collection<X509Certificate> clientCertificatesChain,
-                    final PrivateKey privateKey) {
+    public Security(Collection<X509Certificate> caCertificates,
+                    Collection<X509Certificate> clientCertificatesChain,
+                    PrivateKey privateKey) {
         Preconditions.checkArgument(caCertificates != null && !caCertificates.isEmpty(),
                 "CA certificate are missing!");
         Preconditions.checkArgument(clientCertificatesChain != null && !clientCertificatesChain.isEmpty(),
@@ -57,12 +57,11 @@ public class Security {
         if (this.sslContext != null) {
             return this.sslContext;
         }
-        final SslContextBuilder contextBuilder = GrpcSslContexts.forClient();
+        SslContextBuilder contextBuilder = GrpcSslContexts.forClient();
         if (this.caCertificates != null && this.clientCertificatesChain != null) {
             contextBuilder.trustManager(this.caCertificates);
             contextBuilder.keyManager(privateKey, this.clientCertificatesChain);
-        }
-        else {
+        } else {
             contextBuilder.trustManager(InsecureTrustManagerFactory.INSTANCE);
         }
         this.sslContext = contextBuilder.build();

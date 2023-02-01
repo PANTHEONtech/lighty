@@ -8,6 +8,7 @@
 
 package io.lighty.applications.rcgnmi.module;
 
+import com.google.errorprone.annotations.Var;
 import io.lighty.aaa.encrypt.service.impl.AAAEncryptionServiceImpl;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
@@ -64,9 +65,9 @@ public class RcGnmiAppModule {
     private CommunityRestConf lightyRestconf;
     private GnmiSouthboundModule gnmiSouthboundModule;
 
-    public RcGnmiAppModule(final RcGnmiAppConfiguration appModuleConfig,
-                           final ExecutorService gnmiExecutorService,
-                           @Nullable final CrossSourceStatementReactor customReactor) {
+    public RcGnmiAppModule(RcGnmiAppConfiguration appModuleConfig,
+                           ExecutorService gnmiExecutorService,
+                           @Nullable CrossSourceStatementReactor customReactor) {
         LOG.info("Creating instance of RgNMI lighty.io module...");
         this.appModuleConfig = Objects.requireNonNull(appModuleConfig);
         this.gnmiExecutorService = Objects.requireNonNull(gnmiExecutorService);
@@ -85,7 +86,7 @@ public class RcGnmiAppModule {
                     this.lightyController.getServices());
             startAndWaitLightyModule(this.lightyRestconf);
 
-            final AAAEncryptionService encryptionService = createEncryptionServiceWithErrorHandling();
+            AAAEncryptionService encryptionService = createEncryptionServiceWithErrorHandling();
             this.gnmiSouthboundModule = initGnmiModule(this.lightyController.getServices(),
                     this.gnmiExecutorService, this.appModuleConfig.getGnmiConfiguration(), encryptionService,
                     this.customReactor);
@@ -99,8 +100,8 @@ public class RcGnmiAppModule {
         return true;
     }
 
-    private LightyController initController(final ControllerConfiguration config) throws RcGnmiAppException {
-        final LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
+    private LightyController initController(ControllerConfiguration config) throws RcGnmiAppException {
+        var lightyControllerBuilder = new LightyControllerBuilder();
         try {
             return lightyControllerBuilder.from(config).build();
         } catch (ConfigurationException e) {
@@ -108,16 +109,16 @@ public class RcGnmiAppModule {
         }
     }
 
-    private CommunityRestConf initRestconf(final RestConfConfiguration config, final LightyServices services) {
-        final RestConfConfiguration conf = RestConfConfigUtils.getRestConfConfiguration(config, services);
+    private CommunityRestConf initRestconf(RestConfConfiguration config, LightyServices services) {
+        RestConfConfiguration conf = RestConfConfigUtils.getRestConfConfiguration(config, services);
         return CommunityRestConfBuilder.from(conf).build();
     }
 
-    private GnmiSouthboundModule initGnmiModule(final LightyServices services,
-                                                final ExecutorService gnmiExecService,
-                                                final GnmiConfiguration gnmiConfiguration,
-                                                final AAAEncryptionService encryptionService,
-                                                final CrossSourceStatementReactor reactor) {
+    private GnmiSouthboundModule initGnmiModule(LightyServices services,
+            ExecutorService gnmiExecService,
+            GnmiConfiguration gnmiConfiguration,
+            AAAEncryptionService encryptionService,
+            CrossSourceStatementReactor reactor) {
 
         return new GnmiSouthboundModuleBuilder()
                 .withConfig(gnmiConfiguration)
@@ -128,10 +129,10 @@ public class RcGnmiAppModule {
                 .build();
     }
 
-    private void startAndWaitLightyModule(final LightyModule lightyModule) throws RcGnmiAppException {
+    private void startAndWaitLightyModule(LightyModule lightyModule) throws RcGnmiAppException {
         try {
             LOG.info("Initializing lighty.io module ({})...", lightyModule.getClass());
-            final boolean startSuccess = lightyModule.start()
+            boolean startSuccess = lightyModule.start()
                     .get(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
             if (startSuccess) {
                 LOG.info("lighty.io module ({}) initialized successfully!", lightyModule.getClass());
@@ -153,7 +154,7 @@ public class RcGnmiAppModule {
 
     public boolean close() {
         LOG.info("Stopping RCgNMI lighty.io application...");
-        boolean success = true;
+        @Var boolean success = true;
         if (this.lightyRestconf != null) {
             success &= lightyRestconf.shutdown(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
         }
@@ -176,35 +177,35 @@ public class RcGnmiAppModule {
         try {
             return createEncryptionService();
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeySpecException
-                | InvalidAlgorithmParameterException | InvalidKeyException e) {
+                 | InvalidAlgorithmParameterException | InvalidKeyException e) {
             throw new RcGnmiAppException("Failed to create Encryption Service", e);
         }
     }
 
     private AAAEncryptionServiceImpl createEncryptionService() throws NoSuchPaddingException,
             NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, InvalidKeyException {
-        final AaaEncryptServiceConfig encrySrvConfig = getDefaultAaaEncryptServiceConfig();
-        final byte[] encryptionKeySalt = Base64.getDecoder().decode(encrySrvConfig.getEncryptSalt());
-        final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(encrySrvConfig.getEncryptMethod());
-        final KeySpec keySpec = new PBEKeySpec(encrySrvConfig.getEncryptKey().toCharArray(), encryptionKeySalt,
+        AaaEncryptServiceConfig encrySrvConfig = getDefaultAaaEncryptServiceConfig();
+        byte[] encryptionKeySalt = Base64.getDecoder().decode(encrySrvConfig.getEncryptSalt());
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(encrySrvConfig.getEncryptMethod());
+        KeySpec keySpec = new PBEKeySpec(encrySrvConfig.getEncryptKey().toCharArray(), encryptionKeySalt,
                 encrySrvConfig.getEncryptIterationCount(), encrySrvConfig.getEncryptKeyLength());
-        final SecretKey key
+        SecretKey key
                 = new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(), encrySrvConfig.getEncryptType());
-        final IvParameterSpec ivParameterSpec = new IvParameterSpec(encryptionKeySalt);
+        var ivParameterSpec = new IvParameterSpec(encryptionKeySalt);
 
-        final Cipher encryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
+        Cipher encryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
         encryptCipher.init(Cipher.ENCRYPT_MODE, key, ivParameterSpec);
 
-        final Cipher decryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
+        Cipher decryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
         decryptCipher.init(Cipher.DECRYPT_MODE, key, ivParameterSpec);
 
         return new AAAEncryptionServiceImpl(encryptCipher, decryptCipher);
     }
 
     private AaaEncryptServiceConfig getDefaultAaaEncryptServiceConfig() {
-        final byte[] bytes = new byte[16];
+        byte[] bytes = new byte[16];
         RANDOM.nextBytes(bytes);
-        final String salt = new String(Base64.getEncoder().encode(bytes), StandardCharsets.UTF_8);
+        var salt = new String(Base64.getEncoder().encode(bytes), StandardCharsets.UTF_8);
         return new AaaEncryptServiceConfigBuilder().setEncryptKey("V1S1ED4OMeEh")
                 .setPasswordLength(12).setEncryptSalt(salt)
                 .setEncryptMethod("PBKDF2WithHmacSHA1").setEncryptType("AES")

@@ -17,26 +17,27 @@ import org.opendaylight.netconf.sal.connect.api.SchemaResourceManager;
 import org.opendaylight.netconf.sal.connect.impl.DefaultSchemaResourceManager;
 import org.opendaylight.netconf.sal.connect.netconf.schema.mapping.DefaultBaseNetconfSchemas;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class NetconfCallhomePlugin extends AbstractLightyModule {
 
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(NetconfCallhomePlugin.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NetconfCallhomePlugin.class);
 
     private final IetfZeroTouchCallHomeServerProvider provider;
 
-    public NetconfCallhomePlugin(final LightyServices lightyServices, final String topologyId,
-            final ExecutorService executorService, final AAAEncryptionService encryptionService) {
+    public NetconfCallhomePlugin(LightyServices lightyServices, String topologyId,
+            ExecutorService executorService, AAAEncryptionService encryptionService) {
         super(executorService);
-        final DefaultBaseNetconfSchemas defaultBaseNetconfSchemas;
+        DefaultBaseNetconfSchemas defaultBaseNetconfSchemas;
         try {
             defaultBaseNetconfSchemas = new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
         } catch (YangParserException e) {
             throw new RuntimeException(e);
         }
-        final SchemaResourceManager schemaResourceManager =
+        SchemaResourceManager schemaResourceManager =
                 new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
-        final CallHomeMountDispatcher dispatcher =
+        var dispatcher =
                 new CallHomeMountDispatcher(topologyId, lightyServices.getEventExecutor(),
                         lightyServices.getScheduledThreadPool(), lightyServices.getThreadPool(),
                         schemaResourceManager, defaultBaseNetconfSchemas, lightyServices.getBindingDataBroker(),
@@ -55,7 +56,7 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
     protected boolean stopProcedure() {
         try {
             this.provider.close();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             LOG.error("{} failed to close!", this.provider.getClass(), e);
             return false;
         }

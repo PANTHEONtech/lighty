@@ -16,7 +16,7 @@ import org.opendaylight.restconf.nb.rfc8040.rests.services.api.RootResourceDisco
 public class RootFoundApplication extends Application {
     private final RootResourceDiscoveryService rrds;
 
-    public RootFoundApplication(final String restconfServletContextPath) {
+    public RootFoundApplication(String restconfServletContextPath) {
         this.rrds = new RootResourceDiscoveryServiceImpl(restconfServletContextPath);
     }
 

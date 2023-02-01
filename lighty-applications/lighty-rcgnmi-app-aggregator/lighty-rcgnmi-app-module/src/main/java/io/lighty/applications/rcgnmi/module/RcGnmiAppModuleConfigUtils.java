@@ -36,46 +36,46 @@ public final class RcGnmiAppModuleConfigUtils {
 
     public static RcGnmiAppConfiguration loadDefaultConfig() throws ConfigurationException {
         LOG.debug("Loading default lighty.io controller module configuration...");
-        final Set<YangModuleInfo> modelPaths = new HashSet<>();
+        Set<YangModuleInfo> modelPaths = new HashSet<>();
         defaultModels(modelPaths);
 
         final ControllerConfiguration controllerConfig = ControllerConfigUtils
                 .getDefaultSingleNodeConfiguration(modelPaths);
         LOG.debug("Loading default lighty.io RESTCONF module configuration...");
-        final RestConfConfiguration restconfConfig = RestConfConfigUtils.getDefaultRestConfConfiguration();
+        RestConfConfiguration restconfConfig = RestConfConfigUtils.getDefaultRestConfConfiguration();
         // by default listen on any IP address (0.0.0.0) not only on loopback
         restconfConfig.setInetAddress(new InetSocketAddress(restconfConfig.getHttpPort()).getAddress());
         LOG.debug("Loading default lighty.io gNMI module configuration...");
-        final GnmiConfiguration gnmiConfiguration = GnmiConfigUtils.getDefaultGnmiConfiguration();
+        GnmiConfiguration gnmiConfiguration = GnmiConfigUtils.getDefaultGnmiConfiguration();
         LOG.debug("Loading default lighty.io app modules configuration...");
-        final ModulesConfig modulesConfig = ModulesConfig.getDefaultModulesConfig();
+        ModulesConfig modulesConfig = ModulesConfig.getDefaultModulesConfig();
         return new RcGnmiAppConfiguration(controllerConfig, restconfConfig, gnmiConfiguration, modulesConfig);
     }
 
-    public static RcGnmiAppConfiguration loadConfiguration(final Path path) throws ConfigurationException, IOException {
+    public static RcGnmiAppConfiguration loadConfiguration(Path path) throws ConfigurationException, IOException {
         LOG.debug("Loading lighty.io controller module configuration...");
-        final ControllerConfiguration controllerConfig = ControllerConfigUtils
+        ControllerConfiguration controllerConfig = ControllerConfigUtils
                 .getConfiguration(Files.newInputStream(path));
-        final Config akkaConfig = controllerConfig.getActorSystemConfig().getConfig().resolve();
+        Config akkaConfig = controllerConfig.getActorSystemConfig().getConfig().resolve();
         controllerConfig.getActorSystemConfig().setConfig(akkaConfig);
         LOG.debug("Loading lighty.io RESTCONF module configuration...");
-        final RestConfConfiguration restconfConfig = RestConfConfigUtils
+        RestConfConfiguration restconfConfig = RestConfConfigUtils
                 .getRestConfConfiguration(Files.newInputStream(path));
-        final RestConfConfiguration defaultRestconfConfig = RestConfConfigUtils.getDefaultRestConfConfiguration();
+        RestConfConfiguration defaultRestconfConfig = RestConfConfigUtils.getDefaultRestConfConfiguration();
         if (restconfConfig.getInetAddress().equals(defaultRestconfConfig.getInetAddress())) {
             // by default listen on any IP address (0.0.0.0) not only on loopback
             restconfConfig.setInetAddress(new InetSocketAddress(restconfConfig.getHttpPort()).getAddress());
         }
 
         LOG.debug("Loading lighty.io gNMI module configuration...");
-        final GnmiConfiguration gnmiConfiguration = GnmiConfigUtils.getGnmiConfiguration(Files.newInputStream(path));
+        GnmiConfiguration gnmiConfiguration = GnmiConfigUtils.getGnmiConfiguration(Files.newInputStream(path));
 
         LOG.debug("Loading lighty.io app modules configuration...");
-        final ModulesConfig modulesConfig = ModulesConfig.getModulesConfig(Files.newInputStream(path));
+        ModulesConfig modulesConfig = ModulesConfig.getModulesConfig(Files.newInputStream(path));
         return new RcGnmiAppConfiguration(controllerConfig, restconfConfig, gnmiConfiguration, modulesConfig);
     }
 
-    private static void defaultModels(final Set<YangModuleInfo> modelPaths) {
+    private static void defaultModels(Set<YangModuleInfo> modelPaths) {
         modelPaths.addAll(RestConfConfigUtils.YANG_MODELS);
         modelPaths.addAll(GnmiConfigUtils.YANG_MODELS);
     }

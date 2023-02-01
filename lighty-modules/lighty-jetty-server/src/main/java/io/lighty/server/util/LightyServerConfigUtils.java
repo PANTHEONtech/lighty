@@ -10,6 +10,7 @@ package io.lighty.server.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.errorprone.annotations.Var;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.server.config.LightyServerConfig;
 import io.lighty.server.config.SecurityConfig;
@@ -35,25 +36,25 @@ public final class LightyServerConfigUtils {
         // Hide on purpose
     }
 
-    public static LightyServerConfig getServerConfiguration(final InputStream jsonConfigIS)
+    public static LightyServerConfig getServerConfiguration(InputStream jsonConfigIS)
             throws ConfigurationException {
-        final ObjectMapper mapper = new ObjectMapper();
-        final JsonNode configNode;
+        var mapper = new ObjectMapper();
+        JsonNode configNode;
         try {
             configNode = mapper.readTree(jsonConfigIS);
-        } catch (final IOException e) {
+        } catch (IOException e) {
             throw new ConfigurationException("Cannot deserialize Json content to Json tree nodes", e);
         }
         if (!configNode.has(SERVER_CONFIG_ROOT_ELEMENT_NAME)) {
             LOG.warn("Json config does not contain {} element. Using defaults.", SERVER_CONFIG_ROOT_ELEMENT_NAME);
             return new LightyServerConfig();
         }
-        final JsonNode lightyServerNode = configNode.path(SERVER_CONFIG_ROOT_ELEMENT_NAME);
-        final LightyServerConfig lightyServerConfig;
+        JsonNode lightyServerNode = configNode.path(SERVER_CONFIG_ROOT_ELEMENT_NAME);
+        LightyServerConfig lightyServerConfig;
         try {
             lightyServerConfig = mapper.treeToValue(lightyServerNode, LightyServerConfig.class);
             lightyServerConfig.setSecurityConfig(createSecurityConfig(lightyServerConfig));
-        } catch (final JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             throw new ConfigurationException(String.format("Cannot bind Json tree to type: %s",
                     LightyServerConfig.class), e);
         }
@@ -62,29 +63,29 @@ public final class LightyServerConfigUtils {
     }
 
     public static LightyServerConfig getDefaultLightyServerConfig() throws ConfigurationException {
-        final LightyServerConfig lightyServerConfig = new LightyServerConfig();
+        var lightyServerConfig = new LightyServerConfig();
         lightyServerConfig.setSecurityConfig(createSecurityConfig(lightyServerConfig));
         return lightyServerConfig;
     }
 
-    public static SecurityConfig createSecurityConfig(final LightyServerConfig config) throws ConfigurationException {
+    public static SecurityConfig createSecurityConfig(LightyServerConfig config) throws ConfigurationException {
         try {
-            final KeyStore.PasswordProtection passProtection = new KeyStore.PasswordProtection(
+            var passProtection = new KeyStore.PasswordProtection(
                     config.getKeyStorePassword().toCharArray());
-            final KeyStore keyStore = KeyStore.Builder.newInstance(
+            KeyStore keyStore = KeyStore.Builder.newInstance(
                     config.getKeyStoreType(), null, passProtection).getKeyStore();
-            final Optional<InputStream> ksFile = readKeyStoreFile(config.getKeyStoreFilePath());
+            Optional<InputStream> ksFile = readKeyStoreFile(config.getKeyStoreFilePath());
 
             if (ksFile.isEmpty()) {
                 throw new ConfigurationException("Unable to create KeyStore configuration: KeyStore file was not found"
                         + " on path: " + config.getKeyStoreFilePath());
             }
 
-            final KeyStore.PasswordProtection trustPassProtection = new KeyStore.PasswordProtection(
+            var trustPassProtection = new KeyStore.PasswordProtection(
                     config.getTrustKeyStorePassword().toCharArray());
-            final KeyStore trustKeyStore = KeyStore.Builder.newInstance(
+            KeyStore trustKeyStore = KeyStore.Builder.newInstance(
                     config.getKeyStoreType(), null, trustPassProtection).getKeyStore();
-            final Optional<InputStream> trustKsFile = readKeyStoreFile(config.getTrustKeyStoreFilePath());
+            Optional<InputStream> trustKsFile = readKeyStoreFile(config.getTrustKeyStoreFilePath());
 
             if (trustKsFile.isEmpty()) {
                 throw new ConfigurationException("Unable to create TrustKeyStore config: KeyStore file was not found"
@@ -101,8 +102,8 @@ public final class LightyServerConfigUtils {
         }
     }
 
-    private static Optional<InputStream> readKeyStoreFile(final String keyStoreFilePath) throws IOException {
-        InputStream ksFile;
+    private static Optional<InputStream> readKeyStoreFile(String keyStoreFilePath) throws IOException {
+        @Var InputStream ksFile;
         try {
             LOG.info("Trying to load KeyStore from filesystem from path {}", keyStoreFilePath);
             ksFile = Files.newInputStream(Paths.get(keyStoreFilePath));

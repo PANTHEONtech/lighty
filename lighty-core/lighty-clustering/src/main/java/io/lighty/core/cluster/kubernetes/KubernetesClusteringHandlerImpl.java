@@ -37,28 +37,28 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
     private final ActorSystemProvider actorSystemProvider;
     private Optional<Config> moduleShardsConfig;
 
-    public KubernetesClusteringHandlerImpl(@NonNull final ActorSystemProvider actorSystemProvider,
-                                           @NonNull final Config akkaDeploymentConfig) {
+    public KubernetesClusteringHandlerImpl(@NonNull ActorSystemProvider actorSystemProvider,
+            @NonNull Config akkaDeploymentConfig) {
         this.actorSystemProvider = actorSystemProvider;
         this.akkaDeploymentConfig = akkaDeploymentConfig;
         this.moduleShardsConfig = Optional.empty();
     }
 
     /**
-     * Initialize Cluster Bootstrap. If this instance is the cluster leader, create custom module-shards.conf
-     * specifying that all shards should be created on this member. If this instance is not the leader the
-     * default module-shards.conf will be used. In this case shards will not be created but received from leader
-     * as snapshots and installed.
+     * Initialize Cluster Bootstrap. If this instance is the cluster leader, create custom module-shards.conf specifying
+     * that all shards should be created on this member. If this instance is not the leader the default
+     * module-shards.conf will be used. In this case shards will not be created but received from leader as snapshots
+     * and installed.
      */
     @Override
     public void initClustering() {
         LOG.info("Starting ClusterBootstrap");
         ClusterBootstrap clusterBootstrap = ClusterBootstrap.get(actorSystemProvider.getActorSystem());
         clusterBootstrap.start();
-        final CountDownLatch latch = new CountDownLatch(1);
+        var latch = new CountDownLatch(1);
         try {
             LOG.info("Waiting for cluster to form");
-            final ListenableScheduledFuture clusterLeaderElectionFuture = getClusterLeaderElectionFuture(latch);
+            ListenableScheduledFuture clusterLeaderElectionFuture = getClusterLeaderElectionFuture(latch);
             latch.await();
             clusterLeaderElectionFuture.cancel(true);
         } catch (InterruptedException e) {
@@ -72,8 +72,8 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
         if (Cluster.get(actorSystemProvider.getActorSystem()).selfAddress()
                 .equals(Cluster.get(actorSystemProvider.getActorSystem()).state().getLeader())) {
             LOG.info("I am leader, generating custom module-shards.conf");
-            final List<String> memberRoles = akkaDeploymentConfig.getStringList("akka.cluster.roles");
-            final String data = ClusteringConfigUtils.generateModuleShardsForMembers(memberRoles);
+            List<String> memberRoles = akkaDeploymentConfig.getStringList("akka.cluster.roles");
+            String data = ClusteringConfigUtils.generateModuleShardsForMembers(memberRoles);
             moduleShardsConfig = Optional.of(ConfigFactory.parseString(data));
             return;
         }
@@ -81,7 +81,7 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
     }
 
     @Override
-    public void start(@NonNull final ClusterAdminService clusterAdminRPCService) {
+    public void start(@NonNull ClusterAdminService clusterAdminRPCService) {
         this.actorSystemProvider.getActorSystem().actorOf(
                 MemberRemovedListener.props(clusterAdminRPCService), "memberRemovedListener");
         this.askForShards(clusterAdminRPCService);
@@ -93,15 +93,15 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
     }
 
     /**
-     * The first member of the cluster (leader) will create his shards. Other joining members will query
-     * the leader for snapshots of the shards.
+     * The first member of the cluster (leader) will create his shards. Other joining members will query the leader for
+     * snapshots of the shards.
      */
-    private void askForShards(final ClusterAdminService clusterAdminRPCService) {
+    private void askForShards(ClusterAdminService clusterAdminRPCService) {
         if (!Cluster.get(actorSystemProvider.getActorSystem()).selfAddress()
                 .equals(Cluster.get(actorSystemProvider.getActorSystem()).state().getLeader())) {
             LOG.info("RPC call - Asking for Shard Snapshots");
             try {
-                final var rpcResult = clusterAdminRPCService.addReplicasForAllShards(
+                var rpcResult = clusterAdminRPCService.addReplicasForAllShards(
                         new AddReplicasForAllShardsInputBuilder().build()).get();
                 LOG.debug("RPC call - Asking for Shard Snapshots result: {}", rpcResult.getResult());
             } catch (ExecutionException e) {

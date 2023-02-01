@@ -20,7 +20,7 @@ import org.eclipse.jetty.server.SslConnectionFactory;
 public class HttpsLightyServerBuilder extends LightyServerBuilder {
     private final SecurityConfig securityConfig;
 
-    public HttpsLightyServerBuilder(final InetSocketAddress inetSocketAddress, final SecurityConfig securityConfig) {
+    public HttpsLightyServerBuilder(InetSocketAddress inetSocketAddress, SecurityConfig securityConfig) {
         super(inetSocketAddress);
         this.server = new Server();
         this.securityConfig = securityConfig;
@@ -28,9 +28,9 @@ public class HttpsLightyServerBuilder extends LightyServerBuilder {
 
     @Override
     public Server build() {
-        final Server server = super.build();
-        final SslConnectionFactory ssl = securityConfig.getSslConnectionFactory(HttpVersion.HTTP_1_1.asString());
-        final ServerConnector sslConnector = new ServerConnector(server,
+        Server server = super.build();
+        SslConnectionFactory ssl = securityConfig.getSslConnectionFactory(HttpVersion.HTTP_1_1.asString());
+        var sslConnector = new ServerConnector(server,
                 ssl, httpConfiguration(this.inetSocketAddress));
         sslConnector.setPort(this.inetSocketAddress.getPort());
 
@@ -38,12 +38,12 @@ public class HttpsLightyServerBuilder extends LightyServerBuilder {
         return server;
     }
 
-    private HttpConnectionFactory httpConfiguration(final InetSocketAddress inetSocketAddress) {
-        final HttpConfiguration httpConfig = new HttpConfiguration();
+    private HttpConnectionFactory httpConfiguration(InetSocketAddress inetSocketAddress) {
+        var httpConfig = new HttpConfiguration();
         httpConfig.setSecurePort(inetSocketAddress.getPort());
         httpConfig.setSendXPoweredBy(true);
 
-        final HttpConfiguration httpsConfig = new HttpConfiguration(httpConfig);
+        var httpsConfig = new HttpConfiguration(httpConfig);
         httpsConfig.addCustomizer(new SecureRequestCustomizer());
         return new HttpConnectionFactory(httpsConfig);
     }

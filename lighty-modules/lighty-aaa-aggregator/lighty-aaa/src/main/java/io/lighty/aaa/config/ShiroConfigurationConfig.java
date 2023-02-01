@@ -25,7 +25,7 @@ public final class ShiroConfigurationConfig {
     }
 
     public static ShiroConfiguration getDefault() {
-        final List<Main> mains = new ArrayList<>();
+        List<Main> mains = new ArrayList<>();
         mains.add(initMain("tokenAuthRealm", "org.opendaylight.aaa.shiro.realm.TokenAuthRealm"));
         mains.add(initMain("securityManager.realms", "$tokenAuthRealm"));
         mains.add(initMain("authcBasic", "org.opendaylight.aaa.shiro.filters.ODLHttpAuthenticationFilter"));
@@ -33,7 +33,7 @@ public final class ShiroConfigurationConfig {
         mains.add(initMain("securityManager.authenticator.authenticationListeners", "$accountingListener"));
         mains.add(initMain("dynamicAuthorization", "org.opendaylight.aaa.shiro.realm.MDSALDynamicAuthorizationFilter"));
 
-        final List<Urls> urls = new ArrayList<>();
+        List<Urls> urls = new ArrayList<>();
         urls.add(initUrl("/operations/cluster-admin**", ROLES_ADMIN));
         urls.add(initUrl("/v1/**", ROLES_ADMIN));
         urls.add(initUrl("/config/aaa*/**", ROLES_ADMIN));
@@ -42,11 +42,11 @@ public final class ShiroConfigurationConfig {
         return new ShiroConfigurationBuilder().setMain(mains).setUrls(urls).build();
     }
 
-    private static Urls initUrl(final String key, final String val) {
+    private static Urls initUrl(String key, String val) {
         return new UrlsBuilder().setPairKey(key).setPairValue(val).build();
     }
 
-    private static Main initMain(final String key, final String val) {
+    private static Main initMain(String key, String val) {
         return new MainBuilder().setPairKey(key).setPairValue(val).build();
     }
 }

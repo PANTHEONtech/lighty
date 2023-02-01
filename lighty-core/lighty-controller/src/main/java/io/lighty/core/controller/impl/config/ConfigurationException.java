@@ -14,15 +14,15 @@ public class ConfigurationException extends Exception {
         super();
     }
 
-    public ConfigurationException(final String message) {
+    public ConfigurationException(String message) {
         super(message);
     }
 
-    public ConfigurationException(final String message, final Throwable cause) {
+    public ConfigurationException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ConfigurationException(final Throwable cause) {
+    public ConfigurationException(Throwable cause) {
         super(cause);
     }
 }

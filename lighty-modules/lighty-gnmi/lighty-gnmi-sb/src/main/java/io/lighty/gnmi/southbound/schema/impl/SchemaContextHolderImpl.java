@@ -10,6 +10,7 @@ package io.lighty.gnmi.southbound.schema.impl;
 
 import com.google.common.collect.Sets;
 import com.google.common.io.ByteSource;
+import com.google.errorprone.annotations.Var;
 import io.lighty.gnmi.southbound.capabilities.GnmiDeviceCapability;
 import io.lighty.gnmi.southbound.schema.SchemaConstants;
 import io.lighty.gnmi.southbound.schema.SchemaContextHolder;
@@ -53,8 +54,8 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
     private final Map<CapabilitiesKey, EffectiveModelContext> contextCache;
     private final CrossSourceStatementReactor yangReactor;
 
-    public SchemaContextHolderImpl(final YangDataStoreService yangDataStoreService,
-                                   final @Nullable CrossSourceStatementReactor reactor) {
+    public SchemaContextHolderImpl(YangDataStoreService yangDataStoreService,
+            @Nullable CrossSourceStatementReactor reactor) {
         this.yangDataStoreService = yangDataStoreService;
         this.yangReactor = Objects.requireNonNullElse(reactor, SchemaConstants.DEFAULT_YANG_REACTOR);
         this.contextCache = new ConcurrentHashMap<>();
@@ -70,28 +71,28 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
      * @return set containing all models for building EffectiveModelContext
      */
     private Set<GnmiYangModel> prepareModelsForSchema(
-            final List<GnmiDeviceCapability> baseCaps) throws SchemaException {
-        final Set<String> processedModuleNames = new HashSet<>();
-        final SchemaException schemaException = new SchemaException();
+            List<GnmiDeviceCapability> baseCaps) throws SchemaException {
+        Set<String> processedModuleNames = new HashSet<>();
+        var schemaException = new SchemaException();
 
-        Set<GnmiYangModel> fullModelSet = new HashSet<>();
+        @Var Set<GnmiYangModel> fullModelSet = new HashSet<>();
         try {
             // Read models reported in capabilities
             fullModelSet = readCapabilities(baseCaps, processedModuleNames, schemaException);
             // Get dependencies of models reported in capabilities
-            Set<YangModelDependencyInfo> dependencyInfos = getDependenciesOfModels(fullModelSet, schemaException);
+            @Var Set<YangModelDependencyInfo> dependencyInfos = getDependenciesOfModels(fullModelSet, schemaException);
 
-            boolean nonComplete = true;
+            @Var boolean nonComplete = true;
             while (nonComplete) {
                 // Read dependency models
                 Set<GnmiYangModel> dependencyModels = new HashSet<>();
                 for (YangModelDependencyInfo dependencyInfo : dependencyInfos) {
-                    final Set<GnmiYangModel> gnmiYangModels =
+                    Set<GnmiYangModel> gnmiYangModels =
                             readDependencyModels(dependencyInfo, processedModuleNames, schemaException);
                     dependencyModels.addAll(gnmiYangModels);
                 }
                 // See which models are new, if any, do it again
-                final Sets.SetView<GnmiYangModel> newModels = Sets.difference(dependencyModels, fullModelSet);
+                Sets.SetView<GnmiYangModel> newModels = Sets.difference(dependencyModels, fullModelSet);
                 dependencyInfos = getDependenciesOfModels(newModels.immutableCopy(), schemaException);
                 nonComplete = fullModelSet.addAll(newModels);
             }
@@ -110,14 +111,14 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
         throw schemaException;
     }
 
-    private Set<GnmiYangModel> readCapabilities(final List<GnmiDeviceCapability> baseCaps,
-                                                final Set<String> processedModuleNames,
-                                                final SchemaException schemaException)
+    private Set<GnmiYangModel> readCapabilities(List<GnmiDeviceCapability> baseCaps,
+            Set<String> processedModuleNames,
+            SchemaException schemaException)
             throws InterruptedException, ExecutionException, TimeoutException {
         Set<GnmiYangModel> readModels = new HashSet<>();
         for (GnmiDeviceCapability capability : baseCaps) {
             if (!processedModuleNames.contains(capability.getName())) {
-                final Optional<GnmiYangModel> readModel = tryToReadModel(capability);
+                Optional<GnmiYangModel> readModel = tryToReadModel(capability);
                 if (readModel.isPresent()) {
                     readModels.add(readModel.get());
                 } else {
@@ -129,10 +130,10 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
         return readModels;
     }
 
-    private Optional<GnmiYangModel> tryToReadModel(final GnmiDeviceCapability capability)
+    private Optional<GnmiYangModel> tryToReadModel(GnmiDeviceCapability capability)
             throws InterruptedException, ExecutionException, TimeoutException {
         // Try to find the model stored with version
-        Optional<GnmiYangModel> readImport;
+        @Var Optional<GnmiYangModel> readImport;
         Optional<String> capabilityVersion = capability.getVersionString();
         if (capabilityVersion.isPresent()) {
             readImport = yangDataStoreService.readYangModel(capability.getName(), capabilityVersion.get())
@@ -155,12 +156,12 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
         return readImport;
     }
 
-    private Set<YangModelDependencyInfo> getDependenciesOfModels(final Set<GnmiYangModel> toCheck,
-                                                                 final SchemaException schemaException) {
+    private Set<YangModelDependencyInfo> getDependenciesOfModels(Set<GnmiYangModel> toCheck,
+            SchemaException schemaException) {
         Set<YangModelDependencyInfo> dependencies = new HashSet<>();
         for (GnmiYangModel model : toCheck) {
             try {
-                final YangModelDependencyInfo dependencyInfo = YangModelDependencyInfo.forYangText(
+                YangModelDependencyInfo dependencyInfo = YangModelDependencyInfo.forYangText(
                         makeTextSchemaSource(model));
                 dependencies.add(dependencyInfo);
             } catch (IOException | YangSyntaxErrorException e) {
@@ -170,17 +171,17 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
         return dependencies;
     }
 
-    private Set<GnmiYangModel> readDependencyModels(final YangModelDependencyInfo dependencyInfo,
-                                                    final Set<String> processedModuleNames,
-                                                    final SchemaException schemaException)
+    private Set<GnmiYangModel> readDependencyModels(YangModelDependencyInfo dependencyInfo,
+            Set<String> processedModuleNames,
+            SchemaException schemaException)
             throws InterruptedException, ExecutionException, TimeoutException {
         Set<GnmiYangModel> models = new HashSet<>();
         for (ModuleImport moduleImport : dependencyInfo.getDependencies()) {
             if (!processedModuleNames.contains(moduleImport.getModuleName().getLocalName())) {
-                final GnmiDeviceCapability importedCapability = new GnmiDeviceCapability(
+                var importedCapability = new GnmiDeviceCapability(
                         moduleImport.getModuleName().getLocalName(), null,
                         moduleImport.getRevision().orElse(null));
-                final Optional<GnmiYangModel> gnmiYangModel = tryToReadModel(importedCapability);
+                Optional<GnmiYangModel> gnmiYangModel = tryToReadModel(importedCapability);
                 if (gnmiYangModel.isPresent()) {
                     models.add(gnmiYangModel.get());
                 } else {
@@ -193,18 +194,18 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
     }
 
     @Override
-    public EffectiveModelContext getSchemaContext(final List<GnmiDeviceCapability> capabilities)
+    public EffectiveModelContext getSchemaContext(List<GnmiDeviceCapability> capabilities)
             throws SchemaException {
-        final CapabilitiesKey key = new CapabilitiesKey(capabilities);
+        var key = new CapabilitiesKey(capabilities);
         if (contextCache.containsKey(key)) {
             LOG.info("Schema context for capabilities {} is already cached, reusing", capabilities);
             return contextCache.get(key);
         }
         // Compute schema and add to cache
-        final CrossSourceStatementReactor.BuildAction buildAction = yangReactor.newBuild();
-        final SchemaException schemaException = new SchemaException();
-        boolean success = true;
-        final Set<GnmiYangModel> completeCapabilities = prepareModelsForSchema(capabilities);
+        CrossSourceStatementReactor.BuildAction buildAction = yangReactor.newBuild();
+        var schemaException = new SchemaException();
+        @Var boolean success = true;
+        Set<GnmiYangModel> completeCapabilities = prepareModelsForSchema(capabilities);
         for (GnmiYangModel model : completeCapabilities) {
             try {
                 buildAction.addSource(YangStatementStreamSource.create(makeTextSchemaSource(model)));
@@ -216,7 +217,7 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
         }
         if (success) {
             try {
-                final EffectiveModelContext context = buildAction.buildEffective();
+                EffectiveModelContext context = buildAction.buildEffective();
                 LOG.debug("Schema context created {}", context.getModules());
                 contextCache.put(key, context);
                 return context;
@@ -228,7 +229,7 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
         throw schemaException;
     }
 
-    private YangTextSchemaSource makeTextSchemaSource(final GnmiYangModel model) {
+    private YangTextSchemaSource makeTextSchemaSource(GnmiYangModel model) {
         if (model.getVersion().getValue().matches(SchemaConstants.REVISION_REGEX)) {
             return YangTextSchemaSource.delegateForByteSource(
                     new SourceIdentifier(UnresolvedQName.Unqualified.of(model.getName()),
@@ -240,7 +241,7 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
 
     }
 
-    private ByteSource bodyByteSource(final String yangBody) {
+    private ByteSource bodyByteSource(String yangBody) {
         return new ByteSource() {
             @Override
             public InputStream openStream() {

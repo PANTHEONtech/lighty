@@ -27,7 +27,7 @@ public interface NodeConverter {
 
     default Writer serializeData(Absolute schemaNodeIdentifier, NormalizedNode normalizedNode)
             throws SerializationException {
-        final Inference inference = SchemaInferenceStack.of(getModelContext(), schemaNodeIdentifier).toInference();
+        Inference inference = SchemaInferenceStack.of(getModelContext(), schemaNodeIdentifier).toInference();
         return serializeData(inference, normalizedNode);
     }
 
@@ -37,7 +37,7 @@ public interface NodeConverter {
 
     default Writer serializeData(YangInstanceIdentifier yangInstanceIdentifier, NormalizedNode normalizedNode)
             throws SerializationException {
-        final Inference inference = ConverterUtils.toInference(yangInstanceIdentifier, getModelContext());
+        Inference inference = ConverterUtils.toInference(yangInstanceIdentifier, getModelContext());
         return serializeData(inference, normalizedNode);
     }
 
@@ -46,13 +46,13 @@ public interface NodeConverter {
 
     default Writer serializeRpc(Absolute schemaNodeIdentifier, NormalizedNode normalizedNode)
             throws SerializationException {
-        final Inference inference = SchemaInferenceStack.of(getModelContext(), schemaNodeIdentifier).toInference();
+        Inference inference = SchemaInferenceStack.of(getModelContext(), schemaNodeIdentifier).toInference();
         return serializeRpc(inference, normalizedNode);
     }
 
     default Writer serializeRpc(YangInstanceIdentifier yangInstanceIdentifier, NormalizedNode normalizedNode)
             throws SerializationException {
-        final Inference inference = ConverterUtils.toInference(yangInstanceIdentifier, getModelContext());
+        Inference inference = ConverterUtils.toInference(yangInstanceIdentifier, getModelContext());
         return serializeRpc(inference, normalizedNode);
     }
 
@@ -78,7 +78,7 @@ public interface NodeConverter {
 
     default NormalizedNode deserialize(YangInstanceIdentifier yangInstanceIdentifier, Reader inputData)
             throws DeserializationException {
-        final Inference inference = ConverterUtils.toInference(yangInstanceIdentifier, getModelContext());
+        Inference inference = ConverterUtils.toInference(yangInstanceIdentifier, getModelContext());
         return deserialize(inference, inputData);
     }
 

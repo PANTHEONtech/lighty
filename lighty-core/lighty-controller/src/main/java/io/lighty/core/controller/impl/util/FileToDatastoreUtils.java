@@ -30,8 +30,8 @@ import org.slf4j.LoggerFactory;
 
 public final class FileToDatastoreUtils {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FileToDatastoreUtils.class);
     public static final long IMPORT_TIMEOUT_MILLIS = 20_000;
+    private static final Logger LOG = LoggerFactory.getLogger(FileToDatastoreUtils.class);
 
     private FileToDatastoreUtils() {
         throw new UnsupportedOperationException("Init of utility class is forbidden");
@@ -53,17 +53,17 @@ public final class FileToDatastoreUtils {
      * @throws ExecutionException       if something goes wrong while committing changes to datastore
      * @throws TimeoutException         if something goes wrong while committing changes to datastore
      */
-    public static void importConfigDataFile(final InputStream inputStream,
-            final YangInstanceIdentifier yangInstanceIdentifier,
-            final ImportFileFormat fileFormat, final EffectiveModelContext effectiveModelContext,
-            final DOMDataBroker dataBroker, final boolean override)
+    public static void importConfigDataFile(InputStream inputStream,
+            YangInstanceIdentifier yangInstanceIdentifier,
+            ImportFileFormat fileFormat, EffectiveModelContext effectiveModelContext,
+            DOMDataBroker dataBroker, boolean override)
             throws IOException, DeserializationException, InterruptedException, ExecutionException, TimeoutException {
 
         try (Reader inputReader = new InputStreamReader(inputStream, Charset.defaultCharset())) {
-            final NormalizedNode deserializedNode;
+            NormalizedNode deserializedNode;
             if (fileFormat == ImportFileFormat.JSON) {
                 // Json deserialization needs parent identifier
-                final YangInstanceIdentifier parentIdentifier = yangInstanceIdentifier.getParent() != null
+                YangInstanceIdentifier parentIdentifier = yangInstanceIdentifier.getParent() != null
                         ? yangInstanceIdentifier.getParent()
                         : YangInstanceIdentifier.empty();
                 deserializedNode = new JsonNodeConverter(effectiveModelContext)
@@ -102,18 +102,18 @@ public final class FileToDatastoreUtils {
      * @throws ExecutionException       if something goes wrong while committing changes to datastore
      * @throws TimeoutException         if something goes wrong while committing changes to datastore
      */
-    public static void importConfigDataFile(final InputStream inputStream, final ImportFileFormat fileFormat,
-            final EffectiveModelContext effectiveModelContext,
-            final DOMDataBroker dataBroker, final boolean override)
+    public static void importConfigDataFile(InputStream inputStream, ImportFileFormat fileFormat,
+            EffectiveModelContext effectiveModelContext,
+            DOMDataBroker dataBroker, boolean override)
             throws IOException, DeserializationException, InterruptedException, ExecutionException, TimeoutException {
         importConfigDataFile(inputStream, YangInstanceIdentifier.empty(), fileFormat, effectiveModelContext, dataBroker,
                 override);
     }
 
-    private static void writeNodes(final NormalizedNode nodes, final YangInstanceIdentifier instanceIdentifier,
-            final DOMDataBroker dataBroker, final boolean override)
+    private static void writeNodes(NormalizedNode nodes, YangInstanceIdentifier instanceIdentifier,
+            DOMDataBroker dataBroker, boolean override)
             throws InterruptedException, ExecutionException, TimeoutException {
-        final DOMDataTreeWriteTransaction wrTrx = dataBroker.newWriteOnlyTransaction();
+        DOMDataTreeWriteTransaction wrTrx = dataBroker.newWriteOnlyTransaction();
         if (override) {
             wrTrx.put(LogicalDatastoreType.CONFIGURATION, instanceIdentifier, nodes);
         } else {
@@ -128,16 +128,12 @@ public final class FileToDatastoreUtils {
 
         private final String fileFormat;
 
-        ImportFileFormat(final String formatString) {
+        ImportFileFormat(String formatString) {
             this.fileFormat = formatString;
         }
 
-        public String getFormatString() {
-            return fileFormat;
-        }
-
         @JsonCreator
-        public static ImportFileFormat getFormatType(final String inputtedFormat) {
+        public static ImportFileFormat getFormatType(String inputtedFormat) {
             for (ImportFileFormat formatType : ImportFileFormat.values()) {
                 if (formatType.fileFormat.equalsIgnoreCase(inputtedFormat)) {
                     return formatType;
@@ -145,6 +141,10 @@ public final class FileToDatastoreUtils {
             }
             throw new IllegalStateException(String.format("Format %s is not supported, valid options: xml, json",
                     inputtedFormat));
+        }
+
+        public String getFormatString() {
+            return fileFormat;
         }
     }
 

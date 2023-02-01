@@ -14,7 +14,7 @@ public class SessionSecurityException extends Exception {
         super(message);
     }
 
-    public SessionSecurityException(final String message, final Exception ex) {
+    public SessionSecurityException(String message, Exception ex) {
         super(message, ex);
     }
 

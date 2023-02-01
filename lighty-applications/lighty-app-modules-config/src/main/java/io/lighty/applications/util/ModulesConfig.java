@@ -34,22 +34,22 @@ public class ModulesConfig {
      * @throws ConfigurationException In case InputStream does not contain valid JSON data,
      *     or cannot bind Json tree to type.
      */
-    public static ModulesConfig getModulesConfig(final InputStream jsonConfigInputStream)
+    public static ModulesConfig getModulesConfig(InputStream jsonConfigInputStream)
             throws ConfigurationException {
-        final JsonNode configNode;
+        JsonNode configNode;
         try {
             configNode = MAPPER.readTree(jsonConfigInputStream);
-        } catch (final IOException e) {
+        } catch (IOException e) {
             throw new ConfigurationException("Cannot deserialize Json content to Json tree nodes", e);
         }
         if (!configNode.has(MODULES_ELEMENT_NAME)) {
             LOG.warn("Json config does not contain {} element. Using defaults.", MODULES_ELEMENT_NAME);
             return ModulesConfig.getDefaultModulesConfig();
         }
-        final var modulesNode = configNode.path(MODULES_ELEMENT_NAME);
+        var modulesNode = configNode.path(MODULES_ELEMENT_NAME);
         try {
             return MAPPER.treeToValue(modulesNode, ModulesConfig.class);
-        } catch (final JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             throw new ConfigurationException(
                     String.format("Cannot bind Json tree to type: %s", ModulesConfig.class), e);
         }
@@ -68,19 +68,19 @@ public class ModulesConfig {
         return moduleTimeoutSeconds;
     }
 
-    public void setModuleTimeoutSeconds(final long moduleTimeoutSeconds) {
+    public void setModuleTimeoutSeconds(long moduleTimeoutSeconds) {
         this.moduleTimeoutSeconds = moduleTimeoutSeconds;
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
         if (!(obj instanceof ModulesConfig)) {
             return false;
         }
-        final ModulesConfig that = (ModulesConfig) obj;
+        var that = (ModulesConfig) obj;
         return moduleTimeoutSeconds == that.moduleTimeoutSeconds;
     }
 

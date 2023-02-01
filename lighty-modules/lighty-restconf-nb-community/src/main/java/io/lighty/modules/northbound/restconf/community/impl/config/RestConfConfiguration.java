@@ -41,7 +41,7 @@ public class RestConfConfiguration {
     public RestConfConfiguration() {
     }
 
-    public RestConfConfiguration(final RestConfConfiguration restConfConfiguration) {
+    public RestConfConfiguration(RestConfConfiguration restConfConfiguration) {
         this.inetAddress = restConfConfiguration.getInetAddress();
         this.httpPort = restConfConfiguration.getHttpPort();
         this.restconfServletContextPath = restConfConfiguration.getRestconfServletContextPath();
@@ -54,10 +54,10 @@ public class RestConfConfiguration {
         this.domSchemaService = restConfConfiguration.getDomSchemaService();
     }
 
-    public RestConfConfiguration(final DOMDataBroker domDataBroker, final DOMSchemaService schemaService,
-            final DOMRpcService domRpcService, final DOMActionService domActionService,
-            final DOMNotificationService domNotificationService, final DOMMountPointService domMountPointService,
-            final DOMSchemaService domSchemaService) {
+    public RestConfConfiguration(DOMDataBroker domDataBroker, DOMSchemaService schemaService,
+            DOMRpcService domRpcService, DOMActionService domActionService,
+            DOMNotificationService domNotificationService, DOMMountPointService domMountPointService,
+            DOMSchemaService domSchemaService) {
         this.domDataBroker = domDataBroker;
         this.schemaService = schemaService;
         this.domRpcService = domRpcService;
@@ -71,7 +71,7 @@ public class RestConfConfiguration {
         return this.inetAddress;
     }
 
-    public void setInetAddress(final InetAddress inetAddress) {
+    public void setInetAddress(InetAddress inetAddress) {
         this.inetAddress = inetAddress;
     }
 
@@ -79,7 +79,7 @@ public class RestConfConfiguration {
         return this.domDataBroker;
     }
 
-    public void setDomDataBroker(final DOMDataBroker domDataBroker) {
+    public void setDomDataBroker(DOMDataBroker domDataBroker) {
         this.domDataBroker = domDataBroker;
     }
 
@@ -87,7 +87,7 @@ public class RestConfConfiguration {
         return this.schemaService;
     }
 
-    public void setSchemaService(final DOMSchemaService schemaService) {
+    public void setSchemaService(DOMSchemaService schemaService) {
         this.schemaService = schemaService;
     }
 
@@ -95,7 +95,7 @@ public class RestConfConfiguration {
         return this.domRpcService;
     }
 
-    public void setDomRpcService(final DOMRpcService domRpcService) {
+    public void setDomRpcService(DOMRpcService domRpcService) {
         this.domRpcService = domRpcService;
     }
 
@@ -103,7 +103,7 @@ public class RestConfConfiguration {
         return this.domActionService;
     }
 
-    public void setDomActionService(final DOMActionService domActionService) {
+    public void setDomActionService(DOMActionService domActionService) {
         this.domActionService = domActionService;
     }
 
@@ -111,7 +111,7 @@ public class RestConfConfiguration {
         return this.domNotificationService;
     }
 
-    public void setDomNotificationService(final DOMNotificationService domNotificationService) {
+    public void setDomNotificationService(DOMNotificationService domNotificationService) {
         this.domNotificationService = domNotificationService;
     }
 
@@ -119,7 +119,7 @@ public class RestConfConfiguration {
         return this.domMountPointService;
     }
 
-    public void setDomMountPointService(final DOMMountPointService domMountPointService) {
+    public void setDomMountPointService(DOMMountPointService domMountPointService) {
         this.domMountPointService = domMountPointService;
     }
 
@@ -127,7 +127,7 @@ public class RestConfConfiguration {
         return this.httpPort;
     }
 
-    public void setHttpPort(final int httpPort) {
+    public void setHttpPort(int httpPort) {
         this.httpPort = httpPort;
     }
 
@@ -135,7 +135,7 @@ public class RestConfConfiguration {
         return this.restconfServletContextPath;
     }
 
-    public void setRestconfServletContextPath(final String restconfServletContextPath) {
+    public void setRestconfServletContextPath(String restconfServletContextPath) {
         this.restconfServletContextPath = restconfServletContextPath;
     }
 
@@ -143,19 +143,19 @@ public class RestConfConfiguration {
         return this.domSchemaService;
     }
 
-    public void setDomSchemaService(final DOMSchemaService domSchemaService) {
+    public void setDomSchemaService(DOMSchemaService domSchemaService) {
         this.domSchemaService = domSchemaService;
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof RestConfConfiguration)) {
             return false;
         }
-        RestConfConfiguration that = (RestConfConfiguration) obj;
+        var that = (RestConfConfiguration) obj;
         return httpPort == that.httpPort
                 && Objects.equals(domDataBroker, that.domDataBroker)
                 && Objects.equals(schemaService, that.schemaService)

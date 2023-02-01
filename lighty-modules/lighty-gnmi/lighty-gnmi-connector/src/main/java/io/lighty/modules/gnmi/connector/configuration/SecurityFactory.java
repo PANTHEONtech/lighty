@@ -29,8 +29,8 @@ public final class SecurityFactory {
         // Hidden on purpose
     }
 
-    public static Security createGnmiSecurity(final String caCertificate, final String clientCertificate,
-                                              final PrivateKey privateKey) throws CertificateException {
+    public static Security createGnmiSecurity(String caCertificate, String clientCertificate,
+                                              PrivateKey privateKey) throws CertificateException {
         return new Security(
                 loadCertificates(caCertificate),
                 loadCertificates(clientCertificate),
@@ -41,12 +41,12 @@ public final class SecurityFactory {
         return new Security();
     }
 
-    private static Collection<X509Certificate> loadCertificates(final String certificate) throws CertificateException {
+    private static Collection<X509Certificate> loadCertificates(String certificate) throws CertificateException {
         return getX509Certificates(new ByteArrayInputStream(certificate.getBytes(Charset.defaultCharset())));
     }
 
     @SuppressWarnings("unchecked")
-    private static Collection<X509Certificate> getX509Certificates(final InputStream certsInputStream)
+    private static Collection<X509Certificate> getX509Certificates(InputStream certsInputStream)
             throws CertificateException {
         return (Collection<X509Certificate>) CertificateFactory.getInstance("X.509")
                 .generateCertificates(certsInputStream);

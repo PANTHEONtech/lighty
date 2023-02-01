@@ -37,36 +37,36 @@ public final class LightyDOMActionService implements RemoteDeviceServices.Action
     private final ActionTransformer messageTransformer;
     private final RemoteDeviceCommunicator communicator;
 
-    public LightyDOMActionService(final ActionTransformer messageTransformer,
-            final RemoteDeviceCommunicator communicator) {
+    public LightyDOMActionService(ActionTransformer messageTransformer,
+            RemoteDeviceCommunicator communicator) {
         this.messageTransformer = messageTransformer;
         this.communicator = communicator;
     }
 
     @Override
-    public ListenableFuture<? extends DOMActionResult> invokeAction(final Absolute type,
-            final DOMDataTreeIdentifier path, final ContainerNode input) {
-        final NetconfMessage actionRequest = this.messageTransformer.toActionRequest(type, path, input);
-        final SettableFuture<DOMActionResult> settableFuture = SettableFuture.create();
-        final ListenableFuture<RpcResult<NetconfMessage>> responseFuture = this.communicator.sendRequest(actionRequest,
+    public ListenableFuture<? extends DOMActionResult> invokeAction(Absolute type,
+            DOMDataTreeIdentifier path, ContainerNode input) {
+        NetconfMessage actionRequest = this.messageTransformer.toActionRequest(type, path, input);
+        SettableFuture<DOMActionResult> settableFuture = SettableFuture.create();
+        ListenableFuture<RpcResult<NetconfMessage>> responseFuture = this.communicator.sendRequest(actionRequest,
                 type.lastNodeIdentifier());
         Futures.addCallback(responseFuture, new FutureCallback<RpcResult<NetconfMessage>>() {
 
             @Override
-            public void onSuccess(final RpcResult<NetconfMessage> result) {
+            public void onSuccess(RpcResult<NetconfMessage> result) {
                 Preconditions.checkNotNull(result);
                 if (result.getErrors().isEmpty()) {
-                    final DOMActionResult actionResult = LightyDOMActionService.this.messageTransformer.toActionResult(
+                    DOMActionResult actionResult = LightyDOMActionService.this.messageTransformer.toActionResult(
                             type, result.getResult());
                     settableFuture.set(actionResult);
                 } else {
-                    final SimpleDOMActionResult simpleDOMActionResult = new SimpleDOMActionResult(result.getErrors());
+                    var simpleDOMActionResult = new SimpleDOMActionResult(result.getErrors());
                     settableFuture.set(simpleDOMActionResult);
                 }
             }
 
             @Override
-            public void onFailure(final Throwable cause) {
+            public void onFailure(Throwable cause) {
                 settableFuture.set(new SimpleDOMActionResult(Set.of(new ActionRpcError(cause))));
             }
         }, MoreExecutors.directExecutor());

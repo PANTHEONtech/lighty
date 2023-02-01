@@ -27,7 +27,7 @@ public class NetconfConfiguration {
         return topologyId;
     }
 
-    public void setTopologyId(final String topologyId) {
+    public void setTopologyId(String topologyId) {
         this.topologyId = topologyId;
     }
 
@@ -35,7 +35,7 @@ public class NetconfConfiguration {
         return aaaService;
     }
 
-    public void setAaaService(final AAAEncryptionService aaaService) {
+    public void setAaaService(AAAEncryptionService aaaService) {
         this.aaaService = aaaService;
     }
 
@@ -59,7 +59,7 @@ public class NetconfConfiguration {
         return clientDispatcher;
     }
 
-    public void setClientDispatcher(final NetconfClientDispatcher clientDispatcher) {
+    public void setClientDispatcher(NetconfClientDispatcher clientDispatcher) {
         this.clientDispatcher = clientDispatcher;
     }
 

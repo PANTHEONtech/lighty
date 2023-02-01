@@ -22,10 +22,10 @@ public final class SocketAnalyzer {
 
     }
 
-    public static Boolean awaitPortAvailable(final int port, final long timeout, final TimeUnit timeUnit)
+    public static Boolean awaitPortAvailable(int port, long timeout, TimeUnit timeUnit)
             throws InterruptedException {
 
-        final long expectedEndTime = System.nanoTime() + timeUnit.toNanos(timeout);
+        long expectedEndTime = System.nanoTime() + timeUnit.toNanos(timeout);
 
         while (System.nanoTime() <= expectedEndTime) {
             LOG.debug("Check if port {} is available", port);

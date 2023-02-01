@@ -33,7 +33,7 @@ public abstract class AbstractWriteTx implements DOMDataTreeWriteTransaction {
     protected NodeId nodeId;
     private boolean finished;
 
-    protected AbstractWriteTx(final NodeId nodeId) {
+    protected AbstractWriteTx(NodeId nodeId) {
         this.nodeId = nodeId;
         putList = new ArrayList<>();
         mergeList = new ArrayList<>();
@@ -95,14 +95,14 @@ public abstract class AbstractWriteTx implements DOMDataTreeWriteTransaction {
                 nodeId.getValue(), getIdentifier());
     }
 
-    private void checkEditableDatastore(final LogicalDatastoreType store) {
+    private void checkEditableDatastore(LogicalDatastoreType store) {
         checkNotFinished();
         Preconditions.checkArgument(store == LogicalDatastoreType.CONFIGURATION,
                 "Datastore %s is not editable!", store);
     }
 
-    private boolean containsOnlyNonVisibleData(final YangInstanceIdentifier path,
-                                               final NormalizedNode data) {
+    private boolean containsOnlyNonVisibleData(YangInstanceIdentifier path,
+                                                NormalizedNode data) {
         return path.getPathArguments().size() == 1 && data instanceof MixinNode;
     }
 

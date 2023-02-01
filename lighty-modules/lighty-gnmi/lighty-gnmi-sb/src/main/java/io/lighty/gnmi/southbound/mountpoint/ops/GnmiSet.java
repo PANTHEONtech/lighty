@@ -37,9 +37,9 @@ public class GnmiSet {
     private final SetRequestFactory setRequestFactory;
     private final NodeId nodeId;
 
-    public GnmiSet(final GnmiSessionProvider sessionProvider,
-                   final SetRequestFactory gnmiSetRequestFactory,
-                   final NodeId nodeId) {
+    public GnmiSet(GnmiSessionProvider sessionProvider,
+            SetRequestFactory gnmiSetRequestFactory,
+            NodeId nodeId) {
         this.sessionProvider = sessionProvider;
         this.setRequestFactory = gnmiSetRequestFactory;
         this.nodeId = nodeId;
@@ -47,15 +47,15 @@ public class GnmiSet {
     }
 
     public ListenableFuture<CommitInfo> set(
-            final List<ImmutablePair<YangInstanceIdentifier, NormalizedNode>> replaceList,
-            final List<ImmutablePair<YangInstanceIdentifier, NormalizedNode>> updateList,
-            final List<YangInstanceIdentifier> deleteList) {
+            List<ImmutablePair<YangInstanceIdentifier, NormalizedNode>> replaceList,
+            List<ImmutablePair<YangInstanceIdentifier, NormalizedNode>> updateList,
+            List<YangInstanceIdentifier> deleteList) {
 
-        final SettableFuture<CommitInfo> ret = SettableFuture.create();
+        SettableFuture<CommitInfo> ret = SettableFuture.create();
         try {
-            final Gnmi.SetRequest request = setRequestFactory.newRequest(replaceList, updateList, deleteList);
+            Gnmi.SetRequest request = setRequestFactory.newRequest(replaceList, updateList, deleteList);
             LOG.debug("[{}] Sending gNMI SetRequest:\n{}", nodeId.getValue(), request);
-            final ListenableFuture<Gnmi.SetResponse> setResponseFuture = sessionProvider.getGnmiSession().set(request);
+            ListenableFuture<Gnmi.SetResponse> setResponseFuture = sessionProvider.getGnmiSession().set(request);
             Futures.addCallback(setResponseFuture, new FutureCallback<>() {
                 @Override
                 public void onSuccess(Gnmi.@Nullable SetResponse setResponse) {

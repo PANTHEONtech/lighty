@@ -38,8 +38,8 @@ public class YangInstanceNormToGnmiUpdateCodec implements
     private final SchemaContextProvider schemaContextProvider;
     private final Gson gson;
 
-    public YangInstanceNormToGnmiUpdateCodec(final SchemaContextProvider schemaContextProvider,
-            final YangInstanceIdentifierToPathCodec toPathCodec, final Gson gson) {
+    public YangInstanceNormToGnmiUpdateCodec(SchemaContextProvider schemaContextProvider,
+            YangInstanceIdentifierToPathCodec toPathCodec, Gson gson) {
         this.schemaContextProvider = schemaContextProvider;
         this.toPathCodec = toPathCodec;
         this.gson = gson;
@@ -50,9 +50,9 @@ public class YangInstanceNormToGnmiUpdateCodec implements
             throws GnmiCodecException {
 
         Gnmi.Path path = toPathCodec.apply(identifier);
-        final Gnmi.Update.Builder updateBuilder = Gnmi.Update.newBuilder().setPath(path);
+        Gnmi.Update.Builder updateBuilder = Gnmi.Update.newBuilder().setPath(path);
         LOG.debug("Converting NormalizedNode {} with identifier {} to json", node, identifier);
-        final String json = toJson(identifier, node);
+        String json = toJson(identifier, node);
         LOG.debug("Converted NormalizedNode {} with identifier {} to json string: {}", node, identifier, json);
         if (isListEntry(node)) {
             updateBuilder.setVal(Gnmi.TypedValue.newBuilder().setJsonIetfVal(ByteString.copyFromUtf8(json)));
@@ -66,7 +66,7 @@ public class YangInstanceNormToGnmiUpdateCodec implements
             updateBuilder.setVal(Gnmi.TypedValue.newBuilder()
                     .setJsonIetfVal(ByteString.copyFromUtf8(unwrapContainer(json))));
         } else if (isLeaf(node)) {
-            final JsonPrimitive jsonPrimitive = unwrapPrimitive(json);
+            JsonPrimitive jsonPrimitive = unwrapPrimitive(json);
             // Boolean value case
             if (jsonPrimitive.isBoolean()) {
                 updateBuilder.setVal(Gnmi.TypedValue.newBuilder()
@@ -91,7 +91,7 @@ public class YangInstanceNormToGnmiUpdateCodec implements
     }
 
     @SuppressWarnings("IllegalCatch")
-    public String toJson(final YangInstanceIdentifier identifier, final NormalizedNode data)
+    public String toJson(YangInstanceIdentifier identifier, NormalizedNode data)
             throws GnmiCodecException {
         try {
             return DataConverter.jsonStringFromNormalizedNodes(identifier, data,
@@ -101,14 +101,14 @@ public class YangInstanceNormToGnmiUpdateCodec implements
         }
     }
 
-    private String unwrapContainer(final String json) throws GnmiCodecException {
-        final JsonElement jsonElement = JsonParser.parseString(json);
+    private String unwrapContainer(String json) throws GnmiCodecException {
+        JsonElement jsonElement = JsonParser.parseString(json);
         if (!jsonElement.isJsonObject()) {
             throw new GnmiCodecException("Can't unwrap non json object");
         }
         Set<Entry<String, JsonElement>> jsonEntry = jsonElement.getAsJsonObject().entrySet();
         if (jsonEntry.size() == 1) {
-            final JsonElement elem = jsonEntry.iterator().next().getValue();
+            JsonElement elem = jsonEntry.iterator().next().getValue();
             return gson.toJson(elem);
         } else if (jsonEntry.size() == 0) {
             return json;
@@ -117,14 +117,14 @@ public class YangInstanceNormToGnmiUpdateCodec implements
         }
     }
 
-    private static JsonPrimitive unwrapPrimitive(final String json) throws GnmiCodecException {
-        final JsonElement jsonElement = JsonParser.parseString(json);
+    private static JsonPrimitive unwrapPrimitive(String json) throws GnmiCodecException {
+        JsonElement jsonElement = JsonParser.parseString(json);
         if (!jsonElement.isJsonObject()) {
             throw new GnmiCodecException(String.format("Json %s is not a json object", json));
         }
-        final JsonObject jsonObject = jsonElement.getAsJsonObject();
+        JsonObject jsonObject = jsonElement.getAsJsonObject();
         if (jsonObject.entrySet().size() == 1) {
-            final JsonElement value = jsonObject.entrySet().iterator().next().getValue();
+            JsonElement value = jsonObject.entrySet().iterator().next().getValue();
             if (value.isJsonPrimitive()) {
                 return value.getAsJsonPrimitive();
             } else {
@@ -137,19 +137,19 @@ public class YangInstanceNormToGnmiUpdateCodec implements
         }
     }
 
-    private static boolean isListEntry(final NormalizedNode node) {
+    private static boolean isListEntry(NormalizedNode node) {
         return node instanceof MapEntryNode;
     }
 
-    private static boolean isLeaf(final NormalizedNode node) {
+    private static boolean isLeaf(NormalizedNode node) {
         return node instanceof LeafNode;
     }
 
-    private static boolean isContainer(final NormalizedNode node) {
+    private static boolean isContainer(NormalizedNode node) {
         return node instanceof ContainerNode;
     }
 
-    private static boolean isDecimal(final Number number) {
+    private static boolean isDecimal(Number number) {
         return number.doubleValue() % 1 != 0;
     }
 

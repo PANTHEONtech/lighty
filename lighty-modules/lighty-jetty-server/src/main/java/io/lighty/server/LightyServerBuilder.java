@@ -7,6 +7,7 @@
  */
 package io.lighty.server;
 
+import com.google.errorprone.annotations.Var;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -25,6 +26,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
  * Allows user to build jetty server.
  */
 public class LightyServerBuilder {
+
     private final Map<FilterHolder, String> filters;
     private final Map<String, String> parameters;
     private final List<EventListener> listeners;
@@ -38,7 +40,7 @@ public class LightyServerBuilder {
      *
      * @param inetSocketAddress - port and address of server
      */
-    public LightyServerBuilder(final InetSocketAddress inetSocketAddress) {
+    public LightyServerBuilder(InetSocketAddress inetSocketAddress) {
         this.inetSocketAddress = inetSocketAddress;
         this.filters = new HashMap<>();
         this.parameters = new HashMap<>();
@@ -51,7 +53,7 @@ public class LightyServerBuilder {
      *
      * @param server - jetty server
      */
-    public LightyServerBuilder(final Server server) {
+    public LightyServerBuilder(Server server) {
         this(new InetSocketAddress(0));
         this.server = server;
     }
@@ -60,10 +62,10 @@ public class LightyServerBuilder {
      * Add filter for handlers.
      *
      * @param filterHolder - filter holder
-     * @param path - path
+     * @param path         - path
      * @return instance of {@link LightyServerBuilder}
      */
-    public LightyServerBuilder addCommonFilter(final FilterHolder filterHolder, final String path) {
+    public LightyServerBuilder addCommonFilter(FilterHolder filterHolder, String path) {
         this.filters.put(filterHolder, path);
         return this;
     }
@@ -74,7 +76,7 @@ public class LightyServerBuilder {
      * @param eventListener - event listener
      * @return instance of {@link LightyServerBuilder}
      */
-    public LightyServerBuilder addCommonEventListener(final EventListener eventListener) {
+    public LightyServerBuilder addCommonEventListener(EventListener eventListener) {
         this.listeners.add(eventListener);
         return this;
     }
@@ -82,11 +84,11 @@ public class LightyServerBuilder {
     /**
      * Add init parameters for handlers.
      *
-     * @param key - key of init parameters
+     * @param key   - key of init parameters
      * @param value - value of init parameters
      * @return instance of {@link LightyServerBuilder}
      */
-    public LightyServerBuilder addCommonInitParameter(final String key, final String value) {
+    public LightyServerBuilder addCommonInitParameter(String key, String value) {
         this.parameters.put(key, value);
         return this;
     }
@@ -97,7 +99,7 @@ public class LightyServerBuilder {
      * @param handler - specific handler
      * @return instance of {@link LightyServerBuilder}
      */
-    public LightyServerBuilder addContextHandler(final Handler handler) {
+    public LightyServerBuilder addContextHandler(Handler handler) {
         this.contexts.add(handler);
         return this;
     }
@@ -111,7 +113,7 @@ public class LightyServerBuilder {
         if (this.server == null) {
             this.server = new Server(this.inetSocketAddress);
         }
-        final ContextHandlerCollection contextHandlerCollection = new ContextHandlerCollection();
+        var contextHandlerCollection = new ContextHandlerCollection();
         this.contexts.forEach((contextHandler) -> {
             addFilters(contextHandler);
             contextHandlerCollection.addHandler(contextHandler);
@@ -120,10 +122,10 @@ public class LightyServerBuilder {
         return this.server;
     }
 
-    void addFilters(final Handler contextHandler) {
+    void addFilters(Handler contextHandler) {
         if (contextHandler instanceof ContextHandlerCollection) {
-            final ContextHandlerCollection sch = (ContextHandlerCollection) contextHandler;
-            for (final Handler handler : sch.getChildHandlers()) {
+            var sch = (ContextHandlerCollection) contextHandler;
+            for (Handler handler : sch.getChildHandlers()) {
                 if (handler instanceof ServletContextHandler) {
                     additionalComponents(handler);
                 }
@@ -133,12 +135,12 @@ public class LightyServerBuilder {
         }
     }
 
-    private void additionalComponents(final Handler contextHandler) {
-        final ServletContextHandler ch = (ServletContextHandler) contextHandler;
+    private void additionalComponents(Handler contextHandler) {
+        var ch = (ServletContextHandler) contextHandler;
         this.filters.forEach((filterHolder, path) -> {
             ch.addFilter(filterHolder, path, EnumSet.of(DispatcherType.REQUEST));
         });
-        EventListener[] array = new EventListener[this.listeners.size()];
+        @Var EventListener[] array = new EventListener[this.listeners.size()];
         array = this.listeners.toArray(array);
         ch.setEventListeners(array);
         this.parameters.forEach(ch::setInitParameter);

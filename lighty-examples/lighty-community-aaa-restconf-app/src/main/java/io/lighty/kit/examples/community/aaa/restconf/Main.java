@@ -51,20 +51,20 @@ public final class Main {
     private CommunityRestConf restconf;
     private ModulesConfig modulesConfig = ModulesConfig.getDefaultModulesConfig();
 
-    public static void main(final String[] args) {
-        Main app = new Main();
+    public static void main(String[] args) {
+        var app = new Main();
         app.start(args, true);
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
-    public void start(final String[] args, final boolean registerShutdownHook) {
-        final Stopwatch stopwatch = Stopwatch.createStarted();
+    public void start(String[] args, boolean registerShutdownHook) {
+        var stopwatch = Stopwatch.createStarted();
         try {
-            final ControllerConfiguration singleNodeConfiguration;
-            final RestConfConfiguration restconfConfiguration;
-            final AAAConfiguration aaaConfiguration;
+            ControllerConfiguration singleNodeConfiguration;
+            RestConfConfiguration restconfConfiguration;
+            AAAConfiguration aaaConfiguration;
             if (args.length > 0) {
-                final Path configPath = Paths.get(args[0]);
+                Path configPath = Paths.get(args[0]);
                 LOG.info("Lighty and Restconf starting, using configuration from file {} ...", configPath);
                 singleNodeConfiguration = ControllerConfigUtils.getConfiguration(Files.newInputStream(configPath));
                 restconfConfiguration = RestConfConfigUtils.getRestConfConfiguration(Files.newInputStream(configPath));
@@ -72,7 +72,7 @@ public final class Main {
                 modulesConfig = ModulesConfig.getModulesConfig(Files.newInputStream(configPath));
             } else {
                 LOG.info("Lighty and Restconf starting, using default configuration ...");
-                final Set<YangModuleInfo> modelPaths = Stream.concat(RestConfConfigUtils.YANG_MODELS.stream(),
+                Set<YangModuleInfo> modelPaths = Stream.concat(RestConfConfigUtils.YANG_MODELS.stream(),
                         AAAConfigUtils.YANG_MODELS.stream()).collect(Collectors.toSet());
                 singleNodeConfiguration = ControllerConfigUtils.getDefaultSingleNodeConfiguration(modelPaths);
                 restconfConfiguration = RestConfConfigUtils.getDefaultRestConfConfiguration();
@@ -84,7 +84,7 @@ public final class Main {
             }
             startLighty(singleNodeConfiguration, restconfConfiguration, aaaConfiguration);
             LOG.info("Lighty.io, Restconf and AAA module started in {}", stopwatch.stop());
-        } catch (final Throwable cause) {
+        } catch (Throwable cause) {
             LOG.error("Lighty.io, Restconf and AAA module main application exception: ", cause);
             if (cause instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
@@ -93,40 +93,40 @@ public final class Main {
         }
     }
 
-    private void startLighty(final ControllerConfiguration controllerConfiguration,
-            final RestConfConfiguration restconfConfiguration, final AAAConfiguration aaaConfiguration)
-        throws ConfigurationException, ExecutionException, InterruptedException, TimeoutException,
-               ModuleStartupException {
+    private void startLighty(ControllerConfiguration controllerConfiguration,
+            RestConfConfiguration restconfConfiguration, AAAConfiguration aaaConfiguration)
+            throws ConfigurationException, ExecutionException, InterruptedException, TimeoutException,
+            ModuleStartupException {
 
         //1. Initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
-        final LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
+        var lightyControllerBuilder = new LightyControllerBuilder();
         this.lightyController = lightyControllerBuilder.from(controllerConfiguration).build();
-        final boolean controllerStartOk = this.lightyController.start()
+        boolean controllerStartOk = this.lightyController.start()
                 .get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
         if (!controllerStartOk) {
             throw new ModuleStartupException("Lighty.io Controller startup failed!");
         }
 
         // 2. Initialize and start Restconf server
-        final LightyServerBuilder jettyServerBuilder = new LightyServerBuilder(new InetSocketAddress(
+        var jettyServerBuilder = new LightyServerBuilder(new InetSocketAddress(
                 restconfConfiguration.getInetAddress(), restconfConfiguration.getHttpPort()));
         this.restconf = CommunityRestConfBuilder
                 .from(RestConfConfigUtils.getRestConfConfiguration(restconfConfiguration,
-                    this.lightyController.getServices()))
+                        this.lightyController.getServices()))
                 .withLightyServer(jettyServerBuilder)
                 .build();
-        final boolean restconfStartOk = this.restconf.start()
+        boolean restconfStartOk = this.restconf.start()
                 .get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
         if (!restconfStartOk) {
             throw new ModuleStartupException("Community Restconf startup failed!");
         }
 
         // 3. Initialize and start Lighty AAA
-        final DataBroker bindingDataBroker = this.lightyController.getServices().getBindingDataBroker();
+        DataBroker bindingDataBroker = this.lightyController.getServices().getBindingDataBroker();
         Security.addProvider(new BouncyCastleProvider());
         aaaConfiguration.setCertificateManager(CertificateManagerConfig.getDefault(bindingDataBroker));
-        this.aaaLighty = new AAALighty(bindingDataBroker,null, jettyServerBuilder, aaaConfiguration);
-        final boolean aaaLightyStartOk = this.aaaLighty.start().get(modulesConfig.getModuleTimeoutSeconds(),
+        this.aaaLighty = new AAALighty(bindingDataBroker, null, jettyServerBuilder, aaaConfiguration);
+        boolean aaaLightyStartOk = this.aaaLighty.start().get(modulesConfig.getModuleTimeoutSeconds(),
                 TimeUnit.SECONDS);
         if (!aaaLightyStartOk) {
             throw new ModuleStartupException("AAA module startup failed!");
@@ -136,7 +136,7 @@ public final class Main {
         this.restconf.startServer();
     }
 
-    private void closeLightyModule(final LightyModule module) {
+    private void closeLightyModule(LightyModule module) {
         if (module != null) {
             module.shutdown(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
         }
@@ -144,7 +144,7 @@ public final class Main {
 
     public void shutdown() {
         LOG.info("Lighty.io, Restconf and AAA module shutting down ...");
-        final Stopwatch stopwatch = Stopwatch.createStarted();
+        final var stopwatch = Stopwatch.createStarted();
         closeLightyModule(this.aaaLighty);
         closeLightyModule(this.restconf);
         closeLightyModule(this.lightyController);

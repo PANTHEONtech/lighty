@@ -16,7 +16,7 @@ public class WriteOnlyTx extends AbstractWriteTx {
 
     private final GnmiSet setProvider;
 
-    public WriteOnlyTx(final GnmiSet gnmiSet) {
+    public WriteOnlyTx(GnmiSet gnmiSet) {
         super(gnmiSet.getNodeId());
         this.setProvider = gnmiSet;
     }

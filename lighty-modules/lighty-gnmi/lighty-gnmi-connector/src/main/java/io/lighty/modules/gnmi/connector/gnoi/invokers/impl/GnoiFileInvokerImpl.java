@@ -18,35 +18,35 @@ public final class GnoiFileInvokerImpl implements GnoiFileInvoker {
 
     private final FileGrpc.FileStub fileStub;
 
-    private GnoiFileInvokerImpl(final FileGrpc.FileStub fileStub) {
+    private GnoiFileInvokerImpl(FileGrpc.FileStub fileStub) {
         this.fileStub = fileStub;
     }
 
-    public static GnoiFileInvoker fromChannel(final Channel channel) {
+    public static GnoiFileInvoker fromChannel(Channel channel) {
         return new GnoiFileInvokerImpl(FileGrpc.newStub(channel));
     }
 
     @Override
-    public void get(final FileOuterClass.GetRequest getRequest,
-                    final StreamObserver<FileOuterClass.GetResponse> responseObserver) {
+    public void get(FileOuterClass.GetRequest getRequest,
+            StreamObserver<FileOuterClass.GetResponse> responseObserver) {
         fileStub.get(getRequest, responseObserver);
     }
 
     @Override
     public StreamObserver<FileOuterClass.PutRequest> put(
-            final StreamObserver<FileOuterClass.PutResponse> responseObserver) {
+            StreamObserver<FileOuterClass.PutResponse> responseObserver) {
         return fileStub.put(responseObserver);
     }
 
     @Override
-    public void stat(final FileOuterClass.StatRequest statRequest,
-                     final StreamObserver<FileOuterClass.StatResponse> responseObserver) {
+    public void stat(FileOuterClass.StatRequest statRequest,
+            StreamObserver<FileOuterClass.StatResponse> responseObserver) {
         fileStub.stat(statRequest, responseObserver);
     }
 
     @Override
-    public void remove(final FileOuterClass.RemoveRequest request,
-                       final StreamObserver<FileOuterClass.RemoveResponse> responseObserver) {
+    public void remove(FileOuterClass.RemoveRequest request,
+            StreamObserver<FileOuterClass.RemoveResponse> responseObserver) {
         fileStub.remove(request, responseObserver);
     }
 }

@@ -153,7 +153,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private final int maxDataBrokerFutureCallbackPoolSize;
     private final int mailboxCapacity;
     private final boolean metricCaptureEnabled;
-
+    private final LightyDiagStatusServiceImpl lightyDiagStatusService;
+    private final LightySystemReadyMonitorImpl systemReadyMonitor;
     private Configuration clusterConfiguration;
     private ActorSystemProviderImpl actorSystemProvider;
     private DatastoreSnapshotRestore datastoreSnapshotRestore;
@@ -173,7 +174,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private NotificationService notificationService;
     private NotificationPublishService notificationPublishService;
     private DataBroker dataBroker;
-    private final LightyDiagStatusServiceImpl lightyDiagStatusService;
     private EventExecutor eventExecutor;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
@@ -191,25 +191,24 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private MountPointService mountPointService;
     private ActionService actionService;
     private ActionProviderService actionProviderService;
-    private final LightySystemReadyMonitorImpl systemReadyMonitor;
     private List<ObjectRegistration<YangModuleInfo>> modelsRegistration = new ArrayList<>();
     private AkkaManagement akkaManagement;
     private Optional<ClusteringHandler> clusteringHandler;
     private Optional<InitialConfigData> initialConfigData;
 
 
-    public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
-                                final ClassLoader actorSystemClassLoader,
-                                final ControllerConfiguration.DOMNotificationRouterConfig domNotificationRouterConfig,
-                                final String restoreDirectoryPath, final int maxDataBrokerFutureCallbackQueueSize,
-                                final int maxDataBrokerFutureCallbackPoolSize, final boolean metricCaptureEnabled,
-                                final int mailboxCapacity, final Properties distributedEosProperties,
-                                final String moduleShardsConfig,
-                                final String modulesConfig, final DatastoreContext configDatastoreContext,
-                                final DatastoreContext operDatastoreContext,
-                                final Map<String, Object> datastoreProperties,
-                                final Set<YangModuleInfo> modelSet,
-                                final @Nullable InitialConfigData initialConfigData) {
+    public LightyControllerImpl(ExecutorService executorService, Config actorSystemConfig,
+            ClassLoader actorSystemClassLoader,
+            ControllerConfiguration.DOMNotificationRouterConfig domNotificationRouterConfig,
+            String restoreDirectoryPath, int maxDataBrokerFutureCallbackQueueSize,
+            int maxDataBrokerFutureCallbackPoolSize, boolean metricCaptureEnabled,
+            int mailboxCapacity, Properties distributedEosProperties,
+            String moduleShardsConfig,
+            String modulesConfig, DatastoreContext configDatastoreContext,
+            DatastoreContext operDatastoreContext,
+            Map<String, Object> datastoreProperties,
+            Set<YangModuleInfo> modelSet,
+            @Nullable InitialConfigData initialConfigData) {
         super(executorService);
         initSunXMLWriterProperty();
         this.actorSystemConfig = actorSystemConfig;
@@ -246,7 +245,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
         //INIT actor system provider
         this.actorSystemProvider = new ActorSystemProviderImpl(this.actorSystemClassLoader,
-                QuarantinedMonitorActor.props(() -> { }), this.actorSystemConfig);
+                QuarantinedMonitorActor.props(() -> {
+                }), this.actorSystemConfig);
 
         this.akkaManagement = AkkaManagement.get(actorSystemProvider.getActorSystem());
         akkaManagement.start();
@@ -257,7 +257,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.clusteringHandler.ifPresent(handler -> {
             handler.initClustering();
             if (handler.getModuleShardsConfig().isPresent()) {
-                final HybridModuleShardConfigProvider shardConfigProvider = new HybridModuleShardConfigProvider(
+                var shardConfigProvider = new HybridModuleShardConfigProvider(
                         handler.getModuleShardsConfig().get(), this.modulesConfig);
                 this.clusterConfiguration = new ConfigurationImpl(shardConfigProvider);
             }
@@ -266,7 +266,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.datastoreSnapshotRestore = new DefaultDatastoreSnapshotRestore(this.restoreDirectoryPath);
 
         // INIT yang parser factory
-        final YangXPathParserFactory xpathFactory = new AntlrXPathParserFactory();
+        YangXPathParserFactory xpathFactory = new AntlrXPathParserFactory();
         this.yangParserFactory = new DefaultYangParserFactory(xpathFactory);
 
         //INIT schema context
@@ -277,15 +277,15 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
         // INIT CODEC FACTORY
 
-        final BindingRuntimeGenerator bindingRuntimeGenerator = new DefaultBindingRuntimeGenerator();
-        final BindingRuntimeTypes bindingRuntimeTypes = bindingRuntimeGenerator
+        BindingRuntimeGenerator bindingRuntimeGenerator = new DefaultBindingRuntimeGenerator();
+        BindingRuntimeTypes bindingRuntimeTypes = bindingRuntimeGenerator
                 .generateTypeMapping(moduleInfoSnapshot.getEffectiveModelContext());
-        final DefaultBindingRuntimeContext bindingRuntimeContext
+        var bindingRuntimeContext
                 = new DefaultBindingRuntimeContext(bindingRuntimeTypes, moduleInfoSnapshot);
 
         this.bindingCodecTreeFactory = new DefaultBindingCodecTreeFactory();
 
-        final BindingCodecContext bindingCodecContext = new BindingCodecContext(bindingRuntimeContext);
+        var bindingCodecContext = new BindingCodecContext(bindingRuntimeContext);
         this.codec = new ConstantAdapterContext(bindingCodecContext);
 
         // CONFIG DATASTORE

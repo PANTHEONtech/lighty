@@ -46,18 +46,18 @@ public class Main {
 
     private LightyController controller;
 
-    public static void main(final String[] args) {
-        final Main app = new Main();
+    public static void main(String[] args) {
+        var app = new Main();
         app.start(args, true);
     }
 
     @SuppressWarnings("IllegalCatch")
-    public void start(final String[] args, final boolean registerShutdownHook) {
-        final Stopwatch stopwatch = Stopwatch.createStarted();
+    public void start(String[] args, boolean registerShutdownHook) {
+        var stopwatch = Stopwatch.createStarted();
         try {
-            final ControllerConfiguration singleNodeConfiguration;
+            ControllerConfiguration singleNodeConfiguration;
             if (args.length > 0) {
-                final Path configPath = Paths.get(args[0]);
+                Path configPath = Paths.get(args[0]);
                 LOG.info("Lighty starting, using configuration file {} ...", configPath);
                 singleNodeConfiguration = ControllerConfigUtils.getConfiguration(Files.newInputStream(configPath));
             } else {
@@ -71,10 +71,10 @@ public class Main {
             }
             startLighty(singleNodeConfiguration);
             LOG.info("Lighty started in {}", stopwatch.stop());
-        } catch (final IOException e) {
+        } catch (IOException e) {
             LOG.error("Lighty Guice application - error reading config file: ", e);
             shutdown();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             LOG.error("Lighty Guice application exception: ", e);
             if (e instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
@@ -83,26 +83,26 @@ public class Main {
         }
     }
 
-    private void startLighty(final ControllerConfiguration controllerConfiguration)
+    private void startLighty(ControllerConfiguration controllerConfiguration)
             throws ConfigurationException, InterruptedException, ExecutionException, TimeoutException {
         //1. Initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
-        final LightyControllerBuilder controllerBuilder = new LightyControllerBuilder();
+        var controllerBuilder = new LightyControllerBuilder();
         controller = controllerBuilder.from(controllerConfiguration).build();
         controller.start().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
 
         //2. Initialize Lighty Controller Module custom application beans
-        final LightyControllerModule controllerModule = new LightyControllerModule(controller.getServices());
-        final ApplicationModule applicationModule = new ApplicationModule();
-        final Injector injector = Guice.createInjector(controllerModule, applicationModule);
-        final DataStoreService service = injector.getInstance(DataStoreServiceImpl.class);
+        var controllerModule = new LightyControllerModule(controller.getServices());
+        var applicationModule = new ApplicationModule();
+        Injector injector = Guice.createInjector(controllerModule, applicationModule);
+        DataStoreService service = injector.getInstance(DataStoreServiceImpl.class);
 
         //3. Write initial configuration
         writeInitData(service).get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
-    FluentFuture<? extends CommitInfo> writeInitData(final DataStoreService service) {
-        final TopologyId topologyId = new TopologyId("InitialTopology");
-        final NetworkTopology networkTopology = new NetworkTopologyBuilder()
+    FluentFuture<? extends CommitInfo> writeInitData(DataStoreService service) {
+        var topologyId = new TopologyId("InitialTopology");
+        NetworkTopology networkTopology = new NetworkTopologyBuilder()
                 .setTopology(Collections.singletonMap(new TopologyKey(topologyId), new TopologyBuilder()
                         .setTopologyId(topologyId)
                         .build()))
@@ -110,7 +110,7 @@ public class Main {
         return service.writeData(InstanceIdentifier.create(NetworkTopology.class), networkTopology);
     }
 
-    private void closeLightyModule(final LightyModule module) {
+    private void closeLightyModule(LightyModule module) {
         if (module != null) {
             module.shutdown(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
         }
@@ -118,7 +118,7 @@ public class Main {
 
     public void shutdown() {
         LOG.info("Lighty shutting down ...");
-        final Stopwatch stopwatch = Stopwatch.createStarted();
+        var stopwatch = Stopwatch.createStarted();
         closeLightyModule(controller);
         LOG.info("Lighty stopped in {}", stopwatch.stop());
     }

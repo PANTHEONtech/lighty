@@ -29,22 +29,23 @@ public class DataStoreServiceImpl implements DataStoreService {
     @Named("ClusteredDOMDataBroker")
     private DOMDataBroker domDataBroker;
 
-    public <T extends DataObject> FluentFuture<? extends CommitInfo> writeData(final InstanceIdentifier<T> identifier,
-            final T data) {
-        final var writeTransaction = dataBroker.newWriteOnlyTransaction();
+    @Override
+    public <T extends DataObject> FluentFuture<? extends CommitInfo> writeData(InstanceIdentifier<T> identifier,
+            T data) {
+        var writeTransaction = dataBroker.newWriteOnlyTransaction();
         writeTransaction.put(LogicalDatastoreType.CONFIGURATION, identifier, data);
         return writeTransaction.commit();
     }
 
     @Override
-    public <T extends DataObject> FluentFuture<Optional<T>> readFromDataBroker(final InstanceIdentifier<T> identifier) {
+    public <T extends DataObject> FluentFuture<Optional<T>> readFromDataBroker(InstanceIdentifier<T> identifier) {
         try (var readTransaction = dataBroker.newReadOnlyTransaction()) {
             return readTransaction.read(LogicalDatastoreType.CONFIGURATION, identifier);
         }
     }
 
     @Override
-    public FluentFuture<Optional<NormalizedNode>> readFromDomDataBroker(final YangInstanceIdentifier identifier) {
+    public FluentFuture<Optional<NormalizedNode>> readFromDomDataBroker(YangInstanceIdentifier identifier) {
         try (var domReadTransaction = domDataBroker.newReadOnlyTransaction()) {
             return domReadTransaction.read(LogicalDatastoreType.CONFIGURATION, identifier);
         }

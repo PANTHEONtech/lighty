@@ -45,7 +45,7 @@ public class EffectiveModelContextBuilder {
      * @return {@link EffectiveModelContextBuilder}
      * @throws EffectiveModelContextBuilderException if path is nonnull and empty
      */
-    public EffectiveModelContextBuilder addYangModulesPath(@Nullable final String path)
+    public EffectiveModelContextBuilder addYangModulesPath(@Nullable String path)
             throws EffectiveModelContextBuilderException {
         if (path != null && path.isEmpty()) {
             throw new EffectiveModelContextBuilderException("Provided path to YANG modules is empty");
@@ -61,7 +61,7 @@ public class EffectiveModelContextBuilder {
      * @return {@link EffectiveModelContextBuilder}
      * @throws EffectiveModelContextBuilderException if yangModulesPath is nonnull and empty
      */
-    public EffectiveModelContextBuilder addYangModulesInfo(@Nullable final Set<YangModuleInfo> yangModuleInfoSet)
+    public EffectiveModelContextBuilder addYangModulesInfo(@Nullable Set<YangModuleInfo> yangModuleInfoSet)
             throws EffectiveModelContextBuilderException {
         if (yangModuleInfoSet != null && yangModuleInfoSet.isEmpty()) {
             throw new EffectiveModelContextBuilderException("Provided list of YangModuleInfo  is empty");
@@ -71,8 +71,8 @@ public class EffectiveModelContextBuilder {
     }
 
     /**
-     * Construct {@link EffectiveModelContext} from provided yang models in {@link #addYangModulesInfo(Set)} and {@link
-     * #addYangModulesPath(String)}'.
+     * Construct {@link EffectiveModelContext} from provided yang models in {@link #addYangModulesInfo(Set)} and
+     * {@link #addYangModulesPath(String)}'.
      *
      * @return {@link EffectiveModelContext}
      * @throws EffectiveModelContextBuilderException if models information was not provided or occur any exception
@@ -80,7 +80,7 @@ public class EffectiveModelContextBuilder {
      */
     public EffectiveModelContext build() throws EffectiveModelContextBuilderException {
         if (this.yangModulesPath != null || this.yangModulesInfo != null) {
-            final BuildAction buildAction = RFC7950Reactors.defaultReactorBuilder().build().newBuild();
+            BuildAction buildAction = RFC7950Reactors.defaultReactorBuilder().build().newBuild();
             if (this.yangModulesInfo != null) {
                 buildAction.addSources(getYangStatementsFromYangModulesInfo(this.yangModulesInfo));
             }
@@ -98,18 +98,18 @@ public class EffectiveModelContextBuilder {
         }
     }
 
-    private static List<YangStatementStreamSource> getYangStatementsFromYangModulesPath(final String path)
+    private static List<YangStatementStreamSource> getYangStatementsFromYangModulesPath(String path)
             throws EffectiveModelContextBuilderException {
-        final ArrayList<YangStatementStreamSource> sourceArrayList = new ArrayList<>();
+        ArrayList<YangStatementStreamSource> sourceArrayList = new ArrayList<>();
         try (Stream<Path> pathStream = Files.walk(Path.of(path))) {
-            final List<File> filesInFolder = pathStream
+            List<File> filesInFolder = pathStream
                     .filter(Files::isRegularFile)
                     .map(Path::toFile)
                     .collect(Collectors.toList());
             for (File file : filesInFolder) {
-                final ByteSource sanitizedYangByteSource = YangModelSanitizer
+                ByteSource sanitizedYangByteSource = YangModelSanitizer
                         .removeRegexpPosix(com.google.common.io.Files.asByteSource(file));
-                final YangStatementStreamSource statementSource = YangStatementStreamSource.create(
+                var statementSource = YangStatementStreamSource.create(
                         YangTextSchemaSource.delegateForByteSource(
                                 YangTextSchemaSource.identifierFromFilename(file.getName()),
                                 sanitizedYangByteSource));
@@ -118,26 +118,26 @@ public class EffectiveModelContextBuilder {
             }
             return sourceArrayList;
         } catch (IOException | YangParserException e) {
-            final String errorMsg = String.format("Failed to create YangStatementStreamSource from"
+            String errorMsg = String.format("Failed to create YangStatementStreamSource from"
                     + "provided path: [%s]", path);
             throw new EffectiveModelContextBuilderException(errorMsg, e);
         }
     }
 
     private static List<YangStatementStreamSource> getYangStatementsFromYangModulesInfo(
-            final Set<YangModuleInfo> yangModulesInfo) throws EffectiveModelContextBuilderException {
-        final ArrayList<YangStatementStreamSource> sourceArrayList = new ArrayList<>();
+            Set<YangModuleInfo> yangModulesInfo) throws EffectiveModelContextBuilderException {
+        ArrayList<YangStatementStreamSource> sourceArrayList = new ArrayList<>();
         for (YangModuleInfo yangModuleInfo : yangModulesInfo) {
             try {
-                final ByteSource sanitizedYangByteSource = YangModelSanitizer
+                ByteSource sanitizedYangByteSource = YangModelSanitizer
                         .removeRegexpPosix(yangModuleInfo.getYangTextByteSource());
-                final YangStatementStreamSource statementSource
+                var statementSource
                         = YangStatementStreamSource.create(YangTextSchemaSource.delegateForByteSource(
                         YangTextSchemaSource.identifierFromFilename(yangModuleInfo.getName().getLocalName() + ".yang"),
                         sanitizedYangByteSource));
                 sourceArrayList.add(statementSource);
             } catch (IOException | YangParserException e) {
-                final String errorMsg = String.format("Failed to create YangStatementStreamSource from"
+                String errorMsg = String.format("Failed to create YangStatementStreamSource from"
                         + "provided YangModuleInfo: [%s]", yangModuleInfo);
                 throw new EffectiveModelContextBuilderException(errorMsg, e);
             }

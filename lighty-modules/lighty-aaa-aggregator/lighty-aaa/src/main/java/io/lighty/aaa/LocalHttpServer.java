@@ -21,22 +21,22 @@ final class LocalHttpServer {
     private final LightyServerBuilder server;
     private final Map<String, Handler> handlers;
 
-    LocalHttpServer(final LightyServerBuilder server) {
+    LocalHttpServer(LightyServerBuilder server) {
         this.server = server;
         this.handlers = new HashMap<>();
     }
 
     @SuppressWarnings("rawtypes")
-    public void registerServlet(final String alias, final Servlet servlet, final Dictionary initparams) {
-        final ServletHolder servletHolder = new ServletHolder(servlet);
-        final ContextHandlerCollection contexts = new ContextHandlerCollection();
-        final ServletContextHandler mainHandler = new ServletContextHandler(contexts, alias, true, false);
+    public void registerServlet(String alias, Servlet servlet, Dictionary initparams) {
+        var servletHolder = new ServletHolder(servlet);
+        var contexts = new ContextHandlerCollection();
+        var mainHandler = new ServletContextHandler(contexts, alias, true, false);
         mainHandler.addServlet(servletHolder, "/*");
         this.server.addContextHandler(contexts);
         this.handlers.put(alias, contexts);
     }
 
-    public void unregister(final String alias) {
+    public void unregister(String alias) {
         this.handlers.get(alias).destroy();
     }
 }

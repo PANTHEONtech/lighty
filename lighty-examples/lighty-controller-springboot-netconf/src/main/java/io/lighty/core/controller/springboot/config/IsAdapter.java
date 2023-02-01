@@ -8,6 +8,7 @@
 
 package io.lighty.core.controller.springboot.config;
 
+import com.google.errorprone.annotations.Var;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,9 +66,9 @@ public class IsAdapter implements Adapter {
         InputStream is = IsAdapter.class.getResourceAsStream(classPath);
         BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
 
-        String line;
+        @Var String line;
         try {
-            while((line = br.readLine()) != null) {
+            while ((line = br.readLine()) != null) {
                 handler.accept(line, model);
             }
 

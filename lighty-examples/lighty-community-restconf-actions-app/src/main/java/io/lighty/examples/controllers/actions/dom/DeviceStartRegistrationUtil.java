@@ -31,9 +31,9 @@ public final class DeviceStartRegistrationUtil {
      * @return {@code ObjectRegistration} Registration instance of the DOM action implementation on the controller.
      */
     public static ObjectRegistration<DOMActionImplementation> registerDOMAction(
-            final LightyController lightyController) {
-        final var domActionProviderService = lightyController.getServices().getDOMActionProviderService();
-        final var domDataTreeIdentifier = new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
+             LightyController lightyController) {
+        var domActionProviderService = lightyController.getServices().getDOMActionProviderService();
+        var domDataTreeIdentifier = new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
                 YangInstanceIdentifier.of(Device.QNAME));
         return domActionProviderService.registerActionImplementation(new DeviceStartActionImpl(),
                 DOMActionInstance.of(Absolute.of(Device.QNAME, Start.QNAME), domDataTreeIdentifier));

@@ -26,7 +26,7 @@ public class ConfigurableParameters {
     private final Optional<GnmiParameters.OverwriteDataType> overwriteDataType;
     private final Optional<String> pathTarget;
 
-    public ConfigurableParameters(final ExtensionsParameters extensionsParameters) {
+    public ConfigurableParameters(ExtensionsParameters extensionsParameters) {
         if (extensionsParameters != null) {
             gnmiParameters = extensionsParameters.getGnmiParameters();
             forceCapabilities = extensionsParameters.augmentation(ForceCapabilities.class);
@@ -38,6 +38,20 @@ public class ConfigurableParameters {
         useModelNamePrefix = loadUseModelNamePrefix();
         overwriteDataType = loadOverwriteDataType();
         pathTarget = loadPathTarget();
+    }
+
+    private static Optional<List<Gnmi.ModelData>> loadModelDataList(ForceCapabilities forceCapabilities) {
+        if (forceCapabilities != null && forceCapabilities.getForceCapability() != null) {
+            return Optional.of(forceCapabilities.getForceCapability()
+                    .entrySet()
+                    .stream()
+                    .map(Entry::getValue)
+                    .map(model -> Gnmi.ModelData.newBuilder()
+                            .setName(model.getName())
+                            .setVersion(model.getVersion().getValue()).build())
+                    .collect(Collectors.toList()));
+        }
+        return Optional.empty();
     }
 
     private Optional<Boolean> loadUseModelNamePrefix() {
@@ -57,20 +71,6 @@ public class ConfigurableParameters {
     private Optional<String> loadPathTarget() {
         if (gnmiParameters != null) {
             return Optional.ofNullable(gnmiParameters.getPathTarget());
-        }
-        return Optional.empty();
-    }
-
-    private static Optional<List<Gnmi.ModelData>> loadModelDataList(final ForceCapabilities forceCapabilities) {
-        if (forceCapabilities != null && forceCapabilities.getForceCapability() != null) {
-            return Optional.of(forceCapabilities.getForceCapability()
-                .entrySet()
-                .stream()
-                .map(Entry::getValue)
-                .map(model -> Gnmi.ModelData.newBuilder()
-                    .setName(model.getName())
-                    .setVersion(model.getVersion().getValue()).build())
-                .collect(Collectors.toList()));
         }
         return Optional.empty();
     }

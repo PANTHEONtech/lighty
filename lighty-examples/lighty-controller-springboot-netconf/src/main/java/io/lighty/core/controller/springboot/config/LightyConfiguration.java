@@ -9,6 +9,8 @@
 package io.lighty.core.controller.springboot.config;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.errorprone.annotations.Var;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
@@ -44,16 +46,16 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
     protected LightyController initLightyController() throws LightyLaunchException, InterruptedException {
         try {
             LOG.info("Building LightyController Core");
-            final LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
-            final Set<YangModuleInfo> mavenModelPaths = new HashSet<>();
+            LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
+            Set<YangModuleInfo> mavenModelPaths = new HashSet<>();
             mavenModelPaths.addAll(NetconfConfigUtils.NETCONF_TOPOLOGY_MODELS);
             mavenModelPaths.add($YangModuleInfoImpl.getInstance());
-            final LightyController lightyController = lightyControllerBuilder
+            LightyController lightyController = lightyControllerBuilder
                     .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(mavenModelPaths))
                     .build();
             LOG.info("Starting LightyController (waiting 10s after start)");
-            final boolean controllerStartOk = lightyController
-                .start().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+            boolean controllerStartOk = lightyController
+                    .start().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
             if (!controllerStartOk) {
                 shutdownLightyController(lightyController);
                 throw new LightyLaunchException("Could not init LightyController");
@@ -70,7 +72,7 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
     protected void shutdownLightyController(LightyController lightyController) throws LightyLaunchException {
         try {
             LOG.info("Shutting down LightyController ...");
-            lightyController.shutdown();
+            ListenableFuture<Boolean> unused = lightyController.shutdown();
         } catch (Exception e) {
             throw new LightyLaunchException("Could not shutdown LightyController", e);
         }
@@ -78,13 +80,13 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
 
     @Bean
     NetconfSBPlugin initNetconfSBP(LightyController lightyController)
-        throws ConfigurationException, LightyLaunchException {
-        final NetconfConfiguration netconfSBPConfiguration = NetconfConfigUtils.injectServicesToTopologyConfig(
-            NetconfConfigUtils.createDefaultNetconfConfiguration(), lightyController.getServices());
+            throws ConfigurationException, LightyLaunchException {
+        NetconfConfiguration netconfSBPConfiguration = NetconfConfigUtils.injectServicesToTopologyConfig(
+                NetconfConfigUtils.createDefaultNetconfConfiguration(), lightyController.getServices());
         this.netconfSBPlugin = NetconfTopologyPluginBuilder
-            .from(netconfSBPConfiguration, lightyController.getServices())
-            .build();
-        boolean netconfSBPStartOk;
+                .from(netconfSBPConfiguration, lightyController.getServices())
+                .build();
+        @Var boolean netconfSBPStartOk;
         try {
             netconfSBPStartOk = this.netconfSBPlugin.start().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
         } catch (ExecutionException | TimeoutException e) {
@@ -108,12 +110,12 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
         closeLightyModule(lightyController());
     }
 
-    void closeLightyModule(final LightyModule lightyModule) {
+    void closeLightyModule(LightyModule lightyModule) {
         if (lightyModule != null) {
-            final Stopwatch stopwatch = Stopwatch.createStarted();
+            Stopwatch stopwatch = Stopwatch.createStarted();
             try {
                 LOG.info("Lighty module {} shutting down ...", lightyModule);
-                lightyModule.shutdown();
+                ListenableFuture<Boolean> unused = lightyModule.shutdown();
             } catch (Exception e) {
                 LOG.error("Exception while shutting module: {} :", lightyModule, e);
             }

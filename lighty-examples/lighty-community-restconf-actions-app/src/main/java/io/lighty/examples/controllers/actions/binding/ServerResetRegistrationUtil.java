@@ -29,11 +29,11 @@ public final class ServerResetRegistrationUtil {
      * @param lightyController {@code LightyController} instance for easy access to controller services.
      * @return {@code ObjectRegistration} Registration instance of binding action implementation on the controller.
      */
-    public static ObjectRegistration<Reset> registerBindingAction(final LightyController lightyController) {
-        final var actionProviderService = lightyController.getServices().getActionProviderService();
-        final var validNode =
+    public static ObjectRegistration<Reset> registerBindingAction(LightyController lightyController) {
+        var actionProviderService = lightyController.getServices().getActionProviderService();
+        var validNode =
                 InstanceIdentifier.builder(Server.class, new ServerKey("server-earth")).build();
-        final var actionSpec = ActionSpec.builder(Server.class).build(Reset.class);
+        var actionSpec = ActionSpec.builder(Server.class).build(Reset.class);
         return actionProviderService.registerImplementation(actionSpec, new ServerResetActionImpl(),
                 LogicalDatastoreType.OPERATIONAL, Set.of(validNode));
     }

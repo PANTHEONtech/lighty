@@ -25,8 +25,8 @@ public final class AAALighty extends AbstractLightyModule {
 
     private final AAAConfiguration aaaConfiguration;
 
-    public AAALighty(final DataBroker dataBroker, final CredentialAuth<PasswordCredentials> credentialAuth,
-            final LightyServerBuilder server, final AAAConfiguration config) {
+    public AAALighty(DataBroker dataBroker, CredentialAuth<PasswordCredentials> credentialAuth,
+            LightyServerBuilder server, AAAConfiguration config) {
         this.dataBroker = dataBroker;
         this.aaaConfiguration = config;
         this.credentialAuth = credentialAuth;
@@ -36,9 +36,9 @@ public final class AAALighty extends AbstractLightyModule {
 
     @Override
     protected boolean initProcedure() throws InterruptedException {
-        final CompletableFuture<AAALightyShiroProvider> newInstance = AAALightyShiroProvider.newInstance(
+        CompletableFuture<AAALightyShiroProvider> newInstance = AAALightyShiroProvider.newInstance(
                 this.dataBroker, this.aaaConfiguration, this.credentialAuth, this.server);
-        final CountDownLatch cdl = new CountDownLatch(1);
+        var cdl = new CountDownLatch(1);
         newInstance.whenComplete((t, u) -> {
             AAALighty.this.aaaShiroProviderHandler.setAaaLightyShiroProvider(t);
             cdl.countDown();
@@ -58,12 +58,12 @@ public final class AAALighty extends AbstractLightyModule {
 
         AAALightyShiroProvider aaaLightyShiroProvider;
 
-        void setAaaLightyShiroProvider(final AAALightyShiroProvider aaaLightyShiroProvider) {
-            this.aaaLightyShiroProvider = aaaLightyShiroProvider;
-        }
-
         AAALightyShiroProvider getAaaLightyShiroProvider() {
             return this.aaaLightyShiroProvider;
+        }
+
+        void setAaaLightyShiroProvider(AAALightyShiroProvider aaaLightyShiroProvider) {
+            this.aaaLightyShiroProvider = aaaLightyShiroProvider;
         }
     }
 }

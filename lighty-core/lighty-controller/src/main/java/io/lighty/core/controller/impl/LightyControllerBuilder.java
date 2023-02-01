@@ -27,7 +27,7 @@ public class LightyControllerBuilder {
      * @param newControllerConfiguration input Lighty Controller configuration.
      * @return instance of {@link LightyControllerBuilder}.
      */
-    public LightyControllerBuilder from(final ControllerConfiguration newControllerConfiguration) {
+    public LightyControllerBuilder from(ControllerConfiguration newControllerConfiguration) {
         this.controllerConfiguration = newControllerConfiguration;
         return this;
     }
@@ -38,7 +38,7 @@ public class LightyControllerBuilder {
      * @param newExecutorService - executor
      * @return instance of {@link LightyControllerBuilder}.
      */
-    public LightyControllerBuilder withExecutorService(final ExecutorService newExecutorService) {
+    public LightyControllerBuilder withExecutorService(ExecutorService newExecutorService) {
         this.executorService = newExecutorService;
         return this;
     }
@@ -52,7 +52,7 @@ public class LightyControllerBuilder {
     @SuppressWarnings("checkstyle:illegalCatch")
     public LightyController build() throws ConfigurationException {
         try {
-            final Set<YangModuleInfo> modelSet = this.controllerConfiguration.getSchemaServiceConfig().getModels();
+            Set<YangModuleInfo> modelSet = this.controllerConfiguration.getSchemaServiceConfig().getModels();
             return new LightyControllerImpl(this.executorService,
                     this.controllerConfiguration.getActorSystemConfig().getConfig(),
                     this.controllerConfiguration.getActorSystemConfig().getClassLoader(),

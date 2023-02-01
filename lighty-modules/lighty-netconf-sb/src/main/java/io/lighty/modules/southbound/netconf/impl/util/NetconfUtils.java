@@ -70,7 +70,7 @@ public final class NetconfUtils {
     private NetconfUtils() {
     }
 
-    public static InstanceIdentifier<Node> createNetConfNodeMountPointII(final NodeId nodeId) {
+    public static InstanceIdentifier<Node> createNetConfNodeMountPointII(NodeId nodeId) {
         KeyedInstanceIdentifier<Topology, TopologyKey> instanceIdentifier =
                 InstanceIdentifier.create(NetworkTopology.class).child(Topology.class,
                         new TopologyKey(new TopologyId(NetconfNodeUtils.DEFAULT_TOPOLOGY_NAME)));
@@ -79,8 +79,8 @@ public final class NetconfUtils {
         return netconfNodeIID;
     }
 
-    public static YangInstanceIdentifier createNetConfNodeMountPointYII(final NodeId nodeId) {
-        YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.builder()
+    public static YangInstanceIdentifier createNetConfNodeMountPointYII(NodeId nodeId) {
+        var yangInstanceIdentifier = YangInstanceIdentifier.builder()
                 .node(NetworkTopology.QNAME)
                 .node(Topology.QNAME)
                 .nodeWithKey(Topology.QNAME, TOPOLOGY_ID_QNAME, TOPOLOGY_NETCONF)
@@ -91,29 +91,29 @@ public final class NetconfUtils {
     }
 
     public static ListenableFuture<Optional<NormalizedNode>> extractDataFromRpcResult(
-            final Optional<YangInstanceIdentifier> path, final ListenableFuture<DOMRpcResult> rpcFuture) {
+            Optional<YangInstanceIdentifier> path, ListenableFuture<DOMRpcResult> rpcFuture) {
         return Futures.transform(rpcFuture, result -> {
             Preconditions.checkArgument(
                     result.getErrors().isEmpty(), "Unable to read data: %s, errors: %s", path, result.getErrors());
-            final DataContainerChild dataNode =
+            DataContainerChild dataNode =
                     result.getResult().getChildByArg(NETCONF_DATA_NODEID);
             return NormalizedNodes.findNode(dataNode, path.get().getPathArguments());
         }, MoreExecutors.directExecutor());
     }
 
-    public static DataContainerChild createEditConfigStructure(final EffectiveModelContext effectiveModelContext,
-                                                             final Optional<NormalizedNode> lastChild,
-                                                             final Optional<EffectiveOperation> operation,
-                                                             final YangInstanceIdentifier dataPath) {
-        final AnyxmlNode<?> configContent = NetconfMessageTransformUtil
+    public static DataContainerChild createEditConfigStructure(EffectiveModelContext effectiveModelContext,
+            Optional<NormalizedNode> lastChild,
+            Optional<EffectiveOperation> operation,
+            YangInstanceIdentifier dataPath) {
+        AnyxmlNode<?> configContent = NetconfMessageTransformUtil
                 .createEditConfigAnyxml(effectiveModelContext, dataPath, operation, lastChild);
         return Builders.choiceBuilder().withNodeIdentifier(EDIT_CONTENT_NODEID).withChild(configContent).build();
     }
 
     public static ContainerNode getEditConfigContent(
-            final QName targetDatastore, final DataContainerChild editStructure,
-            final Optional<EffectiveOperation> defaultOperation, final boolean rollback) {
-        final DataContainerNodeBuilder<YangInstanceIdentifier.NodeIdentifier, ContainerNode> editBuilder =
+            QName targetDatastore, DataContainerChild editStructure,
+            Optional<EffectiveOperation> defaultOperation, boolean rollback) {
+        DataContainerNodeBuilder<YangInstanceIdentifier.NodeIdentifier, ContainerNode> editBuilder =
                 Builders.containerBuilder().withNodeIdentifier(NETCONF_EDIT_CONFIG_NODEID);
 
         // Target
@@ -136,43 +136,43 @@ public final class NetconfUtils {
         return editBuilder.build();
     }
 
-    public static DataContainerChild getSourceNode(final QName sourceDatastore) {
+    public static DataContainerChild getSourceNode(QName sourceDatastore) {
         return Builders.containerBuilder().withNodeIdentifier(NETCONF_SOURCE_NODEID)
                 .withChild(Builders.choiceBuilder().withNodeIdentifier(CONFIG_SOURCE_NODEID).withChild(
-                        Builders.leafBuilder().withNodeIdentifier(new NodeIdentifier(sourceDatastore))
-                                .withValue(Empty.value()).build())
+                                Builders.leafBuilder().withNodeIdentifier(new NodeIdentifier(sourceDatastore))
+                                        .withValue(Empty.value()).build())
                         .build()).build();
     }
 
-    public static ContainerNode getLockContent(final QName targetDatastore) {
+    public static ContainerNode getLockContent(QName targetDatastore) {
         return Builders.containerBuilder().withNodeIdentifier(NETCONF_LOCK_NODEID)
                 .withChild(getTargetNode(targetDatastore)).build();
     }
 
-    public static DataContainerChild getTargetNode(final QName targetDatastore) {
+    public static DataContainerChild getTargetNode(QName targetDatastore) {
         return Builders.containerBuilder().withNodeIdentifier(NETCONF_TARGET_NODEID)
                 .withChild(Builders.choiceBuilder().withNodeIdentifier(CONFIG_TARGET_NODEID).withChild(
-                        Builders.leafBuilder().withNodeIdentifier(new NodeIdentifier(targetDatastore))
-                                .withValue(Empty.value()).build())
+                                Builders.leafBuilder().withNodeIdentifier(new NodeIdentifier(targetDatastore))
+                                        .withValue(Empty.value()).build())
                         .build()).build();
     }
 
-    public static ContainerNode getCopyConfigContent(final QName sourceDatastore, final QName targetDatastore) {
+    public static ContainerNode getCopyConfigContent(QName sourceDatastore, QName targetDatastore) {
         return Builders.containerBuilder().withNodeIdentifier(NETCONF_COPY_CONFIG_NODEID)
                 .withChild(getTargetNode(targetDatastore)).withChild(getSourceNode(sourceDatastore)).build();
     }
 
-    public static ContainerNode getDeleteConfigContent(final QName targetDatastore) {
+    public static ContainerNode getDeleteConfigContent(QName targetDatastore) {
         return Builders.containerBuilder().withNodeIdentifier(NETCONF_DELETE_CONFIG_NODEID)
                 .withChild(getTargetNode(targetDatastore)).build();
     }
 
-    public static ContainerNode getValidateContent(final QName sourceDatastore) {
+    public static ContainerNode getValidateContent(QName sourceDatastore) {
         return Builders.containerBuilder().withNodeIdentifier(NETCONF_VALIDATE_NODEID)
                 .withChild(getSourceNode(sourceDatastore)).build();
     }
 
-    public static ContainerNode getUnLockContent(final QName targetDatastore) {
+    public static ContainerNode getUnLockContent(QName targetDatastore) {
         return Builders.containerBuilder().withNodeIdentifier(NETCONF_UNLOCK_NODEID)
                 .withChild(getTargetNode(targetDatastore)).build();
     }

@@ -17,15 +17,15 @@ public class ModuleStartupException extends Exception {
         super();
     }
 
-    public ModuleStartupException(final String message) {
+    public ModuleStartupException(String message) {
         super(message);
     }
 
-    public ModuleStartupException(final String message, final Throwable cause) {
+    public ModuleStartupException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ModuleStartupException(final Throwable cause) {
+    public ModuleStartupException(Throwable cause) {
         super(cause);
     }
 }

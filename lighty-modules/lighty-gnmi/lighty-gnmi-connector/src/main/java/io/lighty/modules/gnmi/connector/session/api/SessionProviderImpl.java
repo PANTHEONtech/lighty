@@ -29,8 +29,8 @@ public class SessionProviderImpl implements SessionProvider {
     private final ManagedChannel channel;
     private boolean closed;
 
-    public SessionProviderImpl(final SessionConfiguration configuration, final SessionCloseDelegate closeDelegate,
-                               final ManagedChannel channel, final GnmiSession gnmiSession) {
+    public SessionProviderImpl(SessionConfiguration configuration, SessionCloseDelegate closeDelegate,
+            ManagedChannel channel, GnmiSession gnmiSession) {
         this.closed = false;
         this.gnmiSession = gnmiSession;
         this.gnoiSession = new GnoiSessionImpl(channel);
@@ -70,7 +70,7 @@ public class SessionProviderImpl implements SessionProvider {
     }
 
     @Override
-    public void notifyOnStateChangedOneOff(final ConnectivityState sourceState, final Runnable callback) {
+    public void notifyOnStateChangedOneOff(ConnectivityState sourceState, Runnable callback) {
         LOG.trace("Registering one-off channel state change listener");
         channel.notifyWhenStateChanged(sourceState, callback);
     }
@@ -82,13 +82,13 @@ public class SessionProviderImpl implements SessionProvider {
     }
 
     @Override
-    public boolean equals(final Object other) {
+    public boolean equals(Object other) {
 
         if (!(other instanceof SessionProviderImpl)) {
             return false;
         }
 
-        SessionProviderImpl that = (SessionProviderImpl) other;
+        var that = (SessionProviderImpl) other;
         return configuration.equals(that.configuration);
     }
 

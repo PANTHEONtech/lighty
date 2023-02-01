@@ -20,11 +20,11 @@ public class MainArgs {
         return configPath;
     }
 
-    public static Optional<MainArgs> parse(final String[] args) {
+    public static Optional<MainArgs> parse(String[] args) {
         if (args == null || args.length == 0) {
             return Optional.empty();
         }
-        final MainArgs mainArgs = new MainArgs();
+        var mainArgs = new MainArgs();
         new JCommander(mainArgs).parse(args);
         return Optional.of(mainArgs);
 

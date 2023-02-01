@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
  * @see XmlNodeConverter
  */
 public class JsonNodeConverter implements NodeConverter {
+
     private static final Logger LOG = LoggerFactory.getLogger(JsonNodeConverter.class);
 
     private final JSONCodecFactory jsonCodecFactory;
@@ -61,7 +62,7 @@ public class JsonNodeConverter implements NodeConverter {
      *
      * @param effectiveModelContext initial effective model context
      */
-    public JsonNodeConverter(final EffectiveModelContext effectiveModelContext) {
+    public JsonNodeConverter(EffectiveModelContext effectiveModelContext) {
         this(effectiveModelContext, JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02);
     }
 
@@ -78,8 +79,8 @@ public class JsonNodeConverter implements NodeConverter {
      * @param effectiveModelContext initial effective model context
      * @param jsonCodecFactorySupplier JSON codec factory supplier
      */
-    public JsonNodeConverter(final EffectiveModelContext effectiveModelContext,
-            final JSONCodecFactorySupplier jsonCodecFactorySupplier) {
+    public JsonNodeConverter(EffectiveModelContext effectiveModelContext,
+            JSONCodecFactorySupplier jsonCodecFactorySupplier) {
         this.jsonCodecFactory = jsonCodecFactorySupplier.createLazy(effectiveModelContext);
     }
 
@@ -92,17 +93,17 @@ public class JsonNodeConverter implements NodeConverter {
      * @throws SerializationException if something goes wrong with serialization
      */
     @Override
-    public Writer serializeData(final Inference inference,
-            final NormalizedNode normalizedNode) throws SerializationException {
-        final Writer writer = new StringWriter();
-        final XMLNamespace initialNamespace = normalizedNode.getIdentifier().getNodeType().getNamespace();
+    public Writer serializeData(Inference inference,
+            NormalizedNode normalizedNode) throws SerializationException {
+        Writer writer = new StringWriter();
+        XMLNamespace initialNamespace = normalizedNode.getIdentifier().getNodeType().getNamespace();
         // nnStreamWriter closes underlying JsonWriter, we don't need too
-        final JsonWriter jsonWriter = new JsonWriter(writer);
+        var jsonWriter = new JsonWriter(writer);
         // Exclusive nnWriter closes underlying NormalizedNodeStreamWriter, we don't need too
-        final boolean useNested = normalizedNode instanceof MapEntryNode;
-        final NormalizedNodeStreamWriter nnStreamWriter = useNested
+        boolean useNested = normalizedNode instanceof MapEntryNode;
+        NormalizedNodeStreamWriter nnStreamWriter = useNested
                 ? JSONNormalizedNodeStreamWriter.createNestedWriter(
-                        this.jsonCodecFactory, inference, initialNamespace, jsonWriter)
+                this.jsonCodecFactory, inference, initialNamespace, jsonWriter)
                 : JSONNormalizedNodeStreamWriter.createExclusiveWriter(
                         this.jsonCodecFactory, inference, initialNamespace, jsonWriter);
 
@@ -123,18 +124,18 @@ public class JsonNodeConverter implements NodeConverter {
     }
 
     @Override
-    public Writer serializeRpc(final Inference inference,
-            final NormalizedNode normalizedNode) throws SerializationException {
+    public Writer serializeRpc(Inference inference,
+            NormalizedNode normalizedNode) throws SerializationException {
         Preconditions.checkState(normalizedNode instanceof ContainerNode,
                 "RPC input/output to serialize is expected to be a ContainerNode");
-        final XMLNamespace namespace = normalizedNode.getIdentifier().getNodeType().getNamespace();
+        XMLNamespace namespace = normalizedNode.getIdentifier().getNodeType().getNamespace();
         // Input/output
-        final String localName = normalizedNode.getIdentifier().getNodeType().getLocalName();
-        final Writer writer = new StringWriter();
+        String localName = normalizedNode.getIdentifier().getNodeType().getLocalName();
+        Writer writer = new StringWriter();
         // nnStreamWriter closes underlying JsonWriter, we don't need too
-        final JsonWriter jsonWriter = new JsonWriter(writer);
+        var jsonWriter = new JsonWriter(writer);
         // nnWriter closes underlying NormalizedNodeStreamWriter, we don't need too
-        final NormalizedNodeStreamWriter nnStreamWriter = JSONNormalizedNodeStreamWriter.createExclusiveWriter(
+        NormalizedNodeStreamWriter nnStreamWriter = JSONNormalizedNodeStreamWriter.createExclusiveWriter(
                 this.jsonCodecFactory, inference, namespace, jsonWriter);
         try (NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(nnStreamWriter)) {
             jsonWriter.beginObject().name(localName);
@@ -157,24 +158,24 @@ public class JsonNodeConverter implements NodeConverter {
      * @throws DeserializationException is thrown in case of an error during deserialization
      */
     @Override
-    public NormalizedNode deserialize(final Inference inference, final Reader inputData)
+    public NormalizedNode deserialize(Inference inference, Reader inputData)
             throws DeserializationException {
         if (inference.statementPath().isEmpty()) {
-            final DataContainerNodeBuilder<NodeIdentifier, ContainerNode> resultBuilder = Builders.containerBuilder()
+            DataContainerNodeBuilder<NodeIdentifier, ContainerNode> resultBuilder = Builders.containerBuilder()
                     .withNodeIdentifier(NodeIdentifier.create(SchemaContext.NAME));
             parseToResult(ImmutableNormalizedNodeStreamWriter.from(resultBuilder), inputData, inference);
             return resultBuilder.build();
         } else {
-            final NormalizedNodeResult result = new NormalizedNodeResult();
+            var result = new NormalizedNodeResult();
             parseToResult(ImmutableNormalizedNodeStreamWriter.from(result), inputData, inference);
             return result.getResult();
         }
     }
 
-    private void parseToResult(final NormalizedNodeStreamWriter writer, final Reader data, final Inference inference)
+    private void parseToResult(NormalizedNodeStreamWriter writer, Reader data, Inference inference)
             throws DeserializationException {
         try (JsonReader reader = new JsonReader(data);
-             JsonParserStream jsonParser = JsonParserStream.create(writer, this.jsonCodecFactory, inference)) {
+                JsonParserStream jsonParser = JsonParserStream.create(writer, this.jsonCodecFactory, inference)) {
 
             jsonParser.parse(reader);
         } catch (IOException e) {

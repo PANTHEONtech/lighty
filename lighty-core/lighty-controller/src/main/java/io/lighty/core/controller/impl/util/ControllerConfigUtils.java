@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
+import com.google.errorprone.annotations.Var;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigException;
 import com.typesafe.config.ConfigFactory;
@@ -226,12 +227,12 @@ public final class ControllerConfigUtils {
         Config finalConfig = akkaConfig.withFallback(factoryAkkaConfig);
 
         controllerConfiguration.getActorSystemConfig().setClassLoader(
-                ControllerConfigUtils.class.getClass().getClassLoader());
+                ControllerConfigUtils.class.getClassLoader());
         controllerConfiguration.getActorSystemConfig().setConfig(finalConfig);
     }
 
-    public static Config getAkkaConfigFromPath(final String pathToConfig) throws ConfigurationException {
-        Config akkaConfig = null;
+    public static Config getAkkaConfigFromPath(String pathToConfig) throws ConfigurationException {
+        @Var Config akkaConfig = null;
         try {
             akkaConfig = ConfigFactory.parseFile(new File(pathToConfig));
         } catch (ConfigException e) {

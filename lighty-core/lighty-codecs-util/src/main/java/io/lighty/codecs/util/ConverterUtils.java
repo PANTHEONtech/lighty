@@ -7,7 +7,9 @@
  */
 package io.lighty.codecs.util;
 
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.errorprone.annotations.Var;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -57,8 +59,8 @@ public final class ConverterUtils {
      * @return {@link Optional} representation of the {@link RpcDefinition}
      * @see QName
      */
-    public static Optional<? extends RpcDefinition> loadRpc(final EffectiveModelContext effectiveModelContext,
-            final QName rpcQName) {
+    public static Optional<? extends RpcDefinition> loadRpc(EffectiveModelContext effectiveModelContext,
+            QName rpcQName) {
         Optional<Module> findModule = findModule(effectiveModelContext, rpcQName);
         if (findModule.isEmpty()) {
             return Optional.empty();
@@ -74,7 +76,7 @@ public final class ConverterUtils {
      * @return {@link Optional} of {@link SchemaNode}
      */
     public static Optional<? extends NotificationDefinition> loadNotification(
-            final EffectiveModelContext effectiveModelContext, final QName notificationQname) {
+            EffectiveModelContext effectiveModelContext, QName notificationQname) {
         Optional<Module> findModule = findModule(effectiveModelContext, notificationQname);
         if (!findModule.isPresent()) {
             return Optional.empty();
@@ -89,21 +91,21 @@ public final class ConverterUtils {
      * @param xmlElement input data.
      * @return {@link QName} for input data or empty.
      */
-    public static Optional<QName> getRpcQName(final XmlElement xmlElement) {
+    public static Optional<QName> getRpcQName(XmlElement xmlElement) {
         Optional<String> optionalNamespace = xmlElement.getNamespaceOptionally();
         String name = xmlElement.getName();
         if (Strings.isNullOrEmpty(name)) {
             return Optional.empty();
         }
-        String revision = null;
+        @Var String revision = null;
         String namespace;
         if (optionalNamespace.isPresent() && !Strings.isNullOrEmpty(optionalNamespace.get())) {
-            String[] split = optionalNamespace.get().split("\\?");
-            if (split.length > 1 && split[1].contains("revision=")) {
-                revision = split[1].replace("revision=", "");
+            List<String> split = Splitter.on('?').splitToList(optionalNamespace.get());
+            if (split.size() > 1 && split.get(1).contains("revision=")) {
+                revision = split.get(1).replace("revision=", "");
 
             }
-            namespace = split[0];
+            namespace = split.get(0);
         } else {
             return Optional.of(QName.create(name));
         }
@@ -122,7 +124,7 @@ public final class ConverterUtils {
      * @throws IllegalArgumentException if there was a problem during parsing the XML document
      * @see ConverterUtils#getRpcQName(XmlElement)
      */
-    public static Optional<QName> getRpcQName(final String inputString) {
+    public static Optional<QName> getRpcQName(String inputString) {
         try {
             return getRpcQName(XmlElement.fromString(inputString));
         } catch (DocumentedException e) {
@@ -130,7 +132,7 @@ public final class ConverterUtils {
         }
     }
 
-    public static XmlElement rpcAsInput(final XmlElement inputXmlElement) {
+    public static XmlElement rpcAsInput(XmlElement inputXmlElement) {
         return rpcAsInput(inputXmlElement, "");
     }
 
@@ -143,7 +145,7 @@ public final class ConverterUtils {
      * @param namespace       namespace
      * @return wrapped xml data.
      */
-    public static XmlElement rpcAsInput(final XmlElement inputXmlElement, final String namespace) {
+    public static XmlElement rpcAsInput(XmlElement inputXmlElement, String namespace) {
         return wrapNodes("input", namespace, inputXmlElement.getChildElements());
     }
 
@@ -155,7 +157,7 @@ public final class ConverterUtils {
      * @see ConverterUtils#rpcAsOutput(XmlElement, String)
      * @see XmlUtil
      */
-    public static XmlElement rpcAsOutput(final XmlElement inputXmlElement) {
+    public static XmlElement rpcAsOutput(XmlElement inputXmlElement) {
         return rpcAsOutput(inputXmlElement, "");
     }
 
@@ -168,7 +170,7 @@ public final class ConverterUtils {
      * @return wrapped xml element.
      * @see XmlUtil
      */
-    public static XmlElement rpcAsOutput(final XmlElement inputXmlElement, final String namespace) {
+    public static XmlElement rpcAsOutput(XmlElement inputXmlElement, String namespace) {
         return wrapNodes("output", namespace, inputXmlElement.getChildElements());
     }
 
@@ -185,7 +187,7 @@ public final class ConverterUtils {
      * @return optional found {@link DataSchemaContextNode}
      */
     public static Optional<@NonNull DataSchemaContextNode<?>> getSchemaNode(
-            final EffectiveModelContext effectiveModelContext, final QName qname) {
+            EffectiveModelContext effectiveModelContext, QName qname) {
         return getSchemaNode(effectiveModelContext, YangInstanceIdentifier.of(qname));
     }
 
@@ -198,7 +200,7 @@ public final class ConverterUtils {
      * @return optional found {@link DataSchemaContextNode}
      */
     public static Optional<@NonNull DataSchemaContextNode<?>> getSchemaNode(
-            final EffectiveModelContext effectiveModelContext, final YangInstanceIdentifier yangInstanceIdentifier) {
+            EffectiveModelContext effectiveModelContext, YangInstanceIdentifier yangInstanceIdentifier) {
         return DataSchemaContextTree.from(effectiveModelContext).findChild(yangInstanceIdentifier);
     }
 
@@ -218,8 +220,8 @@ public final class ConverterUtils {
      * @return optional found {@link DataSchemaContextNode}
      */
     public static Optional<@NonNull DataSchemaContextNode<?>> getSchemaNode(
-            final EffectiveModelContext effectiveModelContext, final String namespace, final String revision,
-            final String localName) {
+            EffectiveModelContext effectiveModelContext, String namespace, String revision,
+            String localName) {
         return getSchemaNode(effectiveModelContext, QName.create(namespace, revision, localName));
     }
 
@@ -230,8 +232,8 @@ public final class ConverterUtils {
      * @param effectiveModelContext current model context
      * @return {@link Inference}
      */
-    public static Inference toInference(final YangInstanceIdentifier yangInstanceIdentifier,
-            final EffectiveModelContext effectiveModelContext) {
+    public static Inference toInference(YangInstanceIdentifier yangInstanceIdentifier,
+            EffectiveModelContext effectiveModelContext) {
         return DataSchemaContextTree.from(effectiveModelContext)
                 .enterPath(Objects.requireNonNull(yangInstanceIdentifier))
                 .orElseThrow()
@@ -248,8 +250,8 @@ public final class ConverterUtils {
      * @return created {@link XmlElement}
      * @see XmlUtil
      */
-    private static XmlElement wrapNodes(final String nodeName, final String namespace,
-            final Collection<XmlElement> children) {
+    private static XmlElement wrapNodes(String nodeName, String namespace,
+            Collection<XmlElement> children) {
         StringBuilder sb = new StringBuilder("<").append(nodeName).append(" xmlns=\"").append(namespace).append("\"/>");
         Document document;
         try {
@@ -265,7 +267,7 @@ public final class ConverterUtils {
         return XmlElement.fromDomDocument(document);
     }
 
-    private static Optional<Module> findModule(final EffectiveModelContext effectiveModelContext, final QName qname) {
+    private static Optional<Module> findModule(EffectiveModelContext effectiveModelContext, QName qname) {
         if (qname.getRevision().isPresent()) {
             return effectiveModelContext.findModule(qname.getNamespace(), qname.getRevision());
         }
@@ -275,7 +277,7 @@ public final class ConverterUtils {
                 : moduleByNamespace.iterator().next());
     }
 
-    private static <T extends SchemaNode> Optional<T> findDefinition(final QName qname, final Collection<T> nodes) {
+    private static <T extends SchemaNode> Optional<T> findDefinition(QName qname, Collection<T> nodes) {
         List<T> foundNodes = nodes.stream().filter(node -> node.getQName().getLocalName().equals(qname.getLocalName()))
                 .collect(Collectors.toList());
         return Optional.ofNullable(foundNodes.size() != 1 ? null : foundNodes.get(0));

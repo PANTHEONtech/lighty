@@ -15,7 +15,7 @@ public class UsernamePasswordAuth {
     private final String username;
     private final String password;
 
-    public UsernamePasswordAuth(@NonNull final String username, @NonNull final String password) {
+    public UsernamePasswordAuth(@NonNull String username, @NonNull String password) {
         this.username = username;
         this.password = password;
     }
@@ -28,7 +28,7 @@ public class UsernamePasswordAuth {
         return !Strings.isNullOrEmpty(this.username) && !Strings.isNullOrEmpty(this.password);
     }
 
-    public boolean authenticate(final String receivedUsername, final String receivedPassword) {
+    public boolean authenticate(String receivedUsername, String receivedPassword) {
         return this.username.equals(receivedUsername) && this.password.equals(receivedPassword);
     }
 }

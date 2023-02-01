@@ -20,8 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class AAAConfigUtils {
-    private static final Logger LOG = LoggerFactory.getLogger(AAAConfigUtils.class);
-    private static final String AAA_ROOT_ELEMENT_NAME = "aaa";
 
     public static final Set<YangModuleInfo> YANG_MODELS = Set.of(
             org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915
@@ -30,29 +28,31 @@ public final class AAAConfigUtils {
                     .$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.aaa.rev161214
                     .$YangModuleInfoImpl.getInstance());
+    private static final Logger LOG = LoggerFactory.getLogger(AAAConfigUtils.class);
+    private static final String AAA_ROOT_ELEMENT_NAME = "aaa";
 
     private AAAConfigUtils() {
         // Hide on purpose
     }
 
-    public static AAAConfiguration getAAAConfiguration(final InputStream jsonConfigInputStream)
+    public static AAAConfiguration getAAAConfiguration(InputStream jsonConfigInputStream)
             throws ConfigurationException {
-        final ObjectMapper mapper = new ObjectMapper();
-        final JsonNode configNode;
+        var mapper = new ObjectMapper();
+        JsonNode configNode;
         try {
             configNode = mapper.readTree(jsonConfigInputStream);
-        } catch (final IOException e) {
+        } catch (IOException e) {
             throw new ConfigurationException("Cannot deserialize Json content to Json tree nodes", e);
         }
         if (!configNode.has(AAA_ROOT_ELEMENT_NAME)) {
             LOG.warn("Json config does not contain {} element. Using defaults.", AAA_ROOT_ELEMENT_NAME);
             return new AAAConfiguration();
         }
-        final JsonNode aaaNode = configNode.path(AAA_ROOT_ELEMENT_NAME);
-        final AAAConfiguration aaaConfiguration;
+        JsonNode aaaNode = configNode.path(AAA_ROOT_ELEMENT_NAME);
+        AAAConfiguration aaaConfiguration;
         try {
             aaaConfiguration = mapper.treeToValue(aaaNode, AAAConfiguration.class);
-        } catch (final JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             throw new ConfigurationException(String.format("Cannot bind Json tree to type: %s",
                     AAAConfiguration.class), e);
         }

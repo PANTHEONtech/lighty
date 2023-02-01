@@ -9,6 +9,7 @@ package io.lighty.modules.northbound.restconf.community.impl;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Throwables;
+import com.google.errorprone.annotations.Var;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.modules.northbound.restconf.community.impl.root.resource.discovery.RootFoundApplication;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
@@ -52,12 +53,12 @@ public class CommunityRestConf extends AbstractLightyModule {
     private LightyServerBuilder lightyServerBuilder;
     private SchemaContextHandler schemaCtxHandler;
 
-    public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMRpcService domRpcService,
-            final DOMActionService domActionService, final DOMNotificationService domNotificationService,
-            final DOMMountPointService domMountPointService,
-            final DOMSchemaService domSchemaService, final InetAddress inetAddress,
-            final int httpPort, final String restconfServletContextPath,
-            final LightyServerBuilder serverBuilder) {
+    public CommunityRestConf(DOMDataBroker domDataBroker, DOMRpcService domRpcService,
+            DOMActionService domActionService, DOMNotificationService domNotificationService,
+            DOMMountPointService domMountPointService,
+            DOMSchemaService domSchemaService, InetAddress inetAddress,
+            int httpPort, String restconfServletContextPath,
+            LightyServerBuilder serverBuilder) {
         this.domDataBroker = domDataBroker;
         this.domRpcService = domRpcService;
         this.domActionService = domActionService;
@@ -70,11 +71,11 @@ public class CommunityRestConf extends AbstractLightyModule {
         this.restconfServletContextPath = restconfServletContextPath;
     }
 
-    public CommunityRestConf(final DOMDataBroker domDataBroker,
-            final DOMRpcService domRpcService, final DOMActionService domActionService,
-            final DOMNotificationService domNotificationService, final DOMMountPointService domMountPointService,
-            final DOMSchemaService domSchemaService, final InetAddress inetAddress, final int httpPort,
-            final String restconfServletContextPath) {
+    public CommunityRestConf(DOMDataBroker domDataBroker,
+            DOMRpcService domRpcService, DOMActionService domActionService,
+            DOMNotificationService domNotificationService, DOMMountPointService domMountPointService,
+            DOMSchemaService domSchemaService, InetAddress inetAddress, int httpPort,
+            String restconfServletContextPath) {
         this(domDataBroker, domRpcService, domActionService, domNotificationService,
                 domMountPointService, domSchemaService, inetAddress, httpPort,
                 restconfServletContextPath, null);
@@ -82,39 +83,39 @@ public class CommunityRestConf extends AbstractLightyModule {
 
     @Override
     protected boolean initProcedure() {
-        final Stopwatch stopwatch = Stopwatch.createStarted();
+        final var stopwatch = Stopwatch.createStarted();
 
         this.schemaCtxHandler
                 = new SchemaContextHandler(this.domDataBroker, this.domSchemaService);
-        final Configuration streamsConfiguration = RestConfConfigUtils.getStreamsConfiguration();
+        Configuration streamsConfiguration = RestConfConfigUtils.getStreamsConfiguration();
 
         LOG.info("Starting RestconfApplication with configuration {}", streamsConfiguration);
-        final DatabindProvider provider = new DOMDatabindProvider(domSchemaService);
-        final RestconfApplication restconfApplication = new RestconfApplication(provider,
+        DatabindProvider provider = new DOMDatabindProvider(domSchemaService);
+        var restconfApplication = new RestconfApplication(provider,
                 this.domMountPointService, this.domDataBroker, this.domRpcService, this.domActionService,
                 this.domNotificationService, this.domSchemaService, streamsConfiguration);
-        final ServletContainer servletContainer8040 = new ServletContainer(ResourceConfig
+        var servletContainer8040 = new ServletContainer(ResourceConfig
                 .forApplication(restconfApplication));
-        final ServletHolder jaxrs = new ServletHolder(servletContainer8040);
+        var jaxrs = new ServletHolder(servletContainer8040);
 
         LOG.info("RestConf init complete, starting Jetty");
         LOG.info("http address:port {}:{}, url prefix: {}", this.inetAddress.toString(), this.httpPort,
                 this.restconfServletContextPath);
 
         try {
-            final InetSocketAddress inetSocketAddress = new InetSocketAddress(this.inetAddress, this.httpPort);
-            final ContextHandlerCollection contexts = new ContextHandlerCollection();
-            final ServletContextHandler mainHandler =
+            var inetSocketAddress = new InetSocketAddress(this.inetAddress, this.httpPort);
+            var contexts = new ContextHandlerCollection();
+            var mainHandler =
                     new ServletContextHandler(contexts, this.restconfServletContextPath, true, false);
             mainHandler.addServlet(jaxrs, "/*");
 
-            final ServletContextHandler rrdHandler =
+            var rrdHandler =
                     new ServletContextHandler(contexts, "/.well-known", true, false);
-            final RootFoundApplication rootDiscoveryApp = new RootFoundApplication(restconfServletContextPath);
+            var rootDiscoveryApp = new RootFoundApplication(restconfServletContextPath);
             rrdHandler.addServlet(new ServletHolder(new ServletContainer(ResourceConfig
                     .forApplication(rootDiscoveryApp))), "/*");
 
-            boolean startDefault = false;
+            @Var boolean startDefault = false;
             if (this.lightyServerBuilder == null) {
                 this.lightyServerBuilder = new LightyServerBuilder(inetSocketAddress);
                 startDefault = true;
@@ -123,7 +124,7 @@ public class CommunityRestConf extends AbstractLightyModule {
             if (startDefault) {
                 startServer();
             }
-        } catch (final IllegalStateException e) {
+        } catch (IllegalStateException e) {
             LOG.error("Failed to start jetty: ", e);
         }
         LOG.info("Lighty RestConf started in {}", stopwatch.stop());
@@ -133,7 +134,7 @@ public class CommunityRestConf extends AbstractLightyModule {
     @SuppressWarnings("checkstyle:illegalCatch")
     @Override
     protected boolean stopProcedure() {
-        boolean stopFailed = false;
+        @Var boolean stopFailed = false;
         if (this.schemaCtxHandler != null) {
             this.schemaCtxHandler.close();
             LOG.info("Schema context handler closed");
@@ -142,7 +143,7 @@ public class CommunityRestConf extends AbstractLightyModule {
             try {
                 this.jettyServer.stop();
                 LOG.info("Jetty stopped");
-            } catch (final Exception e) {
+            } catch (Exception e) {
                 LOG.error("{} failed to stop!", this.jettyServer.getClass(), e);
                 stopFailed = true;
             }
@@ -161,7 +162,7 @@ public class CommunityRestConf extends AbstractLightyModule {
         try {
             this.jettyServer = this.lightyServerBuilder.build();
             this.jettyServer.start();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             Throwables.throwIfUnchecked(e);
             throw new IllegalStateException("Failed to start jetty!", e);
         }

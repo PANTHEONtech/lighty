@@ -27,7 +27,7 @@ public final class InitialBgpConfigLoader {
     private final DOMDataBroker dataBroker;
     private final EffectiveModelContext modelContext;
 
-    public InitialBgpConfigLoader(final DOMDataBroker dataBroker, final EffectiveModelContext modelContext) {
+    public InitialBgpConfigLoader(DOMDataBroker dataBroker, EffectiveModelContext modelContext) {
         this.dataBroker = dataBroker;
         this.modelContext = modelContext;
     }

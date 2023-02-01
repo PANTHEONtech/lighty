@@ -49,13 +49,13 @@ public class Main {
 
 
     public static void main(String[] args) {
-        final Main instance = new Main();
+        var instance = new Main();
         try {
             LOG.info("Registering shutdown hook for graceful shutdown");
             Runtime.getRuntime().addShutdownHook(new Thread(instance::stop));
             instance.start(args);
         } catch (IllegalStateException | ConfigurationException | ExecutionException | TimeoutException
-                | IOException e) {
+                 | IOException e) {
             LOG.error("Failed to start lighty BGP application, exiting", e);
             Runtime.getRuntime().exit(APP_FAILED_TO_START_SC);
         } catch (InterruptedException e) {
@@ -64,10 +64,17 @@ public class Main {
         }
     }
 
+    private static boolean startLightyModule(LightyModule lightyModule, long timeoutSeconds)
+            throws InterruptedException, ExecutionException, TimeoutException {
+        LOG.info("Starting lighty module {}", lightyModule.getClass().getName());
+        return lightyModule.start().get(timeoutSeconds, TimeUnit.SECONDS);
+    }
+
     @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
+    @SuppressWarnings("PATH_TRAVERSAL_IN")
     public synchronized void start(String[] args) throws InterruptedException, ExecutionException, TimeoutException,
             ConfigurationException, IOException {
-        final Stopwatch stopwatch = Stopwatch.createStarted();
+        final var stopwatch = Stopwatch.createStarted();
         LOG.info(".__  .__       .__     __              .__           ");
         LOG.info("|  | |__| ____ |  |___/  |_ ___.__.    |__| ____     ");
         LOG.info("|  | |  |/ ___\\|  |  \\   __<   |  |    |  |/  _ \\ ");
@@ -76,21 +83,21 @@ public class Main {
         LOG.info("        /_____/     \\/      \\/      \\/            ");
         LOG.info("Starting BGP lighty.io application...");
 
-        final ControllerConfiguration controllerConfiguration;
-        final RestConfConfiguration restConfConfiguration;
-        final Optional<MainArgs> mArgs = MainArgs.parse(args);
+        ControllerConfiguration controllerConfiguration;
+        RestConfConfiguration restConfConfiguration;
+        Optional<MainArgs> mainArgs = MainArgs.parse(args);
 
-        final Set<YangModuleInfo> minimalModelSet =
+        Set<YangModuleInfo> minimalModelSet =
                 Sets.newHashSet(Iterables.concat(ControllerConfigUtils.YANG_MODELS, BgpConfigUtils.ALL_BGP_MODELS,
                         RestConfConfigUtils.YANG_MODELS));
 
-        if (mArgs.isPresent()) {
-            final Path configPath = Paths.get(mArgs.get().getConfigPath());
+        if (mainArgs.isPresent()) {
+            Path configPath = Paths.get(mainArgs.get().getConfigPath());
             LOG.info("Using configuration from file {}", configPath);
             controllerConfiguration = ControllerConfigUtils.getConfiguration(Files.newInputStream(configPath));
 
             // Inject minimal required model set, in cases when user does not list them all in the config
-            final ControllerConfiguration.SchemaServiceConfig schemaServiceConfig = controllerConfiguration
+            ControllerConfiguration.SchemaServiceConfig schemaServiceConfig = controllerConfiguration
                     .getSchemaServiceConfig();
             schemaServiceConfig.setModels(Sets.newHashSet(
                     Iterables.concat(schemaServiceConfig.getModels(), minimalModelSet)));
@@ -112,11 +119,11 @@ public class Main {
         restconf = CommunityRestConfBuilder
                 .from(RestConfConfigUtils.getRestConfConfiguration(restConfConfiguration, controller.getServices()))
                 .build();
-        Preconditions.checkState(startLightyModule(restconf,  modulesConfig.getModuleTimeoutSeconds()),
+        Preconditions.checkState(startLightyModule(restconf, modulesConfig.getModuleTimeoutSeconds()),
                 "Unable to start restconf module");
 
         bgpModule = new BgpModule(controller.getServices());
-        Preconditions.checkState(startLightyModule(bgpModule,  modulesConfig.getModuleTimeoutSeconds()),
+        Preconditions.checkState(startLightyModule(bgpModule, modulesConfig.getModuleTimeoutSeconds()),
                 "Unable to start BGP module");
 
         running = true;
@@ -136,12 +143,6 @@ public class Main {
         }
 
         running = false;
-    }
-
-    private static boolean startLightyModule(final LightyModule lightyModule, final long timeoutSeconds)
-            throws InterruptedException, ExecutionException, TimeoutException {
-        LOG.info("Starting lighty module {}", lightyModule.getClass().getName());
-        return lightyModule.start().get(timeoutSeconds, TimeUnit.SECONDS);
     }
 
     public synchronized boolean isRunning() {

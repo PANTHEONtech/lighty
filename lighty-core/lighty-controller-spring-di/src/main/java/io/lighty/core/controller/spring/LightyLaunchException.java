@@ -14,15 +14,15 @@ public class LightyLaunchException extends Exception {
         super();
     }
 
-    public LightyLaunchException(final String message) {
+    public LightyLaunchException(String message) {
         super(message);
     }
 
-    public LightyLaunchException(final String message, final Throwable cause) {
+    public LightyLaunchException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public LightyLaunchException(final Throwable cause) {
+    public LightyLaunchException(Throwable cause) {
         super(cause);
     }
 }

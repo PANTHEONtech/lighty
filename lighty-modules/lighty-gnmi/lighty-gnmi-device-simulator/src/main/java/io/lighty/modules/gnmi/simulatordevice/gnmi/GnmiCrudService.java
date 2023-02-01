@@ -252,10 +252,10 @@ public class GnmiCrudService {
      * @param path  path related to value
      * @return simple json in format {LAST_PATH_ELEMENT:VALUE}"
      */
-    private String getSimpleJsonValue(final Gnmi.TypedValue value, final Gnmi.Path path) {
-        final StringBuilder jsonValue = new StringBuilder();
+    private String getSimpleJsonValue(Gnmi.TypedValue value, Gnmi.Path path) {
+        var jsonValue = new StringBuilder();
         jsonValue.append("{");
-        final String jsonElementName = path.getElem(path.getElemCount() - 1).getName();
+        String jsonElementName = path.getElem(path.getElemCount() - 1).getName();
         jsonValue.append(jsonElementName).append(":");
         switch (value.getValueCase()) {
             case STRING_VAL:

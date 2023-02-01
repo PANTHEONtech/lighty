@@ -19,9 +19,9 @@ public class RcGnmiAppConfiguration {
     private final GnmiConfiguration gnmiConfiguration;
     private final ModulesConfig modulesConfig;
 
-    public RcGnmiAppConfiguration(final ControllerConfiguration controllerConfig,
-            final RestConfConfiguration restconfConfig, final GnmiConfiguration gnmiConfiguration,
-            final ModulesConfig modulesConfig) {
+    public RcGnmiAppConfiguration(ControllerConfiguration controllerConfig,
+            RestConfConfiguration restconfConfig, GnmiConfiguration gnmiConfiguration,
+            ModulesConfig modulesConfig) {
         this.controllerConfig = controllerConfig;
         this.restconfConfig = restconfConfig;
         this.gnmiConfiguration = gnmiConfiguration;

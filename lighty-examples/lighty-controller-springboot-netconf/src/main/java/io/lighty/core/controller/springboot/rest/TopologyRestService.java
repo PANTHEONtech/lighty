@@ -9,6 +9,13 @@
 package io.lighty.core.controller.springboot.rest;
 
 import io.lighty.core.controller.springboot.utils.Utils;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
@@ -33,14 +40,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
-
 @RestController
 @RequestMapping(path = "/services/data/topology")
 public class TopologyRestService {
@@ -58,14 +57,14 @@ public class TopologyRestService {
             throws InterruptedException, ExecutionException, TimeoutException {
         Utils.logUserData(LOG, authentication);
 
-        try (final ReadTransaction tx = databroker.newReadOnlyTransaction()) {
-            final InstanceIdentifier<NetworkTopology> iid =
+        try (ReadTransaction tx = databroker.newReadOnlyTransaction()) {
+            InstanceIdentifier<NetworkTopology> iid =
                     InstanceIdentifier.create(NetworkTopology.class);
-            final Optional<NetworkTopology> readData =
+            Optional<NetworkTopology> readData =
                     tx.read(LogicalDatastoreType.OPERATIONAL, iid).get(TIMEOUT, TimeUnit.SECONDS);
 
             if (readData.isPresent() && readData.get().getTopology() != null) {
-                final List<String> topology = readData.get().getTopology().values().stream()
+                List<String> topology = readData.get().getTopology().values().stream()
                         .map(topology1 -> topology1.getTopologyId().getValue())
                         .collect(Collectors.toList());
                 return ResponseEntity.ok(topology);
@@ -77,17 +76,17 @@ public class TopologyRestService {
 
     @Secured({"ROLE_ADMIN"})
     @PutMapping("/id/{topologyId}")
-    public ResponseEntity putTopologyOperational(@PathVariable final String topologyId, Authentication authentication)
+    public ResponseEntity putTopologyOperational(@PathVariable String topologyId, Authentication authentication)
             throws InterruptedException {
         Utils.logUserData(LOG, authentication);
 
-        final WriteTransaction tx = databroker.newWriteOnlyTransaction();
+        WriteTransaction tx = databroker.newWriteOnlyTransaction();
 
-        final Topology topology = new TopologyBuilder()
-            .setTopologyId(new TopologyId(topologyId))
-            .build();
-        final InstanceIdentifier<Topology> iid = InstanceIdentifier.create(NetworkTopology.class)
-            .child(Topology.class, new TopologyKey(new TopologyId(topologyId)));
+        Topology topology = new TopologyBuilder()
+                .setTopologyId(new TopologyId(topologyId))
+                .build();
+        InstanceIdentifier<Topology> iid = InstanceIdentifier.create(NetworkTopology.class)
+                .child(Topology.class, new TopologyKey(new TopologyId(topologyId)));
 
         tx.put(LogicalDatastoreType.OPERATIONAL, iid, topology);
 
@@ -103,14 +102,14 @@ public class TopologyRestService {
 
     @Secured({"ROLE_ADMIN"})
     @DeleteMapping("/id/{topologyId}")
-    public ResponseEntity deleteTopologyOperational(@PathVariable final String topologyId, Authentication authentication)
+    public ResponseEntity deleteTopologyOperational(@PathVariable String topologyId, Authentication authentication)
             throws InterruptedException {
         Utils.logUserData(LOG, authentication);
 
-        final WriteTransaction tx = databroker.newWriteOnlyTransaction();
+        WriteTransaction tx = databroker.newWriteOnlyTransaction();
 
-        final InstanceIdentifier<Topology> iid = InstanceIdentifier.create(NetworkTopology.class)
-            .child(Topology.class, new TopologyKey(new TopologyId(topologyId)));
+        InstanceIdentifier<Topology> iid = InstanceIdentifier.create(NetworkTopology.class)
+                .child(Topology.class, new TopologyKey(new TopologyId(topologyId)));
 
         tx.delete(LogicalDatastoreType.OPERATIONAL, iid);
 

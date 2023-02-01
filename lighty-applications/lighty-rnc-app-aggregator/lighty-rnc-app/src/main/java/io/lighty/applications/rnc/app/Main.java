@@ -27,14 +27,14 @@ public class Main {
 
     // Using args is safe as we need only a configuration file location here
     @SuppressWarnings("squid:S4823")
-    public static void main(final String[] args) {
-        Main app = new Main();
+    public static void main(String[] args) {
+        var app = new Main();
         app.start(args);
     }
 
     @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
-    public void start(final String[] args) {
-        final Stopwatch stopwatch = Stopwatch.createStarted();
+    public void start(String[] args) {
+        var stopwatch = Stopwatch.createStarted();
         LOG.info(".__  .__       .__     __              .__           ");
         LOG.info("|  | |__| ____ |  |___/  |_ ___.__.    |__| ____     ");
         LOG.info("|  | |  |/ ___\\|  |  \\   __<   |  |    |  |/  _ \\ ");
@@ -45,7 +45,7 @@ public class Main {
 
         RncLightyModuleConfiguration rncModuleConfig;
         // Parse args
-        Arguments arguments = new Arguments();
+        var arguments = new Arguments();
         JCommander.newBuilder()
                 .addObject(arguments)
                 .build()
@@ -68,7 +68,7 @@ public class Main {
                 rncModuleConfig.getControllerConfig().getSchemaServiceConfig().getModels());
         LOG.info("Loaded YANG modules: {}", arrayNode);
 
-        final RncLightyModule rncLightyModule = createRncLightyModule(rncModuleConfig);
+        RncLightyModule rncLightyModule = createRncLightyModule(rncModuleConfig);
         // Initialize RNC modules
         if (rncLightyModule.initModules()) {
             LOG.info("Registering ShutdownHook to gracefully shutdown application");
@@ -80,7 +80,7 @@ public class Main {
         }
     }
 
-    public RncLightyModule createRncLightyModule(final RncLightyModuleConfiguration rncModuleConfig) {
+    public RncLightyModule createRncLightyModule(RncLightyModuleConfiguration rncModuleConfig) {
         return new RncLightyModule(rncModuleConfig);
     }
 }

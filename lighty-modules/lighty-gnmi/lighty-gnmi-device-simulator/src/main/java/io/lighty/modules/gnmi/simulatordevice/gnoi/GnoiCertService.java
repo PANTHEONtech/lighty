@@ -17,8 +17,6 @@ import org.slf4j.LoggerFactory;
 
 public class GnoiCertService extends CertificateManagementGrpc.CertificateManagementImplBase {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GnoiCertService.class);
-
     public static final Cert.CertificateInfo CERTIFICATE_INFO = Cert.CertificateInfo.newBuilder()
             .setCertificate(Cert.Certificate.newBuilder()
                     .setType(Cert.CertificateType.CT_X509)
@@ -31,16 +29,16 @@ public class GnoiCertService extends CertificateManagementGrpc.CertificateManage
                     .build())
             .setModificationTime(System.currentTimeMillis())
             .build();
-
+    private static final Logger LOG = LoggerFactory.getLogger(GnoiCertService.class);
 
     @Override
     public StreamObserver<Cert.InstallCertificateRequest> install(
-            final StreamObserver<Cert.InstallCertificateResponse> responseObserver) {
+            StreamObserver<Cert.InstallCertificateResponse> responseObserver) {
         LOG.info("Received install rpc.");
 
         return new StreamObserver<>() {
             @Override
-            public void onNext(final Cert.InstallCertificateRequest value) {
+            public void onNext(Cert.InstallCertificateRequest value) {
                 LOG.info("Received install rpc value: {}.", value);
 
                 responseObserver.onNext(Cert.InstallCertificateResponse.newBuilder()
@@ -48,7 +46,7 @@ public class GnoiCertService extends CertificateManagementGrpc.CertificateManage
             }
 
             @Override
-            public void onError(final Throwable throwable) {
+            public void onError(Throwable throwable) {
                 LOG.error("Install rpc failed.", throwable);
             }
 
@@ -61,8 +59,8 @@ public class GnoiCertService extends CertificateManagementGrpc.CertificateManage
     }
 
     @Override
-    public void getCertificates(final Cert.GetCertificatesRequest request,
-                                final StreamObserver<Cert.GetCertificatesResponse> responseObserver) {
+    public void getCertificates(Cert.GetCertificatesRequest request,
+            StreamObserver<Cert.GetCertificatesResponse> responseObserver) {
         LOG.info("Received get certificates rpc. {}", request);
         responseObserver.onNext(Cert.GetCertificatesResponse.newBuilder().addCertificateInfo(CERTIFICATE_INFO).build());
         responseObserver.onCompleted();

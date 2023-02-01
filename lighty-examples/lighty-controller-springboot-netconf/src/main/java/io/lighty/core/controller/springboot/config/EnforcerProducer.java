@@ -38,8 +38,8 @@ public class EnforcerProducer {
         Model model = new Model();
         Adapter adapter = new IsAdapter(policyClassPath);
 
-        try (final InputStream is = EnforcerProducer.class.getResourceAsStream(modelClassPath);
-                final BufferedReader bufferedReader =
+        try (InputStream is = EnforcerProducer.class.getResourceAsStream(modelClassPath);
+                BufferedReader bufferedReader =
                         new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
             String text = bufferedReader
                     .lines().collect(Collectors.joining("\n"));

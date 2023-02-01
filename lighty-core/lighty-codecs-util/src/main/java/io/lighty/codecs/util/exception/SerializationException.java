@@ -12,7 +12,7 @@ package io.lighty.codecs.util.exception;
  */
 public class SerializationException extends Exception {
 
-    public SerializationException(final Throwable cause) {
+    public SerializationException(Throwable cause) {
         super(cause);
     }
 }

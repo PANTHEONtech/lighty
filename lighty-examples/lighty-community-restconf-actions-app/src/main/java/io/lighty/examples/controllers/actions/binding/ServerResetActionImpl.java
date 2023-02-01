@@ -23,9 +23,9 @@ import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
  */
 public final class ServerResetActionImpl implements Reset {
     @Override
-    public ListenableFuture<RpcResult<ResetOutput>> invoke(final KeyedInstanceIdentifier<Server, ServerKey> path,
-            final ResetInput input) {
-        final var value = new ResetOutputBuilder().setResetFinishedAt(input.getResetAt()).build();
+    public ListenableFuture<RpcResult<ResetOutput>> invoke(KeyedInstanceIdentifier<Server, ServerKey> path,
+             ResetInput input) {
+        var value = new ResetOutputBuilder().setResetFinishedAt(input.getResetAt()).build();
         return RpcResultBuilder.success(value).buildFuture();
     }
 }

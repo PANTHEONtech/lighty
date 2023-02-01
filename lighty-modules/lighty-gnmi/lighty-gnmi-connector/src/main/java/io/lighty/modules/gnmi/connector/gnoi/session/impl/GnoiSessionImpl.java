@@ -28,7 +28,7 @@ public class GnoiSessionImpl implements GnoiSession {
     private final GnoiSystemInvoker systemInvoker;
     private final GnoiOsInvoker osInvoker;
 
-    public GnoiSessionImpl(final Channel channel) {
+    public GnoiSessionImpl(Channel channel) {
         Objects.requireNonNull(channel);
         this.certInvoker = GnoiCertInvokerImpl.fromChannel(channel);
         this.fileInvoker = GnoiFileInvokerImpl.fromChannel(channel);

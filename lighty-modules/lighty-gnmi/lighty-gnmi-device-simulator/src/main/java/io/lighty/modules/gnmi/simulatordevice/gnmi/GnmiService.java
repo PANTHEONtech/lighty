@@ -33,11 +33,11 @@ public class GnmiService extends gNMIGrpc.gNMIImplBase {
     private final GnmiCapabilitiesService gnmiCapabilitiesService;
     private final GnmiCrudService gnmiCrudService;
 
-    public GnmiService(final EffectiveModelContext schemaContext, final YangDataService dataService,
-                       @Nullable final Gson gson, @Nullable final EnumSet<Gnmi.Encoding> supportedEncodings) {
+    public GnmiService(EffectiveModelContext schemaContext, YangDataService dataService,
+            @Nullable Gson gson, @Nullable EnumSet<Gnmi.Encoding> supportedEncodings) {
         this.gnmiCapabilitiesService = new GnmiCapabilitiesService(schemaContext, supportedEncodings);
-        final Gson nonNullGson = Objects.requireNonNullElse(gson, new Gson());
-        this.gnmiCrudService = new GnmiCrudService(dataService, schemaContext,  nonNullGson);
+        Gson nonNullGson = Objects.requireNonNullElse(gson, new Gson());
+        this.gnmiCrudService = new GnmiCrudService(dataService, schemaContext, nonNullGson);
     }
 
     /**
@@ -51,10 +51,10 @@ public class GnmiService extends gNMIGrpc.gNMIImplBase {
      * </pre>
      */
     @Override
-    public void capabilities(final gnmi.Gnmi.CapabilityRequest request,
-                             final io.grpc.stub.StreamObserver<gnmi.Gnmi.CapabilityResponse> responseObserver) {
+    public void capabilities(Gnmi.CapabilityRequest request,
+            StreamObserver<Gnmi.CapabilityResponse> responseObserver) {
         logMessage("capabilities request", request);
-        final Gnmi.CapabilityResponse response = gnmiCapabilitiesService.getResponse(request);
+        Gnmi.CapabilityResponse response = gnmiCapabilitiesService.getResponse(request);
         logMessage("capabilities response", response);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
@@ -71,16 +71,16 @@ public class GnmiService extends gNMIGrpc.gNMIImplBase {
      */
     @SuppressWarnings({"checkstyle:illegalCatch"})
     @Override
-    public void get(final gnmi.Gnmi.GetRequest request,
-                    final io.grpc.stub.StreamObserver<gnmi.Gnmi.GetResponse> responseObserver) {
+    public void get(Gnmi.GetRequest request,
+            StreamObserver<Gnmi.GetResponse> responseObserver) {
         try {
             logMessage("GetRequest received", request);
             validateGetRequest(request);
-            final Gnmi.GetResponse response = gnmiCrudService.get(request);
+            Gnmi.GetResponse response = gnmiCrudService.get(request);
             logMessage("GetResponse ready", response);
             responseObserver.onNext(response);
             responseObserver.onCompleted();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             responseObserver.onError(e);
         }
     }
@@ -95,15 +95,15 @@ public class GnmiService extends gNMIGrpc.gNMIImplBase {
      */
     @SuppressWarnings({"checkstyle:illegalCatch"})
     @Override
-    public void set(final gnmi.Gnmi.SetRequest request,
-                    final io.grpc.stub.StreamObserver<gnmi.Gnmi.SetResponse> responseObserver) {
+    public void set(Gnmi.SetRequest request,
+            StreamObserver<Gnmi.SetResponse> responseObserver) {
         try {
             logMessage("SetRequest received", request);
-            final Gnmi.SetResponse response = gnmiCrudService.set(request);
+            Gnmi.SetResponse response = gnmiCrudService.set(request);
             logMessage("SetResponse ready", response);
             responseObserver.onNext(response);
             responseObserver.onCompleted();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             LOG.error("Failed to process SetRequest: {}", request, e);
             responseObserver.onError(e);
         }

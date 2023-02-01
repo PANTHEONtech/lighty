@@ -40,8 +40,8 @@ public class SchemaException extends Exception {
     }
 
     @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder("Errors: ");
+    public String getMessage() {
+        var builder = new StringBuilder("Errors: ");
         for (String error : errorMessages) {
             builder.append("\t").append(error).append("\n");
         }

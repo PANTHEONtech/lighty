@@ -27,17 +27,17 @@ public class AuthenticationInterceptor implements ServerInterceptor {
 
     private final UsernamePasswordAuth usernamePasswordAuth;
 
-    public AuthenticationInterceptor(@NonNull final UsernamePasswordAuth usernamePasswordAuth) {
+    public AuthenticationInterceptor(@NonNull  UsernamePasswordAuth usernamePasswordAuth) {
         this.usernamePasswordAuth = usernamePasswordAuth;
     }
 
     @Override
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(
-            final ServerCall<ReqT, RespT> serverCall, final Metadata metadata,
-            final ServerCallHandler<ReqT, RespT> serverCallHandler) {
+             ServerCall<ReqT, RespT> serverCall,  Metadata metadata,
+             ServerCallHandler<ReqT, RespT> serverCallHandler) {
 
-        final String receivedPassword = metadata.get(PASSWORD_KEY);
-        final String receivedUsername = metadata.get(USERNAME_KEY);
+        String receivedPassword = metadata.get(PASSWORD_KEY);
+        String receivedUsername = metadata.get(USERNAME_KEY);
 
         if (Strings.isNullOrEmpty(receivedUsername) || Strings.isNullOrEmpty(receivedPassword)) {
             LOG.info("Denied request: No Authentication header present in metadata");

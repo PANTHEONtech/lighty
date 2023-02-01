@@ -19,19 +19,19 @@ public class CapabilitiesKey {
 
     private final List<GnmiDeviceCapability> capabilityList;
 
-    public CapabilitiesKey(final List<GnmiDeviceCapability> capabilityList) {
+    public CapabilitiesKey(List<GnmiDeviceCapability> capabilityList) {
         this.capabilityList = capabilityList;
     }
 
     @Override
-    public boolean equals(final Object other) {
+    public boolean equals(Object other) {
         if (this == other) {
             return true;
         }
-        if (other == null || getClass() != other.getClass()) {
+        if (!(other instanceof CapabilitiesKey)) {
             return false;
         }
-        CapabilitiesKey that = (CapabilitiesKey) other;
+        var that = (CapabilitiesKey) other;
         return CollectionUtils.isEqualCollection(this.capabilityList, that.capabilityList);
     }
 

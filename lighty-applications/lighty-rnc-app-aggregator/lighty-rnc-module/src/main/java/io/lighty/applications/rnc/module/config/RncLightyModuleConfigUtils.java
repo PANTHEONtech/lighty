@@ -37,19 +37,19 @@ public final class RncLightyModuleConfigUtils {
         throw new UnsupportedOperationException();
     }
 
-    public static RncLightyModuleConfiguration loadConfigFromFile(final Path configPath) throws ConfigurationException {
+    public static RncLightyModuleConfiguration loadConfigFromFile(Path configPath) throws ConfigurationException {
         LOG.info("Loading RNC lighty.io configuration from file {} ...", configPath);
-        final ControllerConfiguration controllerConfig;
-        final LightyServerConfig lightyServerConfig;
-        final RestConfConfiguration restconfConfig;
-        final NetconfConfiguration netconfConfig;
-        final AAAConfiguration aaaConfig;
-        final ModulesConfig moduleConfig;
+        ControllerConfiguration controllerConfig;
+        LightyServerConfig lightyServerConfig;
+        RestConfConfiguration restconfConfig;
+        NetconfConfiguration netconfConfig;
+        AAAConfiguration aaaConfig;
+        ModulesConfig moduleConfig;
         try {
             LOG.debug("Loading lighty.io controller module configuration from file...");
             controllerConfig = ControllerConfigUtils.getConfiguration(Files.newInputStream(configPath));
             addDefaultAppModels(controllerConfig);
-            final Config akkaConfig = controllerConfig.getActorSystemConfig().getConfig().resolve();
+            Config akkaConfig = controllerConfig.getActorSystemConfig().getConfig().resolve();
             controllerConfig.getActorSystemConfig().setConfig(akkaConfig);
             LOG.debug("lighty.io controller module configuration from file loaded!");
 
@@ -80,7 +80,7 @@ public final class RncLightyModuleConfigUtils {
 
     public static RncLightyModuleConfiguration loadDefaultConfig() throws ConfigurationException {
         LOG.info("Loading default RNC lighty.io configuration ...");
-        final Set<YangModuleInfo> modelPaths = new HashSet<>();
+        Set<YangModuleInfo> modelPaths = new HashSet<>();
         defaultModels(modelPaths);
 
         LOG.debug("Loading default lighty.io controller module configuration...");
@@ -105,20 +105,20 @@ public final class RncLightyModuleConfigUtils {
         LOG.debug("Default lighty.io AAA module configuration loaded!");
 
         LOG.debug("Loading default lighty.io app module configuration...");
-        final ModulesConfig modulesConfig = ModulesConfig.getDefaultModulesConfig();
+        ModulesConfig modulesConfig = ModulesConfig.getDefaultModulesConfig();
         LOG.debug("Default lighty.io app module configuration loaded!");
         return new RncLightyModuleConfiguration(controllerConfig, lightyServerConfig, restConfConfiguration,
                 netconfConfig, aaaConfig, modulesConfig);
     }
 
-    private static void addDefaultAppModels(final ControllerConfiguration controllerConfig) {
+    private static void addDefaultAppModels(ControllerConfiguration controllerConfig) {
         LOG.debug("Adding minimal needed yang models if they are not present...");
-        final Set<YangModuleInfo> modelPaths = new HashSet<>(controllerConfig.getSchemaServiceConfig().getModels());
+        Set<YangModuleInfo> modelPaths = new HashSet<>(controllerConfig.getSchemaServiceConfig().getModels());
         defaultModels(modelPaths);
         controllerConfig.getSchemaServiceConfig().setModels(Collections.unmodifiableSet(modelPaths));
     }
 
-    private static void defaultModels(final Set<YangModuleInfo> modelPaths) {
+    private static void defaultModels(Set<YangModuleInfo> modelPaths) {
         modelPaths.addAll(RestConfConfigUtils.YANG_MODELS);
         modelPaths.addAll(NetconfConfigUtils.NETCONF_TOPOLOGY_MODELS);
         modelPaths.addAll(AAAConfigUtils.YANG_MODELS);

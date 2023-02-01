@@ -10,7 +10,6 @@ package io.lighty.modules.gnmi.connector.security;
 
 import io.grpc.CallCredentials;
 import io.grpc.Metadata;
-import io.grpc.Metadata.Key;
 import java.util.concurrent.Executor;
 
 public class GnmiCallCredentials extends CallCredentials {
@@ -21,18 +20,18 @@ public class GnmiCallCredentials extends CallCredentials {
     private final String username;
     private final String password;
 
-    public GnmiCallCredentials(final String username, final String password) {
+    public GnmiCallCredentials(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
     @Override
-    public void applyRequestMetadata(final RequestInfo requestInfo, final Executor appExecutor,
-                                     final MetadataApplier metadataApplier) {
+    public void applyRequestMetadata(RequestInfo requestInfo, Executor appExecutor,
+            MetadataApplier metadataApplier) {
         appExecutor.execute(() -> {
-            final Metadata headers = new Metadata();
-            headers.put(Key.of(PASSWORD_KEY, Metadata.ASCII_STRING_MARSHALLER), password);
-            headers.put(Key.of(USERNAME_KEY, Metadata.ASCII_STRING_MARSHALLER), username);
+            var headers = new Metadata();
+            headers.put(Metadata.Key.of(PASSWORD_KEY, Metadata.ASCII_STRING_MARSHALLER), password);
+            headers.put(Metadata.Key.of(USERNAME_KEY, Metadata.ASCII_STRING_MARSHALLER), username);
             metadataApplier.apply(headers);
         });
     }
