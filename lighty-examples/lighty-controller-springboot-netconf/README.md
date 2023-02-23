@@ -16,7 +16,7 @@ toaster model from [ODL repository](https://github.com/YangModels/yang/blob/19fe
 ![architecture](docs/architecture.svg)
 
 ## Security
-This demo utilizes Spring's [method security](https://docs.spring.io/spring-security/site/docs/5.2.0.BUILD-SNAPSHOT/reference/htmlsingle/#jc-method) 
+This demo utilizes Spring's [method security](https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html) 
 and [jCasbin](https://github.com/casbin/jcasbin). Web layer injects spring SecurityContext so it is available for other beans in application.  
 
 * __Authentication__ is handled by internal service ``io.lighty.core.controller.springboot.services.UserAccessService`` 
