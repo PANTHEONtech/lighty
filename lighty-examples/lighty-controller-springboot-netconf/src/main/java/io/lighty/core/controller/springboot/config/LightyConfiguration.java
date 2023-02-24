@@ -9,6 +9,10 @@
 package io.lighty.core.controller.springboot.config;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
@@ -98,7 +102,7 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
             throw new LightyLaunchException("Could not init NetconfSB Plugin");
         }
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> closeLightyModule(this.netconfSBPlugin)));
+        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
 
         return this.netconfSBPlugin;
     }
@@ -108,16 +112,29 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
         closeLightyModule(lightyController());
     }
 
-    void closeLightyModule(final LightyModule lightyModule) {
+    private static void closeLightyModule(final LightyModule lightyModule) {
         if (lightyModule != null) {
             final Stopwatch stopwatch = Stopwatch.createStarted();
+            LOG.info("Lighty module {} shutting down ...", lightyModule);
             try {
-                LOG.info("Lighty module {} shutting down ...", lightyModule);
-                lightyModule.shutdown();
+                final ListenableFuture<Boolean> future = lightyModule.shutdown();
+                Futures.addCallback(future, new FutureCallback<>() {
+                    @Override
+                    public void onSuccess(Boolean result) {
+                        if (result) {
+                            LOG.info("Lighty module {} stopped in {}", lightyModule, stopwatch.stop());
+                        } else {
+                            LOG.info("Lighty module {} failed to stop after {}", lightyModule, stopwatch.stop());
+                        }
+                    }
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        LOG.error("Exception while shutting module: {} :", lightyModule, throwable);
+                    }
+                }, MoreExecutors.directExecutor());
             } catch (Exception e) {
                 LOG.error("Exception while shutting module: {} :", lightyModule, e);
             }
-            LOG.info("Lighty module {} stopped in {}", lightyModule, stopwatch.stop());
         }
     }
 
