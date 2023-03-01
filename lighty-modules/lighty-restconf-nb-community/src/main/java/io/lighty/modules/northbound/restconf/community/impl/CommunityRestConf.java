@@ -30,7 +30,6 @@ import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.restconf.nb.rfc8040.RestconfApplication;
 import org.opendaylight.restconf.nb.rfc8040.databind.DatabindProvider;
 import org.opendaylight.restconf.nb.rfc8040.databind.mdsal.DOMDatabindProvider;
-import org.opendaylight.restconf.nb.rfc8040.handlers.SchemaContextHandler;
 import org.opendaylight.restconf.nb.rfc8040.streams.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +82,6 @@ public class CommunityRestConf extends AbstractLightyModule {
     protected boolean initProcedure() {
         final Stopwatch stopwatch = Stopwatch.createStarted();
         final Configuration streamsConfiguration = RestConfConfigUtils.getStreamsConfiguration();
-        new SchemaContextHandler(this.domDataBroker, this.domSchemaService);
         final DatabindProvider databindProvider = new DOMDatabindProvider(domSchemaService);
 
         LOG.info("Starting RestconfApplication with configuration {}", streamsConfiguration);
