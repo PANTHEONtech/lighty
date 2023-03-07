@@ -55,7 +55,6 @@ public final class NetconfTopologyPlugin extends AbstractTopologyPlugin {
                 lightyServices.getBindingDataBroker(), lightyServices.getDOMMountPointService(),
                 encryptionService, lightyServices.getRpcProviderService(),
                 defaultBaseNetconfSchemas, new LightyDeviceActionFactory());
-        netconfTopologyImpl.init();
         return true;
     }
 
