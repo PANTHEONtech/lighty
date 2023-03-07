@@ -19,10 +19,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.opendaylight.netconf.sal.rest.doc.api.ApiDocService;
-import org.opendaylight.netconf.sal.rest.doc.impl.AllModulesDocGenerator;
-import org.opendaylight.netconf.sal.rest.doc.impl.ApiDocGeneratorRFC8040;
 import org.opendaylight.netconf.sal.rest.doc.impl.ApiDocServiceImpl;
-import org.opendaylight.netconf.sal.rest.doc.impl.MountPointSwaggerGeneratorRFC8040;
 import org.opendaylight.netconf.sal.rest.doc.jaxrs.ApiDocApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +38,6 @@ public class SwaggerLighty extends AbstractLightyModule {
     private final LightyServerBuilder jettyServerBuilder;
     private final LightyServices lightyServices;
 
-    private MountPointSwaggerGeneratorRFC8040 mountPointSwaggerGeneratorRFC8040;
     private ApiDocService apiDocService;
 
     public SwaggerLighty(RestConfConfiguration restConfConfiguration,
@@ -59,16 +55,8 @@ public class SwaggerLighty extends AbstractLightyModule {
         String basePathString = restConfConfiguration.getRestconfServletContextPath().replaceAll("^/+", "");
         LOG.info("basePath: {}", basePathString);
 
-        this.mountPointSwaggerGeneratorRFC8040 = new MountPointSwaggerGeneratorRFC8040(
-                lightyServices.getDOMSchemaService(), lightyServices.getDOMMountPointService(),basePathString);
-
-        ApiDocGeneratorRFC8040 apiDocGeneratorRFC8040 = new ApiDocGeneratorRFC8040(
-                lightyServices.getDOMSchemaService(), basePathString);
-        AllModulesDocGenerator allModulesDocGenerator =
-                new AllModulesDocGenerator(apiDocGeneratorRFC8040);
-
-        this.apiDocService = new ApiDocServiceImpl(mountPointSwaggerGeneratorRFC8040,
-                apiDocGeneratorRFC8040, allModulesDocGenerator);
+        this.apiDocService = new ApiDocServiceImpl(lightyServices.getDOMSchemaService(),
+            lightyServices.getDOMMountPointService());
 
         ApiDocApplication apiDocApplication = new ApiDocApplication(apiDocService);
 
@@ -90,9 +78,6 @@ public class SwaggerLighty extends AbstractLightyModule {
     @Override
     protected boolean stopProcedure() {
         LOG.info("shutting down swagger ...");
-        if (mountPointSwaggerGeneratorRFC8040 != null) {
-            mountPointSwaggerGeneratorRFC8040.close();
-        }
         return true;
     }
 
