@@ -136,7 +136,8 @@ public class RncLightyModule {
 
     private AAALighty initAAA(final AAAConfiguration config, final LightyServices services) {
         Security.addProvider(new BouncyCastleProvider());
-        config.setCertificateManager(CertificateManagerConfig.getDefault(services.getBindingDataBroker()));
+        config.setCertificateManager(
+                CertificateManagerConfig.getDefault(services.getBindingDataBroker(), services.getRpcProviderService()));
         return new AAALighty(services.getBindingDataBroker(), null, this.jettyServerBuilder, config);
     }
 

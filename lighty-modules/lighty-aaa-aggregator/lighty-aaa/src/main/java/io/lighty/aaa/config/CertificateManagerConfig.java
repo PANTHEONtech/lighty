@@ -14,6 +14,7 @@ import org.opendaylight.aaa.cert.impl.CertificateManagerService;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.opendaylight.aaa.encrypt.impl.AAAEncryptionServiceImpl;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.AaaEncryptServiceConfig;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.AaaEncryptServiceConfigBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.rev151126.AaaCertServiceConfig;
@@ -29,7 +30,8 @@ public final class CertificateManagerConfig {
 
     }
 
-    public static ICertificateManager getDefault(final DataBroker bindingDataBroker) {
+    public static ICertificateManager getDefault(final DataBroker bindingDataBroker,
+            final RpcProviderService rpcProviderService) {
         final List<CipherSuites> cipherSuites = new ArrayList<>();
         final CtlKeystore ctlKeystore = new CtlKeystoreBuilder()
                 .setName("ctl.jks")
@@ -62,8 +64,9 @@ public final class CertificateManagerConfig {
                 .setEncryptKeyLength(128)
                 .setCipherTransforms("AES/CBC/PKCS5Padding")
                 .build();
-        final AAAEncryptionService encryptionSrv = new AAAEncryptionServiceImpl(encrySrvConfig, bindingDataBroker);
+        final AAAEncryptionService encryptionSrv = new AAAEncryptionServiceImpl(encrySrvConfig);
 
-        return new CertificateManagerService(aaaCertServiceConfig, bindingDataBroker, encryptionSrv);
+        return new CertificateManagerService(rpcProviderService, bindingDataBroker, encryptionSrv,
+                aaaCertServiceConfig);
     }
 }

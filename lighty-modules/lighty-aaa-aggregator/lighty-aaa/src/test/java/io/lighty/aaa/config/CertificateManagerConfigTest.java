@@ -13,10 +13,10 @@ import java.util.Optional;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.aaa.cert.api.ICertificateManager;
-import org.opendaylight.aaa.cert.utils.KeyStoresDataUtils;
-import org.opendaylight.aaa.encrypt.impl.MdsalUtils;
+import org.opendaylight.aaa.cert.impl.KeyStoresDataUtils;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.AaaEncryptServiceConfig;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.AaaEncryptServiceConfigBuilder;
@@ -40,12 +40,17 @@ public class CertificateManagerConfigTest {
     @Mock
     ReadTransaction readTransaction;
 
+    @Mock
+    RpcProviderService rpcProviderService;
+
     @BeforeClass
     public void init() {
         MockitoAnnotations.initMocks(this);
+        InstanceIdentifier<AaaEncryptServiceConfig> build = InstanceIdentifier.builder(AaaEncryptServiceConfig.class)
+                .build();
         when(bindingDataBroker.newReadOnlyTransaction()).thenReturn(readTransaction);
         AaaEncryptServiceConfig aaaEncryptServiceConfig = new AaaEncryptServiceConfigBuilder().build();
-        when(readTransaction.read(LogicalDatastoreType.CONFIGURATION, MdsalUtils.getEncryptionSrvConfigIid()))
+        when(readTransaction.read(LogicalDatastoreType.CONFIGURATION, build))
                 .thenReturn(FluentFutures.immediateFluentFuture(Optional.of(aaaEncryptServiceConfig)));
 
         KeyStores keyStores = new KeyStoresBuilder().build();
@@ -60,7 +65,8 @@ public class CertificateManagerConfigTest {
 
     @Test
     public void getDefaultTest() {
-        ICertificateManager certificateManager = CertificateManagerConfig.getDefault(bindingDataBroker);
+        ICertificateManager certificateManager = CertificateManagerConfig.getDefault(bindingDataBroker,
+                rpcProviderService);
 
         Assert.assertNotNull(certificateManager);
         Assert.assertNotNull(certificateManager.getServerContext());
