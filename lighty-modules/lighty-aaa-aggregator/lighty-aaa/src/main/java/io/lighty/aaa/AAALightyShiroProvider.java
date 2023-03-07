@@ -144,7 +144,7 @@ public final class AAALightyShiroProvider {
         server.addContextHandler(contexts);
         this.handlers.add(contexts);
         this.handlers.add(mainHandler);
-        this.aaaWebEnvironment = AAAWebEnvironment.create(shiroConfiguration,
+        this.aaaWebEnvironment = new AAAWebEnvironment(shiroConfiguration,
                 dataBroker,
                 certificateManager,
                 authenticationService,
