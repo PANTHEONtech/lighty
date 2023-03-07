@@ -124,7 +124,9 @@ public final class Main {
         // 3. Initialize and start Lighty AAA
         final DataBroker bindingDataBroker = this.lightyController.getServices().getBindingDataBroker();
         Security.addProvider(new BouncyCastleProvider());
-        aaaConfiguration.setCertificateManager(CertificateManagerConfig.getDefault(bindingDataBroker));
+        aaaConfiguration.setCertificateManager(
+                CertificateManagerConfig.getDefault(bindingDataBroker, lightyController.getServices()
+                        .getRpcProviderService()));
         this.aaaLighty = new AAALighty(bindingDataBroker,null, jettyServerBuilder, aaaConfiguration);
         final boolean aaaLightyStartOk = this.aaaLighty.start().get(modulesConfig.getModuleTimeoutSeconds(),
                 TimeUnit.SECONDS);
