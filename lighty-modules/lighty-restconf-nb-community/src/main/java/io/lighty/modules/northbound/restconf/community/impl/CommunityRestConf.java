@@ -50,6 +50,7 @@ public class CommunityRestConf extends AbstractLightyModule {
     private final String restconfServletContextPath;
     private Server jettyServer;
     private LightyServerBuilder lightyServerBuilder;
+    private SchemaContextHandler schemaCtxHandler;
 
     public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMRpcService domRpcService,
             final DOMActionService domActionService, final DOMNotificationService domNotificationService,
@@ -83,10 +84,11 @@ public class CommunityRestConf extends AbstractLightyModule {
     protected boolean initProcedure() {
         final Stopwatch stopwatch = Stopwatch.createStarted();
         final Configuration streamsConfiguration = RestConfConfigUtils.getStreamsConfiguration();
-        new SchemaContextHandler(this.domDataBroker, this.domSchemaService);
-        final DatabindProvider databindProvider = new DOMDatabindProvider(domSchemaService);
-
         LOG.info("Starting RestconfApplication with configuration {}", streamsConfiguration);
+
+        this.schemaCtxHandler = new SchemaContextHandler(this.domDataBroker, this.domSchemaService);
+
+        final DatabindProvider databindProvider = new DOMDatabindProvider(domSchemaService);
         final RestconfApplication restconfApplication = new RestconfApplication(databindProvider,
                 this.domMountPointService, this.domDataBroker, this.domRpcService, this.domActionService,
                 this.domNotificationService, this.domSchemaService, streamsConfiguration);
@@ -131,6 +133,10 @@ public class CommunityRestConf extends AbstractLightyModule {
     @Override
     protected boolean stopProcedure() {
         boolean stopFailed = false;
+        if (this.schemaCtxHandler != null) {
+            this.schemaCtxHandler.close();
+            LOG.info("Schema context handler closed");
+        }
         if (this.jettyServer != null) {
             try {
                 this.jettyServer.stop();
