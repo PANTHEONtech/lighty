@@ -30,8 +30,8 @@
     <properties>
         <maven.compiler.release>17</maven.compiler.release>
         <!-- Overrides Spring Boot slf4j and log4j2 dependency version -->
-        <slf4j.version>2.0.0</slf4j.version>
-        <log4j2.version>2.19.0</log4j2.version>
+        <slf4j.version>2.0.6</slf4j.version>
+        <log4j2.version>2.20.0</log4j2.version>
     </properties>
 
     <dependencies>
@@ -198,7 +198,7 @@
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>
                             <artifactId>sevntu-checks</artifactId>
-                            <version>1.42.0</version>
+                            <version>1.44.1</version>
                         </dependency>
                         <dependency>
                             <groupId>org.opendaylight.odlparent</groupId>
@@ -210,12 +210,12 @@
                 <plugin>
                     <groupId>com.github.spotbugs</groupId>
                     <artifactId>spotbugs-maven-plugin</artifactId>
-                    <version>4.7.2.0</version>
+                    <version>4.7.3.2</version>
                     <dependencies>
                         <dependency>
                             <groupId>com.github.spotbugs</groupId>
                             <artifactId>spotbugs</artifactId>
-                            <version>4.7.2</version>
+                            <version>4.7.3</version>
                         </dependency>
                         <dependency>
                             <groupId>org.opendaylight.odlparent</groupId>
