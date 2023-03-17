@@ -317,7 +317,7 @@
                             <!-- Produces XML report -->
                             <xmlOutput>true</xmlOutput>
                             <!-- Configures the directory in which the XML report is created -->
-                            <findbugsXmlOutputDirectory>${project.build.directory}/spotbugs</findbugsXmlOutputDirectory>
+                            <spotbugsXmlOutputDirectory>${project.build.directory}/spotbugs</spotbugsXmlOutputDirectory>
                         </configuration>
                         <executions>
                             <!--
