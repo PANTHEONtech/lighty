@@ -20,13 +20,13 @@ import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.conn
 public class ConfigurableParameters {
 
     private final GnmiParameters gnmiParameters;
-    private final ForceCapabilities forceCapabilities;
     private final Optional<List<Gnmi.ModelData>> modelDataList;
     private final Optional<Boolean> useModelNamePrefix;
     private final Optional<GnmiParameters.OverwriteDataType> overwriteDataType;
     private final Optional<String> pathTarget;
 
     public ConfigurableParameters(final ExtensionsParameters extensionsParameters) {
+        final ForceCapabilities forceCapabilities;
         if (extensionsParameters != null) {
             gnmiParameters = extensionsParameters.getGnmiParameters();
             forceCapabilities = extensionsParameters.augmentation(ForceCapabilities.class);
