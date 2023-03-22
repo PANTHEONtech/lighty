@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.force.capabilities.rev210702.ForceCapabilities;
+import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.force.capabilities.rev210702.force.yang.models.ForceCapability;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.connection.parameters.ExtensionsParameters;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.gnmi.connection.parameters.extensions.parameters.GnmiParameters;
 
@@ -69,10 +70,14 @@ public class ConfigurableParameters {
                 .map(Entry::getValue)
                 .map(model -> Gnmi.ModelData.newBuilder()
                     .setName(model.getName())
-                    .setVersion(model.getVersion().getValue()).build())
+                    .setVersion(getVersion(model)).build())
                 .collect(Collectors.toList()));
         }
         return Optional.empty();
+    }
+
+    private String getVersion(ForceCapability model) {
+        return model.getVersion().getValue();
     }
 
     public Optional<Boolean> getUseModelNamePrefix() {
