@@ -7,12 +7,12 @@
  */
 package io.lighty.aaa.config;
 
+import io.lighty.aaa.encrypt.service.impl.AAAEncryptionServiceImpl;
 import java.util.ArrayList;
 import java.util.List;
 import org.opendaylight.aaa.cert.api.ICertificateManager;
 import org.opendaylight.aaa.cert.impl.CertificateManagerService;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
-import org.opendaylight.aaa.encrypt.impl.AAAEncryptionServiceImpl;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.AaaEncryptServiceConfig;
@@ -64,7 +64,8 @@ public final class CertificateManagerConfig {
                 .setEncryptKeyLength(128)
                 .setCipherTransforms("AES/CBC/PKCS5Padding")
                 .build();
-        final AAAEncryptionService encryptionSrv = new AAAEncryptionServiceImpl(encrySrvConfig);
+        // TODO
+        final AAAEncryptionService encryptionSrv = new AAAEncryptionServiceImpl(null, null);
 
         return new CertificateManagerService(rpcProviderService, bindingDataBroker, encryptionSrv,
                 aaaCertServiceConfig);
