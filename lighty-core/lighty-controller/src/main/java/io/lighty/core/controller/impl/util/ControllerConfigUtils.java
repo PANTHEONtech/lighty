@@ -61,6 +61,8 @@ public final class ControllerConfigUtils {
         org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013
                 .$YangModuleInfoImpl.getInstance(),
         org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930
+                .$YangModuleInfoImpl.getInstance(),
+        org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.rpc.rev151215
                 .$YangModuleInfoImpl.getInstance()
     );
 

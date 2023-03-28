@@ -215,6 +215,10 @@
             <artifactId>lighty-test-models</artifactId>
             <scope>test</scope>
         </dependency>
+      <dependency>
+        <groupId>org.opendaylight.aaa</groupId>
+        <artifactId>aaa-cert</artifactId>
+      </dependency>
     </dependencies>
 
     <build>

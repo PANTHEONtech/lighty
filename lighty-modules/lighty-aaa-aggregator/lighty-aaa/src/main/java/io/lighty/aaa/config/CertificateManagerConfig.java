@@ -7,12 +7,25 @@
  */
 package io.lighty.aaa.config;
 
+import io.lighty.aaa.encrypt.service.impl.AAAEncryptionServiceImpl;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 import org.opendaylight.aaa.cert.api.ICertificateManager;
 import org.opendaylight.aaa.cert.impl.CertificateManagerService;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
-import org.opendaylight.aaa.encrypt.impl.AAAEncryptionServiceImpl;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.AaaEncryptServiceConfig;
@@ -64,9 +77,29 @@ public final class CertificateManagerConfig {
                 .setEncryptKeyLength(128)
                 .setCipherTransforms("AES/CBC/PKCS5Padding")
                 .build();
-        final AAAEncryptionService encryptionSrv = new AAAEncryptionServiceImpl(encrySrvConfig);
 
-        return new CertificateManagerService(rpcProviderService, bindingDataBroker, encryptionSrv,
-                aaaCertServiceConfig);
+        final byte[] encryptionKeySalt = Base64.getDecoder().decode(encrySrvConfig.getEncryptSalt());
+
+        try {
+            final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(encrySrvConfig.getEncryptMethod());
+            final KeySpec keySpec = new PBEKeySpec(encrySrvConfig.getEncryptKey().toCharArray(), encryptionKeySalt,
+                    encrySrvConfig.getEncryptIterationCount(), encrySrvConfig.getEncryptKeyLength());
+            SecretKey key = new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(),
+                    encrySrvConfig.getEncryptType());
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(encryptionKeySalt);
+
+            Cipher encryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
+            encryptCipher.init(Cipher.ENCRYPT_MODE, key, ivParameterSpec);
+
+            Cipher decryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
+            decryptCipher.init(Cipher.DECRYPT_MODE, key, ivParameterSpec);
+            final AAAEncryptionService encryptionSrv = new AAAEncryptionServiceImpl(encryptCipher, decryptCipher);
+
+            return new CertificateManagerService(rpcProviderService, bindingDataBroker, encryptionSrv,
+                    aaaCertServiceConfig);
+        } catch (InvalidAlgorithmParameterException | InvalidKeyException | InvalidKeySpecException
+                 | NoSuchAlgorithmException | NoSuchPaddingException e) {
+            return null;
+        }
     }
 }
