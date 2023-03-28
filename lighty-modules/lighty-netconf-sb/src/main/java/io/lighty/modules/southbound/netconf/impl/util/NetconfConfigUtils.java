@@ -35,8 +35,6 @@ import javax.crypto.spec.SecretKeySpec;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.opendaylight.netconf.client.NetconfClientDispatcher;
 import org.opendaylight.netconf.client.NetconfClientDispatcherImpl;
-import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.AaaEncryptServiceConfig;
-import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.AaaEncryptServiceConfigBuilder;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,8 +125,7 @@ public final class NetconfConfigUtils {
      */
     public static NetconfConfiguration injectServicesToConfig(
             final NetconfConfiguration configuration) throws ConfigurationException {
-        final AAAEncryptionService aaa = NetconfConfigUtils.createAAAEncryptionService(
-                getDefaultAaaEncryptServiceConfig());
+        final AAAEncryptionService aaa = NetconfConfigUtils.createAAAEncryptionService();
         configuration.setAaaService(aaa);
         return configuration;
     }
@@ -150,47 +147,38 @@ public final class NetconfConfigUtils {
     }
 
     /**
-     * Create default configuration for {@link AAAEncryptionService}.
-     *
-     * @return default configuration.
-     */
-    public static AaaEncryptServiceConfig getDefaultAaaEncryptServiceConfig() {
-        final byte[] bytes = new byte[16];
-        RANDOM.nextBytes(bytes);
-        final String salt = new String(Base64.getEncoder().encode(bytes), StandardCharsets.UTF_8);
-        return new AaaEncryptServiceConfigBuilder().setEncryptKey("V1S1ED4OMeEh")
-                .setPasswordLength(12).setEncryptSalt(salt)
-                .setEncryptMethod("PBKDF2WithHmacSHA1").setEncryptType("AES")
-                .setEncryptIterationCount(32768).setEncryptKeyLength(128)
-                .setCipherTransforms("AES/CBC/PKCS5Padding").build();
-    }
-
-    /**
      * Create an instance of {@link AAAEncryptionService} from provided configuration.
      *
-     * @param encrySrvConfig service configuration holder.
      * @return configured instance of {@link AAAEncryptionService}
      * @throws ConfigurationException in case provided configuration is not valid.
      */
-    public static AAAEncryptionService createAAAEncryptionService(AaaEncryptServiceConfig encrySrvConfig) throws
-            ConfigurationException {
-        final byte[] encryptionKeySalt = Base64.getDecoder().decode(encrySrvConfig.getEncryptSalt());
-        try {
-            final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(encrySrvConfig.getEncryptMethod());
-            final KeySpec keySpec = new PBEKeySpec(encrySrvConfig.getEncryptKey().toCharArray(), encryptionKeySalt,
-                    encrySrvConfig.getEncryptIterationCount(), encrySrvConfig.getEncryptKeyLength());
-            SecretKey key = new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(),
-                    encrySrvConfig.getEncryptType());
-            IvParameterSpec ivParameterSpec = new IvParameterSpec(encryptionKeySalt);
+    public static AAAEncryptionService createAAAEncryptionService() throws ConfigurationException {
+        final byte[] bytes = new byte[16];
+        RANDOM.nextBytes(bytes);
+        final String salt = new String(Base64.getEncoder().encode(bytes), StandardCharsets.UTF_8);
+        final String encryptKey = "V1S1ED4OMeEh";
+        final String encryptMethod = "PBKDF2WithHmacSHA1";
+        final String encryptType = "AES";
+        final int iterationCount = 32768;
+        final int encryptKeyLength = 128;
+        final String cipherTransforms = "AES/CBC/PKCS5Padding";
 
-            Cipher encryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
+        final byte[] encryptionKeySalt = Base64.getDecoder().decode(salt);
+        try {
+            final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(encryptMethod);
+            final KeySpec keySpec = new PBEKeySpec(encryptKey.toCharArray(), encryptionKeySalt,
+                    iterationCount, encryptKeyLength);
+            final SecretKey key = new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(),
+                encryptType);
+            final IvParameterSpec ivParameterSpec = new IvParameterSpec(encryptionKeySalt);
+
+            final Cipher encryptCipher = Cipher.getInstance(cipherTransforms);
             encryptCipher.init(Cipher.ENCRYPT_MODE, key, ivParameterSpec);
 
-            Cipher decryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
+            final Cipher decryptCipher = Cipher.getInstance(cipherTransforms);
             decryptCipher.init(Cipher.DECRYPT_MODE, key, ivParameterSpec);
 
             return new AAAEncryptionServiceImpl(encryptCipher, decryptCipher);
-
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException
                 | InvalidAlgorithmParameterException | InvalidKeyException e) {
             throw new ConfigurationException(e);

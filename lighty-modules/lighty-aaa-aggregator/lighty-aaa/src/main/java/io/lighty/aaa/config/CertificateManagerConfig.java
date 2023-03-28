@@ -8,15 +8,26 @@
 package io.lighty.aaa.config;
 
 import io.lighty.aaa.encrypt.service.impl.AAAEncryptionServiceImpl;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 import org.opendaylight.aaa.cert.api.ICertificateManager;
 import org.opendaylight.aaa.cert.impl.CertificateManagerService;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
-import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.AaaEncryptServiceConfig;
-import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.AaaEncryptServiceConfigBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.rev151126.AaaCertServiceConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.rev151126.AaaCertServiceConfigBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.rev151126.aaa.cert.service.config.CtlKeystore;
@@ -27,7 +38,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.rev151126.aaa
 
 public final class CertificateManagerConfig {
     private CertificateManagerConfig() {
-
+        // no-op
     }
 
     public static ICertificateManager getDefault(final DataBroker bindingDataBroker,
@@ -54,20 +65,38 @@ public final class CertificateManagerConfig {
                 .setCtlKeystore(ctlKeystore)
                 .setTrustKeystore(trustKeystore)
                 .build();
-        final AaaEncryptServiceConfig encrySrvConfig = new AaaEncryptServiceConfigBuilder()
-                .setEncryptKey("V1S1ED4OMeEh")
-                .setPasswordLength(12)
-                .setEncryptSalt("TdtWeHbch/7xP52/rp3Usw==")
-                .setEncryptMethod("PBKDF2WithHmacSHA1")
-                .setEncryptType("AES")
-                .setEncryptIterationCount(32768)
-                .setEncryptKeyLength(128)
-                .setCipherTransforms("AES/CBC/PKCS5Padding")
-                .build();
-        // TODO
-        final AAAEncryptionService encryptionSrv = new AAAEncryptionServiceImpl(null, null);
-
-        return new CertificateManagerService(rpcProviderService, bindingDataBroker, encryptionSrv,
+        return new CertificateManagerService(rpcProviderService, bindingDataBroker, createAAAEncryptionService(),
                 aaaCertServiceConfig);
+    }
+
+    private static AAAEncryptionService createAAAEncryptionService() {
+        final String salt = "TdtWeHbch/7xP52/rp3Usw==";
+        final String encryptKey = "V1S1ED4OMeEh";
+        final String encryptMethod = "PBKDF2WithHmacSHA1";
+        final String encryptType = "AES";
+        final int iterationCount = 32768;
+        final int encryptKeyLength = 128;
+        final String cipherTransforms = "AES/CBC/PKCS5Padding";
+
+        final byte[] encryptionKeySalt = Base64.getDecoder().decode(salt);
+        try {
+            final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(encryptMethod);
+            final KeySpec keySpec = new PBEKeySpec(encryptKey.toCharArray(), encryptionKeySalt,
+                iterationCount, encryptKeyLength);
+            final SecretKey key = new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(),
+                encryptType);
+            final IvParameterSpec ivParameterSpec = new IvParameterSpec(encryptionKeySalt);
+
+            final Cipher encryptCipher = Cipher.getInstance(cipherTransforms);
+            encryptCipher.init(Cipher.ENCRYPT_MODE, key, ivParameterSpec);
+
+            final Cipher decryptCipher = Cipher.getInstance(cipherTransforms);
+            decryptCipher.init(Cipher.DECRYPT_MODE, key, ivParameterSpec);
+
+            return new AAAEncryptionServiceImpl(encryptCipher, decryptCipher);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException
+            | InvalidAlgorithmParameterException | InvalidKeyException e) {
+            throw new RuntimeException("Cannot initialize lighty.io AAAEncryptionService", e);
+        }
     }
 }

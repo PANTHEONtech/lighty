@@ -21,8 +21,7 @@ public class AAAEncryptionServiceTest {
 
     @BeforeClass
     public void init() throws ConfigurationException {
-        this.aaaEncryptionService = NetconfConfigUtils.createAAAEncryptionService(
-                NetconfConfigUtils.getDefaultAaaEncryptServiceConfig());
+        this.aaaEncryptionService = NetconfConfigUtils.createAAAEncryptionService();
     }
 
     @Test

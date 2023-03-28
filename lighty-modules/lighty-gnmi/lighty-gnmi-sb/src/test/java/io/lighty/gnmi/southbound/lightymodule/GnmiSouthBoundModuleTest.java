@@ -35,8 +35,6 @@ import javax.crypto.spec.SecretKeySpec;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.AaaEncryptServiceConfig;
-import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.AaaEncryptServiceConfigBuilder;
 
 public class GnmiSouthBoundModuleTest {
     private static final long MODULE_TIMEOUT = 60;
@@ -71,31 +69,30 @@ public class GnmiSouthBoundModuleTest {
     }
 
     private static AAAEncryptionServiceImpl createEncryptionService() throws NoSuchPaddingException,
-            NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, InvalidKeyException {
-        final AaaEncryptServiceConfig encrySrvConfig = getDefaultAaaEncryptServiceConfig();
-        final byte[] encryptionKeySalt = Base64.getDecoder().decode(encrySrvConfig.getEncryptSalt());
-        final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(encrySrvConfig.getEncryptMethod());
-        final KeySpec keySpec = new PBEKeySpec(encrySrvConfig.getEncryptKey().toCharArray(), encryptionKeySalt,
-                encrySrvConfig.getEncryptIterationCount(), encrySrvConfig.getEncryptKeyLength());
-        final SecretKey key
-                = new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(), encrySrvConfig.getEncryptType());
+        NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, InvalidKeyException {
+        final String salt = "TdtWeHbch/7xP52/rp3Usw==";
+        final String encryptKey = "V1S1ED4OMeEh";
+        final String encryptMethod = "PBKDF2WithHmacSHA1";
+        final String encryptType = "AES";
+        final int iterationCount = 32768;
+        final int encryptKeyLength = 128;
+        final String cipherTransforms = "AES/CBC/PKCS5Padding";
+
+        final byte[] encryptionKeySalt = Base64.getDecoder().decode(salt);
+        final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(encryptMethod);
+        final KeySpec keySpec = new PBEKeySpec(encryptKey.toCharArray(), encryptionKeySalt,
+            iterationCount, encryptKeyLength);
+        final SecretKey key = new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(),
+            encryptType);
         final IvParameterSpec ivParameterSpec = new IvParameterSpec(encryptionKeySalt);
 
-        final Cipher encryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
+        final Cipher encryptCipher = Cipher.getInstance(cipherTransforms);
         encryptCipher.init(Cipher.ENCRYPT_MODE, key, ivParameterSpec);
 
-        final Cipher decryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
+        final Cipher decryptCipher = Cipher.getInstance(cipherTransforms);
         decryptCipher.init(Cipher.DECRYPT_MODE, key, ivParameterSpec);
 
         return new AAAEncryptionServiceImpl(encryptCipher, decryptCipher);
-    }
-
-    private static AaaEncryptServiceConfig getDefaultAaaEncryptServiceConfig() {
-        return new AaaEncryptServiceConfigBuilder().setEncryptKey("V1S1ED4OMeEh")
-                .setPasswordLength(12).setEncryptSalt("TdtWeHbch/7xP52/rp3Usw==")
-                .setEncryptMethod("PBKDF2WithHmacSHA1").setEncryptType("AES")
-                .setEncryptIterationCount(32768).setEncryptKeyLength(128)
-                .setCipherTransforms("AES/CBC/PKCS5Padding").build();
     }
 }
 
