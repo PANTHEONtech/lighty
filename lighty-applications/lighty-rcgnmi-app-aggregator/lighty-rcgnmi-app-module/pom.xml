@@ -57,6 +57,10 @@
             <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>
         </dependency>
+      <dependency>
+        <groupId>org.opendaylight.aaa</groupId>
+        <artifactId>aaa-encrypt-service-impl</artifactId>
+      </dependency>
     </dependencies>
 
 </project>
