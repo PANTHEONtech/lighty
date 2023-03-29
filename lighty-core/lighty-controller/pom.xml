@@ -53,6 +53,11 @@
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-common</artifactId>
         </dependency>
+        <!--odl-aaa-cert-->
+        <dependency>
+            <groupId>org.opendaylight.aaa</groupId>
+            <artifactId>aaa-cert</artifactId>
+        </dependency>
         <!--odl-mdsal-common-->
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
@@ -215,10 +220,6 @@
             <artifactId>lighty-test-models</artifactId>
             <scope>test</scope>
         </dependency>
-      <dependency>
-        <groupId>org.opendaylight.aaa</groupId>
-        <artifactId>aaa-cert</artifactId>
-      </dependency>
     </dependencies>
 
     <build>
