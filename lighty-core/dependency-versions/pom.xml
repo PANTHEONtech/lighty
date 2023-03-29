@@ -34,7 +34,7 @@
             <dependency>
                 <groupId>org.opendaylight.aaa</groupId>
                 <artifactId>aaa-artifacts</artifactId>
-                <version>0.17.6</version>
+                <version>0.17.7</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -62,7 +62,7 @@
             <dependency>
                 <groupId>org.opendaylight.netconf</groupId>
                 <artifactId>netconf-artifacts</artifactId>
-                <version>5.0.3</version>
+                <version>5.0.4</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -76,7 +76,7 @@
             <dependency>
                 <groupId>org.opendaylight.bgpcep</groupId>
                 <artifactId>bgpcep-artifacts</artifactId>
-                <version>0.19.2</version>
+                <version>0.19.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
