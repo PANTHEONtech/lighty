@@ -209,6 +209,6 @@ public class RcGnmiAppModule {
                 .setPasswordLength(12).setEncryptSalt(salt)
                 .setEncryptMethod("PBKDF2WithHmacSHA1").setEncryptType("AES")
                 .setEncryptIterationCount(32768).setEncryptKeyLength(128)
-                .setCipherTransforms("AES/CBC/PKCS5Padding").build();
+                .setCipherTransforms("AES/GCM/NoPadding").build();
     }
 }

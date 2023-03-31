@@ -530,7 +530,7 @@ public class GnmiWithoutRestconfTest {
                 .setPasswordLength(12).setEncryptSalt("TdtWeHbch/7xP52/rp3Usw==")
                 .setEncryptMethod("PBKDF2WithHmacSHA1").setEncryptType("AES")
                 .setEncryptIterationCount(32768).setEncryptKeyLength(128)
-                .setCipherTransforms("AES/CBC/PKCS5Padding").build();
+                .setCipherTransforms("AES/GCM/NoPadding").build();
     }
 
     private static SimulatedGnmiDevice getUnsecureGnmiDevice(final String host, final int port) {
