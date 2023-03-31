@@ -28,7 +28,6 @@ public final class ShiroConfigurationConfig {
         final List<Main> mains = new ArrayList<>();
         mains.add(initMain("tokenAuthRealm", "org.opendaylight.aaa.shiro.realm.TokenAuthRealm"));
         mains.add(initMain("securityManager.realms", "$tokenAuthRealm"));
-        mains.add(initMain("authcBasic", "org.opendaylight.aaa.shiro.filters.ODLHttpAuthenticationFilter"));
         mains.add(initMain("accountingListener", "org.opendaylight.aaa.shiro.filters.AuthenticationListener"));
         mains.add(initMain("securityManager.authenticator.authenticationListeners", "$accountingListener"));
         mains.add(initMain("dynamicAuthorization", "org.opendaylight.aaa.shiro.realm.MDSALDynamicAuthorizationFilter"));

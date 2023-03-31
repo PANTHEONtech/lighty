@@ -27,7 +27,6 @@ public class ShiroConfigurationConfigTest {
         Assert.assertNotNull(mains);
         Assert.assertTrue(containsMainKey("tokenAuthRealm", mains));
         Assert.assertTrue(containsMainKey("securityManager.realms", mains));
-        Assert.assertTrue(containsMainKey("authcBasic", mains));
         Assert.assertTrue(containsMainKey("accountingListener", mains));
         Assert.assertTrue(containsMainKey("securityManager.authenticator.authenticationListeners", mains));
         Assert.assertTrue(containsMainKey("dynamicAuthorization", mains));
