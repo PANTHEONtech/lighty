@@ -50,7 +50,11 @@ public final class AAALighty extends AbstractLightyModule {
 
     @Override
     protected boolean stopProcedure() {
-        this.aaaShiroProviderHandler.getAaaLightyShiroProvider().close();
+        final AAALightyShiroProvider shiroProvider = aaaShiroProviderHandler.getAaaLightyShiroProvider();
+        if (shiroProvider != null) {
+            shiroProvider.close();
+            aaaShiroProviderHandler.setAaaLightyShiroProvider(null);
+        }
         return true;
     }
 
