@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-
 package io.lighty.core.controller.springboot.config;
 
 import io.lighty.core.controller.springboot.services.UserAccessService;
@@ -18,6 +17,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @EnableWebSecurity
 @Configuration
@@ -36,11 +36,11 @@ public class SecurityConfiguration {
     @Order(1)
     protected SecurityFilterChain auth0FilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
+                .csrf()
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .and()
                 .addFilterBefore(new JCasBinFilter(enforcer, userAccessService), BasicAuthenticationFilter.class)
                 .securityMatcher("/services/data/**")
-                .csrf()
-                .disable()
                 .build();
     }
-
 }
