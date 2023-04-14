@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2021 PANTHEON.tech s.r.o. All Rights Reserved.
+ * Copyright (c) 2018 PANTHEON.tech s.r.o. All Rights Reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -12,6 +12,7 @@ import org.casbin.jcasbin.main.Enforcer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,13 +22,14 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @EnableWebSecurity
 @Configuration
-public class SecurityConfiguration {
+@Profile("deployed")
+public class SecurityConfigurationDeployed {
 
     private final Enforcer enforcer;
     private final UserAccessService userAccessService;
 
     @Autowired
-    public SecurityConfiguration(Enforcer enforcer, UserAccessService userAccessService) {
+    public SecurityConfigurationDeployed(Enforcer enforcer, UserAccessService userAccessService) {
         this.enforcer = enforcer;
         this.userAccessService = userAccessService;
     }
