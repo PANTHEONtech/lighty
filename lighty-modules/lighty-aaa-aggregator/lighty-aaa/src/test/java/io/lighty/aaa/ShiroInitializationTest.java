@@ -25,7 +25,6 @@ import org.opendaylight.aaa.api.CredentialAuth;
 import org.opendaylight.aaa.api.PasswordCredentials;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
-import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.AaaEncryptServiceConfig;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.AaaEncryptServiceConfigBuilder;
@@ -52,8 +51,6 @@ public class ShiroInitializationTest {
     private ReadTransaction readTransaction;
     @Mock
     private CredentialAuth<PasswordCredentials> credentialAuth;
-    @Mock
-    private RpcProviderService rpcProviderService;
     private AAALighty aaaLighty;
 
     @BeforeClass
@@ -104,8 +101,7 @@ public class ShiroInitializationTest {
     @Test
     public void testSuccessfulInitialization() throws InterruptedException {
         // set CertificateManager
-        AAA_CONFIGURATION.setCertificateManager(
-                CertificateManagerConfig.getDefault(bindingDataBroker, rpcProviderService));
+        AAA_CONFIGURATION.setCertificateManager(CertificateManagerConfig.getDefault(bindingDataBroker));
 
         // Create a LightyServerBuilder object
         final LightyServerBuilder serverBuilder = new LightyServerBuilder(
