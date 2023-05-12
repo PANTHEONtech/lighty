@@ -12,7 +12,6 @@ import org.testng.annotations.Test;
 
 public class SwaggerLightyRFC8040Test extends SwaggerLightyTest {
 
-    private static final String SWAGGER2_BASE_URI = "http://localhost:8888/apidoc/swagger2/apis";
     private static final String OPENAPI3_BASE_URI = "http://localhost:8888/apidoc/openapi3/apis";
 
     @Test
@@ -20,31 +19,18 @@ public class SwaggerLightyRFC8040Test extends SwaggerLightyTest {
         super.simpleSwaggerModuleTest();
     }
 
-    @Test
-    public void testGetListOfMountsSwagger2() {
-        super.testGetListOfMounts(mockUriInfo(SWAGGER2_BASE_URI + "/mounts"));
-    }
 
     @Test
     public void testGetListOfMountsOpenApi3() {
         super.testGetListOfMounts(mockUriInfo(OPENAPI3_BASE_URI + "/mounts"));
     }
 
-    @Test
-    public void testGetAllModulesDocSwagger2() {
-        super.testGetAllModulesDoc(mockUriInfo(SWAGGER2_BASE_URI + "/single"));
-    }
 
     @Test
     public void testGetAllModulesDocOpenApi3() {
         super.testGetAllModulesDoc(mockUriInfo(OPENAPI3_BASE_URI + "/single"));
     }
 
-    @Test
-    public void testGetDocByModuleSwagger2() {
-        String path = SWAGGER2_BASE_URI + "/" + DEFAULT_MODEL_NAME + "(" + DEFAULT_REVISION_DATE + ")";
-        super.testGetDocByModule(mockUriInfo(path), DEFAULT_MODEL_NAME, DEFAULT_REVISION_DATE);
-    }
 
     @Test
     public void testGetDocByModuleOpenApi3() {
@@ -52,10 +38,6 @@ public class SwaggerLightyRFC8040Test extends SwaggerLightyTest {
         super.testGetDocByModule(mockUriInfo(path), DEFAULT_MODEL_NAME, DEFAULT_REVISION_DATE);
     }
 
-    @Test
-    public void testGetApiExplorerSwagger2() {
-        super.testGetApiExplorer(mockUriInfo(SWAGGER2_BASE_URI + "/ui"));
-    }
 
     @Test
     public void testGetApiExplorerOpenApi3() {
