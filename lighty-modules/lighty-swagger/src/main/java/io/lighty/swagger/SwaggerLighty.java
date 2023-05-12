@@ -65,7 +65,6 @@ public class SwaggerLighty extends AbstractLightyModule {
 
         ContextHandlerCollection contexts = new ContextHandlerCollection();
         ServletContextHandler mainHandler =   new ServletContextHandler(contexts, APIDOC_PATH, true, false);
-        mainHandler.addServlet(restServletHolder, "/swagger2/apis/*");
         mainHandler.addServlet(restServletHolder, "/openapi3/apis/*");
 
         addStaticResources(mainHandler, "/explorer", "static-content");
