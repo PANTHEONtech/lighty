@@ -17,7 +17,7 @@
     </parent>
 
     <groupId>io.lighty.modules</groupId>
-    <artifactId>lighty-swagger</artifactId>
+    <artifactId>lighty-openapi</artifactId>
     <name>${project.groupId}:${project.artifactId}</name>
     <url>https://github.com/PANTHEONtech/lighty</url>
 

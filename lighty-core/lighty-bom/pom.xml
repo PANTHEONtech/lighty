@@ -96,7 +96,7 @@
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules</groupId>
-                <artifactId>lighty-swagger</artifactId>
+                <artifactId>lighty-openapi</artifactId>
                 <version>19.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
