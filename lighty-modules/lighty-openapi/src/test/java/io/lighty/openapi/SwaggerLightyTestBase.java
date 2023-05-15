@@ -6,7 +6,7 @@
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
 
-package io.lighty.swagger;
+package io.lighty.openapi;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.core.controller.api.LightyController;

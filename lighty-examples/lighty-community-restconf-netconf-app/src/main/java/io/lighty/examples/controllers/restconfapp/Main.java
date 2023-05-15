@@ -26,8 +26,8 @@ import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigU
 import io.lighty.modules.southbound.netconf.impl.NetconfTopologyPluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
+import io.lighty.openapi.SwaggerLighty;
 import io.lighty.server.LightyServerBuilder;
-import io.lighty.swagger.SwaggerLighty;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
