@@ -25,7 +25,7 @@
         <module>lighty-jetty-server</module>
         <module>lighty-netconf-sb</module>
         <module>lighty-restconf-nb-community</module>
-        <module>lighty-swagger</module>
+        <module>lighty-openapi</module>
         <module>integration-tests</module>
         <module>integration-tests-aaa</module>
         <module>lighty-gnmi</module>
