@@ -35,7 +35,7 @@ _This branch maintains compatibility with __OpenDaylight Potassium,__ release._
 | [Jetty Server](/lighty-modules/lighty-jetty-server/) | | | 
 | [NETCONF SouthBound](/lighty-modules/lighty-netconf-sb/) | | | 
 | [RESTCONF NouthBound](/lighty-modules/lighty-restconf-nb-community/) | | | 
-| [Swagger](/lighty-modules/lighty-openapi/) | | |
+| [OpenApi](/lighty-modules/lighty-openapi/) | | |
 
 
 ## Components

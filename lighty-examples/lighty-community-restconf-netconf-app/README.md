@@ -5,7 +5,7 @@ Application works as standalone SDN controller. It is capable to connect to NETC
 This application starts:
 * Lighty Controller
 * OpenDaylight RESTCONF plugin
-* OpenDaylight Swagger servlet
+* OpenDaylight OpenApi servlet
 * NETCONF south-bound plugin
 
 ![architecture](docs/restconf-netconf-controller-architecture.svg)
@@ -34,11 +34,11 @@ RESTCONF web interface is available at URL ```http://localhost:8888/restconf/*``
 * __GET__ ```http://localhost:8888/restconf/data/network-topology:network-topology?content=config```
 * __GET__ ```http://localhost:8888/restconf/data/network-topology:network-topology?content=nonconfig```
 
-##### Swagger UI
-This application example has active [Swagger](https://swagger.io/) UI for RESTCONF.
+##### OpenApi UI
+This application example has active [OpenApi](https://swagger.io/) UI for RESTCONF.
 
-URLs for Swagger: https://datatracker.ietf.org/doc/html/rfc8040
-* __Swagger UI__ ``http://localhost:8888/apidoc/explorer/index.html``
+URLs for OpenApi: https://datatracker.ietf.org/doc/html/rfc8040
+* __OpenApi UI__ ``http://localhost:8888/apidoc/explorer/index.html``
 
 ### Use custom config files
 There are two separated config files: for NETCONF SBP single node and for cluster.
