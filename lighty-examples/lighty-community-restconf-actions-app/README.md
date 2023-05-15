@@ -4,7 +4,7 @@ This application provides RESTCONF north-bound interface with examples of DOM an
 This application starts:
 * Lighty Controller
 * OpenDaylight RESTCONF plugin
-* OpenDaylight Swagger servlet
+* OpenDaylight OpenApi servlet
 * NETCONF south-bound plugin
 
 ![architecture](docs/restconf-netconf-controller-architecture.svg)
@@ -85,11 +85,11 @@ No data are modified during the execution. The implementation is using binding A
     }
 }
 ```
-##### Swagger UI
-This application example has active [Swagger](https://swagger.io/) UI for RESTCONF.
+##### OpenApi UI
+This application example has active [OpenApi](https://swagger.io/) UI for RESTCONF.
 
-URL for Swagger: https://datatracker.ietf.org/doc/html/rfc8040
-* __Swagger UI__ ``http://localhost:8888/apidoc/explorer/index.html``
+URL for OpenApi: https://datatracker.ietf.org/doc/html/rfc8040
+* __OpenApi UI__ ``http://localhost:8888/apidoc/explorer/index.html``
 
 ### Use custom config files
 There are two separated config files: for NETCONF SBP single node and for cluster.
