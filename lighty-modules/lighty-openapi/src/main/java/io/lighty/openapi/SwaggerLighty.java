@@ -49,7 +49,7 @@ public class SwaggerLighty extends AbstractLightyModule {
 
     @Override
     protected boolean initProcedure() {
-        LOG.info("initializing swagger");
+        LOG.info("initializing openapi");
 
         //replace all slash characters from the beginning of the string
         String basePathString = restConfConfiguration.getRestconfServletContextPath().replaceAll("^/+", "");
@@ -76,12 +76,12 @@ public class SwaggerLighty extends AbstractLightyModule {
 
     @Override
     protected boolean stopProcedure() {
-        LOG.info("shutting down swagger ...");
+        LOG.info("shutting down openapi ...");
         return true;
     }
 
     private void addStaticResources(ServletContextHandler mainHandler, String path, String servletName) {
-        LOG.info("initializing swagger UI at: http(s)://{hostname:port}{}{}/index.html", APIDOC_PATH, path);
+        LOG.info("initializing openapi UI at: http(s)://{hostname:port}{}{}/index.html", APIDOC_PATH, path);
         String externalResource = SwaggerLighty.class.getResource(path).toExternalForm();
         LOG.info("externalResource: {}", externalResource);
         DefaultServlet defaultServlet = new DefaultServlet();
