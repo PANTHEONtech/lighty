@@ -25,7 +25,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-public class SwaggerTest {
+public class OpenApiTest {
     private static final String BASE_URL = "http://localhost:8888";
     private static final String PRIMARY_NAME = "urls.primaryName";
     private static final String APIDOC_INDEX = "/apidoc/explorer/index.html";

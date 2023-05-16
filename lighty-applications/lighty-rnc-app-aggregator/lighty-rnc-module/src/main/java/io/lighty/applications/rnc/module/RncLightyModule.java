@@ -26,7 +26,7 @@ import io.lighty.modules.southbound.netconf.impl.NetconfSBPlugin;
 import io.lighty.modules.southbound.netconf.impl.NetconfTopologyPluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
-import io.lighty.openapi.SwaggerLighty;
+import io.lighty.openapi.OpenApiLighty;
 import io.lighty.server.Http2LightyServerBuilder;
 import io.lighty.server.HttpsLightyServerBuilder;
 import io.lighty.server.LightyServerBuilder;
@@ -53,7 +53,7 @@ public class RncLightyModule {
     private NetconfSBPlugin lightyNetconf;
     private AAALighty aaaLighty;
     private LightyServerBuilder jettyServerBuilder;
-    private SwaggerLighty swagger;
+    private OpenApiLighty swagger;
 
     public RncLightyModule(final RncLightyModuleConfiguration rncModuleConfig) {
         LOG.info("Creating instance of RNC lighty.io module...");
@@ -141,9 +141,9 @@ public class RncLightyModule {
         return new AAALighty(services.getBindingDataBroker(), null, this.jettyServerBuilder, config);
     }
 
-    private SwaggerLighty initSwaggerLighty(final RestConfConfiguration config, final LightyServerBuilder serverBuilder,
-            final LightyServices services) {
-        return new SwaggerLighty(config, serverBuilder, services);
+    private OpenApiLighty initSwaggerLighty(final RestConfConfiguration config,
+            final LightyServerBuilder serverBuilder, final LightyServices services) {
+        return new OpenApiLighty(config, serverBuilder, services);
     }
 
     private void startAndWaitLightyModule(final LightyModule lightyModule) throws RncLightyAppStartException {
