@@ -10,7 +10,7 @@ package io.lighty.openapi;
 
 import org.testng.annotations.Test;
 
-public class SwaggerLightyRFC8040Test extends SwaggerLightyTest {
+public class OpenApiLightyRFC8040Test extends OpenApiLightyTest {
 
     private static final String OPENAPI3_BASE_URI = "http://localhost:8888/apidoc/openapi3/apis";
 

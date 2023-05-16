@@ -15,7 +15,7 @@ import javax.ws.rs.core.UriInfo;
 import org.mockito.Mockito;
 import org.testng.Assert;
 
-public abstract class SwaggerLightyTest extends SwaggerLightyTestBase {
+public abstract class OpenApiLightyTest extends OpenApiLightyTestBase {
 
     protected static final String DEFAULT_MODEL_NAME = "ietf-yang-library";
     protected static final String DEFAULT_REVISION_DATE = "2019-01-04";

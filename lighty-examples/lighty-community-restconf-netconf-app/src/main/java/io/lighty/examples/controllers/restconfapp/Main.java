@@ -26,7 +26,7 @@ import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigU
 import io.lighty.modules.southbound.netconf.impl.NetconfTopologyPluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
-import io.lighty.openapi.SwaggerLighty;
+import io.lighty.openapi.OpenApiLighty;
 import io.lighty.server.LightyServerBuilder;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -48,7 +48,7 @@ public class Main {
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
     private LightyController lightyController;
-    private SwaggerLighty swagger;
+    private OpenApiLighty swagger;
     private CommunityRestConf restconf;
     private LightyModule netconfSBPlugin;
     private ModulesConfig modulesConfig = ModulesConfig.getDefaultModulesConfig();
@@ -153,7 +153,7 @@ public class Main {
 
         //3. start swagger and RestConf server
         this.swagger =
-            new SwaggerLighty(restconfConfiguration, jettyServerBuilder, this.lightyController.getServices());
+            new OpenApiLighty(restconfConfiguration, jettyServerBuilder, this.lightyController.getServices());
         final boolean swaggerStartOk = this.swagger.start()
                 .get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
         if (!swaggerStartOk) {

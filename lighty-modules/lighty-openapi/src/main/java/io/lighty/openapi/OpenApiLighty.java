@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory;
  * Swagger initializer for lighty.io.
  * @author juraj.veverka
  */
-public class SwaggerLighty extends AbstractLightyModule {
+public class OpenApiLighty extends AbstractLightyModule {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SwaggerLighty.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OpenApiLighty.class);
     private static final String APIDOC_PATH = "/apidoc";
     private static final String TRUE = "true";
 
@@ -40,7 +40,7 @@ public class SwaggerLighty extends AbstractLightyModule {
 
     private ApiDocService apiDocService;
 
-    public SwaggerLighty(RestConfConfiguration restConfConfiguration,
+    public OpenApiLighty(RestConfConfiguration restConfConfiguration,
                          LightyServerBuilder jettyServerBuilder, LightyServices lightyServices) {
         this.restConfConfiguration = restConfConfiguration;
         this.jettyServerBuilder = jettyServerBuilder;
@@ -82,7 +82,7 @@ public class SwaggerLighty extends AbstractLightyModule {
 
     private void addStaticResources(ServletContextHandler mainHandler, String path, String servletName) {
         LOG.info("initializing openapi UI at: http(s)://{hostname:port}{}{}/index.html", APIDOC_PATH, path);
-        String externalResource = SwaggerLighty.class.getResource(path).toExternalForm();
+        String externalResource = OpenApiLighty.class.getResource(path).toExternalForm();
         LOG.info("externalResource: {}", externalResource);
         DefaultServlet defaultServlet = new DefaultServlet();
         ServletHolder holderPwd = new ServletHolder(servletName, defaultServlet);

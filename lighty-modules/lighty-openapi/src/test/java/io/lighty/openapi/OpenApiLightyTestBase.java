@@ -29,13 +29,13 @@ import org.testng.annotations.BeforeMethod;
 /**
  * Base class for lighty-swagger tests handlin starting and shutting-down of lighty with restConf and swagger module.
  */
-public abstract class SwaggerLightyTestBase {
+public abstract class OpenApiLightyTestBase {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SwaggerLightyTestBase.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OpenApiLightyTestBase.class);
     public static final long SHUTDOWN_TIMEOUT_MILLIS = 60_000;
 
     private LightyController lightyController;
-    private SwaggerLighty swaggerModule;
+    private OpenApiLighty swaggerModule;
 
     @BeforeClass(timeOut = 60_000)
     public void startControllerAndRestConf() throws Exception {
@@ -55,7 +55,7 @@ public abstract class SwaggerLightyTestBase {
 
         final LightyServerBuilder jettyServerBuilder = new LightyServerBuilder(new InetSocketAddress(
                 restConfConfiguration.getInetAddress(), restConfConfiguration.getHttpPort()));
-        swaggerModule = new SwaggerLighty(restConfConfiguration, jettyServerBuilder,
+        swaggerModule = new OpenApiLighty(restConfConfiguration, jettyServerBuilder,
                 lightyController.getServices());
         LOG.info("Starting Lighty Swagger");
         swaggerModule.start().get();
@@ -107,7 +107,7 @@ public abstract class SwaggerLightyTestBase {
         return lightyController;
     }
 
-    SwaggerLighty getSwaggerModule() {
+    OpenApiLighty getSwaggerModule() {
         return swaggerModule;
     }
 }
