@@ -20,7 +20,7 @@ public class LightyServerConfig {
     private boolean useHttps = false;
     private boolean useHttp2 = false;
     private boolean needClientAuth = false;
-    private boolean enableSwagger = false;
+    private boolean enableOpenApi = false;
 
     public void setSecurityConfig(final SecurityConfig securityConfig) {
         this.securityConfig = securityConfig;
@@ -86,12 +86,12 @@ public class LightyServerConfig {
         this.needClientAuth = needClientAuth;
     }
 
-    public boolean isEnableSwagger() {
-        return enableSwagger;
+    public boolean isEnableOpenApi() {
+        return enableOpenApi;
     }
 
-    public void setEnableSwagger(boolean enableSwagger) {
-        this.enableSwagger = enableSwagger;
+    public void setEnableOpenApi(boolean enableOpenApi) {
+        this.enableOpenApi = enableOpenApi;
     }
 
     public boolean isUseHttp2() {

@@ -71,7 +71,7 @@ data:
             "keyStoreFilePath": "{{ .Values.lighty.server.keyStoreDirectory }}/{{ .Values.lighty.server.keyStoreFileName }}",
             "trustKeyStorePassword": {{ .Values.lighty.server.trustKeyStorePassword | quote }},
             "trustKeyStoreFilePath": "{{ .Values.lighty.server.trustKeyStoreDirectory }}/{{ .Values.lighty.server.trustKeyStoreFileName }}",
-            "enableSwagger": {{ .Values.lighty.server.enableSwagger }}
+            "enableOpenApi": {{ .Values.lighty.server.enableOpenApi }}
         },
         "netconf-northbound":{
             "connectionTimeout":20000,

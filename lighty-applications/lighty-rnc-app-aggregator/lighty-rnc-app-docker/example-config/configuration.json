@@ -63,7 +63,7 @@
       "keyStoreFilePath":"keystore/lightyio.jks",
       "trustKeyStorePassword":"8pgETwat",
       "trustKeyStoreFilePath":"keystore/lightyio.jks",
-      "enableSwagger": false
+      "enableOpenApi": false
     },
     "netconf-northbound":{
         "connectionTimeout":20000,
