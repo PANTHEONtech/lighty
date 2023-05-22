@@ -81,7 +81,7 @@ public class RncLightyModule {
                 startAndWaitLightyModule(this.aaaLighty);
             }
 
-            if (rncModuleConfig.getServerConfig().isEnableSwagger()) {
+            if (rncModuleConfig.getServerConfig().isEnableOpenApi()) {
                 this.swagger = initSwaggerLighty(this.rncModuleConfig.getRestconfConfig(),
                                                  this.jettyServerBuilder,
                                                  this.lightyController.getServices());
@@ -172,7 +172,7 @@ public class RncLightyModule {
     public boolean close() {
         LOG.info("Stopping RNC lighty.io application...");
         boolean success = true;
-        if (rncModuleConfig.getServerConfig().isEnableSwagger() && this.swagger != null) {
+        if (rncModuleConfig.getServerConfig().isEnableOpenApi() && this.swagger != null) {
             success &= swagger.shutdown(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
         }
         if (this.rncModuleConfig.getAaaConfig().isEnableAAA() && this.aaaLighty != null) {

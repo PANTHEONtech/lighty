@@ -46,7 +46,7 @@ public class OpenApiTest {
     @BeforeClass
     public void startUp() throws Exception {
         final var configPath = Paths.get(Objects.requireNonNull(this.getClass()
-                .getResource("/swagger_config.json")).toURI());
+                .getResource("/openapi_config.json")).toURI());
         rncModule = new RncLightyModule(RncLightyModuleConfigUtils.loadConfigFromFile(configPath));
         assertTrue(rncModule.initModules());
     }
