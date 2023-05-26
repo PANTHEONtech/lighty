@@ -15,8 +15,8 @@ public class OpenApiLightyRFC8040Test extends OpenApiLightyTest {
     private static final String OPENAPI3_BASE_URI = "http://localhost:8888/apidoc/openapi3/apis";
 
     @Test
-    public void simpleSwaggerModuleTest() {
-        super.simpleSwaggerModuleTest();
+    public void simpleOpenApiModuleTest() {
+        super.simpleOpenApiModuleTest();
     }
 
 

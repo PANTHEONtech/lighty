@@ -27,7 +27,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 
 /**
- * Base class for lighty-swagger tests handlin starting and shutting-down of lighty with restConf and swagger module.
+ * Base class for lighty-openApi tests handlin starting and shutting-down of lighty with restConf and openApi module.
  */
 public abstract class OpenApiLightyTestBase {
 
@@ -35,7 +35,7 @@ public abstract class OpenApiLightyTestBase {
     public static final long SHUTDOWN_TIMEOUT_MILLIS = 60_000;
 
     private LightyController lightyController;
-    private OpenApiLighty swaggerModule;
+    private OpenApiLighty openApiModule;
 
     @BeforeClass(timeOut = 60_000)
     public void startControllerAndRestConf() throws Exception {
@@ -55,11 +55,11 @@ public abstract class OpenApiLightyTestBase {
 
         final LightyServerBuilder jettyServerBuilder = new LightyServerBuilder(new InetSocketAddress(
                 restConfConfiguration.getInetAddress(), restConfConfiguration.getHttpPort()));
-        swaggerModule = new OpenApiLighty(restConfConfiguration, jettyServerBuilder,
+        openApiModule = new OpenApiLighty(restConfConfiguration, jettyServerBuilder,
                 lightyController.getServices());
-        LOG.info("Starting Lighty Swagger");
-        swaggerModule.start().get();
-        LOG.info("Lighty Swagger started");
+        LOG.info("Starting Lighty OpenApi");
+        openApiModule.start().get();
+        LOG.info("Lighty OpenApi started");
     }
 
     @BeforeMethod
@@ -76,8 +76,8 @@ public abstract class OpenApiLightyTestBase {
 
     @AfterClass
     public void shutdownLighty() {
-        if (swaggerModule != null) {
-            swaggerModule.shutdown(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+        if (openApiModule != null) {
+            openApiModule.shutdown(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         }
         if (lightyController != null) {
             lightyController.shutdown(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
@@ -107,7 +107,7 @@ public abstract class OpenApiLightyTestBase {
         return lightyController;
     }
 
-    OpenApiLighty getSwaggerModule() {
-        return swaggerModule;
+    OpenApiLighty getOpenApiModule() {
+        return openApiModule;
     }
 }

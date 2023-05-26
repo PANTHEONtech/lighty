@@ -72,10 +72,10 @@ public class RestconfActionsAppTest {
     }
 
     /**
-     * Check if Swagger service and UI is responding.
+     * Check if OpenApi service and UI is responding.
      */
     @Test
-    public void swaggerURLsTest() throws Exception {
+    public void openApiURLsTest() throws Exception {
         HttpResponse<String> operations;
         operations = restClient.GET("apidoc/openapi3/apis/single");
         assertEquals(operations.statusCode(), 200);

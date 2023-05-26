@@ -53,7 +53,7 @@ public class RncLightyModule {
     private NetconfSBPlugin lightyNetconf;
     private AAALighty aaaLighty;
     private LightyServerBuilder jettyServerBuilder;
-    private OpenApiLighty swagger;
+    private OpenApiLighty openApi;
 
     public RncLightyModule(final RncLightyModuleConfiguration rncModuleConfig) {
         LOG.info("Creating instance of RNC lighty.io module...");
@@ -82,10 +82,10 @@ public class RncLightyModule {
             }
 
             if (rncModuleConfig.getServerConfig().isEnableOpenApi()) {
-                this.swagger = initSwaggerLighty(this.rncModuleConfig.getRestconfConfig(),
+                this.openApi = initOpenApiLighty(this.rncModuleConfig.getRestconfConfig(),
                                                  this.jettyServerBuilder,
                                                  this.lightyController.getServices());
-                startAndWaitLightyModule(this.swagger);
+                startAndWaitLightyModule(this.openApi);
             }
 
             lightyRestconf.startServer();
@@ -141,7 +141,7 @@ public class RncLightyModule {
         return new AAALighty(services.getBindingDataBroker(), null, this.jettyServerBuilder, config);
     }
 
-    private OpenApiLighty initSwaggerLighty(final RestConfConfiguration config,
+    private OpenApiLighty initOpenApiLighty(final RestConfConfiguration config,
             final LightyServerBuilder serverBuilder, final LightyServices services) {
         return new OpenApiLighty(config, serverBuilder, services);
     }
@@ -172,8 +172,8 @@ public class RncLightyModule {
     public boolean close() {
         LOG.info("Stopping RNC lighty.io application...");
         boolean success = true;
-        if (rncModuleConfig.getServerConfig().isEnableOpenApi() && this.swagger != null) {
-            success &= swagger.shutdown(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
+        if (rncModuleConfig.getServerConfig().isEnableOpenApi() && this.openApi != null) {
+            success &= openApi.shutdown(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
         }
         if (this.rncModuleConfig.getAaaConfig().isEnableAAA() && this.aaaLighty != null) {
             success &= aaaLighty.shutdown(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
