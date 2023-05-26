@@ -21,25 +21,25 @@ public abstract class OpenApiLightyTest extends OpenApiLightyTestBase {
     protected static final String DEFAULT_REVISION_DATE = "2019-01-04";
 
 
-    public void simpleSwaggerModuleTest() {
+    public void simpleOpenApiModuleTest() {
         Assert.assertNotNull(getLightyController());
-        Assert.assertNotNull(getSwaggerModule());
+        Assert.assertNotNull(getOpenApiModule());
     }
 
     public void testGetListOfMounts(UriInfo uriInfo) {
-        assertSuccessResponse(getSwaggerModule().getApiDocService().getListOfMounts(uriInfo));
+        assertSuccessResponse(getOpenApiModule().getApiDocService().getListOfMounts(uriInfo));
     }
 
     public void testGetAllModulesDoc(UriInfo uriInfo) {
-        assertSuccessResponse(getSwaggerModule().getApiDocService().getAllModulesDoc(uriInfo));
+        assertSuccessResponse(getOpenApiModule().getApiDocService().getAllModulesDoc(uriInfo));
     }
 
     public void testGetDocByModule(UriInfo uriInfo, String modelName, String revisionDate) {
-        assertSuccessResponse(getSwaggerModule().getApiDocService().getDocByModule(modelName, revisionDate, uriInfo));
+        assertSuccessResponse(getOpenApiModule().getApiDocService().getDocByModule(modelName, revisionDate, uriInfo));
     }
 
     public void testGetApiExplorer(UriInfo uriInfo) {
-        final Response response = getSwaggerModule().getApiDocService().getApiExplorer(uriInfo);
+        final Response response = getOpenApiModule().getApiDocService().getApiExplorer(uriInfo);
 
         final int redirectCode = 303;
         Assert.assertEquals(response.getStatus(), redirectCode);

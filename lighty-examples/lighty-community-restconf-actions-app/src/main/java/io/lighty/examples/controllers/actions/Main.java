@@ -51,7 +51,7 @@ public class Main {
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
     private LightyController lightyController;
-    private OpenApiLighty swagger;
+    private OpenApiLighty openApi;
     private CommunityRestConf restconf;
     private LightyModule netconfSBPlugin;
     private ModulesConfig modulesConfig = ModulesConfig.getDefaultModulesConfig();
@@ -160,13 +160,13 @@ public class Main {
                 .withLightyServer(jettyServerBuilder)
                 .build();
 
-        //3. start swagger and RestConf server
-        this.swagger =
+        //3. start openApi and RestConf server
+        this.openApi =
             new OpenApiLighty(restconfConfiguration, jettyServerBuilder, this.lightyController.getServices());
-        final boolean swaggerStartOk = this.swagger.start()
+        final boolean openApiStartOk = this.openApi.start()
                 .get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
-        if (!swaggerStartOk) {
-            throw new ModuleStartupException("Lighty.io Swagger startup failed!");
+        if (!openApiStartOk) {
+            throw new ModuleStartupException("Lighty.io OpenApi startup failed!");
         }
         final boolean restconfStartOk = this.restconf.start()
                 .get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
@@ -205,7 +205,7 @@ public class Main {
         }
         closeLightyModule(this.netconfSBPlugin);
         closeLightyModule(this.restconf);
-        closeLightyModule(this.swagger);
+        closeLightyModule(this.openApi);
         closeLightyModule(this.lightyController);
         LOG.info("Lighty.io and RESTCONF-ACTIONS stopped in {}", stopwatch.stop());
     }

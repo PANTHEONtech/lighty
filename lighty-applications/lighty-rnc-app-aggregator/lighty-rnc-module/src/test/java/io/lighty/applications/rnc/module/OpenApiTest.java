@@ -33,8 +33,8 @@ public class OpenApiTest {
 
     private RncLightyModule rncModule;
 
-    @DataProvider(name = "swaggerUris")
-    public static String[] swaggerUris() {
+    @DataProvider(name = "openApiUris")
+    public static String[] openApiUris() {
         return new String[]{
             APIDOC_INDEX,
             APIDOC_INDEX + "#/controller%20aaa-app-config",
@@ -56,16 +56,16 @@ public class OpenApiTest {
         assertTrue(rncModule.close());
     }
 
-    @Test(dataProvider = "swaggerUris")
-    public void testSwaggerGet(final String uri) throws Exception {
+    @Test(dataProvider = "openApiUris")
+    public void testOpenApiGet(final String uri) throws Exception {
         final var response = getRequest(uri, null, null);
-        assertNotNull(response, String.format("Swagger response for url [%s] is empty", uri));
+        assertNotNull(response, String.format("OpenApi response for url [%s] is empty", uri));
         assertEquals(response.statusCode(), 200,
-                String.format("Swagger response for url [%s] is not 200 but [%s]", uri, response.statusCode()));
+                String.format("OpenApi response for url [%s] is not 200 but [%s]", uri, response.statusCode()));
     }
 
     @Test
-    public void testSwaggerGetWithQuery() throws Exception {
+    public void testOpenApiGetWithQuery() throws Exception {
         final var apidoc = getRequest(APIDOC_INDEX, PRIMARY_NAME, "Controller resources - RestConf RFC 8040");
         assertNotNull(apidoc);
         assertEquals(apidoc.statusCode(), 200);

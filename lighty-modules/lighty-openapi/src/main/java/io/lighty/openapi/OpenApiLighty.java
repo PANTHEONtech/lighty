@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Swagger initializer for lighty.io.
+ * OpenApi initializer for lighty.io.
  * @author juraj.veverka
  */
 public class OpenApiLighty extends AbstractLightyModule {
