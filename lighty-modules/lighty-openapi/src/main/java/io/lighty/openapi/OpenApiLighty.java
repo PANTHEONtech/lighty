@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 public class OpenApiLighty extends AbstractLightyModule {
 
     private static final Logger LOG = LoggerFactory.getLogger(OpenApiLighty.class);
-    private static final String APIDOC_PATH = "/apidoc";
+    private static final String OPENAPI_PATH = "/openapi";
     private static final String TRUE = "true";
 
     private final RestConfConfiguration restConfConfiguration;
@@ -64,8 +64,8 @@ public class OpenApiLighty extends AbstractLightyModule {
         ServletHolder restServletHolder = new ServletHolder(restServletContainer);
 
         ContextHandlerCollection contexts = new ContextHandlerCollection();
-        ServletContextHandler mainHandler =   new ServletContextHandler(contexts, APIDOC_PATH, true, false);
-        mainHandler.addServlet(restServletHolder, "/openapi3/apis/*");
+        ServletContextHandler mainHandler = new ServletContextHandler(contexts, OPENAPI_PATH, true, false);
+        mainHandler.addServlet(restServletHolder, "/api/v3/*");
 
         addStaticResources(mainHandler, "/explorer", "static-content");
 
@@ -81,7 +81,7 @@ public class OpenApiLighty extends AbstractLightyModule {
     }
 
     private void addStaticResources(ServletContextHandler mainHandler, String path, String servletName) {
-        LOG.info("initializing openapi UI at: http(s)://{hostname:port}{}{}/index.html", APIDOC_PATH, path);
+        LOG.info("initializing openapi UI at: http(s)://{hostname:port}{}{}/index.html", OPENAPI_PATH, path);
         String externalResource = OpenApiLighty.class.getResource(path).toExternalForm();
         LOG.info("externalResource: {}", externalResource);
         DefaultServlet defaultServlet = new DefaultServlet();
