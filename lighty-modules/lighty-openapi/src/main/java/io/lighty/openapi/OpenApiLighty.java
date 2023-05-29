@@ -65,7 +65,7 @@ public class OpenApiLighty extends AbstractLightyModule {
 
         ContextHandlerCollection contexts = new ContextHandlerCollection();
         ServletContextHandler mainHandler = new ServletContextHandler(contexts, OPENAPI_PATH, true, false);
-        mainHandler.addServlet(restServletHolder, "/api/v3/*");
+        mainHandler.addServlet(restServletHolder, OPENAPI_PATH + "/api/v3/*");
 
         addStaticResources(mainHandler, "/explorer", "static-content");
 
