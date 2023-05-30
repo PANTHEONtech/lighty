@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
 public class OpenApiTest {
     private static final String BASE_URL = "http://localhost:8888";
     private static final String PRIMARY_NAME = "urls.primaryName";
-    private static final String APIDOC_INDEX = "/apidoc/explorer/index.html";
+    private static final String APIDOC_INDEX = "/openapi/explorer/index.html";
     private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
 
     private RncLightyModule rncModule;
