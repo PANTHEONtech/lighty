@@ -38,7 +38,7 @@ RESTCONF web interface is available at URL ```http://localhost:8888/restconf/*``
 This application example has active [OpenApi](https://swagger.io/) UI for RESTCONF.
 
 URLs for OpenApi: https://datatracker.ietf.org/doc/html/rfc8040
-* __OpenApi UI__ ``http://localhost:8888/apidoc/explorer/index.html``
+* __OpenApi UI__ ``http://localhost:8888/openapi/explorer/index.html``
 
 ### Use custom config files
 There are two separated config files: for NETCONF SBP single node and for cluster.
