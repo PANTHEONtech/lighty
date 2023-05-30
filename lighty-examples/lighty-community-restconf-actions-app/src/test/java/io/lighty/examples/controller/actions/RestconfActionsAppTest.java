@@ -77,9 +77,9 @@ public class RestconfActionsAppTest {
     @Test
     public void openApiURLsTest() throws Exception {
         HttpResponse<String> operations;
-        operations = restClient.GET("apidoc/openapi3/apis/single");
+        operations = restClient.GET("openapi/explorer/index.html");
         assertEquals(operations.statusCode(), 200);
-        operations = restClient.GET("apidoc/explorer/index.html");
+        operations = restClient.GET("openapi/explorer/index.html");
         assertEquals(operations.statusCode(), 200);
     }
 

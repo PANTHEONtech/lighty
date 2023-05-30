@@ -70,9 +70,9 @@ public class RestconfAppTest {
     @Test
     public void openApiURLsTest() throws IOException, InterruptedException {
         HttpResponse<String> operations;
-        operations = restClient.GET("apidoc/openapi3/apis/single");
+        operations = restClient.GET("openapi/explorer/index.html");
         Assert.assertEquals(operations.statusCode(), 200);
-        operations = restClient.GET("apidoc/explorer/index.html");
+        operations = restClient.GET("openapi/explorer/index.html");
         Assert.assertEquals(operations.statusCode(), 200);
     }
 
