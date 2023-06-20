@@ -216,11 +216,6 @@
             </dependency>
             <dependency>
                 <groupId>com.lightbend.akka.management</groupId>
-                <artifactId>akka-management-cluster-http_2.13</artifactId>
-                <version>1.3.0</version>
-            </dependency>
-            <dependency>
-                <groupId>com.lightbend.akka.management</groupId>
                 <artifactId>akka-management-cluster-bootstrap_2.13</artifactId>
                 <version>1.1.4</version>
             </dependency>

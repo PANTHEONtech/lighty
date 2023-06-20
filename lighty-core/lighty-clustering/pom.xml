@@ -72,10 +72,6 @@
             <groupId>com.lightbend.akka.management</groupId>
             <artifactId>akka-management_2.13</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.lightbend.akka.management</groupId>
-            <artifactId>akka-management-cluster-http_2.13</artifactId>
-        </dependency>
     </dependencies>
 
 </project>
