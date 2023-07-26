@@ -7,10 +7,10 @@
  */
 package io.lighty.modules.southbound.netconf.impl;
 
-import org.opendaylight.netconf.sal.connect.api.ActionTransformer;
-import org.opendaylight.netconf.sal.connect.api.DeviceActionFactory;
-import org.opendaylight.netconf.sal.connect.api.RemoteDeviceCommunicator;
-import org.opendaylight.netconf.sal.connect.api.RemoteDeviceServices.Actions;
+import org.opendaylight.netconf.client.mdsal.api.ActionTransformer;
+import org.opendaylight.netconf.client.mdsal.api.DeviceActionFactory;
+import org.opendaylight.netconf.client.mdsal.api.RemoteDeviceCommunicator;
+import org.opendaylight.netconf.client.mdsal.api.RemoteDeviceServices.Actions;
 
 public class LightyDeviceActionFactory implements DeviceActionFactory {
 

@@ -13,9 +13,9 @@ import java.util.concurrent.ExecutorService;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.opendaylight.netconf.callhome.mount.CallHomeMountDispatcher;
 import org.opendaylight.netconf.callhome.mount.IetfZeroTouchCallHomeServerProvider;
-import org.opendaylight.netconf.sal.connect.api.SchemaResourceManager;
-import org.opendaylight.netconf.sal.connect.impl.DefaultSchemaResourceManager;
-import org.opendaylight.netconf.sal.connect.netconf.schema.mapping.DefaultBaseNetconfSchemas;
+import org.opendaylight.netconf.client.mdsal.api.SchemaResourceManager;
+import org.opendaylight.netconf.client.mdsal.impl.DefaultSchemaResourceManager;
+import org.opendaylight.netconf.client.mdsal.impl.DefaultBaseNetconfSchemas;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.slf4j.LoggerFactory;
 
