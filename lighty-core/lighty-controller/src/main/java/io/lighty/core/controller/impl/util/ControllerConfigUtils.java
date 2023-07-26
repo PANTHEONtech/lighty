@@ -39,7 +39,7 @@ public final class ControllerConfigUtils {
      * YANG files. This is also recommended default model set for majority of Lighty controller applications.
      */
     public static final Set<YangModuleInfo> YANG_MODELS = Set.of(
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev210621
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev230126
                 .$YangModuleInfoImpl.getInstance(),
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220
                 .$YangModuleInfoImpl.getInstance(),
