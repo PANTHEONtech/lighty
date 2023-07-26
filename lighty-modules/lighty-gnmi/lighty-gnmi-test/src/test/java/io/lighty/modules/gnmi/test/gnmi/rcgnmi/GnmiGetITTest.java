@@ -44,7 +44,7 @@ public class GnmiGetITTest extends GnmiITBase {
     private static final String INTERFACES_PATH = GNMI_DEVICE_MOUNTPOINT + OPENCONFIG_INTERFACES;
     private static final String OPENFLOW_PATH = GNMI_DEVICE_MOUNTPOINT + OPENCONFIG_SYSTEM +  OPENCONFIG_OPENFLOW;
     private static final List<String> EXPECTED_CAPABILITIES = List.of(
-        "iana-if-type revision: 2021-06-21", "openconfig-alarm-types semver: 0.2.1", "openconfig-alarms semver: 0.3.2",
+        "iana-if-type revision: 2023-01-26", "openconfig-alarm-types semver: 0.2.1", "openconfig-alarms semver: 0.3.2",
         "openconfig-extensions revision: 2020-06-16", "openconfig-if-aggregate semver: 2.4.3",
         "openconfig-if-ethernet semver: 2.11.0", "openconfig-if-types semver: 0.2.1",
         "openconfig-inet-types semver: 0.4.0", "openconfig-interfaces semver: 2.5.0",
