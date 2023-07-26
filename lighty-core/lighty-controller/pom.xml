@@ -146,6 +146,11 @@
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-singleton-dom-impl</artifactId>
         </dependency>
+        <!--mdsal-binding-dom-codec-->
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding-dom-codec</artifactId>
+        </dependency>
         <!--odl-akka-system-->
         <dependency>
             <groupId>com.typesafe</groupId>
