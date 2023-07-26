@@ -8,8 +8,9 @@
 
 package io.lighty.modules.gnmi.commons.util;
 
-import com.google.common.io.ByteSource;
+import com.google.common.io.CharSource;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
@@ -50,11 +51,15 @@ class GnmiDataConverterTest {
                 .build().newBuild();
 
         for (String modelName : Arrays.asList(YANG_MODEL_1_FILE_NAME, YANG_MODEL_2_FILE_NAME)) {
+            InputStream inputStream = Thread.currentThread().getContextClassLoader()
+                .getResourceAsStream("test/schema/" + modelName);
+            byte[] bytes = inputStream.readAllBytes();
+            String content = new String(bytes); // Convert byte[] to String
+
             final YangStatementStreamSource yangModelRootSource = YangStatementStreamSource.create(
-                    YangTextSchemaSource.delegateForByteSource(
-                            YangTextSchemaSource.identifierFromFilename(modelName),
-                            ByteSource.wrap(Thread.currentThread().getContextClassLoader()
-                                    .getResourceAsStream("test/schema/" + modelName).readAllBytes())));
+                YangTextSchemaSource.delegateForCharSource(
+                    YangTextSchemaSource.identifierFromFilename(modelName),
+                    CharSource.wrap(content))); // Pass String as argument
 
             buildAction.addSource(yangModelRootSource);
         }
