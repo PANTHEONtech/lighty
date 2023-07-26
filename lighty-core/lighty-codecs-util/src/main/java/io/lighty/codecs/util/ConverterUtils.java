@@ -21,7 +21,7 @@ import org.opendaylight.netconf.api.xml.XmlElement;
 import org.opendaylight.netconf.api.xml.XmlUtil;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.util.DataSchemaContextNode;
+import org.opendaylight.yangtools.yang.data.util.DataSchemaContext;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
@@ -174,7 +174,7 @@ public final class ConverterUtils {
     }
 
     /**
-     * Finds the {@link DataSchemaContextNode} for the given {@link QName} in {@link EffectiveModelContext}.
+     * Finds the {@link DataSchemaContext} for the given {@link QName} in {@link EffectiveModelContext}.
      *
      * <p>
      * Search is performed only on first level nodes of the modules, for recursive search,
@@ -183,28 +183,28 @@ public final class ConverterUtils {
      *
      * @param effectiveModelContext model context to search
      * @param qname                 {@link QName} of node to search for
-     * @return optional found {@link DataSchemaContextNode}
+     * @return optional found {@link DataSchemaContext}
      */
-    public static Optional<@NonNull DataSchemaContextNode<?>> getSchemaNode(
+    public static Optional<@NonNull DataSchemaContext> getSchemaNode(
             final EffectiveModelContext effectiveModelContext, final QName qname) {
         return getSchemaNode(effectiveModelContext, YangInstanceIdentifier.of(qname));
     }
 
     /**
-     * Finds the {@link DataSchemaContextNode} for the given {@link YangInstanceIdentifier}
+     * Finds the {@link DataSchemaContext} for the given {@link YangInstanceIdentifier}
      * in {@link EffectiveModelContext}.
      *
      * @param effectiveModelContext  model context to search
      * @param yangInstanceIdentifier {@link YangInstanceIdentifier} of the node to search for
-     * @return optional found {@link DataSchemaContextNode}
+     * @return optional found {@link DataSchemaContext}
      */
-    public static Optional<@NonNull DataSchemaContextNode<?>> getSchemaNode(
+    public static Optional<@NonNull DataSchemaContext> getSchemaNode(
             final EffectiveModelContext effectiveModelContext, final YangInstanceIdentifier yangInstanceIdentifier) {
         return DataSchemaContextTree.from(effectiveModelContext).findChild(yangInstanceIdentifier);
     }
 
     /**
-     * Finds the {@link DataSchemaContextNode} for the given namespace, revision and local name
+     * Finds the {@link DataSchemaContext} for the given namespace, revision and local name
      * in {@link EffectiveModelContext}.
      *
      * <p>
@@ -216,9 +216,9 @@ public final class ConverterUtils {
      * @param namespace             {@link QName} module namespace of the node to search for
      * @param revision              {@link QName} module revision of the node to search for
      * @param localName             {@link QName} local name of the node to search for
-     * @return optional found {@link DataSchemaContextNode}
+     * @return optional found {@link DataSchemaContext}
      */
-    public static Optional<@NonNull DataSchemaContextNode<?>> getSchemaNode(
+    public static Optional<@NonNull DataSchemaContext> getSchemaNode(
             final EffectiveModelContext effectiveModelContext, final String namespace, final String revision,
             final String localName) {
         return getSchemaNode(effectiveModelContext, QName.create(namespace, revision, localName));
