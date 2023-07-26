@@ -67,7 +67,7 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.netconf</groupId>
-            <artifactId>sal-netconf-connector</artifactId>
+            <artifactId>netconf-client-mdsal</artifactId>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
