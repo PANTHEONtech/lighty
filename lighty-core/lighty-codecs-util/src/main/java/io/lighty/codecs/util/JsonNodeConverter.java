@@ -30,7 +30,7 @@ import org.opendaylight.yangtools.yang.data.codec.gson.JSONNormalizedNodeStreamW
 import org.opendaylight.yangtools.yang.data.codec.gson.JsonParserStream;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
-import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
+import org.opendaylight.yangtools.yang.data.impl.schema.NormalizationResultHolder;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack.Inference;
@@ -165,9 +165,9 @@ public class JsonNodeConverter implements NodeConverter {
             parseToResult(ImmutableNormalizedNodeStreamWriter.from(resultBuilder), inputData, inference);
             return resultBuilder.build();
         } else {
-            final NormalizedNodeResult result = new NormalizedNodeResult();
+            final var result = new NormalizationResultHolder();
             parseToResult(ImmutableNormalizedNodeStreamWriter.from(result), inputData, inference);
-            return result.getResult();
+            return result.getResult().data();
         }
     }
 
