@@ -11,6 +11,7 @@ package io.lighty.modules.gnmi.simulatordevice.utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -47,7 +48,7 @@ public final class FileUtils {
                 final YangStatementStreamSource statementSource = YangStatementStreamSource.create(
                         YangTextSchemaSource.delegateForByteSource(
                                 YangTextSchemaSource.identifierFromFilename(file.getName()),
-                                com.google.common.io.Files.asByteSource(file)));
+                                com.google.common.io.Files.asByteSource(file), Charset.defaultCharset()));
 
                 buildAction.addSource(statementSource);
             }
