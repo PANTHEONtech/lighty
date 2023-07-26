@@ -84,7 +84,7 @@ public class ConverterUtilsTest extends AbstractCodecTest {
     @Test
     public void testGetTopLevelSchemaNode() {
         final SchemaNode node = ConverterUtils.getSchemaNode(this.effectiveModelContext, Toaster.QNAME)
-            .orElseThrow().getDataSchemaNode();
+            .orElseThrow().dataSchemaNode();
         assertNotNull(node);
         assertEquals(Toaster.QNAME, node.getQName());
     }
@@ -95,7 +95,7 @@ public class ConverterUtilsTest extends AbstractCodecTest {
                 YangInstanceIdentifier.create(
                         YangInstanceIdentifier.NodeIdentifier.create(TopLevelContainer.QNAME),
                         YangInstanceIdentifier.NodeIdentifier.create(SampleContainer.QNAME)))
-                .orElseThrow().getDataSchemaNode();
+                .orElseThrow().dataSchemaNode();
         assertNotNull(node);
         assertEquals(SampleContainer.QNAME, node.getQName());
     }
