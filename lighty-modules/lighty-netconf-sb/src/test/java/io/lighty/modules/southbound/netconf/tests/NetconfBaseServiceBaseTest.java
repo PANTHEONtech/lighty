@@ -15,11 +15,10 @@ import java.util.Set;
 import org.opendaylight.mdsal.binding.runtime.spi.ModuleInfoSnapshotBuilder;
 import org.opendaylight.netconf.client.mdsal.impl.BaseSchema;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultBaseNetconfSchemas;
-import org.opendaylight.yangtools.rfc8528.data.api.MountPointContext;
-import org.opendaylight.yangtools.rfc8528.data.util.EmptyMountPointContext;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
+import org.opendaylight.yangtools.yang.data.api.schema.MountPointContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
@@ -56,7 +55,7 @@ public abstract class NetconfBaseServiceBaseTest {
                         .$YangModuleInfoImpl.getInstance()
         );
         effectiveModelContext = getEffectiveModelContext(new ArrayList<>(yangModuleInfos));
-        mountContext = new EmptyMountPointContext(effectiveModelContext);
+        mountContext = MountPointContext.of(effectiveModelContext);
         baseSchema = new DefaultBaseNetconfSchemas(new DefaultYangParserFactory()).getBaseSchema();
     }
 
