@@ -49,7 +49,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.stream.YangInstanceIdenti
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
-import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
+import org.opendaylight.yangtools.yang.data.impl.schema.NormalizationResultHolder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableAnydataNodeBuilder;
 import org.opendaylight.yangtools.yang.data.util.ImmutableNormalizedAnydata;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
@@ -129,7 +129,7 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
                                                              Optional<EffectiveOperation> defaultEffectiveOperation) {
 
         final var parentPath = dataPath.isEmpty() ? dataPath : dataPath.coerceParent();
-        final var result = new NormalizedNodeResult();
+        final var result = new NormalizationResultHolder();
         try (var streamWriter = ImmutableNormalizedNodeStreamWriter.from(result)) {
             try (var iidWriter = YangInstanceIdentifierWriter.open(streamWriter,
                     getEffectiveModelContext(), parentPath);
@@ -139,7 +139,7 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
         } catch (IOException e) {
             throw new IllegalArgumentException("Failed to convert " + dataPath, e);
         }
-        final NormalizedNode editNNContent = result.getResult();
+        final NormalizedNode editNNContent = result.getResult().data();
 
         final NormalizedMetadata metadata = dataEffectiveOperation
                 .map(oper -> leafMetadata(dataPath, oper))
