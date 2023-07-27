@@ -44,7 +44,8 @@ public class LightyDiagStatusServiceImplTest {
     public void registerTest() {
         diagStatusService = new LightyDiagStatusServiceImpl(systemReadyMonitor);
         final ServiceRegistration serviceRegistration = diagStatusService.register(TEST_SERVICE);
-        diagStatusService.report(new ServiceDescriptor(TEST_SERVICE_2, ServiceState.STARTING, TEST_SERVICE_2_INFO));
+        diagStatusService.register(TEST_SERVICE).report(
+            new ServiceDescriptor(TEST_SERVICE_2, ServiceState.STARTING, TEST_SERVICE_2_INFO));
 
         Assert.assertEquals(diagStatusService.getAllServiceDescriptors().size(), 2);
         Assert.assertNotNull(diagStatusService.getServiceDescriptor(TEST_SERVICE));
@@ -52,7 +53,7 @@ public class LightyDiagStatusServiceImplTest {
 
         validateServiceStatus(diagStatusService.getServiceStatusSummary(), false, ServiceState.STARTING);
 
-        serviceRegistration.unregister();
+        serviceRegistration.close();
         Assert.assertEquals(diagStatusService.getAllServiceDescriptors().size(), 1);
     }
 
@@ -65,10 +66,11 @@ public class LightyDiagStatusServiceImplTest {
         Assert.assertNotNull(diagStatusService.getServiceDescriptor(TEST_SERVICE_2));
 
         validateServiceStatus(diagStatusService.getServiceStatusSummary(), false, ServiceState.STARTING);
-        diagStatusService.report(new ServiceDescriptor(TEST_SERVICE_2, ServiceState.OPERATIONAL, TEST_SERVICE_2_INFO));
+        diagStatusService.register(TEST_SERVICE_2).report(
+            new ServiceDescriptor(TEST_SERVICE_2, ServiceState.OPERATIONAL, TEST_SERVICE_2_INFO));
         validateServiceStatus(diagStatusService.getServiceStatusSummary(), true, ServiceState.OPERATIONAL);
 
-        serviceRegistration.unregister();
+        serviceRegistration.close();
         Assert.assertEquals(diagStatusService.getAllServiceDescriptors().size(), 0);
     }
 
