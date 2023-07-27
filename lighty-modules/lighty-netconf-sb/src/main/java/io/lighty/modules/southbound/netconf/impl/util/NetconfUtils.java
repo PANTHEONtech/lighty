@@ -17,7 +17,6 @@ import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransform
 import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.NETCONF_TARGET_NODEID;
 import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.NETCONF_UNLOCK_NODEID;
 import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.NETCONF_VALIDATE_NODEID;
-import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.ROLLBACK_ON_ERROR_OPTION;
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Futures;
@@ -28,7 +27,6 @@ import java.util.Optional;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.netconf.api.EffectiveOperation;
 import org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil;
-import org.opendaylight.netconf.util.NetconfUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.copy.config.input.target.ConfigTarget;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.edit.config.input.EditContent;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.get.config.input.source.ConfigSource;
@@ -44,6 +42,8 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.QNameModule;
+import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.AnyxmlNode;
@@ -54,10 +54,12 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
 import org.opendaylight.yangtools.yang.data.api.schema.builder.DataContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 public final class NetconfUtils {
     public static final QName NETCONF_DELETE_CONFIG_QNAME =
-            QName.create(NetconfUtil.NETCONF_QNAME, "delete-config").intern();
+        QName.create(QName.create(QNameModule.create(SchemaContext.NAME.getNamespace(), Revision.of("2011-06-01")),
+            "netconf").intern(), "delete-config").intern();
     public static final NodeIdentifier NETCONF_DELETE_CONFIG_NODEID =
             NodeIdentifier.create(NETCONF_DELETE_CONFIG_QNAME);
     private static final NodeIdentifier CONFIG_SOURCE_NODEID = NodeIdentifier.create(ConfigSource.QNAME);
@@ -128,7 +130,7 @@ public final class NetconfUtils {
         // Error option
         if (rollback) {
             editBuilder.withChild(Builders.leafBuilder().withNodeIdentifier(NETCONF_ERROR_OPTION_NODEID)
-                    .withValue(ROLLBACK_ON_ERROR_OPTION).build());
+                    .withValue("rollback-on-error").build());
         }
 
         // Edit content
