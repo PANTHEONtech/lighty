@@ -18,9 +18,9 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
-import org.opendaylight.netconf.sal.rest.doc.api.ApiDocService;
-import org.opendaylight.netconf.sal.rest.doc.impl.ApiDocServiceImpl;
-import org.opendaylight.netconf.sal.rest.doc.jaxrs.ApiDocApplication;
+import org.opendaylight.restconf.openapi.api.OpenApiService;
+import org.opendaylight.restconf.openapi.impl.OpenApiServiceImpl;
+import org.opendaylight.restconf.openapi.jaxrs.OpenApiApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +38,7 @@ public class OpenApiLighty extends AbstractLightyModule {
     private final LightyServerBuilder jettyServerBuilder;
     private final LightyServices lightyServices;
 
-    private ApiDocService apiDocService;
+    private OpenApiService apiDocService;
 
     public OpenApiLighty(RestConfConfiguration restConfConfiguration,
                          LightyServerBuilder jettyServerBuilder, LightyServices lightyServices) {
@@ -55,10 +55,10 @@ public class OpenApiLighty extends AbstractLightyModule {
         String basePathString = restConfConfiguration.getRestconfServletContextPath().replaceAll("^/+", "");
         LOG.info("basePath: {}", basePathString);
 
-        this.apiDocService = new ApiDocServiceImpl(lightyServices.getDOMSchemaService(),
+        this.apiDocService = new OpenApiServiceImpl(lightyServices.getDOMSchemaService(),
             lightyServices.getDOMMountPointService());
 
-        ApiDocApplication apiDocApplication = new ApiDocApplication(apiDocService);
+        OpenApiApplication apiDocApplication = new OpenApiApplication(apiDocService);
 
         ServletContainer restServletContainer = new ServletContainer(ResourceConfig.forApplication(apiDocApplication));
         ServletHolder restServletHolder = new ServletHolder(restServletContainer);
@@ -93,7 +93,7 @@ public class OpenApiLighty extends AbstractLightyModule {
     }
 
     @VisibleForTesting
-    ApiDocService getApiDocService() {
+    OpenApiService getApiDocService() {
         return apiDocService;
     }
 }
