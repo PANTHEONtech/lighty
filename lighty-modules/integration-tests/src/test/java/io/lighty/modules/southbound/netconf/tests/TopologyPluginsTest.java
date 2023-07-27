@@ -24,6 +24,7 @@ import io.lighty.modules.southbound.netconf.impl.NetconfTopologyPluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.mockito.Mock;
@@ -32,7 +33,7 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.netconf.client.NetconfClientDispatcher;
-import org.opendaylight.netconf.nettyutil.ReconnectFuture;
+import org.opendaylight.netconf.client.NetconfClientSession;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Host;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
@@ -69,7 +70,7 @@ public class TopologyPluginsTest {
     @Mock
     private NetconfClientDispatcher dispatcher;
     @Mock
-    private ReconnectFuture initFuture;
+    private Future<NetconfClientSession> initFuture;
 
     private static LightyModule startSingleNodeNetconf(final LightyServices services,
                                                        final NetconfClientDispatcher dispatcher)
@@ -84,7 +85,7 @@ public class TopologyPluginsTest {
     public void beforeClass()
             throws ConfigurationException, ExecutionException, InterruptedException, TimeoutException {
         MockitoAnnotations.initMocks(this);
-        when(this.dispatcher.createReconnectingClient(any())).thenReturn(this.initFuture);
+        when(this.dispatcher.createClient(any())).thenAnswer(invocation -> initFuture);
 
         this.lightyController = LightyTestUtils.startController();
         RestConfConfiguration restConfConfig =
@@ -133,7 +134,7 @@ public class TopologyPluginsTest {
         final WriteTransaction writeTransaction = bindingDataBroker.newWriteOnlyTransaction();
         writeTransaction.mergeParentStructurePut(LogicalDatastoreType.CONFIGURATION, path, node);
         writeTransaction.commit().get();
-        verify(this.dispatcher, timeout(20000)).createReconnectingClient(any());
+        verify(this.dispatcher, timeout(20000)).createClient(any());
     }
 
 }
