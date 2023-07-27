@@ -11,10 +11,16 @@ import io.lighty.core.controller.api.LightyServices;
 import java.util.concurrent.ExecutorService;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.opendaylight.netconf.client.NetconfClientDispatcher;
+import org.opendaylight.netconf.client.mdsal.api.CredentialProvider;
 import org.opendaylight.netconf.client.mdsal.api.SchemaResourceManager;
-import org.opendaylight.netconf.client.mdsal.impl.DefaultSchemaResourceManager;
+import org.opendaylight.netconf.client.mdsal.api.SslHandlerFactoryProvider;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultBaseNetconfSchemas;
+import org.opendaylight.netconf.client.mdsal.impl.DefaultCredentialProvider;
+import org.opendaylight.netconf.client.mdsal.impl.DefaultSchemaResourceManager;
+import org.opendaylight.netconf.client.mdsal.impl.DefaultSslHandlerFactoryProvider;
 import org.opendaylight.netconf.topology.impl.NetconfTopologyImpl;
+import org.opendaylight.netconf.topology.spi.DefaultNetconfClientConfigurationBuilderFactory;
+import org.opendaylight.netconf.topology.spi.NetconfClientConfigurationBuilderFactory;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,13 +53,19 @@ public final class NetconfTopologyPlugin extends AbstractTopologyPlugin {
             LOG.error("Failed to create DefaultBaseNetconfSchema, cause: ", e);
             return false;
         }
+        final CredentialProvider credentialProvider
+            = new DefaultCredentialProvider(lightyServices.getBindingDataBroker());
+        final SslHandlerFactoryProvider factoryProvider
+            = new DefaultSslHandlerFactoryProvider(lightyServices.getBindingDataBroker());
+        final NetconfClientConfigurationBuilderFactory factory = new DefaultNetconfClientConfigurationBuilderFactory(
+            encryptionService, credentialProvider, factoryProvider);
         final SchemaResourceManager schemaResourceManager =
                 new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
         netconfTopologyImpl = new NetconfTopologyImpl(topologyId, clientDispatcher,
                 lightyServices.getEventExecutor(), lightyServices.getScheduledThreadPool(),
                 lightyServices.getThreadPool(), schemaResourceManager,
                 lightyServices.getBindingDataBroker(), lightyServices.getDOMMountPointService(),
-                encryptionService, lightyServices.getRpcProviderService(),
+                encryptionService, factory, lightyServices.getRpcProviderService(),
                 defaultBaseNetconfSchemas, new LightyDeviceActionFactory());
         return true;
     }

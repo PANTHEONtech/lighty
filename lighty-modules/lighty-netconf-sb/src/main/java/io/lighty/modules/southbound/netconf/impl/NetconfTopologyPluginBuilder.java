@@ -54,8 +54,8 @@ public class NetconfTopologyPluginBuilder {
      */
     public NetconfSBPlugin build() {
         if (configuration.isClusterEnabled()) {
-            return new NetconfClusteredTopologyPlugin(lightyServices, configuration.getTopologyId(),
-                    configuration.getClientDispatcher(), configuration.getWriteTxTimeout(), executorService,
+            return new NetconfClusteredTopologyPlugin(lightyServices,
+                    configuration.getClientDispatcher(), executorService,
                     configuration.getAaaService());
         } else {
             return new NetconfTopologyPlugin(lightyServices, configuration.getTopologyId(),
