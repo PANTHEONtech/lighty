@@ -42,11 +42,6 @@ public class LightyDiagStatusServiceImpl implements DiagStatusService {
     }
 
     @Override
-    public void report(final ServiceDescriptor serviceDescriptor) {
-        descriptors.put(serviceDescriptor.getModuleServiceName(), serviceDescriptor);
-    }
-
-    @Override
     public ServiceDescriptor getServiceDescriptor(final String serviceIdentifier) {
         return descriptors.get(serviceIdentifier);
     }
@@ -86,7 +81,12 @@ public class LightyDiagStatusServiceImpl implements DiagStatusService {
         }
 
         @Override
-        public void unregister() throws IllegalStateException {
+        public void report(ServiceDescriptor serviceDescriptor) {
+            descriptors.put(serviceDescriptor.getModuleServiceName(), serviceDescriptor);
+        }
+
+        @Override
+        public void close() {
             descriptors.remove(descriptorId);
         }
     }
