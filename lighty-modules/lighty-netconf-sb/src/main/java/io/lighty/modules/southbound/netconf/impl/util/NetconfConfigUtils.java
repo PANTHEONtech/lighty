@@ -61,9 +61,7 @@ public final class NetconfConfigUtils {
                     .$YangModuleInfoImpl.getInstance()
     );
     public static final Set<YangModuleInfo> NETCONF_CALLHOME_MODELS = Set.of(
-            org.opendaylight.yang.gen.v1.urn.opendaylight.callhome.device.status.rev170112
-                    .$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.netconf.callhome.server.rev201015
+        org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.netconf.callhome.server.rev230428
                     .$YangModuleInfoImpl.getInstance()
     );
     private static final Logger LOG = LoggerFactory.getLogger(NetconfConfigUtils.class);
