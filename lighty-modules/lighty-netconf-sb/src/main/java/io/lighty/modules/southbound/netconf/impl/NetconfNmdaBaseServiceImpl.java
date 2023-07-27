@@ -30,8 +30,6 @@ import org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Running;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.nmda.rev190107.edit.data.input.EditContent;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedMetadata;
-import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedMetadata;
 import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -43,15 +41,16 @@ import org.opendaylight.yangtools.yang.data.api.schema.ChoiceNode;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafSetEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedAnydata;
+import org.opendaylight.yangtools.yang.data.api.schema.NormalizedMetadata;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeWriter;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.YangInstanceIdentifierWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
+import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedMetadata;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizationResultHolder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableAnydataNodeBuilder;
-import org.opendaylight.yangtools.yang.data.util.ImmutableNormalizedAnydata;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
@@ -149,7 +148,7 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
         final AnydataNode<NormalizedAnydata> editContent = ImmutableAnydataNodeBuilder
                 .create(NormalizedAnydata.class)
                 .withNodeIdentifier(NETCONF_EDIT_DATA_CONFIG_NODEID)
-                .withValue(new ImmutableMetadataNormalizedAnydata(stack.toInference(), editNNContent, metadata))
+                .withValue(NormalizedAnydata.of(stack.toInference(), editNNContent, metadata))
                 .build();
 
         ChoiceNode editStructure = Builders.choiceBuilder().withNodeIdentifier(toId(EditContent.QNAME))
@@ -243,7 +242,9 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
             final ImmutableNormalizedMetadata currentMeta = builders.pop().build();
             final ImmutableNormalizedMetadata.Builder parent = builders.peek();
             if (parent != null) {
-                parent.withChild(currentMeta);
+                for (PathArgument arg : args) {
+                    parent.withChild(arg,parent.build());
+                }
             } else {
                 return currentMeta;
             }
@@ -270,13 +271,14 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
         final AnydataNode<NormalizedAnydata> subtreeFilter =
                 ImmutableAnydataNodeBuilder.create(NormalizedAnydata.class)
                         .withNodeIdentifier(NETCONF_FILTER_NODEID)
-                        .withValue(new ImmutableNormalizedAnydata(stack.toInference(), filterNN))
+                        .withValue(NormalizedAnydata.of(stack.toInference(), filterNN))
                         .build();
         return Builders.choiceBuilder()
                 .withNodeIdentifier(NETCONF_FILTER_CHOICE_NODEID)
                 .withChild(subtreeFilter)
                 .build();
     }
+
     private record BuilderEntry(PathArgument identifier, ImmutableNormalizedMetadata.Builder builder) {
         BuilderEntry {
             requireNonNull(identifier);
