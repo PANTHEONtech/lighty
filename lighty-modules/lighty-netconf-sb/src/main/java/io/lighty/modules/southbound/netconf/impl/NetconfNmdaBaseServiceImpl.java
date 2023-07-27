@@ -229,7 +229,7 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
 
         // Step one: open builders
         for (PathArgument arg : args) {
-            builders.push(ImmutableNormalizedMetadata.builder().withIdentifier(arg));
+            builders.push(new BuilderEntry(arg, ImmutableNormalizedMetadata.builder()).builder());
         }
 
         // Step two: set the top builder's metadata
@@ -276,5 +276,11 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
                 .withNodeIdentifier(NETCONF_FILTER_CHOICE_NODEID)
                 .withChild(subtreeFilter)
                 .build();
+    }
+    private record BuilderEntry(PathArgument identifier, ImmutableNormalizedMetadata.Builder builder) {
+        BuilderEntry {
+            requireNonNull(identifier);
+            requireNonNull(builder);
+        }
     }
 }
