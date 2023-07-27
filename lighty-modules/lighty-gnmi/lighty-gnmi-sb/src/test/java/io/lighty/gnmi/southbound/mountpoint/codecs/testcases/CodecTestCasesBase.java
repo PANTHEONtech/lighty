@@ -25,13 +25,11 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.AugmentationNode;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableAugmentationNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLeafNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapEntryNodeBuilder;
@@ -130,9 +128,8 @@ public class CodecTestCasesBase {
                 YangInstanceIdentifier.create(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interfaces"))
                         .node(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface"))
                         .node(getMapEntryIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface", "name", "br0"))
-                        .node(YangInstanceIdentifier.AugmentationIdentifier.create(
-                                Set.of(QName.create(getQNameOfModule(OC_IF_ETHERNET_ID), "ethernet"))))
-                        .node(getNodeIdentifierOfNodeInModule(OC_IF_ETHERNET_ID, "ethernet"))
+                        .node(YangInstanceIdentifier.NodeIdentifier.create(
+                                (QName.create(getQNameOfModule(OC_IF_ETHERNET_ID), "ethernet"))))
                         .node(getNodeIdentifierOfNodeInModule(OC_IF_ETHERNET_ID, "config"));
 
         return ImmutablePair.of(identifier, ethConfigNode());
@@ -200,13 +197,11 @@ public class CodecTestCasesBase {
                 YangInstanceIdentifier.create(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interfaces"))
                         .node(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface"))
                         .node(getMapEntryIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface", "name", "br0"))
-                        .node(YangInstanceIdentifier.AugmentationIdentifier.create(
-                                Set.of(QName.create(getQNameOfModule(OC_IF_ETHERNET_ID), "ethernet"))))
-                        .node(getNodeIdentifierOfNodeInModule(OC_IF_ETHERNET_ID, "ethernet"))
+                        .node(YangInstanceIdentifier.NodeIdentifier.create(
+                                QName.create(getQNameOfModule(OC_IF_ETHERNET_ID), "ethernet")))
                         .node(getNodeIdentifierOfNodeInModule(OC_IF_ETHERNET_ID, "config"))
-                        .node(YangInstanceIdentifier.AugmentationIdentifier.create(
-                                Set.of(QName.create(getQNameOfModule(OC_IF_AGGREGATE_ID), "aggregate-id"))))
-                        .node(getNodeIdentifierOfNodeInModule(OC_IF_AGGREGATE_ID, "aggregate-id"));
+                        .node(YangInstanceIdentifier.NodeIdentifier.create(
+                                QName.create(getQNameOfModule(OC_IF_AGGREGATE_ID), "aggregate-id")));
 
 
         return ImmutablePair.of(identifier,
@@ -288,31 +283,16 @@ public class CodecTestCasesBase {
                                         "name", "br0"))
                                 .withChild(makeLeafNode(OC_INTERFACES_ID, "name", "br0"))
                                 .withChild(interfaceConfigNode())
-                                .withChild(ImmutableAugmentationNodeBuilder.create()
-                                        .withNodeIdentifier(YangInstanceIdentifier.AugmentationIdentifier.create(
-                                                Set.of(QName.create(getQNameOfModule(OC_IF_ETHERNET_ID), "ethernet"))))
-                                        .withChild(ImmutableContainerNodeBuilder.create()
-                                                .withNodeIdentifier(
-                                                        getNodeIdentifierOfNodeInModule(OC_IF_ETHERNET_ID, "ethernet"))
-                                                .withChild(ethConfigNode())
-                                                .withChild(ImmutableAugmentationNodeBuilder.create()
-                                                        .withNodeIdentifier(YangInstanceIdentifier
-                                                                .AugmentationIdentifier.create(
-                                                                        Set.of(QName.create(
-                                                                                getQNameOfModule(OC_VLAN_ID),
-                                                                                "switched-vlan"))))
-                                                        .withChild(switchedVlanNode())
-                                                        .build())
-                                                .build())
-                                        .build())
-                                .withChild(ImmutableAugmentationNodeBuilder.create()
-                                        .withNodeIdentifier(YangInstanceIdentifier.AugmentationIdentifier.create(
-                                                Set.of(QName.create(getQNameOfModule(OC_IF_AGGREGATE_ID),
-                                                        "aggregation"))))
-                                        .withChild(ImmutableContainerNodeBuilder.create()
-                                                .withNodeIdentifier(
-                                                        getNodeIdentifierOfNodeInModule(OC_IF_AGGREGATE_ID,
-                                                                "aggregation"))
+                                .withChild(ImmutableContainerNodeBuilder.create()
+                                    .withNodeIdentifier(
+                                        getNodeIdentifierOfNodeInModule(OC_IF_ETHERNET_ID, "ethernet"))
+                                    .withChild(ethConfigNode())
+                                    .withChild(switchedVlanNode())
+                                    .build())
+                                .withChild(ImmutableContainerNodeBuilder.create()
+                                        .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifier.create(
+                                                QName.create(getQNameOfModule(OC_IF_AGGREGATE_ID),
+                                                        "aggregation")))
                                                 .withChild(ImmutableContainerNodeBuilder.create()
                                                         .withNodeIdentifier(getNodeIdentifierOfNodeInModule(
                                                                 OC_IF_AGGREGATE_ID, "config"))
@@ -321,15 +301,7 @@ public class CodecTestCasesBase {
                                                                 makeLeafNode(OC_IF_AGGREGATE_ID, "min-links",
                                                                         Uint16.valueOf(5))
                                                         )).build())
-                                                .withChild(ImmutableAugmentationNodeBuilder.create()
-                                                        .withNodeIdentifier(YangInstanceIdentifier
-                                                                .AugmentationIdentifier.create(
-                                                                        Set.of(QName.create(
-                                                                                getQNameOfModule(OC_VLAN_ID),
-                                                                                "switched-vlan"))))
-                                                        .withChild(switchedVlanNode())
-                                                        .build())
-                                                .build())
+                                                .withChild(switchedVlanNode())
                                         .build())
                                 .build())
                         .build())
@@ -343,7 +315,7 @@ public class CodecTestCasesBase {
                         getNodeIdentifierOfNodeInModule(OC_IF_ETHERNET_ID, "config"))
                 .withValue(List.of(
                         makeLeafNode(OC_IF_ETHERNET_ID, "auto-negotiate", true),
-                        makeAugmentationNode(
+                        makeLeafNode(
                                 OC_IF_AGGREGATE_ID, "aggregate-id", "admin"),
                         makeLeafNode(OC_IF_ETHERNET_ID, "port-speed",
                                 OC_IF_ETHERNET_ID, "SPEED_10MB"),
@@ -386,12 +358,12 @@ public class CodecTestCasesBase {
                 .build();
     }
 
-    public AugmentationNode makeAugmentationNode(final String moduleName,
+    public ContainerNode makeContainerNode(final String moduleName,
                                                  final String nodeName,
                                                  final String value) {
-        return ImmutableAugmentationNodeBuilder.create()
-                .withNodeIdentifier(YangInstanceIdentifier.AugmentationIdentifier.create(
-                        Set.of(QName.create(getQNameOfModule(moduleName), nodeName))))
+        return ImmutableContainerNodeBuilder.create()
+                .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifier.create(
+                        QName.create(getQNameOfModule(moduleName), nodeName)))
                 .withValue(Set.of(makeLeafNode(moduleName, nodeName, value))).build();
     }
 

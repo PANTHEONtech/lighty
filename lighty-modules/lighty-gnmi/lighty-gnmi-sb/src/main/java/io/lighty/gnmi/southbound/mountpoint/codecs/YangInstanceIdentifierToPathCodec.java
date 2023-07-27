@@ -52,7 +52,7 @@ public class YangInstanceIdentifierToPathCodec implements Codec<YangInstanceIden
                 pathBuilder.addElem(previousElemBuilder.build());
             } else {
                 addNonKeyDefinitionNode(arg, currentElemBuilder);
-                if (!doesDefineAugment(arg) && (!iterator.hasNext() || !doesDefineKeys(iterator.peek()))) {
+                if ((!iterator.hasNext() || !doesDefineKeys(iterator.peek()))) {
                     /* Add this PathElem only when current path arg is not augment identifier and
                        next arg does not define key and value pairs */
                     pathBuilder.addElem(currentElemBuilder.build());
@@ -100,7 +100,4 @@ public class YangInstanceIdentifierToPathCodec implements Codec<YangInstanceIden
         return pathArgument instanceof YangInstanceIdentifier.NodeIdentifierWithPredicates;
     }
 
-    private static boolean doesDefineAugment(final YangInstanceIdentifier.PathArgument pathArgument) {
-        return pathArgument instanceof YangInstanceIdentifier.AugmentationIdentifier;
-    }
 }

@@ -21,7 +21,6 @@ import java.util.Optional;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
-import org.opendaylight.yangtools.yang.data.api.schema.AugmentationNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 
@@ -65,16 +64,7 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
                  because the AugmentationNode has no QName so later post processing (for example restconf)
                   can correctly deal with that.
                  */
-                if (codecResult instanceof AugmentationNode) {
-                    final AugmentationNode node = (AugmentationNode) codecResult;
-                    if (node.getIdentifier().getPossibleChildNames().size() == 1
-                            && node.body().size() == 1) {
-                        return Optional.of(node.body().iterator().next());
-
-                    }
-                } else {
-                    return Optional.of(codecResult);
-                }
+                return Optional.of(codecResult);
             }
         }
         return Optional.empty();
