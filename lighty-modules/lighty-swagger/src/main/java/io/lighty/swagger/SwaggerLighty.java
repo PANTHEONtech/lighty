@@ -56,7 +56,7 @@ public class SwaggerLighty extends AbstractLightyModule {
         LOG.info("basePath: {}", basePathString);
 
         this.apiDocService = new ApiDocServiceImpl(lightyServices.getDOMSchemaService(),
-            lightyServices.getDOMMountPointService());
+            lightyServices.getDOMMountPointService(), basePathString);
 
         ApiDocApplication apiDocApplication = new ApiDocApplication(apiDocService);
 
