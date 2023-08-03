@@ -56,7 +56,7 @@ public class OpenApiLighty extends AbstractLightyModule {
         LOG.info("basePath: {}", basePathString);
 
         this.apiDocService = new OpenApiServiceImpl(lightyServices.getDOMSchemaService(),
-            lightyServices.getDOMMountPointService());
+            lightyServices.getDOMMountPointService(), basePathString);
 
         OpenApiApplication apiDocApplication = new OpenApiApplication(apiDocService);
 
