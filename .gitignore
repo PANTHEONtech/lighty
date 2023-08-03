@@ -9,6 +9,7 @@
 lighty-models/**/java/org/opendaylight/yang/gen/**/*
 
 bin/
+cache/
 dist
 .idea
 .classpath
