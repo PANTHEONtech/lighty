@@ -5,9 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-
 package io.lighty.gnmi.southbound.mountpoint.codecs.testcases;
-
 
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
@@ -18,7 +16,6 @@ import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
 import io.lighty.gnmi.southbound.schema.provider.SchemaContextProvider;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Set;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.jupiter.api.Assertions;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -40,7 +37,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
  * Contains various YangInstanceIdentifier and NormalizeNode pairs uses for testing codecs.
  */
 public class CodecTestCasesBase {
-
     private static final String BASE_YANGS_PATH = "src/test/resources/additional/test/schema";
     private static final String OC_GNMI_CONFIG = "/lightyconfigs/openconfig_gnmi_config.json";
     private static final String OC_IF_TYPES_ID = "openconfig-if-types";
@@ -93,7 +89,6 @@ public class CodecTestCasesBase {
                 YangInstanceIdentifier.create(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interfaces"))
                         .node(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface"))
                         .node(getMapEntryIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface", "name", "eth3"));
-
 
         return ImmutablePair.of(identifier, wrapInMapNode
                 ? ImmutableMapNodeBuilder.create()
@@ -148,9 +143,7 @@ public class CodecTestCasesBase {
                         .node(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "config"))
                         .node(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "mtu"));
 
-
         return ImmutablePair.of(identifier, makeLeafNode(OC_INTERFACES_ID, "mtu", Uint16.valueOf(1500)));
-
     }
 
     /**
@@ -183,7 +176,6 @@ public class CodecTestCasesBase {
                         .node(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "config"))
                         .node(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "loopback-mode"));
         return ImmutablePair.of(identifier, makeLeafNode(OC_INTERFACES_ID, "loopback-mode", false));
-
     }
 
     /**
@@ -202,7 +194,6 @@ public class CodecTestCasesBase {
                         .node(getNodeIdentifierOfNodeInModule(OC_IF_ETHERNET_ID, "config"))
                         .node(YangInstanceIdentifier.NodeIdentifier.create(
                                 QName.create(getQNameOfModule(OC_IF_AGGREGATE_ID), "aggregate-id")));
-
 
         return ImmutablePair.of(identifier,
                 makeLeafNode(OC_IF_AGGREGATE_ID, "aggregate-id", "admin"));
@@ -272,7 +263,6 @@ public class CodecTestCasesBase {
     }
 
     public NormalizedNode makeInterfaces() {
-
         return ImmutableContainerNodeBuilder.create()
                 .withNodeIdentifier(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interfaces"))
                 .withChild(ImmutableMapNodeBuilder.create()
@@ -306,7 +296,6 @@ public class CodecTestCasesBase {
                                 .build())
                         .build())
                 .build();
-
     }
 
     private ContainerNode ethConfigNode() {
@@ -331,7 +320,6 @@ public class CodecTestCasesBase {
                 .withChild(makeLeafNode(OC_INTERFACES_ID, "name", "eth3"))
                 .build();
     }
-
 
     public ContainerNode interfaceConfigNode() {
         return ImmutableContainerNodeBuilder.create()
@@ -358,19 +346,9 @@ public class CodecTestCasesBase {
                 .build();
     }
 
-    public ContainerNode makeContainerNode(final String moduleName,
-                                                 final String nodeName,
-                                                 final String value) {
-        return ImmutableContainerNodeBuilder.create()
-                .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifier.create(
-                        QName.create(getQNameOfModule(moduleName), nodeName)))
-                .withValue(Set.of(makeLeafNode(moduleName, nodeName, value))).build();
-    }
-
     public LeafNode<Object> makeLeafNode(final String moduleName, final String nodeName, final Object value) {
         return ImmutableLeafNodeBuilder
-                .createNode(getNodeIdentifierOfNodeInModule(moduleName, nodeName),
-                        value);
+                .createNode(getNodeIdentifierOfNodeInModule(moduleName, nodeName), value);
     }
 
     public LeafNode<Object> makeLeafNode(final String moduleName,
@@ -389,5 +367,4 @@ public class CodecTestCasesBase {
     protected static String makePrefixString(String moduleIdentifier, String element) {
         return String.format("%s:%s", moduleIdentifier, element);
     }
-
 }
