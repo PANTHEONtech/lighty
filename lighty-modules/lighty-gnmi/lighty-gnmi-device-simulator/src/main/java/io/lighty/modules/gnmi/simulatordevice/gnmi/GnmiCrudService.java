@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-
 package io.lighty.modules.gnmi.simulatordevice.gnmi;
 
 import com.google.common.collect.Iterables;
@@ -46,13 +45,11 @@ import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("UnstableApiUsage")
 public class GnmiCrudService {
-
     private static final Logger LOG = LoggerFactory.getLogger(GnmiCrudService.class);
 
     private final YangDataService dataService;
     private final EffectiveModelContext context;
     private final Gson gson;
-
 
     public GnmiCrudService(final YangDataService dataService, final EffectiveModelContext context, final Gson gson) {
         this.dataService = dataService;
@@ -132,7 +129,6 @@ public class GnmiCrudService {
         return builder.build();
     }
 
-
     Map.Entry<Gnmi.Path, String> getResultInJsonFormat(final Map.Entry<Gnmi.Path, YangInstanceIdentifier> entry,
                                                        final NormalizedNode node) {
         final Optional<? extends Module> module
@@ -182,7 +178,6 @@ public class GnmiCrudService {
             }
         }
         return results;
-
     }
 
     private Gnmi.UpdateResult processUpdateListNonSimpleValue(final Gnmi.Update update,
@@ -323,25 +318,16 @@ public class GnmiCrudService {
 
     private YangInstanceIdentifier getYIIDWithNewNode(final YangInstanceIdentifier identifier,
             final String pathElement) {
-        final var elementYIID = getIdentifierByElementFromParentModel(identifier, pathElement);
-        if (elementYIID.isPresent()) {
-            return elementYIID.get();
+        final QName expectedQname = QName.create(identifier.getLastPathArgument().getNodeType(), pathElement);
+        final YangInstanceIdentifier expectedYIID = identifier.node(expectedQname);
+        final var foundNode = DataSchemaContextTree.from(context).enterPath(expectedYIID);
+        if (foundNode.isPresent()) {
+            return expectedYIID;
         } else {
             // If an element by name is not found inside parent yang model, then is augmented from other YANG model.
             final var foundAug = findAugmentationFromOuterModel(pathElement, identifier);
-            return addAugmentationNodeToIdentifier(identifier, foundAug.orElseThrow());
+            return identifier.node(foundAug.orElseThrow().getQName());
         }
-    }
-
-    private Optional<YangInstanceIdentifier> getIdentifierByElementFromParentModel(final YangInstanceIdentifier id,
-            final String element) {
-        final QName expectedQname = QName.create(id.getLastPathArgument().getNodeType(), element);
-        final YangInstanceIdentifier expectedYIID = id.node(expectedQname);
-        final var foundNode = DataSchemaContextTree.from(context).enterPath(expectedYIID);
-        if (foundNode.isPresent()) {
-            return Optional.of(expectedYIID);
-        }
-        return Optional.empty();
     }
 
     private Optional<DataSchemaNode> findAugmentationFromOuterModel(final String element,
@@ -367,15 +353,5 @@ public class GnmiCrudService {
         final Map<QName, Object> keysMap = currentElement.getKeyMap().entrySet().stream()
                 .collect(Collectors.toMap(e -> QName.create(qname, e.getKey()), Map.Entry::getValue));
         return resultIdentifier.node(NodeIdentifierWithPredicates.of(qname, keysMap));
-    }
-
-    private static YangInstanceIdentifier addAugmentationNodeToIdentifier(final YangInstanceIdentifier identifier,
-            final DataSchemaNode augmentationDataNode) {
-        return addAugmentationNodeToIdentifier(identifier, augmentationDataNode.getQName());
-    }
-
-    private static YangInstanceIdentifier addAugmentationNodeToIdentifier(final YangInstanceIdentifier identifier,
-            final QName augmentation) {
-        return identifier.node(augmentation);
     }
 }
