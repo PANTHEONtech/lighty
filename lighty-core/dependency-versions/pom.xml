@@ -22,15 +22,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- FIXME remove this when ODL bumps to at least 4.1.94.Final -->
-            <!-- FIX for https://github.com/netty/netty/security/advisories/GHSA-6mjq-h674-j845 -->
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-bom</artifactId>
-                <version>4.1.94.Final</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <dependency>
                 <groupId>org.opendaylight.odlparent</groupId>
                 <artifactId>odlparent</artifactId>
