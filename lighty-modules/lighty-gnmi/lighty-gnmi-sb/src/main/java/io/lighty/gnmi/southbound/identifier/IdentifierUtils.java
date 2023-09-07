@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-
 package io.lighty.gnmi.southbound.identifier;
 
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
@@ -17,11 +16,11 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.TopologyKey;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
-import org.opendaylight.yangtools.concepts.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableItem;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-
 
 public final class IdentifierUtils {
 
@@ -37,9 +36,7 @@ public final class IdentifierUtils {
     public static final DataTreeIdentifier<Node> GNMI_NODE_DTI = DataTreeIdentifier
             .create(LogicalDatastoreType.CONFIGURATION, GNMI_TOPO_IID.child(Node.class));
 
-
     public static YangInstanceIdentifier nodeidToYii(final NodeId nodeId) {
-
         return YangInstanceIdentifier.builder()
                 .node(NetworkTopology.QNAME)
                 .node(Topology.QNAME)
@@ -47,24 +44,20 @@ public final class IdentifierUtils {
                 .node(Node.QNAME)
                 .nodeWithKey(Node.QNAME, QName.create(Node.QNAME, "node-id"), nodeId.getValue())
                 .build();
-
     }
 
-    public static NodeId nodeIdOfPathArgument(final InstanceIdentifier.PathArgument pathArgument)
+    public static NodeId nodeIdOfPathArgument(final PathArgument pathArgument)
             throws IllegalStateException {
-        if (pathArgument instanceof InstanceIdentifier.IdentifiableItem<?, ?>) {
-
-            final Identifier key = ((InstanceIdentifier.IdentifiableItem) pathArgument).getKey();
-            if (key instanceof NodeKey) {
-                return ((NodeKey) key).getNodeId();
+        if (pathArgument instanceof IdentifiableItem<?, ?> identifiableItem) {
+            final var key = identifiableItem.getKey();
+            if (key instanceof NodeKey nodeKey) {
+                return nodeKey.getNodeId();
             }
         }
         throw new IllegalStateException("Unable to create NodeId from: " + pathArgument);
     }
 
-
     public static InstanceIdentifier<Node> gnmiNodeIID(final NodeId nodeId) {
         return GNMI_TOPO_IID.child(Node.class, new NodeKey(nodeId));
     }
-
 }
