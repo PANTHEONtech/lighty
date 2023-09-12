@@ -56,9 +56,10 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
     public Optional<NormalizedNode> apply(Gnmi.GetResponse response, YangInstanceIdentifier identifier)
             throws GnmiCodecException {
         for (Gnmi.Notification notification : response.getNotificationList()) {
-            for (Gnmi.Update update : notification.getUpdateList()) {
+            if (!notification.getUpdateList().isEmpty()) {
                 // Json to NormalizedNode
-                final NormalizedNode codecResult = updateToNormalizedNode(update, identifier);
+                final var update = notification.getUpdateList().get(0);
+                final var codecResult = updateToNormalizedNode(update, identifier);
                 /*
                 If the serialized normalized node is of type AugmentationNode we need to return the child
                  because the AugmentationNode has no QName so later post processing (for example restconf)
