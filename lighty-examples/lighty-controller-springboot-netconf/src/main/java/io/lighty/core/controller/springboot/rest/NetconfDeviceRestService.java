@@ -96,11 +96,7 @@ public class NetconfDeviceRestService {
     private List<NetconfDeviceResponse> getNetconfDevices(final Topology netconfTopology)
             throws InterruptedException, TimeoutException, ExecutionException {
         final List<NetconfDeviceResponse> devices = new ArrayList<>();
-        final Map<NodeKey, Node> netconfNodes =
-                Optional.ofNullable(netconfTopology.getNode())
-                        .orElse(Collections.emptyMap());
-
-        for (Node node : netconfNodes.values()) {
+        for (Node node : netconfTopology.nonnullNode().values()) {
             NetconfDeviceResponse nodeResponse = NetconfDeviceResponse.from(node);
             final Optional<MountPoint> netconfMountPoint = mountPointService.getMountPoint(NETCONF_TOPOLOGY_IID
                     .child(Node.class, new NodeKey(node.getNodeId())));
