@@ -16,7 +16,7 @@ import io.lighty.gnmi.southbound.schema.yangstore.service.YangDataStoreService;
 import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -57,7 +57,7 @@ public class ByClassPathYangLoaderService implements YangLoaderService {
             final YangTextSchemaSource yangTextSchemaSource = YangTextSchemaSource.delegateForByteSource(
                     YangTextSchemaSource.identifierFromFilename(
                             yangModuleInfo.getName().getLocalName() + ".yang"),
-                    yangModuleInfo.getYangTextByteSource(), Charset.defaultCharset());
+                    yangModuleInfo.getYangTextByteSource(), StandardCharsets.UTF_8);
             try (InputStream yangTextStream = yangModuleInfo.openYangTextStream()) {
                 // This validates the yang
                 this.yangParser.addSource(yangTextSchemaSource);

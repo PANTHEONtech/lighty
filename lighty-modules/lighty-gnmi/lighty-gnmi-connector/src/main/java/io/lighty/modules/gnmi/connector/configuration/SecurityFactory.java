@@ -12,7 +12,7 @@ import io.lighty.modules.gnmi.connector.security.Security;
 import io.lighty.modules.gnmi.connector.session.api.SessionManager;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -42,7 +42,7 @@ public final class SecurityFactory {
     }
 
     private static Collection<X509Certificate> loadCertificates(final String certificate) throws CertificateException {
-        return getX509Certificates(new ByteArrayInputStream(certificate.getBytes(Charset.defaultCharset())));
+        return getX509Certificates(new ByteArrayInputStream(certificate.getBytes(StandardCharsets.UTF_8)));
     }
 
     @SuppressWarnings("unchecked")

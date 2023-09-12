@@ -10,7 +10,7 @@ package io.lighty.gnmi.southbound.schema.loader.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import org.apache.commons.io.IOUtils;
 import org.opendaylight.yangtools.concepts.SemVer;
@@ -43,7 +43,7 @@ public class YangLoadModelUtil {
         this.modelRevision = Optional.ofNullable(yangTextSchemaSource.getIdentifier().revision())
                 .or(yangModelDependencyInfo::getRevision).orElse(null);
         this.modelSemVer = semanticVersion.orElse(null);
-        this.modelBody = IOUtils.toString(yangTextStream, Charset.defaultCharset());
+        this.modelBody = IOUtils.toString(yangTextStream, StandardCharsets.UTF_8);
         this.modelName = yangModelDependencyInfo.getName();
     }
 
