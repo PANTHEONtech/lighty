@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -59,7 +59,7 @@ public final class FileToDatastoreUtils {
             final DOMDataBroker dataBroker, final boolean override)
             throws IOException, DeserializationException, InterruptedException, ExecutionException, TimeoutException {
 
-        try (Reader inputReader = new InputStreamReader(inputStream, Charset.defaultCharset())) {
+        try (Reader inputReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
             final NormalizedNode deserializedNode;
             if (fileFormat == ImportFileFormat.JSON) {
                 // Json deserialization needs parent identifier

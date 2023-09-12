@@ -18,7 +18,6 @@ import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.List;
@@ -234,10 +233,10 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
             return YangTextSchemaSource.delegateForByteSource(
                     new SourceIdentifier(UnresolvedQName.Unqualified.of(model.getName()),
                             Revision.of(model.getVersion().getValue())), bodyByteSource(model.getBody()),
-                Charset.defaultCharset());
+                StandardCharsets.UTF_8);
         } else {
             return YangTextSchemaSource.delegateForByteSource(new SourceIdentifier(model.getName()),
-                    bodyByteSource(model.getBody()), Charset.defaultCharset());
+                    bodyByteSource(model.getBody()), StandardCharsets.UTF_8);
         }
 
     }

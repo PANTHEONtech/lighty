@@ -12,7 +12,7 @@ import com.google.common.io.ByteSource;
 import io.lighty.modules.gnmi.commons.util.YangModelSanitizer;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -113,7 +113,7 @@ public class EffectiveModelContextBuilder {
                 final YangStatementStreamSource statementSource = YangStatementStreamSource.create(
                         YangTextSchemaSource.delegateForByteSource(
                                 YangTextSchemaSource.identifierFromFilename(file.getName()),
-                                sanitizedYangByteSource, Charset.defaultCharset()));
+                                sanitizedYangByteSource, StandardCharsets.UTF_8));
 
                 sourceArrayList.add(statementSource);
             }
@@ -135,7 +135,7 @@ public class EffectiveModelContextBuilder {
                 final YangStatementStreamSource statementSource
                         = YangStatementStreamSource.create(YangTextSchemaSource.delegateForByteSource(
                         YangTextSchemaSource.identifierFromFilename(yangModuleInfo.getName().getLocalName() + ".yang"),
-                        sanitizedYangByteSource, Charset.defaultCharset()));
+                        sanitizedYangByteSource, StandardCharsets.UTF_8));
                 sourceArrayList.add(statementSource);
             } catch (IOException | YangParserException e) {
                 final String errorMsg = String.format("Failed to create YangStatementStreamSource from"

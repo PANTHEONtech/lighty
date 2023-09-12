@@ -7,7 +7,7 @@
  */
 package io.lighty.aaa.encrypt.service.impl;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -33,7 +33,7 @@ public class AAAEncryptionServiceImpl implements AAAEncryptionService {
         if (data != null && data.length() != 0) {
             try {
                 synchronized (encryptCipher) {
-                    byte[] cryptobytes = encryptCipher.doFinal(data.getBytes(Charset.defaultCharset()));
+                    byte[] cryptobytes = encryptCipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
                     return DatatypeConverter.printBase64Binary(cryptobytes);
                 }
             } catch (IllegalBlockSizeException | BadPaddingException e) {
@@ -69,7 +69,7 @@ public class AAAEncryptionServiceImpl implements AAAEncryptionService {
             try {
                 byte[] cryptobytes = DatatypeConverter.parseBase64Binary(encryptedData);
                 byte[] clearbytes = decryptCipher.doFinal(cryptobytes);
-                return new String(clearbytes, Charset.defaultCharset());
+                return new String(clearbytes, StandardCharsets.UTF_8);
             } catch (IllegalBlockSizeException | BadPaddingException e) {
                 LOG.error("Failed to decrypt encoded data", e);
                 return encryptedData;
