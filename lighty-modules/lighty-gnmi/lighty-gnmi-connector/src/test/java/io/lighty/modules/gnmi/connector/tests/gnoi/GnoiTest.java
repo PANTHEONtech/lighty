@@ -135,7 +135,7 @@ public class GnoiTest {
         }
     }
 
-    private static class TestGnoiServiceImpl extends FileGrpc.FileImplBase {
+    private static final class TestGnoiServiceImpl extends FileGrpc.FileImplBase {
 
         @Override
         public void get(final gnoi.file.FileOuterClass.GetRequest request,
