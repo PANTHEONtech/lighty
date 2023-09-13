@@ -227,9 +227,7 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
         final Deque<ImmutableNormalizedMetadata.Builder> builders = new ArrayDeque<>(args.size());
 
         // Step one: open builders
-        for (PathArgument arg : args) {
-            builders.push(new BuilderEntry(arg, ImmutableNormalizedMetadata.builder()).builder());
-        }
+        builders.push(ImmutableNormalizedMetadata.builder());
 
         // Step two: set the top builder's metadata
         Optional.ofNullable(builders.peek())
@@ -277,12 +275,5 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
                 .withNodeIdentifier(NETCONF_FILTER_CHOICE_NODEID)
                 .withChild(subtreeFilter)
                 .build();
-    }
-
-    private record BuilderEntry(PathArgument identifier, ImmutableNormalizedMetadata.Builder builder) {
-        BuilderEntry {
-            requireNonNull(identifier);
-            requireNonNull(builder);
-        }
     }
 }
