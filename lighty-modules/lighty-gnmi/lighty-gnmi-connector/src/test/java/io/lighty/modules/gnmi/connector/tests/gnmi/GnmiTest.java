@@ -210,7 +210,7 @@ public class GnmiTest {
         });
     }
 
-    private static class TestGrpcServiceImpl extends gNMIGrpc.gNMIImplBase {
+    private static final class TestGrpcServiceImpl extends gNMIGrpc.gNMIImplBase {
         private String gnmiVersion = null;
 
         @Override
