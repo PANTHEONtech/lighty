@@ -1,4 +1,4 @@
-FROM alpine:3.18.2 as clone
+FROM alpine:3.18.3 as clone
 RUN apk add git
 WORKDIR /netconf-simulator
 RUN git clone https://github.com/PANTHEONtech/lighty-netconf-simulator.git -b 18.2.0
