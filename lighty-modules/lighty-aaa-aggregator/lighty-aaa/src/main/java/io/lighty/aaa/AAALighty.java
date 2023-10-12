@@ -58,7 +58,7 @@ public final class AAALighty extends AbstractLightyModule {
         return true;
     }
 
-    private static class AAAShiroProviderHandler {
+    private static final class AAAShiroProviderHandler {
 
         AAALightyShiroProvider aaaLightyShiroProvider;
 
