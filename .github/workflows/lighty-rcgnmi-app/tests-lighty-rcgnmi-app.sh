@@ -44,7 +44,7 @@ ls -1 yangs
 #Run simulator for testing purpose
 printLine
 echo -e "-- Starting gNMI simulator device --\n"
-java -jar ${GITHUB_WORKSPACE}/lighty-modules/lighty-gnmi/lighty-gnmi-device-simulator/target/lighty-gnmi-device-simulator-17.4.0.jar -c ./simulator/example_config.json > /dev/null 2>&1 &
+java -jar ${GITHUB_WORKSPACE}/lighty-modules/lighty-gnmi/lighty-gnmi-device-simulator/target/lighty-gnmi-device-simulator-17.5.0-SNAPSHOT.jar -c ./simulator/example_config.json > /dev/null 2>&1 &
 
 #Add yangs into controller through REST rpc
 ./add_yangs_via_rpc.sh
