@@ -16,7 +16,7 @@ HTTP_STATUS_CODES=("200","201","202","204")
 declare -a test_results
 
 # Start lighty-netconf-simulator in minikube network
-docker build -t lighty-netconf-simulator ${GITHUB_WORKSPACE}/.github/workflows/lighty-rnc-app/simulator
+docker build -t lighty-netconf-simulator ${GITHUB_WORKSPACE}/.github/workflows/lighty-rnc-app/simulator --build-arg VERSION=19.0.0
 docker run -d --rm --name netconf-simulator -p$SIMULATOR_PORT:$SIMULATOR_PORT lighty-netconf-simulator:latest
 
 # Get netconf-simulator container's IP
