@@ -25,7 +25,7 @@
                 { "usedBy": "CONTROLLER", "name": "opendaylight-l2-types", "revision": "2013-08-27", "nameSpace": "urn:opendaylight:l2:types"},
                 { "usedBy": "CONTROLLER", "name": "distributed-datastore-provider", "revision": "2014-06-12", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:distributed-datastore-provider"},
                 { "usedBy": "CONTROLLER", "name": "ietf-interfaces", "revision": "2018-02-20", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
-                { "usedBy": "CONTROLLER", "name": "iana-if-type","revision": "2021-06-21", "nameSpace": "urn:ietf:params:xml:ns:yang:iana-if-type"},
+                { "usedBy": "CONTROLLER", "name": "iana-if-type","revision": "2023-01-26", "nameSpace": "urn:ietf:params:xml:ns:yang:iana-if-type"},
                 { "usedBy": "RESTCONF", "name": "ietf-yang-library", "revision": "2019-01-04", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-library"},
                 { "usedBy": "RESTCONF", "name": "ietf-restconf-monitoring", "revision": "2017-01-26", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-restconf-monitoring"},
                 { "usedBy": "RESTCONF", "name": "subscribe-to-notification", "revision": "2016-10-28", "nameSpace": "subscribe:to:notification"},
@@ -50,7 +50,7 @@
         ],
         "initialYangModels" : [
             {"name": "ietf-interfaces", "revision": "2018-02-20", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
-            {"name": "iana-if-type", "revision": "2021-06-21", "nameSpace": "urn:ietf:params:xml:ns:yang:iana-if-type"},
+            {"name": "iana-if-type", "revision": "2023-01-26", "nameSpace": "urn:ietf:params:xml:ns:yang:iana-if-type"},
             {"name": "ietf-yang-types", "revision": "2013-07-15", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-types"}
         ]
     }

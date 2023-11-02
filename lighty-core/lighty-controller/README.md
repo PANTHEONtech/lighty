@@ -115,7 +115,7 @@ or completely override it if required.
                 { "usedBy": "CONTROLLER", "name": "odl-general-entity", "revision": "2015-09-30", "nameSpace": "urn:opendaylight:params:xml:ns:yang:mdsal:core:general-entity"},
                 { "usedBy": "CONTROLLER", "name": "yang-ext", "revision": "2013-07-09", "nameSpace": "urn:opendaylight:yang:extension:yang-ext"},
                 { "usedBy": "CONTROLLER", "name": "opendaylight-l2-types", "revision": "2013-08-27", "nameSpace": "urn:opendaylight:l2:types"},
-                { "usedBy": "CONTROLLER", "name": "iana-if-type", "revision": "2021-06-21", "nameSpace": "urn:ietf:params:xml:ns:yang:iana-if-type"},
+                { "usedBy": "CONTROLLER", "name": "iana-if-type", "revision": "2023-01-26", "nameSpace": "urn:ietf:params:xml:ns:yang:iana-if-type"},
                 { "usedBy": "CONTROLLER", "name": "ietf-interfaces", "revision": "2018-02-20", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
                 { "usedBy": "CONTROLLER", "name": "network-topology", "revision": "2013-10-21", "nameSpace": "urn:TBD:params:xml:ns:yang:network-topology"},
                 { "usedBy": "CONTROLLER", "name": "ietf-inet-types", "revision": "2013-07-15", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-inet-types"}
