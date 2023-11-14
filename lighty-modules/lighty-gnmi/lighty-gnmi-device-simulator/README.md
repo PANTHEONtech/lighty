@@ -76,7 +76,7 @@ This simulator provides gNMI device driven by gNMI proto files, with datastore d
    Build and start gNMI simulator device:
 ```
    final SimulatedGnmiDevice simulatedGnmiDevice
-         = new SimulatedGnmiDeviceBuilder()
+         = new SimulatedGnmiDevice()
                .from(gnmiSimulatorConfiguration)
                .build();
    simulatedGnmiDevice.start();
@@ -150,15 +150,18 @@ This example will show how to execute basic operations on lighty.io gNMI device 
    - [INITIAL_CONFIGURATION_PATH](src/test/resources/initData/config.json)
    - SERVER_CERTIFICATE / SERVER_PKCS8_KEY - was generated with script inside lighty-gnmi-connector module.
    ```
-   SimulatedGnmiDevice device = new SimulatedGnmiDeviceBuilder()
+   GnmiSimulatorConfiguration gnmiSimulatorConfiguration = new GnmiSimulatorConfiguration()
             .setYangsPath(YANG_MODELS_PATH)
             .setInitialConfigDataPath(INITIAL_CONFIGURATION_PATH)
-            .setHost("127.0.0.1")
-            .setCertificatePath(SERVER_CERTIFICATE)
-            .setKeyPath(SERVER_PKCS8_KEY)
-            .setUsernamePasswordAuth("Admin", "Admin")
-            .setPort(9090)
+            .setTargetAddress("127.0.0.1")
+            .setCertPath(SERVER_CERTIFICATE)
+            .setCertKeyPath(SERVER_PKCS8_KEY)
+            .setUsername("Admin")
+            .setPassword("Admin")
+            .setTargetPort(9090)
             .build();
+
+   SimulatedGnmiDevice device = new SimulatedGnmiDevice(gnmiSimulatorConfiguration);
           device.start();
    ```
 
