@@ -153,11 +153,6 @@ assertHttpStatusCode $(curl -X PUT -o /dev/null -s -w "%{http_code} PUT %{url_ef
                 "openconfig-aaa-types:TACACS_ALL"
             ]
         },
-        "state": {
-            "authentication-method": [
-                "openconfig-aaa-types:RADIUS_ALL"
-            ]
-        },
         "admin-user": {
             "config": {
                 "admin-password": "password"
