@@ -84,6 +84,7 @@ public class YangDataService {
                 tx.merge(path, node);
             }
             final DOMStoreThreePhaseCommitCohort tpcc = tx.ready();
+            tpcc.canCommit().get();
             tpcc.preCommit().get();
             tpcc.commit().get();
         } catch (final ExecutionException exception) {

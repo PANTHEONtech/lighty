@@ -129,8 +129,10 @@ public class SimulatedGnmiDevice {
                 .addYangModulesInfo(modulesInfoSet)
                 .build();
 
-        // Initialize data service
-        dataService = new YangDataService(schemaContext, initialConfigDataPath, initialStateDataPath);
+        // FIXME in fact, this has never worked because data to commit are incorrect
+        // Initialize data service - enable this with initialConfigDataPath, initialStateDataPath after fix is applied
+        // dataService = new YangDataService(schemaContext, initialConfigDataPath, initialStateDataPath);
+        dataService = new YangDataService(schemaContext, null, null);
 
         // Route gNMI calls towards gNMI service facade
         gnmiService = new GnmiService(schemaContext, dataService, gson, supportedEncodings);
