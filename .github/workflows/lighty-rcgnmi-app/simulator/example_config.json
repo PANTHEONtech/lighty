@@ -2,8 +2,8 @@
     "gnmi_simulator":{
         "targetAddress": "0.0.0.0",
         "targetPort": 3333,
-        "initialStateDataPath": "./simulator/initialJsonData.json",
-        "initialConfigDataPath": "./simulator/initialJsonData.json",
+        "initialStateDataPath": "./simulator/initialStateJsonData.json",
+        "initialConfigDataPath": "./simulator/initialConfigJsonData.json",
         "certPath": "./simulator/certs/server.crt",
         "certKeyPath": "./simulator/certs/server.key",
         "yangsPath": "./yangs",

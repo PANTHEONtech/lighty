@@ -6,7 +6,7 @@ are performed on this device.
 
 The application, lighty.io gNMI/RESTCONF is pre-prepared with [Openconfig YANG models](yangs).
 These models are used by both gNMI application and gNMI device simulator. Device has already preconfigured state/config
-data specified in [initialJsonData.json](simulator/initialJsonData.json) JSON file.
+data specified in [initialStateJsonData.json](simulator/initialStateJsonData.json) JSON file.
 To communicate with gNMI device it is required to use TLS communication with certificates and username and password
 authorization.
 

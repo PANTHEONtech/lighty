@@ -23,3 +23,4 @@ wget https://raw.githubusercontent.com/openconfig/public/ed650bd969afc2eb5f66d60
 wget https://raw.githubusercontent.com/openconfig/public/ed650bd969afc2eb5f66d60b86b62ffa6fd5fb8e/release/models/system/openconfig-system-terminal.yang -P yangs
 wget https://raw.githubusercontent.com/openconfig/public/ed650bd969afc2eb5f66d60b86b62ffa6fd5fb8e/release/models/types/openconfig-types.yang -P yangs
 wget https://raw.githubusercontent.com/openconfig/public/ed650bd969afc2eb5f66d60b86b62ffa6fd5fb8e/release/models/types/openconfig-yang-types.yang -P yangs
+wget https://raw.githubusercontent.com/openconfig/public/f3349778e3cb3b0987f3ec18acea329ea4bf30e6/release/models/interfaces/openconfig-if-types.yang -P yangs
