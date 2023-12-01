@@ -13,13 +13,13 @@
     <parent>
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-app-parent</artifactId>
-        <version>19.1.0</version>
+        <version>19.2.0-SNAPSHOT</version>
         <relativePath>../../../lighty-core/lighty-app-parent/pom.xml</relativePath>
     </parent>
 
     <groupId>io.lighty.modules.gnmi</groupId>
     <artifactId>lighty-gnmi-device-simulator</artifactId>
-    <version>19.1.0</version>
+    <version>19.2.0-SNAPSHOT</version>
 
     <properties>
         <application.main.class>io.lighty.modules.gnmi.simulatordevice.main.GnmiSimulatorApp</application.main.class>
