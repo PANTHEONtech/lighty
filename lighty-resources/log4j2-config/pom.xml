@@ -11,7 +11,7 @@
 
     <groupId>io.lighty.resources</groupId>
     <artifactId>log4j2-config</artifactId>
-    <version>19.1.0</version>
+    <version>19.2.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
