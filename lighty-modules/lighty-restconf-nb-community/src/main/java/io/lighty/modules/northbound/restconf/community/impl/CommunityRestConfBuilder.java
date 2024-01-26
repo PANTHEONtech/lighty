@@ -9,6 +9,7 @@ package io.lighty.modules.northbound.restconf.community.impl;
 
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.server.LightyServerBuilder;
+import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
 
 /**
  * Builder for {@link CommunityRestConf}.
@@ -17,6 +18,7 @@ public final class CommunityRestConfBuilder {
 
     private RestConfConfiguration restconfConfiguration = null;
     private LightyServerBuilder lightyServerBuilder = null;
+    private ScheduledThreadPool threadPool = null;
 
 
     private CommunityRestConfBuilder(final RestConfConfiguration configuration) {
@@ -45,6 +47,17 @@ public final class CommunityRestConfBuilder {
     }
 
     /**
+     * Add ScheduledThreadPool.
+     *
+     * @param pool input scheduledThreadPool.
+     * @return instance of {@link CommunityRestConfBuilder}.
+     */
+    public CommunityRestConfBuilder withScheduledThreadPool(final ScheduledThreadPool pool) {
+        this.threadPool = pool;
+        return this;
+    }
+
+    /**
      * Build new {@link CommunityRestConf} instance from {@link CommunityRestConfBuilder}.
      * @return instance of CommunityRestConf.
      */
@@ -55,6 +68,6 @@ public final class CommunityRestConfBuilder {
             this.restconfConfiguration.getDomMountPointService(),
             this.restconfConfiguration.getDomSchemaService(),
             this.restconfConfiguration.getInetAddress(), this.restconfConfiguration.getHttpPort(),
-            this.restconfConfiguration.getRestconfServletContextPath(), this.lightyServerBuilder);
+            this.restconfConfiguration.getRestconfServletContextPath(), this.lightyServerBuilder, this.threadPool);
     }
 }
