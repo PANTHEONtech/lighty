@@ -68,7 +68,7 @@ public class Main {
     }
 
     @SuppressWarnings("IllegalCatch")
-    @SuppressFBWarnings("SLF4J_SIGN_ONLY_FORMAT")
+    @SuppressFBWarnings({"SLF4J_SIGN_ONLY_FORMAT", "REC_CATCH_EXCEPTION"})
     public void start(String[] args, boolean registerShutdownHook) {
         final Stopwatch stopwatch = Stopwatch.createStarted();
         LOG.info(".__  .__       .__     __              .__           _________________    _______");
@@ -158,6 +158,7 @@ public class Main {
                 .from(RestConfConfigUtils.getRestConfConfiguration(restconfConfiguration,
                     this.lightyController.getServices()))
                 .withLightyServer(jettyServerBuilder)
+                .withScheduledThreadPool(lightyController.getServices().getScheduledThreadPool())
                 .build();
 
         //3. start openApi and RestConf server

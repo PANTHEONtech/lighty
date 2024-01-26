@@ -40,8 +40,9 @@ public final class RestConfConfigUtils {
             org.opendaylight.yang.gen.v1.subscribe.to.notification.rev161028
                     .$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.instance.identifier.patch.module.rev151121
-                    .$YangModuleInfoImpl.getInstance()
-            );
+                    .$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.urn.opendaylight.device.notification.rev221106
+                     .$YangModuleInfoImpl.getInstance());
     public static final int MAXIMUM_FRAGMENT_LENGTH = 0;
     public static final int IDLE_TIMEOUT =  30000;
     public static final int HEARTBEAT_INTERVAL = 10000;
