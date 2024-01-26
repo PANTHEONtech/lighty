@@ -7,6 +7,9 @@
  */
 package io.lighty.modules.northbound.restconf.community.impl;
 
+import static org.opendaylight.restconf.nb.rfc8040.rests.utils.RestconfStreamsConstants.DATA_SUBSCRIPTION;
+import static org.opendaylight.restconf.nb.rfc8040.rests.utils.RestconfStreamsConstants.NOTIFICATION_STREAM;
+
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Throwables;
 import io.lighty.core.controller.api.AbstractLightyModule;
@@ -15,23 +18,30 @@ import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigU
 import io.lighty.server.LightyServerBuilder;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import javax.servlet.ServletContext;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.websocket.server.WebSocketServerFactory;
+import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
+import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
+import org.opendaylight.restconf.nb.rfc8040.DataStreamApplication;
 import org.opendaylight.restconf.nb.rfc8040.RestconfApplication;
 import org.opendaylight.restconf.nb.rfc8040.databind.DatabindProvider;
 import org.opendaylight.restconf.nb.rfc8040.databind.mdsal.DOMDatabindProvider;
 import org.opendaylight.restconf.nb.rfc8040.handlers.SchemaContextHandler;
+import org.opendaylight.restconf.nb.rfc8040.rests.services.impl.RestconfDataStreamServiceImpl;
 import org.opendaylight.restconf.nb.rfc8040.streams.StreamsConfiguration;
+import org.opendaylight.restconf.nb.rfc8040.streams.WebSocketInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,13 +61,14 @@ public class CommunityRestConf extends AbstractLightyModule {
     private Server jettyServer;
     private LightyServerBuilder lightyServerBuilder;
     private SchemaContextHandler schemaCtxHandler;
+    private final ScheduledThreadPool scheduledThreadPool;
 
     public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMRpcService domRpcService,
             final DOMActionService domActionService, final DOMNotificationService domNotificationService,
             final DOMMountPointService domMountPointService,
             final DOMSchemaService domSchemaService, final InetAddress inetAddress,
             final int httpPort, final String restconfServletContextPath,
-            final LightyServerBuilder serverBuilder) {
+            final LightyServerBuilder serverBuilder, final ScheduledThreadPool threadPool) {
         this.domDataBroker = domDataBroker;
         this.domRpcService = domRpcService;
         this.domActionService = domActionService;
@@ -68,16 +79,17 @@ public class CommunityRestConf extends AbstractLightyModule {
         this.httpPort = httpPort;
         this.inetAddress = inetAddress;
         this.restconfServletContextPath = restconfServletContextPath;
+        this.scheduledThreadPool = threadPool;
     }
 
     public CommunityRestConf(final DOMDataBroker domDataBroker,
             final DOMRpcService domRpcService, final DOMActionService domActionService,
             final DOMNotificationService domNotificationService, final DOMMountPointService domMountPointService,
             final DOMSchemaService domSchemaService, final InetAddress inetAddress, final int httpPort,
-            final String restconfServletContextPath) {
+            final String restconfServletContextPath, final ScheduledThreadPool threadPool) {
         this(domDataBroker, domRpcService, domActionService, domNotificationService,
                 domMountPointService, domSchemaService, inetAddress, httpPort,
-                restconfServletContextPath, null);
+                restconfServletContextPath, null, threadPool);
     }
 
     @Override
@@ -93,9 +105,15 @@ public class CommunityRestConf extends AbstractLightyModule {
         final RestconfApplication restconfApplication = new RestconfApplication(databindProvider,
                 this.domMountPointService, this.domDataBroker, this.domRpcService, this.domActionService,
                 this.domNotificationService, this.domSchemaService, streamsConfiguration);
+        final DataStreamApplication dataStreamApplication = new DataStreamApplication(databindProvider,
+            this.domMountPointService, new RestconfDataStreamServiceImpl(scheduledThreadPool, streamsConfiguration));
         final ServletContainer servletContainer8040 = new ServletContainer(ResourceConfig
                 .forApplication(restconfApplication));
         final ServletHolder jaxrs = new ServletHolder(servletContainer8040);
+
+        final ServletContainer dataStreamServletContainer = new ServletContainer(
+            ResourceConfig.forApplication(dataStreamApplication));
+        final ServletHolder dataStreamHolder = new ServletHolder(dataStreamServletContainer);
 
         LOG.info("RestConf init complete, starting Jetty");
         LOG.info("http address:port {}:{}, url prefix: {}", this.inetAddress.toString(), this.httpPort,
@@ -107,6 +125,19 @@ public class CommunityRestConf extends AbstractLightyModule {
             final ServletContextHandler mainHandler =
                     new ServletContextHandler(contexts, this.restconfServletContextPath, true, false);
             mainHandler.addServlet(jaxrs, "/*");
+            mainHandler.addServlet(dataStreamHolder, "/notif/*");
+
+            final ServletContextHandler dataHandler = new ServletContextHandler(
+                contexts, "/" + DATA_SUBSCRIPTION, true, false);
+            final ServletContextHandler notifHandler = new ServletContextHandler(
+                contexts, "/" + NOTIFICATION_STREAM, true, false);
+            final WebSocketInitializer webSocketInitializer = new WebSocketInitializer(
+                scheduledThreadPool, streamsConfiguration);
+            final ServletContext context = notifHandler.getServletContext();
+            final WebSocketServletFactory factory = new WebSocketServerFactory(context);
+            webSocketInitializer.configure(factory);
+            dataHandler.addServlet(new ServletHolder(webSocketInitializer), "/*");
+            notifHandler.addServlet(new ServletHolder(webSocketInitializer), "/*");
 
             final ServletContextHandler rrdHandler =
                     new ServletContextHandler(contexts, "/.well-known", true, false);
