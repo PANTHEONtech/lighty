@@ -131,6 +131,7 @@ public class RncLightyModule {
 
         return CommunityRestConfBuilder.from(restConfConfiguration)
             .withLightyServer(jettyServerBuilder)
+            .withScheduledThreadPool(services.getScheduledThreadPool())
             .build();
     }
 
