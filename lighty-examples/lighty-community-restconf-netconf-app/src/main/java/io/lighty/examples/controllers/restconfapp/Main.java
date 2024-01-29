@@ -133,6 +133,10 @@ public class Main {
         throws ConfigurationException, ExecutionException, InterruptedException, TimeoutException,
                ModuleStartupException {
 
+        //FIXME remove this after paths NETCONF-1218 is resolved.
+        restconfConfiguration.setRestconfServletContextPath("/rests");
+        restconfConfiguration.setHttpPort(8181);
+
         //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
         LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
         this.lightyController = lightyControllerBuilder.from(controllerConfiguration).build();
