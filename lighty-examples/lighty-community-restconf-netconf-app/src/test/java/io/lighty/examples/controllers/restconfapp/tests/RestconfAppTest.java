@@ -37,7 +37,7 @@ public class RestconfAppTest {
     public static void init() {
         restconfApp = new Main();
         restconfApp.start();
-        restClient = new RestClient("http://localhost:8888/");
+        restClient = new RestClient("http://localhost:8181/");
     }
 
     /**
@@ -46,7 +46,7 @@ public class RestconfAppTest {
     @Test
     public void simpleApplicationTest() throws IOException, InterruptedException {
         HttpResponse<String> operations;
-        restClient.POST("restconf/data/network-topology:network-topology/topology=topology-netconf",
+        restClient.POST("rests/data/network-topology:network-topology/topology=topology-netconf",
             """
                     {
                         "netconf-topology:node": [
@@ -56,11 +56,11 @@ public class RestconfAppTest {
                         ]
                     }""");
 
-        operations = restClient.GET("restconf/operations");
+        operations = restClient.GET("rests/operations");
         Assert.assertEquals(operations.statusCode(), 200);
-        operations = restClient.GET("restconf/data/network-topology:network-topology?content=config");
+        operations = restClient.GET("rests/data/network-topology:network-topology?content=config");
         Assert.assertEquals(operations.statusCode(), 200);
-        operations = restClient.GET("restconf/data/network-topology:network-topology?content=nonconfig");
+        operations = restClient.GET("rests/data/network-topology:network-topology?content=nonconfig");
         Assert.assertEquals(operations.statusCode(), 200);
     }
 
