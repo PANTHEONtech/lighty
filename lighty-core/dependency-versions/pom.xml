@@ -273,7 +273,7 @@
         <connection>scm:git:https://github.com/PANTHEONtech/lighty.git</connection>
         <developerConnection>scm:git:https://github.com/PANTHEONtech/lighty.git</developerConnection>
         <url>https://github.com/PANTHEONtech/lighty</url>
-        <tag>HEAD</tag>
+        <tag>19.2.0</tag>
     </scm>
     <developers>
         <developer>
