@@ -5,6 +5,8 @@ module gnmi-test-model {
   prefix "gtm";
 
   import openconfig-extensions { prefix oc-ext; }
+  import openconfig-inet-types { prefix inet; }
+  import openconfig-aaa-types { prefix types; }
 
   oc-ext:openconfig-version "1.0.0";
 
@@ -23,6 +25,35 @@ module gnmi-test-model {
         leaf nc-leaf {
             type string;
         }
+    }
+    list multiple-key-list {
+      key "number leafref-key identityref-key union-key";
+      leaf number {
+        type inet:as-number;
+      }
+      leaf leafref-key {
+        type leafref {
+          path "../number";
+        }
+      }
+      leaf identityref-key {
+        type identityref {
+          base "types:SYSTEM_DEFINED_ROLES";
+        }
+      }
+      leaf union-key {
+          type union {
+            type int32;
+            type enumeration {
+              enum "unbounded";
+            }
+          }
+        }
+      container inner-container {
+        leaf inner-data {
+          type string;
+        }
+      }
     }
   }
 
