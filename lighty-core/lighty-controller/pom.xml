@@ -144,7 +144,7 @@
         <!--odl-mdsal-singleton-dom-->
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-singleton-dom-impl</artifactId>
+            <artifactId>mdsal-singleton-impl</artifactId>
         </dependency>
         <!--mdsal-binding-dom-codec-->
         <dependency>
