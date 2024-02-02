@@ -25,6 +25,7 @@ import io.lighty.modules.gnmi.simulatordevice.yang.YangDataService;
 import java.time.Instant;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,8 +33,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.opendaylight.yangtools.yang.common.Decimal64;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
+import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint32;
+import org.opendaylight.yangtools.yang.common.Uint64;
+import org.opendaylight.yangtools.yang.common.Uint8;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
@@ -43,7 +49,12 @@ import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
+import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.TypedDataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
+import org.opendaylight.yangtools.yang.model.api.type.IdentityrefTypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.TypeDefinitions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -373,12 +384,68 @@ public class GnmiCrudService {
                 .findFirst();
     }
 
-    private static YangInstanceIdentifier getYIIDWithNewPredicateNode(final YangInstanceIdentifier resultIdentifier,
+    private YangInstanceIdentifier getYIIDWithNewPredicateNode(final YangInstanceIdentifier resultIdentifier,
             final PathElem currentElement) {
         final var qname = resultIdentifier.getLastPathArgument().getNodeType();
         final Map<QName, Object> keysMap = currentElement.getKeyMap().entrySet().stream()
-                .collect(Collectors.toMap(e -> QName.create(qname, e.getKey()), Map.Entry::getValue));
+            .collect(Collectors.toMap(e -> QName.create(qname, e.getKey()), Map.Entry::getValue));
+
+        for (final var entry : keysMap.entrySet()) {
+            final var keyNode = resultIdentifier.node(NodeIdentifierWithPredicates.of(qname, keysMap))
+                .node(entry.getKey());
+            final var baseTypeDef = getBaseTypeDef(keyNode);
+            entry.setValue(mapToCorrectDataType(baseTypeDef, (String) entry.getValue()));
+        }
         return resultIdentifier.node(NodeIdentifierWithPredicates.of(qname, keysMap));
+    }
+
+    private TypeDefinition<?> getBaseTypeDef(final YangInstanceIdentifier identifier) {
+        final var nodeAndStack = DataSchemaContextTree.from(context).enterPath(identifier).get();
+        final var dataSchemaNode = nodeAndStack.node().getDataSchemaNode();
+        var resultDataSchemaType = ((TypedDataSchemaNode) dataSchemaNode).getType();
+        if (resultDataSchemaType instanceof LeafrefTypeDefinition leafRefType) {
+            final var leafRefPathOrig = leafRefType.getPathStatement().getOriginalString();
+            final var leafRefPathList = Arrays.stream(leafRefPathOrig.split("/")).filter(s -> !s.isEmpty()).toList();
+            final var stack = nodeAndStack.stack();
+            for (final var path : leafRefPathList) {
+                if ("..".equals(path)) {
+                    stack.exit();
+                } else {
+                    stack.enterSchemaTree(QName.create(stack.currentModule().localQNameModule(), path));
+                }
+            }
+            resultDataSchemaType = ((TypedDataSchemaNode) stack.currentStatement()).getType();
+        }
+        return resultDataSchemaType.getBaseType() != null ? resultDataSchemaType.getBaseType() : resultDataSchemaType;
+    }
+
+    private Object mapToCorrectDataType(final TypeDefinition<?> typeDefinition, final String value) {
+        final var qname = typeDefinition.getQName();
+        if (typeDefinition instanceof IdentityrefTypeDefinition identityType) {
+            final var firstIdentity = identityType.getIdentities().iterator().next();
+            final var identityQname = firstIdentity.getQName();
+            final var values = value.split(":");
+            final var identityRefName = values[values.length - 1];
+            return QName.create(identityQname, identityRefName);
+        } else if (qname.equals(TypeDefinitions.BOOLEAN)) {
+            return Boolean.valueOf(value);
+        } else if (qname.equals(TypeDefinitions.DECIMAL64)) {
+            return Decimal64.valueOf(value);
+        } else if (qname.equals(TypeDefinitions.INT8) || qname.equals(TypeDefinitions.INT16)
+            || qname.equals(TypeDefinitions.INT32) || qname.equals(TypeDefinitions.INT64)) {
+            return Integer.parseInt(value);
+        } else if (qname.equals(TypeDefinitions.UINT8)) {
+            return Uint8.valueOf(value);
+        } else if (qname.equals(TypeDefinitions.UINT16)) {
+            return Uint16.valueOf(value);
+        } else if (qname.equals(TypeDefinitions.UINT32)) {
+            return Uint32.valueOf(value);
+        } else if (qname.equals(TypeDefinitions.UINT64)) {
+            return Uint64.valueOf(value);
+        } else {
+            // Other types which can be sent as a String type.
+            return value;
+        }
     }
 
     private static YangInstanceIdentifier addAugmentationNodeToIdentifier(final YangInstanceIdentifier identifier,
@@ -391,6 +458,6 @@ public class GnmiCrudService {
         final HashSet<QName> augmentationQname = new HashSet<>();
         augmentationQname.add(augmentation);
         return identifier.node(AugmentationIdentifier.create(augmentationQname))
-                .node(augmentation);
+            .node(augmentation);
     }
 }
