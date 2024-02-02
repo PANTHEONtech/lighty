@@ -264,6 +264,67 @@ public class SimulatorCrudTest {
     }
 
     @Test
+    public void setContainerWithMultipleListKeyInPathTest() throws Exception {
+        final var testDataPath = Gnmi.Path.newBuilder()
+            .addElem(Gnmi.PathElem.newBuilder()
+                .setName("gnmi-test-model:test-data")
+                .build())
+            .build();
+        final var multipleListKeyUpdate = Gnmi.Update.newBuilder()
+            .setPath(testDataPath)
+            .setVal(Gnmi.TypedValue.newBuilder()
+                .setJsonIetfVal(ByteString.copyFromUtf8("""
+                    {
+                      "multiple-key-list" : [
+                        {
+                          "number": 10,
+                          "leafref-key": 15,
+                          "identityref-key": "openconfig-aaa-types:SYSTEM_ROLE_ADMIN",
+                          "union-key": "unbounded"
+                        }
+                      ]
+                    }
+                    """))
+                .build())
+            .build();
+
+        final var innerDataPath = Gnmi.Path.newBuilder()
+            .addElem(Gnmi.PathElem.newBuilder()
+                .setName("gnmi-test-model:test-data")
+                .build())
+            .addElem(Gnmi.PathElem.newBuilder()
+                .setName("multiple-key-list")
+                .putKey("number", "10")
+                .putKey("leafref-key", "15")
+                .putKey("identityref-key", "openconfig-aaa-types:SYSTEM_ROLE_ADMIN")
+                .putKey("union-key", "unbounded")
+                .build())
+            .addElem(Gnmi.PathElem.newBuilder()
+                .setName("inner-container")
+                .build())
+            .build();
+        final var innerDataUpdate = Gnmi.Update.newBuilder()
+            .setPath(innerDataPath)
+            .setVal(Gnmi.TypedValue.newBuilder()
+                .setJsonIetfVal(ByteString.copyFromUtf8("""
+                    {
+                      "inner-data": "data"
+                    }
+                    """))
+                .build())
+            .build();
+        final var setRequest = Gnmi.SetRequest.newBuilder()
+            .addUpdate(multipleListKeyUpdate)
+            .addUpdate(innerDataUpdate)
+            .build();
+        LOG.info("Sending set request:\n{}", setRequest);
+
+        final var setResponse = sessionProvider.getGnmiSession().set(setRequest).get();
+        assertEquals("UPDATE", setResponse.getResponse(0).getOp().toString());
+        assertEquals("UPDATE", setResponse.getResponse(1).getOp().toString());
+    }
+
+    @Test
     public void crudComplexValueTest() throws ExecutionException, InterruptedException, IOException, JSONException {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
