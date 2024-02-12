@@ -56,37 +56,8 @@ public class MemberRemovedListener extends AbstractActor {
         return receiveBuilder()
                 .match(ClusterEvent.MemberRemoved.class, removedMember -> {
                     LOG.info("Member detected as removed, processing: {}", removedMember.member().address());
-                    processRemovedMember(removedMember.member());
                 })
                 .build();
-    }
-
-    private void processRemovedMember(Member member) {
-        LOG.info("Removing shard replicas for member {}. May result in WARN (DOES_NOT_EXIST) messages if already"
-                + "removed by another member.", member.address());
-        List<String> removedMemberRoles = member.getRoles().stream()
-                .filter(role -> !role.contains("default")).collect(Collectors.toList());
-
-        try {
-            for (String removedMemberRole : removedMemberRoles) {
-                ListenableFuture<RpcResult<RemoveAllShardReplicasOutput>> rpcResultListenableFuture =
-                        clusterAdminRPCService.removeAllShardReplicas(new RemoveAllShardReplicasInputBuilder()
-                                .setMemberName(removedMemberRole).build());
-                RpcResult<RemoveAllShardReplicasOutput> removeAllShardReplicasResult = rpcResultListenableFuture.get();
-                if (removeAllShardReplicasResult.isSuccessful()) {
-                    LOG.info("RPC RemoveAllShards for member {} executed successfully", removedMemberRole);
-                } else {
-                    LOG.warn("RPC RemoveAllShards for member {} failed: {}", removedMemberRole,
-                            removeAllShardReplicasResult.getErrors());
-                }
-            }
-            LOG.info("Shard replicas removed for member {}", member.address());
-        } catch (ExecutionException e) {
-            LOG.error("Unable to remove shard replicas for member {}", member.address(), e);
-        } catch (InterruptedException e) {
-            LOG.error("Interrupted while removing shard replicas for member {}", member.address(), e);
-            Thread.currentThread().interrupt();
-        }
     }
 
 }

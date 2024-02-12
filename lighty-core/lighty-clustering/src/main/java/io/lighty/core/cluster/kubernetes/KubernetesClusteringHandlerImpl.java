@@ -19,13 +19,11 @@ import io.lighty.core.cluster.config.ClusteringConfigUtils;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.AddReplicasForAllShardsInputBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,16 +98,6 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
         if (!Cluster.get(actorSystemProvider.getActorSystem()).selfAddress()
                 .equals(Cluster.get(actorSystemProvider.getActorSystem()).state().getLeader())) {
             LOG.info("RPC call - Asking for Shard Snapshots");
-            try {
-                final var rpcResult = clusterAdminRPCService.addReplicasForAllShards(
-                        new AddReplicasForAllShardsInputBuilder().build()).get();
-                LOG.debug("RPC call - Asking for Shard Snapshots result: {}", rpcResult.getResult());
-            } catch (ExecutionException e) {
-                LOG.error("RPC call - Asking for Shard Snapshots failed", e);
-            } catch (InterruptedException e) {
-                LOG.error("RPC call - Asking for Shard Snapshots interrupted", e);
-                Thread.currentThread().interrupt();
-            }
         }
     }
 
