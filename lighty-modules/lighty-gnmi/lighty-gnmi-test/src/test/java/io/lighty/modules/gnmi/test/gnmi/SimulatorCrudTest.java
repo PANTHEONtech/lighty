@@ -325,6 +325,39 @@ public class SimulatorCrudTest {
     }
 
     @Test
+    public void setMultipleKeyListAsLastElementInPathTest() throws Exception {
+        final var multipleKeyPath = Gnmi.Path.newBuilder()
+            .addElem(Gnmi.PathElem.newBuilder()
+                .setName("gnmi-test-model:test-data")
+                .build())
+            .addElem(Gnmi.PathElem.newBuilder()
+                .setName("multiple-key-list")
+                .putKey("number", "10")
+                .putKey("leafref-key", "15")
+                .putKey("identityref-key", "openconfig-aaa-types:SYSTEM_DEFINED_ROLES")
+                .putKey("union-key", "5")
+                .build())
+            .build();
+        final var innerContainerUpdate = Gnmi.Update.newBuilder()
+            .setPath(multipleKeyPath)
+            .setVal(Gnmi.TypedValue.newBuilder()
+                .setJsonIetfVal(ByteString.copyFromUtf8("""
+                    {
+                      "inner-container": {
+                        "inner-data": "data"
+                      }
+                    }
+                    """))
+                .build())
+            .build();
+        final var setRequest = Gnmi.SetRequest.newBuilder().addUpdate(innerContainerUpdate).build();
+        LOG.info("Sending set request:\n{}", setRequest);
+
+        final var setResponse = sessionProvider.getGnmiSession().set(setRequest).get();
+        assertEquals("UPDATE", setResponse.getResponse(0).getOp().toString());
+    }
+
+    @Test
     public void crudComplexValueTest() throws ExecutionException, InterruptedException, IOException, JSONException {
         final Gnmi.Path path = Gnmi.Path.newBuilder()
                 .addElem(Gnmi.PathElem.newBuilder()
