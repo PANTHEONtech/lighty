@@ -18,8 +18,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.opendaylight.yangtools.yang.common.Decimal64;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public final class JsonUtils {
 
@@ -28,10 +30,26 @@ public final class JsonUtils {
     }
 
     public static String wrapJsonWithArray(final String jsonString, final String wrapper, final Gson gson,
-            final NodeIdentifierWithPredicates predicates) {
+            final NodeIdentifierWithPredicates predicates, final EffectiveModelContext context) {
         final JsonObject innerJson = JsonParser.parseString(jsonString).getAsJsonObject();
         for (final Entry<QName, Object> key : predicates.entrySet()) {
-            innerJson.add(key.getKey().getLocalName(), gson.toJsonTree(key.getValue()));
+            final var keyValue = key.getValue();
+            // InstanceIdentifier for identityref is stored as a QName, value should be in format MODULE:IDENTITY_NAME.
+            if (keyValue instanceof QName qnameValue) {
+                final var module = context.findModule(qnameValue.getModule()).orElseThrow();
+                final var value = String.format("%s:%s", module.getName(), qnameValue.getLocalName());
+                innerJson.add(key.getKey().getLocalName(), gson.toJsonTree(value));
+            // Custom ODL Number types are not correctly parsed by Gson.
+            } else if (keyValue instanceof Number numberValue) {
+                if (numberValue instanceof Decimal64) {
+                    innerJson.add(key.getKey().getLocalName(), gson.toJsonTree(numberValue.doubleValue()));
+                } else {
+                    innerJson.add(key.getKey().getLocalName(), gson.toJsonTree(numberValue.longValue()));
+                }
+            // Other parse-able types.
+            } else {
+                innerJson.add(key.getKey().getLocalName(), gson.toJsonTree(keyValue));
+            }
         }
 
         final JsonObject result = new JsonObject();
