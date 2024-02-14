@@ -105,7 +105,8 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
                     if (identifier.getLastPathArgument() instanceof NodeIdentifierWithPredicates) {
                         final NodeIdentifierWithPredicates lastPathArgument
                                 = (NodeIdentifierWithPredicates) identifier.getLastPathArgument();
-                        responseJson = JsonUtils.wrapJsonWithArray(responseJson, wrapWith, gson, lastPathArgument);
+                        responseJson = JsonUtils.wrapJsonWithArray(responseJson, wrapWith, gson, lastPathArgument,
+                            schemaContextProvider.getSchemaContext());
                     } else {
                         responseJson = JsonUtils.wrapJsonWithObject(responseJson, wrapWith, gson);
                     }

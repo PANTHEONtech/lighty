@@ -221,7 +221,7 @@ public class GnmiCrudService {
                     String.format("%s:%s",
                             module.getName(),
                             Iterables.getLast(identifier.getPathArguments()).getNodeType().getLocalName()), gson,
-                    lastPathArgument);
+                    lastPathArgument, context);
             node = DataConverter.nodeFromJsonString(identifier, json, context);
             // In case of list entry, point to the list itself
             resultingIdentifier = identifier.getParent();
