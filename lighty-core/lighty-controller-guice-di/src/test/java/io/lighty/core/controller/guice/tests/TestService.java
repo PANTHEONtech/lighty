@@ -33,8 +33,7 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
-import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
-import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListenerRegistry;
+import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
@@ -56,7 +55,7 @@ public class TestService {
     private DOMSchemaService domSchemaService;
 
     @Inject
-    private DOMYangTextSourceProvider domYangTextSourceProvider;
+    private DOMSchemaService.YangTextSourceExtension domYangTextSourceProvider;
 
     @Inject
     private DOMNotificationRouter domNotificationSubscriptionListenerRegistry;
@@ -164,7 +163,7 @@ public class TestService {
         return domSchemaService;
     }
 
-    public DOMYangTextSourceProvider getDomYangTextSourceProvider() {
+    public DOMSchemaService.YangTextSourceExtension getDomYangTextSourceProvider() {
         return domYangTextSourceProvider;
     }
 
