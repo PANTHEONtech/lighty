@@ -90,7 +90,7 @@ import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 public class Main {
 
     private static final Set<YangModuleInfo> MY_MODELS = Set.of(
-            org.opendaylight.yang.gen.v1.urn.example.my.model.rev180914.$YangModuleInfoImpl.getInstance()
+            org.opendaylight.yang.svc.v1.urn.example.my.model.rev180914.YangModuleInfoImpl.getInstance()
     );
 
     public static void main(String[] args) {

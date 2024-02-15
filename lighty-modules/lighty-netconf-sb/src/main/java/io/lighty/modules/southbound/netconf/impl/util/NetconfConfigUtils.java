@@ -45,24 +45,24 @@ public final class NetconfConfigUtils {
 
     public static final String NETCONF_CONFIG_ROOT_ELEMENT_NAME = "netconf";
     public static final Set<YangModuleInfo> NETCONF_TOPOLOGY_MODELS = Set.of(
-            org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.keystore.rev171017
-                    .$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev221225
-                    .$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.optional.rev221225
-                    .$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.opendaylight.yang.extension.yang.ext.rev130709
-                    .$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601
-                    .$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.monitoring.rev101004
-                    .$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104
-                    .$YangModuleInfoImpl.getInstance()
+            org.opendaylight.yang.svc.v1.urn.opendaylight.netconf.keystore.rev171017
+                    .YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.svc.v1.urn.opendaylight.netconf.node.topology.rev221225
+                    .YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.svc.v1.urn.opendaylight.netconf.node.optional.rev221225
+                    .YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.svc.v1.urn.opendaylight.yang.extension.yang.ext.rev130709
+                    .YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601
+                    .YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.monitoring.rev101004
+                    .YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104
+                    .YangModuleInfoImpl.getInstance()
     );
     public static final Set<YangModuleInfo> NETCONF_CALLHOME_MODELS = Set.of(
-        org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.netconf.callhome.server.rev230428
-                    .$YangModuleInfoImpl.getInstance()
+        org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.netconf.callhome.server.rev230428
+                    .YangModuleInfoImpl.getInstance()
     );
     private static final Logger LOG = LoggerFactory.getLogger(NetconfConfigUtils.class);
     private static final SecureRandom RANDOM = new SecureRandom();

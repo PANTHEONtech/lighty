@@ -29,7 +29,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.$YangModuleInfoImpl;
+import org.opendaylight.yang.svc.v1.http.netconfcentral.org.ns.toaster.rev091120.YangModuleInfoImpl;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +51,7 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
             final LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
             final Set<YangModuleInfo> mavenModelPaths = new HashSet<>();
             mavenModelPaths.addAll(NetconfConfigUtils.NETCONF_TOPOLOGY_MODELS);
-            mavenModelPaths.add($YangModuleInfoImpl.getInstance());
+            mavenModelPaths.add(YangModuleInfoImpl.getInstance());
             final LightyController lightyController = lightyControllerBuilder
                     .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(mavenModelPaths))
                     .build();

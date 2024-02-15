@@ -184,12 +184,12 @@ public abstract class AbstractCodecTest {
     }
 
     protected static QName qOfTestModel(final String localName) {
-        return org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.$YangModuleInfoImpl
+        return org.opendaylight.yang.svc.v1.http.pantheon.tech.ns.test.models.rev180119.YangModuleInfoImpl
                 .qnameOf(localName);
     }
 
     protected static QName qOfToasterModel(final String localName) {
-        return org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.$YangModuleInfoImpl
+        return org.opendaylight.yang.svc.v1.http.netconfcentral.org.ns.toaster.rev091120.YangModuleInfoImpl
                 .qnameOf(localName);
     }
 

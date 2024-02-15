@@ -27,22 +27,22 @@ public final class RestConfConfigUtils {
 
     public static final String RESTCONF_CONFIG_ROOT_ELEMENT_NAME = "restconf";
     public static final Set<YangModuleInfo> YANG_MODELS = Set.of(
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104
-                    .$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126
-                    .$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.monitoring.rev170126
-                    .$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.remote.rev140114
-                    .$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.sal.restconf.event.subscription.rev140708
-                    .$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.subscribe.to.notification.rev161028
-                    .$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.instance.identifier.patch.module.rev151121
-                    .$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.opendaylight.device.notification.rev221106
-                     .$YangModuleInfoImpl.getInstance());
+            org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104
+                    .YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126
+                    .YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.monitoring.rev170126
+                    .YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.remote.rev140114
+                    .YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.svc.v1.urn.sal.restconf.event.subscription.rev140708
+                    .YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.svc.v1.subscribe.to.notification.rev161028
+                    .YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.svc.v1.instance.identifier.patch.module.rev151121
+                    .YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.svc.v1.urn.opendaylight.device.notification.rev221106
+                     .YangModuleInfoImpl.getInstance());
     public static final int MAXIMUM_FRAGMENT_LENGTH = 0;
     public static final int IDLE_TIMEOUT =  30000;
     public static final int HEARTBEAT_INTERVAL = 10000;

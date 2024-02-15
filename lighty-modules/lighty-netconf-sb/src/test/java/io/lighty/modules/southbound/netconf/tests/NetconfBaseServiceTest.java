@@ -44,8 +44,8 @@ import org.w3c.dom.Element;
 public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
 
     private static final QName QNAME_BASE =
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601
-                    .$YangModuleInfoImpl.getInstance().getName();
+            org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601
+                    .YangModuleInfoImpl.getInstance().getName();
     private static final QName RUNNING_DATASTORE =
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601
                     .get.config.input.source.config.source.Running.QNAME;

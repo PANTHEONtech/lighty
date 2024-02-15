@@ -30,14 +30,14 @@ public final class GnmiConfigUtils {
 
     public static final String GNMI_CONFIG_JSON_ROOT_ELEMENT = "gnmi";
     public static final Set<YangModuleInfo> YANG_MODELS = Set.of(
-            org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316
-                    .$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331
-                    .$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.lighty.gnmi.force.capabilities.rev210702
-                    .$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504
-                    .$YangModuleInfoImpl.getInstance()
+            org.opendaylight.yang.svc.v1.urn.lighty.gnmi.topology.rev210316
+                    .YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.svc.v1.urn.lighty.gnmi.yang.storage.rev210331
+                    .YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.svc.v1.urn.lighty.gnmi.force.capabilities.rev210702
+                    .YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.svc.v1.urn.lighty.gnmi.certificate.storage.rev210504
+                    .YangModuleInfoImpl.getInstance()
     );
 
     private GnmiConfigUtils() {
