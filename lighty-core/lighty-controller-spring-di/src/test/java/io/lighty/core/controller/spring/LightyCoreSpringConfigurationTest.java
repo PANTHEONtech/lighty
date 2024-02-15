@@ -21,12 +21,12 @@ import io.netty.util.Timer;
 import io.netty.util.concurrent.EventExecutor;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
 import org.junit.jupiter.api.Test;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
-import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
-import org.opendaylight.controller.config.threadpool.ThreadPool;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -162,10 +162,11 @@ public class LightyCoreSpringConfigurationTest extends AbstractJUnit4SpringConte
     EventLoopGroup workerGroupTestProperty;
 
     @Autowired
-    ThreadPool threadPoolTestProperty;
+    ExecutorService threadPoolTestProperty;
 
     @Autowired
-    ScheduledThreadPool scheduledThreadPoolTestProperty;
+    @Qualifier("scheduledThreadPool")
+    ScheduledExecutorService scheduledThreadPoolTestProperty;
 
     @Autowired
     Timer timerTestProperty;

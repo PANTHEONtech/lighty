@@ -14,11 +14,11 @@ import io.netty.util.Timer;
 import io.netty.util.concurrent.EventExecutor;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
-import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
-import org.opendaylight.controller.config.threadpool.ThreadPool;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -98,10 +98,10 @@ public class TestService {
     private EventLoopGroup eventLoopGroupWorker;
 
     @Inject
-    private ThreadPool threadPool;
+    private ExecutorService threadPool;
 
     @Inject
-    private ScheduledThreadPool scheduledThreadPool;
+    private ScheduledExecutorService scheduledThreadPool;
 
     @Inject
     private Timer timer;
@@ -215,11 +215,11 @@ public class TestService {
         return eventLoopGroupWorker;
     }
 
-    public ThreadPool getThreadPool() {
+    public ExecutorService getThreadPool() {
         return threadPool;
     }
 
-    public ScheduledThreadPool getScheduledThreadPool() {
+    public ScheduledExecutorService getScheduledThreadPool() {
         return scheduledThreadPool;
     }
 

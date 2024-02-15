@@ -18,6 +18,7 @@ import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigU
 import io.lighty.server.LightyServerBuilder;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.concurrent.ScheduledExecutorService;
 import javax.servlet.ServletContext;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -27,7 +28,6 @@ import org.eclipse.jetty.websocket.server.WebSocketServerFactory;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
-import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
@@ -61,14 +61,14 @@ public class CommunityRestConf extends AbstractLightyModule {
     private Server jettyServer;
     private LightyServerBuilder lightyServerBuilder;
     private SchemaContextHandler schemaCtxHandler;
-    private final ScheduledThreadPool scheduledThreadPool;
+    private final ScheduledExecutorService scheduledThreadPool;
 
     public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMRpcService domRpcService,
             final DOMActionService domActionService, final DOMNotificationService domNotificationService,
             final DOMMountPointService domMountPointService,
             final DOMSchemaService domSchemaService, final InetAddress inetAddress,
             final int httpPort, final String restconfServletContextPath,
-            final LightyServerBuilder serverBuilder, final ScheduledThreadPool threadPool) {
+            final LightyServerBuilder serverBuilder, final ScheduledExecutorService threadPool) {
         this.domDataBroker = domDataBroker;
         this.domRpcService = domRpcService;
         this.domActionService = domActionService;
@@ -86,7 +86,7 @@ public class CommunityRestConf extends AbstractLightyModule {
             final DOMRpcService domRpcService, final DOMActionService domActionService,
             final DOMNotificationService domNotificationService, final DOMMountPointService domMountPointService,
             final DOMSchemaService domSchemaService, final InetAddress inetAddress, final int httpPort,
-            final String restconfServletContextPath, final ScheduledThreadPool threadPool) {
+            final String restconfServletContextPath, final ScheduledExecutorService threadPool) {
         this(domDataBroker, domRpcService, domActionService, domNotificationService,
                 domMountPointService, domSchemaService, inetAddress, httpPort,
                 restconfServletContextPath, null, threadPool);
