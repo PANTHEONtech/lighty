@@ -16,6 +16,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
+import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
 import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
 import org.opendaylight.controller.config.threadpool.ThreadPool;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
@@ -37,7 +38,6 @@ import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public class TestService {
@@ -81,7 +81,7 @@ public class TestService {
     private EntityOwnershipService entityOwnershipService;
 
     @Inject
-    private ClusterAdminService clusterAdminService;
+    private ClusterAdminRpcService clusterAdminService;
 
     @Inject
     private ClusterSingletonServiceProvider clusterSingletonServiceProvider;
@@ -195,7 +195,7 @@ public class TestService {
         return entityOwnershipService;
     }
 
-    public ClusterAdminService getClusterAdminService() {
+    public ClusterAdminRpcService getClusterAdminService() {
         return clusterAdminService;
     }
 

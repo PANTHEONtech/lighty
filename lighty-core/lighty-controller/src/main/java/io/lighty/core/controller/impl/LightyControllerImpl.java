@@ -118,7 +118,6 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.mdsal.singleton.dom.impl.DOMClusterSingletonServiceProviderImpl;
 import org.opendaylight.mdsal.singleton.dom.impl.di.DefaultClusterSingletonServiceProvider;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.DurationStatisticsTracker;
@@ -324,8 +323,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.defaultEntityOwnershipService = new DefaultEntityOwnershipService(
                 akkaEntityOwnershipService, this.codec);
         this.clusterAdminRpcService =
-                new ClusterAdminRpcService(this.configDatastore, this.operDatastore, this.codec.currentSerializer(),
-                        this.akkaEntityOwnershipService);
+                new ClusterAdminRpcService(this.configDatastore, this.operDatastore, this.akkaEntityOwnershipService);
 
         this.clusterSingletonServiceProvider =
                 new DefaultClusterSingletonServiceProvider(this.akkaEntityOwnershipService);
@@ -557,7 +555,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public ClusterAdminService getClusterAdminRPCService() {
+    public ClusterAdminRpcService getClusterAdminRPCService() {
         return this.clusterAdminRpcService;
     }
 
