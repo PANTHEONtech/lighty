@@ -43,6 +43,9 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.eclipse.jdt.annotation.Nullable;
@@ -63,10 +66,6 @@ import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcServic
 import org.opendaylight.controller.cluster.datastore.config.Configuration;
 import org.opendaylight.controller.cluster.datastore.config.ConfigurationImpl;
 import org.opendaylight.controller.cluster.datastore.config.HybridModuleShardConfigProvider;
-import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
-import org.opendaylight.controller.config.threadpool.ThreadPool;
-import org.opendaylight.controller.config.threadpool.util.FixedThreadPoolWrapper;
-import org.opendaylight.controller.config.threadpool.util.ScheduledThreadPoolWrapper;
 import org.opendaylight.controller.eos.akka.AkkaEntityOwnershipService;
 import org.opendaylight.controller.remote.rpc.RemoteOpsProvider;
 import org.opendaylight.controller.remote.rpc.RemoteOpsProviderConfig;
@@ -175,8 +174,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private EventExecutor eventExecutor;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
-    private ThreadPool threadPool;
-    private ScheduledThreadPool scheduledThreadPool;
+    private ExecutorService threadPool;
+    private ScheduledExecutorService scheduledThreadPool;
     private Timer timer;
     private ModuleInfoSnapshot moduleInfoSnapshot;
     private ModuleInfoSnapshotResolver snapshotResolver;
@@ -346,9 +345,9 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.eventExecutor = new DefaultEventExecutor();
         this.timer = new HashedWheelTimer();
         this.threadPool =
-                new FixedThreadPoolWrapper(2, new DefaultThreadFactory("default-pool"));
+                Executors.newFixedThreadPool(2, new DefaultThreadFactory("default-pool"));
         this.scheduledThreadPool =
-                new ScheduledThreadPoolWrapper(2, new DefaultThreadFactory("default-scheduled-pool"));
+                new ScheduledThreadPoolExecutor(2, new DefaultThreadFactory("default-scheduled-pool"));
 
         if (this.initialConfigData.isPresent()) {
             final InitialConfigData initialData = this.initialConfigData.get();
@@ -389,11 +388,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         if (this.timer != null) {
             this.timer.stop();
         }
-        if (this.threadPool != null && this.threadPool.getExecutor() != null) {
-            this.threadPool.getExecutor().shutdown();
+        if (this.threadPool != null) {
+            this.threadPool.shutdown();
         }
-        if (this.scheduledThreadPool != null && this.scheduledThreadPool.getExecutor() != null) {
-            this.scheduledThreadPool.getExecutor().shutdown();
+        if (this.scheduledThreadPool != null) {
+            this.scheduledThreadPool.shutdown();
         }
         if (this.clusterSingletonServiceProvider != null) {
             this.clusterSingletonServiceProvider.close();
@@ -580,12 +579,12 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public ThreadPool getThreadPool() {
+    public ExecutorService getThreadPool() {
         return this.threadPool;
     }
 
     @Override
-    public ScheduledThreadPool getScheduledThreadPool() {
+    public ScheduledExecutorService getScheduledThreadPool() {
         return this.scheduledThreadPool;
     }
 

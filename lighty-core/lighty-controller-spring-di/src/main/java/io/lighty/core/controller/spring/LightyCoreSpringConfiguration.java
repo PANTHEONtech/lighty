@@ -14,11 +14,11 @@ import io.netty.util.Timer;
 import io.netty.util.concurrent.EventExecutor;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
-import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
-import org.opendaylight.controller.config.threadpool.ThreadPool;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -273,12 +273,12 @@ public abstract class LightyCoreSpringConfiguration {
 
     @Bean(destroyMethod = "")
     @Primary
-    public ThreadPool threadPool() {
+    public ExecutorService threadPool() {
         return this.lightyController.getServices().getThreadPool();
     }
 
     @Bean(destroyMethod = "")
-    public ScheduledThreadPool scheduledThreadPool() {
+    public ScheduledExecutorService scheduledThreadPool() {
         return this.lightyController.getServices().getScheduledThreadPool();
     }
 

@@ -14,11 +14,11 @@ import io.lighty.core.controller.api.LightyServices;
 import io.netty.channel.EventLoopGroup;
 import io.netty.util.Timer;
 import io.netty.util.concurrent.EventExecutor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
-import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
-import org.opendaylight.controller.config.threadpool.ThreadPool;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -97,9 +97,9 @@ public class LightyControllerModule extends AbstractModule {
         bind(EventLoopGroup.class)
                 .annotatedWith(Names.named("WorkerGroup"))
                 .toInstance(lightyServices.getWorkerGroup());
-        bind(ThreadPool.class)
+        bind(ExecutorService.class)
                 .toInstance(lightyServices.getThreadPool());
-        bind(ScheduledThreadPool.class)
+        bind(ScheduledExecutorService.class)
                 .toInstance(lightyServices.getScheduledThreadPool());
         bind(Timer.class)
                 .toInstance(lightyServices.getTimer());

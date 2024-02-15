@@ -9,7 +9,7 @@ package io.lighty.modules.northbound.restconf.community.impl;
 
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.server.LightyServerBuilder;
-import org.opendaylight.controller.config.threadpool.ScheduledThreadPool;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Builder for {@link CommunityRestConf}.
@@ -18,7 +18,7 @@ public final class CommunityRestConfBuilder {
 
     private RestConfConfiguration restconfConfiguration = null;
     private LightyServerBuilder lightyServerBuilder = null;
-    private ScheduledThreadPool threadPool = null;
+    private ScheduledExecutorService threadPool = null;
 
 
     private CommunityRestConfBuilder(final RestConfConfiguration configuration) {
@@ -52,7 +52,7 @@ public final class CommunityRestConfBuilder {
      * @param pool input scheduledThreadPool.
      * @return instance of {@link CommunityRestConfBuilder}.
      */
-    public CommunityRestConfBuilder withScheduledThreadPool(final ScheduledThreadPool pool) {
+    public CommunityRestConfBuilder withScheduledThreadPool(final ScheduledExecutorService pool) {
         this.threadPool = pool;
         return this;
     }
