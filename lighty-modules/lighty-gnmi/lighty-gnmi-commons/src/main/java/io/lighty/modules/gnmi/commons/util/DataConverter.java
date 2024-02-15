@@ -126,7 +126,7 @@ public final class DataConverter {
 
         final NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(resultBuilder);
         final JSONCodecFactory jsonCodecFactory =
-                JSONCodecFactorySupplier.RFC7951.createLazy(inference.getEffectiveModelContext());
+                JSONCodecFactorySupplier.RFC7951.createLazy(inference.modelContext());
 
         try (JsonParserStream jsonParser = JsonParserStream.create(streamWriter,
                 jsonCodecFactory, inference)) {

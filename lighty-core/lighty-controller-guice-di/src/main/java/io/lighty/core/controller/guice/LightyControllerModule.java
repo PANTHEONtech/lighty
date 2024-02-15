@@ -40,7 +40,7 @@ import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +66,7 @@ public class LightyControllerModule extends AbstractModule {
                 .toInstance(lightyServices.getDiagStatusService());
         bind(ActorSystemProvider.class)
                 .toInstance(lightyServices.getActorSystemProvider());
-        bind(EffectiveModelContextProvider.class).toInstance(lightyServices.getEffectiveModelContextProvider());
+        bind(EffectiveModelContext.class).toInstance(lightyServices.getEffectiveModelContext());
         bind(DOMSchemaService.class)
                 .toInstance(lightyServices.getDOMSchemaService());
         bind(DOMYangTextSourceProvider.class)
