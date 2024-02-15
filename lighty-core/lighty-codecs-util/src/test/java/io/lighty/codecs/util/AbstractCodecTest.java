@@ -73,7 +73,7 @@ public abstract class AbstractCodecTest {
 
     public AbstractCodecTest() throws YangParserException {
         this.bindingCodecContext = createCodecContext(loadModuleInfos());
-        this.effectiveModelContext = bindingCodecContext.getRuntimeContext().getEffectiveModelContext();
+        this.effectiveModelContext = bindingCodecContext.getRuntimeContext().modelContext();
 
         this.toasterTopLevelContainerNode = topLevelContainerNode();
         this.rpcLeafInputNode = rpcLeafInputNode();
@@ -93,7 +93,7 @@ public abstract class AbstractCodecTest {
                 defaultYangParserFactory);
         moduleInfoSnapshotBuilder.add(moduleInfos);
         final BindingRuntimeTypes bindingRuntimeTypes = bindingRuntimeGenerator
-                .generateTypeMapping(moduleInfoSnapshotBuilder.build().getEffectiveModelContext());
+                .generateTypeMapping(moduleInfoSnapshotBuilder.build().modelContext());
 
         final DefaultBindingRuntimeContext defaultBindingRuntimeContext = new DefaultBindingRuntimeContext(
                 bindingRuntimeTypes, moduleInfoSnapshotBuilder.build());

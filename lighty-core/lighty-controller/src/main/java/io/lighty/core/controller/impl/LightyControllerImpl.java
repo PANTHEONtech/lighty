@@ -125,7 +125,7 @@ import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContextProvider;
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
 import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
@@ -357,8 +357,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             final InitialConfigData initialData = this.initialConfigData.get();
             try (InputStream inputStream = initialData.getAsInputStream()) {
                 FileToDatastoreUtils.importConfigDataFile(inputStream, initialData.getFormat(),
-                        getEffectiveModelContextProvider().getEffectiveModelContext(),
-                        this.getClusteredDOMDataBroker(), true);
+                        getEffectiveModelContext(), this.getClusteredDOMDataBroker(), true);
             } catch (TimeoutException | ExecutionException | IOException | DeserializationException e) {
                 LOG.error("Exception occurred while importing config data from file", e);
                 return false;
@@ -504,8 +503,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public EffectiveModelContextProvider getEffectiveModelContextProvider() {
-        return this.moduleInfoSnapshot;
+    public EffectiveModelContext getEffectiveModelContext() {
+        return this.moduleInfoSnapshot.modelContext();
     }
 
     @Override

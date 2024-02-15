@@ -184,7 +184,7 @@ public class JsonNodeConverter implements NodeConverter {
 
     @Override
     public EffectiveModelContext getModelContext() {
-        return jsonCodecFactory.getEffectiveModelContext();
+        return jsonCodecFactory.modelContext();
     }
 
 }
