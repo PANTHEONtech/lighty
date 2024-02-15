@@ -103,7 +103,7 @@ public class Main {
                 modelPaths.addAll(RestConfConfigUtils.YANG_MODELS);
                 modelPaths.addAll(NetconfConfigUtils.NETCONF_TOPOLOGY_MODELS);
                 modelPaths.add(org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807
-                        .$YangModuleInfoImpl.getInstance());
+                        .YangModuleInfoImpl.getInstance());
                 final ArrayNode arrayNode = YangModuleUtils.generateJSONModelSetConfiguration(modelPaths);
                 //0. print the list of schema context models
                 LOG.info("JSON model config snippet: {}", arrayNode.toString());

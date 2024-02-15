@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.$YangModuleInfoImpl;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.ChoiceContainer;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SampleList;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SampleListKey;
@@ -29,6 +28,7 @@ import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.choice.container.Snack;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.choice.container.snack.SportsArena;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.container.group.SampleContainer;
+import org.opendaylight.yang.svc.v1.http.pantheon.tech.ns.test.models.rev180119.YangModuleInfoImpl;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -67,7 +67,7 @@ public class FileToDatastoreUtilsTest {
     private static final YangInstanceIdentifier INNER_VALUE_YII = YangInstanceIdentifier.create(
             NodeIdentifier.create(TopLevelContainer.QNAME),
             NodeIdentifier.create(SampleContainer.QNAME),
-            NodeIdentifier.create($YangModuleInfoImpl.qnameOf("value")));
+            NodeIdentifier.create(YangModuleInfoImpl.qnameOf("value")));
 
     private static final long TIMEOUT_MILLIS = 20_000;
 
@@ -78,7 +78,7 @@ public class FileToDatastoreUtilsTest {
     public void startUp() throws Exception {
         lightyController = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(
-                        Set.of($YangModuleInfoImpl.getInstance())))
+                        Set.of(YangModuleInfoImpl.getInstance())))
                 .build();
         assertTrue(lightyController.start().get(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
         dataBroker = lightyController.getServices().getBindingDataBroker();
