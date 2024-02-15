@@ -115,7 +115,7 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.binding.dom.adapter.DefaultEntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
-import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
+import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
 import org.opendaylight.mdsal.singleton.dom.impl.DOMClusterSingletonServiceProviderImpl;
 import org.opendaylight.mdsal.singleton.dom.impl.di.DefaultClusterSingletonServiceProvider;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
