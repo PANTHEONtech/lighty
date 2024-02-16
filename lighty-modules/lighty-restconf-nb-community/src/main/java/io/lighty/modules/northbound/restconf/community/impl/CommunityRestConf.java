@@ -7,9 +7,6 @@
  */
 package io.lighty.modules.northbound.restconf.community.impl;
 
-import static org.opendaylight.restconf.nb.rfc8040.rests.utils.RestconfStreamsConstants.DATA_SUBSCRIPTION;
-import static org.opendaylight.restconf.nb.rfc8040.rests.utils.RestconfStreamsConstants.NOTIFICATION_STREAM;
-
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Throwables;
 import io.lighty.core.controller.api.AbstractLightyModule;
@@ -124,9 +121,9 @@ public class CommunityRestConf extends AbstractLightyModule {
             mainHandler.addServlet(dataStreamHolder, "/notif/*");
 
             final ServletContextHandler dataHandler = new ServletContextHandler(
-                contexts, "/" + DATA_SUBSCRIPTION, true, false);
+                 contexts, "/" + "data-change-event-subscription", true, false);
             final ServletContextHandler notifHandler = new ServletContextHandler(
-                contexts, "/" + NOTIFICATION_STREAM, true, false);
+                contexts, "/" + "notification-stream", true, false);
             final WebSocketInitializer webSocketInitializer = new WebSocketInitializer(
                 scheduledThreadPool, streamsConfiguration);
             final ServletContext context = notifHandler.getServletContext();
