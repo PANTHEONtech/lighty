@@ -38,7 +38,6 @@ import org.opendaylight.restconf.nb.rfc8040.DataStreamApplication;
 import org.opendaylight.restconf.nb.rfc8040.RestconfApplication;
 import org.opendaylight.restconf.nb.rfc8040.databind.DatabindProvider;
 import org.opendaylight.restconf.nb.rfc8040.databind.mdsal.DOMDatabindProvider;
-import org.opendaylight.restconf.nb.rfc8040.handlers.SchemaContextHandler;
 import org.opendaylight.restconf.nb.rfc8040.rests.services.impl.RestconfDataStreamServiceImpl;
 import org.opendaylight.restconf.nb.rfc8040.streams.StreamsConfiguration;
 import org.opendaylight.restconf.nb.rfc8040.streams.WebSocketInitializer;
@@ -60,7 +59,6 @@ public class CommunityRestConf extends AbstractLightyModule {
     private final String restconfServletContextPath;
     private Server jettyServer;
     private LightyServerBuilder lightyServerBuilder;
-    private SchemaContextHandler schemaCtxHandler;
     private final ScheduledExecutorService scheduledThreadPool;
 
     public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMRpcService domRpcService,
@@ -98,8 +96,6 @@ public class CommunityRestConf extends AbstractLightyModule {
         final StreamsConfiguration streamsConfiguration = RestConfConfigUtils.getStreamsConfiguration();
 
         LOG.info("Starting RestconfApplication with configuration {}", streamsConfiguration);
-
-        this.schemaCtxHandler = new SchemaContextHandler(this.domDataBroker, this.domSchemaService);
 
         final DatabindProvider databindProvider = new DOMDatabindProvider(domSchemaService);
         final RestconfApplication restconfApplication = new RestconfApplication(databindProvider,
@@ -165,10 +161,6 @@ public class CommunityRestConf extends AbstractLightyModule {
     @Override
     protected boolean stopProcedure() {
         boolean stopFailed = false;
-        if (this.schemaCtxHandler != null) {
-            this.schemaCtxHandler.close();
-            LOG.info("Schema context handler closed");
-        }
         if (this.jettyServer != null) {
             try {
                 this.jettyServer.stop();
