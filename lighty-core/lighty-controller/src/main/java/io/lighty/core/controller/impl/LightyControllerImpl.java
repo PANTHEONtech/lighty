@@ -116,7 +116,6 @@ import org.opendaylight.mdsal.eos.binding.dom.adapter.DefaultEntityOwnershipServ
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
 import org.opendaylight.mdsal.singleton.impl.EOSClusterSingletonServiceProvider;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
@@ -188,7 +187,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private ActionService actionService;
     private ActionProviderService actionProviderService;
     private final LightySystemReadyMonitorImpl systemReadyMonitor;
-    private List<ObjectRegistration<YangModuleInfo>> modelsRegistration = new ArrayList<>();
+    private List<Registration> modelsRegistration = new ArrayList<>();
     private AkkaManagement akkaManagement;
     private Optional<ClusteringHandler> clusteringHandler;
     private Optional<InitialConfigData> initialConfigData;
@@ -667,7 +666,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public List<ObjectRegistration<YangModuleInfo>> registerModuleInfos(
+    public List<Registration> registerModuleInfos(
             Iterable<? extends YangModuleInfo> yangModuleInfos) {
         return this.snapshotResolver.registerModuleInfos(yangModuleInfos);
     }

@@ -14,7 +14,7 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.Server;
 import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.ServerKey;
 import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.server.Reset;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public final class ServerResetRegistrationUtil {
@@ -29,7 +29,7 @@ public final class ServerResetRegistrationUtil {
      * @param lightyController {@code LightyController} instance for easy access to controller services.
      * @return {@code ObjectRegistration} Registration instance of binding action implementation on the controller.
      */
-    public static ObjectRegistration<Reset> registerBindingAction(final LightyController lightyController) {
+    public static Registration registerBindingAction(final LightyController lightyController) {
         final var actionProviderService = lightyController.getServices().getActionProviderService();
         final var validNode =
                 InstanceIdentifier.builder(Server.class, new ServerKey("server-earth")).build();

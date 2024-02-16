@@ -40,9 +40,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
-import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.server.Reset;
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,8 +53,8 @@ public class Main {
     private CommunityRestConf restconf;
     private LightyModule netconfSBPlugin;
     private ModulesConfig modulesConfig = ModulesConfig.getDefaultModulesConfig();
-    private ObjectRegistration<DOMActionImplementation> domActionRegistration;
-    private ObjectRegistration<Reset> bindingActionRegistration;
+    private Registration domActionRegistration;
+    private Registration bindingActionRegistration;
 
     public static void main(final String[] args) {
         final Main app = new Main();
@@ -102,7 +100,7 @@ public class Main {
                 modelPaths.addAll(ControllerConfigUtils.YANG_MODELS);
                 modelPaths.addAll(RestConfConfigUtils.YANG_MODELS);
                 modelPaths.addAll(NetconfConfigUtils.NETCONF_TOPOLOGY_MODELS);
-                modelPaths.add(org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807
+                modelPaths.add(org.opendaylight.yang.svc.v1.urn.example.data.center.rev180807
                         .YangModuleInfoImpl.getInstance());
                 final ArrayNode arrayNode = YangModuleUtils.generateJSONModelSetConfiguration(modelPaths);
                 //0. print the list of schema context models
@@ -122,10 +120,10 @@ public class Main {
             LOG.info("Lighty.io and RESTCONF-ACTIONS started in {}", stopwatch.stop());
             // Register example DOM action
             domActionRegistration = DeviceStartRegistrationUtil.registerDOMAction(lightyController);
-            LOG.info("Example DOM action implementation registered: {}", domActionRegistration.getInstance());
+            LOG.info("Example DOM action implementation registered: {}", domActionRegistration);
             // Register example binding action
             bindingActionRegistration = ServerResetRegistrationUtil.registerBindingAction(lightyController);
-            LOG.info("Example binding action implementation registered: {}", bindingActionRegistration.getInstance());
+            LOG.info("Example binding action implementation registered: {}", bindingActionRegistration);
         } catch (IOException e) {
             LOG.error("Main RESTCONF-ACTIONS application - error reading config file: ", e);
             shutdown();
