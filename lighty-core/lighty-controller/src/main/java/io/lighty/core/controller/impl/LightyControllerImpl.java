@@ -332,9 +332,10 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         //create binding mount point service
         this.mountPointService = new BindingDOMMountPointServiceAdapter(this.codec, this.domMountPointService);
 
-        this.notificationService = new BindingDOMNotificationServiceAdapter(this.codec, this.domNotificationRouter);
-        this.notificationPublishService =
-                new BindingDOMNotificationPublishServiceAdapter(this.codec, this.domNotificationRouter);
+        this.notificationService = new BindingDOMNotificationServiceAdapter(
+                this.codec, this.domNotificationRouter.notificationService());
+        this.notificationPublishService = new BindingDOMNotificationPublishServiceAdapter(
+                this.codec, this.domNotificationRouter.notificationPublishService());
 
         //create data broker
         this.dataBroker = bindingAdapterFactory.createDataBroker(concurrentDOMDataBroker);
