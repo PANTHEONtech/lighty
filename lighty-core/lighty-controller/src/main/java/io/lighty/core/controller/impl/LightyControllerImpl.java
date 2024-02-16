@@ -212,7 +212,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.actorSystemConfig = actorSystemConfig;
         this.actorSystemClassLoader = actorSystemClassLoader;
         this.domMountPointService = new DOMMountPointServiceImpl();
-        this.domNotificationRouter = DOMNotificationRouter.create(domNotificationRouterConfig.getQueueDepth());
+        this.domNotificationRouter = new DOMNotificationRouter(domNotificationRouterConfig.getQueueDepth());
         this.restoreDirectoryPath = restoreDirectoryPath;
         this.maxDataBrokerFutureCallbackQueueSize = maxDataBrokerFutureCallbackQueueSize;
         this.maxDataBrokerFutureCallbackPoolSize = maxDataBrokerFutureCallbackPoolSize;
