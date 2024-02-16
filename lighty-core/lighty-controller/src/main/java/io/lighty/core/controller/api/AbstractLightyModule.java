@@ -13,6 +13,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -98,7 +99,7 @@ public abstract class AbstractLightyModule implements LightyModule {
      * @return success of stop.
      * @throws InterruptedException if stopping was interrupted.
      */
-    protected abstract boolean stopProcedure() throws InterruptedException;
+    protected abstract boolean stopProcedure() throws InterruptedException, ExecutionException;
 
     @Override
     public synchronized ListenableFuture<Boolean> start() {

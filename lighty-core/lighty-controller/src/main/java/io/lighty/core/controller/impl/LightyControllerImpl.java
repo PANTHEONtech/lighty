@@ -384,7 +384,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    protected boolean stopProcedure() throws InterruptedException {
+    protected boolean stopProcedure() throws InterruptedException, ExecutionException {
         LOG.debug("Lighty Controller stopProcedure");
         boolean stopSuccessful = true;
         if (this.timer != null) {
