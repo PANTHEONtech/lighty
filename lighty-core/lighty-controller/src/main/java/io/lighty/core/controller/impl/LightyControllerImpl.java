@@ -115,8 +115,7 @@ import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.binding.dom.adapter.DefaultEntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
-import org.opendaylight.mdsal.singleton.dom.impl.DOMClusterSingletonServiceProviderImpl;
-import org.opendaylight.mdsal.singleton.dom.impl.di.DefaultClusterSingletonServiceProvider;
+import org.opendaylight.mdsal.singleton.impl.EOSClusterSingletonServiceProvider;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.DurationStatisticsTracker;
@@ -166,7 +165,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private AkkaEntityOwnershipService akkaEntityOwnershipService;
     private DefaultEntityOwnershipService defaultEntityOwnershipService;
     private ClusterAdminRpcService clusterAdminRpcService;
-    private DOMClusterSingletonServiceProviderImpl clusterSingletonServiceProvider;
+    private EOSClusterSingletonServiceProvider clusterSingletonServiceProvider;
     private NotificationService notificationService;
     private NotificationPublishService notificationPublishService;
     private DataBroker dataBroker;
@@ -325,8 +324,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                 new ClusterAdminRpcService(this.configDatastore, this.operDatastore, this.akkaEntityOwnershipService);
 
         this.clusterSingletonServiceProvider =
-                new DefaultClusterSingletonServiceProvider(this.akkaEntityOwnershipService);
-        this.clusterSingletonServiceProvider.initializeProvider();
+                new EOSClusterSingletonServiceProvider (this.akkaEntityOwnershipService);
 
         //create binding mount point service
         this.mountPointService = new BindingDOMMountPointServiceAdapter(this.codec, this.domMountPointService);
