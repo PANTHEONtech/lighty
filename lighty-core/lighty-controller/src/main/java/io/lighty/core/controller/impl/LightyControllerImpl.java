@@ -298,8 +298,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         createConcurrentDOMDataBroker();
 
         this.domRpcRouter = DOMRpcRouter.newInstance(this.schemaService);
-        this.domActionProviderService = domRpcRouter.getActionProviderService();
-        this.domActionService = domRpcRouter.getActionService();
+        this.domActionProviderService = domRpcRouter.actionProviderService();
+        this.domActionService = domRpcRouter.actionService();
         createRemoteOpsProvider();
 
         this.bindingAdapterFactory = new BindingAdapterFactory(getAdapterContext());
@@ -309,7 +309,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         rpcConsumerRegistry = bindingAdapterFactory.createRpcConsumerRegistry(domRpcRouter.getRpcService());
 
         this.rpcProviderService = new BindingDOMRpcProviderServiceAdapter(this.codec,
-                this.domRpcRouter.getRpcProviderService());
+                this.domRpcRouter.rpcProviderService());
 
         // ENTITY OWNERSHIP
         try {
@@ -456,8 +456,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private void createRemoteOpsProvider() {
         final RemoteOpsProviderConfig remoteOpsProviderConfig = RemoteOpsProviderConfig.newInstance(
                 this.actorSystemProvider.getActorSystem().name(), this.metricCaptureEnabled, this.mailboxCapacity);
-        this.remoteOpsProvider = RemoteOpsProviderFactory.createInstance(this.domRpcRouter.getRpcProviderService(),
-                this.domRpcRouter.getRpcService(), this.actorSystemProvider.getActorSystem(), remoteOpsProviderConfig,
+        this.remoteOpsProvider = RemoteOpsProviderFactory.createInstance(this.domRpcRouter.rpcProviderService(),
+                this.domRpcRouter.rpcService(), this.actorSystemProvider.getActorSystem(), remoteOpsProviderConfig,
                 this.domActionProviderService, this.domActionService);
         this.remoteOpsProvider.start();
     }
@@ -616,12 +616,12 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     public DOMRpcService getDOMRpcService() {
-        return this.domRpcRouter.getRpcService();
+        return this.domRpcRouter.rpcService();
     }
 
     @Override
     public DOMRpcProviderService getDOMRpcProviderService() {
-        return this.domRpcRouter.getRpcProviderService();
+        return this.domRpcRouter.rpcProviderService();
     }
 
     @Override
