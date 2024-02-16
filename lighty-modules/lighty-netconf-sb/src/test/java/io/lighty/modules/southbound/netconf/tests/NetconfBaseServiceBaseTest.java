@@ -88,6 +88,6 @@ public abstract class NetconfBaseServiceBaseTest {
         final DefaultYangParserFactory yangParserFactory = new DefaultYangParserFactory(new AntlrXPathParserFactory());
         ModuleInfoSnapshotBuilder moduleInfoSnapshotBuilder = new ModuleInfoSnapshotBuilder(yangParserFactory);
         moduleInfoSnapshotBuilder.add(moduleInfos);
-        return moduleInfoSnapshotBuilder.build().getEffectiveModelContext();
+        return moduleInfoSnapshotBuilder.build().modelContext();
     }
 }

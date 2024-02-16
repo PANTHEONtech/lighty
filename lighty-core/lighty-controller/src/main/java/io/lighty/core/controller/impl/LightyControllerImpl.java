@@ -10,6 +10,7 @@ package io.lighty.core.controller.impl;
 import akka.actor.Terminated;
 import akka.management.javadsl.AkkaManagement;
 import com.google.common.base.Stopwatch;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.typesafe.config.Config;
 import io.lighty.codecs.util.exception.DeserializationException;
 import io.lighty.core.cluster.ClusteringHandler;
@@ -121,6 +122,8 @@ import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.source.SourceIdentifier;
+import org.opendaylight.yangtools.yang.model.api.source.YangTextSource;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
 import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
@@ -269,13 +272,14 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.snapshotResolver = new ModuleInfoSnapshotResolver("binding-dom-codec", yangParserFactory);
         this.modelsRegistration = snapshotResolver.registerModuleInfos(modelSet);
         this.moduleInfoSnapshot = snapshotResolver.takeSnapshot();
-        this.schemaService = FixedDOMSchemaService.of(this.moduleInfoSnapshot, this.moduleInfoSnapshot);
+        this.schemaService = new FixedDOMSchemaService(this::getEffectiveModelContext,
+                sourceId -> (ListenableFuture<YangTextSource>) moduleInfoSnapshot.yangTextSource(sourceId));
 
         // INIT CODEC FACTORY
 
         final BindingRuntimeGenerator bindingRuntimeGenerator = new DefaultBindingRuntimeGenerator();
         final BindingRuntimeTypes bindingRuntimeTypes = bindingRuntimeGenerator
-                .generateTypeMapping(moduleInfoSnapshot.getEffectiveModelContext());
+                .generateTypeMapping(moduleInfoSnapshot.modelContext());
         final DefaultBindingRuntimeContext bindingRuntimeContext
                 = new DefaultBindingRuntimeContext(bindingRuntimeTypes, moduleInfoSnapshot);
 

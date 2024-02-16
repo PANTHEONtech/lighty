@@ -45,7 +45,7 @@ public class GnmiMountPointRegistrator implements AutoCloseable {
                 "Mount point for node %s already exists!", node.getNodeId().getValue());
         final DOMMountPointService.DOMMountPointBuilder builder = mountPointService
                 .createMountPoint(IdentifierUtils.nodeidToYii(node.getNodeId()));
-        builder.addService(DOMSchemaService.class, FixedDOMSchemaService.of(schemaContext));
+        builder.addService(DOMSchemaService.class, new FixedDOMSchemaService(schemaContext));
         builder.addService(DOMDataBroker.class, dataBroker);
         final ObjectRegistration<DOMMountPoint> registration = builder.register();
         registeredMountPoints.put(node.getNodeId(), registration);
