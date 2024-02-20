@@ -15,8 +15,10 @@ import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigU
 import io.lighty.server.LightyServerBuilder;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.servlet.ServletContext;
+import javax.ws.rs.core.Application;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -31,12 +33,18 @@ import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
+import org.opendaylight.restconf.nb.jaxrs.JaxRsRestconf;
 import org.opendaylight.restconf.nb.rfc8040.DataStreamApplication;
-import org.opendaylight.restconf.nb.rfc8040.RestconfApplication;
-import org.opendaylight.restconf.nb.rfc8040.databind.DatabindProvider;
-import org.opendaylight.restconf.nb.rfc8040.databind.mdsal.DOMDatabindProvider;
+import org.opendaylight.restconf.nb.rfc8040.jersey.providers.JsonNormalizedNodeBodyWriter;
+import org.opendaylight.restconf.nb.rfc8040.jersey.providers.JsonPatchStatusBodyWriter;
+import org.opendaylight.restconf.nb.rfc8040.jersey.providers.XmlNormalizedNodeBodyWriter;
+import org.opendaylight.restconf.nb.rfc8040.jersey.providers.XmlPatchStatusBodyWriter;
+import org.opendaylight.restconf.nb.rfc8040.jersey.providers.errors.RestconfDocumentedExceptionMapper;
 import org.opendaylight.restconf.nb.rfc8040.rests.services.impl.RestconfDataStreamServiceImpl;
 import org.opendaylight.restconf.nb.rfc8040.streams.StreamsConfiguration;
+import org.opendaylight.restconf.server.api.DatabindContext;
+import org.opendaylight.restconf.server.mdsal.MdsalRestconfServer;
+import org.opendaylight.restconf.server.spi.DatabindProvider;
 import org.opendaylight.restconf.nb.rfc8040.streams.WebSocketInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,14 +102,29 @@ public class CommunityRestConf extends AbstractLightyModule {
 
         LOG.info("Starting RestconfApplication with configuration {}", streamsConfiguration);
 
-        final DatabindProvider databindProvider = new DOMDatabindProvider(domSchemaService);
-        final RestconfApplication restconfApplication = new RestconfApplication(databindProvider,
-                this.domMountPointService, this.domDataBroker, this.domRpcService, this.domActionService,
-                this.domNotificationService, this.domSchemaService, streamsConfiguration);
+        final DatabindProvider databindProvider = () -> DatabindContext.ofModel(domSchemaService.getGlobalContext());
+        final var server = new MdsalRestconfServer(domSchemaService, domDataBroker, domRpcService, domActionService,
+                domMountPointService);
+
         final DataStreamApplication dataStreamApplication = new DataStreamApplication(databindProvider,
             this.domMountPointService, new RestconfDataStreamServiceImpl(scheduledThreadPool, streamsConfiguration));
         final ServletContainer servletContainer8040 = new ServletContainer(ResourceConfig
-                .forApplication(restconfApplication));
+                .forApplication(new Application() {
+                    @Override
+                    public Set<Class<?>> getClasses() {
+                        return Set.of(
+                                JsonNormalizedNodeBodyWriter.class, XmlNormalizedNodeBodyWriter.class,
+                                JsonPatchStatusBodyWriter.class, XmlPatchStatusBodyWriter.class);
+                    }
+
+                    @Override
+                    public Set<Object> getSingletons() {
+                        return Set.of(
+                                new RestconfDocumentedExceptionMapper(databindProvider),
+                                new JaxRsRestconf(server));
+                    }
+                }));
+
         final ServletHolder jaxrs = new ServletHolder(servletContainer8040);
 
         final ServletContainer dataStreamServletContainer = new ServletContainer(
