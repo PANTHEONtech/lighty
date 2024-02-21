@@ -54,7 +54,6 @@
       "shardBatchedModificationCount": -10000,
       "shardCommitQueueExpiryTimeoutInMillis": -1200000,
       "transactionDebugContextEnabled": false,
-      "useTellBasedProtocol": false,
       "maximumMessageSliceSize": 2048002,
       "fileBackedStreamingThresholdInMegabytes": 130,
       "syncIndexThreshold": 12,
