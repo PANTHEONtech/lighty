@@ -17,7 +17,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.lighty.gnmi.southbound.device.connection.DeviceConnectionManager;
 import io.lighty.gnmi.southbound.identifier.IdentifierUtils;
 import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -61,7 +61,7 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
 
 
     @Override
-    public void onDataTreeChanged(@NonNull Collection<DataTreeModification<Node>> changes) {
+    public void onDataTreeChanged(@NonNull List<DataTreeModification<Node>> changes) {
         LOG.debug("Data tree change on gNMI topology triggered");
         for (final DataTreeModification<Node> change : changes) {
             final DataObjectModification<Node> rootNode = change.getRootNode();
