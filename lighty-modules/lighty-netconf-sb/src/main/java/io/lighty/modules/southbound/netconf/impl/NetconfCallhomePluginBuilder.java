@@ -20,10 +20,14 @@ public class NetconfCallhomePluginBuilder {
     private LightyServices lightyServices;
     private NetconfConfiguration configuration;
     private ExecutorService executorService = null;
+    private String adress;
+    private int port;
 
-    public NetconfCallhomePluginBuilder(LightyServices services, NetconfConfiguration config) {
+    public NetconfCallhomePluginBuilder(LightyServices services, NetconfConfiguration config, String adress, int port) {
         this.lightyServices = services;
         this.configuration = config;
+        this.adress = adress;
+        this.port = port;
     }
 
     /**
@@ -34,8 +38,8 @@ public class NetconfCallhomePluginBuilder {
      * @return instance of {@link NetconfCallhomePluginBuilder} class.
      */
     public static NetconfCallhomePluginBuilder from(final NetconfConfiguration config,
-                                             final LightyServices services) {
-        return new NetconfCallhomePluginBuilder(services, config);
+                                             final LightyServices services, final String adress, final int port) {
+        return new NetconfCallhomePluginBuilder(services, config, adress, port);
     }
 
     /**
@@ -54,6 +58,6 @@ public class NetconfCallhomePluginBuilder {
      */
     public NetconfCallhomePlugin build() {
         return new NetconfCallhomePlugin(lightyServices, configuration.getTopologyId(), executorService,
-                configuration.getAaaService());
+                adress, port);
     }
 }

@@ -46,7 +46,9 @@ public class CallhomePluginTest {
         final NetconfConfiguration configuration =
                 NetconfConfigUtils.createDefaultNetconfConfiguration();
         NetconfConfigUtils.injectServicesToTopologyConfig(configuration, lightyController.getServices());
-        netconfPlugin = NetconfCallhomePluginBuilder.from(configuration, lightyController.getServices()).build();
+        netconfPlugin = NetconfCallhomePluginBuilder.from(configuration, lightyController.getServices(),
+                restConfConfig.getInetAddress().getHostAddress(), restConfConfig.getHttpPort()).build();
+
     }
 
     @AfterClass
