@@ -10,10 +10,11 @@ package io.lighty.modules.southbound.netconf.impl;
 import io.lighty.core.controller.api.LightyServices;
 import java.util.concurrent.ExecutorService;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
+import org.opendaylight.netconf.client.mdsal.api.BaseNetconfSchemaProvider;
 import org.opendaylight.netconf.client.mdsal.api.CredentialProvider;
 import org.opendaylight.netconf.client.mdsal.api.SchemaResourceManager;
 import org.opendaylight.netconf.client.mdsal.api.SslHandlerFactoryProvider;
-import org.opendaylight.netconf.client.mdsal.impl.DefaultBaseNetconfSchemas;
+import org.opendaylight.netconf.client.mdsal.impl.DefaultBaseNetconfSchemaProvider;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultCredentialProvider;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultSchemaResourceManager;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultSslHandlerFactoryProvider;
@@ -42,13 +43,8 @@ public final class NetconfTopologyPlugin extends AbstractTopologyPlugin {
 
     @Override
     protected boolean initProcedure() {
-        final DefaultBaseNetconfSchemas defaultBaseNetconfSchemas;
-        try {
-            defaultBaseNetconfSchemas = new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
-        } catch (YangParserException e) {
-            LOG.error("Failed to create DefaultBaseNetconfSchema, cause: ", e);
-            return false;
-        }
+        final BaseNetconfSchemaProvider defaultBaseNetconfSchemas;
+        defaultBaseNetconfSchemas = new DefaultBaseNetconfSchemaProvider(lightyServices.getYangParserFactory());
         final CredentialProvider credentialProvider
             = new DefaultCredentialProvider(lightyServices.getBindingDataBroker());
         final SslHandlerFactoryProvider factoryProvider

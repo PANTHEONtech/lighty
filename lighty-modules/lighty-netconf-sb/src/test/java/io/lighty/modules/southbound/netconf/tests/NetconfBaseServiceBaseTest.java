@@ -13,8 +13,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.runtime.spi.ModuleInfoSnapshotBuilder;
-import org.opendaylight.netconf.client.mdsal.impl.BaseSchema;
-import org.opendaylight.netconf.client.mdsal.impl.DefaultBaseNetconfSchemas;
+import org.opendaylight.netconf.client.mdsal.api.BaseNetconfSchema;
+import org.opendaylight.netconf.client.mdsal.api.NetconfSessionPreferences;
+import org.opendaylight.netconf.client.mdsal.impl.DefaultBaseNetconfSchemaProvider;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
@@ -32,7 +33,7 @@ public abstract class NetconfBaseServiceBaseTest {
 
     protected EffectiveModelContext effectiveModelContext;
     protected MountPointContext mountContext;
-    protected BaseSchema baseSchema;
+    protected BaseNetconfSchema baseSchema;
 
     @BeforeClass
     public void beforeTest() throws YangParserException {
@@ -56,7 +57,11 @@ public abstract class NetconfBaseServiceBaseTest {
         );
         effectiveModelContext = getEffectiveModelContext(new ArrayList<>(yangModuleInfos));
         mountContext = MountPointContext.of(effectiveModelContext);
-        baseSchema = new DefaultBaseNetconfSchemas(new DefaultYangParserFactory()).getBaseSchema();
+
+        NetconfSessionPreferences preferences = NetconfSessionPreferences.fromStrings(
+                List.of(yangModuleInfos.toArray().toString()));
+        baseSchema = new DefaultBaseNetconfSchemaProvider(
+                new DefaultYangParserFactory()).baseSchemaForCapabilities(preferences);
     }
 
     boolean hasSpecificChild(final Collection<DataContainerChild> children,

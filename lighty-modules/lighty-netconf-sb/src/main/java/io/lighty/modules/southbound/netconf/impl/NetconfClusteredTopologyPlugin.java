@@ -14,7 +14,7 @@ import org.opendaylight.netconf.client.mdsal.DeviceActionFactoryImpl;
 import org.opendaylight.netconf.client.mdsal.api.CredentialProvider;
 import org.opendaylight.netconf.client.mdsal.api.SchemaResourceManager;
 import org.opendaylight.netconf.client.mdsal.api.SslHandlerFactoryProvider;
-import org.opendaylight.netconf.client.mdsal.impl.DefaultBaseNetconfSchemas;
+import org.opendaylight.netconf.client.mdsal.impl.DefaultBaseNetconfSchemaProvider;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultCredentialProvider;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultSchemaResourceManager;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultSslHandlerFactoryProvider;
@@ -42,13 +42,9 @@ public final class NetconfClusteredTopologyPlugin extends AbstractTopologyPlugin
 
     @Override
     protected boolean initProcedure() {
-        final DefaultBaseNetconfSchemas defaultBaseNetconfSchemas;
-        try {
-            defaultBaseNetconfSchemas = new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
-        } catch (YangParserException e) {
-            LOG.error("Failed to create DefaultBaseNetconfSchema, cause: ", e);
-            return false;
-        }
+        final var timer =  new DefaultNetconfTimer();
+        final var defaultBaseNetconfSchemas =
+                new DefaultBaseNetconfSchemaProvider(lightyServices.getYangParserFactory());
         final SchemaResourceManager schemaResourceManager
                 = new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
         final CredentialProvider credentialProvider

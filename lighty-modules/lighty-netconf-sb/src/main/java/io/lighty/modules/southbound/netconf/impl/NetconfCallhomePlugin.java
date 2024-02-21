@@ -16,7 +16,7 @@ import org.opendaylight.netconf.callhome.mount.IetfZeroTouchCallHomeServerProvid
 import org.opendaylight.netconf.client.mdsal.api.CredentialProvider;
 import org.opendaylight.netconf.client.mdsal.api.SchemaResourceManager;
 import org.opendaylight.netconf.client.mdsal.api.SslHandlerFactoryProvider;
-import org.opendaylight.netconf.client.mdsal.impl.DefaultBaseNetconfSchemas;
+import org.opendaylight.netconf.client.mdsal.impl.DefaultBaseNetconfSchemaProvider;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultCredentialProvider;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultSchemaResourceManager;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultSslHandlerFactoryProvider;
@@ -34,12 +34,8 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
     public NetconfCallhomePlugin(final LightyServices lightyServices, final String topologyId,
             final ExecutorService executorService, final AAAEncryptionService encryptionService) {
         super(executorService);
-        final DefaultBaseNetconfSchemas defaultBaseNetconfSchemas;
-        try {
-            defaultBaseNetconfSchemas = new DefaultBaseNetconfSchemas(lightyServices.getYangParserFactory());
-        } catch (YangParserException e) {
-            throw new RuntimeException(e);
-        }
+        final DefaultBaseNetconfSchemaProvider defaultBaseNetconfSchemas = new
+                DefaultBaseNetconfSchemaProvider(lightyServices.getYangParserFactory());
         final SchemaResourceManager schemaResourceManager =
                 new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
         final CredentialProvider credentialProvider =
