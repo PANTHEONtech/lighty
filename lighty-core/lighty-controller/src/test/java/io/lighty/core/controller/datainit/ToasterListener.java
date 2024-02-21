@@ -7,7 +7,7 @@
  */
 package io.lighty.core.controller.datainit;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
@@ -30,7 +30,7 @@ public class ToasterListener implements DataTreeChangeListener<Toaster> {
     }
 
     @Override
-    public void onDataTreeChanged(@NonNull Collection<DataTreeModification<Toaster>> changes) {
+    public void onDataTreeChanged(@NonNull List<DataTreeModification<Toaster>> changes) {
         LOG.debug("Got onDataTreeChanged!");
         for (DataTreeModification<Toaster> modification : changes) {
             DataObjectModification.ModificationType type = modification.getRootNode().getModificationType();
