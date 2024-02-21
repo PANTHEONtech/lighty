@@ -33,6 +33,7 @@ import io.lighty.modules.gnmi.connector.session.SessionManagerImpl;
 import io.lighty.modules.gnmi.connector.session.api.SessionProviderImpl;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.InvalidAlgorithmParameterException;
@@ -52,6 +53,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -416,19 +418,20 @@ public class KeystoreGnmiSecurityTest {
         return new KeystoreBuilder()
                 .setCaCertificate(getResource(CA_CRT))
                 .setClientCert(getResource(CLIENT_ENCRYPTED_CRT))
-                .setClientKey(AAA_ENCRYPTION_SERVICE.encrypt(getResource(CLIENT_ENCRYPTED_KEY)))
-                .setPassphrase(AAA_ENCRYPTION_SERVICE.encrypt(PASSPHRASE))
+                .setClientKey(DatatypeConverter.printBase64Binary(
+                        (AAA_ENCRYPTION_SERVICE.encrypt(getResource(CLIENT_ENCRYPTED_KEY).getBytes(
+                                Charset.defaultCharset())))))
+                .setPassphrase(
+                        DatatypeConverter.printBase64Binary(AAA_ENCRYPTION_SERVICE.encrypt(PASSPHRASE.getBytes())))
                 .setKeystoreId(KEYSTORE_PASSPHRASE_ID_1)
                 .build();
     }
 
     private static Keystore getKeystore2Response() {
-        return new KeystoreBuilder()
-                .setCaCertificate(getResource(CA_CRT))
-                .setClientCert(getResource(CLIENT_CRT))
-                .setClientKey(AAA_ENCRYPTION_SERVICE.encrypt(getResource(CLIENT_KEY)))
-                .setKeystoreId(KEYSTORE_ID_2)
-                .build();
+        return new KeystoreBuilder().setCaCertificate(getResource(CA_CRT)).setClientCert(getResource(CLIENT_CRT))
+                .setClientKey(DatatypeConverter.printBase64Binary(
+                        (AAA_ENCRYPTION_SERVICE.encrypt((getResource(CLIENT_KEY).getBytes())))))
+                .setKeystoreId(KEYSTORE_ID_2).build();
     }
 
     private static <T extends DataObject> FluentFuture<Optional<T>> getReadResult(T data) {
