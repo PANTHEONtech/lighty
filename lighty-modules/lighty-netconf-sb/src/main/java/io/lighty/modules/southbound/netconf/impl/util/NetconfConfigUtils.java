@@ -33,8 +33,6 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
-import org.opendaylight.netconf.client.NetconfClientDispatcher;
-import org.opendaylight.netconf.client.NetconfClientDispatcherImpl;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.AaaEncryptServiceConfig;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev160915.AaaEncryptServiceConfigBuilder;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
@@ -143,7 +141,6 @@ public final class NetconfConfigUtils {
             final NetconfConfiguration configuration, final LightyServices lightyServices) throws
             ConfigurationException {
         injectServicesToConfig(configuration);
-        injectClient(lightyServices, configuration);
         return configuration;
     }
 
@@ -194,21 +191,4 @@ public final class NetconfConfigUtils {
             throw new ConfigurationException(e);
         }
     }
-
-    /**
-     * Inject netconf client dispatcher to Netconf southbound configuration, it uses {@link LightyServices}.
-     *
-     * @param services      LightyServices from running Lighty core.
-     * @param configuration Netconf southbound configuration where should be services injected.
-     * @return Netconf southbound configuration with injected services from Lighty core.
-     */
-    private static NetconfConfiguration injectClient(final LightyServices services,
-                                                     final NetconfConfiguration configuration) {
-        final NetconfClientDispatcher client =
-                new NetconfClientDispatcherImpl(services.getBossGroup(), services.getWorkerGroup(),
-                        services.getTimer());
-        configuration.setClientDispatcher(client);
-        return configuration;
-    }
-
 }
