@@ -109,7 +109,7 @@ or completely override it if required.
         "schemaServiceConfig":{
             "topLevelModels":[
                 { "usedBy": "CONTROLLER", "name": "cluster-admin", "revision": "2015-10-13", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:cluster:admin"},
-                { "usedBy": "CONTROLLER", "name": "distributed-datastore-provider", "revision": "2014-06-12", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:distributed-datastore-provider"},
+                { "usedBy": "CONTROLLER", "name": "distributed-datastore-provider", "revision": "2023-12-29", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:distributed-datastore-provider"},
                 { "usedBy": "CONTROLLER", "name": "odl-entity-owners", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:entity-owners"},
                 { "usedBy": "CONTROLLER", "name": "ietf-yang-types", "revision": "2013-07-15", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-types"},
                 { "usedBy": "CONTROLLER", "name": "odl-general-entity", "revision": "2015-09-30", "nameSpace": "urn:opendaylight:params:xml:ns:yang:mdsal:core:general-entity"},
