@@ -10,7 +10,6 @@ package io.lighty.modules.southbound.netconf.impl;
 import io.lighty.core.controller.api.LightyServices;
 import java.util.concurrent.ExecutorService;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
-import org.opendaylight.netconf.client.NetconfClientDispatcher;
 import org.opendaylight.netconf.client.mdsal.DeviceActionFactoryImpl;
 import org.opendaylight.netconf.client.mdsal.api.CredentialProvider;
 import org.opendaylight.netconf.client.mdsal.api.SchemaResourceManager;
@@ -30,17 +29,14 @@ public final class NetconfClusteredTopologyPlugin extends AbstractTopologyPlugin
     private static final Logger LOG = LoggerFactory.getLogger(NetconfClusteredTopologyPlugin.class);
 
     private final LightyServices lightyServices;
-    private final NetconfClientDispatcher clientDispatcher;
     private final AAAEncryptionService encryptionService;
 
     private NetconfTopologyManager topology;
 
     public NetconfClusteredTopologyPlugin(final LightyServices lightyServices,
-            final NetconfClientDispatcher clientDispatcher,
             final ExecutorService executorService, final AAAEncryptionService encryptionService) {
         super(executorService, lightyServices.getDOMMountPointService());
         this.lightyServices = lightyServices;
-        this.clientDispatcher = clientDispatcher;
         this.encryptionService = encryptionService;
     }
 

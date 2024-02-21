@@ -8,10 +8,6 @@
 package io.lighty.modules.southbound.netconf.tests;
 
 import static io.lighty.modules.southbound.netconf.tests.LightyTestUtils.MAX_START_TIME_MILLIS;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModule;
@@ -32,7 +28,6 @@ import org.mockito.MockitoAnnotations;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.netconf.client.NetconfClientDispatcher;
 import org.opendaylight.netconf.client.NetconfClientSession;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Host;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -68,16 +63,12 @@ public class TopologyPluginsTest {
     private CommunityRestConf restConf;
     private LightyModule netconfPlugin;
     @Mock
-    private NetconfClientDispatcher dispatcher;
-    @Mock
     private Future<NetconfClientSession> initFuture;
 
-    private static LightyModule startSingleNodeNetconf(final LightyServices services,
-                                                       final NetconfClientDispatcher dispatcher)
+    private static LightyModule startSingleNodeNetconf(final LightyServices services)
             throws ConfigurationException {
         final NetconfConfiguration config = NetconfConfigUtils.createDefaultNetconfConfiguration();
         NetconfConfigUtils.injectServicesToConfig(config);
-        config.setClientDispatcher(dispatcher);
         return NetconfTopologyPluginBuilder.from(config, services).build();
     }
 
@@ -85,13 +76,12 @@ public class TopologyPluginsTest {
     public void beforeClass()
             throws ConfigurationException, ExecutionException, InterruptedException, TimeoutException {
         MockitoAnnotations.initMocks(this);
-        when(this.dispatcher.createClient(any())).thenAnswer(invocation -> initFuture);
 
         this.lightyController = LightyTestUtils.startController();
         RestConfConfiguration restConfConfig =
                 RestConfConfigUtils.getDefaultRestConfConfiguration();
         this.restConf = LightyTestUtils.startRestconf(restConfConfig, this.lightyController.getServices());
-        this.netconfPlugin = startSingleNodeNetconf(this.lightyController.getServices(), this.dispatcher);
+        this.netconfPlugin = startSingleNodeNetconf(this.lightyController.getServices());
         this.netconfPlugin.start().get(MAX_START_TIME_MILLIS, TimeUnit.MILLISECONDS);
     }
 
@@ -134,7 +124,6 @@ public class TopologyPluginsTest {
         final WriteTransaction writeTransaction = bindingDataBroker.newWriteOnlyTransaction();
         writeTransaction.mergeParentStructurePut(LogicalDatastoreType.CONFIGURATION, path, node);
         writeTransaction.commit().get();
-        verify(this.dispatcher, timeout(20000)).createClient(any());
     }
 
 }

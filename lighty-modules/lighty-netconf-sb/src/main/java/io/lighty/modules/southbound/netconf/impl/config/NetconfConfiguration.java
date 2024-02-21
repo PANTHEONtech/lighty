@@ -9,16 +9,12 @@ package io.lighty.modules.southbound.netconf.impl.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
-import org.opendaylight.netconf.client.NetconfClientDispatcher;
 
 public class NetconfConfiguration {
 
     private String topologyId = "topology-netconf";
     private int writeTxTimeout = 0;
     private boolean clusterEnabled = false;
-
-    @JsonIgnore
-    private NetconfClientDispatcher clientDispatcher;
 
     @JsonIgnore
     private AAAEncryptionService aaaService;
@@ -53,14 +49,6 @@ public class NetconfConfiguration {
 
     public void setClusterEnabled(boolean clusterEnabled) {
         this.clusterEnabled = clusterEnabled;
-    }
-
-    public NetconfClientDispatcher getClientDispatcher() {
-        return clientDispatcher;
-    }
-
-    public void setClientDispatcher(final NetconfClientDispatcher clientDispatcher) {
-        this.clientDispatcher = clientDispatcher;
     }
 
 }
