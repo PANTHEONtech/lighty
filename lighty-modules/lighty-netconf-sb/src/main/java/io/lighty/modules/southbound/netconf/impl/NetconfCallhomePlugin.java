@@ -9,20 +9,21 @@ package io.lighty.modules.southbound.netconf.impl;
 
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyServices;
+import java.lang.annotation.Annotation;
 import java.util.concurrent.ExecutorService;
-import org.opendaylight.aaa.encrypt.AAAEncryptionService;
-import org.opendaylight.netconf.callhome.mount.CallHomeMountDispatcher;
-import org.opendaylight.netconf.callhome.mount.IetfZeroTouchCallHomeServerProvider;
-import org.opendaylight.netconf.client.mdsal.api.CredentialProvider;
+import java.util.concurrent.TimeUnit;
+import org.opendaylight.netconf.client.mdsal.DeviceActionFactoryImpl;
 import org.opendaylight.netconf.client.mdsal.api.SchemaResourceManager;
-import org.opendaylight.netconf.client.mdsal.api.SslHandlerFactoryProvider;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultBaseNetconfSchemaProvider;
-import org.opendaylight.netconf.client.mdsal.impl.DefaultCredentialProvider;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultSchemaResourceManager;
-import org.opendaylight.netconf.client.mdsal.impl.DefaultSslHandlerFactoryProvider;
-import org.opendaylight.netconf.topology.spi.DefaultNetconfClientConfigurationBuilderFactory;
-import org.opendaylight.netconf.topology.spi.NetconfClientConfigurationBuilderFactory;
-import org.opendaylight.yangtools.yang.parser.api.YangParserException;
+import org.opendaylight.netconf.common.NetconfTimer;
+import org.opendaylight.netconf.common.impl.DefaultNetconfTimer;
+import org.opendaylight.netconf.topology.callhome.CallHomeMountService;
+import org.opendaylight.netconf.topology.callhome.CallHomeMountSshAuthProvider;
+import org.opendaylight.netconf.topology.callhome.CallHomeMountStatusReporter;
+import org.opendaylight.netconf.topology.callhome.CallHomeSshAuthProvider;
+import org.opendaylight.netconf.topology.callhome.IetfZeroTouchCallHomeServerProvider;
+import org.opendaylight.netconf.topology.spi.NetconfTopologySchemaAssembler;
 import org.slf4j.LoggerFactory;
 
 public class NetconfCallhomePlugin extends AbstractLightyModule {
@@ -32,24 +33,26 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
     private final IetfZeroTouchCallHomeServerProvider provider;
 
     public NetconfCallhomePlugin(final LightyServices lightyServices, final String topologyId,
-            final ExecutorService executorService, final AAAEncryptionService encryptionService) {
+            final ExecutorService executorService, final String adress, final int port) {
         super(executorService);
         final DefaultBaseNetconfSchemaProvider defaultBaseNetconfSchemas = new
                 DefaultBaseNetconfSchemaProvider(lightyServices.getYangParserFactory());
-        final SchemaResourceManager schemaResourceManager =
-                new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
-        final CredentialProvider credentialProvider =
-            new DefaultCredentialProvider(lightyServices.getBindingDataBroker());
-        final SslHandlerFactoryProvider factoryProvider =
-            new DefaultSslHandlerFactoryProvider(lightyServices.getBindingDataBroker());
-        final NetconfClientConfigurationBuilderFactory factory = new DefaultNetconfClientConfigurationBuilderFactory(
-            encryptionService, credentialProvider, factoryProvider);
-        final CallHomeMountDispatcher dispatcher =
-                new CallHomeMountDispatcher(topologyId, lightyServices.getEventExecutor(),
-                        lightyServices.getScheduledThreadPool(), lightyServices.getThreadPool(),
-                        schemaResourceManager, defaultBaseNetconfSchemas, lightyServices.getBindingDataBroker(),
-                        lightyServices.getDOMMountPointService(), factory);
-        this.provider = new IetfZeroTouchCallHomeServerProvider(lightyServices.getBindingDataBroker(), dispatcher);
+        final SchemaResourceManager manager = new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
+        final var mountStatusReporter = new CallHomeMountStatusReporter(
+                lightyServices.getBindingDataBroker());
+        final CallHomeSshAuthProvider authProvider = new CallHomeMountSshAuthProvider(
+                lightyServices.getBindingDataBroker(), mountStatusReporter);
+        final var recorder = new CallHomeMountStatusReporter(lightyServices.getBindingDataBroker());
+        final NetconfTimer timer = new DefaultNetconfTimer();
+        IetfZeroTouchCallHomeServerProvider.Configuration configuration = new Configuration(adress, 4334);
+
+        final CallHomeMountService dispatcher =
+                new CallHomeMountService(topologyId, timer,
+                        new NetconfTopologySchemaAssembler(1, 1, 10, TimeUnit.SECONDS),
+                        manager, defaultBaseNetconfSchemas, lightyServices.getBindingDataBroker(),
+                        lightyServices.getDOMMountPointService(), new DeviceActionFactoryImpl());
+        this.provider = new IetfZeroTouchCallHomeServerProvider(timer, dispatcher, authProvider, recorder,
+                configuration);
     }
 
     @Override
@@ -67,6 +70,31 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
             return false;
         }
         return true;
+    }
+
+    public static class Configuration implements IetfZeroTouchCallHomeServerProvider.Configuration {
+        private final String host;
+        private final int port;
+
+        public Configuration(String host, int port) {
+            this.host = host;
+            this.port = port;
+        }
+
+        @Override
+        public String host() {
+            return this.host;
+        }
+
+        @Override
+        public int port() {
+            return this.port;
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return null;
+        }
     }
 
 }

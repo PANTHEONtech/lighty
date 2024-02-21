@@ -9,19 +9,24 @@ package io.lighty.modules.southbound.netconf.impl;
 
 import io.lighty.core.controller.api.LightyServices;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
+import org.opendaylight.netconf.client.NetconfClientFactory;
+import org.opendaylight.netconf.client.NetconfClientFactoryImpl;
 import org.opendaylight.netconf.client.mdsal.DeviceActionFactoryImpl;
 import org.opendaylight.netconf.client.mdsal.api.CredentialProvider;
 import org.opendaylight.netconf.client.mdsal.api.SchemaResourceManager;
-import org.opendaylight.netconf.client.mdsal.api.SslHandlerFactoryProvider;
+import org.opendaylight.netconf.client.mdsal.api.SslContextFactoryProvider;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultBaseNetconfSchemaProvider;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultCredentialProvider;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultSchemaResourceManager;
-import org.opendaylight.netconf.client.mdsal.impl.DefaultSslHandlerFactoryProvider;
+import org.opendaylight.netconf.client.mdsal.impl.DefaultSslContextFactoryProvider;
+import org.opendaylight.netconf.common.impl.DefaultNetconfTimer;
+import org.opendaylight.netconf.keystore.legacy.impl.DefaultNetconfKeystoreService;
 import org.opendaylight.netconf.topology.singleton.impl.NetconfTopologyManager;
-import org.opendaylight.netconf.topology.spi.DefaultNetconfClientConfigurationBuilderFactory;
 import org.opendaylight.netconf.topology.spi.NetconfClientConfigurationBuilderFactory;
-import org.opendaylight.yangtools.yang.parser.api.YangParserException;
+import org.opendaylight.netconf.topology.spi.NetconfClientConfigurationBuilderFactoryImpl;
+import org.opendaylight.netconf.topology.spi.NetconfTopologySchemaAssembler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,19 +52,22 @@ public final class NetconfClusteredTopologyPlugin extends AbstractTopologyPlugin
                 new DefaultBaseNetconfSchemaProvider(lightyServices.getYangParserFactory());
         final SchemaResourceManager schemaResourceManager
                 = new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
+        final var keystoreService = new DefaultNetconfKeystoreService(lightyServices.getBindingDataBroker(),
+                lightyServices.getRpcProviderService(), lightyServices.getClusterSingletonServiceProvider(),
+                encryptionService);
         final CredentialProvider credentialProvider
-                = new DefaultCredentialProvider(lightyServices.getBindingDataBroker());
-        final SslHandlerFactoryProvider factoryProvider
-            = new DefaultSslHandlerFactoryProvider(lightyServices.getBindingDataBroker());
-        final NetconfClientConfigurationBuilderFactory factory = new DefaultNetconfClientConfigurationBuilderFactory(
-            encryptionService, credentialProvider, factoryProvider);
+                = new DefaultCredentialProvider(keystoreService);
+        final NetconfClientFactory netconfClientFactory = new NetconfClientFactoryImpl(timer);
+        final SslContextFactoryProvider factoryProvider
+            = new DefaultSslContextFactoryProvider(keystoreService);
+        final NetconfClientConfigurationBuilderFactory factory = new NetconfClientConfigurationBuilderFactoryImpl(
+                encryptionService, credentialProvider, factoryProvider);
         topology = new NetconfTopologyManager(defaultBaseNetconfSchemas,
                 lightyServices.getBindingDataBroker(),
-                lightyServices.getClusterSingletonServiceProvider(), lightyServices.getScheduledThreadPool(),
-                lightyServices.getThreadPool(), lightyServices.getActorSystemProvider(),
-                lightyServices.getEventExecutor(), clientDispatcher,
-                lightyServices.getDOMMountPointService(), encryptionService, lightyServices.getRpcProviderService(),
-                new DeviceActionFactoryImpl(), schemaResourceManager, factory);
+                lightyServices.getClusterSingletonServiceProvider(), new DefaultNetconfTimer(),
+                new NetconfTopologySchemaAssembler(1, 1, 0, TimeUnit.SECONDS), lightyServices.getActorSystemProvider(),
+                netconfClientFactory, lightyServices.getDOMMountPointService(), encryptionService,
+                lightyServices.getRpcProviderService(), new DeviceActionFactoryImpl(), schemaResourceManager, factory);
         return true;
     }
 
