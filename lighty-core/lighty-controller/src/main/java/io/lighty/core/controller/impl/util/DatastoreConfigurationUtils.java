@@ -62,9 +62,6 @@ public final class DatastoreConfigurationUtils {
         if (!configNode.path("transactionDebugContextEnabled").asText().isBlank()) {
             builder.transactionDebugContextEnabled(configNode.path("transactionDebugContextEnabled").asBoolean());
         }
-        if (!configNode.path("useTellBasedProtocol").asText().isBlank()) {
-            builder.useTellBasedProtocol(configNode.path("useTellBasedProtocol").asBoolean());
-        }
         if (!configNode.path("fileBackedStreamingThresholdInMegabytes").asText().isBlank()) {
             builder.fileBackedStreamingThresholdInMegabytes(
                     configNode.path("fileBackedStreamingThresholdInMegabytes").asInt());

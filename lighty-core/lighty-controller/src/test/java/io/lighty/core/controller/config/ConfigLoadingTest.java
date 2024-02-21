@@ -55,7 +55,6 @@ public class ConfigLoadingTest {
         Assert.assertEquals(configDatastoreContext.getShardBatchedModificationCount(), 1000);
         Assert.assertEquals(configDatastoreContext.getShardCommitQueueExpiryTimeoutInMillis(), 120000);
         Assert.assertEquals(configDatastoreContext.isTransactionDebugContextEnabled(), false);
-        Assert.assertEquals(configDatastoreContext.isUseTellBasedProtocol(), true);
         Assert.assertEquals(configDatastoreContext.getMaximumMessageSliceSize(), 491520);
         Assert.assertEquals(configDatastoreContext.getFileBackedStreamingThreshold(), 134217728);
         Assert.assertEquals(configDatastoreContext.getShardRaftConfig().getSyncIndexThreshold(), 10);
@@ -82,7 +81,6 @@ public class ConfigLoadingTest {
         Assert.assertEquals(operDatastoreContext.getShardBatchedModificationCount(), 1000);
         Assert.assertEquals(operDatastoreContext.getShardCommitQueueExpiryTimeoutInMillis(), 120000);
         Assert.assertEquals(operDatastoreContext.isTransactionDebugContextEnabled(), false);
-        Assert.assertEquals(operDatastoreContext.isUseTellBasedProtocol(), true);
         Assert.assertEquals(operDatastoreContext.getMaximumMessageSliceSize(), 491520);
         Assert.assertEquals(operDatastoreContext.getFileBackedStreamingThreshold(), 134217728);
         Assert.assertEquals(operDatastoreContext.getShardRaftConfig().getSyncIndexThreshold(), 10);
@@ -180,7 +178,6 @@ public class ConfigLoadingTest {
         Assert.assertEquals(dataStoreContext.getShardBatchedModificationCount(), 10000);
         Assert.assertEquals(dataStoreContext.getShardCommitQueueExpiryTimeoutInMillis(), 1200000);
         Assert.assertEquals(dataStoreContext.isTransactionDebugContextEnabled(), true);
-        Assert.assertEquals(dataStoreContext.isUseTellBasedProtocol(), true);
         Assert.assertEquals(dataStoreContext.getMaximumMessageSliceSize(), 2048001);
         Assert.assertEquals(dataStoreContext.getFileBackedStreamingThreshold(), 135266304);
         Assert.assertEquals(dataStoreContext.getShardRaftConfig().getSyncIndexThreshold(), 11);
@@ -212,7 +209,6 @@ public class ConfigLoadingTest {
         Assert.assertEquals(dataStoreContext.getShardBatchedModificationCount(), -10000);
         Assert.assertEquals(dataStoreContext.getShardCommitQueueExpiryTimeoutInMillis(), -1200000);
         Assert.assertEquals(dataStoreContext.isTransactionDebugContextEnabled(), false);
-        Assert.assertEquals(dataStoreContext.isUseTellBasedProtocol(), false);
         Assert.assertEquals(dataStoreContext.getMaximumMessageSliceSize(), 2048002);
         Assert.assertEquals(dataStoreContext.getFileBackedStreamingThreshold(), 136314880);
         Assert.assertEquals(dataStoreContext.getShardRaftConfig().getSyncIndexThreshold(), 12);
