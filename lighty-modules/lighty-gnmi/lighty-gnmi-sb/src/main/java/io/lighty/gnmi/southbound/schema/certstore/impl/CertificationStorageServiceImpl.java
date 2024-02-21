@@ -10,7 +10,10 @@ package io.lighty.gnmi.southbound.schema.certstore.impl;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.gnmi.southbound.schema.certstore.service.CertificationStorageService;
+import java.nio.charset.Charset;
+import java.security.GeneralSecurityException;
 import java.util.Optional;
+import javax.xml.bind.DatatypeConverter;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
@@ -37,10 +40,14 @@ public class CertificationStorageServiceImpl implements CertificationStorageServ
 
     @Override
     public @NonNull ListenableFuture<? extends CommitInfo> writeCertificates(final AddKeystoreCertificateInput input) {
+        byte[] encryptedParaphrase = this.encryptionService.encrypt(
+                input.getPassphrase() != null ? input.getPassphrase().getBytes(Charset.defaultCharset()) : null);
         final Keystore keystore = new KeystoreBuilder()
                 .setKeystoreId(input.getKeystoreId())
-                .setClientKey(this.encryptionService.encrypt(input.getClientKey()))
-                .setPassphrase(this.encryptionService.encrypt(input.getPassphrase()))
+                .setClientKey(DatatypeConverter.printBase64Binary(
+                        this.encryptionService.encrypt(input.getClientKey().getBytes(Charset.defaultCharset()))))
+                .setPassphrase(
+                        encryptedParaphrase != null ? DatatypeConverter.printBase64Binary(encryptedParaphrase) : null)
                 .setClientCert(input.getClientCert())
                 .setCaCertificate(input.getCaCertificate())
                 .build();
@@ -67,7 +74,8 @@ public class CertificationStorageServiceImpl implements CertificationStorageServ
 
     @Override
     public String decrypt(final String data) {
-        return this.encryptionService.decrypt(data);
+        return new String(this.encryptionService.decrypt(DatatypeConverter.parseBase64Binary(data)),
+                Charset.defaultCharset());
     }
 
     private InstanceIdentifier<Keystore> getKeystoreII(final String keystoreId) {

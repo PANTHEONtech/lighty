@@ -7,11 +7,9 @@
  */
 package io.lighty.aaa.encrypt.service.impl;
 
-import java.nio.charset.StandardCharsets;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
-import javax.xml.bind.DatatypeConverter;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,24 +27,6 @@ public class AAAEncryptionServiceImpl implements AAAEncryptionService {
     }
 
     @Override
-    public String encrypt(String data) {
-        if (data != null && data.length() != 0) {
-            try {
-                synchronized (encryptCipher) {
-                    byte[] cryptobytes = encryptCipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
-                    return DatatypeConverter.printBase64Binary(cryptobytes);
-                }
-            } catch (IllegalBlockSizeException | BadPaddingException e) {
-                LOG.error("Failed to encrypt data.", e);
-                return data;
-            }
-        } else {
-            LOG.warn("data is empty or null.");
-            return data;
-        }
-    }
-
-    @Override
     public byte[] encrypt(byte[] data) {
         if (data != null && data.length != 0) {
             try {
@@ -60,23 +40,6 @@ public class AAAEncryptionServiceImpl implements AAAEncryptionService {
         } else {
             LOG.warn("data is empty or null.");
             return data;
-        }
-    }
-
-    @Override
-    public String decrypt(String encryptedData) {
-        if (encryptedData != null && encryptedData.length() != 0) {
-            try {
-                byte[] cryptobytes = DatatypeConverter.parseBase64Binary(encryptedData);
-                byte[] clearbytes = decryptCipher.doFinal(cryptobytes);
-                return new String(clearbytes, StandardCharsets.UTF_8);
-            } catch (IllegalBlockSizeException | BadPaddingException e) {
-                LOG.error("Failed to decrypt encoded data", e);
-                return encryptedData;
-            }
-        } else {
-            LOG.warn("encryptedData is empty or null.");
-            return encryptedData;
         }
     }
 
