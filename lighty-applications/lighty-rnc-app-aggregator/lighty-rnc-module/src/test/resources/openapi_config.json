@@ -60,7 +60,7 @@
                 { "nameSpace": "urn:opendaylight:l2:types", "name": "opendaylight-l2-types", "revision": "2013-08-27" },
                 { "nameSpace": "urn:opendaylight:aaa:app:config", "name": "aaa-app-config", "revision": "2017-06-19" },
                 { "nameSpace": "urn:TBD:params:xml:ns:yang:network:isis-topology", "name": "isis-topology", "revision": "2013-07-12" },
-                { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:distributed-datastore-provider", "name": "distributed-datastore-provider", "revision": "2014-06-12" },
+                { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:distributed-datastore-provider", "name": "distributed-datastore-provider", "revision": "2023-12-29" },
                 { "nameSpace": "urn:TBD:params:xml:ns:yang:ospf-topology", "name": "ospf-topology", "revision": "2013-10-21" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:legacy-entity-ownership-service-provider", "name": "opendaylight-legacy-entity-ownership-service-provider", "revision": "2016-02-26" }
             ]
