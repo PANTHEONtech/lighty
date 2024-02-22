@@ -17,7 +17,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.Set;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
-import org.opendaylight.mdsal.dom.api.DOMActionServiceExtension;
+import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
 import org.opendaylight.netconf.api.NetconfMessage;
@@ -74,7 +74,7 @@ public final class LightyDOMActionService implements Normalized {
     }
 
     @Override
-    public ClassToInstanceMap<DOMActionServiceExtension> getExtensions() {
+    public ClassToInstanceMap<DOMActionService.Extension> getExtensions() {
         return MutableClassToInstanceMap.create();
     }
 
