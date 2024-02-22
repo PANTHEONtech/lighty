@@ -43,9 +43,9 @@ public final class NetconfConfigUtils {
 
     public static final String NETCONF_CONFIG_ROOT_ELEMENT_NAME = "netconf";
     public static final Set<YangModuleInfo> NETCONF_TOPOLOGY_MODELS = Set.of(
-            org.opendaylight.yang.svc.v1.urn.opendaylight.netconf.keystore.rev171017
+            org.opendaylight.yang.svc.v1.urn.opendaylight.netconf.keystore.rev231109
                     .YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.svc.v1.urn.opendaylight.netconf.node.topology.rev221225
+            org.opendaylight.yang.svc.v1.urn.opendaylight.netconf.node.topology.rev231121
                     .YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.svc.v1.urn.opendaylight.netconf.node.optional.rev221225
                     .YangModuleInfoImpl.getInstance(),
