@@ -28,7 +28,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.netconf.api.EffectiveOperation;
-import org.opendaylight.netconf.api.NetconfMessage;
+import org.opendaylight.netconf.api.messages.NetconfMessage;
 import org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformer;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Operational;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Running;
