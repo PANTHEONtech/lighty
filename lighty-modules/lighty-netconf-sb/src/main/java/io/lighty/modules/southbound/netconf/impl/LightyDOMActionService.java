@@ -8,8 +8,6 @@
 package io.lighty.modules.southbound.netconf.impl;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.MutableClassToInstanceMap;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -17,7 +15,6 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.Set;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
-import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
 import org.opendaylight.netconf.api.messages.NetconfMessage;
@@ -71,11 +68,6 @@ public final class LightyDOMActionService implements Normalized {
             }
         }, MoreExecutors.directExecutor());
         return settableFuture;
-    }
-
-    @Override
-    public ClassToInstanceMap<DOMActionService.Extension> getExtensions() {
-        return MutableClassToInstanceMap.create();
     }
 
     private static final class ActionRpcError implements RpcError {
