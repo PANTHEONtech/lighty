@@ -7,12 +7,9 @@
  */
 package io.lighty.modules.southbound.netconf.impl;
 
-import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.NETCONF_EDIT_CONFIG_QNAME;
-import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.NETCONF_GET_CONFIG_QNAME;
-import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.NETCONF_GET_QNAME;
-import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.NETCONF_LOCK_QNAME;
-import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.NETCONF_RUNNING_QNAME;
-import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.NETCONF_UNLOCK_QNAME;
+import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.NETCONF_LOCK_NODEID;
+import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.NETCONF_RUNNING_NODEID;
+import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.NETCONF_UNLOCK_NODEID;
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -22,6 +19,10 @@ import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.netconf.api.EffectiveOperation;
 import org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.CopyConfig;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.EditConfig;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.Get;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.GetConfig;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -47,10 +48,10 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
         if (filterYII.isPresent() && !filterYII.get().isEmpty()) {
             final DataContainerChild filter =
                     NetconfMessageTransformUtil.toFilterStructure(filterYII.get(), effectiveModelContext);
-            return domRpcService.invokeRpc(NETCONF_GET_QNAME,
-                    NetconfMessageTransformUtil.wrap(NETCONF_GET_QNAME, filter));
+            return domRpcService.invokeRpc(Get.QNAME,
+                    NetconfMessageTransformUtil.wrap(Get.QNAME, filter));
         } else {
-            return domRpcService.invokeRpc(NETCONF_GET_QNAME, NetconfMessageTransformUtil.GET_RPC_CONTENT);
+            return domRpcService.invokeRpc(Get.QNAME, NetconfMessageTransformUtil.GET_RPC_CONTENT);
         }
     }
 
@@ -62,12 +63,12 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
         if (filterYII.isPresent() && !filterYII.get().isEmpty()) {
             final DataContainerChild filter =
                     NetconfMessageTransformUtil.toFilterStructure(filterYII.get(), effectiveModelContext);
-            return domRpcService.invokeRpc(NETCONF_GET_CONFIG_QNAME,
-                    NetconfMessageTransformUtil.wrap(NETCONF_GET_CONFIG_QNAME,
+            return domRpcService.invokeRpc(GetConfig.QNAME,
+                    NetconfMessageTransformUtil.wrap(GetConfig.QNAME,
                             NetconfUtils.getSourceNode(sourceDatastore), filter));
         } else {
-            return domRpcService.invokeRpc(NETCONF_GET_CONFIG_QNAME,
-                    NetconfMessageTransformUtil.wrap(NETCONF_GET_CONFIG_QNAME,
+            return domRpcService.invokeRpc(GetConfig.QNAME,
+                    NetconfMessageTransformUtil.wrap(GetConfig.QNAME,
                             NetconfUtils.getSourceNode(sourceDatastore)));
         }
     }
@@ -84,7 +85,7 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
 
         Preconditions.checkNotNull(editStructure);
 
-        return domRpcService.invokeRpc(NETCONF_EDIT_CONFIG_QNAME,
+        return domRpcService.invokeRpc(EditConfig.QNAME,
                 NetconfUtils.getEditConfigContent(targetDatastore, editStructure, defaultEffectiveOperation, rollback));
     }
 
@@ -94,17 +95,17 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
         Preconditions.checkNotNull(sourceDatastore);
         Preconditions.checkNotNull(targetDatastore);
 
-        return domRpcService.invokeRpc(NetconfMessageTransformUtil.NETCONF_COPY_CONFIG_QNAME,
+        return domRpcService.invokeRpc(CopyConfig.QNAME,
                 NetconfUtils.getCopyConfigContent(sourceDatastore, targetDatastore));
     }
 
     @Override
     public ListenableFuture<? extends DOMRpcResult> deleteConfig(final QName targetDatastore) {
         Preconditions.checkNotNull(targetDatastore);
-        Preconditions.checkArgument(!NETCONF_RUNNING_QNAME.equals(targetDatastore),
+        Preconditions.checkArgument(!NETCONF_RUNNING_NODEID.getNodeType().equals(targetDatastore),
                 "Running datastore cannot be deleted.");
 
-        return domRpcService.invokeRpc(NetconfUtils.NETCONF_DELETE_CONFIG_QNAME,
+        return domRpcService.invokeRpc(NetconfUtils.NETCONF_DELETE_CONFIG_QNAME.getNodeType(),
                 NetconfUtils.getDeleteConfigContent(targetDatastore));
     }
 
@@ -112,14 +113,15 @@ public class NetconfBaseServiceImpl implements NetconfBaseService {
     public ListenableFuture<? extends DOMRpcResult> lock(final QName targetDatastore) {
         Preconditions.checkNotNull(targetDatastore);
 
-        return domRpcService.invokeRpc(NETCONF_LOCK_QNAME, NetconfUtils.getLockContent(targetDatastore));
+        return domRpcService.invokeRpc(NETCONF_LOCK_NODEID.getNodeType(), NetconfUtils.getLockContent(targetDatastore));
     }
 
     @Override
     public ListenableFuture<? extends DOMRpcResult> unlock(final QName targetDatastore) {
         Preconditions.checkNotNull(targetDatastore);
 
-        return domRpcService.invokeRpc(NETCONF_UNLOCK_QNAME, NetconfUtils.getUnLockContent(targetDatastore));
+        return domRpcService.invokeRpc(NETCONF_UNLOCK_NODEID.getNodeType(),
+                NetconfUtils.getUnLockContent(targetDatastore));
     }
 
     @Override

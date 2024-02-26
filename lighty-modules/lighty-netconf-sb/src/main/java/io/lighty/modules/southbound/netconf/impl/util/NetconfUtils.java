@@ -17,7 +17,7 @@ import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransform
 import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.NETCONF_TARGET_NODEID;
 import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.NETCONF_UNLOCK_NODEID;
 import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.NETCONF_VALIDATE_NODEID;
-import static org.opendaylight.netconf.common.mdsal.NormalizedDataUtil.NETCONF_QNAME;
+import static org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601.YangModuleInfoImpl.qnameOf;
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Futures;
@@ -55,10 +55,10 @@ import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public final class NetconfUtils {
-    public static final QName NETCONF_DELETE_CONFIG_QNAME =
-        QName.create(NETCONF_QNAME, "delete-config").intern();
+    public static final NodeIdentifier NETCONF_DELETE_CONFIG_QNAME =
+        NodeIdentifier.create(qnameOf("delete-config"));
     public static final NodeIdentifier NETCONF_DELETE_CONFIG_NODEID =
-            NodeIdentifier.create(NETCONF_DELETE_CONFIG_QNAME);
+            NodeIdentifier.create(NETCONF_DELETE_CONFIG_QNAME.getNodeType());
     private static final NodeIdentifier CONFIG_SOURCE_NODEID = NodeIdentifier.create(ConfigSource.QNAME);
     private static final NodeIdentifier CONFIG_TARGET_NODEID = NodeIdentifier.create(ConfigTarget.QNAME);
     private static final NodeIdentifier EDIT_CONTENT_NODEID = NodeIdentifier.create(EditContent.QNAME);
@@ -94,9 +94,9 @@ public final class NetconfUtils {
             final Optional<YangInstanceIdentifier> path, final ListenableFuture<DOMRpcResult> rpcFuture) {
         return Futures.transform(rpcFuture, result -> {
             Preconditions.checkArgument(
-                    result.getErrors().isEmpty(), "Unable to read data: %s, errors: %s", path, result.getErrors());
+                    result.errors().isEmpty(), "Unable to read data: %s, errors: %s", path, result.errors());
             final DataContainerChild dataNode =
-                    result.getResult().getChildByArg(NETCONF_DATA_NODEID);
+                    result.value().getChildByArg(NETCONF_DATA_NODEID);
             return NormalizedNodes.findNode(dataNode, path.get().getPathArguments());
         }, MoreExecutors.directExecutor());
     }
