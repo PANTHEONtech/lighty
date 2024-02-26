@@ -46,7 +46,6 @@ public final class RestConfConfigUtils {
     public static final int MAXIMUM_FRAGMENT_LENGTH = 0;
     public static final int IDLE_TIMEOUT =  30000;
     public static final int HEARTBEAT_INTERVAL = 10000;
-    public static final boolean USE_SSE = true;
 
     private RestConfConfigUtils() {
         throw new UnsupportedOperationException();
@@ -170,6 +169,6 @@ public final class RestConfConfigUtils {
     }
 
     public static StreamsConfiguration getStreamsConfiguration() {
-        return new StreamsConfiguration(MAXIMUM_FRAGMENT_LENGTH, IDLE_TIMEOUT, HEARTBEAT_INTERVAL, USE_SSE);
+        return new StreamsConfiguration(MAXIMUM_FRAGMENT_LENGTH, IDLE_TIMEOUT, HEARTBEAT_INTERVAL);
     }
 }
