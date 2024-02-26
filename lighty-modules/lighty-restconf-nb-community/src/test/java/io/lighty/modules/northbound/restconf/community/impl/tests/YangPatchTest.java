@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.restconf.common.context.InstanceIdentifierContext;
 import org.opendaylight.restconf.common.patch.PatchContext;
 import org.opendaylight.restconf.common.patch.PatchEntity;
 import org.opendaylight.restconf.common.patch.PatchStatusContext;
@@ -60,9 +59,7 @@ public class YangPatchTest extends CommunityRestConfTestBase {
                 .build();
 
         final PatchEntity entityReplace = new PatchEntity("edit1", REPLACE, targetNodeMerge, patchContainerNode);
-        final InstanceIdentifierContext iidContext = InstanceIdentifierContext.ofLocalRoot(
-                        getLightyController().getServices().getDOMSchemaService().getGlobalContext());
-        final PatchContext patchContext = new PatchContext(iidContext, List.of(entityReplace), "test-patch");
+        final PatchContext patchContext = new PatchContext("test-patch" ,List.of(entityReplace));
 
         final PatchStatusContext patchStatusContext = PatchDataTransactionUtil.patchData(patchContext,
                 new MdsalRestconfStrategy(getLightyController().getServices().getClusteredDOMDataBroker()),
@@ -74,7 +71,7 @@ public class YangPatchTest extends CommunityRestConfTestBase {
 
         final ContainerNode response = (ContainerNode) getLightyController().getServices().getClusteredDOMDataBroker()
                 .newReadOnlyTransaction()
-                .read(LogicalDatastoreType.CONFIGURATION, iidContext.getInstanceIdentifier())
+                .read(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of())
                 .get(5000, TimeUnit.MILLISECONDS).orElseThrow();
 
         final DataContainerChild bodyOfResponse = response.body().iterator().next();
