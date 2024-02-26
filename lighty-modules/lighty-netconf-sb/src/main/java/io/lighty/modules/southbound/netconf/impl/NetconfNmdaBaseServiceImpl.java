@@ -8,8 +8,7 @@
 package io.lighty.modules.southbound.netconf.impl;
 
 import static java.util.Objects.requireNonNull;
-import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.NETCONF_OPERATION_QNAME;
-import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.NETCONF_RUNNING_QNAME;
+import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.NETCONF_RUNNING_NODEID;
 import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.toId;
 
 import com.google.common.base.Preconditions;
@@ -26,6 +25,8 @@ import java.util.Set;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.netconf.api.EffectiveOperation;
+import org.opendaylight.netconf.api.NamespaceURN;
+import org.opendaylight.netconf.api.xml.XmlNetconfConstants;
 import org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Running;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.nmda.rev190107.edit.data.input.EditContent;
@@ -81,11 +82,10 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
     private static final NodeIdentifier NETCONF_WITH_ORIGIN_NODEID =
             NodeIdentifier.create(QName.create(NETCONF_GET_DATA_QNAME, "with-origin").intern());
 
-    private static final QName NETCONF_OPERATION_QNAME_LEGACY = NETCONF_OPERATION_QNAME.withoutRevision().intern();
+    private static final QName NETCONF_OPERATION_QNAME_LEGACY = QName.create(NamespaceURN.BASE,
+            XmlNetconfConstants.OPERATION_ATTR_KEY).intern();
     private static final NodeIdentifier NETCONF_EDIT_DATA_CONFIG_NODEID =
             NodeIdentifier.create(QName.create(NETCONF_EDIT_DATA_QNAME, "config").intern());
-    private static final NodeIdentifier NETCONF_DEFAULT_OPERATION_NODEID =
-            NodeIdentifier.create(QName.create(NETCONF_EDIT_DATA_QNAME, "default-operation").intern());
 
     public NetconfNmdaBaseServiceImpl(NodeId nodeId, DOMRpcService domRpcService,
             EffectiveModelContext effectiveModelContext) {
@@ -163,7 +163,7 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
     @Override
     public ListenableFuture<? extends DOMRpcResult> deleteConfig(QName targetDatastore) {
         if (Running.QNAME.equals(targetDatastore)) {
-            targetDatastore = NETCONF_RUNNING_QNAME;
+            targetDatastore = NETCONF_RUNNING_NODEID.getNodeType();
         }
         return super.deleteConfig(targetDatastore);
     }
@@ -217,7 +217,9 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
 
     private DataContainerChild getDefaultOperationNode(EffectiveOperation defaultEffectiveOperation) {
         final String opString = defaultEffectiveOperation.name().toLowerCase(Locale.US);
-        return Builders.leafBuilder().withNodeIdentifier(NETCONF_DEFAULT_OPERATION_NODEID)
+        return Builders.leafBuilder().withNodeIdentifier(NodeIdentifier.create(
+                        org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.nmda.rev190107
+                                .YangModuleInfoImpl.qnameOf("default-operation")))
                 .withValue(opString).build();
     }
 

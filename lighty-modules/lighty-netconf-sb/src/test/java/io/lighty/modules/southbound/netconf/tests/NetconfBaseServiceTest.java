@@ -79,7 +79,7 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
 
         NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true, baseSchema);
         NetconfMessage netconfMessage = transformer.toRpcRequest(
-                NetconfMessageTransformUtil.NETCONF_GET_QNAME, capturedNN.getValue());
+                NetconfMessageTransformUtil.NETCONF_GET_NODEID.getNodeType(), capturedNN.getValue());
         Element getElement =
                 getSpecificElementSubtree(netconfMessage.getDocument().getDocumentElement(), QNAME_BASE, "get");
         assertNotNull(getElement);
@@ -117,8 +117,8 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
         assertTrue(hasSpecificChild(children, "filter"));
 
         NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true, baseSchema);
-        NetconfMessage netconfMessage = transformer.toRpcRequest(NetconfMessageTransformUtil.NETCONF_GET_CONFIG_QNAME,
-                capturedNN.getValue());
+        NetconfMessage netconfMessage = transformer.toRpcRequest(NetconfMessageTransformUtil.NETCONF_GET_CONFIG_NODEID
+                        .getNodeType(), capturedNN.getValue());
         Element getElement =
                 getSpecificElementSubtree(netconfMessage.getDocument().getDocumentElement(), QNAME_BASE, "get-config");
         assertNotNull(getElement);
@@ -174,7 +174,7 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
 
         NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true, baseSchema);
         NetconfMessage netconfMessage = transformer.toRpcRequest(
-                NetconfMessageTransformUtil.NETCONF_EDIT_CONFIG_QNAME, capturedNN.getValue());
+                NetconfMessageTransformUtil.NETCONF_EDIT_CONFIG_NODEID.getNodeType(), capturedNN.getValue());
         Element editData =
                 getSpecificElementSubtree(netconfMessage.getDocument().getDocumentElement(), QNAME_BASE, "edit-config");
         assertNotNull(editData);
