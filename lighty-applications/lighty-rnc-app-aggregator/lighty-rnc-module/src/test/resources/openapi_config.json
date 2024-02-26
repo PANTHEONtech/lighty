@@ -40,7 +40,7 @@
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:toaster-app-config", "name": "toaster-app-config", "revision": "2016-05-03" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:core:general-entity", "name": "general-entity", "revision": "2015-08-20" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:dom:pingpong", "name": "opendaylight-pingpong-broker", "revision": "2014-11-07" },
-                { "nameSpace": "urn:sal:restconf:event:subscription", "name": "sal-remote-augment", "revision": "2014-07-08" },
+                { "nameSpace": "urn:sal:restconf:event:subscription", "name": "sal-remote-augment", "revision": "2023-11-03" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:netty", "name": "netty", "revision": "2013-11-19" },
                 { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-library", "name": "ietf-yang-library", "revision": "2019-01-04" },
                 { "nameSpace": "urn:ietf:params:xml:ns:yang:ospf-topology", "name": "ospf-topology", "revision": "2013-07-12" },

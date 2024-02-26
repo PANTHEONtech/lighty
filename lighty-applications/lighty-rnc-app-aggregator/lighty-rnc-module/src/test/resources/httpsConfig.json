@@ -30,7 +30,7 @@
         { "usedBy": "RESTCONF", "name": "ietf-restconf-monitoring", "revision": "2017-01-26", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-restconf-monitoring"},
         { "usedBy": "RESTCONF", "name": "subscribe-to-notification", "revision": "2016-10-28", "nameSpace": "subscribe:to:notification"},
         { "usedBy": "RESTCONF", "name": "ietf-restconf", "revision": "2017-01-26", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-restconf"},
-        { "usedBy": "RESTCONF", "name": "sal-remote-augment", "revision": "2014-07-08", "nameSpace": "urn:sal:restconf:event:subscription"},
+        { "usedBy": "RESTCONF", "name": "sal-remote-augment", "revision": "2023-11-03", "nameSpace": "urn:sal:restconf:event:subscription"},
         { "usedBy": "RESTCONF", "name": "instance-identifier-patch-module", "revision": "2015-11-21", "nameSpace": "instance:identifier:patch:module"},
         { "usedBy": "RESTCONF/NETCONF", "name": "ietf-yang-library", "revision": "2019-01-04", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-library"},
         { "usedBy": "NETCONF", "name": "netconf-keystore", "revision": "2017-10-17", "nameSpace": "urn:opendaylight:netconf:keystore"},
