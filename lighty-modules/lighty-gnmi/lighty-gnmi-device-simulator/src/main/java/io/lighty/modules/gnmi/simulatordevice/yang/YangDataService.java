@@ -126,11 +126,11 @@ public class YangDataService {
              If QName of parsed node is a root node (SchemaContext.NAME), that means we parsed multiple
               top-level element, in that case we need to write this node on ROOT YII.
             */
-            if (node.getIdentifier().getNodeType().equals(SchemaContext.NAME)) {
+            if (node.name().getNodeType().equals(SchemaContext.NAME)) {
                 writeDataByPath(datastoreType, YangInstanceIdentifier.empty(), node);
             // Else we parsed only one top-level element, in that case we write this node on it's identifier.
             } else {
-                writeDataByPath(datastoreType, YangInstanceIdentifier.of(node.getIdentifier().getNodeType()), node);
+                writeDataByPath(datastoreType, YangInstanceIdentifier.of(node.name().getNodeType()), node);
             }
 
         } catch (final IOException e) {

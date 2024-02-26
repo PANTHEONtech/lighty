@@ -72,7 +72,7 @@ public final class DataConverter {
                                                         final JSONCodecFactory jsonCodecFactory) {
         final Writer writer = new StringWriter();
         final JsonWriter jsonWriter = new JsonWriter(writer);
-        final XMLNamespace namespace = data.getIdentifier().getNodeType().getNamespace();
+        final XMLNamespace namespace = data.name().getNodeType().getNamespace();
         final NormalizedNodeStreamWriter nodeWriter = JSONNormalizedNodeStreamWriter
                 .createExclusiveWriter(jsonCodecFactory, inference, namespace, jsonWriter);
         final NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(nodeWriter);
@@ -91,7 +91,7 @@ public final class DataConverter {
                                                      final JSONCodecFactory jsonCodecFactory) {
         final Writer writer = new StringWriter();
         final JsonWriter jsonWriter = new JsonWriter(writer);
-        final XMLNamespace namespace = data.getIdentifier().getNodeType().getNamespace();
+        final XMLNamespace namespace = data.name().getNodeType().getNamespace();
         final NormalizedNodeStreamWriter nodeWriter = JSONNormalizedNodeStreamWriter
                 .createNestedWriter(jsonCodecFactory, inference, namespace, jsonWriter);
         final NormalizedNodeWriter normalizedNodeWriter = NormalizedNodeWriter.forStreamWriter(nodeWriter);

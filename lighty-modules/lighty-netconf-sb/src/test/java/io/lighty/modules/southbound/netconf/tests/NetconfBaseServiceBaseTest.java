@@ -67,7 +67,7 @@ public abstract class NetconfBaseServiceBaseTest {
     boolean hasSpecificChild(final Collection<DataContainerChild> children,
                                      final String localName) {
         return children.stream()
-                .anyMatch(child -> child.getIdentifier().getNodeType().getLocalName().equals(localName));
+                .anyMatch(child -> child.name().getNodeType().getLocalName().equals(localName));
     }
 
     Element getSpecificElementSubtree(final Element doc, final String namespace, final String localName) {

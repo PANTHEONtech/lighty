@@ -81,7 +81,7 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
         assertTrue(hasSpecificChild(children, "filter-spec"));
 
         Optional<DataContainerChild> filter = children.stream()
-                .filter(child -> child.getIdentifier().getNodeType().getLocalName().equals("filter-spec")).findAny();
+                .filter(child -> child.name().getNodeType().getLocalName().equals("filter-spec")).findAny();
         assertTrue(filter.isPresent());
 
         NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true, baseSchema);

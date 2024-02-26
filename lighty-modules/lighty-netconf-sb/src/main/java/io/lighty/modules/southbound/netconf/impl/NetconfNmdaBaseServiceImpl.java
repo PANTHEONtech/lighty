@@ -144,7 +144,7 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
                 .map(oper -> leafMetadata(dataPath, oper))
                 .orElse(null);
         final SchemaInferenceStack stack = SchemaInferenceStack.of(getEffectiveModelContext());
-        stack.enterSchemaTree(editNNContent.getIdentifier().getNodeType());
+        stack.enterSchemaTree(editNNContent.name().getNodeType());
         final AnydataNode<NormalizedAnydata> editContent = new ImmutableAnydataNodeBuilder<>(NormalizedAnydata.class)
                 .withNodeIdentifier(NETCONF_EDIT_DATA_CONFIG_NODEID)
                 .withValue(NormalizedAnydata.of(stack.toInference(), editNNContent, metadata))
@@ -266,7 +266,7 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
     private ChoiceNode getFilterSpecChoiceNode(final YangInstanceIdentifier filterYII) {
         final NormalizedNode filterNN = ImmutableNodes.fromInstanceId(getEffectiveModelContext(), filterYII);
         final SchemaInferenceStack stack = SchemaInferenceStack.of(getEffectiveModelContext());
-        stack.enterSchemaTree(filterNN.getIdentifier().getNodeType());
+        stack.enterSchemaTree(filterNN.name().getNodeType());
         final AnydataNode<NormalizedAnydata> subtreeFilter =
                 (AnydataNode<NormalizedAnydata>) new ImmutableAnydataNodeBuilder(NormalizedAnydata.class)
                         .withNodeIdentifier(NETCONF_FILTER_NODEID)
