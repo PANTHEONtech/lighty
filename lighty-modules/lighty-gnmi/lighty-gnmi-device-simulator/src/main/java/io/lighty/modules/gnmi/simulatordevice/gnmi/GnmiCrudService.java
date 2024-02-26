@@ -143,7 +143,7 @@ public class GnmiCrudService {
     Map.Entry<Gnmi.Path, String> getResultInJsonFormat(final Map.Entry<Gnmi.Path, YangInstanceIdentifier> entry,
                                                        final NormalizedNode node) {
         final Optional<? extends Module> module
-                = DataConverter.findModuleByQName(node.getIdentifier().getNodeType(), context);
+                = DataConverter.findModuleByQName(node.name().getNodeType(), context);
         final String moduleName = module.map(Module::getName).orElse(null);
 
         final String jsonValue = DataConverter.jsonStringFromNormalizedNodes(entry.getValue(), node, context);

@@ -106,9 +106,9 @@ public class XmlNodeConverter implements NodeConverter {
         } catch (XMLStreamException | FactoryConfigurationError e) {
             throw new SerializationException(e);
         }
-        final XMLNamespace namespace = normalizedNode.getIdentifier().getNodeType().getNamespace();
+        final XMLNamespace namespace = normalizedNode.name().getNodeType().getNamespace();
         // Input/output
-        final String localName = normalizedNode.getIdentifier().getNodeType().getLocalName();
+        final String localName = normalizedNode.name().getNodeType().getLocalName();
         final NormalizedNodeStreamWriter nnStreamWriter = XMLStreamNormalizedNodeStreamWriter
                 .create(xmlStreamWriter, inference);
         try (NormalizedNodeWriter nnWriter = NormalizedNodeWriter.forStreamWriter(nnStreamWriter)) {

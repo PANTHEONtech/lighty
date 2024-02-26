@@ -95,7 +95,7 @@ public class JsonNodeConverter implements NodeConverter {
     public Writer serializeData(final Inference inference,
             final NormalizedNode normalizedNode) throws SerializationException {
         final Writer writer = new StringWriter();
-        final XMLNamespace initialNamespace = normalizedNode.getIdentifier().getNodeType().getNamespace();
+        final XMLNamespace initialNamespace = normalizedNode.name().getNodeType().getNamespace();
         // nnStreamWriter closes underlying JsonWriter, we don't need too
         final JsonWriter jsonWriter = new JsonWriter(writer);
         // Exclusive nnWriter closes underlying NormalizedNodeStreamWriter, we don't need too
@@ -127,9 +127,9 @@ public class JsonNodeConverter implements NodeConverter {
             final NormalizedNode normalizedNode) throws SerializationException {
         Preconditions.checkState(normalizedNode instanceof ContainerNode,
                 "RPC input/output to serialize is expected to be a ContainerNode");
-        final XMLNamespace namespace = normalizedNode.getIdentifier().getNodeType().getNamespace();
+        final XMLNamespace namespace = normalizedNode.name().getNodeType().getNamespace();
         // Input/output
-        final String localName = normalizedNode.getIdentifier().getNodeType().getLocalName();
+        final String localName = normalizedNode.name().getNodeType().getLocalName();
         final Writer writer = new StringWriter();
         // nnStreamWriter closes underlying JsonWriter, we don't need too
         final JsonWriter jsonWriter = new JsonWriter(writer);

@@ -232,7 +232,7 @@ public class GnmiWithoutRestconfTest {
         final YangInstanceIdentifier interfacesYIID = YangInstanceIdentifier.builder().node(INTERFACES_QNAME).build();
         final Optional<NormalizedNode> normalizedNode = readDOMConfigData(domDataBroker, interfacesYIID);
         assertTrue(normalizedNode.isPresent());
-        assertEquals(INTERFACES_QNAME, normalizedNode.get().getIdentifier().getNodeType());
+        assertEquals(INTERFACES_QNAME, normalizedNode.get().name().getNodeType());
 
         //SET data
         final YangInstanceIdentifier testLeafListYIID = YangInstanceIdentifier.builder()
@@ -243,7 +243,7 @@ public class GnmiWithoutRestconfTest {
         //GET created data
         final Optional<NormalizedNode> createdContainer = readDOMConfigData(domDataBroker, testLeafListYIID);
         assertTrue(createdContainer.isPresent());
-        assertEquals(TEST_DATA_CONTAINER_QN, createdContainer.get().getIdentifier().getNodeType());
+        assertEquals(TEST_DATA_CONTAINER_QN, createdContainer.get().name().getNodeType());
 
         //UPDATE data
         final ContainerNode updateTestDataContainerNode = getUpdateTestDataContainerNode();
@@ -252,7 +252,7 @@ public class GnmiWithoutRestconfTest {
         //GET updated data
         final Optional<NormalizedNode> updatedContainer = readDOMConfigData(domDataBroker, testLeafListYIID);
         assertTrue(updatedContainer.isPresent());
-        assertEquals(TEST_DATA_CONTAINER_QN, updatedContainer.get().getIdentifier().getNodeType());
+        assertEquals(TEST_DATA_CONTAINER_QN, updatedContainer.get().name().getNodeType());
         assertTrue(updatedContainer.get() instanceof ContainerNode);
         ContainerNode containerNode = (ContainerNode) updatedContainer.get();
         assertEquals(1, containerNode.body().toArray().length);
