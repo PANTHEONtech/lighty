@@ -24,6 +24,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.model.spi.source.DelegatedYangTextSource;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.parser.rfc7950.reactor.RFC7950Reactors;
 import org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangStatementStreamSource;
@@ -111,7 +112,7 @@ public class EffectiveModelContextBuilder {
                 final ByteSource sanitizedYangByteSource = YangModelSanitizer
                         .removeRegexpPosix(com.google.common.io.Files.asByteSource(file));
                 final YangStatementStreamSource statementSource = YangStatementStreamSource.create(
-                        YangTextSchemaSource.delegateForByteSource(
+                        new DelegatedYangTextSource(
                                 YangTextSchemaSource.identifierFromFilename(file.getName()),
                                 sanitizedYangByteSource, StandardCharsets.UTF_8));
 
@@ -133,7 +134,7 @@ public class EffectiveModelContextBuilder {
                 final ByteSource sanitizedYangByteSource = YangModelSanitizer
                         .removeRegexpPosix(yangModuleInfo.getYangTextByteSource());
                 final YangStatementStreamSource statementSource
-                        = YangStatementStreamSource.create(YangTextSchemaSource.delegateForByteSource(
+                        = YangStatementStreamSource.create(new DelegatedYangTextSource(
                         YangTextSchemaSource.identifierFromFilename(yangModuleInfo.getName().getLocalName() + ".yang"),
                         sanitizedYangByteSource, StandardCharsets.UTF_8));
                 sourceArrayList.add(statementSource);

@@ -37,6 +37,7 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.ModuleImport;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.model.spi.source.DelegatedYangTextSource;
 import org.opendaylight.yangtools.yang.parser.api.YangSyntaxErrorException;
 import org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangModelDependencyInfo;
 import org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangStatementStreamSource;
@@ -230,12 +231,12 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
 
     private YangTextSchemaSource makeTextSchemaSource(final GnmiYangModel model) {
         if (model.getVersion().getValue().matches(SchemaConstants.REVISION_REGEX)) {
-            return YangTextSchemaSource.delegateForByteSource(
+            return new DelegatedYangTextSource(
                     new SourceIdentifier(UnresolvedQName.Unqualified.of(model.getName()),
                             Revision.of(model.getVersion().getValue())), bodyByteSource(model.getBody()),
                 StandardCharsets.UTF_8);
         } else {
-            return YangTextSchemaSource.delegateForByteSource(new SourceIdentifier(model.getName()),
+            return new DelegatedYangTextSource(new SourceIdentifier(model.getName()),
                     bodyByteSource(model.getBody()), StandardCharsets.UTF_8);
         }
 

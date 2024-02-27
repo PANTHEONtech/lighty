@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.model.spi.source.DelegatedYangTextSource;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.parser.rfc7950.reactor.RFC7950Reactors;
 import org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangStatementStreamSource;
@@ -46,7 +47,7 @@ public final class FileUtils {
 
             for (File file : filesInFolder) {
                 final YangStatementStreamSource statementSource = YangStatementStreamSource.create(
-                        YangTextSchemaSource.delegateForByteSource(
+                        new DelegatedYangTextSource(
                                 YangTextSchemaSource.identifierFromFilename(file.getName()),
                                 com.google.common.io.Files.asByteSource(file), StandardCharsets.UTF_8));
 

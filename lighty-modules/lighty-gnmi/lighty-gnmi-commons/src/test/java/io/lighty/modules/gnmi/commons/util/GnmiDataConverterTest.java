@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.model.spi.source.DelegatedYangTextSource;
 import org.opendaylight.yangtools.yang.parser.api.YangSyntaxErrorException;
 import org.opendaylight.yangtools.yang.parser.rfc7950.reactor.RFC7950Reactors;
 import org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangStatementStreamSource;
@@ -57,10 +57,9 @@ class GnmiDataConverterTest {
             String content = new String(bytes); // Convert byte[] to String
 
             final YangStatementStreamSource yangModelRootSource = YangStatementStreamSource.create(
-                YangTextSchemaSource.delegateForCharSource(
-                    YangTextSchemaSource.identifierFromFilename(modelName),
-                    CharSource.wrap(content))); // Pass String as argument
-
+                    new DelegatedYangTextSource(
+                        YangTextSchemaSource.identifierFromFilename(modelName),
+                        CharSource.wrap(content))); // Pass String as argument
             buildAction.addSource(yangModelRootSource);
         }
 
