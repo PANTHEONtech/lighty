@@ -28,7 +28,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.opendaylight.yangtools.yang.common.YangConstants;
-import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.model.api.source.YangTextSource;
+import org.opendaylight.yangtools.yang.model.spi.source.FileYangTextSource;
 import org.opendaylight.yangtools.yang.parser.api.YangParser;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
@@ -68,7 +69,7 @@ public class ByPathYangLoaderService implements YangLoaderService {
 
             for (Path path : paths) {
                 try (InputStream bodyInputStream = Files.newInputStream(path)) {
-                    final YangTextSchemaSource yangTextSchemaSource = YangTextSchemaSource.forPath(path);
+                    final YangTextSource yangTextSchemaSource = new FileYangTextSource(path);
                     // This validates the yang
                     this.yangParser.addSource(yangTextSchemaSource);
                     final YangLoadModelUtil yangLoadModelUtil = new YangLoadModelUtil(yangTextSchemaSource,
