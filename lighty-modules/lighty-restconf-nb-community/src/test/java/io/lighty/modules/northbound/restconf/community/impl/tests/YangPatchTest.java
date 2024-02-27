@@ -21,7 +21,7 @@ import org.opendaylight.restconf.common.patch.PatchEntity;
 import org.opendaylight.restconf.common.patch.PatchStatusContext;
 import org.opendaylight.restconf.common.patch.PatchStatusEntity;
 import org.opendaylight.restconf.nb.rfc8040.rests.transactions.MdsalRestconfStrategy;
-import org.opendaylight.restconf.nb.rfc8040.rests.utils.PatchDataTransactionUtil;
+import org.opendaylight.restconf.server.api.DatabindContext;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -61,13 +61,20 @@ public class YangPatchTest extends CommunityRestConfTestBase {
         final PatchEntity entityReplace = new PatchEntity("edit1", REPLACE, targetNodeMerge, patchContainerNode);
         final PatchContext patchContext = new PatchContext("test-patch" ,List.of(entityReplace));
 
-        final PatchStatusContext patchStatusContext = PatchDataTransactionUtil.patchData(patchContext,
-                new MdsalRestconfStrategy(getLightyController().getServices().getClusteredDOMDataBroker()),
-                getLightyController().getServices().getDOMSchemaService().getGlobalContext());
-        for (final PatchStatusEntity entity : patchStatusContext.getEditCollection()) {
+        final var strategy = new MdsalRestconfStrategy(DatabindContext.ofModel(getLightyController()
+                .getServices().getEffectiveModelContext()), getLightyController().getServices()
+                .getClusteredDOMDataBroker(), getLightyController().getServices().getDOMRpcService(),
+                getLightyController().getServices()
+                        .getDOMActionService(), getLightyController().getServices().getYangTextSourceExtension(),
+                getLightyController().getServices()
+                        .getDOMMountPointService());
+
+        final PatchStatusContext patchStatusContext = strategy.patchData(patchContext).get().status();
+
+        for (final PatchStatusEntity entity : patchStatusContext.editCollection()) {
             assertTrue(entity.isOk());
         }
-        assertTrue(patchStatusContext.isOk());
+        assertTrue(patchStatusContext.ok());
 
         final ContainerNode response = (ContainerNode) getLightyController().getServices().getClusteredDOMDataBroker()
                 .newReadOnlyTransaction()
