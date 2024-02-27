@@ -7,20 +7,25 @@
  */
 package io.lighty.openapi;
 
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.google.common.annotations.VisibleForTesting;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.server.LightyServerBuilder;
+import java.util.Set;
+import javax.servlet.http.HttpServlet;
+import javax.ws.rs.core.Application;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
+import org.opendaylight.restconf.nb.rfc8040.streams.RestconfStreamServletFactory;
 import org.opendaylight.restconf.openapi.api.OpenApiService;
 import org.opendaylight.restconf.openapi.impl.OpenApiServiceImpl;
-import org.opendaylight.restconf.openapi.jaxrs.OpenApiApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,11 +61,26 @@ public class OpenApiLighty extends AbstractLightyModule {
         LOG.info("basePath: {}", basePathString);
 
         this.apiDocService = new OpenApiServiceImpl(lightyServices.getDOMSchemaService(),
-            lightyServices.getDOMMountPointService(), basePathString);
+                lightyServices.getDOMMountPointService(), new RestconfStreamServletFactory() {
+                    @Override
+                    public @NonNull String restconf() {
+                        return basePathString;
+                    }
 
-        OpenApiApplication apiDocApplication = new OpenApiApplication(apiDocService);
+                    @Override
+                    public @NonNull HttpServlet newStreamServlet() {
+                        return new DefaultServlet();
+                    }
+                });
 
-        ServletContainer restServletContainer = new ServletContainer(ResourceConfig.forApplication(apiDocApplication));
+        final ServletContainer restServletContainer = new ServletContainer(ResourceConfig
+                .forApplication((new Application() {
+                    @Override
+                    public Set<Object> getSingletons() {
+                        return Set.of(apiDocService, new JacksonJaxbJsonProvider());
+                    }
+                })));
+
         ServletHolder restServletHolder = new ServletHolder(restServletContainer);
 
         ContextHandlerCollection contexts = new ContextHandlerCollection();
