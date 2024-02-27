@@ -8,6 +8,7 @@
 
 package io.lighty.openapi;
 
+import java.io.IOException;
 import java.net.URI;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
@@ -30,11 +31,11 @@ public abstract class OpenApiLightyTest extends OpenApiLightyTestBase {
         assertSuccessResponse(getOpenApiModule().getApiDocService().getListOfMounts(uriInfo));
     }
 
-    public void testGetAllModulesDoc(UriInfo uriInfo) {
+    public void testGetAllModulesDoc(UriInfo uriInfo) throws IOException {
         assertSuccessResponse(getOpenApiModule().getApiDocService().getAllModulesDoc(uriInfo));
     }
 
-    public void testGetDocByModule(UriInfo uriInfo, String modelName, String revisionDate) {
+    public void testGetDocByModule(UriInfo uriInfo, String modelName, String revisionDate) throws IOException {
         assertSuccessResponse(getOpenApiModule().getApiDocService().getDocByModule(modelName, revisionDate, uriInfo));
     }
 

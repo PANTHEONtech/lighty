@@ -8,6 +8,7 @@
 
 package io.lighty.openapi;
 
+import java.io.IOException;
 import org.testng.annotations.Test;
 
 public class OpenApiLightyRFC8040Test extends OpenApiLightyTest {
@@ -27,13 +28,13 @@ public class OpenApiLightyRFC8040Test extends OpenApiLightyTest {
 
 
     @Test
-    public void testGetAllModulesDocOpenApi3() {
+    public void testGetAllModulesDocOpenApi3() throws IOException {
         super.testGetAllModulesDoc(mockUriInfo(OPENAPI_BASE_URI + "/api/v3/single"));
     }
 
 
     @Test
-    public void testGetDocByModuleOpenApi3() {
+    public void testGetDocByModuleOpenApi3() throws IOException {
         String path = OPENAPI_BASE_URI + "/api/v3/" + DEFAULT_MODEL_NAME + "(" + DEFAULT_REVISION_DATE + ")";
         super.testGetDocByModule(mockUriInfo(path), DEFAULT_MODEL_NAME, DEFAULT_REVISION_DATE);
     }
