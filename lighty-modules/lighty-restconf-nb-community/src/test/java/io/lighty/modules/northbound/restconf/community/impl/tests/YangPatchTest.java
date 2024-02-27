@@ -7,7 +7,6 @@
  */
 package io.lighty.modules.northbound.restconf.community.impl.tests;
 
-import static org.opendaylight.restconf.common.patch.PatchEditOperation.REPLACE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
@@ -22,6 +21,7 @@ import org.opendaylight.restconf.common.patch.PatchStatusContext;
 import org.opendaylight.restconf.common.patch.PatchStatusEntity;
 import org.opendaylight.restconf.nb.rfc8040.rests.transactions.MdsalRestconfStrategy;
 import org.opendaylight.restconf.server.api.DatabindContext;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.patch.rev170222.yang.patch.yang.patch.Edit;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -58,8 +58,9 @@ public class YangPatchTest extends CommunityRestConfTestBase {
                 .node(CONTAINER_ID)
                 .build();
 
-        final PatchEntity entityReplace = new PatchEntity("edit1", REPLACE, targetNodeMerge, patchContainerNode);
-        final PatchContext patchContext = new PatchContext("test-patch" ,List.of(entityReplace));
+        final PatchEntity entityReplace = new PatchEntity("edit1", Edit.Operation.Replace, targetNodeMerge,
+                patchContainerNode);
+        final PatchContext patchContext = new PatchContext("test-patch", List.of(entityReplace));
 
         final var strategy = new MdsalRestconfStrategy(DatabindContext.ofModel(getLightyController()
                 .getServices().getEffectiveModelContext()), getLightyController().getServices()
