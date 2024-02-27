@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.model.spi.source.DelegatedYangTextSource;
 import org.opendaylight.yangtools.yang.parser.api.YangParser;
 import org.opendaylight.yangtools.yang.parser.api.YangSyntaxErrorException;
 import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
@@ -54,7 +55,7 @@ public class ByClassPathYangLoaderService implements YangLoaderService {
     public List<GnmiDeviceCapability> load(final YangDataStoreService storeService) throws YangLoadException {
         final List<GnmiDeviceCapability> loadedModels = new ArrayList<>();
         for (YangModuleInfo yangModuleInfo : this.yangModulesInfo) {
-            final YangTextSchemaSource yangTextSchemaSource = YangTextSchemaSource.delegateForByteSource(
+            final DelegatedYangTextSource yangTextSchemaSource = new DelegatedYangTextSource(
                     YangTextSchemaSource.identifierFromFilename(
                             yangModuleInfo.getName().getLocalName() + ".yang"),
                     yangModuleInfo.getYangTextByteSource(), StandardCharsets.UTF_8);
