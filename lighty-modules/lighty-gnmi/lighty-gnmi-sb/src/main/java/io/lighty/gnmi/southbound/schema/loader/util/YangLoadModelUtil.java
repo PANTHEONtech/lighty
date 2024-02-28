@@ -35,7 +35,7 @@ public class YangLoadModelUtil {
     public YangLoadModelUtil(final YangTextSource yangTextSchemaSource, final InputStream yangTextStream)
             throws YangSyntaxErrorException, IOException {
         final var irSchemaSource = TextToIRTransformer.transformText(yangTextSchemaSource);
-        final var semanticVersion = getSemVer(irSchemaSource.getRootStatement());
+        final var semanticVersion = getSemVer(irSchemaSource.statement());
 
         final YangModelDependencyInfo yangModelDependencyInfo =
                 YangModelDependencyInfo.forYangText(yangTextSchemaSource);
