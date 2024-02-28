@@ -9,8 +9,8 @@
 package io.lighty.modules.gnmi.commons.util;
 
 import com.google.common.io.ByteSource;
+import com.google.common.io.CharSource;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,10 +43,9 @@ public final class YangModelSanitizer {
      * @return Sanitized regex posix inside YANG model regex patterns.
      * @throws IOException Throw when is execute {@link ByteSource#read()}
      */
-    public static ByteSource removeRegexpPosix(final ByteSource data) throws IOException {
-        final String textModel = new String(data.read(), StandardCharsets.UTF_8);
-        final String sanitizedModel = removeRegexpPosix(textModel);
-        return ByteSource.wrap(sanitizedModel.getBytes(StandardCharsets.UTF_8));
+    public static CharSource removeRegexpPosix(final CharSource data) throws IOException {
+        final String sanitizedModel = removeRegexpPosix(data.read());
+        return CharSource.wrap(sanitizedModel);
     }
 
     /**

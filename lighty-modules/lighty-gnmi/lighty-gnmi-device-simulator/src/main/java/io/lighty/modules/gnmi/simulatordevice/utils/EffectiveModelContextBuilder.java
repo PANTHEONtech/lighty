@@ -8,7 +8,7 @@
 
 package io.lighty.modules.gnmi.simulatordevice.utils;
 
-import com.google.common.io.ByteSource;
+import com.google.common.io.CharSource;
 import io.lighty.modules.gnmi.commons.util.YangModelSanitizer;
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.model.api.source.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.spi.source.DelegatedYangTextSource;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.parser.rfc7950.reactor.RFC7950Reactors;
@@ -109,12 +109,12 @@ public class EffectiveModelContextBuilder {
                     .map(Path::toFile)
                     .collect(Collectors.toList());
             for (File file : filesInFolder) {
-                final ByteSource sanitizedYangByteSource = YangModelSanitizer
-                        .removeRegexpPosix(com.google.common.io.Files.asByteSource(file));
+                final CharSource sanitizedYangByteSource = YangModelSanitizer
+                        .removeRegexpPosix(com.google.common.io.Files.asCharSource(file, StandardCharsets.UTF_8));
                 final YangStatementStreamSource statementSource = YangStatementStreamSource.create(
                         new DelegatedYangTextSource(
-                                YangTextSchemaSource.identifierFromFilename(file.getName()),
-                                sanitizedYangByteSource, StandardCharsets.UTF_8));
+                                SourceIdentifier.ofYangFileName(file.getName()),
+                                sanitizedYangByteSource));
 
                 sourceArrayList.add(statementSource);
             }
@@ -131,12 +131,12 @@ public class EffectiveModelContextBuilder {
         final ArrayList<YangStatementStreamSource> sourceArrayList = new ArrayList<>();
         for (YangModuleInfo yangModuleInfo : yangModulesInfo) {
             try {
-                final ByteSource sanitizedYangByteSource = YangModelSanitizer
-                        .removeRegexpPosix(yangModuleInfo.getYangTextByteSource());
+                final CharSource sanitizedYangByteSource = YangModelSanitizer
+                        .removeRegexpPosix(yangModuleInfo.getYangTextCharSource());
                 final YangStatementStreamSource statementSource
                         = YangStatementStreamSource.create(new DelegatedYangTextSource(
-                        YangTextSchemaSource.identifierFromFilename(yangModuleInfo.getName().getLocalName() + ".yang"),
-                        sanitizedYangByteSource, StandardCharsets.UTF_8));
+                        SourceIdentifier.ofYangFileName(yangModuleInfo.getName().getLocalName() + ".yang"),
+                        sanitizedYangByteSource));
                 sourceArrayList.add(statementSource);
             } catch (IOException | YangParserException e) {
                 final String errorMsg = String.format("Failed to create YangStatementStreamSource from"

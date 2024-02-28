@@ -18,7 +18,7 @@ import org.opendaylight.yangtools.openconfig.model.api.OpenConfigStatements;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.ir.IRArgument.Single;
 import org.opendaylight.yangtools.yang.ir.IRStatement;
-import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.model.api.source.YangTextSource;
 import org.opendaylight.yangtools.yang.parser.api.YangSyntaxErrorException;
 import org.opendaylight.yangtools.yang.parser.rfc7950.repo.TextToIRTransformer;
 import org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangModelDependencyInfo;
@@ -32,7 +32,7 @@ public class YangLoadModelUtil {
     private final String modelBody;
     private final String modelName;
 
-    public YangLoadModelUtil(final YangTextSchemaSource yangTextSchemaSource, final InputStream yangTextStream)
+    public YangLoadModelUtil(final YangTextSource yangTextSchemaSource, final InputStream yangTextStream)
             throws YangSyntaxErrorException, IOException {
         final var irSchemaSource = TextToIRTransformer.transformText(yangTextSchemaSource);
         final var semanticVersion = getSemVer(irSchemaSource.getRootStatement());
@@ -40,7 +40,7 @@ public class YangLoadModelUtil {
         final YangModelDependencyInfo yangModelDependencyInfo =
                 YangModelDependencyInfo.forYangText(yangTextSchemaSource);
         // If revision is present in fileName, prefer that
-        this.modelRevision = Optional.ofNullable(yangTextSchemaSource.name().revision())
+        this.modelRevision = Optional.ofNullable(yangTextSchemaSource.sourceId().revision())
                 .or(yangModelDependencyInfo::getRevision).orElse(null);
         this.modelSemVer = semanticVersion.orElse(null);
         this.modelBody = IOUtils.toString(yangTextStream, StandardCharsets.UTF_8);
