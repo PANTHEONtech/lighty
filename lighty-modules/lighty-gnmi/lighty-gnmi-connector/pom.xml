@@ -43,6 +43,11 @@
             <artifactId>aaa-encrypt-service</artifactId>
             <scope>test</scope>
         </dependency>
+      <dependency>
+        <groupId>io.lighty.modules</groupId>
+        <artifactId>lighty-aaa</artifactId>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
 
 </project>

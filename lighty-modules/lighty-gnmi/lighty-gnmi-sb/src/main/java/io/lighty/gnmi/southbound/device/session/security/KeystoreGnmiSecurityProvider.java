@@ -8,6 +8,7 @@
 
 package io.lighty.gnmi.southbound.device.session.security;
 
+import io.lighty.aaa.util.AAAConfigUtils;
 import io.lighty.gnmi.southbound.schema.certstore.service.CertificationStorageService;
 import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
 import io.lighty.modules.gnmi.connector.configuration.SecurityFactory;
@@ -20,7 +21,6 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.opendaylight.aaa.encrypt.PKIUtil;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.Keystore;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.GnmiNode;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.security.SecurityChoice;
@@ -99,7 +99,7 @@ public class KeystoreGnmiSecurityProvider implements GnmiSecurityProvider {
 
     private KeyPair getKeyPair(final String clientKey, final String passphrase) throws SessionSecurityException {
         try {
-            return new PKIUtil().decodePrivateKey(
+            return AAAConfigUtils.decodePrivateKey(
                     new StringReader(this.certService
                             .decrypt(clientKey)
                             .replace("\\\\n", "\n")),

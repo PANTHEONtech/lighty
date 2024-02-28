@@ -11,6 +11,9 @@ package io.lighty.gnmi.southbound.schema.loader.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.Optional;
 import org.apache.commons.io.IOUtils;
 import org.opendaylight.yangtools.concepts.SemVer;
@@ -40,8 +43,10 @@ public class YangLoadModelUtil {
         final var yangModelDependencyInfo =
                 YangIRSourceInfoExtractor.forYangText(yangTextSchemaSource);
         // If revision is present in fileName, prefer that
-        this.modelRevision = Optional.ofNullable(yangTextSchemaSource.sourceId().revision())
-                .or(yangModelDependencyInfo::revisions).orElse(null);
+        this.modelRevision = yangModelDependencyInfo.revisions().stream()
+                .max(Comparator.comparing(revision -> LocalDate.parse(revision.toString(),
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
+                .orElse(null);
         this.modelSemVer = semanticVersion.orElse(null);
         this.modelBody = IOUtils.toString(yangTextStream, StandardCharsets.UTF_8);
         this.modelName = yangModelDependencyInfo.sourceId().name().getLocalName();
