@@ -16,7 +16,6 @@ import io.lighty.gnmi.southbound.schema.yangstore.service.YangDataStoreService;
 import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -25,7 +24,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.model.api.source.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.spi.source.DelegatedYangTextSource;
 import org.opendaylight.yangtools.yang.parser.api.YangParser;
 import org.opendaylight.yangtools.yang.parser.api.YangSyntaxErrorException;
@@ -56,9 +55,9 @@ public class ByClassPathYangLoaderService implements YangLoaderService {
         final List<GnmiDeviceCapability> loadedModels = new ArrayList<>();
         for (YangModuleInfo yangModuleInfo : this.yangModulesInfo) {
             final DelegatedYangTextSource yangTextSchemaSource = new DelegatedYangTextSource(
-                    YangTextSchemaSource.identifierFromFilename(
+                    SourceIdentifier.ofYangFileName(
                             yangModuleInfo.getName().getLocalName() + ".yang"),
-                    yangModuleInfo.getYangTextByteSource(), StandardCharsets.UTF_8);
+                    yangModuleInfo.getYangTextCharSource());
             try (InputStream yangTextStream = yangModuleInfo.openYangTextStream()) {
                 // This validates the yang
                 this.yangParser.addSource(yangTextSchemaSource);

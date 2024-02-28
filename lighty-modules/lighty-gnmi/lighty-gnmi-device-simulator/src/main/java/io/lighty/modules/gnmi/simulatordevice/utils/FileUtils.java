@@ -8,6 +8,7 @@
 
 package io.lighty.modules.gnmi.simulatordevice.utils;
 
+import com.google.common.io.CharSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.model.api.source.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.spi.source.DelegatedYangTextSource;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.parser.rfc7950.reactor.RFC7950Reactors;
@@ -48,8 +49,8 @@ public final class FileUtils {
             for (File file : filesInFolder) {
                 final YangStatementStreamSource statementSource = YangStatementStreamSource.create(
                         new DelegatedYangTextSource(
-                                YangTextSchemaSource.identifierFromFilename(file.getName()),
-                                com.google.common.io.Files.asByteSource(file), StandardCharsets.UTF_8));
+                                SourceIdentifier.ofYangFileName(file.getName()), CharSource.wrap(
+                                (CharSequence) com.google.common.io.Files.asCharSource(file,StandardCharsets.UTF_8))));
 
                 buildAction.addSource(statementSource);
             }
