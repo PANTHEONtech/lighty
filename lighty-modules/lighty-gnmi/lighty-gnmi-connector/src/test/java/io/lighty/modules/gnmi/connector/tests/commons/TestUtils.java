@@ -9,6 +9,7 @@
 package io.lighty.modules.gnmi.connector.tests.commons;
 
 import com.google.common.io.CharStreams;
+import io.lighty.aaa.util.AAAConfigUtils;
 import io.lighty.modules.gnmi.connector.configuration.SecurityFactory;
 import io.lighty.modules.gnmi.connector.gnmi.session.impl.GnmiSessionFactoryImpl;
 import io.lighty.modules.gnmi.connector.security.Security;
@@ -20,7 +21,6 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
-import org.opendaylight.aaa.encrypt.PKIUtil;
 
 public final class TestUtils {
 
@@ -36,7 +36,7 @@ public final class TestUtils {
     }
 
     public static SessionManager createSessionManagerWithCerts() throws Exception {
-        final KeyPair keyPair = new PKIUtil().decodePrivateKey(new StringReader(readResource(CLIENT_KEY)), PASSPHRASE);
+        final KeyPair keyPair = AAAConfigUtils.decodePrivateKey(new StringReader(readResource(CLIENT_KEY)), PASSPHRASE);
         final Security gnmiSecurity = SecurityFactory.createGnmiSecurity(readResource(CA_CERTS),
                 readResource(CLIENT_CERTS), keyPair.getPrivate());
 

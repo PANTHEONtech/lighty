@@ -14,7 +14,18 @@ import io.lighty.aaa.config.AAAConfiguration;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.security.KeyPair;
+import java.security.Provider;
+import java.security.Security;
 import java.util.Set;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.PEMDecryptorProvider;
+import org.bouncycastle.openssl.PEMEncryptedKeyPair;
+import org.bouncycastle.openssl.PEMKeyPair;
+import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import org.bouncycastle.openssl.jcajce.JcePEMDecryptorProviderBuilder;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +41,13 @@ public final class AAAConfigUtils {
                     .YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.aaa.rev161214
                     .YangModuleInfoImpl.getInstance());
+
+    private static final Provider BCPROV;
+
+    static {
+        final var prov = Security.getProvider(BouncyCastleProvider.PROVIDER_NAME);
+        BCPROV = prov != null ? prov : new BouncyCastleProvider();
+    }
 
     private AAAConfigUtils() {
         // Hide on purpose
@@ -58,6 +76,23 @@ public final class AAAConfigUtils {
         }
 
         return aaaConfiguration;
+    }
+
+    public static KeyPair decodePrivateKey(final Reader reader, final String passphrase) throws IOException {
+        try (PEMParser keyReader = new PEMParser(reader)) {
+            JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
+            PEMDecryptorProvider decryptionProv = new JcePEMDecryptorProviderBuilder().setProvider(BCPROV)
+                    .build(passphrase.toCharArray());
+
+            Object privateKey = keyReader.readObject();
+            KeyPair keyPair;
+            if (privateKey instanceof PEMEncryptedKeyPair pemPrivateKey) {
+                keyPair = converter.getKeyPair(pemPrivateKey.decryptKeyPair(decryptionProv));
+            } else {
+                keyPair = converter.getKeyPair((PEMKeyPair) privateKey);
+            }
+            return keyPair;
+        }
     }
 
     public static AAAConfiguration createDefaultAAAConfiguration() {

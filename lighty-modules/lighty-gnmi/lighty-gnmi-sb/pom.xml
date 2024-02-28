@@ -101,6 +101,10 @@
             <artifactId>aaa-encrypt-service-impl</artifactId>
             <scope>test</scope>
         </dependency>
+      <dependency>
+        <groupId>io.lighty.modules</groupId>
+        <artifactId>lighty-aaa</artifactId>
+      </dependency>
     </dependencies>
 
 </project>
