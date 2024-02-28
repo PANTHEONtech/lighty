@@ -9,16 +9,13 @@
 package io.lighty.gnmi.southbound.schema.impl;
 
 import com.google.common.collect.Sets;
-import com.google.common.io.ByteSource;
+import com.google.common.io.CharSource;
 import io.lighty.gnmi.southbound.capabilities.GnmiDeviceCapability;
 import io.lighty.gnmi.southbound.schema.SchemaConstants;
 import io.lighty.gnmi.southbound.schema.SchemaContextHolder;
 import io.lighty.gnmi.southbound.schema.yangstore.service.YangDataStoreService;
 import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -31,15 +28,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import javax.annotation.Nullable;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.gnmi.yang.models.GnmiYangModel;
-import org.opendaylight.yangtools.yang.common.Revision;
-import org.opendaylight.yangtools.yang.common.UnresolvedQName;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.ModuleImport;
-import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
-import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.model.api.source.SourceDependency;
+import org.opendaylight.yangtools.yang.model.api.source.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.spi.source.DelegatedYangTextSource;
+import org.opendaylight.yangtools.yang.model.spi.source.SourceInfo;
 import org.opendaylight.yangtools.yang.parser.api.YangSyntaxErrorException;
-import org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangModelDependencyInfo;
+import org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangIRSourceInfoExtractor;
 import org.opendaylight.yangtools.yang.parser.rfc7950.repo.YangStatementStreamSource;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
@@ -80,13 +75,13 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
             // Read models reported in capabilities
             fullModelSet = readCapabilities(baseCaps, processedModuleNames, schemaException);
             // Get dependencies of models reported in capabilities
-            Set<YangModelDependencyInfo> dependencyInfos = getDependenciesOfModels(fullModelSet, schemaException);
+            Set<SourceInfo> dependencyInfos = getDependenciesOfModels(fullModelSet, schemaException);
 
             boolean nonComplete = true;
             while (nonComplete) {
                 // Read dependency models
                 Set<GnmiYangModel> dependencyModels = new HashSet<>();
-                for (YangModelDependencyInfo dependencyInfo : dependencyInfos) {
+                for (SourceInfo dependencyInfo : dependencyInfos) {
                     final Set<GnmiYangModel> gnmiYangModels =
                             readDependencyModels(dependencyInfo, processedModuleNames, schemaException);
                     dependencyModels.addAll(gnmiYangModels);
@@ -149,19 +144,19 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
                                 gnmiYangModel.getVersion().getValue()));
             }
         } else {
-            readImport = yangDataStoreService.readYangModel(capability.getName())
+            readImport = yangDataStoreService.readYangModel(capability.toString())
                     .get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         }
 
         return readImport;
     }
 
-    private Set<YangModelDependencyInfo> getDependenciesOfModels(final Set<GnmiYangModel> toCheck,
+    private Set<SourceInfo> getDependenciesOfModels(final Set<GnmiYangModel> toCheck,
                                                                  final SchemaException schemaException) {
-        Set<YangModelDependencyInfo> dependencies = new HashSet<>();
+        Set<SourceInfo> dependencies = new HashSet<>();
         for (GnmiYangModel model : toCheck) {
             try {
-                final YangModelDependencyInfo dependencyInfo = YangModelDependencyInfo.forYangText(
+                final SourceInfo dependencyInfo = YangIRSourceInfoExtractor.forYangText(
                         makeTextSchemaSource(model));
                 dependencies.add(dependencyInfo);
             } catch (IOException | YangSyntaxErrorException e) {
@@ -171,23 +166,37 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
         return dependencies;
     }
 
-    private Set<GnmiYangModel> readDependencyModels(final YangModelDependencyInfo dependencyInfo,
+    private Set<GnmiYangModel> readDependencyModels(final SourceInfo dependencyInfo,
                                                     final Set<String> processedModuleNames,
                                                     final SchemaException schemaException)
             throws InterruptedException, ExecutionException, TimeoutException {
         Set<GnmiYangModel> models = new HashSet<>();
-        for (ModuleImport moduleImport : dependencyInfo.getDependencies()) {
-            if (!processedModuleNames.contains(moduleImport.getModuleName().getLocalName())) {
+        for (SourceDependency.Include moduleImport : dependencyInfo.includes()) {
+            if (!processedModuleNames.contains(moduleImport.name().getLocalName())) {
                 final GnmiDeviceCapability importedCapability = new GnmiDeviceCapability(
-                        moduleImport.getModuleName().getLocalName(), null,
-                        moduleImport.getRevision().orElse(null));
+                        moduleImport.name().getLocalName(), null,
+                        moduleImport.revision());
                 final Optional<GnmiYangModel> gnmiYangModel = tryToReadModel(importedCapability);
                 if (gnmiYangModel.isPresent()) {
                     models.add(gnmiYangModel.get());
                 } else {
                     schemaException.addMissingModel(importedCapability);
                 }
-                processedModuleNames.add(moduleImport.getModuleName().getLocalName());
+                processedModuleNames.add(moduleImport.name().getLocalName());
+            }
+        }
+        for (SourceDependency.Import moduleImport : dependencyInfo.imports()) {
+            if (!processedModuleNames.contains(moduleImport.name().getLocalName())) {
+                final GnmiDeviceCapability importedCapability = new GnmiDeviceCapability(
+                        moduleImport.name().getLocalName(), null,
+                        moduleImport.revision());
+                final Optional<GnmiYangModel> gnmiYangModel = tryToReadModel(importedCapability);
+                if (gnmiYangModel.isPresent()) {
+                    models.add(gnmiYangModel.get());
+                } else {
+                    schemaException.addMissingModel(importedCapability);
+                }
+                processedModuleNames.add(moduleImport.name().getLocalName());
             }
         }
         return models;
@@ -229,26 +238,14 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
         throw schemaException;
     }
 
-    private YangTextSchemaSource makeTextSchemaSource(final GnmiYangModel model) {
-        if (model.getVersion().getValue().matches(SchemaConstants.REVISION_REGEX)) {
-            return new DelegatedYangTextSource(
-                    new SourceIdentifier(UnresolvedQName.Unqualified.of(model.getName()),
-                            Revision.of(model.getVersion().getValue())), bodyByteSource(model.getBody()),
-                StandardCharsets.UTF_8);
-        } else {
-            return new DelegatedYangTextSource(new SourceIdentifier(model.getName()),
-                    bodyByteSource(model.getBody()), StandardCharsets.UTF_8);
-        }
+    private DelegatedYangTextSource makeTextSchemaSource(final GnmiYangModel model) {
+        return new DelegatedYangTextSource(
+                new SourceIdentifier(model.getName()), bodyCharSource(model.getBody()));
 
     }
 
-    private ByteSource bodyByteSource(final String yangBody) {
-        return new ByteSource() {
-            @Override
-            public InputStream openStream() {
-                return new ByteArrayInputStream(yangBody.getBytes(StandardCharsets.UTF_8));
-            }
-        };
+    private CharSource bodyCharSource(final String yangBody) {
+        return CharSource.wrap(yangBody);
     }
 
 }
