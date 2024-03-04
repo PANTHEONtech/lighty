@@ -8,21 +8,21 @@
 
 package io.lighty.gnmi.southbound.mountpoint.broker;
 
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableClassToInstanceMap;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.gnmi.southbound.mountpoint.ops.GnmiGet;
 import io.lighty.gnmi.southbound.mountpoint.ops.GnmiSet;
 import io.lighty.gnmi.southbound.mountpoint.transactions.ReadOnlyTx;
 import io.lighty.gnmi.southbound.mountpoint.transactions.ReadWriteTx;
 import io.lighty.gnmi.southbound.mountpoint.transactions.WriteOnlyTx;
+import java.util.concurrent.Executor;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.dom.api.DOMDataBrokerExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
-import org.opendaylight.mdsal.dom.api.DOMTransactionChainListener;
 import org.opendaylight.mdsal.dom.spi.PingPongMergingDOMDataBroker;
+import org.opendaylight.yangtools.yang.common.Empty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +39,7 @@ public class GnmiDataBroker implements PingPongMergingDOMDataBroker {
     }
 
     @Override
-    public @NonNull DOMTransactionChain createTransactionChain(DOMTransactionChainListener listener) {
+    public @NonNull DOMTransactionChain createTransactionChain() {
         return new DOMTransactionChain() {
             @Override
             public DOMDataTreeReadTransaction newReadOnlyTransaction() {
@@ -52,6 +52,21 @@ public class GnmiDataBroker implements PingPongMergingDOMDataBroker {
             }
 
             @Override
+            public void addCallback(FutureCallback<Empty> callback) {
+                DOMTransactionChain.super.addCallback(callback);
+            }
+
+            @Override
+            public void addCallback(FutureCallback<Empty> callback, Executor executor) {
+                DOMTransactionChain.super.addCallback(callback, executor);
+            }
+
+            @Override
+            public @NonNull ListenableFuture<Empty> future() {
+                return createMergingTransactionChain().future();
+            }
+
+            @Override
             public DOMDataTreeWriteTransaction newWriteOnlyTransaction() {
                 return GnmiDataBroker.this.newWriteOnlyTransaction();
             }
@@ -61,11 +76,6 @@ public class GnmiDataBroker implements PingPongMergingDOMDataBroker {
                 LOG.debug("Closing {} resources", this.getClass().getSimpleName());
             }
         };
-    }
-
-    @Override
-    public @NonNull ClassToInstanceMap<DOMDataBrokerExtension> getExtensions() {
-        return ImmutableClassToInstanceMap.of();
     }
 
     @Override
