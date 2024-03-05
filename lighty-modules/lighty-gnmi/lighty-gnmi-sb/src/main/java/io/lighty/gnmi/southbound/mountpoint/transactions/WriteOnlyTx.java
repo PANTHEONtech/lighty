@@ -10,6 +10,7 @@ package io.lighty.gnmi.southbound.mountpoint.transactions;
 
 import com.google.common.util.concurrent.FluentFuture;
 import io.lighty.gnmi.southbound.mountpoint.ops.GnmiSet;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 
 public class WriteOnlyTx extends AbstractWriteTx {
@@ -24,6 +25,11 @@ public class WriteOnlyTx extends AbstractWriteTx {
 
     @Override
     public synchronized FluentFuture<CommitInfo> performCommit() {
+        return FluentFuture.from(setProvider.set(putList, mergeList, deleteList));
+    }
+
+    @Override
+    public @NonNull FluentFuture<?> completionFuture() {
         return FluentFuture.from(setProvider.set(putList, mergeList, deleteList));
     }
 }
