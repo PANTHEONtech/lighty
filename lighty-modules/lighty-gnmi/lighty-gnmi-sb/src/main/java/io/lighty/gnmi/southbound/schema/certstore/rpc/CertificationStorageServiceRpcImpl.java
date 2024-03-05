@@ -17,6 +17,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import io.lighty.gnmi.southbound.schema.certstore.service.CertificationStorageService;
+import java.security.GeneralSecurityException;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.AddKeystoreCertificate;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.AddKeystoreCertificateInput;
@@ -43,7 +44,13 @@ public class CertificationStorageServiceRpcImpl {
 
     private ListenableFuture<RpcResult<AddKeystoreCertificateOutput>> addKeystoreCertificate(
             final AddKeystoreCertificateInput input) {
-        final ListenableFuture<? extends CommitInfo> writeResult = this.certStorage.writeCertificates(input);
+        final ListenableFuture<? extends CommitInfo> writeResult;
+        try {
+            writeResult = this.certStorage.writeCertificates(input);
+        } catch (GeneralSecurityException e) {
+            LOG.error("Failed do encrypt input {}", input);
+            throw new RuntimeException(e);
+        }
         final SettableFuture<RpcResult<AddKeystoreCertificateOutput>> rpcResult = SettableFuture.create();
 
         Futures.addCallback(writeResult, new FutureCallback<CommitInfo>() {

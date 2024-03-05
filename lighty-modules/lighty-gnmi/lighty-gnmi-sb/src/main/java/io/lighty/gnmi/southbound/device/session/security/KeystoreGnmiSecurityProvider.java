@@ -15,6 +15,7 @@ import io.lighty.modules.gnmi.connector.configuration.SecurityFactory;
 import io.lighty.modules.gnmi.connector.security.Security;
 import java.io.IOException;
 import java.io.StringReader;
+import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.cert.CertificateException;
 import java.util.Optional;
@@ -106,6 +107,9 @@ public class KeystoreGnmiSecurityProvider implements GnmiSecurityProvider {
                     this.certService.decrypt(passphrase));
         } catch (IOException e) {
             throw new SessionSecurityException("Error while creating KeyPair from private key and passphrase", e);
+        } catch (GeneralSecurityException e) {
+            LOG.error("Failed do decrypt input {}", clientKey);
+            throw new RuntimeException(e);
         }
     }
 }
