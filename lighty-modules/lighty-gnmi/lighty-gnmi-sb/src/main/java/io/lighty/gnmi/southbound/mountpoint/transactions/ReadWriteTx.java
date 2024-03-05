@@ -10,6 +10,7 @@ package io.lighty.gnmi.southbound.mountpoint.transactions;
 
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
@@ -49,6 +50,11 @@ public class ReadWriteTx implements DOMDataTreeReadWriteTransaction {
     @Override
     public void delete(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
         delegateWriteTx.delete(store, path);
+    }
+
+    @Override
+    public @NonNull FluentFuture<?> completionFuture() {
+        return delegateWriteTx.commit();
     }
 
     @Override
