@@ -8,6 +8,8 @@
 
 package io.lighty.gnmi.southbound.schema.yangstore.rpc;
 
+import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -16,17 +18,18 @@ import com.google.common.util.concurrent.SettableFuture;
 import io.lighty.gnmi.southbound.schema.yangstore.service.YangDataStoreService;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.opendaylight.mdsal.common.api.CommitInfo;
-import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.GnmiYangStorageService;
+import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.UploadYangModel;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.UploadYangModelInput;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.UploadYangModelOutput;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.UploadYangModelOutputBuilder;
+import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.opendaylight.yangtools.yang.common.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class YangStorageServiceRpcImpl implements GnmiYangStorageService {
+public class YangStorageServiceRpcImpl {
     private static final Logger LOG = LoggerFactory.getLogger(YangStorageServiceRpcImpl.class);
 
     private final YangDataStoreService yangDataStoreService;
@@ -35,8 +38,7 @@ public class YangStorageServiceRpcImpl implements GnmiYangStorageService {
         this.yangDataStoreService = yangDataStoreService;
     }
 
-    @Override
-    public ListenableFuture<RpcResult<UploadYangModelOutput>> uploadYangModel(final UploadYangModelInput input) {
+    private ListenableFuture<RpcResult<UploadYangModelOutput>> uploadYangModel(final UploadYangModelInput input) {
         final ListenableFuture<? extends CommitInfo> uploadResultFuture =
                 yangDataStoreService
                         .addYangModel(input.getName(), input.getVersion().getValue(), input.getBody());
@@ -67,4 +69,9 @@ public class YangStorageServiceRpcImpl implements GnmiYangStorageService {
         return rpcResultFuture;
     }
 
+    public ClassToInstanceMap<Rpc<?,?>> getRpcClassToInstanceMap() {
+        return ImmutableClassToInstanceMap.<Rpc<?, ?>>builder()
+                .put(UploadYangModel.class, this::uploadYangModel)
+                .build();
+    }
 }

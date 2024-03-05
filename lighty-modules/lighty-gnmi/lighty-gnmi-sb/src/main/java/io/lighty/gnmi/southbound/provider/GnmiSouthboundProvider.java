@@ -43,9 +43,7 @@ import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
-import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.GnmiCertificateStorageService;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.GnmiTopologyTypesBuilder;
-import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.GnmiYangStorageService;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.TopologyBuilder;
@@ -97,14 +95,14 @@ public class GnmiSouthboundProvider implements AutoCloseable {
         //----Load initial yang models to datastore and register yang load rpc----
         final YangDataStoreService yangDataStoreService = new YangDataStoreServiceImpl(dataBroker, gnmiExecutorService);
         final YangStorageServiceRpcImpl yangStorageServiceRpc = new YangStorageServiceRpcImpl(yangDataStoreService);
-        closeables.add(rpcProvider.registerRpcImplementation(GnmiYangStorageService.class, yangStorageServiceRpc));
+        closeables.add(rpcProvider.registerRpcImplementations(yangStorageServiceRpc.getRpcClassToInstanceMap()));
 
         final CertificationStorageServiceImpl certStorageService
                 = new CertificationStorageServiceImpl(encryptionService, dataBroker);
         final CertificationStorageServiceRpcImpl certStorageServiceRpc
                 = new CertificationStorageServiceRpcImpl(certStorageService);
         closeables.add(rpcProvider
-                .registerRpcImplementation(GnmiCertificateStorageService.class,certStorageServiceRpc));
+                .registerRpcImplementations(certStorageServiceRpc.getRpcClassToInstanceMap()));
 
         // Load initial Yang models
         if (!initialYangsLoaders.isEmpty()) {

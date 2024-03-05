@@ -79,8 +79,8 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
-import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.mdsal.binding.api.RpcService;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingAdapterFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMMountPointServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationPublishServiceAdapter;
@@ -122,7 +122,6 @@ import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.source.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.source.YangTextSource;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
@@ -194,7 +193,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private AkkaManagement akkaManagement;
     private Optional<ClusteringHandler> clusteringHandler;
     private Optional<InitialConfigData> initialConfigData;
-    private RpcConsumerRegistry rpcConsumerRegistry;
+    private RpcService rpcConsumerRegistry;
 
 
     public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
@@ -306,7 +305,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.actionProviderService = this.bindingAdapterFactory.createActionProviderService(
                 this.domActionProviderService);
         this.actionService = bindingAdapterFactory.createActionService(this.domActionService);
-        rpcConsumerRegistry = bindingAdapterFactory.createRpcConsumerRegistry(domRpcRouter.getRpcService());
+        rpcConsumerRegistry = bindingAdapterFactory.createRpcService(domRpcRouter.rpcService());
 
         this.rpcProviderService = new BindingDOMRpcProviderServiceAdapter(this.codec,
                 this.domRpcRouter.rpcProviderService());
@@ -340,7 +339,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         //create data broker
         this.dataBroker = bindingAdapterFactory.createDataBroker(concurrentDOMDataBroker);
 
-        this.clusteringHandler.ifPresent(handler -> handler.start(clusterAdminRpcService));
+        this.clusteringHandler.ifPresent(handler -> handler.start(rpcConsumerRegistry));
 
         this.bossGroup = new NioEventLoopGroup();
         this.workerGroup = new NioEventLoopGroup();
@@ -661,7 +660,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public RpcConsumerRegistry getRpcConsumerRegistry() {
+    public RpcService getRpcConsumerRegistry() {
         return rpcConsumerRegistry;
     }
 

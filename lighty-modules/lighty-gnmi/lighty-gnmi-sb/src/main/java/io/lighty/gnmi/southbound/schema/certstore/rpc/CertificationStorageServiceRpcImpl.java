@@ -9,6 +9,8 @@
 package io.lighty.gnmi.southbound.schema.certstore.rpc;
 
 
+import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -16,19 +18,21 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import io.lighty.gnmi.southbound.schema.certstore.service.CertificationStorageService;
 import org.opendaylight.mdsal.common.api.CommitInfo;
+import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.AddKeystoreCertificate;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.AddKeystoreCertificateInput;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.AddKeystoreCertificateOutput;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.AddKeystoreCertificateOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.GnmiCertificateStorageService;
+import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.RemoveKeystoreCertificate;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.RemoveKeystoreCertificateInput;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.RemoveKeystoreCertificateOutput;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.RemoveKeystoreCertificateOutputBuilder;
+import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CertificationStorageServiceRpcImpl implements GnmiCertificateStorageService {
+public class CertificationStorageServiceRpcImpl {
 
     private static final Logger LOG = LoggerFactory.getLogger(CertificationStorageServiceRpcImpl.class);
     private final CertificationStorageService certStorage;
@@ -37,8 +41,7 @@ public class CertificationStorageServiceRpcImpl implements GnmiCertificateStorag
         this.certStorage = certStorage;
     }
 
-    @Override
-    public ListenableFuture<RpcResult<AddKeystoreCertificateOutput>> addKeystoreCertificate(
+    private ListenableFuture<RpcResult<AddKeystoreCertificateOutput>> addKeystoreCertificate(
             final AddKeystoreCertificateInput input) {
         final ListenableFuture<? extends CommitInfo> writeResult = this.certStorage.writeCertificates(input);
         final SettableFuture<RpcResult<AddKeystoreCertificateOutput>> rpcResult = SettableFuture.create();
@@ -59,8 +62,7 @@ public class CertificationStorageServiceRpcImpl implements GnmiCertificateStorag
         return rpcResult;
     }
 
-    @Override
-    public ListenableFuture<RpcResult<RemoveKeystoreCertificateOutput>> removeKeystoreCertificate(
+    private ListenableFuture<RpcResult<RemoveKeystoreCertificateOutput>> removeKeystoreCertificate(
             final RemoveKeystoreCertificateInput input) {
         final ListenableFuture<? extends CommitInfo> removeResult = this.certStorage.removeCertificates(input);
         final SettableFuture<RpcResult<RemoveKeystoreCertificateOutput>> rpcResult = SettableFuture.create();
@@ -79,5 +81,12 @@ public class CertificationStorageServiceRpcImpl implements GnmiCertificateStorag
             }
         }, MoreExecutors.directExecutor());
         return rpcResult;
+    }
+
+    public ClassToInstanceMap<Rpc<?,?>> getRpcClassToInstanceMap() {
+        return ImmutableClassToInstanceMap.<Rpc<?, ?>>builder()
+                .put(AddKeystoreCertificate.class, this::addKeystoreCertificate)
+                .put(RemoveKeystoreCertificate.class, this::removeKeystoreCertificate)
+                .build();
     }
 }
