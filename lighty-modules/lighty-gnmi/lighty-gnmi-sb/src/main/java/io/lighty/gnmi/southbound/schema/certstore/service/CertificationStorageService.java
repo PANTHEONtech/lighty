@@ -9,6 +9,7 @@
 package io.lighty.gnmi.southbound.schema.certstore.service;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import java.security.GeneralSecurityException;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
@@ -18,11 +19,12 @@ import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev21050
 
 public interface CertificationStorageService {
 
-    @NonNull ListenableFuture<? extends CommitInfo> writeCertificates(AddKeystoreCertificateInput input);
+    @NonNull ListenableFuture<? extends CommitInfo> writeCertificates(AddKeystoreCertificateInput input)
+            throws GeneralSecurityException;
 
     @NonNull ListenableFuture<? extends CommitInfo> removeCertificates(RemoveKeystoreCertificateInput input);
 
     @NonNull ListenableFuture<Optional<Keystore>> readCertificate(String keystoreId);
 
-    String decrypt(String data);
+    String decrypt(String data) throws GeneralSecurityException;
 }

@@ -39,7 +39,8 @@ public class CertificationStorageServiceImpl implements CertificationStorageServ
     }
 
     @Override
-    public @NonNull ListenableFuture<? extends CommitInfo> writeCertificates(final AddKeystoreCertificateInput input) {
+    public @NonNull ListenableFuture<? extends CommitInfo> writeCertificates(final AddKeystoreCertificateInput input)
+            throws GeneralSecurityException {
         byte[] encryptedParaphrase = this.encryptionService.encrypt(
                 input.getPassphrase() != null ? input.getPassphrase().getBytes(Charset.defaultCharset()) : null);
         final Keystore keystore = new KeystoreBuilder()
@@ -73,7 +74,7 @@ public class CertificationStorageServiceImpl implements CertificationStorageServ
     }
 
     @Override
-    public String decrypt(final String data) {
+    public String decrypt(final String data) throws GeneralSecurityException {
         return new String(this.encryptionService.decrypt(DatatypeConverter.parseBase64Binary(data)),
                 Charset.defaultCharset());
     }
