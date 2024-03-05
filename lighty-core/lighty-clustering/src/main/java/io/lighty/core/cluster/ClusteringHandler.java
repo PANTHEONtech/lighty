@@ -10,13 +10,13 @@ package io.lighty.core.cluster;
 import com.typesafe.config.Config;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
+import org.opendaylight.mdsal.binding.api.RpcService;
 
 public interface ClusteringHandler {
 
     void initClustering();
 
-    void start(@NonNull ClusterAdminRpcService clusterAdminRPCService);
+    void start(@NonNull RpcService clusterAdminRPCService);
 
     Optional<Config> getModuleShardsConfig();
 }

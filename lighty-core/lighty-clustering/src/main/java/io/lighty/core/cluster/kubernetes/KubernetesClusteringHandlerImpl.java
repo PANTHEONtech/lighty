@@ -19,11 +19,16 @@ import io.lighty.core.cluster.config.ClusteringConfigUtils;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
-import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
+import org.opendaylight.mdsal.binding.api.RpcService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.AddReplicasForAllShards;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.AddReplicasForAllShardsInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.AddReplicasForAllShardsInputBuilder;
+import org.opendaylight.yangtools.yang.binding.Rpc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,10 +84,10 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
     }
 
     @Override
-    public void start(@NonNull final ClusterAdminRpcService clusterAdminRPCService) {
+    public void start(@NonNull final RpcService clusterAdminRPCService) {
         this.actorSystemProvider.getActorSystem().actorOf(
                 MemberRemovedListener.props(clusterAdminRPCService), "memberRemovedListener");
-        this.askForShards(clusterAdminRPCService);
+        this.askForShards(clusterAdminRPCService.getRpc(AddReplicasForAllShards.class));
     }
 
     @Override
@@ -94,10 +99,20 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
      * The first member of the cluster (leader) will create his shards. Other joining members will query
      * the leader for snapshots of the shards.
      */
-    private void askForShards(final ClusterAdminRpcService clusterAdminRPCService) {
+    private void askForShards(final Rpc<AddReplicasForAllShardsInput, ?> clusterAdminRpcService) {
         if (!Cluster.get(actorSystemProvider.getActorSystem()).selfAddress()
                 .equals(Cluster.get(actorSystemProvider.getActorSystem()).state().getLeader())) {
             LOG.info("RPC call - Asking for Shard Snapshots");
+            try {
+                final var rpcResult = clusterAdminRpcService.invoke(
+                        new AddReplicasForAllShardsInputBuilder().build()).get();
+                LOG.debug("RPC call - Asking for Shard Snapshots result: {}", rpcResult.getResult());
+            } catch (ExecutionException e) {
+                LOG.error("RPC call - Asking for Shard Snapshots failed", e);
+            } catch (InterruptedException e) {
+                LOG.error("RPC call - Asking for Shard Snapshots interrupted", e);
+                Thread.currentThread().interrupt();
+            }
         }
     }
 

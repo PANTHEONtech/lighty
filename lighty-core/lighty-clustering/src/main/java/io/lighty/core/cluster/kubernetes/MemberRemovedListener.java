@@ -12,11 +12,11 @@ import akka.actor.Props;
 import akka.cluster.Cluster;
 import akka.cluster.ClusterEvent;
 import akka.cluster.Member;
-import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
-import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
+import org.opendaylight.mdsal.binding.api.RpcService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.RemoveAllShardReplicas;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.RemoveAllShardReplicasInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.RemoveAllShardReplicasOutput;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -28,15 +28,15 @@ public class MemberRemovedListener extends AbstractActor {
     private static final Logger LOG = LoggerFactory.getLogger(MemberRemovedListener.class);
 
     private final Cluster cluster;
-    private final ClusterAdminRpcService clusterAdminRPCService;
+    private final RpcService clusterAdminRPCService;
 
-    public MemberRemovedListener(final ClusterAdminRpcService clusterAdminRPCService) {
+    public MemberRemovedListener(final RpcService clusterAdminRPCService) {
         LOG.info("{} created", this.getClass());
         this.cluster = Cluster.get(super.getContext().getSystem());
         this.clusterAdminRPCService = clusterAdminRPCService;
     }
 
-    public static Props props(ClusterAdminRpcService clusterAdminRPCService) {
+    public static Props props(RpcService clusterAdminRPCService) {
         return Props.create(MemberRemovedListener.class, () -> new MemberRemovedListener(clusterAdminRPCService));
     }
 
@@ -56,8 +56,38 @@ public class MemberRemovedListener extends AbstractActor {
         return receiveBuilder()
                 .match(ClusterEvent.MemberRemoved.class, removedMember -> {
                     LOG.info("Member detected as removed, processing: {}", removedMember.member().address());
+                    processRemovedMember(removedMember.member());
                 })
                 .build();
     }
+
+    private void processRemovedMember(Member member) {
+        LOG.info("Removing shard replicas for member {}. May result in WARN (DOES_NOT_EXIST) messages if already"
+                + "removed by another member.", member.address());
+        List<String> removedMemberRoles = member.getRoles().stream()
+                .filter(role -> !role.contains("default")).collect(Collectors.toList());
+
+        try {
+            for (String removedMemberRole : removedMemberRoles) {
+
+                final var removeRpc = clusterAdminRPCService.getRpc(RemoveAllShardReplicas.class);
+                RpcResult<RemoveAllShardReplicasOutput> rpcResult = removeRpc.invoke(
+                        new RemoveAllShardReplicasInputBuilder().setMemberName(removedMemberRole).build()).get();
+                if (rpcResult.isSuccessful()) {
+                    LOG.info("RPC RemoveAllShards for member {} executed successfully", removedMemberRole);
+                } else {
+                    LOG.warn("RPC RemoveAllShards for member {} failed: {}", removedMemberRole,
+                            rpcResult.getErrors());
+                }
+            }
+            LOG.info("Shard replicas removed for member {}", member.address());
+        } catch (ExecutionException e) {
+            LOG.error("Unable to remove shard replicas for member {}", member.address(), e);
+        } catch (InterruptedException e) {
+            LOG.error("Interrupted while removing shard replicas for member {}", member.address(), e);
+            Thread.currentThread().interrupt();
+        }
+    }
+
 
 }
