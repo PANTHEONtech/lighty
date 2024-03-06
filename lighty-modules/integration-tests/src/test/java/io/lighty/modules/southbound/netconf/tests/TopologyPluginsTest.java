@@ -102,10 +102,11 @@ public class TopologyPluginsTest {
     @Test
     public void testMountDevice() throws Exception {
         final NodeId nodeId = new NodeId("device1");
-        final Credentials loginPassword = new LoginPasswordBuilder()
+        final Credentials loginPassword = new LoginPwUnencryptedBuilder().setLoginPasswordUnencrypted(
+                new LoginPasswordUnencryptedBuilder()
                 .setUsername("user1")
                 .setPassword("password1")
-                .build();
+                .build()).build();
         final NetconfNode netconfNode = new NetconfNodeBuilder()
                 .setHost(new Host(new IpAddress(new Ipv4Address("10.10.8.8"))))
                 .setPort(new PortNumber(Uint16.valueOf(17830)))
