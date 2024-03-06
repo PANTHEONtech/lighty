@@ -35,6 +35,7 @@ import org.opendaylight.protocol.bgp.openconfig.spi.DefaultBGPTableTypeRegistryC
 import org.opendaylight.protocol.bgp.parser.spi.BGPExtensionConsumerContext;
 import org.opendaylight.protocol.bgp.parser.spi.pojo.DefaultBGPExtensionConsumerContext;
 import org.opendaylight.protocol.bgp.rib.impl.BGPDispatcherImpl;
+import org.opendaylight.protocol.bgp.rib.impl.BGPNettyGroups;
 import org.opendaylight.protocol.bgp.rib.impl.ConstantCodecsRegistry;
 import org.opendaylight.protocol.bgp.rib.impl.StrictBGPPeerRegistry;
 import org.opendaylight.protocol.bgp.rib.impl.config.DefaultBgpDeployer;
@@ -52,7 +53,7 @@ public class BgpModule extends AbstractLightyModule {
 
     //Basic BGP
     private final SimpleStatementRegistry simpleStatementRegistry;
-    private final BGPDispatcherImpl bgpDispatcher;
+    private final BGPNettyGroups bgpNettyGroups;
     private final DefaultBgpDeployer bgpDeployer;
     private final StateProviderImpl stateProvider;
     private final StrictBGPPeerRegistry peerRegistry;
@@ -73,7 +74,8 @@ public class BgpModule extends AbstractLightyModule {
             final EventLoopGroup bossGroup, final EventLoopGroup workerGroup) {
         initialConfigLoader = new InitialBgpConfigLoader(domDataBroker, modelContext);
         peerRegistry = new StrictBGPPeerRegistry();
-        bgpDispatcher = new BGPDispatcherImpl(createBgpExtensions(), bossGroup, workerGroup, peerRegistry);
+        bgpNettyGroups = new BGPNettyGroups();
+        final var bgpDispatcher = new BGPDispatcherImpl(createBgpExtensions(), bgpNettyGroups, peerRegistry);
         simpleStatementRegistry = createStatementRegistry(dataBroker);
         final DefaultBGPRibRoutingPolicyFactory routingPolicyFactory = new DefaultBGPRibRoutingPolicyFactory(
                 dataBroker, simpleStatementRegistry);
@@ -147,7 +149,7 @@ public class BgpModule extends AbstractLightyModule {
             closeSuccess = false;
         }
         try {
-            bgpDispatcher.close();
+            bgpNettyGroups.close();
         } catch (Exception e) {
             LOG.warn("Failed to stop BGP dispatcher", e);
             closeSuccess = false;
