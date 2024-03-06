@@ -137,10 +137,11 @@ public class NetconfDeviceRestService {
             .addAugmentation(new NetconfNodeBuilder()
                 .setHost(new Host(new IpAddress(new Ipv4Address(deviceInfo.getAddress()))))
                 .setPort(new PortNumber(Uint16.valueOf(deviceInfo.getPort())))
-                .setCredentials(new LoginPasswordBuilder()
+                .setCredentials(new LoginPwUnencryptedBuilder().setLoginPasswordUnencrypted(
+                        new LoginPasswordUnencryptedBuilder()
                         .setUsername(deviceInfo.getUsername())
                         .setPassword(deviceInfo.getPassword())
-                        .build())
+                        .build()).build())
                 .setTcpOnly(false)
                 .build())
             .build();
