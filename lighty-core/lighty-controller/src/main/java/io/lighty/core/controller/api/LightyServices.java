@@ -23,6 +23,7 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
+import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.binding.dom.adapter.ConstantAdapterContext;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
@@ -130,5 +131,7 @@ public interface LightyServices extends LightyModuleRegistryService {
     ActionProviderService getActionProviderService();
 
     ActionService getActionService();
+
+    RpcConsumerRegistry getRpcConsumerRegistry();
 
 }

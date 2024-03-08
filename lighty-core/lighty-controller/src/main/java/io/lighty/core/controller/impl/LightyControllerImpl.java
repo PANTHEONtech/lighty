@@ -79,6 +79,7 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
+import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingAdapterFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMMountPointServiceAdapter;
@@ -196,6 +197,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private AkkaManagement akkaManagement;
     private Optional<ClusteringHandler> clusteringHandler;
     private Optional<InitialConfigData> initialConfigData;
+    private RpcConsumerRegistry rpcConsumerRegistry;
 
 
     public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
@@ -306,6 +308,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.actionProviderService = this.bindingAdapterFactory.createActionProviderService(
                 this.domActionProviderService);
         this.actionService = bindingAdapterFactory.createActionService(this.domActionService);
+        rpcConsumerRegistry = bindingAdapterFactory.createRpcConsumerRegistry(domRpcRouter.getRpcService());
 
         this.rpcProviderService = new BindingDOMRpcProviderServiceAdapter(this.codec,
                 this.domRpcRouter.getRpcProviderService());
@@ -662,6 +665,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     public ActionProviderService getActionProviderService() {
         return actionProviderService;
+    }
+
+    @Override
+    public RpcConsumerRegistry getRpcConsumerRegistry() {
+        return rpcConsumerRegistry;
     }
 
     @Override
