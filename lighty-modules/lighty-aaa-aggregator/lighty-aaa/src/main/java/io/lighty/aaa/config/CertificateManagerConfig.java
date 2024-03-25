@@ -75,7 +75,7 @@ public final class CertificateManagerConfig {
                 .setEncryptType("AES")
                 .setEncryptIterationCount(32768)
                 .setEncryptKeyLength(128)
-                .setCipherTransforms("AES/CBC/PKCS5Padding")
+                .setCipherTransforms("AES/GCM/NoPadding")
                 .build();
 
         final byte[] encryptionKeySalt = Base64.getDecoder().decode(encrySrvConfig.getEncryptSalt());
