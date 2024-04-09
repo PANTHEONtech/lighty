@@ -117,6 +117,7 @@ import org.opendaylight.mdsal.eos.binding.dom.adapter.DefaultEntityOwnershipServ
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
 import org.opendaylight.mdsal.singleton.impl.EOSClusterSingletonServiceProvider;
+import org.opendaylight.netconf.yanglib.writer.YangLibraryWriterSingleton;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
@@ -194,6 +195,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private Optional<ClusteringHandler> clusteringHandler;
     private Optional<InitialConfigData> initialConfigData;
     private RpcService rpcConsumerRegistry;
+    private YangLibraryWriterSingleton yangLibraryWriter;
 
 
     public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
@@ -326,7 +328,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                 new ClusterAdminRpcService(this.configDatastore, this.operDatastore, this.akkaEntityOwnershipService);
 
         this.clusterSingletonServiceProvider =
-                new EOSClusterSingletonServiceProvider (this.akkaEntityOwnershipService);
+                new EOSClusterSingletonServiceProvider(this.akkaEntityOwnershipService);
 
         //create binding mount point service
         this.mountPointService = new BindingDOMMountPointServiceAdapter(this.codec, this.domMountPointService);
@@ -349,6 +351,9 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                 Executors.newFixedThreadPool(2, new DefaultThreadFactory("default-pool"));
         this.scheduledThreadPool =
                 new ScheduledThreadPoolExecutor(2, new DefaultThreadFactory("default-scheduled-pool"));
+        this.yangLibraryWriter = new YangLibraryWriterSingleton(clusterSingletonServiceProvider, schemaService,
+                dataBroker, true);
+        yangLibraryWriter.instantiateServiceInstance();
 
         if (this.initialConfigData.isPresent()) {
             final InitialConfigData initialData = this.initialConfigData.get();
