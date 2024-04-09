@@ -16,7 +16,6 @@ import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigU
 import io.lighty.modules.southbound.netconf.impl.NetconfCallhomePluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -69,7 +68,8 @@ public class CallhomePluginTest {
         netconfPlugin.start().get();
         // check, whether TCP server is running on port
         try (Socket socket = new Socket()) {
-            final SocketAddress endpoint = new InetSocketAddress(InetAddress.getLocalHost(), 4334);
+            final SocketAddress endpoint = new InetSocketAddress(
+                    RestConfConfigUtils.getDefaultRestConfConfiguration().getInetAddress(), 4334);
             socket.connect(endpoint);
         }
     }
