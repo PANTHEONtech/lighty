@@ -24,8 +24,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
+import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.AddReplicasForAllShardsInputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,7 +81,7 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
     }
 
     @Override
-    public void start(@NonNull final ClusterAdminService clusterAdminRPCService) {
+    public void start(@NonNull final ClusterAdminRpcService clusterAdminRPCService) {
         this.actorSystemProvider.getActorSystem().actorOf(
                 MemberRemovedListener.props(clusterAdminRPCService), "memberRemovedListener");
         this.askForShards(clusterAdminRPCService);
@@ -96,7 +96,7 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
      * The first member of the cluster (leader) will create his shards. Other joining members will query
      * the leader for snapshots of the shards.
      */
-    private void askForShards(final ClusterAdminService clusterAdminRPCService) {
+    private void askForShards(final ClusterAdminRpcService clusterAdminRPCService) {
         if (!Cluster.get(actorSystemProvider.getActorSystem()).selfAddress()
                 .equals(Cluster.get(actorSystemProvider.getActorSystem()).state().getLeader())) {
             LOG.info("RPC call - Asking for Shard Snapshots");
