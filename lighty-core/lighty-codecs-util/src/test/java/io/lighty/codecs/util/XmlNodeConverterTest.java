@@ -16,13 +16,13 @@ import java.io.Writer;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster;
-import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.$YangModuleInfoImpl;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.ContainerIoRpcInput;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SampleList;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SimpleInputOutputRpcInput;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SimpleInputOutputRpcOutput;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.TopLevelContainer;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.container.group.SampleContainer;
+import org.opendaylight.yang.svc.v1.http.pantheon.tech.ns.test.models.rev180119.YangModuleInfoImpl;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
@@ -127,7 +127,7 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
     @Test
     public void testDeserializeInnerLeaf() throws DeserializationException {
         final NormalizedNode result = bindingSerializer.deserialize(Absolute.of(TopLevelContainer.QNAME,
-                SampleContainer.QNAME, $YangModuleInfoImpl.qnameOf("name")),
+                SampleContainer.QNAME, YangModuleInfoImpl.qnameOf("name")),
                 new StringReader(loadResourceAsString("inner-leaf.xml")));
         assertNotNull(result);
     }

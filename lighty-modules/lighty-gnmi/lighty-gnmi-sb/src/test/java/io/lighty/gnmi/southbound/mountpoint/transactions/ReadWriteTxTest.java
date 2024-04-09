@@ -20,7 +20,7 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLeafNodeBuilder;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 
 public class ReadWriteTxTest {
     private ReadWriteTx readWriteTx;
@@ -38,7 +38,7 @@ public class ReadWriteTxTest {
         yiid = YangInstanceIdentifier.builder()
                 .node(QName.create("test-namespace", "2021-05-03", "test-node"))
                 .build();
-        node = ImmutableLeafNodeBuilder.createNode(
+        node = ImmutableNodes.leafNode(
                 YangInstanceIdentifier.NodeIdentifier.create(QName.create("test-namespace",
                         "2021-05-03", "test-node")), 123);
 

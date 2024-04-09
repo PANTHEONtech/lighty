@@ -50,7 +50,7 @@ import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedMetadata;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizationResultHolder;
-import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableAnydataNodeBuilder;
+import org.opendaylight.yangtools.yang.data.spi.node.impl.ImmutableAnydataNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
@@ -145,8 +145,7 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
                 .orElse(null);
         final SchemaInferenceStack stack = SchemaInferenceStack.of(getEffectiveModelContext());
         stack.enterSchemaTree(editNNContent.getIdentifier().getNodeType());
-        final AnydataNode<NormalizedAnydata> editContent = ImmutableAnydataNodeBuilder
-                .create(NormalizedAnydata.class)
+        final AnydataNode<NormalizedAnydata> editContent = new ImmutableAnydataNodeBuilder<>(NormalizedAnydata.class)
                 .withNodeIdentifier(NETCONF_EDIT_DATA_CONFIG_NODEID)
                 .withValue(NormalizedAnydata.of(stack.toInference(), editNNContent, metadata))
                 .build();
@@ -187,7 +186,7 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
     private DataContainerChild getOriginFilterNode(Set<QName> originFilter) {
         List<LeafSetEntryNode<Object>> leafSetEntryNodes = new ArrayList<>();
         originFilter.forEach(originFilterEntry -> {
-            leafSetEntryNodes.add(Builders.leafSetEntryBuilder()
+            leafSetEntryNodes.add((LeafSetEntryNode<Object>) Builders.leafSetEntryBuilder()
                     .withNodeIdentifier(new NodeWithValue(NETCONF_ORIGIN_FILTER_NODEID.getNodeType(),
                             originFilterEntry))
                     .withValue(originFilterEntry)
@@ -200,7 +199,7 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
     private DataContainerChild getNegatedOriginFilterNode(Set<QName> negatedOriginFilter) {
         List<LeafSetEntryNode<Object>> leafSetEntryNodes = new ArrayList<>();
         negatedOriginFilter.forEach(negatedOriginFilterEntry -> {
-            leafSetEntryNodes.add(Builders.leafSetEntryBuilder()
+            leafSetEntryNodes.add((LeafSetEntryNode<Object>) Builders.leafSetEntryBuilder()
                     .withNodeIdentifier(new NodeWithValue(NETCONF_NEGATED_ORIGIN_FILTER_NODEID.getNodeType(),
                             negatedOriginFilterEntry))
                     .withValue(negatedOriginFilterEntry)
@@ -267,7 +266,7 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
         final SchemaInferenceStack stack = SchemaInferenceStack.of(getEffectiveModelContext());
         stack.enterSchemaTree(filterNN.getIdentifier().getNodeType());
         final AnydataNode<NormalizedAnydata> subtreeFilter =
-                ImmutableAnydataNodeBuilder.create(NormalizedAnydata.class)
+                (AnydataNode<NormalizedAnydata>) new ImmutableAnydataNodeBuilder(NormalizedAnydata.class)
                         .withNodeIdentifier(NETCONF_FILTER_NODEID)
                         .withValue(NormalizedAnydata.of(stack.toInference(), filterNN))
                         .build();
