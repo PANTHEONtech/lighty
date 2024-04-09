@@ -89,7 +89,7 @@ do \
   assertHttpStatusCode $(curl -o /dev/null -s -w "%{http_code} GET %{url_effective}\n" --user admin:admin -H "Content-Type: application/json" --insecure http://$pod_controller_ip:8558/cluster/members) \
 ;done
 sleep 1
-
+: ' FIXME uncomment this after NETCONF-1285 is resolved
 #Pods healthcheck (:8888/restconf/operations)
 
 for pod_controller_ip in $POD_CONTROLLER_IPS; \
@@ -100,7 +100,7 @@ sleep 1
 
 #Service healthcheck (:30888/restconf/operations)
 assertHttpStatusCode $(curl -o /dev/null -s -w "%{http_code} GET %{url_effective}\n" --user admin:admin -H "Content-Type: application/json" --insecure http://$MINIKUBE_IP:$CONTROLLER_PORT/restconf/operations)
-
+'
 # add gNMI node into gNMI topology
 assertHttpStatusCode $(curl -X PUT -o /dev/null -s -w "%{http_code} PUT %{url_effective}\n" \
   http://"$MINIKUBE_IP":$CONTROLLER_PORT/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-"${MINIKUBE_IP//.}" \
