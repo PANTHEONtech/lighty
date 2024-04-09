@@ -201,8 +201,10 @@ do \
 	      "node-id": "node-'"${SIMULATOR_IP//.}"'",
 	      "host": "'"$SIMULATOR_IP"'",
         "port": '"$SIMULATOR_PORT"',
-	      "username": "admin",
-	      "password": "admin",
+	      "login-password-unencrypted": {
+          "username": "admin",
+          "password": "admin"
+        },
 	      "tcp-only": false,
 	      "keepalive-delay": 0
       }

@@ -28,9 +28,9 @@
                 { "usedBy":"CONTROLLER","name":"odl-general-entity","revision":"2015-09-30","nameSpace":"urn:opendaylight:params:xml:ns:yang:mdsal:core:general-entity"},
                 { "usedBy":"CONTROLLER","name":"distributed-datastore-provider","revision": "2023-12-29","nameSpace":"urn:opendaylight:params:xml:ns:yang:controller:config:distributed-datastore-provider"},
                 { "usedBy":"CONTROLLER","name":"odl-entity-owners","nameSpace":"urn:opendaylight:params:xml:ns:yang:controller:entity-owners"},
-                { "usedBy":"NETCONF","name":"netconf-node-topology","revision":"2022-12-25","nameSpace":"urn:opendaylight:netconf-node-topology"},
-                { "usedBy":"NETCONF","name":"netconf-node-optional","revision":"2022-12-25","nameSpace":"urn:opendaylight:netconf-node-optional"},
                 { "usedBy":"NETCONF","name":"netconf-keystore","revision":"2023-11-09","nameSpace":"urn:opendaylight:netconf:keystore"},
+                { "usedBy":"NETCONF","name":"netconf-node-topology","revision":"2023-11-21","nameSpace":"urn:opendaylight:netconf-node-topology"},
+                { "usedBy":"NETCONF","name":"netconf-node-optional","revision":"2023-11-21","nameSpace":"urn:opendaylight:netconf-node-optional"},
                 { "usedBy":"NETCONF","name":"ietf-netconf","revision":"2011-06-01","nameSpace":"urn:ietf:params:xml:ns:netconf:base:1.0"}
             ]
         }
