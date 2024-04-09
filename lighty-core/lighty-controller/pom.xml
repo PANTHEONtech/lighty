@@ -217,6 +217,10 @@
             <artifactId>lighty-test-models</artifactId>
             <scope>test</scope>
         </dependency>
+      <dependency>
+        <groupId>org.opendaylight.netconf</groupId>
+        <artifactId>yanglib-mdsal-writer</artifactId>
+      </dependency>
     </dependencies>
 
     <build>
