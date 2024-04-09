@@ -40,10 +40,10 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
-import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLeafNodeBuilder;
-import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapEntryNodeBuilder;
-import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapNodeBuilder;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
+import org.opendaylight.yangtools.yang.data.spi.node.impl.ImmutableContainerNodeBuilder;
+import org.opendaylight.yangtools.yang.data.spi.node.impl.ImmutableMapEntryNodeBuilder;
+import org.opendaylight.yangtools.yang.data.spi.node.impl.ImmutableSystemMapNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
@@ -124,61 +124,61 @@ public abstract class AbstractCodecTest {
     }
 
     private static NormalizedNode topLevelContainerNode() {
-        return ImmutableContainerNodeBuilder.create().withNodeIdentifier(NodeIdentifier.create(Toaster.QNAME))
+        return new ImmutableContainerNodeBuilder().withNodeIdentifier(NodeIdentifier.create(Toaster.QNAME))
                 .withValue(List.of(
-                        ImmutableLeafNodeBuilder.createNode(
+                        ImmutableNodes.leafNode(
                                 NodeIdentifier.create(qOfToasterModel("toasterManufacturer")), "manufacturer"),
-                        ImmutableLeafNodeBuilder.createNode(
+                        ImmutableNodes.leafNode(
                                 NodeIdentifier.create(qOfToasterModel("toasterStatus")), ToasterStatus.Up.getName()),
-                        ImmutableLeafNodeBuilder.createNode(
+                        ImmutableNodes.leafNode(
                                 NodeIdentifier.create(qOfToasterModel("darknessFactor")), 50)))
                 .build();
     }
 
     private static NormalizedNode rpcLeafInputNode() {
-        return ImmutableContainerNodeBuilder.create()
+        return new ImmutableContainerNodeBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(SimpleInputOutputRpcInput.QNAME))
-                .withChild(ImmutableLeafNodeBuilder.createNode(
+                .withChild(ImmutableNodes.leafNode(
                         NodeIdentifier.create(qOfTestModel("input-obj")), "testValue"))
                 .build();
     }
 
     private static NormalizedNode rpcLeafOutputNode() {
-        return ImmutableContainerNodeBuilder.create()
+        return new ImmutableContainerNodeBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(SimpleInputOutputRpcOutput.QNAME))
-                .withChild(ImmutableLeafNodeBuilder.createNode(
+                .withChild(ImmutableNodes.leafNode(
                         NodeIdentifier.create(qOfTestModel("output-obj")), "testValue"))
                 .build();
     }
 
     private static NormalizedNode notificationContainer() {
-        return ImmutableContainerNodeBuilder.create()
+        return new ImmutableContainerNodeBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(ToasterRestocked.QNAME))
-                .withChild(ImmutableLeafNodeBuilder.createNode(
+                .withChild(ImmutableNodes.leafNode(
                         NodeIdentifier.create(qOfToasterModel("amountOfBread")), 1)).build();
     }
 
     private static NormalizedNode listEntryNode() {
         final QName key = qOfTestModel("name");
-        return ImmutableMapEntryNodeBuilder.create()
+        return new ImmutableMapEntryNodeBuilder()
                 .withNodeIdentifier(NodeIdentifierWithPredicates.of(
                         SampleList.QNAME, key, "nameValue"))
                 .withValue(List.of(
-                        ImmutableLeafNodeBuilder.createNode(NodeIdentifier.create(key), "nameValue"),
-                        ImmutableLeafNodeBuilder.createNode(NodeIdentifier
+                        ImmutableNodes.leafNode(NodeIdentifier.create(key), "nameValue"),
+                        ImmutableNodes.leafNode(NodeIdentifier
                                 .create(qOfTestModel("value")), 1)))
                 .build();
     }
 
     private static NormalizedNode listNode() {
-        return ImmutableMapNodeBuilder.create().withNodeIdentifier(new NodeIdentifier(SampleList.QNAME))
+        return new ImmutableSystemMapNodeBuilder().withNodeIdentifier(new NodeIdentifier(SampleList.QNAME))
                 .withChild((MapEntryNode) listEntryNode()).build();
     }
 
     private static NormalizedNode innerContainerNode() {
-        return ImmutableContainerNodeBuilder.create().withNodeIdentifier(NodeIdentifier.create(SampleContainer.QNAME))
+        return new ImmutableContainerNodeBuilder().withNodeIdentifier(NodeIdentifier.create(SampleContainer.QNAME))
                 .withValue(List.of(
-                        ImmutableLeafNodeBuilder.createNode(
+                    org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes.leafNode(
                                 NodeIdentifier.create(qOfTestModel("name")), "name")))
                 .build();
     }

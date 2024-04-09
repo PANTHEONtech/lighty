@@ -34,7 +34,6 @@ import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.SystemMapNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
-import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapNodeBuilder;
 import org.testng.annotations.Test;
 
 public class YangPatchTest extends CommunityRestConfTestBase {
@@ -99,7 +98,7 @@ public class YangPatchTest extends CommunityRestConfTestBase {
                 .withNodeIdentifier(NodeIdentifierWithPredicates.of(EXAMPLE_LIST))
                 .withValue(List.of(nameLeafA, buildLeaf1, buildLeaf2))
                 .build();
-        final SystemMapNode myList = ImmutableMapNodeBuilder.create()
+        final SystemMapNode myList = Builders.mapBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(EXAMPLE_LIST))
                 .withValue(Collections.singletonList(mapEntryNode))
                 .build();
