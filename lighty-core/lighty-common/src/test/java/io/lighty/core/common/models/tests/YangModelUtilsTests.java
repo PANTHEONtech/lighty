@@ -95,10 +95,10 @@ public class YangModelUtilsTests {
                 //valid inits
                 {TEST_NAMESPACE, TEST_NAME, TEST_REVISION, true},
                 {"", TEST_NAME, TEST_REVISION, true},
+                {TEST_NAMESPACE, TEST_NAME, null, true},
 
                 //invalid inits
                 {TEST_NAMESPACE, TEST_NAME, "", false},
-                {TEST_NAMESPACE, TEST_NAME, null, false},
                 {null, TEST_NAME, TEST_REVISION, false},
                 {TEST_NAMESPACE, null, TEST_REVISION, false},
                 {TEST_NAMESPACE, "", TEST_REVISION, false},
