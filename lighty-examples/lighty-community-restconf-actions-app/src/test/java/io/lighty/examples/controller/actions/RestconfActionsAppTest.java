@@ -31,11 +31,11 @@ public class RestconfActionsAppTest {
     private static final String DOM_ACTION_PATH = "restconf/data/example-data-center:device/start";
     private static final String DOM_ACTION_INPUT = "{\"input\":{\"start-at\":\"2021-09-09T16:20:00Z\"}}";
     private static final String DOM_ACTION_OUTPUT =
-            "{\"example-data-center:output\":{\"example-data-center:start-finished-at\":\"2021-09-09T16:20:00Z\"}}";
+            "{\"example-data-center:output\":{\"start-finished-at\":\"2021-09-09T16:20:00Z\"}}";
     private static final String BINDING_ACTION_PATH = "restconf/data/example-data-center:server=server-earth/reset";
     private static final String BINDING_ACTION_INPUT = "{\"input\":{\"reset-at\":\"2021-09-09T16:20:00Z\"}}";
     private static final String BINDING_ACTION_OUTPUT =
-            "{\"example-data-center:output\":{\"example-data-center:reset-finished-at\":\"2021-09-09T16:20:00Z\"}}";
+            "{\"example-data-center:output\":{\"reset-finished-at\":\"2021-09-09T16:20:00Z\"}}";
     private static final long SLEEP_AFTER_SHUTDOWN_TIMEOUT_MILLIS = 3_000;
 
     private static Main restconfApp;
