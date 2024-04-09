@@ -111,11 +111,10 @@ import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
 import org.opendaylight.mdsal.dom.broker.DOMMountPointServiceImpl;
 import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.mdsal.dom.broker.DOMRpcRouter;
-import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListenerRegistry;
 import org.opendaylight.mdsal.dom.spi.FixedDOMSchemaService;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
-import org.opendaylight.mdsal.eos.binding.dom.adapter.BindingDOMEntityOwnershipServiceAdapter;
+import org.opendaylight.mdsal.eos.binding.dom.adapter.DefaultEntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.mdsal.singleton.dom.impl.DOMClusterSingletonServiceProviderImpl;
@@ -168,7 +167,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private DOMActionService domActionService;
     private DOMActionProviderService domActionProviderService;
     private AkkaEntityOwnershipService akkaEntityOwnershipService;
-    private BindingDOMEntityOwnershipServiceAdapter bindingDOMEntityOwnershipServiceAdapter;
+    private DefaultEntityOwnershipService defaultEntityOwnershipService;
     private ClusterAdminRpcService clusterAdminRpcService;
     private DOMClusterSingletonServiceProviderImpl clusterSingletonServiceProvider;
     private NotificationService notificationService;
@@ -323,7 +322,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             return false;
         }
 
-        this.bindingDOMEntityOwnershipServiceAdapter = new BindingDOMEntityOwnershipServiceAdapter(
+        this.defaultEntityOwnershipService = new DefaultEntityOwnershipService(
                 akkaEntityOwnershipService, this.codec);
         this.clusterAdminRpcService =
                 new ClusterAdminRpcService(this.configDatastore, this.operDatastore, this.codec.currentSerializer(),
@@ -402,9 +401,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         }
         if (this.clusterSingletonServiceProvider != null) {
             this.clusterSingletonServiceProvider.close();
-        }
-        if (this.bindingDOMEntityOwnershipServiceAdapter != null) {
-            this.bindingDOMEntityOwnershipServiceAdapter.close();
         }
         if (this.akkaEntityOwnershipService != null) {
             try {
@@ -523,7 +519,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public DOMNotificationSubscriptionListenerRegistry getDOMNotificationSubscriptionListenerRegistry() {
+    public DOMNotificationRouter getDOMNotificationRouter() {
         return this.domNotificationRouter;
     }
 
@@ -559,7 +555,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     public EntityOwnershipService getEntityOwnershipService() {
-        return this.bindingDOMEntityOwnershipServiceAdapter;
+        return this.defaultEntityOwnershipService;
     }
 
     @Override
@@ -609,12 +605,12 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     public DOMNotificationPublishService getDOMNotificationPublishService() {
-        return this.domNotificationRouter;
+        return domNotificationRouter.notificationPublishService();
     }
 
     @Override
     public DOMNotificationService getDOMNotificationService() {
-        return this.domNotificationRouter;
+        return domNotificationRouter.notificationService();
     }
 
     @Override

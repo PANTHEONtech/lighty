@@ -34,6 +34,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
+import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListenerRegistry;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
@@ -172,8 +173,8 @@ public abstract class LightyCoreSpringConfiguration {
     }
 
     @Bean(destroyMethod = "")
-    public DOMNotificationSubscriptionListenerRegistry domNotificationSubscriptionListenerRegistry() {
-        return this.lightyController.getServices().getDOMNotificationSubscriptionListenerRegistry();
+    public DOMNotificationRouter domNotificationRouter() {
+        return this.lightyController.getServices().getDOMNotificationRouter();
     }
 
     @Bean(name = "ConfigDatastore", destroyMethod = "")

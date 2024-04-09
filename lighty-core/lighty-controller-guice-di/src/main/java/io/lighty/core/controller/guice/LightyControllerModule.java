@@ -34,6 +34,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
+import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListenerRegistry;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
@@ -70,8 +71,8 @@ public class LightyControllerModule extends AbstractModule {
                 .toInstance(lightyServices.getDOMSchemaService());
         bind(DOMYangTextSourceProvider.class)
                 .toInstance(lightyServices.getDOMYangTextSourceProvider());
-        bind(DOMNotificationSubscriptionListenerRegistry.class)
-                .toInstance(lightyServices.getDOMNotificationSubscriptionListenerRegistry());
+        bind(DOMNotificationRouter.class)
+                .toInstance(lightyServices.getDOMNotificationRouter());
         bind(DistributedDataStoreInterface.class)
                 .annotatedWith(Names.named("ControllerConfigDatastore"))
                 .toInstance(lightyServices.getConfigDatastore());

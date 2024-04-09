@@ -59,7 +59,7 @@ public class TestService {
     private DOMYangTextSourceProvider domYangTextSourceProvider;
 
     @Inject
-    private DOMNotificationSubscriptionListenerRegistry domNotificationSubscriptionListenerRegistry;
+    private DOMNotificationRouter domNotificationSubscriptionListenerRegistry;
 
     @Inject
     @Named("ControllerConfigDatastore")
@@ -168,7 +168,7 @@ public class TestService {
         return domYangTextSourceProvider;
     }
 
-    public DOMNotificationSubscriptionListenerRegistry getDomNotificationSubscriptionListenerRegistry() {
+    public DOMNotificationRouter getDomNotificationSubscriptionListenerRegistry() {
         return domNotificationSubscriptionListenerRegistry;
     }
 
