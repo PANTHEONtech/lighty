@@ -37,9 +37,8 @@ import org.opendaylight.restconf.nb.rfc8040.jersey.providers.XmlNormalizedNodeBo
 import org.opendaylight.restconf.nb.rfc8040.jersey.providers.XmlPatchStatusBodyWriter;
 import org.opendaylight.restconf.nb.rfc8040.jersey.providers.errors.RestconfDocumentedExceptionMapper;
 import org.opendaylight.restconf.nb.rfc8040.streams.StreamsConfiguration;
-import org.opendaylight.restconf.server.api.DatabindContext;
+import org.opendaylight.restconf.server.mdsal.MdsalDatabindProvider;
 import org.opendaylight.restconf.server.mdsal.MdsalRestconfServer;
-import org.opendaylight.restconf.server.spi.DatabindProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,8 +95,8 @@ public class CommunityRestConf extends AbstractLightyModule {
 
         LOG.info("Starting RestconfApplication with configuration {}", streamsConfiguration);
 
-        final DatabindProvider databindProvider = () -> DatabindContext.ofModel(domSchemaService.getGlobalContext());
-        final var server = new MdsalRestconfServer(domSchemaService, domDataBroker, domRpcService, domActionService,
+        final MdsalDatabindProvider databindProvider = new MdsalDatabindProvider(domSchemaService);
+        final var server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService, domActionService,
                 domMountPointService);
 
         final ServletContainer servletContainer8040 = new ServletContainer(ResourceConfig
