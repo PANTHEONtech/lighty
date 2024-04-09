@@ -16,7 +16,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.ClusterAdminService;
+import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.RemoveAllShardReplicasInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.RemoveAllShardReplicasOutput;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -28,15 +28,15 @@ public class MemberRemovedListener extends AbstractActor {
     private static final Logger LOG = LoggerFactory.getLogger(MemberRemovedListener.class);
 
     private final Cluster cluster;
-    private final ClusterAdminService clusterAdminRPCService;
+    private final ClusterAdminRpcService clusterAdminRPCService;
 
-    public MemberRemovedListener(final ClusterAdminService clusterAdminRPCService) {
+    public MemberRemovedListener(final ClusterAdminRpcService clusterAdminRPCService) {
         LOG.info("{} created", this.getClass());
         this.cluster = Cluster.get(super.getContext().getSystem());
         this.clusterAdminRPCService = clusterAdminRPCService;
     }
 
-    public static Props props(ClusterAdminService clusterAdminRPCService) {
+    public static Props props(ClusterAdminRpcService clusterAdminRPCService) {
         return Props.create(MemberRemovedListener.class, () -> new MemberRemovedListener(clusterAdminRPCService));
     }
 
