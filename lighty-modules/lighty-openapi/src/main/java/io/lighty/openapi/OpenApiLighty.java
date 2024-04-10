@@ -12,12 +12,14 @@ import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.server.LightyServerBuilder;
+import java.lang.annotation.Annotation;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
+import org.opendaylight.restconf.nb.rfc8040.JaxRsNorthbound;
 import org.opendaylight.restconf.openapi.api.OpenApiService;
 import org.opendaylight.restconf.openapi.impl.OpenApiServiceImpl;
 import org.opendaylight.restconf.openapi.jaxrs.OpenApiApplication;
@@ -56,7 +58,7 @@ public class OpenApiLighty extends AbstractLightyModule {
         LOG.info("basePath: {}", basePathString);
 
         this.apiDocService = new OpenApiServiceImpl(lightyServices.getDOMSchemaService(),
-            lightyServices.getDOMMountPointService(), basePathString);
+            lightyServices.getDOMMountPointService(), new OpenApiLightyConfiguration(basePathString));
 
         OpenApiApplication apiDocApplication = new OpenApiApplication(apiDocService);
 
@@ -95,5 +97,53 @@ public class OpenApiLighty extends AbstractLightyModule {
     @VisibleForTesting
     OpenApiService getApiDocService() {
         return apiDocService;
+    }
+
+    public static final class OpenApiLightyConfiguration implements JaxRsNorthbound.Configuration {
+        private final String basePath;
+
+        private OpenApiLightyConfiguration(final String basePath) {
+            this.basePath = basePath;
+        }
+
+        @Override
+        public int maximum$_$fragment$_$length() {
+            return 0;
+        }
+
+        @Override
+        public int heartbeat$_$interval() {
+            return 10000;
+        }
+
+        @Override
+        public int idle$_$timeout() {
+            return 30000;
+        }
+
+        @Override
+        public String ping$_$executor$_$name$_$prefix() {
+            return "ping-executor";
+        }
+
+        @Override
+        public int max$_$thread$_$count() {
+            return 1;
+        }
+
+        @Override
+        public boolean use$_$sse() {
+            return true;
+        }
+
+        @Override
+        public String restconf() {
+            return basePath;
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return null;
+        }
     }
 }
