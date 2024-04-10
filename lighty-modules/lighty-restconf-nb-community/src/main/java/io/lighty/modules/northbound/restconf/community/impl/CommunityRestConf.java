@@ -95,7 +95,8 @@ public class CommunityRestConf extends AbstractLightyModule {
     @Override
     protected boolean initProcedure() {
         final Stopwatch stopwatch = Stopwatch.createStarted();
-        final StreamsConfiguration streamsConfiguration = RestConfConfigUtils.getStreamsConfiguration();
+        final StreamsConfiguration streamsConfiguration = RestConfConfigUtils
+            .getStreamsConfiguration(restconfServletContextPath);
 
         LOG.info("Starting RestconfApplication with configuration {}", streamsConfiguration);
 
