@@ -169,7 +169,9 @@ public final class RestConfConfigUtils {
         return new RestConfConfiguration();
     }
 
-    public static StreamsConfiguration getStreamsConfiguration() {
-        return new StreamsConfiguration(MAXIMUM_FRAGMENT_LENGTH, IDLE_TIMEOUT, HEARTBEAT_INTERVAL, USE_SSE);
+    public static StreamsConfiguration getStreamsConfiguration(final String restconfServletContextPath) {
+        // we use, for example "/rests" as restconfServletContextPath but NETCONF expects just "rests" as basePath
+        final var basePath = restconfServletContextPath.substring(1);
+        return new StreamsConfiguration(MAXIMUM_FRAGMENT_LENGTH, IDLE_TIMEOUT, HEARTBEAT_INTERVAL, USE_SSE, basePath);
     }
 }
