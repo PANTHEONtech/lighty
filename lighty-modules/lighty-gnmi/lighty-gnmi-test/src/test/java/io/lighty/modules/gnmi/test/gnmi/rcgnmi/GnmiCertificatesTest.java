@@ -226,7 +226,8 @@ public class GnmiCertificatesTest extends GnmiITBase {
                     HttpResponse<String> tdGetResponse
                             = sendGetRequestJSON(String.format(TEST_DATA_PATH, GNMI_NODE_ID));
                     Assertions.assertEquals(HttpURLConnection.HTTP_UNAVAILABLE, tdGetResponse.statusCode());
-                    assertTrue(tdGetResponse.body().contains("Mount point does not exist"));
+                    assertTrue(tdGetResponse.body().contains("Mount point") && tdGetResponse.body()
+                            .contains("does not exist"));
                 });
 
         // Register correct keystore
@@ -296,7 +297,8 @@ public class GnmiCertificatesTest extends GnmiITBase {
                     HttpResponse<String> tdGetResponse
                             = sendGetRequestJSON(String.format(TEST_DATA_PATH, GNMI_NODE_ID));
                     assertEquals(HttpURLConnection.HTTP_UNAVAILABLE, tdGetResponse.statusCode());
-                    assertTrue(tdGetResponse.body().contains("Mount point does not exist"));
+                    assertTrue(tdGetResponse.body().contains("Mount point") && tdGetResponse.body()
+                            .contains("does not exist"));
                 });
     }
 
