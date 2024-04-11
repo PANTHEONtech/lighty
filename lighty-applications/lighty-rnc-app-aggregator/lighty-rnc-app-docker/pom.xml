@@ -11,7 +11,7 @@
 
     <groupId>io.lighty.applications.rnc</groupId>
     <artifactId>lighty-rnc-app-docker</artifactId>
-    <version>20.0.0-SNAPSHOT</version>
+    <version>20.0.0</version>
 
     <properties>
         <image.name>lighty-rnc</image.name>
