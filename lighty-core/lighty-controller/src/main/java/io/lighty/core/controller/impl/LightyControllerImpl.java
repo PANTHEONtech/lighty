@@ -10,7 +10,7 @@ package io.lighty.core.controller.impl;
 import akka.actor.Terminated;
 import akka.management.javadsl.AkkaManagement;
 import com.google.common.base.Stopwatch;
-import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.Futures;
 import com.typesafe.config.Config;
 import io.lighty.codecs.util.exception.DeserializationException;
 import io.lighty.core.cluster.ClusteringHandler;
@@ -122,8 +122,7 @@ import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
-import org.opendaylight.yangtools.yang.model.api.source.YangTextSource;
+import org.opendaylight.yangtools.yang.model.repo.api.MissingSchemaSourceException;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
 import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
@@ -273,8 +272,13 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.snapshotResolver = new ModuleInfoSnapshotResolver("binding-dom-codec", yangParserFactory);
         this.modelsRegistration = snapshotResolver.registerModuleInfos(modelSet);
         this.moduleInfoSnapshot = snapshotResolver.takeSnapshot();
-        this.schemaService = new FixedDOMSchemaService(this::getEffectiveModelContext,
-                sourceId -> (ListenableFuture<YangTextSource>) moduleInfoSnapshot.yangTextSource(sourceId));
+        this.schemaService = new FixedDOMSchemaService(() -> moduleInfoSnapshot.modelContext(), sourceId -> {
+            try {
+                return Futures.immediateFuture(moduleInfoSnapshot.getYangTextSource(sourceId));
+            } catch (MissingSchemaSourceException e) {
+                return Futures.immediateFailedFuture(e);
+            }
+        });
 
         // INIT CODEC FACTORY
 
@@ -359,7 +363,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             final InitialConfigData initialData = this.initialConfigData.get();
             try (InputStream inputStream = initialData.getAsInputStream()) {
                 FileToDatastoreUtils.importConfigDataFile(inputStream, initialData.getFormat(),
-                        getEffectiveModelContext(), this.getClusteredDOMDataBroker(), true);
+                        moduleInfoSnapshot.modelContext(), this.getClusteredDOMDataBroker(), true);
             } catch (TimeoutException | ExecutionException | IOException | DeserializationException e) {
                 LOG.error("Exception occurred while importing config data from file", e);
                 return false;
@@ -502,11 +506,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     public ActorSystemProvider getActorSystemProvider() {
         return this.actorSystemProvider;
-    }
-
-    @Override
-    public EffectiveModelContext getEffectiveModelContext() {
-        return this.moduleInfoSnapshot.modelContext();
     }
 
     @Override

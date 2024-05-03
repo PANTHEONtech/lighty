@@ -38,7 +38,6 @@ import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -136,11 +135,6 @@ public abstract class LightyCoreSpringConfiguration {
     @Bean(destroyMethod = "")
     public ActorSystemProvider actorSystemProvider() {
         return this.lightyController.getServices().getActorSystemProvider();
-    }
-
-    @Bean(destroyMethod = "")
-    public EffectiveModelContext effectiveModelContext() {
-        return this.lightyController.getServices().getEffectiveModelContext();
     }
 
     @Bean(destroyMethod = "")

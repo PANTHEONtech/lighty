@@ -107,7 +107,7 @@ public class BgpModule extends AbstractLightyModule {
     }
 
     public BgpModule(final LightyServices lightyServices) {
-        this(lightyServices.getEffectiveModelContext(),
+        this(lightyServices.getDOMSchemaService().getGlobalContext(),
                 lightyServices.getBindingDataBroker(), lightyServices.getClusteredDOMDataBroker(),
                 lightyServices.getBindingCodecTreeFactory(),
                 lightyServices.getAdapterContext().currentSerializer().getRuntimeContext(),

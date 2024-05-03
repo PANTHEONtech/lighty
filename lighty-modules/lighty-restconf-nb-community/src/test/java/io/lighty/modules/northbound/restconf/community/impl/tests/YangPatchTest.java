@@ -63,7 +63,7 @@ public class YangPatchTest extends CommunityRestConfTestBase {
         final PatchContext patchContext = new PatchContext("test-patch", List.of(entityReplace));
 
         final var strategy = new MdsalRestconfStrategy(DatabindContext.ofModel(getLightyController()
-                .getServices().getEffectiveModelContext()), getLightyController().getServices()
+                .getServices().getDOMSchemaService().getGlobalContext()), getLightyController().getServices()
                 .getClusteredDOMDataBroker(), getLightyController().getServices().getDOMRpcService(),
                 getLightyController().getServices()
                         .getDOMActionService(), getLightyController().getServices().getYangTextSourceExtension(),

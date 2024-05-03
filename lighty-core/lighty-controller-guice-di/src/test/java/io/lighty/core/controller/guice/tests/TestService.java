@@ -49,9 +49,6 @@ public class TestService {
     private ActorSystemProvider actorSystemProvider;
 
     @Inject
-    private EffectiveModelContext effectiveModelContext;
-
-    @Inject
     private DOMSchemaService domSchemaService;
 
     @Inject
@@ -156,7 +153,7 @@ public class TestService {
     }
 
     public EffectiveModelContext getSchemaContext() {
-        return effectiveModelContext;
+        return getDomSchemaService().getGlobalContext();
     }
 
     public DOMSchemaService getDomSchemaService() {

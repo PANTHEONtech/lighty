@@ -46,7 +46,6 @@ import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,9 +77,6 @@ public class LightyCoreSpringConfigurationTest extends AbstractJUnit4SpringConte
 
     @Autowired
     ActorSystemProvider actorSystemProviderTestProperty;
-
-    @Autowired
-    EffectiveModelContext effectiveModelContext;
 
     @Autowired
     DOMSchemaService domSchemaServiceTestProperty;
@@ -177,7 +173,6 @@ public class LightyCoreSpringConfigurationTest extends AbstractJUnit4SpringConte
         assertNotNull(lightyModuleRegistryServiceTestProperty);
         assertNotNull(diagStatusServiceTestProperty);
         assertNotNull(actorSystemProviderTestProperty);
-        assertNotNull(effectiveModelContext);
         assertNotNull(domSchemaServiceTestProperty);
         assertNotNull(domYangTextSourceProviderTestProperty);
         assertNotNull(domMountPointServiceTestProperty);

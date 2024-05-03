@@ -42,7 +42,6 @@ import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
-import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 
 /**
@@ -60,8 +59,6 @@ public interface LightyServices extends LightyModuleRegistryService {
     LightySystemReadyService getLightySystemReadyService();
 
     ActorSystemProvider getActorSystemProvider();
-
-    EffectiveModelContext getEffectiveModelContext();
 
     DOMSchemaService getDOMSchemaService();
 

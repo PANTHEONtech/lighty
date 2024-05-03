@@ -29,7 +29,8 @@ public class SampleConfigTest {
         final LightyController lightyController = getLightyController("sampleConfigSingleNode.json");
         assertTrue(lightyController.start().get(TIME_OUT, TimeUnit.SECONDS));
 
-        final int loadedModulesSize = lightyController.getServices().getEffectiveModelContext().getModules().size();
+        final int loadedModulesSize = lightyController.getServices().getDOMSchemaService().getGlobalContext()
+            .getModules().size();
         assertTrue(lightyController.shutdown(TIME_OUT, TimeUnit.SECONDS));
 
         assertEquals(loadedModulesSize, 17);
@@ -40,7 +41,8 @@ public class SampleConfigTest {
         final LightyController lightyController = getLightyController("sampleConfigCluster.json");
         assertTrue(lightyController.start().get(TIME_OUT, TimeUnit.SECONDS));
 
-        final int loadedModulesSize = lightyController.getServices().getEffectiveModelContext().getModules().size();
+        final int loadedModulesSize = lightyController.getServices().getDOMSchemaService().getGlobalContext()
+            .getModules().size();
         assertTrue(lightyController.shutdown(TIME_OUT, TimeUnit.SECONDS));
 
         assertEquals(loadedModulesSize, 17);

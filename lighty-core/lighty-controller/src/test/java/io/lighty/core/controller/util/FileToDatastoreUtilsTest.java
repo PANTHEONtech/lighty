@@ -157,7 +157,7 @@ public class FileToDatastoreUtilsTest {
         FileToDatastoreUtils.importConfigDataFile(FileToDatastoreUtils.class.getResourceAsStream(path),
                 yii,
                 format,
-                lightyController.getServices().getEffectiveModelContext(),
+                lightyController.getServices().getDOMSchemaService().getGlobalContext(),
                 lightyController.getServices().getClusteredDOMDataBroker(),
                 true);
     }
