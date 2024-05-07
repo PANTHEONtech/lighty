@@ -13,13 +13,13 @@
     <parent>
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-parent</artifactId>
-        <version>18.4.0</version>
+        <version>18.4.0-SNAPSHOT</version>
         <relativePath>../../../lighty-core/lighty-parent/pom.xml</relativePath>
     </parent>
 
     <groupId>io.lighty.applications.rcgnmi</groupId>
     <artifactId>lighty-rcgnmi-app-module</artifactId>
-    <version>18.4.0</version>
+    <version>18.4.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
