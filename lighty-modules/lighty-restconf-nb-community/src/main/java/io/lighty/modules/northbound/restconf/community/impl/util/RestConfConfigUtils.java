@@ -170,6 +170,7 @@ public final class RestConfConfigUtils {
     }
 
     public static StreamsConfiguration getStreamsConfiguration() {
-        return new StreamsConfiguration(MAXIMUM_FRAGMENT_LENGTH, IDLE_TIMEOUT, HEARTBEAT_INTERVAL, USE_SSE);
+        return new StreamsConfiguration(MAXIMUM_FRAGMENT_LENGTH, IDLE_TIMEOUT, HEARTBEAT_INTERVAL, USE_SSE,
+            RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
     }
 }
