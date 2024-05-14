@@ -62,8 +62,6 @@ public class LightyControllerModule extends AbstractModule {
                 .toInstance(lightyServices.getActorSystemProvider());
         bind(DOMSchemaService.class)
                 .toInstance(lightyServices.getDOMSchemaService());
-        bind(DOMSchemaService.YangTextSourceExtension.class)
-                .toInstance(lightyServices.getYangTextSourceExtension());
         bind(DOMNotificationRouter.class)
                 .toInstance(lightyServices.getDOMNotificationRouter());
         bind(DistributedDataStoreInterface.class)
