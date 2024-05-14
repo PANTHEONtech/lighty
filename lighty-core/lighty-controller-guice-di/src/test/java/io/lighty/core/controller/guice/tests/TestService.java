@@ -11,11 +11,8 @@ import io.lighty.core.controller.api.LightyModuleRegistryService;
 import io.lighty.core.controller.api.LightyServices;
 import io.netty.channel.EventLoopGroup;
 import io.netty.util.Timer;
-import io.netty.util.concurrent.EventExecutor;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
@@ -84,21 +81,12 @@ public class TestService {
     private ClusterSingletonServiceProvider clusterSingletonServiceProvider;
 
     @Inject
-    private EventExecutor eventExecutor;
-
-    @Inject
     @Named("BossGroup")
     private EventLoopGroup eventLoopGroupBoss;
 
     @Inject
     @Named("WorkerGroup")
     private EventLoopGroup eventLoopGroupWorker;
-
-    @Inject
-    private ExecutorService threadPool;
-
-    @Inject
-    private ScheduledExecutorService scheduledThreadPool;
 
     @Inject
     private Timer timer;
@@ -200,24 +188,12 @@ public class TestService {
         return clusterSingletonServiceProvider;
     }
 
-    public EventExecutor getEventExecutor() {
-        return eventExecutor;
-    }
-
     public EventLoopGroup getEventLoopGroupBoss() {
         return eventLoopGroupBoss;
     }
 
     public EventLoopGroup getEventLoopGroupWorker() {
         return eventLoopGroupWorker;
-    }
-
-    public ExecutorService getThreadPool() {
-        return threadPool;
-    }
-
-    public ScheduledExecutorService getScheduledThreadPool() {
-        return scheduledThreadPool;
     }
 
     public Timer getTimer() {

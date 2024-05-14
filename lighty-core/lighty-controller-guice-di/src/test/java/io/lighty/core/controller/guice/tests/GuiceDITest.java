@@ -128,11 +128,6 @@ public class GuiceDITest {
     }
 
     @Test
-    public void testDIEventExecutor() {
-        assertNotNull(testService.getEventExecutor());
-    }
-
-    @Test
     public void testDIEventLoopGroupBoss() {
         assertNotNull(testService.getEventLoopGroupBoss());
     }
@@ -140,16 +135,6 @@ public class GuiceDITest {
     @Test
     public void testDIEventLoopGroupWorker() {
         assertNotNull(testService.getEventLoopGroupWorker());
-    }
-
-    @Test
-    public void testDIThreadPool() {
-        assertNotNull(testService.getThreadPool());
-    }
-
-    @Test
-    public void testDIScheduledThreadPool() {
-        assertNotNull(testService.getScheduledThreadPool());
     }
 
     @Test

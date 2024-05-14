@@ -11,11 +11,8 @@ import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModuleRegistryService;
 import io.netty.channel.EventLoopGroup;
 import io.netty.util.Timer;
-import io.netty.util.concurrent.EventExecutor;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
@@ -250,11 +247,6 @@ public abstract class LightyCoreSpringConfiguration {
         return this.lightyController.getServices().getBindingDataBroker();
     }
 
-    @Bean(destroyMethod = "")
-    public EventExecutor eventExecutor() {
-        return this.lightyController.getServices().getEventExecutor();
-    }
-
     @Bean(name = "BossGroup", destroyMethod = "")
     public EventLoopGroup bossGroup() {
         return this.lightyController.getServices().getBossGroup();
@@ -263,17 +255,6 @@ public abstract class LightyCoreSpringConfiguration {
     @Bean(name = "WorkerGroup", destroyMethod = "")
     public EventLoopGroup workerGroup() {
         return this.lightyController.getServices().getWorkerGroup();
-    }
-
-    @Bean(destroyMethod = "")
-    @Primary
-    public ExecutorService threadPool() {
-        return this.lightyController.getServices().getThreadPool();
-    }
-
-    @Bean(destroyMethod = "")
-    public ScheduledExecutorService scheduledThreadPool() {
-        return this.lightyController.getServices().getScheduledThreadPool();
     }
 
     @Bean(destroyMethod = "")

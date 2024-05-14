@@ -156,7 +156,6 @@ public class Main {
                 .from(RestConfConfigUtils.getRestConfConfiguration(restconfConfiguration,
                     this.lightyController.getServices()))
                 .withLightyServer(jettyServerBuilder)
-                .withScheduledThreadPool(lightyController.getServices().getScheduledThreadPool())
                 .build();
 
         //3. start openApi and RestConf server
