@@ -19,7 +19,7 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 
 /**
@@ -34,9 +34,9 @@ public final class DeviceStartActionImpl implements DOMActionImplementation {
             final DOMDataTreeIdentifier path, final ContainerNode input) {
         final var inputValue = input.findChildByArg(NodeIdentifier.create(INPUT_LEAF_QNAME))
                 .map(NormalizedNode::body).orElseThrow();
-        return Futures.immediateFuture(new SimpleDOMActionResult(Builders.containerBuilder()
+        return Futures.immediateFuture(new SimpleDOMActionResult(ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(StartOutput.QNAME))
-                .withChild(Builders.leafBuilder().withNodeIdentifier(NodeIdentifier.create(OUTPUT_LEAF_QNAME))
+                .withChild(ImmutableNodes.newLeafBuilder().withNodeIdentifier(NodeIdentifier.create(OUTPUT_LEAF_QNAME))
                         .withValue(inputValue)
                         .build())
                 .build()));

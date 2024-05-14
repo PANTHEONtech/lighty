@@ -102,10 +102,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafSetEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafSetNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.spi.node.impl.ImmutableContainerNodeBuilder;
-import org.opendaylight.yangtools.yang.data.spi.node.impl.ImmutableLeafNodeBuilder;
-import org.opendaylight.yangtools.yang.data.spi.node.impl.ImmutableLeafSetEntryNodeBuilder;
-import org.opendaylight.yangtools.yang.data.spi.node.impl.ImmutableSystemLeafSetNodeBuilder;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 
 public class GnmiWithoutRestconfTest {
     private static final String INITIAL_JSON_DATA_PATH = "src/test/resources/json/initData";
@@ -338,17 +335,17 @@ public class GnmiWithoutRestconfTest {
 
     private ContainerNode getYangModelInput(final String yangName, final String yangBody,
                                                   final String yangVersion) {
-        return new ImmutableContainerNodeBuilder()
+        return ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(UPLOAD_YANG_INPUT_QN))
-                .withChild(new ImmutableLeafNodeBuilder<String>()
+                .withChild(ImmutableNodes.newLeafBuilder()
                         .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(YANG_NAME_QN))
                         .withValue(yangName)
                         .build())
-                .withChild(new ImmutableLeafNodeBuilder<String>()
+                .withChild(ImmutableNodes.newLeafBuilder()
                         .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(YANG_BODY_QN))
                         .withValue(yangBody)
                         .build())
-                .withChild(new ImmutableLeafNodeBuilder<String>()
+                .withChild(ImmutableNodes.newLeafBuilder()
                         .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(YANG_VERSION_QN))
                         .withValue(yangVersion)
                         .build())
@@ -357,25 +354,25 @@ public class GnmiWithoutRestconfTest {
 
     private ContainerNode getCertificateInput(final String certId, final String ca, final String clientCert,
                                                     final String certKey, final String passphrase) {
-        return new ImmutableContainerNodeBuilder()
+        return ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(ADD_KEYSTORE_INPUT_QN))
-                .withChild(new ImmutableLeafNodeBuilder<String>()
+                .withChild(ImmutableNodes.newLeafBuilder()
                         .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(KEYSTORE_ID_QN))
                         .withValue(certId)
                         .build())
-                .withChild(new ImmutableLeafNodeBuilder<String>()
+                .withChild(ImmutableNodes.newLeafBuilder()
                         .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(CA_CERT_QN))
                         .withValue(ca)
                         .build())
-                .withChild(new ImmutableLeafNodeBuilder<String>()
+                .withChild(ImmutableNodes.newLeafBuilder()
                         .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(CLIENT_CERT_QN))
                         .withValue(clientCert)
                         .build())
-                .withChild(new ImmutableLeafNodeBuilder<String>()
+                .withChild(ImmutableNodes.newLeafBuilder()
                         .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(CLIENT_KEY_QN))
                         .withValue(certKey)
                         .build())
-                .withChild(new ImmutableLeafNodeBuilder<String>()
+                .withChild(ImmutableNodes.newLeafBuilder()
                         .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(PASSPHRASE_QN))
                         .withValue(passphrase)
                         .build())
@@ -460,37 +457,37 @@ public class GnmiWithoutRestconfTest {
     }
 
     private static ContainerNode getTestDataContainerNode() {
-        final var firstEntryValue = new ImmutableLeafSetEntryNodeBuilder()
+        final var firstEntryValue = ImmutableNodes.newLeafSetEntryBuilder()
                 .withValue(FIRST_VALUE)
-                .withNodeIdentifier(new YangInstanceIdentifier.NodeWithValue(TEST_LEAF_LIST_QN, FIRST_VALUE))
+                .withNodeIdentifier(new YangInstanceIdentifier.NodeWithValue<>(TEST_LEAF_LIST_QN, FIRST_VALUE))
                 .build();
-        final var secondEntryValues = new ImmutableLeafSetEntryNodeBuilder()
+        final var secondEntryValues = ImmutableNodes.newLeafSetEntryBuilder()
                 .withValue(SECOND_VALUE)
-                .withNodeIdentifier(new YangInstanceIdentifier.NodeWithValue(TEST_LEAF_LIST_QN, SECOND_VALUE))
+                .withNodeIdentifier(new YangInstanceIdentifier.NodeWithValue<>(TEST_LEAF_LIST_QN, SECOND_VALUE))
                 .build();
-        final var leafSetNode = new ImmutableSystemLeafSetNodeBuilder()
+        final var leafSetNode = ImmutableNodes.newSystemLeafSetBuilder()
                 .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifier.create(TEST_LEAF_LIST_QN))
-                .withChild((LeafSetEntryNode) firstEntryValue)
-                .withChild((LeafSetEntryNode) secondEntryValues)
+                .withChild(firstEntryValue)
+                .withChild(secondEntryValues)
                 .build();
 
-        return new ImmutableContainerNodeBuilder()
+        return ImmutableNodes.newContainerBuilder()
                 .withChild(leafSetNode)
                 .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifier.create(TEST_DATA_CONTAINER_QN))
                 .build();
     }
 
     private static ContainerNode getUpdateTestDataContainerNode() {
-        final var thirdEntryValue = new ImmutableLeafSetEntryNodeBuilder()
+        final var thirdEntryValue = ImmutableNodes.newLeafSetEntryBuilder()
                 .withValue(THIRD_VALUE)
-                .withNodeIdentifier(new YangInstanceIdentifier.NodeWithValue(TEST_LEAF_LIST_QN, THIRD_VALUE))
+                .withNodeIdentifier(new YangInstanceIdentifier.NodeWithValue<>(TEST_LEAF_LIST_QN, THIRD_VALUE))
                 .build();
-        final LeafSetNode<Object> leafSetNode = new ImmutableSystemLeafSetNodeBuilder()
+        final LeafSetNode<Object> leafSetNode = ImmutableNodes.newSystemLeafSetBuilder()
                 .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifier.create(TEST_LEAF_LIST_QN))
-                .withChild((LeafSetEntryNode) thirdEntryValue)
+                .withChild(thirdEntryValue)
                 .build();
 
-        return new ImmutableContainerNodeBuilder()
+        return ImmutableNodes.newContainerBuilder()
                 .withChild(leafSetNode)
                 .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifier.create(TEST_DATA_CONTAINER_QN))
                 .build();

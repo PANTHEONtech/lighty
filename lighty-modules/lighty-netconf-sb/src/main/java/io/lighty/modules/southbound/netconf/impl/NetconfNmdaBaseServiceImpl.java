@@ -10,6 +10,7 @@ package io.lighty.modules.southbound.netconf.impl;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.NETCONF_RUNNING_NODEID;
 import static org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil.toId;
+import static org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes.fromInstanceId;
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -46,12 +47,10 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedMetadata;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeWriter;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.YangInstanceIdentifierWriter;
-import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
-import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedMetadata;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizationResultHolder;
-import org.opendaylight.yangtools.yang.data.spi.node.impl.ImmutableAnydataNodeBuilder;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack;
 
@@ -145,12 +144,12 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
                 .orElse(null);
         final SchemaInferenceStack stack = SchemaInferenceStack.of(getEffectiveModelContext());
         stack.enterSchemaTree(editNNContent.name().getNodeType());
-        final AnydataNode<NormalizedAnydata> editContent = new ImmutableAnydataNodeBuilder<>(NormalizedAnydata.class)
+        final AnydataNode<NormalizedAnydata> editContent = ImmutableNodes.newAnydataBuilder(NormalizedAnydata.class)
                 .withNodeIdentifier(NETCONF_EDIT_DATA_CONFIG_NODEID)
                 .withValue(NormalizedAnydata.of(stack.toInference(), editNNContent, metadata))
                 .build();
 
-        ChoiceNode editStructure = Builders.choiceBuilder().withNodeIdentifier(toId(EditContent.QNAME))
+        ChoiceNode editStructure = ImmutableNodes.newChoiceBuilder().withNodeIdentifier(toId(EditContent.QNAME))
                 .withChild(editContent).build();
         Preconditions.checkNotNull(editStructure);
         return getDOMRpcService().invokeRpc(NETCONF_EDIT_DATA_QNAME,
@@ -169,55 +168,55 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
     }
 
     private DataContainerChild getDatastoreNode(QName datastore) {
-        return Builders.leafBuilder().withNodeIdentifier(NETCONF_DATASTORE_NODEID)
+        return ImmutableNodes.newLeafBuilder().withNodeIdentifier(NETCONF_DATASTORE_NODEID)
                 .withValue(datastore).build();
     }
 
     private DataContainerChild getConfigFilterNode(Boolean configFilter) {
-        return Builders.leafBuilder().withNodeIdentifier(NETCONF_CONFIG_FILTER_NODEID)
+        return ImmutableNodes.newLeafBuilder().withNodeIdentifier(NETCONF_CONFIG_FILTER_NODEID)
                 .withValue(configFilter).build();
     }
 
     private DataContainerChild getMaxDepthNode(Integer maxDepth) {
-        return Builders.leafBuilder().withNodeIdentifier(NETCONF_MAX_DEPTH_NODEID)
+        return ImmutableNodes.newLeafBuilder().withNodeIdentifier(NETCONF_MAX_DEPTH_NODEID)
                 .withValue(maxDepth).build();
     }
 
     private DataContainerChild getOriginFilterNode(Set<QName> originFilter) {
         List<LeafSetEntryNode<Object>> leafSetEntryNodes = new ArrayList<>();
         originFilter.forEach(originFilterEntry -> {
-            leafSetEntryNodes.add((LeafSetEntryNode<Object>) Builders.leafSetEntryBuilder()
+            leafSetEntryNodes.add((LeafSetEntryNode<Object>) ImmutableNodes.newLeafSetEntryBuilder()
                     .withNodeIdentifier(new NodeWithValue(NETCONF_ORIGIN_FILTER_NODEID.getNodeType(),
                             originFilterEntry))
                     .withValue(originFilterEntry)
                     .build());
         });
-        return Builders.leafSetBuilder().withNodeIdentifier(NETCONF_ORIGIN_FILTER_NODEID)
+        return ImmutableNodes.newSystemLeafSetBuilder().withNodeIdentifier(NETCONF_ORIGIN_FILTER_NODEID)
                 .withValue(leafSetEntryNodes).build();
     }
 
     private DataContainerChild getNegatedOriginFilterNode(Set<QName> negatedOriginFilter) {
         List<LeafSetEntryNode<Object>> leafSetEntryNodes = new ArrayList<>();
         negatedOriginFilter.forEach(negatedOriginFilterEntry -> {
-            leafSetEntryNodes.add((LeafSetEntryNode<Object>) Builders.leafSetEntryBuilder()
+            leafSetEntryNodes.add((LeafSetEntryNode<Object>) ImmutableNodes.newLeafSetEntryBuilder()
                     .withNodeIdentifier(new NodeWithValue(NETCONF_NEGATED_ORIGIN_FILTER_NODEID.getNodeType(),
                             negatedOriginFilterEntry))
                     .withValue(negatedOriginFilterEntry)
                     .build());
         });
-        return Builders.leafSetBuilder().withNodeIdentifier(NETCONF_NEGATED_ORIGIN_FILTER_NODEID)
+        return ImmutableNodes.newSystemLeafSetBuilder().withNodeIdentifier(NETCONF_NEGATED_ORIGIN_FILTER_NODEID)
                 .withValue(leafSetEntryNodes).build();
     }
 
     private DataContainerChild getWithOriginNode() {
-        return Builders.leafBuilder().withNodeIdentifier(NETCONF_WITH_ORIGIN_NODEID)
+        return ImmutableNodes.newLeafBuilder().withNodeIdentifier(NETCONF_WITH_ORIGIN_NODEID)
                 .withValue(Empty.value())
                 .build();
     }
 
     private DataContainerChild getDefaultOperationNode(EffectiveOperation defaultEffectiveOperation) {
         final String opString = defaultEffectiveOperation.name().toLowerCase(Locale.US);
-        return Builders.leafBuilder().withNodeIdentifier(NodeIdentifier.create(
+        return ImmutableNodes.newLeafBuilder().withNodeIdentifier(NodeIdentifier.create(
                         org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.nmda.rev190107
                                 .YangModuleInfoImpl.qnameOf("default-operation")))
                 .withValue(opString).build();
@@ -257,22 +256,22 @@ public class NetconfNmdaBaseServiceImpl extends NetconfBaseServiceImpl implement
         } else {
             originFilterChild = getOriginFilterNode(originFilter);
         }
-        return Builders.choiceBuilder()
+        return ImmutableNodes.newChoiceBuilder()
                 .withNodeIdentifier(NETCONF_ORIGIN_FILTERS_CHOICE_NODEID)
                 .withChild(originFilterChild)
                 .build();
     }
 
     private ChoiceNode getFilterSpecChoiceNode(final YangInstanceIdentifier filterYII) {
-        final NormalizedNode filterNN = ImmutableNodes.fromInstanceId(getEffectiveModelContext(), filterYII);
+        final NormalizedNode filterNN = fromInstanceId(getEffectiveModelContext(), filterYII);
         final SchemaInferenceStack stack = SchemaInferenceStack.of(getEffectiveModelContext());
         stack.enterSchemaTree(filterNN.name().getNodeType());
         final AnydataNode<NormalizedAnydata> subtreeFilter =
-                (AnydataNode<NormalizedAnydata>) new ImmutableAnydataNodeBuilder(NormalizedAnydata.class)
+                ImmutableNodes.newAnydataBuilder(NormalizedAnydata.class)
                         .withNodeIdentifier(NETCONF_FILTER_NODEID)
                         .withValue(NormalizedAnydata.of(stack.toInference(), filterNN))
                         .build();
-        return Builders.choiceBuilder()
+        return ImmutableNodes.newChoiceBuilder()
                 .withNodeIdentifier(NETCONF_FILTER_CHOICE_NODEID)
                 .withChild(subtreeFilter)
                 .build();

@@ -15,7 +15,7 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
-import org.opendaylight.yangtools.yang.data.spi.node.impl.ImmutableContainerNodeBuilder;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -36,7 +36,7 @@ public class LightyControllerNotificationTest extends LightyControllerTestBase {
 
             @Override
             public ContainerNode getBody() {
-                return new ImmutableContainerNodeBuilder().build();
+                return ImmutableNodes.newContainerBuilder().build();
             }
         };
         final int[] listenerMethodsCalled = { 0 };

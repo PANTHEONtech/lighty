@@ -32,7 +32,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.SystemMapNode;
-import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.testng.annotations.Test;
 
 public class YangPatchTest extends CommunityRestConfTestBase {
@@ -87,27 +87,27 @@ public class YangPatchTest extends CommunityRestConfTestBase {
     }
 
     private static ContainerNode getContainerWithData() {
-        final LeafNode<?> nameLeafA = Builders.leafBuilder()
+        final LeafNode<?> nameLeafA = ImmutableNodes.newLeafBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(EXAMPLE_LIST_NAME))
                 .withValue(MY_LIST_1_A)
                 .build();
-        final LeafNode<?> buildLeaf1 = Builders.leafBuilder()
+        final LeafNode<?> buildLeaf1 = ImmutableNodes.newLeafBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(MY_LEAF_11))
                 .withValue(I_AM_LEAF_11_0)
                 .build();
-        final LeafNode<?> buildLeaf2 = Builders.leafBuilder()
+        final LeafNode<?> buildLeaf2 = ImmutableNodes.newLeafBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(MY_LEAF_12))
                 .withValue(I_AM_LEAF_12_1)
                 .build();
-        final MapEntryNode mapEntryNode = Builders.mapEntryBuilder()
+        final MapEntryNode mapEntryNode = ImmutableNodes.newMapEntryBuilder()
                 .withNodeIdentifier(NodeIdentifierWithPredicates.of(EXAMPLE_LIST))
                 .withValue(List.of(nameLeafA, buildLeaf1, buildLeaf2))
                 .build();
-        final SystemMapNode myList = Builders.mapBuilder()
+        final SystemMapNode myList = ImmutableNodes.newSystemMapBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(EXAMPLE_LIST))
                 .withValue(Collections.singletonList(mapEntryNode))
                 .build();
-        return Builders.containerBuilder()
+        return ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(CONTAINER_ID))
                 .withValue(Collections.singletonList(myList))
                 .build();
