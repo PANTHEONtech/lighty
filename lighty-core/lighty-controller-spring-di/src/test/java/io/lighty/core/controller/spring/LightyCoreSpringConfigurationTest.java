@@ -18,11 +18,8 @@ import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import io.netty.channel.EventLoopGroup;
 import io.netty.util.Timer;
-import io.netty.util.concurrent.EventExecutor;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
 import org.junit.jupiter.api.Test;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
@@ -147,22 +144,12 @@ public class LightyCoreSpringConfigurationTest extends AbstractJUnit4SpringConte
     DataBroker bindingDataBrokerTestProperty;
 
     @Autowired
-    EventExecutor eventExecutorTestProperty;
-
-    @Autowired
     @Qualifier("BossGroup")
     EventLoopGroup bossGroupTestProperty;
 
     @Autowired
     @Qualifier("WorkerGroup")
     EventLoopGroup workerGroupTestProperty;
-
-    @Autowired
-    ExecutorService threadPoolTestProperty;
-
-    @Autowired
-    @Qualifier("scheduledThreadPool")
-    ScheduledExecutorService scheduledThreadPoolTestProperty;
 
     @Autowired
     Timer timerTestProperty;
@@ -195,11 +182,8 @@ public class LightyCoreSpringConfigurationTest extends AbstractJUnit4SpringConte
         assertNotNull(notificationServiceTestProperty);
         assertNotNull(bindingNotificationPublishServiceTestProperty);
         assertNotNull(bindingDataBrokerTestProperty);
-        assertNotNull(eventExecutorTestProperty);
         assertNotNull(bossGroupTestProperty);
         assertNotNull(workerGroupTestProperty);
-        assertNotNull(threadPoolTestProperty);
-        assertNotNull(scheduledThreadPoolTestProperty);
         assertNotNull(timerTestProperty);
     }
 

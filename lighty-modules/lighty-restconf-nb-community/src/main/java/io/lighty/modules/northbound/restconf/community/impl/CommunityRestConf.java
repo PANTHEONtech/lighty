@@ -16,7 +16,6 @@ import io.lighty.server.LightyServerBuilder;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Set;
-import java.util.concurrent.ScheduledExecutorService;
 import javax.ws.rs.core.Application;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -57,14 +56,13 @@ public class CommunityRestConf extends AbstractLightyModule {
     private final String restconfServletContextPath;
     private Server jettyServer;
     private LightyServerBuilder lightyServerBuilder;
-    private final ScheduledExecutorService scheduledThreadPool;
 
     public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMRpcService domRpcService,
             final DOMActionService domActionService, final DOMNotificationService domNotificationService,
             final DOMMountPointService domMountPointService,
             final DOMSchemaService domSchemaService, final InetAddress inetAddress,
             final int httpPort, final String restconfServletContextPath,
-            final LightyServerBuilder serverBuilder, final ScheduledExecutorService threadPool) {
+            final LightyServerBuilder serverBuilder) {
         this.domDataBroker = domDataBroker;
         this.domRpcService = domRpcService;
         this.domActionService = domActionService;
@@ -75,17 +73,16 @@ public class CommunityRestConf extends AbstractLightyModule {
         this.httpPort = httpPort;
         this.inetAddress = inetAddress;
         this.restconfServletContextPath = restconfServletContextPath;
-        this.scheduledThreadPool = threadPool;
     }
 
     public CommunityRestConf(final DOMDataBroker domDataBroker,
             final DOMRpcService domRpcService, final DOMActionService domActionService,
             final DOMNotificationService domNotificationService, final DOMMountPointService domMountPointService,
             final DOMSchemaService domSchemaService, final InetAddress inetAddress, final int httpPort,
-            final String restconfServletContextPath, final ScheduledExecutorService threadPool) {
+            final String restconfServletContextPath) {
         this(domDataBroker, domRpcService, domActionService, domNotificationService,
                 domMountPointService, domSchemaService, inetAddress, httpPort,
-                restconfServletContextPath, null, threadPool);
+                restconfServletContextPath, null);
     }
 
     @Override

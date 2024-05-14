@@ -36,11 +36,8 @@ public class LightyControllerTest extends LightyControllerTestBase {
         Assert.assertNotNull(lightyController.getServices().getEntityOwnershipService());
         Assert.assertNotNull(lightyController.getServices().getClusterAdminRPCService());
         Assert.assertNotNull(lightyController.getServices().getClusterSingletonServiceProvider());
-        Assert.assertNotNull(lightyController.getServices().getEventExecutor());
         Assert.assertNotNull(lightyController.getServices().getBossGroup());
         Assert.assertNotNull(lightyController.getServices().getWorkerGroup());
-        Assert.assertNotNull(lightyController.getServices().getThreadPool());
-        Assert.assertNotNull(lightyController.getServices().getScheduledThreadPool());
         Assert.assertNotNull(lightyController.getServices().getTimer());
         Assert.assertNotNull(lightyController.getServices().getDOMMountPointService());
         Assert.assertNotNull(lightyController.getServices().getDOMNotificationPublishService());
