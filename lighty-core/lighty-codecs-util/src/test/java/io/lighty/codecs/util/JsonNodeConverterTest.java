@@ -30,7 +30,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
@@ -166,17 +166,17 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
     }
 
     private static NormalizedNode expectedToasterContainerNN() {
-        return wrapWithBaseContainer(Builders.containerBuilder()
+        return wrapWithBaseContainer(ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(Toaster.QNAME))
-                .withChild(Builders.leafBuilder()
+                .withChild(ImmutableNodes.newLeafBuilder()
                         .withNodeIdentifier(NodeIdentifier.create(qOfToasterModel("toasterManufacturer")))
                         .withValue("manufacturer")
                         .build())
-                .withChild((Builders.leafBuilder()
+                .withChild((ImmutableNodes.newLeafBuilder()
                         .withNodeIdentifier(NodeIdentifier.create(qOfToasterModel("toasterStatus")))
                         .withValue("up")
                         .build()))
-                .withChild((Builders.leafBuilder()
+                .withChild((ImmutableNodes.newLeafBuilder()
                         .withNodeIdentifier(NodeIdentifier.create(qOfToasterModel("darknessFactor")))
                         .withValue(Uint32.valueOf(201392110))
                         .build()))
@@ -184,9 +184,9 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
     }
 
     private static NormalizedNode expectedRpcInputNN() {
-        return Builders.containerBuilder()
+        return ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(SimpleInputOutputRpcInput.QNAME))
-                .withChild(Builders.leafBuilder()
+                .withChild(ImmutableNodes.newLeafBuilder()
                         .withNodeIdentifier(NodeIdentifier.create(qOfTestModel("input-obj")))
                         .withValue("a")
                         .build())
@@ -194,9 +194,9 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
     }
 
     private static NormalizedNode expectedRpcOutputNN() {
-        return Builders.containerBuilder()
+        return ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(SimpleInputOutputRpcOutput.QNAME))
-                .withChild(Builders.leafBuilder()
+                .withChild(ImmutableNodes.newLeafBuilder()
                         .withNodeIdentifier(NodeIdentifier.create(qOfTestModel("output-obj")))
                         .withValue("a")
                         .build())
@@ -204,24 +204,24 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
     }
 
     private static NormalizedNode expectedRpcContainerInputNN() {
-        return Builders.containerBuilder()
+        return ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(ContainerIoRpcInput.QNAME))
                 .withChild(expectedInnerContainerNN())
                 .build();
     }
 
     private static NormalizedNode expectedTopLevelContainerNN() {
-        return wrapWithBaseContainer(Builders.containerBuilder()
+        return wrapWithBaseContainer(ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(TopLevelContainer.QNAME))
                 .withChild(expectedInnerContainerNN())
                 .build());
     }
 
     private static DataContainerChild expectedInnerContainerNN() {
-        return Builders.containerBuilder()
+        return ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(SampleContainer.QNAME))
                 .withChild(expectedInnerLeafNN())
-                .withChild((Builders.leafBuilder()
+                .withChild((ImmutableNodes.newLeafBuilder()
                         .withNodeIdentifier(NodeIdentifier.create(qOfTestModel("value")))
                         .withValue(Uint32.valueOf(1))
                         .build()))
@@ -229,19 +229,19 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
     }
 
     private static DataContainerChild expectedInnerLeafNN() {
-        return Builders.leafBuilder()
+        return ImmutableNodes.newLeafBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(qOfTestModel("name")))
                 .withValue("name")
                 .build();
     }
 
     private static NormalizedNode expectedListSingleEntryNN() {
-        return wrapWithBaseContainer(Builders.mapBuilder()
+        return wrapWithBaseContainer(ImmutableNodes.newSystemMapBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(SampleList.QNAME))
-                .withChild(Builders.mapEntryBuilder()
+                .withChild(ImmutableNodes.newMapEntryBuilder()
                         .withNodeIdentifier(NodeIdentifierWithPredicates.of(SampleList.QNAME,
                                 qOfTestModel("name"), "test"))
-                        .withChild(Builders.leafBuilder()
+                        .withChild(ImmutableNodes.newLeafBuilder()
                                 .withNodeIdentifier(NodeIdentifier.create(qOfTestModel("name")))
                                 .withValue("test")
                                 .build())
@@ -250,12 +250,12 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
     }
 
     private static NormalizedNode expectedTestListNN() {
-        return Builders.mapBuilder()
+        return ImmutableNodes.newSystemMapBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(TestList.QNAME))
-                .withChild(Builders.mapEntryBuilder()
+                .withChild(ImmutableNodes.newMapEntryBuilder()
                         .withNodeIdentifier(NodeIdentifierWithPredicates.of(TestList.QNAME,
                                 qOfTestModel("test-name"), "test"))
-                        .withChild(Builders.leafBuilder()
+                        .withChild(ImmutableNodes.newLeafBuilder()
                                 .withNodeIdentifier(NodeIdentifier.create(qOfTestModel("test-name")))
                                 .withValue("test")
                                 .build())
@@ -264,20 +264,20 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
     }
 
     private static NormalizedNode expectedListMultipleEntriesNN() {
-        return wrapWithBaseContainer(Builders.mapBuilder()
+        return wrapWithBaseContainer(ImmutableNodes.newSystemMapBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(SampleList.QNAME))
-                .withChild(Builders.mapEntryBuilder()
+                .withChild(ImmutableNodes.newMapEntryBuilder()
                         .withNodeIdentifier(NodeIdentifierWithPredicates.of(SampleList.QNAME,
                                 qOfTestModel("name"), "test"))
-                        .withChild(Builders.leafBuilder()
+                        .withChild(ImmutableNodes.newLeafBuilder()
                                 .withNodeIdentifier(NodeIdentifier.create(qOfTestModel("name")))
                                 .withValue("test")
                                 .build())
                         .build())
-                .withChild(Builders.mapEntryBuilder()
+                .withChild(ImmutableNodes.newMapEntryBuilder()
                         .withNodeIdentifier(NodeIdentifierWithPredicates.of(SampleList.QNAME,
                                 qOfTestModel("name"), "test2"))
-                        .withChild(Builders.leafBuilder()
+                        .withChild(ImmutableNodes.newLeafBuilder()
                                 .withNodeIdentifier(NodeIdentifier.create(qOfTestModel("name")))
                                 .withValue("test2")
                                 .build())
@@ -286,7 +286,7 @@ public class JsonNodeConverterTest extends AbstractCodecTest {
     }
 
     private static NormalizedNode wrapWithBaseContainer(final DataContainerChild child) {
-        return Builders.containerBuilder()
+        return ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(SchemaContext.NAME))
                 .withChild(child)
                 .build();

@@ -36,8 +36,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
-import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
-import org.opendaylight.yangtools.yang.data.spi.node.impl.ImmutableLeafNodeBuilder;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.testng.annotations.Test;
 import org.w3c.dom.Element;
 
@@ -142,10 +141,10 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
 
         final String editVersionValue = "test_version_x_x_x";
 
-        MapEntryNode schema = Builders.mapEntryBuilder()
+        MapEntryNode schema = ImmutableNodes.newMapEntryBuilder()
                 .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifierWithPredicates
                         .of(Schema.QNAME, QName.create(Schema.QNAME, "identifier"), "listkeyvalue1"))
-                .withChild((DataContainerChild) new ImmutableLeafNodeBuilder()
+                .withChild(ImmutableNodes.newLeafBuilder()
                         .withNodeIdentifier(NodeIdentifier.create(QName.create(Schema.QNAME, "version")))
                         .withValue(editVersionValue)
                         .build())
