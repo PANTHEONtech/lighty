@@ -64,9 +64,6 @@ import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
-import org.opendaylight.yangtools.yang.data.spi.node.impl.ImmutableContainerNodeBuilder;
-import org.opendaylight.yangtools.yang.data.spi.node.impl.ImmutableMapEntryNodeBuilder;
-import org.opendaylight.yangtools.yang.data.spi.node.impl.ImmutableSystemMapNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.skyscreamer.jsonassert.JSONAssert;
 
@@ -212,7 +209,7 @@ public class WriteTransactionTest {
                 YangInstanceIdentifier.NodeIdentifier.create(CONFIG_NAME_QN), NAME_KEY_VALUE);
         final LeafNode<Boolean> loopbackNode = ImmutableNodes.leafNode(
                 YangInstanceIdentifier.NodeIdentifier.create(CONFIG_LOOPBACK_QN), true);
-        return new ImmutableContainerNodeBuilder()
+        return ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifier.create(CONFIG_CONTAINER_QN))
                 .withChild(configName)
                 .withChild(loopbackNode)
@@ -222,26 +219,26 @@ public class WriteTransactionTest {
     private static ContainerNode getPrepareListNode() {
         final LeafNode<String> node = ImmutableNodes.leafNode(
                 YangInstanceIdentifier.NodeIdentifier.create(NAME_QN), NAME_KEY_VALUE);
-        final MapEntryNode name = new ImmutableMapEntryNodeBuilder()
+        final MapEntryNode name = ImmutableNodes.newMapEntryBuilder()
                 .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifierWithPredicates
                         .of(INTERFACE_LIST_QN, NAME_QN, NAME_KEY_VALUE))
                 .withChild(node)
                 .build();
-        final MapNode mapNode = new ImmutableSystemMapNodeBuilder()
+        final MapNode mapNode = ImmutableNodes.newSystemMapBuilder()
                 .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifier.create(INTERFACE_LIST_QN))
                 .withChild(name)
                 .build();
-        return new ImmutableContainerNodeBuilder()
+        return ImmutableNodes.newContainerBuilder()
                 .withChild(mapNode)
                 .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifier.create(INTERFACES_CONTAINER_QN))
                 .build();
     }
 
     private static ContainerNode getEmptyPrepareListNode() {
-        final MapNode build = new ImmutableSystemMapNodeBuilder()
+        final MapNode build = ImmutableNodes.newSystemMapBuilder()
                 .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifier.create(INTERFACE_LIST_QN))
                 .build();
-        return new ImmutableContainerNodeBuilder()
+        return ImmutableNodes.newContainerBuilder()
                 .withChild(build)
                 .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifier.create(INTERFACES_CONTAINER_QN))
                 .build();
