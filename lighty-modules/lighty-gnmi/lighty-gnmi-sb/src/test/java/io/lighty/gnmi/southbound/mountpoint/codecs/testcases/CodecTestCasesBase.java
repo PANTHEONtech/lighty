@@ -28,9 +28,6 @@ import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
-import org.opendaylight.yangtools.yang.data.spi.node.impl.ImmutableContainerNodeBuilder;
-import org.opendaylight.yangtools.yang.data.spi.node.impl.ImmutableMapEntryNodeBuilder;
-import org.opendaylight.yangtools.yang.data.spi.node.impl.ImmutableSystemMapNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 /**
@@ -91,7 +88,7 @@ public class CodecTestCasesBase {
                         .node(getMapEntryIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface", "name", "eth3"));
 
         return ImmutablePair.of(identifier, wrapInMapNode
-                ? new ImmutableSystemMapNodeBuilder()
+                ? ImmutableNodes.newSystemMapBuilder()
                 .withNodeIdentifier(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface"))
                 .withValue(List.of(interfaceEth3Node())).build()
                 : interfaceEth3Node());
@@ -237,7 +234,7 @@ public class CodecTestCasesBase {
     }
 
     private NormalizedNode makeRoot() {
-        final NormalizedNode normalizedNode = new ImmutableContainerNodeBuilder()
+        final NormalizedNode normalizedNode = ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifier.create(SchemaContext.NAME))
                 .withChild((DataContainerChild) makeInterfaces())
                 .withChild((DataContainerChild) makeComponents()).build();
@@ -245,15 +242,15 @@ public class CodecTestCasesBase {
     }
 
     private NormalizedNode makeComponents() {
-        return new ImmutableContainerNodeBuilder()
+        return ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(getNodeIdentifierOfNodeInModule(OC_PLATFORM_ID, "components"))
-                .withChild(new ImmutableSystemMapNodeBuilder()
+                .withChild(ImmutableNodes.newSystemMapBuilder()
                         .withNodeIdentifier(getNodeIdentifierOfNodeInModule(OC_PLATFORM_ID, "component"))
-                        .withChild(new ImmutableMapEntryNodeBuilder()
+                        .withChild(ImmutableNodes.newMapEntryBuilder()
                                 .withNodeIdentifier(getMapEntryIdentifierOfNodeInModule(OC_PLATFORM_ID, "component",
                                         "name", "admin"))
                                 .withChild(makeLeafNode(OC_PLATFORM_ID,"name","admin"))
-                                .withChild(new ImmutableContainerNodeBuilder()
+                                .withChild(ImmutableNodes.newContainerBuilder()
                                         .withNodeIdentifier(getNodeIdentifierOfNodeInModule(OC_PLATFORM_ID, "config"))
                                         .withChild(makeLeafNode(OC_PLATFORM_ID,"name","admin"))
                                         .build())
@@ -263,27 +260,27 @@ public class CodecTestCasesBase {
     }
 
     public NormalizedNode makeInterfaces() {
-        return new ImmutableContainerNodeBuilder()
+        return ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interfaces"))
-                .withChild(new ImmutableSystemMapNodeBuilder()
+                .withChild(ImmutableNodes.newSystemMapBuilder()
                         .withNodeIdentifier(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface"))
                         .withChild(interfaceEth3Node())
-                        .withChild(new ImmutableMapEntryNodeBuilder()
+                        .withChild(ImmutableNodes.newMapEntryBuilder()
                                 .withNodeIdentifier(getMapEntryIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface",
                                         "name", "br0"))
                                 .withChild(makeLeafNode(OC_INTERFACES_ID, "name", "br0"))
                                 .withChild(interfaceConfigNode())
-                                .withChild(new ImmutableContainerNodeBuilder()
+                                .withChild(ImmutableNodes.newContainerBuilder()
                                     .withNodeIdentifier(
                                         getNodeIdentifierOfNodeInModule(OC_IF_ETHERNET_ID, "ethernet"))
                                     .withChild(ethConfigNode())
                                     .withChild(switchedVlanNode())
                                     .build())
-                                .withChild(new ImmutableContainerNodeBuilder()
+                                .withChild(ImmutableNodes.newContainerBuilder()
                                         .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifier.create(
                                                 QName.create(getQNameOfModule(OC_IF_AGGREGATE_ID),
                                                         "aggregation")))
-                                                .withChild(new ImmutableContainerNodeBuilder()
+                                                .withChild(ImmutableNodes.newContainerBuilder()
                                                         .withNodeIdentifier(getNodeIdentifierOfNodeInModule(
                                                                 OC_IF_AGGREGATE_ID, "config"))
                                                         .withValue(List.of(
@@ -299,7 +296,7 @@ public class CodecTestCasesBase {
     }
 
     private ContainerNode ethConfigNode() {
-        return new ImmutableContainerNodeBuilder()
+        return ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(
                         getNodeIdentifierOfNodeInModule(OC_IF_ETHERNET_ID, "config"))
                 .withValue(List.of(
@@ -313,7 +310,7 @@ public class CodecTestCasesBase {
     }
 
     public MapEntryNode interfaceEth3Node() {
-        return new ImmutableMapEntryNodeBuilder()
+        return ImmutableNodes.newMapEntryBuilder()
                 .withNodeIdentifier(
                         getMapEntryIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface", "name", "eth3"))
                 .withChild(interfaceConfigNode())
@@ -322,7 +319,7 @@ public class CodecTestCasesBase {
     }
 
     public ContainerNode interfaceConfigNode() {
-        return new ImmutableContainerNodeBuilder()
+        return ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "config"))
                 .withValue(List.of(
                         makeLeafNode(OC_INTERFACES_ID, "name", "admin"),
@@ -334,9 +331,9 @@ public class CodecTestCasesBase {
     }
 
     public ContainerNode switchedVlanNode() {
-        return new ImmutableContainerNodeBuilder()
+        return ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(getNodeIdentifierOfNodeInModule(OC_VLAN_ID, "switched-vlan"))
-                .withChild(new ImmutableContainerNodeBuilder()
+                .withChild(ImmutableNodes.newContainerBuilder()
                         .withNodeIdentifier(getNodeIdentifierOfNodeInModule(OC_VLAN_ID, "config"))
                         .withValue(List.of(
                                 makeLeafNode(OC_VLAN_ID, "native-vlan", Uint16.valueOf(37)),

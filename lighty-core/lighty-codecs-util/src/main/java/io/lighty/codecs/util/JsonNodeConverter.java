@@ -28,9 +28,9 @@ import org.opendaylight.yangtools.yang.data.codec.gson.JSONCodecFactory;
 import org.opendaylight.yangtools.yang.data.codec.gson.JSONCodecFactorySupplier;
 import org.opendaylight.yangtools.yang.data.codec.gson.JSONNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.codec.gson.JsonParserStream;
-import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizationResultHolder;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack.Inference;
@@ -160,8 +160,8 @@ public class JsonNodeConverter implements NodeConverter {
     public NormalizedNode deserialize(final Inference inference, final Reader inputData)
             throws DeserializationException {
         if (inference.statementPath().isEmpty()) {
-            final DataContainerNodeBuilder<NodeIdentifier, ContainerNode> resultBuilder = Builders.containerBuilder()
-                    .withNodeIdentifier(NodeIdentifier.create(SchemaContext.NAME));
+            final DataContainerNodeBuilder<NodeIdentifier, ContainerNode> resultBuilder =
+                    ImmutableNodes.newContainerBuilder().withNodeIdentifier(NodeIdentifier.create(SchemaContext.NAME));
             parseToResult(ImmutableNormalizedNodeStreamWriter.from(resultBuilder), inputData, inference);
             return resultBuilder.build();
         } else {

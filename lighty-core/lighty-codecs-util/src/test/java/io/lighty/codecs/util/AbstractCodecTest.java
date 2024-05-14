@@ -41,9 +41,6 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
-import org.opendaylight.yangtools.yang.data.spi.node.impl.ImmutableContainerNodeBuilder;
-import org.opendaylight.yangtools.yang.data.spi.node.impl.ImmutableMapEntryNodeBuilder;
-import org.opendaylight.yangtools.yang.data.spi.node.impl.ImmutableSystemMapNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
@@ -124,7 +121,7 @@ public abstract class AbstractCodecTest {
     }
 
     private static NormalizedNode topLevelContainerNode() {
-        return new ImmutableContainerNodeBuilder().withNodeIdentifier(NodeIdentifier.create(Toaster.QNAME))
+        return ImmutableNodes.newContainerBuilder().withNodeIdentifier(NodeIdentifier.create(Toaster.QNAME))
                 .withValue(List.of(
                         ImmutableNodes.leafNode(
                                 NodeIdentifier.create(qOfToasterModel("toasterManufacturer")), "manufacturer"),
@@ -136,7 +133,7 @@ public abstract class AbstractCodecTest {
     }
 
     private static NormalizedNode rpcLeafInputNode() {
-        return new ImmutableContainerNodeBuilder()
+        return ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(SimpleInputOutputRpcInput.QNAME))
                 .withChild(ImmutableNodes.leafNode(
                         NodeIdentifier.create(qOfTestModel("input-obj")), "testValue"))
@@ -144,7 +141,7 @@ public abstract class AbstractCodecTest {
     }
 
     private static NormalizedNode rpcLeafOutputNode() {
-        return new ImmutableContainerNodeBuilder()
+        return ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(SimpleInputOutputRpcOutput.QNAME))
                 .withChild(ImmutableNodes.leafNode(
                         NodeIdentifier.create(qOfTestModel("output-obj")), "testValue"))
@@ -152,7 +149,7 @@ public abstract class AbstractCodecTest {
     }
 
     private static NormalizedNode notificationContainer() {
-        return new ImmutableContainerNodeBuilder()
+        return ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(ToasterRestocked.QNAME))
                 .withChild(ImmutableNodes.leafNode(
                         NodeIdentifier.create(qOfToasterModel("amountOfBread")), 1)).build();
@@ -160,7 +157,7 @@ public abstract class AbstractCodecTest {
 
     private static NormalizedNode listEntryNode() {
         final QName key = qOfTestModel("name");
-        return new ImmutableMapEntryNodeBuilder()
+        return ImmutableNodes.newMapEntryBuilder()
                 .withNodeIdentifier(NodeIdentifierWithPredicates.of(
                         SampleList.QNAME, key, "nameValue"))
                 .withValue(List.of(
@@ -171,12 +168,12 @@ public abstract class AbstractCodecTest {
     }
 
     private static NormalizedNode listNode() {
-        return new ImmutableSystemMapNodeBuilder().withNodeIdentifier(new NodeIdentifier(SampleList.QNAME))
+        return ImmutableNodes.newSystemMapBuilder().withNodeIdentifier(new NodeIdentifier(SampleList.QNAME))
                 .withChild((MapEntryNode) listEntryNode()).build();
     }
 
     private static NormalizedNode innerContainerNode() {
-        return new ImmutableContainerNodeBuilder().withNodeIdentifier(NodeIdentifier.create(SampleContainer.QNAME))
+        return ImmutableNodes.newContainerBuilder().withNodeIdentifier(NodeIdentifier.create(SampleContainer.QNAME))
                 .withValue(List.of(
                     org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes.leafNode(
                                 NodeIdentifier.create(qOfTestModel("name")), "name")))

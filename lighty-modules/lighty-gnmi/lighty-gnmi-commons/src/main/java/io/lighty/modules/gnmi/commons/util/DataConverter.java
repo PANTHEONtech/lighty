@@ -33,8 +33,8 @@ import org.opendaylight.yangtools.yang.data.codec.gson.JSONCodecFactory;
 import org.opendaylight.yangtools.yang.data.codec.gson.JSONCodecFactorySupplier;
 import org.opendaylight.yangtools.yang.data.codec.gson.JSONNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.codec.gson.JsonParserStream;
-import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
+import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
@@ -121,8 +121,8 @@ public final class DataConverter {
          Write result into container builder with identifier (netconf:base)data. Makes possible to write multiple
           top level elements.
          */
-        final DataContainerNodeBuilder<NodeIdentifier, ContainerNode> resultBuilder = Builders.containerBuilder()
-            .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifier.create(SchemaContext.NAME));
+        final DataContainerNodeBuilder<NodeIdentifier, ContainerNode> resultBuilder = ImmutableNodes
+            .newContainerBuilder().withNodeIdentifier(YangInstanceIdentifier.NodeIdentifier.create(SchemaContext.NAME));
 
         final NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(resultBuilder);
         final JSONCodecFactory jsonCodecFactory =
