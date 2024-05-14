@@ -14,8 +14,6 @@ import io.netty.util.Timer;
 import io.netty.util.concurrent.EventExecutor;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
@@ -263,17 +261,6 @@ public abstract class LightyCoreSpringConfiguration {
     @Bean(name = "WorkerGroup", destroyMethod = "")
     public EventLoopGroup workerGroup() {
         return this.lightyController.getServices().getWorkerGroup();
-    }
-
-    @Bean(destroyMethod = "")
-    @Primary
-    public ExecutorService threadPool() {
-        return this.lightyController.getServices().getThreadPool();
-    }
-
-    @Bean(destroyMethod = "")
-    public ScheduledExecutorService scheduledThreadPool() {
-        return this.lightyController.getServices().getScheduledThreadPool();
     }
 
     @Bean(destroyMethod = "")

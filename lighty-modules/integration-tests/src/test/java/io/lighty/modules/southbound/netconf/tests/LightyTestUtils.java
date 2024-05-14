@@ -69,7 +69,6 @@ public final class LightyTestUtils {
             final CommunityRestConf communityRestConf = CommunityRestConfBuilder
                     .from(RestConfConfigUtils.getRestConfConfiguration(restConfConfiguration,
                             services))
-                    .withScheduledThreadPool(services.getScheduledThreadPool())
                     .build();
 
             LOG.info("Starting CommunityRestConf");

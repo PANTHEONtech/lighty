@@ -30,7 +30,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;
 import io.netty.util.concurrent.DefaultEventExecutor;
-import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.EventExecutor;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,9 +43,6 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.eclipse.jdt.annotation.Nullable;
@@ -174,8 +170,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private EventExecutor eventExecutor;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
-    private ExecutorService threadPool;
-    private ScheduledExecutorService scheduledThreadPool;
     private Timer timer;
     private ModuleInfoSnapshot moduleInfoSnapshot;
     private ModuleInfoSnapshotResolver snapshotResolver;
@@ -351,10 +345,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.workerGroup = new NioEventLoopGroup();
         this.eventExecutor = new DefaultEventExecutor();
         this.timer = new HashedWheelTimer();
-        this.threadPool =
-                Executors.newFixedThreadPool(2, new DefaultThreadFactory("default-pool"));
-        this.scheduledThreadPool =
-                new ScheduledThreadPoolExecutor(2, new DefaultThreadFactory("default-scheduled-pool"));
         this.yangLibraryWriter = new YangLibraryWriterSingleton(clusterSingletonServiceProvider, schemaService,
                 dataBroker, true);
         yangLibraryWriter.instantiateServiceInstance();
@@ -397,12 +387,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         boolean stopSuccessful = true;
         if (this.timer != null) {
             this.timer.stop();
-        }
-        if (this.threadPool != null) {
-            this.threadPool.shutdown();
-        }
-        if (this.scheduledThreadPool != null) {
-            this.scheduledThreadPool.shutdown();
         }
         if (this.clusterSingletonServiceProvider != null) {
             this.clusterSingletonServiceProvider.close();
@@ -581,16 +565,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     public EventLoopGroup getWorkerGroup() {
         return this.workerGroup;
-    }
-
-    @Override
-    public ExecutorService getThreadPool() {
-        return this.threadPool;
-    }
-
-    @Override
-    public ScheduledExecutorService getScheduledThreadPool() {
-        return this.scheduledThreadPool;
     }
 
     @Override

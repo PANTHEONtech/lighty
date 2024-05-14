@@ -14,8 +14,6 @@ import io.netty.util.Timer;
 import io.netty.util.concurrent.EventExecutor;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
@@ -93,12 +91,6 @@ public class TestService {
     @Inject
     @Named("WorkerGroup")
     private EventLoopGroup eventLoopGroupWorker;
-
-    @Inject
-    private ExecutorService threadPool;
-
-    @Inject
-    private ScheduledExecutorService scheduledThreadPool;
 
     @Inject
     private Timer timer;
@@ -210,14 +202,6 @@ public class TestService {
 
     public EventLoopGroup getEventLoopGroupWorker() {
         return eventLoopGroupWorker;
-    }
-
-    public ExecutorService getThreadPool() {
-        return threadPool;
-    }
-
-    public ScheduledExecutorService getScheduledThreadPool() {
-        return scheduledThreadPool;
     }
 
     public Timer getTimer() {

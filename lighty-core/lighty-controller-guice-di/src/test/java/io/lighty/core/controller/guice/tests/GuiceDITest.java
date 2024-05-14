@@ -143,16 +143,6 @@ public class GuiceDITest {
     }
 
     @Test
-    public void testDIThreadPool() {
-        assertNotNull(testService.getThreadPool());
-    }
-
-    @Test
-    public void testDIScheduledThreadPool() {
-        assertNotNull(testService.getScheduledThreadPool());
-    }
-
-    @Test
     public void testDITimer() {
         assertNotNull(testService.getTimer());
     }
