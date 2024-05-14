@@ -50,9 +50,6 @@ public class TestService {
     private DOMSchemaService domSchemaService;
 
     @Inject
-    private DOMSchemaService.YangTextSourceExtension domYangTextSourceProvider;
-
-    @Inject
     private DOMNotificationRouter domNotificationSubscriptionListenerRegistry;
 
     @Inject
@@ -150,10 +147,6 @@ public class TestService {
 
     public DOMSchemaService getDomSchemaService() {
         return domSchemaService;
-    }
-
-    public DOMSchemaService.YangTextSourceExtension getDomYangTextSourceProvider() {
-        return domYangTextSourceProvider;
     }
 
     public DOMNotificationRouter getDomNotificationSubscriptionListenerRegistry() {

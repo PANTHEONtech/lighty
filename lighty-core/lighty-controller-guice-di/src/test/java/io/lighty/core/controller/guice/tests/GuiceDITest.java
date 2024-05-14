@@ -78,11 +78,6 @@ public class GuiceDITest {
     }
 
     @Test
-    public void testDIDomYangTextSourceProvider() {
-        assertNotNull(testService.getDomYangTextSourceProvider());
-    }
-
-    @Test
     public void testDIDomNotificationSubscriptionListenerRegistry() {
         assertNotNull(testService.getDomNotificationSubscriptionListenerRegistry());
     }
