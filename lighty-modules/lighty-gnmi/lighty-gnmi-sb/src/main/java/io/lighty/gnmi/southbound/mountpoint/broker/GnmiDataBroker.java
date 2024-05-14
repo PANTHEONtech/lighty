@@ -8,14 +8,13 @@
 
 package io.lighty.gnmi.southbound.mountpoint.broker;
 
-import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.gnmi.southbound.mountpoint.ops.GnmiGet;
 import io.lighty.gnmi.southbound.mountpoint.ops.GnmiSet;
 import io.lighty.gnmi.southbound.mountpoint.transactions.ReadOnlyTx;
 import io.lighty.gnmi.southbound.mountpoint.transactions.ReadWriteTx;
 import io.lighty.gnmi.southbound.mountpoint.transactions.WriteOnlyTx;
-import java.util.concurrent.Executor;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
@@ -51,19 +50,10 @@ public class GnmiDataBroker implements PingPongMergingDOMDataBroker {
                 return GnmiDataBroker.this.newReadWriteTransaction();
             }
 
-            @Override
-            public void addCallback(FutureCallback<Empty> callback) {
-                DOMTransactionChain.super.addCallback(callback);
-            }
-
-            @Override
-            public void addCallback(FutureCallback<Empty> callback, Executor executor) {
-                DOMTransactionChain.super.addCallback(callback, executor);
-            }
-
+            //Since transactions are not chained, just return completed future.
             @Override
             public @NonNull ListenableFuture<Empty> future() {
-                return createMergingTransactionChain().future();
+                return Futures.immediateFuture(Empty.value());
             }
 
             @Override
