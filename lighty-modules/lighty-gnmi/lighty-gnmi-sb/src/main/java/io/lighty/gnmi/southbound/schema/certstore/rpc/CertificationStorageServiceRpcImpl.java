@@ -9,8 +9,6 @@
 package io.lighty.gnmi.southbound.schema.certstore.rpc;
 
 
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -18,6 +16,8 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import io.lighty.gnmi.southbound.schema.certstore.service.CertificationStorageService;
 import java.security.GeneralSecurityException;
+import java.util.Collection;
+import java.util.List;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.AddKeystoreCertificate;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.AddKeystoreCertificateInput;
@@ -90,10 +90,9 @@ public class CertificationStorageServiceRpcImpl {
         return rpcResult;
     }
 
-    public ClassToInstanceMap<Rpc<?,?>> getRpcClassToInstanceMap() {
-        return ImmutableClassToInstanceMap.<Rpc<?, ?>>builder()
-                .put(AddKeystoreCertificate.class, this::addKeystoreCertificate)
-                .put(RemoveKeystoreCertificate.class, this::removeKeystoreCertificate)
-                .build();
+    public Collection<Rpc<?,?>> getRpcClassToInstanceMap() {
+        return List.of(
+            (AddKeystoreCertificate) this::addKeystoreCertificate,
+            (RemoveKeystoreCertificate) this::removeKeystoreCertificate);
     }
 }
