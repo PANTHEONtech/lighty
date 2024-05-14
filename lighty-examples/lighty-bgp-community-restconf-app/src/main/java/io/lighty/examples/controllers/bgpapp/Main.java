@@ -111,7 +111,6 @@ public class Main {
 
         restconf = CommunityRestConfBuilder
                 .from(RestConfConfigUtils.getRestConfConfiguration(restConfConfiguration, controller.getServices()))
-                .withScheduledThreadPool(controller.getServices().getScheduledThreadPool())
                 .build();
         Preconditions.checkState(startLightyModule(restconf,  modulesConfig.getModuleTimeoutSeconds()),
                 "Unable to start restconf module");

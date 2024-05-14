@@ -114,7 +114,6 @@ public final class Main {
                 .from(RestConfConfigUtils.getRestConfConfiguration(restconfConfiguration,
                     this.lightyController.getServices()))
                 .withLightyServer(jettyServerBuilder)
-                .withScheduledThreadPool(this.lightyController.getServices().getScheduledThreadPool())
                 .build();
         final boolean restconfStartOk = this.restconf.start()
                 .get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
