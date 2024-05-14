@@ -16,7 +16,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.netconf.api.DocumentedException;
-import org.opendaylight.netconf.api.xml.MissingNameSpaceException;
 import org.opendaylight.netconf.api.xml.XmlElement;
 import org.opendaylight.netconf.api.xml.XmlUtil;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -91,20 +90,14 @@ public final class ConverterUtils {
      * @return {@link QName} for input data or empty.
      */
     public static Optional<QName> getRpcQName(final XmlElement xmlElement) {
-        String optionalNamespace = null;
-        try {
-            optionalNamespace = xmlElement.getNamespace();
-        } catch (MissingNameSpaceException e) {
-            throw new RuntimeException(e);
-        }
+        String namespace = xmlElement.namespace();
         String name = xmlElement.getName();
         if (Strings.isNullOrEmpty(name)) {
             return Optional.empty();
         }
         String revision = null;
-        String namespace;
-        if (optionalNamespace != null) {
-            String[] split = optionalNamespace.split("\\?");
+        if (namespace != null) {
+            String[] split = namespace.split("\\?");
             if (split.length > 1 && split[1].contains("revision=")) {
                 revision = split[1].replace("revision=", "");
 
