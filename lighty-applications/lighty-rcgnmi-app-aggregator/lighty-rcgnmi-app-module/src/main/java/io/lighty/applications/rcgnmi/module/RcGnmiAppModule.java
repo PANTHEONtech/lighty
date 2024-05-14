@@ -110,7 +110,7 @@ public class RcGnmiAppModule {
 
     private CommunityRestConf initRestconf(final RestConfConfiguration config, final LightyServices services) {
         final RestConfConfiguration conf = RestConfConfigUtils.getRestConfConfiguration(config, services);
-        return CommunityRestConfBuilder.from(conf).withScheduledThreadPool(services.getScheduledThreadPool()).build();
+        return CommunityRestConfBuilder.from(conf).build();
     }
 
     private GnmiSouthboundModule initGnmiModule(final LightyServices services,
