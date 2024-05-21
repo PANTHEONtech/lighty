@@ -55,10 +55,8 @@ public final class NetconfTopologyPlugin extends AbstractTopologyPlugin {
                 lightyServices.getBindingDataBroker(), lightyServices.getRpcProviderService(),
                 lightyServices.getClusterSingletonServiceProvider(), encryptionService);
         final NetconfClientFactory netconfFactory = new NetconfClientFactoryImpl(new DefaultNetconfTimer());
-        final CredentialProvider credentialProvider
-            = new DefaultCredentialProvider(service);
-        final SslContextFactoryProvider factoryProvider
-            = new DefaultSslContextFactoryProvider(service);
+        final CredentialProvider credentialProvider = new DefaultCredentialProvider(service);
+        final SslContextFactoryProvider factoryProvider = new DefaultSslContextFactoryProvider(service);
         final NetconfClientConfigurationBuilderFactory factory = new NetconfClientConfigurationBuilderFactoryImpl(
             encryptionService, credentialProvider, factoryProvider);
         final NetconfTopologySchemaAssembler assembler = new NetconfTopologySchemaAssembler(1,1,10, TimeUnit.SECONDS);
