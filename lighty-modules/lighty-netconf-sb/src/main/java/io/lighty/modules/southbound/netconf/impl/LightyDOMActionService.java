@@ -14,9 +14,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.Set;
-import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
+import org.opendaylight.mdsal.dom.api.DOMRpcResult;
+import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
 import org.opendaylight.netconf.api.messages.NetconfMessage;
 import org.opendaylight.netconf.client.mdsal.api.ActionTransformer;
 import org.opendaylight.netconf.client.mdsal.api.RemoteDeviceCommunicator;
@@ -41,10 +41,10 @@ public final class LightyDOMActionService implements Normalized {
     }
 
     @Override
-    public ListenableFuture<? extends DOMActionResult> invokeAction(final Absolute type,
+    public ListenableFuture<? extends DOMRpcResult> invokeAction(final Absolute type,
             final DOMDataTreeIdentifier path, final ContainerNode input) {
         final NetconfMessage actionRequest = this.messageTransformer.toActionRequest(type, path, input);
-        final SettableFuture<DOMActionResult> settableFuture = SettableFuture.create();
+        final SettableFuture<DOMRpcResult> settableFuture = SettableFuture.create();
         final ListenableFuture<RpcResult<NetconfMessage>> responseFuture = this.communicator.sendRequest(actionRequest,
                 type.lastNodeIdentifier());
         Futures.addCallback(responseFuture, new FutureCallback<RpcResult<NetconfMessage>>() {
@@ -53,18 +53,18 @@ public final class LightyDOMActionService implements Normalized {
             public void onSuccess(final RpcResult<NetconfMessage> result) {
                 Preconditions.checkNotNull(result);
                 if (result.getErrors().isEmpty()) {
-                    final DOMActionResult actionResult = LightyDOMActionService.this.messageTransformer.toActionResult(
+                    final DOMRpcResult actionResult = LightyDOMActionService.this.messageTransformer.toActionResult(
                             type, result.getResult());
                     settableFuture.set(actionResult);
                 } else {
-                    final SimpleDOMActionResult simpleDOMActionResult = new SimpleDOMActionResult(result.getErrors());
+                    final DefaultDOMRpcResult simpleDOMActionResult = new DefaultDOMRpcResult(result.getErrors());
                     settableFuture.set(simpleDOMActionResult);
                 }
             }
 
             @Override
             public void onFailure(final Throwable cause) {
-                settableFuture.set(new SimpleDOMActionResult(Set.of(new ActionRpcError(cause))));
+                settableFuture.set(new DefaultDOMRpcResult(Set.of(new ActionRpcError(cause))));
             }
         }, MoreExecutors.directExecutor());
         return settableFuture;
