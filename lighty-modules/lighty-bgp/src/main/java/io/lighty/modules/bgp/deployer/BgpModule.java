@@ -151,7 +151,7 @@ public class BgpModule extends AbstractLightyModule {
         try {
             bgpNettyGroups.close();
         } catch (Exception e) {
-            LOG.warn("Failed to stop BGP dispatcher", e);
+            LOG.warn("Failed to stop BGP Netty groups", e);
             closeSuccess = false;
         }
         try {
