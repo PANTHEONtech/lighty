@@ -10,9 +10,9 @@ package io.lighty.examples.controllers.actions.dom;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
-import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
+import org.opendaylight.mdsal.dom.api.DOMRpcResult;
+import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
 import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.device.StartInput;
 import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.device.StartOutput;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -30,11 +30,11 @@ public final class DeviceStartActionImpl implements DOMActionImplementation {
     private static final QName OUTPUT_LEAF_QNAME = QName.create(StartOutput.QNAME, "start-finished-at").intern();
 
     @Override
-    public ListenableFuture<? extends DOMActionResult> invokeAction(final Absolute type,
+    public ListenableFuture<? extends DOMRpcResult> invokeAction(final Absolute type,
             final DOMDataTreeIdentifier path, final ContainerNode input) {
         final var inputValue = input.findChildByArg(NodeIdentifier.create(INPUT_LEAF_QNAME))
                 .map(NormalizedNode::body).orElseThrow();
-        return Futures.immediateFuture(new SimpleDOMActionResult(ImmutableNodes.newContainerBuilder()
+        return Futures.immediateFuture(new DefaultDOMRpcResult(ImmutableNodes.newContainerBuilder()
                 .withNodeIdentifier(NodeIdentifier.create(StartOutput.QNAME))
                 .withChild(ImmutableNodes.newLeafBuilder().withNodeIdentifier(NodeIdentifier.create(OUTPUT_LEAF_QNAME))
                         .withValue(inputValue)
