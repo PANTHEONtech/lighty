@@ -23,6 +23,8 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
+import org.opendaylight.restconf.api.query.PrettyPrintParam;
+import org.opendaylight.restconf.nb.rfc8040.ErrorTagMapping;
 import org.opendaylight.restconf.nb.rfc8040.streams.RestconfStreamServletFactory;
 import org.opendaylight.restconf.openapi.api.OpenApiService;
 import org.opendaylight.restconf.openapi.impl.OpenApiServiceImpl;
@@ -70,6 +72,17 @@ public class OpenApiLighty extends AbstractLightyModule {
                     @Override
                     public @NonNull HttpServlet newStreamServlet() {
                         return new DefaultServlet();
+                    }
+
+                    //FIXME do not hardcode ErrorTagMapping and PrettyPrintParam (LIGHTY-305)
+                    @Override
+                    public PrettyPrintParam prettyPrint() {
+                        return PrettyPrintParam.FALSE;
+                    }
+
+                    @Override
+                    public ErrorTagMapping errorTagMapping() {
+                        return ErrorTagMapping.RFC8040;
                     }
                 });
 
