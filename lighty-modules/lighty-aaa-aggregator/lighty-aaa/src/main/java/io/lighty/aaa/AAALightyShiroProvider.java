@@ -33,7 +33,6 @@ import org.opendaylight.aaa.api.StoreBuilder;
 import org.opendaylight.aaa.api.password.service.PasswordHashService;
 import org.opendaylight.aaa.cert.api.ICertificateManager;
 import org.opendaylight.aaa.datastore.h2.H2Store;
-import org.opendaylight.aaa.datastore.h2.H2TokenStore;
 import org.opendaylight.aaa.datastore.h2.IdmLightConfig;
 import org.opendaylight.aaa.datastore.h2.IdmLightConfigBuilder;
 import org.opendaylight.aaa.datastore.h2.IdmLightSimpleConnectionProvider;
@@ -69,7 +68,6 @@ public final class AAALightyShiroProvider {
     private final ShiroConfiguration shiroConfiguration;
     private final AuthenticationService authenticationService;
     private final DefaultPasswordHashService defaultPasswordHashService;
-    private final H2TokenStore tokenStore;
     private TokenAuthenticators tokenAuthenticators;
     private CredentialAuth<PasswordCredentials> credentialAuth;
     private ClaimCache claimCache;
@@ -99,12 +97,9 @@ public final class AAALightyShiroProvider {
                     "SHA-512").setIterations(20000).build();
             this.defaultPasswordHashService = new DefaultPasswordHashService(passwordServiceConfig);
             iidmStore = new H2Store(new IdmLightSimpleConnectionProvider(config), defaultPasswordHashService);
-            this.tokenStore = new H2TokenStore(datastoreConfig.getTimeToLive().longValue(),
-                    datastoreConfig.getTimeToWait().longValue());
         } else {
             this.defaultPasswordHashService = null;
             iidmStore = null;
-            this.tokenStore = null;
             LOG.info("AAA Datastore has not been initialized");
             return;
         }
@@ -149,7 +144,6 @@ public final class AAALightyShiroProvider {
                 certificateManager,
                 authenticationService,
                 tokenAuthenticators,
-                tokenStore,
                 passwordHashService,
                 new JerseyServletSupport());
 
@@ -218,10 +212,6 @@ public final class AAALightyShiroProvider {
         return this.tokenAuthenticators;
     }
 
-    public H2TokenStore getTokenStore() {
-        return tokenStore;
-    }
-
     public DefaultPasswordHashService getDefaultPasswordHashService() {
         return defaultPasswordHashService;
     }
@@ -255,9 +245,6 @@ public final class AAALightyShiroProvider {
                 handler.destroy();
             }
         });
-        if (this.tokenStore != null) {
-            this.tokenStore.close();
-        }
     }
 
     private static TokenAuthenticators buildTokenAuthenticators(
