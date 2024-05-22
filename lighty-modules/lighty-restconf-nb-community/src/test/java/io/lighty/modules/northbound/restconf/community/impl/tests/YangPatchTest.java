@@ -11,6 +11,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
 
+import com.google.common.collect.ImmutableMap;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -64,7 +65,7 @@ public class YangPatchTest extends CommunityRestConfTestBase {
 
         final var strategy = new MdsalRestconfStrategy(DatabindContext.ofModel(getLightyController()
                 .getServices().getDOMSchemaService().getGlobalContext()), getLightyController().getServices()
-                .getClusteredDOMDataBroker(), getLightyController().getServices().getDOMRpcService(),
+                .getClusteredDOMDataBroker(), ImmutableMap.of(), getLightyController().getServices().getDOMRpcService(),
                 getLightyController().getServices()
                         .getDOMActionService(), getLightyController().getServices().getYangTextSourceExtension(),
                 getLightyController().getServices()
