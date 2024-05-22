@@ -29,12 +29,12 @@ import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
+import org.opendaylight.restconf.api.query.PrettyPrintParam;
 import org.opendaylight.restconf.nb.jaxrs.JaxRsRestconf;
-import org.opendaylight.restconf.nb.rfc8040.jersey.providers.JsonNormalizedNodeBodyWriter;
-import org.opendaylight.restconf.nb.rfc8040.jersey.providers.JsonPatchStatusBodyWriter;
-import org.opendaylight.restconf.nb.rfc8040.jersey.providers.XmlNormalizedNodeBodyWriter;
-import org.opendaylight.restconf.nb.rfc8040.jersey.providers.XmlPatchStatusBodyWriter;
-import org.opendaylight.restconf.nb.rfc8040.jersey.providers.errors.RestconfDocumentedExceptionMapper;
+import org.opendaylight.restconf.nb.jaxrs.JsonJaxRsFormattableBodyWriter;
+import org.opendaylight.restconf.nb.jaxrs.XmlJaxRsFormattableBodyWriter;
+import org.opendaylight.restconf.nb.rfc8040.ErrorTagMapping;
+import org.opendaylight.restconf.nb.rfc8040.legacy.RestconfDocumentedExceptionMapper;
 import org.opendaylight.restconf.nb.rfc8040.streams.StreamsConfiguration;
 import org.opendaylight.restconf.server.mdsal.MdsalDatabindProvider;
 import org.opendaylight.restconf.server.mdsal.MdsalRestconfServer;
@@ -99,17 +99,12 @@ public class CommunityRestConf extends AbstractLightyModule {
         final ServletContainer servletContainer8040 = new ServletContainer(ResourceConfig
                 .forApplication(new Application() {
                     @Override
-                    public Set<Class<?>> getClasses() {
-                        return Set.of(
-                                JsonNormalizedNodeBodyWriter.class, XmlNormalizedNodeBodyWriter.class,
-                                JsonPatchStatusBodyWriter.class, XmlPatchStatusBodyWriter.class);
-                    }
-
-                    @Override
                     public Set<Object> getSingletons() {
                         return Set.of(
-                                new RestconfDocumentedExceptionMapper(databindProvider),
-                                new JaxRsRestconf(server));
+                            //FIXME do not hardcode ErrorTagMapping and PrettyPrintParam (LIGHTY-305)
+                            new JsonJaxRsFormattableBodyWriter(), new XmlJaxRsFormattableBodyWriter(),
+                            new RestconfDocumentedExceptionMapper(databindProvider, ErrorTagMapping.RFC8040),
+                            new JaxRsRestconf(server, ErrorTagMapping.RFC8040, PrettyPrintParam.FALSE));
                     }
                 }));
 

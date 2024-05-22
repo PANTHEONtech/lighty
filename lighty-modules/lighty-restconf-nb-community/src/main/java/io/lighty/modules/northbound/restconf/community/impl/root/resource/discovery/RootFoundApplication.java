@@ -11,7 +11,7 @@ package io.lighty.modules.northbound.restconf.community.impl.root.resource.disco
 import java.util.Set;
 import javax.ws.rs.core.Application;
 import org.opendaylight.restconf.nb.jaxrs.JaxRsWebHostMetadata;
-import org.opendaylight.restconf.nb.rfc8040.jersey.providers.errors.RestconfDocumentedExceptionMapper;
+import org.opendaylight.restconf.nb.rfc8040.legacy.RestconfDocumentedExceptionMapper;
 
 public class RootFoundApplication extends Application {
     private final JaxRsWebHostMetadata rrds;
