@@ -19,6 +19,7 @@ import java.util.Map;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -47,6 +48,7 @@ public class YangInstanceNormToGnmiUpdateCodecTest {
         assertUpdateEquals(prepared.getValue(), result);
     }
 
+    @Disabled("Disabled until YANGTOOLS-1575 is resolved")
     @Test
     public void listEntryCase() throws Exception {
         final Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> prepared =
