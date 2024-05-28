@@ -179,7 +179,7 @@ public final class AAALightyShiroProvider {
         return completableFuture;
     }
 
-    public static AAALightyShiroProvider getInstance() {
+    public static synchronized AAALightyShiroProvider getInstance() {
         return INSTANCE;
     }
 
