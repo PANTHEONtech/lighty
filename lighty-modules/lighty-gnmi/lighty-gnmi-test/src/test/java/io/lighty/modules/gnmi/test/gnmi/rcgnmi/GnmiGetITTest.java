@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
@@ -162,6 +163,7 @@ public class GnmiGetITTest extends GnmiITBase {
         assertEquals(OC_INTERFACE_ETH3_CONFIG_TYPE_EXPECTED, ocInterfaceEth3ConfigType);
     }
 
+    @Disabled("Disabled until YANGTOOLS-1575 is resolved")
     @Test
     public void getListEntryTest() throws InterruptedException, IOException, JSONException {
         //assert list entry in openconfig-interfaces - interface - eth3, and also if it is only one with that key
