@@ -380,13 +380,13 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     protected boolean stopProcedure() throws InterruptedException, ExecutionException {
         LOG.debug("Lighty Controller stopProcedure");
-        boolean stopSuccessful = true;
         if (this.timer != null) {
             this.timer.stop();
         }
         if (this.clusterSingletonServiceProvider != null) {
             this.clusterSingletonServiceProvider.close();
         }
+        boolean stopSuccessful = true;
         if (this.akkaEntityOwnershipService != null) {
             try {
                 this.akkaEntityOwnershipService.close();
