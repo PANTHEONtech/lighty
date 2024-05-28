@@ -182,7 +182,7 @@ do \
    "http://$pod_controller_ip:8558/cluster/members")" \
 ;done
 validateTestStatus
-: ' FIXME uncomment this after NETCONF-1285 is resolved
+
 # Pods health check (:8888/restconf/operations)
 for pod_controller_ip in $POD_CONTROLLER_IPS; \
 do \
@@ -190,7 +190,7 @@ do \
    -H "Content-Type: application/json" \
    "http://$pod_controller_ip:$CONTROLLER_PORT/restconf/operations")" \
 ;done
-'
+
 # Add node into topology
   assertHttpStatusCode "$(curl -X PUT -o /dev/null -s -w "%{http_code} PUT %{url_effective}\n" \
   "http://$CTRL0_IP:$CONTROLLER_PORT/restconf/data/network-topology:network-topology/topology=topology-netconf/node=node-${SIMULATOR_IP//.}" \
