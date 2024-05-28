@@ -13,13 +13,13 @@
     <parent>
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-parent</artifactId>
-        <version>20.1.0-SNAPSHOT</version>
+        <version>20.1.0</version>
         <relativePath>../../lighty-core/lighty-parent/pom.xml</relativePath>
     </parent>
 
     <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-bgp</artifactId>
-    <version>20.1.0-SNAPSHOT</version>
+    <version>20.1.0</version>
 
     <dependencies>
         <dependency>
