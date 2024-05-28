@@ -56,10 +56,8 @@ public class RestconfAppTest {
                         ]
                     }""");
 
-        /* FIXME uncomment this after NETCONF-1285 is resolved
         operations = restClient.GET("rests/operations");
         Assert.assertEquals(operations.statusCode(), 200);
-         */
         operations = restClient.GET("rests/data/network-topology:network-topology?content=config");
         Assert.assertEquals(operations.statusCode(), 200);
         operations = restClient.GET("rests/data/network-topology:network-topology?content=nonconfig");
