@@ -32,7 +32,6 @@ import java.util.concurrent.ExecutionException;
 import org.json.JSONException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
@@ -639,7 +638,7 @@ public class SimulatorCrudTest {
         assertThrows(ExecutionException.class, () -> sessionProvider.getGnmiSession().get(getRequest).get());
     }
 
-    @Disabled("Disabled until YANGTOOLS-1575 is resolved")
+
     @Test
     public void getListEntryTest() throws ExecutionException, InterruptedException, IOException, JSONException {
         final Gnmi.Path path = Gnmi.Path.newBuilder()

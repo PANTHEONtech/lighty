@@ -29,7 +29,6 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
@@ -153,7 +152,6 @@ public class GnmiSetITTest extends GnmiITBase {
         restoreDeviceToOriginalState();
     }
 
-    @Disabled("Disabled until YANGTOOLS-1575 is resolved")
     @Test
     public void setAugmentedInterfaceListFromOuterModelTest() throws Exception {
         final String payload = getAugmentedTestInterfaceBody();
@@ -271,7 +269,6 @@ public class GnmiSetITTest extends GnmiITBase {
         restoreDeviceToOriginalState();
     }
 
-    @Disabled("Disabled until YANGTOOLS-1575 is resolved")
     @Test
     public void setSimpleListEntryTest() throws IOException, InterruptedException, JSONException {
         // Set simple list with
@@ -358,7 +355,6 @@ public class GnmiSetITTest extends GnmiITBase {
         assertEquals(HttpURLConnection.HTTP_INTERNAL_ERROR, nestedListResponse.statusCode());
     }
 
-    @Disabled("Disabled until YANGTOOLS-1575 is resolved")
     @Test
     public void setNestedListTest() throws IOException, InterruptedException, JSONException {
         // Create data in base list
