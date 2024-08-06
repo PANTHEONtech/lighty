@@ -19,7 +19,7 @@ Most important lighty.io components used are:
 ## Prerequisites
 In order to build and start the lighty.io RNC application locally, you need:
 * Java 21 or later 
-* Maven 3.8.5 or later
+* Maven 3.9.5 or later
 * (Optional) Docker for creating and running Docker images
 
 ## Build and start

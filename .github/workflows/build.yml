@@ -25,6 +25,10 @@ jobs:
         with:
           java-version: 21
           distribution: 'temurin'
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.9.8
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         if: ${{ env.SONAR_TOKEN != 0 }}

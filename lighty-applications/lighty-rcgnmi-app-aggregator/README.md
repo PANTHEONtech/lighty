@@ -12,7 +12,7 @@ A lighty.io application, which starts and wires the following components:
 ## Prerequisites
 In order to build & start the RCgNMI application locally, you need:
 * Java 21 (or later)
-* Maven 3.8.5 (or later)
+* Maven 3.9.5 (or later)
 
 ## Build & Start
 To build and start the RCgNMI application in your local environment, follow these steps:
