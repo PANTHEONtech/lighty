@@ -54,6 +54,10 @@ jobs:
         with:
           java-version: 21
           distribution: 'temurin'
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.9.8
       - name: Cache Maven packages
         uses: actions/cache@v1
         with:
