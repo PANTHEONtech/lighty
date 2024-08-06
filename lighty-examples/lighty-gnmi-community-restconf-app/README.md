@@ -21,7 +21,7 @@ This application starts:
 
 ## Prerequisites
 In order to build and start and run this example, the lighty.io gNMI/RESTCONF application locally, you need:
-* Java 17 or later
+* Java 21 or later
 * Maven 3.8.5 or later
 * Postman v7.36.5. or later
 * Linux-based system with bash
