@@ -54,7 +54,7 @@ _This branch maintains compatibility with __OpenDaylight 2024-09 Scandium,__ rel
 
 ## Build & Install
 In order to build and install lighty.io artifacts locally, follow the steps below:
-1. __Install JDK__ - make sure [JDK 17](https://openjdk.java.net/projects/jdk/17/) is installed
+1. __Install JDK__ - make sure [JDK 21](https://openjdk.java.net/projects/jdk/21/) is installed (For example: https://adoptium.net/temurin/releases/)
 2. __Install maven__ - make sure you have maven 3.8.5 or later installed
 3. __Setup maven__ - make sure you have the proper [settings.xml](https://github.com/opendaylight/odlparent/blob/master/settings.xml) in your ```~/.m2``` directory
 4. __Build & Install locally__ - by running command: ``mvn clean install -DskipTests``
