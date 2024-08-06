@@ -42,6 +42,13 @@ jobs:
         with:
           java-version: 17
           distribution: 'temurin'
+      - name: Download and set up Maven 3.9.8
+        run: |
+          wget https://downloads.apache.org/maven/maven-3/3.9.8/binaries/apache-maven-3.9.8-bin.tar.gz
+          tar -xzf apache-maven-3.9.8-bin.tar.gz
+          sudo mv apache-maven-3.9.8 /opt/maven
+          echo "MAVEN_HOME=/opt/maven" >> $GITHUB_ENV
+          echo "/opt/maven/bin" >> $GITHUB_PATH
       - name: Cache Maven packages
         uses: actions/cache@v1
         with:
