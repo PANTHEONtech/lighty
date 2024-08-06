@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Set JAVA_HOME to point to a specific Java 17+ JDK
-#export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+# Set JAVA_HOME to point to a specific Java 21+ JDK
+#export JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64
 
 # If JAVA_HOME is not set, try to find it using java itself
 if [ -z ${JAVA_HOME} ]; then
