@@ -1,4 +1,4 @@
 build = "maven"
-jdkVersion = "17"
+jdkVersion = "21"
 summaryComments = true
 
