@@ -57,7 +57,7 @@ jobs:
         if: ${{ env.SONAR_TOKEN == 0 }}
         run: mvn -B verify
       - name: Upload surefire test results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Surefire-Test-Results
           path: ~/**/surefire-reports/**/*.txt
