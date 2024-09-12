@@ -72,10 +72,9 @@ public class LightyModuleTest {
             Assert.fail("Init timed out.", e);
         }
         Mockito.verify(executorService, Mockito.times(1)).execute(Mockito.any());
-        this.moduleUnderTest.shutdown();
+        this.moduleUnderTest.shutdown(SLEEP_AFTER_SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
         Mockito.verify(executorService, Mockito.times(2)).execute(Mockito.any());
-        Thread.sleep(SLEEP_AFTER_SHUTDOWN_TIMEOUT);
-        this.moduleUnderTest.shutdown();
+        this.moduleUnderTest.shutdown(SLEEP_AFTER_SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
         Mockito.verify(executorService, Mockito.times(2)).execute(Mockito.any());
     }
 
