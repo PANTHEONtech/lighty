@@ -31,6 +31,7 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(NetconfCallhomePlugin.class);
 
     private final IetfZeroTouchCallHomeServerProvider provider;
+    private final CallHomeMountService dispatcher;
 
     public NetconfCallhomePlugin(final LightyServices lightyServices, final String topologyId,
             final ExecutorService executorService, final String adress, final int port) {
@@ -44,13 +45,13 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
                 lightyServices.getBindingDataBroker(), mountStatusReporter);
         final var recorder = new CallHomeMountStatusReporter(lightyServices.getBindingDataBroker());
         final NetconfTimer timer = new DefaultNetconfTimer();
-        IetfZeroTouchCallHomeServerProvider.Configuration configuration = new Configuration(adress, 4334);
+        CallHomeMountService.Configuration configuration = new Configuration(adress);
 
-        final CallHomeMountService dispatcher =
-                new CallHomeMountService(topologyId, timer,
-                        new NetconfTopologySchemaAssembler(1, 1, 10, TimeUnit.SECONDS),
-                        manager, defaultBaseNetconfSchemas, lightyServices.getBindingDataBroker(),
-                        lightyServices.getDOMMountPointService(), new DeviceActionFactoryImpl());
+        this.dispatcher =
+            new CallHomeMountService(topologyId, timer,
+                new NetconfTopologySchemaAssembler(1, 1, 10, TimeUnit.SECONDS),
+                manager, defaultBaseNetconfSchemas, lightyServices.getBindingDataBroker(),
+                lightyServices.getDOMMountPointService(), new DeviceActionFactoryImpl(), configuration);
         this.provider = new IetfZeroTouchCallHomeServerProvider(timer, dispatcher, authProvider, recorder,
                 configuration);
     }
@@ -64,6 +65,7 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
     @Override
     protected boolean stopProcedure() {
         try {
+            this.dispatcher.close();
             this.provider.close();
         } catch (final Exception e) {
             LOG.error("{} failed to close!", this.provider.getClass(), e);
@@ -72,23 +74,97 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
         return true;
     }
 
-    public static class Configuration implements IetfZeroTouchCallHomeServerProvider.Configuration {
-        private final String host;
-        private final int port;
+    public static class Configuration implements CallHomeMountService.Configuration {
 
-        public Configuration(String host, int port) {
+        private final String host;
+
+        public Configuration(final String host) {
             this.host = host;
-            this.port = port;
         }
 
         @Override
         public String host() {
-            return this.host;
+            return host;
         }
 
         @Override
-        public int port() {
-            return this.port;
+        public int ssh$_$port() {
+            return 4334;
+        }
+
+        @Override
+        public int tls$_$port() {
+            return 4335;
+        }
+
+        @Override
+        public int connection$_$timeout$_$millis() {
+            return 10_000;
+        }
+
+        @Override
+        public int max$_$connections() {
+            return 64;
+        }
+
+        @Override
+        public int keep$_$alive$_$delay() {
+            return 120;
+        }
+
+        @Override
+        public int request$_$timeout$_$millis() {
+            return 60000;
+        }
+
+        @Override
+        public int min$_$backoff$_$millis() {
+            return 2000;
+        }
+
+        @Override
+        public int max$_$backoff$_$millis() {
+            return 1800000;
+        }
+
+        @Override
+        public double backoff$_$multiplier() {
+            return 1.5;
+        }
+
+        @Override
+        public double backoff$_$jitter() {
+            return 0.1;
+        }
+
+        @Override
+        public int concurrent$_$rpc$_$limit() {
+            return 0;
+        }
+
+        @Override
+        public int max$_$connection$_$attempts() {
+            return 0;
+        }
+
+        @Override
+        public boolean schemaless() {
+            return false;
+        }
+
+        @Override
+        public int actor$_$response$_$wait$_$time() {
+            return 5;
+        }
+
+        @Override
+        public boolean lock$_$datastore() {
+            return true;
+        }
+
+        @Override
+        public boolean reconnect$_$on$_$changed$_$schema() {
+            return false;
         }
 
         @Override
