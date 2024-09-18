@@ -28,7 +28,7 @@ import org.opendaylight.mdsal.binding.api.RpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.AddReplicasForAllShards;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.AddReplicasForAllShardsInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.AddReplicasForAllShardsInputBuilder;
-import org.opendaylight.yangtools.yang.binding.Rpc;
+import org.opendaylight.yangtools.binding.Rpc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -22,7 +22,7 @@ import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.Uploa
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.UploadYangModelInput;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.UploadYangModelOutput;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.UploadYangModelOutputBuilder;
-import org.opendaylight.yangtools.yang.binding.Rpc;
+import org.opendaylight.yangtools.binding.Rpc;
 import org.opendaylight.yangtools.yang.common.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;

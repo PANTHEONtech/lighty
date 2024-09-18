@@ -10,7 +10,7 @@ package io.lighty.examples.controllers.guice.service;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
 import org.opendaylight.mdsal.common.api.CommitInfo;
-import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;

@@ -29,8 +29,8 @@ import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.choice.container.snack.SportsArena;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.container.group.SampleContainer;
 import org.opendaylight.yang.svc.v1.http.pantheon.tech.ns.test.models.rev180119.YangModuleInfoImpl;
-import org.opendaylight.yangtools.yang.binding.ChildOf;
-import org.opendaylight.yangtools.yang.binding.DataRoot;
+import org.opendaylight.yangtools.binding.ChildOf;
+import org.opendaylight.yangtools.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
