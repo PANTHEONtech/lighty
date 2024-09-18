@@ -10,7 +10,6 @@ package io.lighty.examples.controllers.actions.dom;
 import io.lighty.core.controller.api.LightyController;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionInstance;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.Device;
 import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.device.Start;
 import org.opendaylight.yangtools.concepts.Registration;
@@ -32,9 +31,8 @@ public final class DeviceStartRegistrationUtil {
     public static Registration registerDOMAction(
             final LightyController lightyController) {
         final var domActionProviderService = lightyController.getServices().getDOMActionProviderService();
-        final var domDataTreeIdentifier = new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
-                YangInstanceIdentifier.of(Device.QNAME));
         return domActionProviderService.registerActionImplementation(new DeviceStartActionImpl(),
-                DOMActionInstance.of(Absolute.of(Device.QNAME, Start.QNAME), domDataTreeIdentifier));
+                DOMActionInstance.of(Absolute.of(Device.QNAME, Start.QNAME), LogicalDatastoreType.OPERATIONAL,
+                    YangInstanceIdentifier.of(Device.QNAME)));
     }
 }
