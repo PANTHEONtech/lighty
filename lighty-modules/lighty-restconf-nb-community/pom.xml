@@ -35,6 +35,15 @@
             <groupId>org.opendaylight.netconf</groupId>
             <artifactId>restconf-nb</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.netconf.model</groupId>
+            <artifactId>test-models</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.netconf</groupId>
+            <artifactId>odl-device-notification</artifactId>
+        </dependency>
 
         <!-- Jersey + Jetty for RESTCONF -->
         <dependency>
