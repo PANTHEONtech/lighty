@@ -21,10 +21,6 @@ import org.opendaylight.bgpcep.bgp.topology.provider.config.LinkstateTopologyPro
 import org.opendaylight.graph.impl.ConnectedGraphServer;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
-import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
 import org.opendaylight.protocol.bgp.openconfig.routing.policy.impl.DefaultBGPRibRoutingPolicyFactory;
@@ -43,6 +39,10 @@ import org.opendaylight.protocol.bgp.rib.impl.state.BGPStateCollector;
 import org.opendaylight.protocol.bgp.rib.spi.DefaultRIBExtensionConsumerContext;
 import org.opendaylight.protocol.bgp.rib.spi.RIBExtensionConsumerContext;
 import org.opendaylight.protocol.bgp.state.StateProviderImpl;
+import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTree;
+import org.opendaylight.yangtools.binding.data.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.yangtools.binding.data.codec.impl.BindingCodecContext;
+import org.opendaylight.yangtools.binding.runtime.api.BindingRuntimeContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,18 +98,17 @@ public class BgpModule extends AbstractLightyModule {
     }
 
     public BgpModule(final EffectiveModelContext modelContext, final DataBroker dataBroker,
-            final DOMDataBroker domDataBroker, final BindingCodecTreeFactory codecTreeFactory,
-            final BindingRuntimeContext runtimeContext, final RpcProviderService rpcProvider,
-            final ClusterSingletonServiceProvider cssProvider, final BindingNormalizedNodeSerializer serializer,
+            final DOMDataBroker domDataBroker, final BindingRuntimeContext runtimeContext,
+            final RpcProviderService rpcProvider, final ClusterSingletonServiceProvider cssProvider,
+            final BindingNormalizedNodeSerializer serializer,
             final EventLoopGroup bossGroup, final EventLoopGroup workerGroup) {
-        this(modelContext, dataBroker, domDataBroker, codecTreeFactory.create(runtimeContext),
+        this(modelContext, dataBroker, domDataBroker, new BindingCodecContext(runtimeContext),
                 rpcProvider, cssProvider, serializer, bossGroup, workerGroup);
     }
 
     public BgpModule(final LightyServices lightyServices) {
         this(lightyServices.getDOMSchemaService().getGlobalContext(),
                 lightyServices.getBindingDataBroker(), lightyServices.getClusteredDOMDataBroker(),
-                lightyServices.getBindingCodecTreeFactory(),
                 lightyServices.getAdapterContext().currentSerializer().getRuntimeContext(),
                 lightyServices.getRpcProviderService(), lightyServices.getClusterSingletonServiceProvider(),
                 lightyServices.getBindingNormalizedNodeSerializer(), lightyServices.getBossGroup(),

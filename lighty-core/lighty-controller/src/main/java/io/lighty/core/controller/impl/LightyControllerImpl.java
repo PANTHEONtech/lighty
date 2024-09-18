@@ -84,7 +84,6 @@ import org.opendaylight.mdsal.binding.dom.adapter.ConstantAdapterContext;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingCodecContext;
-import org.opendaylight.mdsal.binding.dom.codec.impl.di.DefaultBindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.runtime.api.BindingRuntimeTypes;
@@ -113,6 +112,7 @@ import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
 import org.opendaylight.mdsal.singleton.impl.EOSClusterSingletonServiceProvider;
 import org.opendaylight.netconf.yanglib.writer.YangLibraryWriterSingleton;
 import org.opendaylight.restconf.server.jaxrs.JaxRsEndpoint;
+import org.opendaylight.yangtools.binding.data.codec.impl.di.DefaultDynamicBindingDataCodec;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
@@ -173,7 +173,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private ModuleInfoSnapshotResolver snapshotResolver;
     private DOMSchemaService schemaService;
     private ConstantAdapterContext codec;
-    private BindingCodecTreeFactory bindingCodecTreeFactory;
+    private DefaultDynamicBindingDataCodec bindingCodecTreeFactory;
     private DefaultYangParserFactory yangParserFactory;
     private BindingAdapterFactory bindingAdapterFactory;
     private RpcProviderService rpcProviderService;
@@ -281,7 +281,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         final DefaultBindingRuntimeContext bindingRuntimeContext
                 = new DefaultBindingRuntimeContext(bindingRuntimeTypes, moduleInfoSnapshot);
 
-        this.bindingCodecTreeFactory = new DefaultBindingCodecTreeFactory();
+        this.bindingCodecTreeFactory = new DefaultDynamicBindingDataCodec(bindingRuntimeContext);
 
         final BindingCodecContext bindingCodecContext = new BindingCodecContext(bindingRuntimeContext);
         this.codec = new ConstantAdapterContext(bindingCodecContext);
@@ -526,7 +526,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public BindingCodecTreeFactory getBindingCodecTreeFactory() {
+    public DefaultDynamicBindingDataCodec getBindingCodecTreeFactory() {
         return this.bindingCodecTreeFactory;
     }
 
