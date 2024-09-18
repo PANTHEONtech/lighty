@@ -11,7 +11,7 @@ package io.lighty.core.common.models.tests;
 import io.lighty.core.common.models.YangModuleUtils;
 import io.lighty.core.common.models.YangModulesTool;
 import java.util.Set;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.testng.annotations.Test;
 
 public class YangModulesToolTest {

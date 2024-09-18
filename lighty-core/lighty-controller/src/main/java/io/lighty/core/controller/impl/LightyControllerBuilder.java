@@ -12,7 +12,7 @@ import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 
 /**
  * Builder for {@link LightyController}.
