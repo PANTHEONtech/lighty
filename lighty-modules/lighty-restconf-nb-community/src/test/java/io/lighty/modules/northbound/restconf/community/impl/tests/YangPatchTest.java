@@ -11,17 +11,16 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.restconf.common.patch.PatchContext;
-import org.opendaylight.restconf.common.patch.PatchEntity;
-import org.opendaylight.restconf.nb.rfc8040.rests.transactions.MdsalRestconfStrategy;
+import org.opendaylight.restconf.mdsal.spi.data.MdsalRestconfStrategy;
+import org.opendaylight.restconf.server.api.DataYangPatchResult;
 import org.opendaylight.restconf.server.api.DatabindContext;
-import org.opendaylight.restconf.server.api.PatchStatusContext;
-import org.opendaylight.restconf.server.api.PatchStatusEntity;
+import org.opendaylight.restconf.server.api.DatabindPath;
+import org.opendaylight.restconf.server.api.PatchContext;
+import org.opendaylight.restconf.server.api.PatchEntity;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.patch.rev170222.yang.patch.yang.patch.Edit;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Revision;
@@ -65,24 +64,18 @@ public class YangPatchTest extends CommunityRestConfTestBase {
 
         final var strategy = new MdsalRestconfStrategy(DatabindContext.ofModel(getLightyController()
                 .getServices().getDOMSchemaService().getGlobalContext()), getLightyController().getServices()
-                .getClusteredDOMDataBroker(), ImmutableMap.of(), getLightyController().getServices().getDOMRpcService(),
-                getLightyController().getServices()
-                        .getDOMActionService(), getLightyController().getServices().getYangTextSourceExtension(),
-                getLightyController().getServices()
-                        .getDOMMountPointService());
+                .getClusteredDOMDataBroker());
 
-        final PatchStatusContext patchStatusContext = strategy.patchData(patchContext).get().status();
+        final CompletingServerRequest<DataYangPatchResult> dataYangPatchRequest = new CompletingServerRequest<>();
 
-        for (final PatchStatusEntity entity : patchStatusContext.editCollection()) {
-            assertTrue(entity.isOk());
-        }
-        assertTrue(patchStatusContext.ok());
+        strategy.patchData(dataYangPatchRequest, new DatabindPath.Data(DatabindContext.ofModel(getLightyController()
+            .getServices().getDOMSchemaService().getGlobalContext())) ,patchContext);
+        assertTrue(dataYangPatchRequest.getResult().status().ok());
 
         final ContainerNode response = (ContainerNode) getLightyController().getServices().getClusteredDOMDataBroker()
                 .newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.of())
                 .get(5000, TimeUnit.MILLISECONDS).orElseThrow();
-
         final DataContainerChild bodyOfResponse = response.body().iterator().next();
         assertEquals(bodyOfResponse, getContainerWithData());
     }
