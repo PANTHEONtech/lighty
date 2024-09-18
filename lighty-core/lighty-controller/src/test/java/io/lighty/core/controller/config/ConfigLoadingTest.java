@@ -225,7 +225,7 @@ public class ConfigLoadingTest {
         InputStream inputStream = this.getClass().getResourceAsStream("/testLightyControllerConfig-example.json");
         final ControllerConfiguration configuration = ControllerConfigUtils.getConfiguration(inputStream);
         Set<YangModuleInfo> models = configuration.getSchemaServiceConfig().getModels();
-        Assert.assertEquals(models.size(), 2);
+        Assert.assertEquals(models.size(), 3);
 
         for (String expectedModuleName : expectedModuleNames) {
             long expectedModuleCount = models.stream()
