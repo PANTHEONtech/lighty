@@ -33,8 +33,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>yang-binding</artifactId>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>binding-spec</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.spotbugs</groupId>
@@ -52,8 +52,8 @@
                 <version>14.0.4</version>
                 <dependencies>
                     <dependency>
-                        <groupId>org.opendaylight.mdsal</groupId>
-                        <artifactId>mdsal-binding-java-api-generator</artifactId>
+                        <groupId>org.opendaylight.yangtools</groupId>
+                        <artifactId>binding-codegen</artifactId>
                         <version>14.0.4</version>
                     </dependency>
                 </dependencies>
