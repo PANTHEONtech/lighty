@@ -41,7 +41,7 @@
                 { "usedBy": "NETCONF", "name":"ietf-netconf", "revision":"2011-06-01", "nameSpace":"urn:ietf:params:xml:ns:netconf:base:1.0"},
                 { "usedBy": "AAA", "name": "aaa", "revision": "2016-12-14", "nameSpace": "urn:opendaylight:params:xml:ns:yang:aaa"},
                 { "usedBy": "AAA", "name": "aaa-cert-mdsal", "revision":"2016-03-21", "nameSpace":"urn:opendaylight:yang:aaa:cert:mdsal"},
-                { "usedBy": "AAA", "name": "aaa-encrypt-service-config", "revision": "2016-09-15", "nameSpace": "config:aaa:authn:encrypt:service:config"}
+                { "usedBy": "AAA", "name": "aaa-encrypt-service-config", "revision": "2024-02-02", "nameSpace": "config:aaa:authn:encrypt:service:config"}
             ]
         }
     },

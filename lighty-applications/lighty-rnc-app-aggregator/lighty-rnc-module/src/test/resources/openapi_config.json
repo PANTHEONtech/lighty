@@ -30,7 +30,7 @@
                 { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-network-topology", "name": "ietf-network-topology", "revision": "2015-06-08" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:entity-owners", "name": "odl-entity-owners" },
                 { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-access-control-list", "name": "ietf-access-control-list", "revision": "2016-02-18" },
-                { "nameSpace": "config:aaa:authn:encrypt:service:config", "name": "aaa-encrypt-service-config", "revision": "2016-09-15" },
+                { "nameSpace": "config:aaa:authn:encrypt:service:config", "name": "aaa-encrypt-service-config", "revision": "2024-02-02" },
                 { "nameSpace": "urn:TBD:params:xml:ns:yang:network:isis-topology", "name": "isis-topology", "revision": "2013-10-21" },
                 { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-lisp-address-types", "name": "ietf-lisp-address-types", "revision": "2015-11-05" },
                 { "nameSpace": "urn:opendaylight:netconf:topology:singleton:config", "name": "netconf-clustered-topology-config", "revision": "2017-04-19" },

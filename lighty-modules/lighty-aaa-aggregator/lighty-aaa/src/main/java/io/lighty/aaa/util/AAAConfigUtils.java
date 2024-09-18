@@ -26,7 +26,7 @@ import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.openssl.jcajce.JcePEMDecryptorProviderBuilder;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +35,7 @@ public final class AAAConfigUtils {
     private static final String AAA_ROOT_ELEMENT_NAME = "aaa";
 
     public static final Set<YangModuleInfo> YANG_MODELS = Set.of(
-            org.opendaylight.yang.svc.v1.config.aaa.authn.encrypt.service.config.rev160915
+            org.opendaylight.yang.svc.v1.config.aaa.authn.encrypt.service.config.rev240202
                     .YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.svc.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321
                     .YangModuleInfoImpl.getInstance(),
