@@ -66,8 +66,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-binding-dom-codec</artifactId>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>binding-data-codec-api</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
