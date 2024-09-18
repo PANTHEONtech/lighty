@@ -12,6 +12,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
+import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
+import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import io.lighty.server.LightyServerBuilder;
@@ -36,6 +38,7 @@ public abstract class OpenApiLightyTestBase {
 
     private LightyController lightyController;
     private OpenApiLighty openApiModule;
+    private CommunityRestConf communityRestConf;
 
     @BeforeClass(timeOut = 60_000)
     public void startControllerAndRestConf() throws Exception {
@@ -51,14 +54,19 @@ public abstract class OpenApiLightyTestBase {
 
         final RestConfConfiguration restConfConfiguration = RestConfConfigUtils
                 .getDefaultRestConfConfiguration(lightyController.getServices());
+        communityRestConf = CommunityRestConfBuilder.from(restConfConfiguration).build();
+        communityRestConf.start().get();
+        lightyController.getServices().withJaxRsEndpoint(communityRestConf.getJaxRsEndpoint());
 
 
         final LightyServerBuilder jettyServerBuilder = new LightyServerBuilder(new InetSocketAddress(
                 restConfConfiguration.getInetAddress(), restConfConfiguration.getHttpPort()));
+
         openApiModule = new OpenApiLighty(restConfConfiguration, jettyServerBuilder,
                 lightyController.getServices());
         LOG.info("Starting Lighty OpenApi");
         openApiModule.start().get();
+        communityRestConf.startServer();
         LOG.info("Lighty OpenApi started");
     }
 
