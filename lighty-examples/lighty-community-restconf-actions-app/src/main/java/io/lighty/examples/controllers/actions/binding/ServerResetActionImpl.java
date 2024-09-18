@@ -14,7 +14,7 @@ import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.server.Res
 import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.server.ResetInput;
 import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.server.ResetOutput;
 import org.opendaylight.yang.gen.v1.urn.example.data.center.rev180807.server.ResetOutputBuilder;
-import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 
@@ -23,7 +23,7 @@ import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
  */
 public final class ServerResetActionImpl implements Reset {
     @Override
-    public ListenableFuture<RpcResult<ResetOutput>> invoke(final KeyedInstanceIdentifier<Server, ServerKey> path,
+    public ListenableFuture<RpcResult<ResetOutput>> invoke(final DataObjectIdentifier.WithKey<Server, ServerKey> path,
             final ResetInput input) {
         final var value = new ResetOutputBuilder().setResetFinishedAt(input.getResetAt()).build();
         return RpcResultBuilder.success(value).buildFuture();
