@@ -16,8 +16,12 @@ import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfi
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
-import org.opendaylight.restconf.nb.rfc8040.streams.StreamsConfiguration;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.restconf.api.query.PrettyPrintParam;
+import org.opendaylight.restconf.server.jaxrs.JaxRsEndpointConfiguration;
+import org.opendaylight.restconf.server.spi.ErrorTagMapping;
+import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
+import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -168,7 +172,9 @@ public final class RestConfConfigUtils {
         return new RestConfConfiguration();
     }
 
-    public static StreamsConfiguration getStreamsConfiguration() {
-        return new StreamsConfiguration(MAXIMUM_FRAGMENT_LENGTH, IDLE_TIMEOUT, HEARTBEAT_INTERVAL);
+    public static JaxRsEndpointConfiguration getStreamsConfiguration() {
+        return new JaxRsEndpointConfiguration(ErrorTagMapping.RFC8040, PrettyPrintParam.FALSE,
+            Uint16.valueOf(MAXIMUM_FRAGMENT_LENGTH), Uint32.valueOf(HEARTBEAT_INTERVAL),
+            RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
     }
 }

@@ -69,6 +69,11 @@
             <artifactId>singlenode-configuration</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.aaa.web</groupId>
+            <artifactId>servlet-jersey2</artifactId>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>
