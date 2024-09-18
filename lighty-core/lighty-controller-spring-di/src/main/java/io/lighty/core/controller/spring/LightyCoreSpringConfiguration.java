@@ -9,8 +9,6 @@ package io.lighty.core.controller.spring;
 
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModuleRegistryService;
-import io.netty.channel.EventLoopGroup;
-import io.netty.util.Timer;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
@@ -245,21 +243,6 @@ public abstract class LightyCoreSpringConfiguration {
     @Bean(name = "BindingDataBroker", destroyMethod = "")
     public DataBroker getBindingDataBroker() {
         return this.lightyController.getServices().getBindingDataBroker();
-    }
-
-    @Bean(name = "BossGroup", destroyMethod = "")
-    public EventLoopGroup bossGroup() {
-        return this.lightyController.getServices().getBossGroup();
-    }
-
-    @Bean(name = "WorkerGroup", destroyMethod = "")
-    public EventLoopGroup workerGroup() {
-        return this.lightyController.getServices().getWorkerGroup();
-    }
-
-    @Bean(destroyMethod = "")
-    public Timer timer() {
-        return this.lightyController.getServices().getTimer();
     }
 
 }

@@ -8,8 +8,6 @@
 package io.lighty.core.controller.api;
 
 import io.lighty.core.controller.impl.services.LightySystemReadyService;
-import io.netty.channel.EventLoopGroup;
-import io.netty.util.Timer;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
@@ -81,12 +79,6 @@ public interface LightyServices extends LightyModuleRegistryService {
     ClusterAdminRpcService getClusterAdminRPCService();
 
     ClusterSingletonServiceProvider getClusterSingletonServiceProvider();
-
-    EventLoopGroup getBossGroup();
-
-    EventLoopGroup getWorkerGroup();
-
-    Timer getTimer();
 
     DOMMountPointService getDOMMountPointService();
 

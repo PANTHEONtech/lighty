@@ -25,10 +25,6 @@ import io.lighty.core.controller.impl.services.LightyDiagStatusServiceImpl;
 import io.lighty.core.controller.impl.services.LightySystemReadyMonitorImpl;
 import io.lighty.core.controller.impl.services.LightySystemReadyService;
 import io.lighty.core.controller.impl.util.FileToDatastoreUtils;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.util.HashedWheelTimer;
-import io.netty.util.Timer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -166,9 +162,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private NotificationPublishService notificationPublishService;
     private DataBroker dataBroker;
     private final LightyDiagStatusServiceImpl lightyDiagStatusService;
-    private EventLoopGroup bossGroup;
-    private EventLoopGroup workerGroup;
-    private Timer timer;
     private ModuleInfoSnapshot moduleInfoSnapshot;
     private ModuleInfoSnapshotResolver snapshotResolver;
     private DOMSchemaService schemaService;
@@ -340,9 +333,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
         this.clusteringHandler.ifPresent(handler -> handler.start(rpcConsumerRegistry));
 
-        this.bossGroup = new NioEventLoopGroup();
-        this.workerGroup = new NioEventLoopGroup();
-        this.timer = new HashedWheelTimer();
         this.yangLibraryWriter = new YangLibraryWriterSingleton(clusterSingletonServiceProvider, schemaService,
                 dataBroker, true);
         yangLibraryWriter.instantiateServiceInstance();
@@ -382,9 +372,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     protected boolean stopProcedure() throws InterruptedException, ExecutionException {
         LOG.debug("Lighty Controller stopProcedure");
-        if (this.timer != null) {
-            this.timer.stop();
-        }
         if (this.clusterSingletonServiceProvider != null) {
             this.clusterSingletonServiceProvider.close();
         }
@@ -548,21 +535,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     public ClusterSingletonServiceProvider getClusterSingletonServiceProvider() {
         return this.clusterSingletonServiceProvider;
-    }
-
-    @Override
-    public EventLoopGroup getBossGroup() {
-        return this.bossGroup;
-    }
-
-    @Override
-    public EventLoopGroup getWorkerGroup() {
-        return this.workerGroup;
-    }
-
-    @Override
-    public Timer getTimer() {
-        return this.timer;
     }
 
     @Override

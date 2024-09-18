@@ -123,21 +123,6 @@ public class GuiceDITest {
     }
 
     @Test
-    public void testDIEventLoopGroupBoss() {
-        assertNotNull(testService.getEventLoopGroupBoss());
-    }
-
-    @Test
-    public void testDIEventLoopGroupWorker() {
-        assertNotNull(testService.getEventLoopGroupWorker());
-    }
-
-    @Test
-    public void testDITimer() {
-        assertNotNull(testService.getTimer());
-    }
-
-    @Test
     public void testDIDomMountPointService() {
         assertNotNull(testService.getDomMountPointService());
     }

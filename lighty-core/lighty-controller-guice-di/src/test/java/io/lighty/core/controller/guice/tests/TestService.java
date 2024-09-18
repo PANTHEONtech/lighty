@@ -9,8 +9,6 @@ package io.lighty.core.controller.guice.tests;
 
 import io.lighty.core.controller.api.LightyModuleRegistryService;
 import io.lighty.core.controller.api.LightyServices;
-import io.netty.channel.EventLoopGroup;
-import io.netty.util.Timer;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
@@ -76,17 +74,6 @@ public class TestService {
 
     @Inject
     private ClusterSingletonServiceProvider clusterSingletonServiceProvider;
-
-    @Inject
-    @Named("BossGroup")
-    private EventLoopGroup eventLoopGroupBoss;
-
-    @Inject
-    @Named("WorkerGroup")
-    private EventLoopGroup eventLoopGroupWorker;
-
-    @Inject
-    private Timer timer;
 
     @Inject
     private DOMMountPointService domMountPointService;
@@ -179,18 +166,6 @@ public class TestService {
 
     public ClusterSingletonServiceProvider getClusterSingletonServiceProvider() {
         return clusterSingletonServiceProvider;
-    }
-
-    public EventLoopGroup getEventLoopGroupBoss() {
-        return eventLoopGroupBoss;
-    }
-
-    public EventLoopGroup getEventLoopGroupWorker() {
-        return eventLoopGroupWorker;
-    }
-
-    public Timer getTimer() {
-        return timer;
     }
 
     public DOMMountPointService getDomMountPointService() {
