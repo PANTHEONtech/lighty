@@ -152,17 +152,19 @@ public class Main {
                 .build();
 
         //3. start openApi and RestConf server
+        final boolean restconfStartOk = this.restconf.start()
+            .get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
+        if (!restconfStartOk) {
+            throw new ModuleStartupException("Community Restconf startup failed!");
+        }
+        lightyController.getServices().withJaxRsEndpoint(restconf.getJaxRsEndpoint());
+
         this.openApi =
             new OpenApiLighty(restconfConfiguration, jettyServerBuilder, this.lightyController.getServices());
         final boolean openApiStartOk = this.openApi.start()
                 .get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
         if (!openApiStartOk) {
             throw new ModuleStartupException("Lighty.io OpenApi startup failed!");
-        }
-        final boolean restconfStartOk = this.restconf.start()
-                .get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
-        if (!restconfStartOk) {
-            throw new ModuleStartupException("Community Restconf startup failed!");
         }
         this.restconf.startServer();
 

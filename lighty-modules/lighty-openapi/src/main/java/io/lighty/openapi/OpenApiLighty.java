@@ -14,18 +14,13 @@ import io.lighty.core.controller.api.LightyServices;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.server.LightyServerBuilder;
 import java.util.Set;
-import javax.servlet.http.HttpServlet;
 import javax.ws.rs.core.Application;
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
-import org.opendaylight.restconf.api.query.PrettyPrintParam;
-import org.opendaylight.restconf.nb.rfc8040.ErrorTagMapping;
-import org.opendaylight.restconf.nb.rfc8040.streams.RestconfStreamServletFactory;
 import org.opendaylight.restconf.openapi.api.OpenApiService;
 import org.opendaylight.restconf.openapi.impl.OpenApiServiceImpl;
 import org.slf4j.Logger;
@@ -63,28 +58,7 @@ public class OpenApiLighty extends AbstractLightyModule {
         LOG.info("basePath: {}", basePathString);
 
         this.apiDocService = new OpenApiServiceImpl(lightyServices.getDOMSchemaService(),
-                lightyServices.getDOMMountPointService(), new RestconfStreamServletFactory() {
-                    @Override
-                    public @NonNull String restconf() {
-                        return basePathString;
-                    }
-
-                    @Override
-                    public @NonNull HttpServlet newStreamServlet() {
-                        return new DefaultServlet();
-                    }
-
-                    //FIXME do not hardcode ErrorTagMapping and PrettyPrintParam (LIGHTY-305)
-                    @Override
-                    public PrettyPrintParam prettyPrint() {
-                        return PrettyPrintParam.FALSE;
-                    }
-
-                    @Override
-                    public ErrorTagMapping errorTagMapping() {
-                        return ErrorTagMapping.RFC8040;
-                    }
-                });
+                lightyServices.getDOMMountPointService(), lightyServices.getJaxRsEndpoint());
 
         final ServletContainer restServletContainer = new ServletContainer(ResourceConfig
                 .forApplication((new Application() {
