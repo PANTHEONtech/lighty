@@ -32,11 +32,12 @@ public abstract class OpenApiLightyTest extends OpenApiLightyTestBase {
     }
 
     public void testGetAllModulesDoc(UriInfo uriInfo) throws IOException {
-        assertSuccessResponse(getOpenApiModule().getApiDocService().getAllModulesDoc(uriInfo));
+        assertSuccessResponse(getOpenApiModule().getApiDocService().getAllModulesDoc(uriInfo, 0, 0, 0, 0));
     }
 
     public void testGetDocByModule(UriInfo uriInfo, String modelName, String revisionDate) throws IOException {
-        assertSuccessResponse(getOpenApiModule().getApiDocService().getDocByModule(modelName, revisionDate, uriInfo));
+        assertSuccessResponse(
+            getOpenApiModule().getApiDocService().getDocByModule(modelName, revisionDate, uriInfo, 0, 0));
     }
 
     public void testGetApiExplorer(UriInfo uriInfo) {
