@@ -22,7 +22,6 @@ import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
-import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
@@ -35,6 +34,7 @@ import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
+import org.opendaylight.yangtools.binding.data.codec.impl.di.DefaultDynamicBindingDataCodec;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public class TestService {
@@ -63,7 +63,7 @@ public class TestService {
     private BindingNormalizedNodeSerializer bindingNormalizedNodeSerializer;
 
     @Inject
-    private BindingCodecTreeFactory bindingCodecTreeFactory;
+    private DefaultDynamicBindingDataCodec bindingCodecTreeFactory;
 
     @Inject
     private DOMEntityOwnershipService domEntityOwnershipService;
@@ -161,7 +161,7 @@ public class TestService {
         return bindingNormalizedNodeSerializer;
     }
 
-    public BindingCodecTreeFactory getBindingCodecTreeFactory() {
+    public DefaultDynamicBindingDataCodec getBindingCodecTreeFactory() {
         return bindingCodecTreeFactory;
     }
 
