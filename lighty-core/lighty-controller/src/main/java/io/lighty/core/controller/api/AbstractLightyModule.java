@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import javax.servlet.ServletException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,7 +91,7 @@ public abstract class AbstractLightyModule implements LightyModule {
      * @return success of initialization
      * @throws InterruptedException if initialization was interrupted.
      */
-    protected abstract boolean initProcedure() throws InterruptedException;
+    protected abstract boolean initProcedure() throws InterruptedException, ServletException;
 
     /**
      * This method is called in {@link AbstractLightyModule#shutdown()} method.

@@ -112,6 +112,7 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
 import org.opendaylight.mdsal.singleton.impl.EOSClusterSingletonServiceProvider;
 import org.opendaylight.netconf.yanglib.writer.YangLibraryWriterSingleton;
+import org.opendaylight.restconf.server.jaxrs.JaxRsEndpoint;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
@@ -186,6 +187,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private Optional<InitialConfigData> initialConfigData;
     private RpcService rpcConsumerRegistry;
     private YangLibraryWriterSingleton yangLibraryWriter;
+    private JaxRsEndpoint jaxRsEndpoint;
 
 
     public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
@@ -631,6 +633,16 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     public RpcService getRpcConsumerRegistry() {
         return rpcConsumerRegistry;
+    }
+
+    @Override
+    public JaxRsEndpoint getJaxRsEndpoint() {
+        return this.jaxRsEndpoint;
+    }
+
+    @Override
+    public void withJaxRsEndpoint(JaxRsEndpoint endpoint) {
+        this.jaxRsEndpoint = endpoint;
     }
 
     @Override

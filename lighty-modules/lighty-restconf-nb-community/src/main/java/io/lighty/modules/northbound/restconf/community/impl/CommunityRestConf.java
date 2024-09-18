@@ -16,6 +16,7 @@ import io.lighty.server.LightyServerBuilder;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Set;
+import javax.servlet.ServletException;
 import javax.ws.rs.core.Application;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -23,6 +24,11 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
+import org.opendaylight.aaa.filterchain.configuration.impl.CustomFilterAdapterConfigurationImpl;
+import org.opendaylight.aaa.web.WebContext;
+import org.opendaylight.aaa.web.WebContextSecurer;
+import org.opendaylight.aaa.web.jetty.JettyWebServer;
+import org.opendaylight.aaa.web.servlet.jersey2.JerseyServletSupport;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
@@ -30,14 +36,16 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.restconf.api.query.PrettyPrintParam;
-import org.opendaylight.restconf.nb.jaxrs.JaxRsRestconf;
-import org.opendaylight.restconf.nb.jaxrs.JsonJaxRsFormattableBodyWriter;
-import org.opendaylight.restconf.nb.jaxrs.XmlJaxRsFormattableBodyWriter;
-import org.opendaylight.restconf.nb.rfc8040.ErrorTagMapping;
-import org.opendaylight.restconf.nb.rfc8040.legacy.RestconfDocumentedExceptionMapper;
-import org.opendaylight.restconf.nb.rfc8040.streams.StreamsConfiguration;
+import org.opendaylight.restconf.server.jaxrs.JaxRsEndpoint;
+import org.opendaylight.restconf.server.jaxrs.JaxRsEndpointConfiguration;
+import org.opendaylight.restconf.server.jaxrs.JaxRsLocationProvider;
+import org.opendaylight.restconf.server.jaxrs.JaxRsRestconf;
+import org.opendaylight.restconf.server.jaxrs.JsonJaxRsFormattableBodyWriter;
+import org.opendaylight.restconf.server.jaxrs.XmlJaxRsFormattableBodyWriter;
 import org.opendaylight.restconf.server.mdsal.MdsalDatabindProvider;
 import org.opendaylight.restconf.server.mdsal.MdsalRestconfServer;
+import org.opendaylight.restconf.server.mdsal.MdsalRestconfStreamRegistry;
+import org.opendaylight.restconf.server.spi.ErrorTagMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +64,7 @@ public class CommunityRestConf extends AbstractLightyModule {
     private final String restconfServletContextPath;
     private Server jettyServer;
     private LightyServerBuilder lightyServerBuilder;
+    private JaxRsEndpoint jaxRsEndpoint;
 
     public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMRpcService domRpcService,
             final DOMActionService domActionService, final DOMNotificationService domNotificationService,
@@ -86,67 +95,77 @@ public class CommunityRestConf extends AbstractLightyModule {
     }
 
     @Override
-    protected boolean initProcedure() {
+    protected boolean initProcedure() throws ServletException {
         final Stopwatch stopwatch = Stopwatch.createStarted();
-        final StreamsConfiguration streamsConfiguration = RestConfConfigUtils.getStreamsConfiguration();
+        final JaxRsEndpointConfiguration streamsConfiguration = RestConfConfigUtils.getStreamsConfiguration();
 
         LOG.info("Starting RestconfApplication with configuration {}", streamsConfiguration);
 
         final MdsalDatabindProvider databindProvider = new MdsalDatabindProvider(domSchemaService);
         final var server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService, domActionService,
-                domMountPointService);
+            domMountPointService);
+
+        this.jaxRsEndpoint = new JaxRsEndpoint(new JettyWebServer(httpPort), new LightyWebContextSecurer(),
+            new JerseyServletSupport(), new CustomFilterAdapterConfigurationImpl(), server,
+            new MdsalRestconfStreamRegistry(new JaxRsLocationProvider(), domDataBroker),
+            JaxRsEndpoint.props(streamsConfiguration));
 
         final ServletContainer servletContainer8040 = new ServletContainer(ResourceConfig
-                .forApplication(new Application() {
-                    @Override
-                    public Set<Object> getSingletons() {
-                        return Set.of(
-                            //FIXME do not hardcode ErrorTagMapping and PrettyPrintParam (LIGHTY-305)
-                            new JsonJaxRsFormattableBodyWriter(), new XmlJaxRsFormattableBodyWriter(),
-                            new RestconfDocumentedExceptionMapper(databindProvider, ErrorTagMapping.RFC8040),
-                            new JaxRsRestconf(server, ErrorTagMapping.RFC8040, PrettyPrintParam.FALSE));
-                    }
-                }));
+            .forApplication(new Application() {
+                @Override
+                public Set<Object> getSingletons() {
+                    return Set.of(
+                        new JsonJaxRsFormattableBodyWriter(), new XmlJaxRsFormattableBodyWriter(),
+                        new JaxRsRestconf(server, new MdsalRestconfStreamRegistry(new JaxRsLocationProvider(),
+                            domDataBroker), jaxRsEndpoint, ErrorTagMapping.RFC8040, PrettyPrintParam.FALSE));
+                }
+            }));
 
         final ServletHolder jaxrs = new ServletHolder(servletContainer8040);
 
         LOG.info("RestConf init complete, starting Jetty");
         LOG.info("http address:port {}:{}, url prefix: {}", this.inetAddress.toString(), this.httpPort,
-                this.restconfServletContextPath);
+            this.restconfServletContextPath);
+        final InetSocketAddress inetSocketAddress = new InetSocketAddress(this.inetAddress, this.httpPort);
+        final ContextHandlerCollection contexts = new ContextHandlerCollection();
+        final ServletContextHandler mainHandler =
+            new ServletContextHandler(contexts, this.restconfServletContextPath, true, false);
+        mainHandler.addServlet(jaxrs, "/*");
 
-        try {
-            final InetSocketAddress inetSocketAddress = new InetSocketAddress(this.inetAddress, this.httpPort);
-            final ContextHandlerCollection contexts = new ContextHandlerCollection();
-            final ServletContextHandler mainHandler =
-                    new ServletContextHandler(contexts, this.restconfServletContextPath, true, false);
-            mainHandler.addServlet(jaxrs, "/*");
+        final ServletContextHandler rrdHandler =
+            new ServletContextHandler(contexts, "/.well-known", true, false);
+        final RootFoundApplication rootDiscoveryApp = new RootFoundApplication(restconfServletContextPath);
+        rrdHandler.addServlet(new ServletHolder(new ServletContainer(ResourceConfig
+            .forApplication(rootDiscoveryApp))), "/*");
 
-            final ServletContextHandler rrdHandler =
-                    new ServletContextHandler(contexts, "/.well-known", true, false);
-            final RootFoundApplication rootDiscoveryApp = new RootFoundApplication(restconfServletContextPath);
-            rrdHandler.addServlet(new ServletHolder(new ServletContainer(ResourceConfig
-                    .forApplication(rootDiscoveryApp))), "/*");
-
-            boolean startDefault = false;
-            if (this.lightyServerBuilder == null) {
-                this.lightyServerBuilder = new LightyServerBuilder(inetSocketAddress);
-                startDefault = true;
-            }
-            this.lightyServerBuilder.addContextHandler(contexts);
-            if (startDefault) {
-                startServer();
-            }
-        } catch (final IllegalStateException e) {
-            LOG.error("Failed to start jetty: ", e);
+        boolean startDefault = false;
+        if (this.lightyServerBuilder == null) {
+            this.lightyServerBuilder = new LightyServerBuilder(inetSocketAddress);
+            startDefault = true;
         }
+        this.lightyServerBuilder.addContextHandler(contexts);
+        if (startDefault) {
+            startServer();
+        }
+
         LOG.info("Lighty RestConf started in {}", stopwatch.stop());
         return true;
     }
+
 
     @SuppressWarnings("checkstyle:illegalCatch")
     @Override
     protected boolean stopProcedure() {
         boolean stopFailed = false;
+        if (this.jaxRsEndpoint != null) {
+            try {
+                this.jaxRsEndpoint.close();
+                LOG.info("jaxRsEndpoint stopped");
+            } catch (final Exception e) {
+                LOG.error("{} failed to stop!", this.jaxRsEndpoint.getClass(), e);
+                stopFailed = true;
+            }
+        }
         if (this.jettyServer != null) {
             try {
                 this.jettyServer.stop();
@@ -175,6 +194,28 @@ public class CommunityRestConf extends AbstractLightyModule {
             throw new IllegalStateException("Failed to start jetty!", e);
         }
         LOG.info("Jetty started");
+    }
+
+    public JaxRsEndpoint getJaxRsEndpoint() {
+        return this.jaxRsEndpoint;
+    }
+
+    public static class LightyWebContextSecurer implements WebContextSecurer {
+        @Override
+        public void requireAuthentication(WebContext.Builder webContextBuilder,
+            boolean asyncSupported, String... urlPatterns) {
+
+        }
+
+        @Override
+        public void requireAuthentication(WebContext.Builder webContextBuilder, String... urlPatterns) {
+            WebContextSecurer.super.requireAuthentication(webContextBuilder, urlPatterns);
+        }
+
+        @Override
+        public void requireAuthentication(WebContext.Builder webContextBuilder) {
+            WebContextSecurer.super.requireAuthentication(webContextBuilder);
+        }
     }
 
 }
