@@ -11,7 +11,6 @@ package io.lighty.modules.bgp.deployer;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.modules.bgp.config.InitialBgpConfigLoader;
-import io.netty.channel.EventLoopGroup;
 import java.util.List;
 import org.opendaylight.bgpcep.bgp.topology.provider.config.BgpTopologyDeployerImpl;
 import org.opendaylight.bgpcep.bgp.topology.provider.config.Ipv4TopologyProvider;
@@ -70,8 +69,7 @@ public class BgpModule extends AbstractLightyModule {
 
     public BgpModule(final EffectiveModelContext modelContext, final DataBroker dataBroker,
             final DOMDataBroker domDataBroker, final BindingCodecTree codecTree, final RpcProviderService rpcProvider,
-            final ClusterSingletonServiceProvider cssProvider, final BindingNormalizedNodeSerializer serializer,
-            final EventLoopGroup bossGroup, final EventLoopGroup workerGroup) {
+            final ClusterSingletonServiceProvider cssProvider, final BindingNormalizedNodeSerializer serializer) {
         initialConfigLoader = new InitialBgpConfigLoader(domDataBroker, modelContext);
         peerRegistry = new StrictBGPPeerRegistry();
         bgpNettyGroups = new BGPNettyGroups();
@@ -100,10 +98,9 @@ public class BgpModule extends AbstractLightyModule {
     public BgpModule(final EffectiveModelContext modelContext, final DataBroker dataBroker,
             final DOMDataBroker domDataBroker, final BindingRuntimeContext runtimeContext,
             final RpcProviderService rpcProvider, final ClusterSingletonServiceProvider cssProvider,
-            final BindingNormalizedNodeSerializer serializer,
-            final EventLoopGroup bossGroup, final EventLoopGroup workerGroup) {
+            final BindingNormalizedNodeSerializer serializer) {
         this(modelContext, dataBroker, domDataBroker, new BindingCodecContext(runtimeContext),
-                rpcProvider, cssProvider, serializer, bossGroup, workerGroup);
+                rpcProvider, cssProvider, serializer);
     }
 
     public BgpModule(final LightyServices lightyServices) {
@@ -111,8 +108,7 @@ public class BgpModule extends AbstractLightyModule {
                 lightyServices.getBindingDataBroker(), lightyServices.getClusteredDOMDataBroker(),
                 lightyServices.getAdapterContext().currentSerializer().getRuntimeContext(),
                 lightyServices.getRpcProviderService(), lightyServices.getClusterSingletonServiceProvider(),
-                lightyServices.getBindingNormalizedNodeSerializer(), lightyServices.getBossGroup(),
-                lightyServices.getWorkerGroup());
+                lightyServices.getBindingNormalizedNodeSerializer());
     }
 
 

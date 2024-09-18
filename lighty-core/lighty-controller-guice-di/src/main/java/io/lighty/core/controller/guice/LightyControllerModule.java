@@ -11,8 +11,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
 import io.lighty.core.controller.api.LightyModuleRegistryService;
 import io.lighty.core.controller.api.LightyServices;
-import io.netty.channel.EventLoopGroup;
-import io.netty.util.Timer;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
@@ -82,14 +80,6 @@ public class LightyControllerModule extends AbstractModule {
                 .toInstance(lightyServices.getClusterAdminRPCService());
         bind(ClusterSingletonServiceProvider.class)
                 .toInstance(lightyServices.getClusterSingletonServiceProvider());
-        bind(EventLoopGroup.class)
-                .annotatedWith(Names.named("BossGroup"))
-                .toInstance(lightyServices.getBossGroup());
-        bind(EventLoopGroup.class)
-                .annotatedWith(Names.named("WorkerGroup"))
-                .toInstance(lightyServices.getWorkerGroup());
-        bind(Timer.class)
-                .toInstance(lightyServices.getTimer());
         bind(DOMMountPointService.class)
                 .toInstance(lightyServices.getDOMMountPointService());
         bind(DOMNotificationPublishService.class)

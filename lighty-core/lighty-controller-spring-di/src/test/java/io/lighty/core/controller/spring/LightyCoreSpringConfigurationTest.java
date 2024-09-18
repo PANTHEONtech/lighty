@@ -16,8 +16,6 @@ import io.lighty.core.controller.api.LightyModuleRegistryService;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
-import io.netty.channel.EventLoopGroup;
-import io.netty.util.Timer;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 import org.junit.jupiter.api.Test;
@@ -143,17 +141,6 @@ public class LightyCoreSpringConfigurationTest extends AbstractJUnit4SpringConte
     @Autowired
     DataBroker bindingDataBrokerTestProperty;
 
-    @Autowired
-    @Qualifier("BossGroup")
-    EventLoopGroup bossGroupTestProperty;
-
-    @Autowired
-    @Qualifier("WorkerGroup")
-    EventLoopGroup workerGroupTestProperty;
-
-    @Autowired
-    Timer timerTestProperty;
-
     @Test
     public void testLightyBeansExists() {
         assertNotNull(lightyControllerTestProperty);
@@ -182,9 +169,6 @@ public class LightyCoreSpringConfigurationTest extends AbstractJUnit4SpringConte
         assertNotNull(notificationServiceTestProperty);
         assertNotNull(bindingNotificationPublishServiceTestProperty);
         assertNotNull(bindingDataBrokerTestProperty);
-        assertNotNull(bossGroupTestProperty);
-        assertNotNull(workerGroupTestProperty);
-        assertNotNull(timerTestProperty);
     }
 
     @TestConfiguration
