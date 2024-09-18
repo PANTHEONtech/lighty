@@ -45,8 +45,7 @@ public final class LightyDOMActionService implements Normalized {
             final DOMDataTreeIdentifier path, final ContainerNode input) {
         final NetconfMessage actionRequest = this.messageTransformer.toActionRequest(type, path, input);
         final SettableFuture<DOMRpcResult> settableFuture = SettableFuture.create();
-        final ListenableFuture<RpcResult<NetconfMessage>> responseFuture = this.communicator.sendRequest(actionRequest,
-                type.lastNodeIdentifier());
+        final ListenableFuture<RpcResult<NetconfMessage>> responseFuture = this.communicator.sendRequest(actionRequest);
         Futures.addCallback(responseFuture, new FutureCallback<RpcResult<NetconfMessage>>() {
 
             @Override
