@@ -127,14 +127,14 @@ public class GnmiWithoutRestconfTest {
     private static final String YANG_NAME = "YANG_NAME";
     private static final String YANG_VERSION = "YANG_VERSION";
     private static final QNameModule INERFACE_QNAME_MODULE
-            = QNameModule.create(XMLNamespace.of("http://openconfig.net/yang/interfaces"), Revision.of("2021-04-06"));
+            = QNameModule.of(XMLNamespace.of("http://openconfig.net/yang/interfaces"), Revision.of("2021-04-06"));
     private static final QName INTERFACES_QNAME = QName.create(INERFACE_QNAME_MODULE, "interfaces");
-    private static final QNameModule TEST_MODULE_QN_MODULE = QNameModule.create(XMLNamespace.of("test:model"));
+    private static final QNameModule TEST_MODULE_QN_MODULE = QNameModule.of(XMLNamespace.of("test:model"));
     private static final QName TEST_DATA_CONTAINER_QN = QName.create(TEST_MODULE_QN_MODULE, "test-data");
     private static final QName TEST_LEAF_LIST_QN = QName.create(TEST_DATA_CONTAINER_QN, "test-leaf-list");
 
     private static final QNameModule CERT_STORAGE_QN_MODULE
-            = QNameModule.create(XMLNamespace.of("urn:lighty:gnmi:certificate:storage"), Revision.of("2021-05-04"));
+            = QNameModule.of(XMLNamespace.of("urn:lighty:gnmi:certificate:storage"), Revision.of("2021-05-04"));
     private static final QName ADD_KEYSTORE_RPC_QN = QName.create(CERT_STORAGE_QN_MODULE, "add-keystore-certificate");
     private static final QName ADD_KEYSTORE_INPUT_QN = QName.create(ADD_KEYSTORE_RPC_QN, "input");
     private static final QName KEYSTORE_ID_QN = QName.create(CERT_STORAGE_QN_MODULE, "keystore-id");
@@ -144,7 +144,7 @@ public class GnmiWithoutRestconfTest {
     private static final QName CLIENT_CERT_QN = QName.create(CERT_STORAGE_QN_MODULE, "client-cert");
 
     private static final QNameModule YANG_STORAGE_QN_MODULE
-            = QNameModule.create(XMLNamespace.of("urn:lighty:gnmi:yang:storage"), Revision.of("2021-03-31"));
+            = QNameModule.of(XMLNamespace.of("urn:lighty:gnmi:yang:storage"), Revision.of("2021-03-31"));
     private static final QName UPLOAD_YANG_RPC_QN = QName.create(YANG_STORAGE_QN_MODULE, "upload-yang-model");
     private static final QName UPLOAD_YANG_INPUT_QN = QName.create(UPLOAD_YANG_RPC_QN, "input");
     private static final QName GNMI_YANG_MODELS_QN = QName.create(YANG_STORAGE_QN_MODULE, "gnmi-yang-models");
