@@ -68,7 +68,7 @@ import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 public class WriteTransactionTest {
-    private static final QNameModule INTERFACES_MODULE_QN_MODULE = QNameModule.create(
+    private static final QNameModule INTERFACES_MODULE_QN_MODULE = QNameModule.of(
             XMLNamespace.of("http://openconfig.net/yang/interfaces"), Revision.of("2021-04-06"));
     private static final String OPENCONFIG_GNMI_CONFIG = "/lightyconfigs/openconfig_gnmi_config.json";
     private static final QName INTERFACES_CONTAINER_QN = QName.create(INTERFACES_MODULE_QN_MODULE, "interfaces");
