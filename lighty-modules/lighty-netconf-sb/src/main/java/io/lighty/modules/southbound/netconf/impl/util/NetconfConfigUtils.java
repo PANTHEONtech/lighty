@@ -35,7 +35,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev240202.AaaEncryptServiceConfig;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev240202.AaaEncryptServiceConfigBuilder;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

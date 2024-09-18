@@ -20,7 +20,7 @@ import io.lighty.gnmi.southbound.schema.provider.SchemaContextProvider;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public class TestSchemaContextProvider implements SchemaContextProvider {

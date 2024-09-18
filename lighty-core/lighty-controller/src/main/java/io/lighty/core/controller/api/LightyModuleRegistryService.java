@@ -8,8 +8,8 @@
 package io.lighty.core.controller.api;
 
 import java.util.List;
+import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 
 /**
  * Yang module registration service for global schema context.

@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 
 public final class BgpConfigUtils {
 

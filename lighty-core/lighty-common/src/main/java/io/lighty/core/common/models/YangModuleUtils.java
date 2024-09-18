@@ -18,8 +18,8 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.binding.meta.YangModelBindingProvider;
+import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

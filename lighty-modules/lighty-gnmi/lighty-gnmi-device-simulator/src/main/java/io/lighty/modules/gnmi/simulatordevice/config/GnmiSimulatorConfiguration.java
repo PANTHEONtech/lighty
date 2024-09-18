@@ -14,7 +14,7 @@ import gnmi.Gnmi;
 import io.netty.channel.EventLoopGroup;
 import java.util.EnumSet;
 import java.util.Set;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class GnmiSimulatorConfiguration {
