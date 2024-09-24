@@ -54,7 +54,7 @@
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:inmemory-datastore-provider", "name": "opendaylight-inmemory-datastore-provider", "revision": "2014-06-17" },
                 { "nameSpace": "urn:ietf:params:xml:ns:yang:iana-afn-safi", "name": "iana-afn-safi", "revision": "2013-07-04" },
                 { "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:binding:impl", "name": "opendaylight-sal-binding-broker-impl", "revision": "2013-10-28" },
-                { "nameSpace": "urn:opendaylight:netconf-node-topology", "name": "netconf-node-topology", "revision": "2024-06-11" },
+                { "nameSpace": "urn:opendaylight:netconf-node-topology", "name": "netconf-node-topology", "revision": "2024-09-11" },
                 { "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-restconf", "name": "ietf-restconf", "revision": "2017-01-26" },
                 { "nameSpace": "urn:ietf:params:xml:ns:netmod:notification", "name": "nc-notifications", "revision": "2008-07-14" },
                 { "nameSpace": "urn:opendaylight:l2:types", "name": "opendaylight-l2-types", "revision": "2013-08-27" },

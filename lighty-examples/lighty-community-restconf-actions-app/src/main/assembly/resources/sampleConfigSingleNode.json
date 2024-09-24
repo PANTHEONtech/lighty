@@ -41,7 +41,7 @@
                 { "usedBy":"RESTCONF","name":"subscribe-to-notification","revision":"2016-10-28","nameSpace":"subscribe:to:notification"},
                 { "usedBy":"RESTCONF", "name": "instance-identifier-patch-module", "revision": "2015-11-21", "nameSpace": "instance:identifier:patch:module"},
                 { "usedBy":"NETCONF","name":"netconf-keystore","revision":"2024-07-08","nameSpace":"urn:opendaylight:netconf:keystore"},
-                { "usedBy":"NETCONF","name":"netconf-node-topology","revision":"2024-06-11","nameSpace":"urn:opendaylight:netconf-node-topology"},
+                { "usedBy":"NETCONF","name":"netconf-node-topology","revision":"2024-09-11","nameSpace":"urn:opendaylight:netconf-node-topology"},
                 { "usedBy":"NETCONF","name":"netconf-node-optional","revision":"2024-06-11","nameSpace":"urn:opendaylight:netconf-node-optional"},
                 { "usedBy":"NETCONF","name":"ietf-netconf","revision":"2011-06-01","nameSpace":"urn:ietf:params:xml:ns:netconf:base:1.0"},
                 { "usedBy":"NETCONF_ACTION","name":"example-data-center","revision":"2018-08-07","nameSpace":"urn:example:data-center"}

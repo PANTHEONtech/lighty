@@ -100,14 +100,16 @@ sleep 1
       "netconf-topology:node" :[
     	{
 	      "node-id": "node-'"${SIMULATOR_IP//.}"'",
-	      "host": "'"$SIMULATOR_IP"'",
-        "port": '"$SIMULATOR_PORT"',
-        "login-password-unencrypted": {
-	        "username": "admin",
-	        "password": "admin"
-	      },
-	      "tcp-only": false,
-	      "keepalive-delay": 0
+	        "netconf-node": {
+	          "host": "'"$SIMULATOR_IP"'",
+            "port": '"$SIMULATOR_PORT"',
+            "login-password-unencrypted": {
+	            "username": "admin",
+	            "password": "admin"
+	          },
+	          "tcp-only": false,
+	          "keepalive-delay": 0
+	      }
       }
     ]
   }')
@@ -118,7 +120,7 @@ echo "Check if netconf-simulator is connected"
 connection_status="not-connected"
 for i in {1..20} ; do
   connection_status=$(assertNodeConnected $(curl -X GET -s \
-  'http://'"$MINIKUBE_IP"':'"$CONTROLLER_PORT"'/restconf/data/network-topology:network-topology/topology=topology-netconf/node='node-"${SIMULATOR_IP//.}"'/netconf-node-topology:connection-status'))
+  'http://'"$MINIKUBE_IP"':'"$CONTROLLER_PORT"'/restconf/data/network-topology:network-topology/topology=topology-netconf/node='node-"${SIMULATOR_IP//.}"'/netconf-node-topology:netconf-node/connection-status'))
   echo -e "Connection status: $connection_status"
   if [[ $connection_status == "connected" ]]
   then

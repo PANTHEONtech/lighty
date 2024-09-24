@@ -11,7 +11,7 @@ package io.lighty.core.controller.springboot.rest.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.device.rev240611.ConnectionOper.ConnectionStatus;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev240611.NetconfNode;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev240911.NetconfNodeAugment;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 
 public class NetconfDeviceResponse {
@@ -42,14 +42,14 @@ public class NetconfDeviceResponse {
     }
 
     public static NetconfDeviceResponse from(final Node node, Long darknessFactor) {
-        final NetconfNode netconfNode = node.augmentation(NetconfNode.class);
-        final ConnectionStatus connectionStatus = netconfNode != null ? netconfNode.getConnectionStatus() : null;
+        final NetconfNodeAugment netconfNode = node.augmentation(NetconfNodeAugment.class);
+        final ConnectionStatus connectionStatus = netconfNode != null ? netconfNode.getNetconfNode().getConnectionStatus() : null;
         return new NetconfDeviceResponse(node.getNodeId().getValue(), connectionStatus, darknessFactor);
     }
 
     public static NetconfDeviceResponse from(final Node node) {
-        final NetconfNode netconfNode = node.augmentation(NetconfNode.class);
-        final ConnectionStatus connectionStatus = netconfNode != null ? netconfNode.getConnectionStatus() : null;
+        final NetconfNodeAugment netconfNode = node.augmentation(NetconfNodeAugment.class);
+        final ConnectionStatus connectionStatus = netconfNode != null ? netconfNode.getNetconfNode().getConnectionStatus() : null;
         return new NetconfDeviceResponse(node.getNodeId().getValue(), connectionStatus, new Long(0));
     }
 

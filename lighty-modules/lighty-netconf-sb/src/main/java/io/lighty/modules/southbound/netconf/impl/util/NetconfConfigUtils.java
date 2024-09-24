@@ -45,7 +45,7 @@ public final class NetconfConfigUtils {
     public static final Set<YangModuleInfo> NETCONF_TOPOLOGY_MODELS = Set.of(
             org.opendaylight.yang.svc.v1.urn.opendaylight.netconf.keystore.rev240708
                     .YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.svc.v1.urn.opendaylight.netconf.node.topology.rev240611
+            org.opendaylight.yang.svc.v1.urn.opendaylight.netconf.node.topology.rev240911
                     .YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.svc.v1.urn.opendaylight.netconf.node.optional.rev221225
                     .YangModuleInfoImpl.getInstance(),
