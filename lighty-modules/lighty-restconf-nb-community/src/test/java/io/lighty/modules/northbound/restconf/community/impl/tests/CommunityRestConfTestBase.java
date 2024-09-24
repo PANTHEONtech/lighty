@@ -15,7 +15,9 @@ import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import java.lang.reflect.Method;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
@@ -37,10 +39,15 @@ public abstract class CommunityRestConfTestBase {
 
     @BeforeClass(timeOut = 60_000)
     public void startControllerAndRestConf() throws Exception {
+
+        final Set<YangModuleInfo> moduleInfos = new java.util.HashSet<>(RestConfConfigUtils.YANG_MODELS);
+        moduleInfos.add(org.opendaylight.yang.svc.v1.instance.identifier.patch.module.rev151121
+            .YangModuleInfoImpl.getInstance());
+
         LOG.info("Building LightyController");
         LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
         lightyController = lightyControllerBuilder.from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(
-                RestConfConfigUtils.YANG_MODELS)).build();
+                moduleInfos)).build();
 
         LOG.info("Starting LightyController (waiting 10s after start)");
         ListenableFuture<Boolean> started = lightyController.start();
