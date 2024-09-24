@@ -41,9 +41,7 @@ public final class RestConfConfigUtils {
                     .YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.svc.v1.urn.sal.restconf.event.subscription.rev231103
                     .YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.svc.v1.subscribe.to.notification.rev161028
-                    .YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.svc.v1.instance.identifier.patch.module.rev151121
+            org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.yang.patch.rev170222
                     .YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.svc.v1.urn.opendaylight.device.notification.rev240218
                      .YangModuleInfoImpl.getInstance());
