@@ -8,7 +8,7 @@ This simulator provides gNMI device driven by gNMI proto files, with datastore d
    <dependency>
       <groupId>io.lighty.modules.gnmi</groupId>
       <artifactId>lighty-gnmi-device-simulator</artifactId>
-      <version>20.2.0</version>
+      <version>20.3.0-SNAPSHOT</version>
    </dependency>
 ```
 
