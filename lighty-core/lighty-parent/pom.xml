@@ -84,7 +84,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.3.2</version>
+                    <version>3.4.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -94,7 +94,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.4.0</version>
+                    <version>3.4.2</version>
                     <configuration>
                         <archive>
                             <manifest>
@@ -106,7 +106,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-install-plugin</artifactId>
-                    <version>3.1.1</version>
+                    <version>3.1.3</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -116,12 +116,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>3.2.5</version>
+                    <version>3.4.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.2.5</version>
+                    <version>3.4.0</version>
                     <configuration>
                         <forkCount>1</forkCount>
                         <reuseForks>true</reuseForks>
@@ -171,7 +171,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.6.3</version>
+                    <version>3.8.0</version>
                     <configuration combine.children="append">
                         <!-- Keep things quiet except for warnings/errors -->
                         <quiet>true</quiet>
@@ -187,7 +187,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>3.3.1</version>
+                    <version>3.5.0</version>
                     <dependencies>
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
@@ -210,12 +210,12 @@
                 <plugin>
                     <groupId>com.github.spotbugs</groupId>
                     <artifactId>spotbugs-maven-plugin</artifactId>
-                    <version>4.8.5.0</version>
+                    <version>4.8.6.1</version>
                     <dependencies>
                         <dependency>
                             <groupId>com.github.spotbugs</groupId>
                             <artifactId>spotbugs</artifactId>
-                            <version>4.8.5</version>
+                            <version>4.8.6</version>
                         </dependency>
                         <dependency>
                             <groupId>org.opendaylight.odlparent</groupId>
