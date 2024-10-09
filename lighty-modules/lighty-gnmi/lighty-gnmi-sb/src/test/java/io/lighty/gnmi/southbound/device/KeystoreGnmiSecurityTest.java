@@ -50,7 +50,7 @@ import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
@@ -465,7 +465,8 @@ public class KeystoreGnmiSecurityTest {
                 encrySrvConfig.getEncryptIterationCount(), encrySrvConfig.getEncryptKeyLength());
         final SecretKey key = new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(),
                 encrySrvConfig.getEncryptType());
-        final IvParameterSpec ivParameterSpec = new IvParameterSpec(encryptionKeySalt);
+        final GCMParameterSpec ivParameterSpec = new GCMParameterSpec(encrySrvConfig.getAuthTagLength(),
+                encryptionKeySalt);
 
         final Cipher encryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
         encryptCipher.init(Cipher.ENCRYPT_MODE, key, ivParameterSpec);
@@ -473,7 +474,7 @@ public class KeystoreGnmiSecurityTest {
         final Cipher decryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
         decryptCipher.init(Cipher.DECRYPT_MODE, key, ivParameterSpec);
 
-        return new AAAEncryptionServiceImpl(encryptCipher, decryptCipher);
+        return new AAAEncryptionServiceImpl(ivParameterSpec, encrySrvConfig.getCipherTransforms(), key);
     }
 
     private static AaaEncryptServiceConfig getDefaultAaaEncryptServiceConfig() {
@@ -481,6 +482,6 @@ public class KeystoreGnmiSecurityTest {
                 .setPasswordLength(12).setEncryptSalt("TdtWeHbch/7xP52/rp3Usw==")
                 .setEncryptMethod("PBKDF2WithHmacSHA1").setEncryptType("AES")
                 .setEncryptIterationCount(32768).setEncryptKeyLength(128)
-                .setCipherTransforms("AES/CBC/PKCS5Padding").build();
+                .setAuthTagLength(128).setCipherTransforms("AES/GCM/NoPadding").build();
     }
 }

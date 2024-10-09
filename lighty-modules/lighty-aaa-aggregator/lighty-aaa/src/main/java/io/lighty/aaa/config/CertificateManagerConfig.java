@@ -8,19 +8,15 @@
 package io.lighty.aaa.config;
 
 import io.lighty.aaa.encrypt.service.impl.AAAEncryptionServiceImpl;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.opendaylight.aaa.cert.api.ICertificateManager;
@@ -75,7 +71,8 @@ public final class CertificateManagerConfig {
                 .setEncryptType("AES")
                 .setEncryptIterationCount(32768)
                 .setEncryptKeyLength(128)
-                .setCipherTransforms("AES/CBC/PKCS5Padding")
+                .setCipherTransforms("AES/GCM/NoPadding")
+                .setAuthTagLength(128)
                 .build();
 
         final byte[] encryptionKeySalt = Base64.getDecoder().decode(encrySrvConfig.getEncryptSalt());
@@ -86,19 +83,16 @@ public final class CertificateManagerConfig {
                     encrySrvConfig.getEncryptIterationCount(), encrySrvConfig.getEncryptKeyLength());
             SecretKey key = new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(),
                     encrySrvConfig.getEncryptType());
-            IvParameterSpec ivParameterSpec = new IvParameterSpec(encryptionKeySalt);
+            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(encrySrvConfig.getAuthTagLength(),
+                encryptionKeySalt);
 
-            Cipher encryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
-            encryptCipher.init(Cipher.ENCRYPT_MODE, key, ivParameterSpec);
-
-            Cipher decryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
-            decryptCipher.init(Cipher.DECRYPT_MODE, key, ivParameterSpec);
-            final AAAEncryptionService encryptionSrv = new AAAEncryptionServiceImpl(encryptCipher, decryptCipher);
+            final AAAEncryptionService encryptionSrv = new AAAEncryptionServiceImpl(gcmParameterSpec,
+                encrySrvConfig.getCipherTransforms(), key);
 
             return new CertificateManagerService(rpcProviderService, bindingDataBroker, encryptionSrv,
                     aaaCertServiceConfig);
-        } catch (InvalidAlgorithmParameterException | InvalidKeyException | InvalidKeySpecException
-                 | NoSuchAlgorithmException | NoSuchPaddingException e) {
+        } catch (InvalidKeySpecException
+                 | NoSuchAlgorithmException e) {
             return null;
         }
     }
