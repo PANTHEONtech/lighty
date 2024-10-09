@@ -39,7 +39,7 @@ import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.eclipse.jdt.annotation.Nullable;
@@ -190,15 +190,16 @@ public class RcGnmiAppModule {
                 encrySrvConfig.getEncryptIterationCount(), encrySrvConfig.getEncryptKeyLength());
         final SecretKey key
                 = new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(), encrySrvConfig.getEncryptType());
-        final IvParameterSpec ivParameterSpec = new IvParameterSpec(encryptionKeySalt);
+        final GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(encrySrvConfig.getAuthTagLength(),
+                encryptionKeySalt);
 
         final Cipher encryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
-        encryptCipher.init(Cipher.ENCRYPT_MODE, key, ivParameterSpec);
+        encryptCipher.init(Cipher.ENCRYPT_MODE, key, gcmParameterSpec);
 
         final Cipher decryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
-        decryptCipher.init(Cipher.DECRYPT_MODE, key, ivParameterSpec);
+        decryptCipher.init(Cipher.DECRYPT_MODE, key, gcmParameterSpec);
 
-        return new AAAEncryptionServiceImpl(encryptCipher, decryptCipher);
+        return new AAAEncryptionServiceImpl(gcmParameterSpec, encrySrvConfig.getCipherTransforms(), key);
     }
 
     private AaaEncryptServiceConfig getDefaultAaaEncryptServiceConfig() {
@@ -209,6 +210,6 @@ public class RcGnmiAppModule {
                 .setPasswordLength(12).setEncryptSalt(salt)
                 .setEncryptMethod("PBKDF2WithHmacSHA1").setEncryptType("AES")
                 .setEncryptIterationCount(32768).setEncryptKeyLength(128)
-                .setCipherTransforms("AES/CBC/PKCS5Padding").build();
+                .setAuthTagLength(128).setCipherTransforms("AES/GCM/NoPadding").build();
     }
 }
