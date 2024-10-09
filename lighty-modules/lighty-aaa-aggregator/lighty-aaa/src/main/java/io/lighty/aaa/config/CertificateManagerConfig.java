@@ -20,7 +20,7 @@ import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.opendaylight.aaa.cert.api.ICertificateManager;
@@ -75,7 +75,8 @@ public final class CertificateManagerConfig {
                 .setEncryptType("AES")
                 .setEncryptIterationCount(32768)
                 .setEncryptKeyLength(128)
-                .setCipherTransforms("AES/CBC/PKCS5Padding")
+                .setCipherTransforms("AES/GCM/NoPadding")
+                .setAuthTagLength(128)
                 .build();
 
         final byte[] encryptionKeySalt = Base64.getDecoder().decode(encrySrvConfig.getEncryptSalt());
@@ -86,14 +87,14 @@ public final class CertificateManagerConfig {
                     encrySrvConfig.getEncryptIterationCount(), encrySrvConfig.getEncryptKeyLength());
             SecretKey key = new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(),
                     encrySrvConfig.getEncryptType());
-            IvParameterSpec ivParameterSpec = new IvParameterSpec(encryptionKeySalt);
+            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, encryptionKeySalt);
 
             Cipher encryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
-            encryptCipher.init(Cipher.ENCRYPT_MODE, key, ivParameterSpec);
+            encryptCipher.init(Cipher.ENCRYPT_MODE, key, gcmParameterSpec);
 
             Cipher decryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
-            decryptCipher.init(Cipher.DECRYPT_MODE, key, ivParameterSpec);
-            final AAAEncryptionService encryptionSrv = new AAAEncryptionServiceImpl(encryptCipher, decryptCipher);
+            decryptCipher.init(Cipher.DECRYPT_MODE, key, gcmParameterSpec);
+            final AAAEncryptionService encryptionSrv = new AAAEncryptionServiceImpl(encryptCipher, decryptCipher, key);
 
             return new CertificateManagerService(rpcProviderService, bindingDataBroker, encryptionSrv,
                     aaaCertServiceConfig);
