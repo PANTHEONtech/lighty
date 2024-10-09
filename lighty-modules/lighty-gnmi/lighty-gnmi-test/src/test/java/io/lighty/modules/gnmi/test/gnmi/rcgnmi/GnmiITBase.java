@@ -310,6 +310,7 @@ public abstract class GnmiITBase {
         final HttpRequest putRequest = HttpRequest.newBuilder()
             .uri(URI.create(path))
             .header("Content-Type", "application/json")
+            .header("Accept", "application/json")
             .PUT(BodyPublishers.ofString(payload))
             .timeout(REQUEST_TIMEOUT_DURATION)
             .build();
