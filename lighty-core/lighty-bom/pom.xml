@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.lighty.core</groupId>
     <artifactId>lighty-bom</artifactId>
-    <version>19.4.0-SNAPSHOT</version>
+    <version>19.4.0</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -26,231 +26,231 @@
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-codecs-util</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-common</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-controller</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-clustering</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
 
             <!-- DI framework integrations -->
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-controller-guice-di</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-controller-spring-di</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
 
             <!-- Models -->
             <dependency>
                 <groupId>io.lighty.models</groupId>
                 <artifactId>openconfig-models</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
 
             <!-- Modules -->
             <dependency>
                 <groupId>io.lighty.modules.tests</groupId>
                 <artifactId>integration-tests</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules.tests</groupId>
                 <artifactId>integration-tests-aaa</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules</groupId>
                 <artifactId>lighty-aaa</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules</groupId>
                 <artifactId>lighty-jetty-server</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules</groupId>
                 <artifactId>lighty-netconf-sb</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules</groupId>
                 <artifactId>lighty-restconf-nb-community</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules</groupId>
                 <artifactId>lighty-openapi</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules</groupId>
                 <artifactId>lighty-aaa-encryption-service</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules</groupId>
                 <artifactId>lighty-bgp</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
 
             <!-- gNMI -->
             <dependency>
                 <groupId>io.lighty.modules.gnmi</groupId>
                 <artifactId>lighty-gnmi-connector</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules.gnmi</groupId>
                 <artifactId>lighty-gnmi-commons</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules.gnmi</groupId>
                 <artifactId>lighty-gnmi-proto</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules.gnmi</groupId>
                 <artifactId>lighty-gnmi-device-simulator</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.modules.gnmi.southbound</groupId>
                 <artifactId>lighty-gnmi-sb</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.models.gnmi</groupId>
                 <artifactId>lighty-gnmi-topology-model</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.models.gnmi</groupId>
                 <artifactId>lighty-gnmi-yang-storage-model</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.models.gnmi</groupId>
                 <artifactId>lighty-gnmi-certificates-storage-model</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.models.gnmi</groupId>
                 <artifactId>lighty-gnmi-force-capabilities</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
 
             <!-- lighty applications -->
             <dependency>
                 <groupId>io.lighty.applications.rcgnmi</groupId>
                 <artifactId>lighty-rcgnmi-app</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.applications.rcgnmi</groupId>
                 <artifactId>lighty-rcgnmi-app-module</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.applications.rnc</groupId>
                 <artifactId>lighty-rnc-app</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.applications.rnc</groupId>
                 <artifactId>lighty-rnc-module</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.applications</groupId>
                 <artifactId>lighty-app-modules-config</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
 
             <!-- lighty examples -->
             <dependency>
                 <groupId>io.lighty.kit.examples.controllers</groupId>
                 <artifactId>lighty-community-aaa-restconf-app</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.kit.examples.controllers</groupId>
                 <artifactId>lighty-community-restconf-netconf-app</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.kit.examples.controllers</groupId>
                 <artifactId>lighty-bgp-community-restconf-app</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.core</groupId>
                 <artifactId>lighty-controller-springboot</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.kit.examples.controllers</groupId>
                 <artifactId>lighty-guice-app</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.kit.examples.controllers</groupId>
                 <artifactId>lighty-community-restconf-actions-app</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
 
             <!-- Utility resources -->
             <dependency>
                 <groupId>io.lighty.resources</groupId>
                 <artifactId>controller-application-assembly</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>io.lighty.resources</groupId>
                 <artifactId>singlenode-configuration</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
             <dependency>
                 <groupId>io.lighty.resources</groupId>
                 <artifactId>start-script</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
             </dependency>
 
             <!-- Dependencies and resources which should not normally leak into production -->
             <dependency>
                 <groupId>io.lighty.models.test</groupId>
                 <artifactId>lighty-test-models</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>io.lighty.models.test</groupId>
                 <artifactId>lighty-toaster</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>io.lighty.resources</groupId>
                 <artifactId>log4j2-config</artifactId>
-                <version>19.4.0-SNAPSHOT</version>
+                <version>19.4.0</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
