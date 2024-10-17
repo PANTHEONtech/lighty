@@ -14,7 +14,6 @@ import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -33,14 +32,13 @@ public class AAAEncryptionServiceImpl implements AAAEncryptionService {
     private final SecretKey key;
     private final byte[] iv;
     private final int tagLength;
-    final SecureRandom random;
 
-    public AAAEncryptionServiceImpl(GCMParameterSpec gcmParameterSpec, String cipherTransforms, SecretKey key) {
+    public AAAEncryptionServiceImpl(final GCMParameterSpec gcmParameterSpec, final String cipherTransforms,
+            final SecretKey key) {
         this.iv = gcmParameterSpec.getIV();
         this.tagLength = gcmParameterSpec.getTLen();
         this.cipherTransforms = cipherTransforms;
         this.key = key;
-        this.random = new SecureRandom();
     }
 
     @Override
@@ -111,5 +109,4 @@ public class AAAEncryptionServiceImpl implements AAAEncryptionService {
         cipher.init(mode, key, new GCMParameterSpec(tagLength, localIv));
         return cipher;
     }
-
 }

@@ -81,14 +81,12 @@ public final class CertificateManagerConfig {
             final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(encrySrvConfig.getEncryptMethod());
             final KeySpec keySpec = new PBEKeySpec(encrySrvConfig.getEncryptKey().toCharArray(), encryptionKeySalt,
                     encrySrvConfig.getEncryptIterationCount(), encrySrvConfig.getEncryptKeyLength());
-            SecretKey key = new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(),
+            final SecretKey key = new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(),
                     encrySrvConfig.getEncryptType());
-            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(encrySrvConfig.getAuthTagLength(),
+            final GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(encrySrvConfig.getAuthTagLength(),
                 encryptionKeySalt);
-
             final AAAEncryptionService encryptionSrv = new AAAEncryptionServiceImpl(gcmParameterSpec,
                 encrySrvConfig.getCipherTransforms(), key);
-
             return new CertificateManagerService(rpcProviderService, bindingDataBroker, encryptionSrv,
                     aaaCertServiceConfig);
         } catch (InvalidKeySpecException

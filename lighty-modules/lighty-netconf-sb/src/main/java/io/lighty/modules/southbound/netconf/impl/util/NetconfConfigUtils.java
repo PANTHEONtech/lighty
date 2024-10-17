@@ -17,16 +17,12 @@ import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Base64;
 import java.util.Set;
-import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.GCMParameterSpec;
@@ -174,21 +170,12 @@ public final class NetconfConfigUtils {
             final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(encrySrvConfig.getEncryptMethod());
             final KeySpec keySpec = new PBEKeySpec(encrySrvConfig.getEncryptKey().toCharArray(), encryptionKeySalt,
                     encrySrvConfig.getEncryptIterationCount(), encrySrvConfig.getEncryptKeyLength());
-            SecretKey key = new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(),
+            final SecretKey key = new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(),
                     encrySrvConfig.getEncryptType());
-            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(encrySrvConfig.getAuthTagLength(),
+            final GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(encrySrvConfig.getAuthTagLength(),
                     encryptionKeySalt);
-
-            Cipher encryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
-            encryptCipher.init(Cipher.ENCRYPT_MODE, key, gcmParameterSpec);
-
-            Cipher decryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
-            decryptCipher.init(Cipher.DECRYPT_MODE, key, gcmParameterSpec);
-
             return new AAAEncryptionServiceImpl(gcmParameterSpec, encrySrvConfig.getCipherTransforms(), key);
-
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException
-                | InvalidAlgorithmParameterException | InvalidKeyException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new ConfigurationException(e);
         }
     }

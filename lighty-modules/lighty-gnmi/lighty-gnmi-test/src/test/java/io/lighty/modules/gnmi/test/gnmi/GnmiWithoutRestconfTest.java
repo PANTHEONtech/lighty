@@ -44,7 +44,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -500,8 +499,8 @@ public class GnmiWithoutRestconfTest {
                 .build();
     }
 
-    private static AAAEncryptionServiceImpl createEncryptionService() throws NoSuchPaddingException,
-            NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, InvalidKeyException {
+    private static AAAEncryptionServiceImpl createEncryptionService()
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
         final AaaEncryptServiceConfig encrySrvConfig = getDefaultAaaEncryptServiceConfig();
         final byte[] encryptionKeySalt = Base64.getDecoder().decode(encrySrvConfig.getEncryptSalt());
         final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(encrySrvConfig.getEncryptMethod());
@@ -511,13 +510,6 @@ public class GnmiWithoutRestconfTest {
                 = new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(), encrySrvConfig.getEncryptType());
         final GCMParameterSpec ivParameterSpec = new GCMParameterSpec(encrySrvConfig.getAuthTagLength(),
             encryptionKeySalt);
-
-        final Cipher encryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
-        encryptCipher.init(Cipher.ENCRYPT_MODE, key, ivParameterSpec);
-
-        final Cipher decryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
-        decryptCipher.init(Cipher.DECRYPT_MODE, key, ivParameterSpec);
-
         return new AAAEncryptionServiceImpl(ivParameterSpec, encrySrvConfig.getCipherTransforms(), key);
     }
 

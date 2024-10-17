@@ -35,7 +35,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -192,13 +191,6 @@ public class RcGnmiAppModule {
                 = new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(), encrySrvConfig.getEncryptType());
         final GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(encrySrvConfig.getAuthTagLength(),
                 encryptionKeySalt);
-
-        final Cipher encryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
-        encryptCipher.init(Cipher.ENCRYPT_MODE, key, gcmParameterSpec);
-
-        final Cipher decryptCipher = Cipher.getInstance(encrySrvConfig.getCipherTransforms());
-        decryptCipher.init(Cipher.DECRYPT_MODE, key, gcmParameterSpec);
-
         return new AAAEncryptionServiceImpl(gcmParameterSpec, encrySrvConfig.getCipherTransforms(), key);
     }
 
