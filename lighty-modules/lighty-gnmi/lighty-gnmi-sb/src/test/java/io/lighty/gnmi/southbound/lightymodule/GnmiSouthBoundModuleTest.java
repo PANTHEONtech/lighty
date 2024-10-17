@@ -16,8 +16,6 @@ import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
 import io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
@@ -25,7 +23,6 @@ import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.GCMParameterSpec;
@@ -69,8 +66,8 @@ public class GnmiSouthBoundModuleTest {
         Assertions.assertTrue(services.shutdown(MODULE_TIMEOUT, MODULE_TIME_UNIT));
     }
 
-    private static AAAEncryptionServiceImpl createEncryptionService() throws NoSuchPaddingException,
-            NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, InvalidKeyException {
+    private static AAAEncryptionServiceImpl createEncryptionService()
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
         final AaaEncryptServiceConfig encrySrvConfig = getDefaultAaaEncryptServiceConfig();
         final byte[] encryptionKeySalt = Base64.getDecoder().decode(encrySrvConfig.getEncryptSalt());
         final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(encrySrvConfig.getEncryptMethod());
@@ -80,7 +77,6 @@ public class GnmiSouthBoundModuleTest {
                 = new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(), encrySrvConfig.getEncryptType());
         final GCMParameterSpec ivParameterSpec = new GCMParameterSpec(encrySrvConfig.getAuthTagLength(),
                 encryptionKeySalt);
-
         return new AAAEncryptionServiceImpl(ivParameterSpec, encrySrvConfig.getCipherTransforms(), key);
     }
 
