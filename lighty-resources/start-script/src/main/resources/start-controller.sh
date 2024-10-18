@@ -9,10 +9,10 @@ if [ -z ${JAVA_HOME} ]; then
 	JAVA_HOME=`java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home' | sed -e 's/^.*java.home = \(.*\)$/\1/'`
 fi;
 
-# Make sure we are using Java 17+
+# Make sure we are using Java 21+
 JAVA_VERSION=`${JAVA_HOME}/bin/java -version 2>&1 | head -1 | cut -d'"' -f2 | sed '/^1\./s///' | cut -d'.' -f1`
-if [ -z ${JAVA_VERSION} ] || [ ${JAVA_VERSION} -lt 17 ]; then
-        echo "Java 17+ is required to run this application!"
+if [ -z ${JAVA_VERSION} ] || [ ${JAVA_VERSION} -lt 21 ]; then
+        echo "Java 21+ is required to run this application!"
         exit -1
 fi;
 
