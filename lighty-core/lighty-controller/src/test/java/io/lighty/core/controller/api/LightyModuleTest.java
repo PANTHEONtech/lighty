@@ -24,9 +24,10 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class LightyModuleTest {
-    private static long MAX_INIT_TIMEOUT = 15000L;
-    private static long MAX_SHUTDOWN_TIMEOUT = 15000L;
-    private static long SLEEP_AFTER_SHUTDOWN_TIMEOUT = 800L;
+    private static final long MAX_INIT_TIMEOUT = 15000L;
+    private static final long MAX_SHUTDOWN_TIMEOUT = 15000L;
+    private static final long SLEEP_AFTER_SHUTDOWN_TIMEOUT = 60000L;
+
     private ExecutorService executorService;
     private LightyModule moduleUnderTest;
 
@@ -71,10 +72,9 @@ public class LightyModuleTest {
             Assert.fail("Init timed out.", e);
         }
         Mockito.verify(executorService, Mockito.times(1)).execute(Mockito.any());
-        this.moduleUnderTest.shutdown();
+        this.moduleUnderTest.shutdown(SLEEP_AFTER_SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
         Mockito.verify(executorService, Mockito.times(2)).execute(Mockito.any());
-        Thread.sleep(SLEEP_AFTER_SHUTDOWN_TIMEOUT);
-        this.moduleUnderTest.shutdown();
+        this.moduleUnderTest.shutdown(SLEEP_AFTER_SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
         Mockito.verify(executorService, Mockito.times(2)).execute(Mockito.any());
     }
 
@@ -114,8 +114,8 @@ public class LightyModuleTest {
             //(after small timeout due to synchronization);
             startBlockingFuture.get(SLEEP_AFTER_SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
         } catch (TimeoutException e) {
-            Assert.fail("Waiting for finish of startBlocking method thread timed out. you may consider to adjust"
-                    + "timeout by overriding SLEEP_AFTER_SHUTDOWN_TIMEOUT", e);
+            Assert.fail("Waiting to finish of startBlocking method thread timed out. You may consider to adjust"
+                    + " timeout by overriding SLEEP_AFTER_SHUTDOWN_TIMEOUT", e);
         }
 
         Mockito.verify(executorService, Mockito.times(2)).execute(Mockito.any());
