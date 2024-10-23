@@ -29,7 +29,7 @@ import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
 import io.lighty.openapi.OpenApiLighty;
 import io.lighty.server.Http2LightyServerBuilder;
 import io.lighty.server.HttpsLightyServerBuilder;
-import io.lighty.server.LightyServerBuilder;
+import io.lighty.server.LightyJettyServerProvider;
 import io.lighty.server.config.LightyServerConfig;
 import java.net.InetSocketAddress;
 import java.security.Security;
@@ -52,7 +52,7 @@ public class RncLightyModule {
     private CommunityRestConf lightyRestconf;
     private NetconfSBPlugin lightyNetconf;
     private AAALighty aaaLighty;
-    private LightyServerBuilder jettyServerBuilder;
+    private LightyJettyServerProvider jettyServerBuilder;
     private OpenApiLighty openApi;
 
     public RncLightyModule(final RncLightyModuleConfiguration rncModuleConfig) {
@@ -127,7 +127,7 @@ public class RncLightyModule {
         } else if (serverConfig.isUseHttps()) {
             jettyServerBuilder = new HttpsLightyServerBuilder(inetSocketAddress, serverConfig.getSecurityConfig());
         } else {
-            jettyServerBuilder = new LightyServerBuilder(inetSocketAddress);
+            jettyServerBuilder = new LightyJettyServerProvider(inetSocketAddress);
         }
 
         return CommunityRestConfBuilder.from(restConfConfiguration)
@@ -143,7 +143,7 @@ public class RncLightyModule {
     }
 
     private OpenApiLighty initOpenApiLighty(final RestConfConfiguration config,
-            final LightyServerBuilder serverBuilder, final LightyServices services) {
+            final LightyJettyServerProvider serverBuilder, final LightyServices services) {
         return new OpenApiLighty(config, serverBuilder, services);
     }
 
