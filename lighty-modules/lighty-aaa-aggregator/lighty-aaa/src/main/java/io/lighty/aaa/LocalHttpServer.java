@@ -12,14 +12,12 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.Servlet;
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
+import org.opendaylight.aaa.web.ServletDetails;
+import org.opendaylight.aaa.web.WebContext;
 
 final class LocalHttpServer {
     private final LightyServerBuilder server;
-    private final Map<String, Handler> handlers;
+    private final Map<String, WebContext> handlers;
 
     LocalHttpServer(final LightyServerBuilder server) {
         this.server = server;
@@ -27,16 +25,19 @@ final class LocalHttpServer {
     }
 
     @SuppressWarnings("rawtypes")
-    public void registerServlet(final String alias, final Servlet servlet, final Dictionary initparams) {
-        final ServletHolder servletHolder = new ServletHolder(servlet);
-        final ContextHandlerCollection contexts = new ContextHandlerCollection();
-        final ServletContextHandler mainHandler = new ServletContextHandler(contexts, alias, true, false);
-        mainHandler.addServlet(servletHolder, "/*");
-        this.server.addContextHandler(contexts);
-        this.handlers.put(alias, contexts);
+    public void registerServlet(final String alias, final Servlet servlet, final Dictionary<String, String> initParam) {
+        WebContext webContext = WebContext.builder()
+            .name("name")
+            .contextPath(alias)
+            .supportsSessions(true)
+            .putContextParam("exampleKey", "exampleValue")
+            .addServlet(ServletDetails.builder().servlet(servlet).addUrlPattern("/*").build())
+            .build();
+
+        this.server.addContextHandler(webContext);
+        this.handlers.put(alias, webContext);
     }
 
     public void unregister(final String alias) {
-        this.handlers.get(alias).destroy();
     }
 }

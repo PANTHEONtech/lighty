@@ -9,29 +9,19 @@ package io.lighty.server;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.EventListener;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import javax.servlet.DispatcherType;
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
+import javax.servlet.ServletException;
+import org.opendaylight.aaa.web.WebContext;
+import org.opendaylight.aaa.web.jetty.JettyWebServer;
 
 /**
  * Allows user to build jetty server.
  */
 public class LightyServerBuilder {
-    private final Map<FilterHolder, String> filters;
-    private final Map<String, String> parameters;
-    private final List<EventListener> listeners;
 
     protected final InetSocketAddress inetSocketAddress;
-    protected final List<Handler> contexts;
-    protected Server server;
+    protected final List<WebContext> contexts;
+    protected JettyWebServer server;
 
     /**
      * Init new jetty server on specific port and address wrapped into {@link InetSocketAddress}.
@@ -40,9 +30,6 @@ public class LightyServerBuilder {
      */
     public LightyServerBuilder(final InetSocketAddress inetSocketAddress) {
         this.inetSocketAddress = inetSocketAddress;
-        this.filters = new HashMap<>();
-        this.parameters = new HashMap<>();
-        this.listeners = new ArrayList<>();
         this.contexts = new ArrayList<>();
     }
 
@@ -51,44 +38,9 @@ public class LightyServerBuilder {
      *
      * @param server - jetty server
      */
-    public LightyServerBuilder(final Server server) {
+    public LightyServerBuilder(final JettyWebServer server) {
         this(new InetSocketAddress(0));
         this.server = server;
-    }
-
-    /**
-     * Add filter for handlers.
-     *
-     * @param filterHolder - filter holder
-     * @param path - path
-     * @return instance of {@link LightyServerBuilder}
-     */
-    public LightyServerBuilder addCommonFilter(final FilterHolder filterHolder, final String path) {
-        this.filters.put(filterHolder, path);
-        return this;
-    }
-
-    /**
-     * Add listener for handlers.
-     *
-     * @param eventListener - event listener
-     * @return instance of {@link LightyServerBuilder}
-     */
-    public LightyServerBuilder addCommonEventListener(final EventListener eventListener) {
-        this.listeners.add(eventListener);
-        return this;
-    }
-
-    /**
-     * Add init parameters for handlers.
-     *
-     * @param key - key of init parameters
-     * @param value - value of init parameters
-     * @return instance of {@link LightyServerBuilder}
-     */
-    public LightyServerBuilder addCommonInitParameter(final String key, final String value) {
-        this.parameters.put(key, value);
-        return this;
     }
 
     /**
@@ -97,7 +49,7 @@ public class LightyServerBuilder {
      * @param handler - specific handler
      * @return instance of {@link LightyServerBuilder}
      */
-    public LightyServerBuilder addContextHandler(final Handler handler) {
+    public LightyServerBuilder addContextHandler(final WebContext handler) {
         this.contexts.add(handler);
         return this;
     }
@@ -107,40 +59,17 @@ public class LightyServerBuilder {
      *
      * @return instance of jetty server
      */
-    public Server build() {
+    public JettyWebServer build() {
         if (this.server == null) {
-            this.server = new Server(this.inetSocketAddress);
+            this.server = new JettyWebServer(this.inetSocketAddress.getPort());
         }
-        final ContextHandlerCollection contextHandlerCollection = new ContextHandlerCollection();
         this.contexts.forEach((contextHandler) -> {
-            addFilters(contextHandler);
-            contextHandlerCollection.addHandler(contextHandler);
-        });
-        this.server.setHandler(contextHandlerCollection);
-        return this.server;
-    }
-
-    void addFilters(final Handler contextHandler) {
-        if (contextHandler instanceof ContextHandlerCollection) {
-            final ContextHandlerCollection sch = (ContextHandlerCollection) contextHandler;
-            for (final Handler handler : sch.getChildHandlers()) {
-                if (handler instanceof ServletContextHandler) {
-                    additionalComponents(handler);
-                }
+            try {
+                this.server.registerWebContext(contextHandler);
+            } catch (ServletException e) {
+                throw new RuntimeException(e);
             }
-        } else if (contextHandler instanceof ServletContextHandler) {
-            additionalComponents(contextHandler);
-        }
-    }
-
-    private void additionalComponents(final Handler contextHandler) {
-        final ServletContextHandler ch = (ServletContextHandler) contextHandler;
-        this.filters.forEach((filterHolder, path) -> {
-            ch.addFilter(filterHolder, path, EnumSet.of(DispatcherType.REQUEST));
         });
-        EventListener[] array = new EventListener[this.listeners.size()];
-        array = this.listeners.toArray(array);
-        ch.setEventListeners(array);
-        this.parameters.forEach(ch::setInitParameter);
+        return this.server;
     }
 }
