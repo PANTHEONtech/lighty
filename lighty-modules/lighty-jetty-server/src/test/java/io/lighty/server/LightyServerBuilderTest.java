@@ -10,11 +10,20 @@ package io.lighty.server;
 import static org.testng.AssertJUnit.assertNotNull;
 
 import io.lighty.server.util.LightyServerConfigUtils;
+import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.EventListener;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import org.eclipse.jetty.servlet.FilterHolder;
+import org.opendaylight.aaa.web.FilterDetails;
+import org.opendaylight.aaa.web.WebContext;
+import org.opendaylight.aaa.web.jetty.JettyWebServer;
 import org.testng.annotations.Test;
 
 public class LightyServerBuilderTest {
@@ -68,13 +77,32 @@ public class LightyServerBuilderTest {
         assertNotNull(server);
     }
 
-    private static Server initLightyServer(final LightyServerBuilder serverBuilder) {
+    private static JettyWebServer initLightyServer(final LightyServerBuilder serverBuilder) {
         final var filterHolder = new FilterHolder();
-        final var contexts = new ContextHandlerCollection();
-        serverBuilder.addCommonEventListener(new EventListener(){});
-        serverBuilder.addCommonFilter(filterHolder, "/path");
-        serverBuilder.addCommonInitParameter("key", "value");
-        serverBuilder.addContextHandler(contexts);
+        WebContext.Builder builder = WebContext.builder().name("name").contextPath("/.").addListener(
+            new ServletContextListener() {
+            @Override
+            public void contextInitialized(ServletContextEvent servletContextEvent) {
+            }
+            @Override
+            public void contextDestroyed(ServletContextEvent servletContextEvent) {
+            }
+        }).addFilter(FilterDetails.builder().filter(
+            new Filter() {
+                @Override
+                public void init(FilterConfig filterConfig) throws ServletException {
+                }
+
+                @Override
+                public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+                }
+
+                @Override
+                public void destroy() {
+                }
+            }).addUrlPattern("/path")
+            .putInitParam("key", "value").build());
+        serverBuilder.addContextHandler(builder.build());
         return serverBuilder.build();
     }
 }
