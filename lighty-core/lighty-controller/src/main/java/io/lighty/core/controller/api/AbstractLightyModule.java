@@ -167,7 +167,6 @@ public abstract class AbstractLightyModule implements LightyModule {
             synchronized (AbstractLightyModule.this) {
                 LOG.debug("Starting shutdown procedure of LightyModule {}.", this.getClass().getSimpleName());
                 final boolean stopResult = stopProcedure();
-                this.shutdownLatch.countDown();
                 this.running = false;
                 LOG.info("LightyModule {} shutdown complete.", this.getClass().getSimpleName());
                 return stopResult;
@@ -192,6 +191,7 @@ public abstract class AbstractLightyModule implements LightyModule {
     @Override
     public final boolean shutdown(final long duration, final TimeUnit unit) {
         try {
+            shutdownLatch.countDown();
             final var stopSuccess = shutdown().get(duration, unit);
             if (stopSuccess) {
                 LOG.info("LightyModule {} stopped successfully!", getClass().getSimpleName());
