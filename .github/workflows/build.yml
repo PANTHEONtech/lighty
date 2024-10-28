@@ -42,7 +42,7 @@ jobs:
         run: mvn install -DskipTests=true -B -V -Psource-quality
       - name: Maven test + SonarCloud
         if: ${{ env.SONAR_TOKEN != 0 }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+        run: mvn -T1 -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
           -Dsonar.java.source=17
           -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
           -Dsonar.organization=${{ env.SONAR_ORGANIZATION }}
@@ -51,7 +51,7 @@ jobs:
           -Dsonar.coverage.exclusions=**/lighty-codecs/**/*
       - name: Maven test no SonarCloud
         if: ${{ env.SONAR_TOKEN == 0 }}
-        run: mvn -B verify
+        run: mvn -T1 -B verify
       - name: Upload surefire test results
         uses: actions/upload-artifact@v4
         with:
