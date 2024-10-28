@@ -78,7 +78,7 @@
         <dependency>
             <groupId>org.casbin</groupId>
             <artifactId>jcasbin</artifactId>
-            <version>1.67.0</version>
+            <version>1.71.0</version>
         </dependency>
 
         <dependency>
