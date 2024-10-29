@@ -198,7 +198,7 @@ public class LightyCoreSpringConfigurationTest extends AbstractJUnit4SpringConte
         public void shutdownLightyController(LightyController lightyController) throws LightyLaunchException {
             try {
                 LOG.info("Shutting down LightyController ...");
-                lightyController.shutdown();
+                lightyController.shutdown().get();
             } catch (Exception e) {
                 throw new LightyLaunchException("Could not shutdown LightyController", e);
             }
