@@ -30,7 +30,9 @@ public interface LightyModule {
      * Start and block until shutdown is requested.
      *
      * @throws InterruptedException thrown in case module initialization fails.
+     * @deprecated Use @{@code start.get()} instead in case you want blocking start.
      */
+    @Deprecated(forRemoval = true)
     void startBlocking() throws InterruptedException;
 
     /**
