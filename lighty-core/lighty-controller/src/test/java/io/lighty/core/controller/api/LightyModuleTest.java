@@ -55,7 +55,7 @@ public class LightyModuleTest {
     @Test
     public void testStartShutdown() throws Exception {
         this.moduleUnderTest = getModuleUnderTest(getExecutorService());
-        startLightyModuleAndFailIfTimedOut();
+        this.moduleUnderTest.start().get(MAX_INIT_TIMEOUT, TimeUnit.MILLISECONDS);
         Mockito.verify(executorService, Mockito.times(1)).execute(Mockito.any());
         this.moduleUnderTest.shutdown(MAX_SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
         Mockito.verify(executorService, Mockito.times(2)).execute(Mockito.any());
@@ -71,10 +71,9 @@ public class LightyModuleTest {
             Assert.fail("Init timed out.", e);
         }
         Mockito.verify(executorService, Mockito.times(1)).execute(Mockito.any());
-        this.moduleUnderTest.shutdown();
+        this.moduleUnderTest.shutdown(MAX_SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
         Mockito.verify(executorService, Mockito.times(2)).execute(Mockito.any());
-        Thread.sleep(SLEEP_AFTER_SHUTDOWN_TIMEOUT);
-        this.moduleUnderTest.shutdown();
+        this.moduleUnderTest.shutdown(MAX_SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
         Mockito.verify(executorService, Mockito.times(2)).execute(Mockito.any());
     }
 
@@ -82,7 +81,6 @@ public class LightyModuleTest {
     public void testShutdown_before_start() throws Exception {
         this.moduleUnderTest = getModuleUnderTest(getExecutorService());
         this.moduleUnderTest.shutdown(MAX_SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
-
         Mockito.verify(executorService, Mockito.times(0)).execute(Mockito.any());
     }
 
@@ -142,13 +140,5 @@ public class LightyModuleTest {
         });
         Thread.sleep(MAX_INIT_TIMEOUT);
         return startFuture;
-    }
-
-    private void startLightyModuleAndFailIfTimedOut() throws ExecutionException, InterruptedException {
-        try {
-            this.moduleUnderTest.start().get(MAX_INIT_TIMEOUT, TimeUnit.MILLISECONDS);
-        } catch (TimeoutException e) {
-            Assert.fail("Init timed out.", e);
-        }
     }
 }
