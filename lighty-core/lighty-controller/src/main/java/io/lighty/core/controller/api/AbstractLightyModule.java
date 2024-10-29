@@ -7,32 +7,27 @@
  */
 package io.lighty.core.controller.api;
 
-import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import javax.servlet.ServletException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * This abstract class implement {@link LightyModule} interface with
- * synchronization of {@link LightyModule#start()},
- * {@link LightyModule#startBlocking()} and {@link LightyModule#shutdown()}
+ * synchronization of {@link LightyModule#start()} and {@link LightyModule#shutdown()}
  * methods. Users who don't want to implement their own synchronization
  * can extend this class and provide just
  * {@link AbstractLightyModule#initProcedure()} and
  * {@link AbstractLightyModule#stopProcedure()} methods.These methods
  * will be then automatically called in
- * {@link AbstractLightyModule#start()},
- * {@link AbstractLightyModule#startBlocking()} and
+ * {@link AbstractLightyModule#start()} and
  * {@link AbstractLightyModule#shutdown()} methods.
  *
  * <p>
@@ -63,7 +58,6 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractLightyModule implements LightyModule {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractLightyModule.class);
-    private final CountDownLatch shutdownLatch;
     private ListeningExecutorService executorService;
     private boolean executorIsProvided;
     private volatile boolean running;
@@ -77,7 +71,6 @@ public abstract class AbstractLightyModule implements LightyModule {
             this.executorService = MoreExecutors.listeningDecorator(executorService);
             this.executorIsProvided = true;
         }
-        this.shutdownLatch = new CountDownLatch(1);
         this.running = false;
     }
 
@@ -128,35 +121,6 @@ public abstract class AbstractLightyModule implements LightyModule {
     }
 
     @Override
-    public void startBlocking() throws InterruptedException {
-        LOG.info("Start LightyModule {} and block until it will shutdown.", this.getClass().getSimpleName());
-        start();
-        LOG.debug("Waiting for LightyModule {} shutdown.", this.getClass().getSimpleName());
-        this.shutdownLatch.await();
-        LOG.info("LightyModule {} shutdown complete. Stop blocking.", this.getClass().getSimpleName());
-    }
-
-    /**
-     * Start and block until shutdown is requested.
-     * @param initFinishCallback callback that will be called after start is completed.
-     * @throws InterruptedException thrown in case module initialization fails.
-     */
-    public void startBlocking(final Consumer<Boolean> initFinishCallback) throws InterruptedException {
-        Futures.addCallback(start(), new FutureCallback<Boolean>() {
-            @Override
-            public void onSuccess(final Boolean result) {
-                initFinishCallback.accept(true);
-            }
-
-            @Override
-            public void onFailure(final Throwable cause) {
-                initFinishCallback.accept(false);
-            }
-        }, MoreExecutors.directExecutor());
-        this.shutdownLatch.await();
-    }
-
-    @Override
     public synchronized ListenableFuture<Boolean> shutdown() {
         if (!this.running) {
             LOG.warn("LightyModule {} is already shut down.", this.getClass().getSimpleName());
@@ -191,7 +155,6 @@ public abstract class AbstractLightyModule implements LightyModule {
     @Override
     public final boolean shutdown(final long duration, final TimeUnit unit) {
         try {
-            shutdownLatch.countDown();
             final var stopSuccess = shutdown().get(duration, unit);
             if (stopSuccess) {
                 LOG.info("LightyModule {} stopped successfully!", getClass().getSimpleName());

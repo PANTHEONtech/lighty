@@ -27,13 +27,6 @@ public interface LightyModule {
     ListenableFuture<Boolean> start();
 
     /**
-     * Start and block until shutdown is requested.
-     *
-     * @throws InterruptedException thrown in case module initialization fails.
-     */
-    void startBlocking() throws InterruptedException;
-
-    /**
      * Shutdown module.
      *
      * @return true if module shutdown was successful, false or exception otherwise.
