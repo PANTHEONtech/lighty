@@ -60,7 +60,7 @@ public abstract class CommunityRestConfTestBase {
         communityRestConf = builder.build();
 
         LOG.info("Starting CommunityRestConf (waiting 10s after start)");
-        communityRestConf.start();
+        communityRestConf.start().get(10_000, TimeUnit.MILLISECONDS);
         LOG.info("CommunityRestConf started");
     }
 
