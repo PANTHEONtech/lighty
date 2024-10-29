@@ -139,7 +139,9 @@ public abstract class AbstractLightyModule implements LightyModule {
      * Start and block until shutdown is requested.
      * @param initFinishCallback callback that will be called after start is completed.
      * @throws InterruptedException thrown in case module initialization fails.
+     * @deprecated Use @{@code start.get()} instead in case you want blocking start.
      */
+    @Deprecated(forRemoval = true)
     public void startBlocking(final Consumer<Boolean> initFinishCallback) throws InterruptedException {
         Futures.addCallback(start(), new FutureCallback<Boolean>() {
             @Override
