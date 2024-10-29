@@ -50,7 +50,7 @@ public class GuiceDITest {
     public void shutdown() {
         try {
             if (lightyController != null) {
-                lightyController.shutdown();
+                lightyController.shutdown().get();
             }
         } catch (Exception e) {
             LOG.error("Shutdown of LightyController failed", e);
