@@ -85,8 +85,8 @@ public class FileToDatastoreUtilsTest {
     }
 
     @AfterClass
-    public void tearDown() {
-        assertTrue(lightyController.shutdown(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
+    public void tearDown() throws Exception {
+        assertTrue(lightyController.shutdown().get(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
     }
 
     @Test
