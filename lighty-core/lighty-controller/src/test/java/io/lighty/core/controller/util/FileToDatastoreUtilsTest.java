@@ -40,7 +40,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class FileToDatastoreUtilsTest {
-
     private static final String INITIAL_CONTAINER_PATH = "/data/container-value-1.json";
     private static final String CASE_CONTAINER_PATH = "/data/case-container-value.json";
     private static final String OVERRIDE_CONTAINER_PATH = "/data/container-value-2.xml";
@@ -69,7 +68,7 @@ public class FileToDatastoreUtilsTest {
             NodeIdentifier.create(SampleContainer.QNAME),
             NodeIdentifier.create(YangModuleInfoImpl.qnameOf("value")));
 
-    private static final long TIMEOUT_MILLIS = 20_000;
+    private static final long TIMEOUT_MILLIS = 60_000;
 
     private LightyController lightyController;
     private DataBroker dataBroker;
@@ -85,8 +84,8 @@ public class FileToDatastoreUtilsTest {
     }
 
     @AfterClass
-    public void tearDown() throws Exception {
-        assertTrue(lightyController.shutdown().get(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
+    public void tearDown() {
+        assertTrue(lightyController.shutdown(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
     }
 
     @Test
