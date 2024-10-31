@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-
 package io.lighty.modules.gnmi.test.gnmi;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,8 +29,6 @@ import io.lighty.modules.gnmi.simulatordevice.utils.GnmiSimulatorConfUtils;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
@@ -44,7 +41,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.GCMParameterSpec;
@@ -152,17 +148,14 @@ public class GnmiWithoutRestconfTest {
     private static final QName YANG_VERSION_QN = QName.create(GNMI_YANG_MODEL_QN, "version");
     private static final QName YANG_BODY_QN = QName.create(GNMI_YANG_MODEL_QN, "body");
 
-
     private static LightyController lightyController;
     private static GnmiSouthboundModule gnmiSouthboundModule;
     private static SimulatedGnmiDevice gnmiDevice;
 
-
     @BeforeAll
     public static void startUp() throws ConfigurationException, ExecutionException, InterruptedException, IOException,
-            InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchAlgorithmException,
-            InvalidKeySpecException, InvalidKeyException, TimeoutException, EffectiveModelContextBuilderException {
-
+            NoSuchAlgorithmException, InvalidKeySpecException, TimeoutException,
+            EffectiveModelContextBuilderException {
         lightyController = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getConfiguration(Files.newInputStream(CONFIGURATION_PATH)))
                 .build();
