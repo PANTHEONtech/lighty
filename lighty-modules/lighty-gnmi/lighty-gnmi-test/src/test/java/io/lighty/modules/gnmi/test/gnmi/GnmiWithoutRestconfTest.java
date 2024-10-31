@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at https://www.eclipse.org/legal/epl-v10.html
  */
-
 package io.lighty.modules.gnmi.test.gnmi;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -153,17 +152,14 @@ public class GnmiWithoutRestconfTest {
     private static final QName YANG_VERSION_QN = QName.create(GNMI_YANG_MODEL_QN, "version");
     private static final QName YANG_BODY_QN = QName.create(GNMI_YANG_MODEL_QN, "body");
 
-
     private static LightyController lightyController;
     private static GnmiSouthboundModule gnmiSouthboundModule;
     private static SimulatedGnmiDevice gnmiDevice;
 
-
     @BeforeAll
     public static void startUp() throws ConfigurationException, ExecutionException, InterruptedException, IOException,
-            InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchAlgorithmException,
-            InvalidKeySpecException, InvalidKeyException, TimeoutException, EffectiveModelContextBuilderException {
-
+            NoSuchAlgorithmException, InvalidKeySpecException, TimeoutException, EffectiveModelContextBuilderException,
+            InvalidAlgorithmParameterException, NoSuchPaddingException, InvalidKeyException {
         lightyController = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getConfiguration(Files.newInputStream(CONFIGURATION_PATH)))
                 .build();
@@ -493,7 +489,6 @@ public class GnmiWithoutRestconfTest {
                 .build();
     }
 
-
     private static SecurityChoice getInsecureSecurityChoice() {
         return new InsecureDebugOnlyBuilder()
                 .setConnectionType(InsecureDebugOnly.ConnectionType.INSECURE)
@@ -501,7 +496,8 @@ public class GnmiWithoutRestconfTest {
     }
 
     private static AAAEncryptionServiceImpl createEncryptionService() throws NoSuchPaddingException,
-            NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, InvalidKeyException {
+            NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException,
+            InvalidKeyException {
         final AaaEncryptServiceConfig encrySrvConfig = getDefaultAaaEncryptServiceConfig();
         final byte[] encryptionKeySalt = Base64.getDecoder().decode(encrySrvConfig.getEncryptSalt());
         final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(encrySrvConfig.getEncryptMethod());
@@ -529,7 +525,6 @@ public class GnmiWithoutRestconfTest {
     }
 
     private static SimulatedGnmiDevice getUnsecureGnmiDevice(final String host, final int port) {
-
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
                 .loadGnmiSimulatorConfiguration(GnmiWithoutRestconfTest.class.getResourceAsStream(SIMULATOR_CONFIG));
         simulatorConfiguration.setTargetAddress(host);
