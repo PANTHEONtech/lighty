@@ -18,6 +18,7 @@ import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterClass;
@@ -50,7 +51,7 @@ public class GuiceDITest {
     public void shutdown() {
         try {
             if (lightyController != null) {
-                lightyController.shutdown().get();
+                lightyController.shutdown(60, TimeUnit.SECONDS);
             }
         } catch (Exception e) {
             LOG.error("Shutdown of LightyController failed", e);

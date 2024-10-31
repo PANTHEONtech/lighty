@@ -20,6 +20,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.util.Timer;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
@@ -214,7 +215,7 @@ public class LightyCoreSpringConfigurationTest extends AbstractJUnit4SpringConte
         public void shutdownLightyController(LightyController lightyController) throws LightyLaunchException {
             try {
                 LOG.info("Shutting down LightyController ...");
-                lightyController.shutdown().get();
+                lightyController.shutdown(60, TimeUnit.SECONDS);
             } catch (Exception e) {
                 throw new LightyLaunchException("Could not shutdown LightyController", e);
             }

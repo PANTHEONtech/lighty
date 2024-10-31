@@ -18,7 +18,7 @@ import io.lighty.aaa.util.AAAConfigUtils;
 import io.lighty.server.LightyServerBuilder;
 import java.net.InetSocketAddress;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.aaa.api.CredentialAuth;
@@ -81,11 +81,11 @@ public class ShiroInitializationTest {
     }
 
     @AfterMethod
-    public void tearDown() throws ExecutionException, InterruptedException {
+    public void tearDown() {
         if (aaaLighty != null) {
             // Stop the object and ensure that stopping was successful
             assertTrue(aaaLighty.stopProcedure());
-            assertTrue(aaaLighty.shutdown().get());
+            assertTrue(aaaLighty.shutdown(60, TimeUnit.SECONDS));
         }
     }
 
