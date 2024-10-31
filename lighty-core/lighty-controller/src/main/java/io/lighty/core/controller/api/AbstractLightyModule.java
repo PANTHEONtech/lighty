@@ -217,7 +217,8 @@ public abstract class AbstractLightyModule implements LightyModule {
      * @param duration duration to wait for shutdown to complete
      * @param unit {@link TimeUnit} of {@code duration}
      * @return {@code boolean} indicating shutdown sucess
-     * @deprecated Use {@code shutdown()} or {@code shutdown(duration, unit)} instead in case you want blocking shutdown.
+     * @deprecated Use {@code shutdown()} or {@code shutdown(duration, unit)} instead in case you want
+     *     blocking shutdown.
      */
     @Deprecated(forRemoval = true)
     public final boolean shutdownBlocking(final long duration, final TimeUnit unit) {
