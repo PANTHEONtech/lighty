@@ -192,7 +192,6 @@ public abstract class AbstractLightyModule implements LightyModule {
     @Override
     public final boolean shutdown(final long duration, final TimeUnit unit) {
         try {
-            shutdownLatch.countDown();
             final var stopSuccess = shutdown().get(duration, unit);
             if (stopSuccess) {
                 LOG.info("LightyModule {} stopped successfully!", getClass().getSimpleName());
@@ -207,5 +206,22 @@ public abstract class AbstractLightyModule implements LightyModule {
             LOG.error("Exception while shutting down {}:", getClass().getSimpleName(), e);
         }
         return false;
+    }
+
+    /**
+     * Invoke blocking shutdown after blocking start.
+     *
+     * <p>
+     * Release CountDownLatch locking this thread and shutdown.
+     * @param duration duration to wait for shutdown to complete
+     * @param unit {@link TimeUnit} of {@code duration}
+     * @return {@code boolean} indicating shutdown sucess
+     * @deprecated Use {@code shutdown()} or {@code shutdown(duration, unit)} instead in case you want
+     *     blocking shutdown.
+     */
+    @Deprecated(forRemoval = true)
+    public final boolean shutdownBlocking(final long duration, final TimeUnit unit) {
+        shutdownLatch.countDown();
+        return shutdown(duration, unit);
     }
 }
