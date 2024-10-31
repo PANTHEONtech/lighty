@@ -20,16 +20,12 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 @Test
 public class CallhomePluginTest {
-
-    private static final Logger LOG = LoggerFactory.getLogger(CallhomePluginTest.class);
     public static final long SHUTDOWN_TIMEOUT_MILLIS = 60_000;
 
     private LightyController lightyController;
@@ -47,7 +43,6 @@ public class CallhomePluginTest {
         NetconfConfigUtils.injectServicesToTopologyConfig(configuration, lightyController.getServices());
         netconfPlugin = NetconfCallhomePluginBuilder.from(configuration, lightyController.getServices(),
                 restConfConfig.getInetAddress().getHostAddress(), restConfConfig.getHttpPort()).build();
-
     }
 
     @AfterClass
@@ -73,5 +68,4 @@ public class CallhomePluginTest {
             socket.connect(endpoint);
         }
     }
-
 }

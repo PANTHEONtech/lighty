@@ -25,8 +25,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
 public class DataInitTest {
-    // value from .xml/.json file
-    private static int EXPECTED_DARKNESS_FACTOR = 200;
     private static final String PATH_TO_JSON_INIT_CONFIG = "/DataInitJsonConfig.json";
     private static final String PATH_TO_XML_INIT_CONFIG = "/DataInitXmlConfig.json";
     private static final String PATH_TO_INVALID_PATH_TO_INIT_CONFIG = "/DataInitInvalidInitPathConfig.json";
@@ -86,7 +84,6 @@ public class DataInitTest {
                 .build();
         boolean result = lightyController.start().get(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         Assert.assertEquals(result,false);
-
     }
 
     @Test
@@ -114,10 +111,11 @@ public class DataInitTest {
         lightyController.shutdown(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
     }
 
-    private ToasterListener registerToasterListener(DataBroker dataBroker,
-                                                    InstanceIdentifier<Toaster> instanceIdentifier,
-                                                    CountDownLatch listenerLatch) {
-        ToasterListener listener = new ToasterListener(listenerLatch, EXPECTED_DARKNESS_FACTOR);
+    private ToasterListener registerToasterListener(final DataBroker dataBroker,
+            final InstanceIdentifier<Toaster> instanceIdentifier, final CountDownLatch listenerLatch) {
+        // value from .xml/.json file
+        final int expectedDarknessFactor = 200;
+        ToasterListener listener = new ToasterListener(listenerLatch, expectedDarknessFactor);
         dataBroker.registerDataTreeChangeListener(
                 DataTreeIdentifier.create(LogicalDatastoreType.CONFIGURATION, instanceIdentifier),
                 listener);
