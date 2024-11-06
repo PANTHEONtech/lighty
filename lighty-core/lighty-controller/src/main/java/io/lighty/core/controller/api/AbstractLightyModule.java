@@ -30,8 +30,7 @@ import org.slf4j.LoggerFactory;
  * {@link AbstractLightyModule#start()} and
  * {@link AbstractLightyModule#shutdown()} methods.
  *
- * <p>
- * <b>Example usage:</b>
+ * <p><b>Example usage:</b>
  * <pre>
  * <code>
  *     public class MyLightyModule extends AbstractLightyModule {
