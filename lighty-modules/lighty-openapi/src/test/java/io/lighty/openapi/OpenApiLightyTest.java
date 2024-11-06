@@ -28,20 +28,20 @@ public abstract class OpenApiLightyTest extends OpenApiLightyTestBase {
     }
 
     public void testGetListOfMounts(UriInfo uriInfo) {
-        assertSuccessResponse(getOpenApiModule().getApiDocService().getListOfMounts(uriInfo));
+        assertSuccessResponse(getOpenApiModule().getJaxRsOpenApi().getListOfMounts(uriInfo));
     }
 
     public void testGetAllModulesDoc(UriInfo uriInfo) throws IOException {
-        assertSuccessResponse(getOpenApiModule().getApiDocService().getAllModulesDoc(uriInfo, 0, 0, 0, 0));
+        assertSuccessResponse(getOpenApiModule().getJaxRsOpenApi().getAllModulesDoc(uriInfo, 0, 0, 0, 0));
     }
 
     public void testGetDocByModule(UriInfo uriInfo, String modelName, String revisionDate) throws IOException {
         assertSuccessResponse(
-            getOpenApiModule().getApiDocService().getDocByModule(modelName, revisionDate, uriInfo, 0, 0));
+            getOpenApiModule().getJaxRsOpenApi().getDocByModule(modelName, revisionDate, uriInfo, 0, 0));
     }
 
     public void testGetApiExplorer(UriInfo uriInfo) {
-        final Response response = getOpenApiModule().getApiDocService().getApiExplorer(uriInfo);
+        final Response response = getOpenApiModule().getJaxRsOpenApi().getApiExplorer(uriInfo);
 
         final int redirectCode = 303;
         Assert.assertEquals(response.getStatus(), redirectCode);
@@ -58,7 +58,7 @@ public abstract class OpenApiLightyTest extends OpenApiLightyTestBase {
         Mockito.when(uriInfo.getAbsolutePath()).thenReturn(absolutePathUri);
         Mockito.when(uriInfo.getBaseUri()).thenReturn(URI.create(path));
         Mockito.when(uriInfo.getBaseUriBuilder()).thenReturn(UriBuilder.fromPath(path));
-        Mockito.when(uriInfo.getRequestUriBuilder()).thenReturn(UriBuilder.fromUri(absolutePathUri));
+        Mockito.when(uriInfo.getRequestUri()).thenReturn(absolutePathUri);
 
         return uriInfo;
     }

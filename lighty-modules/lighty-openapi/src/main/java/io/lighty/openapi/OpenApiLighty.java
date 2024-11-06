@@ -7,7 +7,7 @@
  */
 package io.lighty.openapi;
 
-import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import com.fasterxml.jackson.core.JsonFactoryBuilder;
 import com.google.common.annotations.VisibleForTesting;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyServices;
@@ -21,8 +21,9 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
-import org.opendaylight.restconf.openapi.api.OpenApiService;
 import org.opendaylight.restconf.openapi.impl.OpenApiServiceImpl;
+import org.opendaylight.restconf.openapi.jaxrs.JaxRsOpenApi;
+import org.opendaylight.restconf.openapi.jaxrs.OpenApiBodyWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,7 @@ public class OpenApiLighty extends AbstractLightyModule {
     private final LightyServerBuilder jettyServerBuilder;
     private final LightyServices lightyServices;
 
-    private OpenApiService apiDocService;
+    private JaxRsOpenApi jaxRsOpenApi;
 
     public OpenApiLighty(RestConfConfiguration restConfConfiguration,
                          LightyServerBuilder jettyServerBuilder, LightyServices lightyServices) {
@@ -57,14 +58,17 @@ public class OpenApiLighty extends AbstractLightyModule {
         String basePathString = restConfConfiguration.getRestconfServletContextPath().replaceAll("^/+", "");
         LOG.info("basePath: {}", basePathString);
 
-        this.apiDocService = new OpenApiServiceImpl(lightyServices.getDOMSchemaService(),
-                lightyServices.getDOMMountPointService(), lightyServices.getJaxRsEndpoint());
+        final var openApiService = new OpenApiServiceImpl(lightyServices.getDOMSchemaService(),
+            lightyServices.getDOMMountPointService(), lightyServices.getJaxRsEndpoint());
+
+        this.jaxRsOpenApi = new JaxRsOpenApi(openApiService);
 
         final ServletContainer restServletContainer = new ServletContainer(ResourceConfig
                 .forApplication((new Application() {
                     @Override
                     public Set<Object> getSingletons() {
-                        return Set.of(apiDocService, new JacksonJaxbJsonProvider());
+                        return Set.of(new JaxRsOpenApi(openApiService),
+                            new OpenApiBodyWriter(new JsonFactoryBuilder().build()));
                     }
                 })));
 
@@ -100,7 +104,7 @@ public class OpenApiLighty extends AbstractLightyModule {
     }
 
     @VisibleForTesting
-    OpenApiService getApiDocService() {
-        return apiDocService;
+    JaxRsOpenApi getJaxRsOpenApi() {
+        return jaxRsOpenApi;
     }
 }
