@@ -46,8 +46,7 @@ import org.springframework.context.annotation.Primary;
  * {@link LightyController} shutdown process. This configuration initializes all core lighty.io services as spring
  * beans.
  *
- * <p>
- * Example:
+ * <p>Example:
  * <pre>
  * &#64;Configuration
  * public class LightyConfiguration extends LightyCoreSprigConfiguration {
