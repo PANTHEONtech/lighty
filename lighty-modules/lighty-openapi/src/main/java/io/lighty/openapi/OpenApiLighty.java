@@ -15,12 +15,11 @@ import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfi
 import io.lighty.server.LightyServerBuilder;
 import java.util.Set;
 import javax.ws.rs.core.Application;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.DefaultServlet;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.servlet.ServletContainer;
+import org.opendaylight.aaa.web.ResourceDetails;
+import org.opendaylight.aaa.web.ServletDetails;
+import org.opendaylight.aaa.web.WebContext;
+import org.opendaylight.aaa.web.servlet.jersey2.JerseyServletSupport;
 import org.opendaylight.restconf.openapi.api.OpenApiService;
 import org.opendaylight.restconf.openapi.impl.OpenApiServiceImpl;
 import org.slf4j.Logger;
@@ -60,24 +59,25 @@ public class OpenApiLighty extends AbstractLightyModule {
         this.apiDocService = new OpenApiServiceImpl(lightyServices.getDOMSchemaService(),
                 lightyServices.getDOMMountPointService(), lightyServices.getJaxRsEndpoint());
 
-        final ServletContainer restServletContainer = new ServletContainer(ResourceConfig
-                .forApplication((new Application() {
+        final var webContextBuilder = WebContext.builder()
+            .name("OpenAPI")
+            .contextPath("/openapi")
+            .supportsSessions(true)
+            .addServlet(ServletDetails.builder()
+                .servlet(new JerseyServletSupport().createHttpServletBuilder(new Application() {
                     @Override
                     public Set<Object> getSingletons() {
                         return Set.of(apiDocService, new JacksonJaxbJsonProvider());
                     }
-                })));
+                }).build())
+                .addUrlPattern("/api/v3/*")
+                .build())
+            .addResource(ResourceDetails.builder().name("/explorer").build());
 
-        ServletHolder restServletHolder = new ServletHolder(restServletContainer);
-
-        ContextHandlerCollection contexts = new ContextHandlerCollection();
-        ServletContextHandler mainHandler = new ServletContextHandler(contexts, OPENAPI_PATH, true, false);
-        mainHandler.addServlet(restServletHolder, "/api/v3/*");
-
-        addStaticResources(mainHandler, "/explorer", "static-content");
-
-        LOG.info("adding context handler ...");
-        jettyServerBuilder.addContextHandler(contexts);
+        LOG.info("Adding web context handler...");
+        WebContext staticResourceContext = addStaticResources("/explorer", "static-content");
+        jettyServerBuilder.addContextHandler(staticResourceContext);
+        jettyServerBuilder.addContextHandler(webContextBuilder.build());
         return true;
     }
 
@@ -87,16 +87,25 @@ public class OpenApiLighty extends AbstractLightyModule {
         return true;
     }
 
-    private void addStaticResources(ServletContextHandler mainHandler, String path, String servletName) {
+    private WebContext addStaticResources(String path, String servletName) {
         LOG.info("initializing openapi UI at: http(s)://{hostname:port}{}{}/index.html", OPENAPI_PATH, path);
         String externalResource = OpenApiLighty.class.getResource(path).toExternalForm();
         LOG.info("externalResource: {}", externalResource);
-        DefaultServlet defaultServlet = new DefaultServlet();
-        ServletHolder holderPwd = new ServletHolder(servletName, defaultServlet);
-        holderPwd.setInitParameter("resourceBase", externalResource);
-        holderPwd.setInitParameter("dirAllowed", TRUE);
-        holderPwd.setInitParameter("pathInfoOnly", TRUE);
-        mainHandler.addServlet(holderPwd, path + "/*");
+
+        ServletDetails servletDetails = ServletDetails.builder()
+            .servlet(new DefaultServlet())
+            .name(servletName)
+            .addUrlPattern(path + "/*")
+            .putInitParam("resourceBase", externalResource)
+            .putInitParam("dirAllowed", "true")
+            .putInitParam("pathInfoOnly", "true")
+            .build();
+
+        return WebContext.builder()
+            .name(servletName)
+            .contextPath(OPENAPI_PATH)
+            .addServlet(servletDetails)
+            .build();
     }
 
     @VisibleForTesting

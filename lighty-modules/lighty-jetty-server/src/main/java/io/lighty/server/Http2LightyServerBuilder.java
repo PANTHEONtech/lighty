@@ -8,7 +8,10 @@
 package io.lighty.server;
 
 import io.lighty.server.config.SecurityConfig;
+import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import org.eclipse.jetty.alpn.server.ALPNServerConnectionFactory;
 import org.eclipse.jetty.http.HttpScheme;
 import org.eclipse.jetty.http2.server.HTTP2ServerConnectionFactory;
@@ -17,9 +20,9 @@ import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.opendaylight.aaa.web.jetty.JettyWebServer;
 
 public class Http2LightyServerBuilder extends LightyServerBuilder {
-
     private final SecurityConfig securityConfig;
 
     public Http2LightyServerBuilder(final InetSocketAddress inetSocketAddress, final SecurityConfig config) {
@@ -28,9 +31,30 @@ public class Http2LightyServerBuilder extends LightyServerBuilder {
     }
 
     @Override
-    public Server build() {
-        super.server = new Server();
-        final var server = super.build();
+    public JettyWebServer build() {
+        if (super.server == null) {
+            super.server = new JettyWebServer(this.inetSocketAddress.getPort());
+        }
+        super.build();
+
+        Server jettyServer;
+        try {
+            // Use AccessController.doPrivileged to allow access to the private field
+            Field serverField = AccessController.doPrivileged((PrivilegedAction<Field>) () -> {
+                try {
+                    Field field = JettyWebServer.class.getDeclaredField("server");
+                    field.setAccessible(true);
+                    return field;
+                } catch (NoSuchFieldException e) {
+                    throw new RuntimeException("Field not found", e);
+                }
+            });
+
+            jettyServer = (Server) serverField.get(server);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Failed to set handler on JettyWebServer", e);
+        }
+
         // HTTPS Configuration
         final var httpsConfig = new HttpConfiguration();
         httpsConfig.setSecureScheme(HttpScheme.HTTPS.asString());
@@ -48,9 +72,11 @@ public class Http2LightyServerBuilder extends LightyServerBuilder {
         final var ssl = securityConfig.getSslConnectionFactory(alpn.getProtocol());
 
         // HTTP/2 Connector
-        final var sslConnector = new ServerConnector(server, ssl, alpn, h2, new HttpConnectionFactory(httpsConfig));
+        final var sslConnector = new ServerConnector(
+            jettyServer, ssl, alpn, h2, new HttpConnectionFactory(httpsConfig));
         sslConnector.setPort(this.inetSocketAddress.getPort());
-        server.addConnector(sslConnector);
-        return server;
+        jettyServer.addConnector(sslConnector);
+
+        return super.server;
     }
 }
