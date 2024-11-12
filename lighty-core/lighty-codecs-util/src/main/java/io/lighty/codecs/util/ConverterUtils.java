@@ -44,13 +44,11 @@ public final class ConverterUtils {
      * Returns the {@link RpcDefinition} from the given {@link EffectiveModelContext} and given {@link QName}.
      * The {@link QName} of a rpc can be constructed via
      *
-     * <p>
-     * {@code
+     * <p>{@code
      * QName.create("http://netconfcentral.org/ns/toaster", "2009-11-20", "make-toast");
      * } , where {@code "make-toast"} is the name of the RPC given in the yang model.
      *
-     * <p>
-     * If the given RPC was found in the {@link EffectiveModelContext} the {@link RpcDefinition} will be returned
+     * <p>If the given RPC was found in the {@link EffectiveModelContext} the {@link RpcDefinition} will be returned
      *
      * @param effectiveModelContext the effective model context used for the RPC resolution
      * @param rpcQName              {@link QName} of the RPC
@@ -175,8 +173,7 @@ public final class ConverterUtils {
     /**
      * Finds the {@link DataSchemaContext} for the given {@link QName} in {@link EffectiveModelContext}.
      *
-     * <p>
-     * Search is performed only on first level nodes of the modules, for recursive search,
+     * <p>Search is performed only on first level nodes of the modules, for recursive search,
      * the {@link YangInstanceIdentifier} is needed, thus consider using
      * {@link ConverterUtils#getSchemaNode(EffectiveModelContext, YangInstanceIdentifier)}.
      *
@@ -206,8 +203,7 @@ public final class ConverterUtils {
      * Finds the {@link DataSchemaContext} for the given namespace, revision and local name
      * in {@link EffectiveModelContext}.
      *
-     * <p>
-     * Search is performed only on first level nodes of the modules, for recursive search,
+     * <p>Search is performed only on first level nodes of the modules, for recursive search,
      * the {@link YangInstanceIdentifier} is needed, thus consider using
      * {@link ConverterUtils#getSchemaNode(EffectiveModelContext, YangInstanceIdentifier)}.
      *

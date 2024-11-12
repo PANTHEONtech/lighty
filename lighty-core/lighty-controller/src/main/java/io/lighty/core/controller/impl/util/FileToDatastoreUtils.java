@@ -83,11 +83,9 @@ public final class FileToDatastoreUtils {
     /**
      * Writes/merges input stream containing serialized normalized node data into config datastore.
      *
-     * <p>
-     * Node is written at root node, that means only top level nodes are supported.
+     * <p>Node is written at root node, that means only top level nodes are supported.
      *
-     * <p>
-     * In the case of importing XML file, node needs to be wrapped in
+     * <p>In the case of importing XML file, node needs to be wrapped in
      * {@code <data xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">} element.
      *
      * @param inputStream           stream of serialized node to deserialize

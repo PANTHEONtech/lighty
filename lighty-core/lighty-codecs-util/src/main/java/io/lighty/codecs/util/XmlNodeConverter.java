@@ -127,8 +127,7 @@ public class XmlNodeConverter implements NodeConverter {
     /**
      * Deserializes a given XML input data into {@link NormalizedNode}.
      *
-     * <p>
-     * In the case of deserializing multiple top level list entries, entries are expected to be wrapped in
+     * <p>In the case of deserializing multiple top level list entries, entries are expected to be wrapped in
      * {@code <data xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">}.
      *
      * @param inference {@link Inference} pointing to a node we are trying to deserialize

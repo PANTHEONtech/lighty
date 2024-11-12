@@ -34,8 +34,7 @@ import org.slf4j.LoggerFactory;
  * {@link AbstractLightyModule#startBlocking()} and
  * {@link AbstractLightyModule#shutdown()} methods.
  *
- * <p>
- * <b>Example usage:</b>
+ * <p><b>Example usage:</b>
  * <pre>
  * <code>
  *     public class MyLightyModule extends AbstractLightyModule {
@@ -211,8 +210,7 @@ public abstract class AbstractLightyModule implements LightyModule {
     /**
      * Invoke blocking shutdown after blocking start.
      *
-     * <p>
-     * Release CountDownLatch locking this thread and shutdown.
+     * <p>Release CountDownLatch locking this thread and shutdown.
      * @param duration duration to wait for shutdown to complete
      * @param unit {@link TimeUnit} of {@code duration}
      * @return {@code boolean} indicating shutdown sucess

@@ -52,11 +52,9 @@ public class JsonNodeConverter implements NodeConverter {
      * This constructor will create an instance of {@link JsonNodeConverter} with the given
      * {@link EffectiveModelContext}.
      *
-     * <p>
-     * The effective model context will be used for proper RPC and Node resolution.
+     * <p>The effective model context will be used for proper RPC and Node resolution.
      *
-     * <p>
-     * The {@code JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02} will be used for JSON
+     * <p>The {@code JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02} will be used for JSON
      * serialization/deserialization of data.
      *
      * @param effectiveModelContext initial effective model context
@@ -69,11 +67,9 @@ public class JsonNodeConverter implements NodeConverter {
      * This constructor will create an instance of {@link JsonNodeConverter} with the given
      * {@link EffectiveModelContext} and customizable {@link JSONCodecFactorySupplier}.
      *
-     * <p>
-     * The effective model context will be used for proper RPC and Node resolution.
+     * <p>The effective model context will be used for proper RPC and Node resolution.
      *
-     * <p>
-     * The {@code JSONCodecFactorySupplier} instance will be used for JSON serialization/deserialization of data.
+     * <p>The {@code JSONCodecFactorySupplier} instance will be used for JSON serialization/deserialization of data.
      *
      * @param effectiveModelContext initial effective model context
      * @param jsonCodecFactorySupplier JSON codec factory supplier
