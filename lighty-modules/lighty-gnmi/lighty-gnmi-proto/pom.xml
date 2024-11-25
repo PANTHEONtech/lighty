@@ -23,7 +23,7 @@
 
     <properties>
         <protobuf.version>3.25.5</protobuf.version>
-        <grpc.version>1.67.1</grpc.version>
+        <grpc.version>1.68.2</grpc.version>
     </properties>
 
     <dependencies>
