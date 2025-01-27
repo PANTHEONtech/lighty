@@ -1,0 +1,77 @@
+name: Publish netconf-simulator
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Desired version of published docker image & helm charts, e.g. "XX.YY.ZZ"
+        required: true
+      checkout-ref:
+        description: The branch, tag or SHA to checkout. (if "default" the selected branch will be used)
+        default: default
+        required: true
+      image-tag-latest:
+        description: Should be this docker labeled with tag latest? Enter `true` if the tag `latest` should be added for image.
+        default: "true"
+        required: true
+
+jobs:
+  publish-docker-helm:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    env:
+      IMAGE_NAME: "lighty-netconf-simulator"
+      PUBLISH_ACCESS_KEY: ${{ secrets.MM_PKG_WRITE }}
+    name: "Publish netconf-simulator docker image. Checkout-ref: ${{ github.event.inputs.checkout-ref }}"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Tag image
+        shell: bash
+        run: |
+          echo "Image name set to:" ${{ env.IMAGE_NAME }}
+          DOCKER_IMAGE_NAME=$(echo ghcr.io/pantheontech/${{ env.IMAGE_NAME }})
+          DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME:${{ inputs.version }})
+
+          docker build -t $DOCKER_IMAGE_NAME -f .github/workflows/lighty-rnc-app/simulator/Dockerfile .
+          
+          echo "Docker image tag:" $DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME_TAG
+          docker tag $DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME_TAG
+          if [ "${{ inputs.image-tag-latest }}" = 'true' ]; then
+            docker tag $DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME:latest
+          fi
+          docker images | grep $DOCKER_IMAGE_NAME
+      - name: List docker images
+        shell: bash
+        run: |
+          docker images
+      - name: Docker log in (ghcr.io)
+        shell: bash
+        run: |
+          echo ${{ inputs.publish-access-key}} | docker login  --username ${{ github.actor }} --password-stdin ghcr.io
+      - name: Publish docker image (ghcr.io)
+        shell: bash
+        run: |
+          docker push $DOCKER_IMAGE_NAME_TAG
+          if [ "${{ inputs.image-tag-latest }}" = 'true' ]; then
+            docker push $DOCKER_IMAGE_NAME:latest
+          fi
+      - name: Check if docker image is pullable  (ghcr.io)
+        shell: bash
+        run: |
+          docker rmi $DOCKER_IMAGE_NAME_TAG
+          docker pull $DOCKER_IMAGE_NAME_TAG
+      - name: Install yq (yaml processor)
+        shell: bash
+        run: |
+          sudo snap install yq
+      - name: Set image.name, image.version in values.yaml of helm chart
+        shell: bash
+        run: |
+          yq eval '.image.name="ghcr.io/pantheontech/$'"IMAGE_NAME"'" | .image.version="'${{ inputs.version }}'"' "${{ inputs.app-helm-values-path }}" -i
+      - name: Print values.yaml
+        shell: bash
+        run: |
+          cat -A ${{ inputs.app-helm-values-path }}
