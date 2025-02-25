@@ -76,5 +76,18 @@ To run unit and integration tests, use the command:
 
 ```mvn clean install```
 
-## Support & More Information
-If you are interested in lighty.io, require technical support, need blogs, FAQ, technical articles and more examples, visit [lighty.io](https://lighty.io/)
+## Support
+
+### Community Support
+
+lighty.io is supported by the community through **GitHub Issues**.  
+If you encounter any issues or have questions, please open a ticket on our GitHub repository:  
+[lighty.io Issues](https://github.com/PANTHEONtech/lighty/issues)
+
+### Enterprise Support
+
+Enterprise support for `lighty.io` is available through **PANTHEON.tech Enterprise Support**.
+
+PANTHEON.tech provides commercial support, maintenance, and consulting services for `lighty.io` to help you build reliable, production-grade applications. Gain access to expert guidance, timely updates, and long-term support tailored to your business needs.  
+
+For more details, visit: [PANTHEON.tech](https://www.pantheon.tech/) or [contact us](https://pantheon.tech/contact-us/).
