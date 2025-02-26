@@ -24,8 +24,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev1603
 import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321.KeyStoresBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321.key.stores.SslData;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321.key.stores.SslDataBuilder;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -46,16 +46,17 @@ public class CertificateManagerConfigTest {
     @BeforeClass
     public void init() {
         MockitoAnnotations.initMocks(this);
-        InstanceIdentifier<AaaEncryptServiceConfig> build = InstanceIdentifier.builder(AaaEncryptServiceConfig.class)
-                .build();
+        DataObjectIdentifier<AaaEncryptServiceConfig> build = DataObjectIdentifier
+            .builder(AaaEncryptServiceConfig.class).build();
         when(bindingDataBroker.newReadOnlyTransaction()).thenReturn(readTransaction);
         AaaEncryptServiceConfig aaaEncryptServiceConfig = new AaaEncryptServiceConfigBuilder().build();
         when(readTransaction.read(LogicalDatastoreType.CONFIGURATION, build))
-                .thenReturn(FluentFutures.immediateFluentFuture(Optional.of(aaaEncryptServiceConfig)));
+            .thenReturn(FluentFutures.immediateFluentFuture(Optional.of(aaaEncryptServiceConfig)));
 
         KeyStores keyStores = new KeyStoresBuilder().build();
-        when(readTransaction.read(LogicalDatastoreType.CONFIGURATION, InstanceIdentifier.create(KeyStores.class)))
-                .thenReturn(FluentFutures.immediateFluentFuture(Optional.of(keyStores)));
+        when(readTransaction.read(LogicalDatastoreType.CONFIGURATION, DataObjectIdentifier
+            .builder(KeyStores.class).build()))
+            .thenReturn(FluentFutures.immediateFluentFuture(Optional.of(keyStores)));
 
         SslData sslData = new SslDataBuilder()
                 .setBundleName(BUNDLE_NAME).build();

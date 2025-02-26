@@ -34,9 +34,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev1603
 import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321.key.stores.SslData;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321.key.stores.SslDataBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321.key.stores.SslDataKey;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -62,20 +61,21 @@ public class ShiroInitializationTest {
         MockitoAnnotations.initMocks(this);
 
         // Set up mocks for some datastore reads
-        final InstanceIdentifier<AaaEncryptServiceConfig> aaaEncryptInstanceIdentifier = InstanceIdentifier.builder(
-                AaaEncryptServiceConfig.class).build();
+        final DataObjectIdentifier<AaaEncryptServiceConfig> aaaEncryptInstanceIdentifier = DataObjectIdentifier
+            .builder(AaaEncryptServiceConfig.class).build();
         when(bindingDataBroker.newReadOnlyTransaction()).thenReturn(readTransaction);
         final AaaEncryptServiceConfig aaaEncryptServiceConfig = new AaaEncryptServiceConfigBuilder().build();
         when(readTransaction.read(LogicalDatastoreType.CONFIGURATION, aaaEncryptInstanceIdentifier))
                 .thenReturn(FluentFutures.immediateFluentFuture(Optional.of(aaaEncryptServiceConfig)));
 
         final KeyStores keyStores = new KeyStoresBuilder().build();
-        when(readTransaction.read(LogicalDatastoreType.CONFIGURATION, InstanceIdentifier.create(KeyStores.class)))
-                .thenReturn(FluentFutures.immediateFluentFuture(Optional.of(keyStores)));
+        when(readTransaction.read(LogicalDatastoreType.CONFIGURATION, DataObjectIdentifier
+            .builder(KeyStores.class).build())) // DataObjectIdentifier.builder(KeyStores.class).build();
+            .thenReturn(FluentFutures.immediateFluentFuture(Optional.of(keyStores)));
 
         final SslData sslData = new SslDataBuilder().setBundleName(BUNDLE_NAME).build();
-        final KeyedInstanceIdentifier<SslData, SslDataKey> keyStoresInstanceIdentifier = InstanceIdentifier.create(
-                KeyStores.class).child(SslData.class, new SslDataKey(BUNDLE_NAME));
+        final DataObjectIdentifier.WithKey<SslData, SslDataKey> keyStoresInstanceIdentifier = DataObjectIdentifier
+            .builder(KeyStores.class).child(SslData.class, new SslDataKey(BUNDLE_NAME)).build();
         when(readTransaction.read(LogicalDatastoreType.CONFIGURATION, keyStoresInstanceIdentifier))
                 .thenReturn(FluentFutures.immediateFluentFuture(Optional.of(sslData)));
     }
