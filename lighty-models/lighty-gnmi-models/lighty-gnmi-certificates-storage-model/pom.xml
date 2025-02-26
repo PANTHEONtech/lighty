@@ -13,12 +13,12 @@
     <parent>
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-binding-parent</artifactId>
-        <version>21.2.0-SNAPSHOT</version>
+        <version>21.2.0</version>
         <relativePath>../../../lighty-core/lighty-binding-parent/pom.xml</relativePath>
     </parent>
 
     <groupId>io.lighty.models.gnmi</groupId>
     <artifactId>lighty-gnmi-certificates-storage-model</artifactId>
-    <version>21.2.0-SNAPSHOT</version>
+    <version>21.2.0</version>
 
 </project>
