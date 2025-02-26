@@ -166,6 +166,7 @@ public final class DataConverter {
 
     /**
      * Find module by the element-name in current converter's schema-context.
+     *
      * <p>It is necessary to specify module name as prefix, if there are multiple modules with same elements - the
      * element has to be specified uniquely.</p>
      * <ul>
