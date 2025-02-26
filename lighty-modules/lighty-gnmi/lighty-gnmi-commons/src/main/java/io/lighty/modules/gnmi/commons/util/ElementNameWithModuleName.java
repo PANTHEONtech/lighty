@@ -13,6 +13,7 @@ import org.opendaylight.yangtools.yang.model.api.Module;
 
 /**
  * Immutable representation of Element-name together with optional Module-name.
+ *
  * <p>This class may be helpful when preparing string values representing YANG elements, where representation of
  * `openconfig-interfaces:interfaces` can be parsed and manipulate withing objects of this class.</p>
  */
