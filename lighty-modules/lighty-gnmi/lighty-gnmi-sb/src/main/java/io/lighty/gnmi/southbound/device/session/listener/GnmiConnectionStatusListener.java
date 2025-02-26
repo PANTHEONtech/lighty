@@ -62,6 +62,7 @@ public class GnmiConnectionStatusListener implements AutoCloseable {
 
     /**
      * Update device connection state in md-sal datastore to READY.
+     *
      * <p>As far as the state may change in time based on actual underlying connection, this method will perform the
      * write transaction into md-sal only if last observed state of underlying connection is still READY.</p>
      *
