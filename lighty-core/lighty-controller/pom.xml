@@ -103,7 +103,7 @@
         <!--odl-mdsal-dom-api-->
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-dom-api</artifactId>
+            <artifactId>mdsal-dom-broker</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
