@@ -24,12 +24,12 @@ data:
                 "unit":"MILLISECONDS"
             },
             "actorSystemConfig":{
-                {{- if .Values.lighty.akka.isSingleNode }}
-                "akkaConfigPath":"singlenode/akka-default.conf",
+                {{- if .Values.lighty.pekko.isSingleNode }}
+                "pekkoConfigPath":"singlenode/pekko-default.conf",
                 {{- else }}
-                "akkaConfigPath":"{{ .Values.lighty.configDirectoryName }}/{{ .Values.lighty.akka.akkaNodeConfigFilename }}",
+                "pekkoConfigPath":"{{ .Values.lighty.configDirectoryName }}/{{ .Values.lighty.pekko.pekkoNodeConfigFilename }}",
                 {{- end }}
-                "factoryAkkaConfigPath":"singlenode/factory-akka-default.conf"
+                "factoryPekkoConfigPath":"singlenode/factory-pekko.conf"
             },
             "schemaServiceConfig":{
                 "topLevelModels":[
@@ -111,18 +111,17 @@ data:
         </Loggers>
     </Configuration>  
 
-  akka-node-k8s.conf: |
-    akka {
+  pekko-node-k8s.conf: |
+    pekko {
 
       log-level = "debug"
 
       actor {
         warn-about-java-serializer-usage = off
-        provider = "akka.cluster.ClusterActorRefProvider"
+        provider = "org.apache.pekko.cluster.ClusterActorRefProvider"
         serializers {
-          java = "akka.serialization.JavaSerializer"
-          proto = "akka.remote.serialization.ProtobufSerializer"
-          readylocal = "org.opendaylight.controller.cluster.datastore.messages.ReadyLocalTransactionSerializer"
+          java = "org.apache.pekko.serialization.JavaSerializer"
+          proto = "org.apache.pekko.remote.serialization.ProtobufSerializer"
           simpleReplicatedLogEntry = "org.opendaylight.controller.cluster.raft.persisted.SimpleReplicatedLogEntrySerializer"
         }
 
@@ -137,42 +136,42 @@ data:
       remote {
         artery {
           canonical.hostname = ${?HOSTNAME}
-          canonical.port = {{ .Values.lighty.akka.remotingPort }}
+          canonical.port = {{ .Values.lighty.pekko.remotingPort }}
           bind-hostname = 0.0.0.0
-          bind-port = {{ .Values.lighty.akka.remotingPort }}
+          bind-port = {{ .Values.lighty.pekko.remotingPort }}
         }
       }
 
       cluster {
         seed-nodes = []
         roles = [
-          "{{ .Values.lighty.akka.memberNamePrefix }}"${?HOSTNAME}
+          "{{ .Values.lighty.pekko.memberNamePrefix }}"${?HOSTNAME}
         ]
-        downing-provider-class = "akka.cluster.sbr.SplitBrainResolverProvider"
+        downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
         split-brain-resolver {
-          active-strategy = "{{ .Values.lighty.akka.sbrStrategy }}"
+          active-strategy = "{{ .Values.lighty.pekko.sbrStrategy }}"
         }
       }
 
       management.http.hostname = ${?HOSTNAME}
       management.http.bind-hostname = "0.0.0.0"
-      management.http.port = {{ .Values.lighty.akka.managementPort }}
-      management.http.bind-port = {{ .Values.lighty.akka.managementPort }}
+      management.http.port = {{ .Values.lighty.pekko.managementPort }}
+      management.http.bind-port = {{ .Values.lighty.pekko.managementPort }}
 
       management.cluster.bootstrap {
         new-cluster-enabled = on
         contact-point-discovery {
-          required-contact-point-nr = {{ .Values.lighty.akka.minimumClusterNodes }} // minimun number of nodes to bootstrap the cluster
+          required-contact-point-nr = {{ .Values.lighty.pekko.minimumClusterNodes }} // minimun number of nodes to bootstrap the cluster
         }
       }
 
       discovery {
         method = kubernetes-api
         kubernetes-api {
-          class = akka.discovery.kubernetes.KubernetesApiServiceDiscovery
-          pod-namespace = {{ .Values.lighty.akka.discovery.podNamespace | quote }} // in which namespace cluster is running
-          pod-label-selector = "{{ .Values.lighty.akka.discovery.podSelectorName }}={{ .Values.lighty.akka.discovery.podSelectorValue }}" // selector - to find other cluster nodes
-          pod-port-name = {{ .Values.lighty.akka.discovery.portName | quote }} // name of cluster management port
+          class = org.apache.pekko.discovery.kubernetes.KubernetesApiServiceDiscovery
+          pod-namespace = {{ .Values.lighty.pekko.discovery.podNamespace | quote }} // in which namespace cluster is running
+          pod-label-selector = "{{ .Values.lighty.pekko.discovery.podSelectorName }}={{ .Values.lighty.pekko.discovery.podSelectorValue }}" // selector - to find other cluster nodes
+          pod-port-name = {{ .Values.lighty.pekko.discovery.portName | quote }} // name of cluster management port
         }
       }
 
@@ -194,7 +193,7 @@ data:
         journal {
           leveldb {
             # Set native = off to use a Java-only implementation of leveldb.
-            # Note that the Java-only version is not currently considered by Akka to be production quality,
+            # Note that the Java-only version is not currently considered by Pekko to be production quality,
             # but being Java-only makes it work also on platforms where native leveldb is not available.
 
             #native = on

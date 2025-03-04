@@ -85,7 +85,7 @@ public class Main {
 
     private void startLighty(final ControllerConfiguration controllerConfiguration)
             throws ConfigurationException, InterruptedException, ExecutionException, TimeoutException {
-        //1. Initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
+        //1. Initialize and start Lighty controller (MD-SAL, Controller, YangTools, Pekko)
         final LightyControllerBuilder controllerBuilder = new LightyControllerBuilder();
         controller = controllerBuilder.from(controllerConfiguration).build();
         controller.start().get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);

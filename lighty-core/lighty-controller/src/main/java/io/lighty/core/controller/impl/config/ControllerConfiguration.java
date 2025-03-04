@@ -202,28 +202,28 @@ public class ControllerConfiguration {
 
     public static class ActorSystemConfig {
 
-        private String akkaConfigPath = "singlenode/akka-default.conf";
-        private String factoryAkkaConfigPath = "singlenode/factory-akka-default.conf";
+        private String pekkoConfigPath = "singlenode/pekko-default.conf";
+        private String factoryPekkoConfigPath = "singlenode/factory-pekko.conf";
 
         @JsonIgnore
         private Config config;
         @JsonIgnore
         private ClassLoader classLoader;
 
-        public String getAkkaConfigPath() {
-            return akkaConfigPath;
+        public String getPekkoConfigPath() {
+            return pekkoConfigPath;
         }
 
-        public void setAkkaConfigPath(final String akkaConfigPath) {
-            this.akkaConfigPath = akkaConfigPath;
+        public void setPekkoConfigPath(final String pekkoConfigPath) {
+            this.pekkoConfigPath = pekkoConfigPath;
         }
 
-        public String getFactoryAkkaConfigPath() {
-            return factoryAkkaConfigPath;
+        public String getFactoryPekkoConfigPath() {
+            return factoryPekkoConfigPath;
         }
 
-        public void setFactoryAkkaConfigPath(final String factoryAkkaConfigPath) {
-            this.factoryAkkaConfigPath = factoryAkkaConfigPath;
+        public void setFactoryPekkoConfigPath(final String factoryPekkoConfigPath) {
+            this.factoryPekkoConfigPath = factoryPekkoConfigPath;
         }
 
         public Config getConfig() {
@@ -253,23 +253,22 @@ public class ControllerConfiguration {
 
             ActorSystemConfig that = (ActorSystemConfig) obj;
 
-            if (akkaConfigPath != null ? !akkaConfigPath.equals(that.akkaConfigPath) : that.akkaConfigPath != null) {
+            if (!Objects.equals(pekkoConfigPath, that.pekkoConfigPath)) {
                 return false;
             }
-            if (factoryAkkaConfigPath != null ? !factoryAkkaConfigPath.equals(that.factoryAkkaConfigPath)
-                    : that.factoryAkkaConfigPath != null) {
+            if (!Objects.equals(factoryPekkoConfigPath, that.factoryPekkoConfigPath)) {
                 return false;
             }
-            if (config != null ? !config.equals(that.config) : that.config != null) {
+            if (!Objects.equals(config, that.config)) {
                 return false;
             }
-            return classLoader != null ? classLoader.equals(that.classLoader) : that.classLoader == null;
+            return Objects.equals(classLoader, that.classLoader);
         }
 
         @Override
         public int hashCode() {
-            int result = akkaConfigPath != null ? akkaConfigPath.hashCode() : 0;
-            result = 31 * result + (factoryAkkaConfigPath != null ? factoryAkkaConfigPath.hashCode() : 0);
+            int result = pekkoConfigPath != null ? pekkoConfigPath.hashCode() : 0;
+            result = 31 * result + (factoryPekkoConfigPath != null ? factoryPekkoConfigPath.hashCode() : 0);
             result = 31 * result + (config != null ? config.hashCode() : 0);
             result = 31 * result + (classLoader != null ? classLoader.hashCode() : 0);
             return result;

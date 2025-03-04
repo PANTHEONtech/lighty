@@ -5,7 +5,7 @@ runtime of all important ODL subsystems such as:
 * __MD-SAL__ - model-driven service abstraction layer
 * __controller__ - MD-SAL and related ODL services
 * __yangtools__ - tooling and libraries providing support of NETCONF and YANG for Java
-* __clustering__ - akka actor system with clustering 
+* __clustering__ - pekko actor system with clustering 
 
 References to important ODL runtime services are provided by ```LightyController.getServices()``` method call.
 
@@ -90,8 +90,8 @@ If something goes wrong (e.g file doesn't exist, initial data isn't valid ..) `l
 ### Configuration Files
 
 * __lightyControllerConfig.json__ - main configuration file containing LightyController config options and paths to other configuration files.
-* __akka.conf__ - configuration file for akka actor system
-* __factory-akka.conf__
+* __pekko.conf__ - configuration file for pekko actor system
+* __factory-pekko.conf__
 * __module-shards.conf__
 * __modules.conf__
 
@@ -134,4 +134,4 @@ as java archive. You can add your model by:
 
 Clustering
 ----------
-For proper clustering configuration of LightyController, appropriate __akka.conf__ must be provided.
+For proper clustering configuration of LightyController, appropriate __pekko.conf__ must be provided.

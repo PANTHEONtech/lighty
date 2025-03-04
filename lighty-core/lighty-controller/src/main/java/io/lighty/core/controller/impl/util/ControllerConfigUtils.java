@@ -113,13 +113,13 @@ public final class ControllerConfigUtils {
         LOG.info("Controller configuration: Restore dir path: {}\n"
                 + "Module Shards config path: {}\n"
                 + "Modules config path: {}\n"
-                + "Akka-default config path: {}\n"
-                + "Factory-akka-default config path: {}",
+                + "Pekko-default config path: {}\n"
+                + "Factory-pekko-default config path: {}",
                 controllerConfiguration.getRestoreDirectoryPath(),
                 controllerConfiguration.getModuleShardsConfig(),
                 controllerConfiguration.getModulesConfig(),
-                controllerConfiguration.getActorSystemConfig().getAkkaConfigPath(),
-                controllerConfiguration.getActorSystemConfig().getFactoryAkkaConfigPath());
+                controllerConfiguration.getActorSystemConfig().getPekkoConfigPath(),
+                controllerConfiguration.getActorSystemConfig().getFactoryPekkoConfigPath());
 
         return controllerConfiguration;
     }
@@ -190,7 +190,7 @@ public final class ControllerConfigUtils {
     /**
      * Get typical single node configuration with default model set.
      * @return Instance of LightyController configuration data.
-     * @throws ConfigurationException if unable to find akka config files
+     * @throws ConfigurationException if unable to find pekko config files
      */
     public static ControllerConfiguration getDefaultSingleNodeConfiguration()
             throws ConfigurationException {
@@ -201,7 +201,7 @@ public final class ControllerConfigUtils {
      * Get typical single node configuration with custom model set.
      * @param additionalModels List of models which is used in addition to default model set.
      * @return Instance of LightyController configuration data.
-     * @throws ConfigurationException if unable to find akka config files
+     * @throws ConfigurationException if unable to find pekko config files
      */
     public static ControllerConfiguration getDefaultSingleNodeConfiguration(final Set<YangModuleInfo> additionalModels)
             throws ConfigurationException {
@@ -222,36 +222,37 @@ public final class ControllerConfigUtils {
 
     private static void injectActorSystemConfigToControllerConfig(final ControllerConfiguration controllerConfiguration)
             throws ConfigurationException {
-        Config akkaConfig = getAkkaConfigFromPath(controllerConfiguration.getActorSystemConfig().getAkkaConfigPath());
-        Config factoryAkkaConfig = getAkkaConfigFromPath(
-                controllerConfiguration.getActorSystemConfig().getFactoryAkkaConfigPath());
-        Config finalConfig = akkaConfig.withFallback(factoryAkkaConfig);
+        Config pekkoConfig = getPekkoConfigFromPath(
+            controllerConfiguration.getActorSystemConfig().getPekkoConfigPath());
+        Config factoryPekkoConfig = getPekkoConfigFromPath(
+                controllerConfiguration.getActorSystemConfig().getFactoryPekkoConfigPath());
+        Config finalConfig = pekkoConfig.withFallback(factoryPekkoConfig);
 
         controllerConfiguration.getActorSystemConfig().setClassLoader(
                 ControllerConfigUtils.class.getClass().getClassLoader());
         controllerConfiguration.getActorSystemConfig().setConfig(finalConfig);
     }
 
-    public static Config getAkkaConfigFromPath(final String pathToConfig) throws ConfigurationException {
-        Config akkaConfig = null;
+    public static Config getPekkoConfigFromPath(final String pathToConfig) throws ConfigurationException {
+        Config pekkoConfig = null;
         try {
-            akkaConfig = ConfigFactory.parseFile(new File(pathToConfig));
+            pekkoConfig = ConfigFactory.parseFile(new File(pathToConfig));
         } catch (ConfigException e) {
-            LOG.debug("Cannot read Akka config from filesystem: {}", pathToConfig, e);
+            LOG.debug("Cannot read Pekko config from filesystem: {}", pathToConfig, e);
         }
-        if (akkaConfig == null || akkaConfig.isEmpty()) {
+        if (pekkoConfig == null || pekkoConfig.isEmpty()) {
             // read from JAR resources on classpath
-            akkaConfig = ConfigFactory.parseResources(
+            pekkoConfig = ConfigFactory.parseResources(
                     ControllerConfigUtils.class.getClass().getClassLoader(),
                     pathToConfig);
-            if (akkaConfig.isEmpty()) {
-                throw new ConfigurationException("Cannot find Akka config on classpath: " + pathToConfig);
+            if (pekkoConfig.isEmpty()) {
+                throw new ConfigurationException("Cannot find Pekko config on classpath: " + pathToConfig);
             }
 
-            LOG.info("Used Akka config file from classpath: {}", pathToConfig);
-            return akkaConfig;
+            LOG.info("Used Pekko config file from classpath: {}", pathToConfig);
+            return pekkoConfig;
         }
-        LOG.info("Used Akka config file from filesystem: {}", pathToConfig);
-        return akkaConfig;
+        LOG.info("Used Pekko config file from filesystem: {}", pathToConfig);
+        return pekkoConfig;
     }
 }

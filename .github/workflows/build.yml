@@ -76,4 +76,4 @@ jobs:
     with:
       app-name: lighty-rnc-app
       test-script-file: ${GITHUB_WORKSPACE}/.github/workflows/lighty-rnc-app/test-lighty-rnc-app-cluster.sh
-      override-helm-values: lighty.replicaCount=3,lighty.akka.isSingleNode=false,nodePort.useNodePort=false,lighty.moduleTimeOut=120,resources=null
+      override-helm-values: lighty.replicaCount=3,lighty.pekko.isSingleNode=false,nodePort.useNodePort=false,lighty.moduleTimeOut=120,resources=null

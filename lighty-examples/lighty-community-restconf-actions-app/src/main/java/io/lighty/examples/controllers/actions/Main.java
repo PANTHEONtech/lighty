@@ -140,7 +140,7 @@ public class Main {
             final RestConfConfiguration restconfConfiguration, NetconfConfiguration netconfSBPConfiguration)
         throws ConfigurationException, ExecutionException, InterruptedException, TimeoutException,
                ModuleStartupException {
-        //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
+        //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Pekko)
         LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
         this.lightyController = lightyControllerBuilder.from(controllerConfiguration).build();
         final boolean controllerStartOk = this.lightyController.start()

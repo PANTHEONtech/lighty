@@ -151,7 +151,7 @@
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>binding-data-codec-api</artifactId>
         </dependency>
-        <!--odl-akka-system-->
+        <!--odl-pekko-system-->
         <dependency>
             <groupId>com.typesafe</groupId>
             <artifactId>config</artifactId>
@@ -164,7 +164,7 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-common</artifactId>
         </dependency>
-        <!-- controller - akka-segmented-journal dependencies -->
+        <!-- controller - pekko-segmented-journal dependencies -->
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
             <artifactId>sal-akka-segmented-journal</artifactId>

@@ -98,7 +98,7 @@ public final class Main {
         throws ConfigurationException, ExecutionException, InterruptedException, TimeoutException,
                ModuleStartupException {
 
-        //1. Initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
+        //1. Initialize and start Lighty controller (MD-SAL, Controller, YangTools, Pekko)
         final LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
         this.lightyController = lightyControllerBuilder.from(controllerConfiguration).build();
         final boolean controllerStartOk = this.lightyController.start()

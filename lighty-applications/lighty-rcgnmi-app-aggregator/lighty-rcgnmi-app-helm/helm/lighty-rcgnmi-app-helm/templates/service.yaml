@@ -9,10 +9,10 @@ spec:
   ports:
     {{- if .Values.nodePort.exposeManagement }}
     - protocol: TCP
-      name: http-akka
-      port: {{ .Values.lighty.akka.managementPort }}
+      name: http-pekko
+      port: {{ .Values.lighty.pekko.managementPort }}
       {{- if .Values.nodePort.useNodePort }}
-      targetPort: {{ .Values.lighty.akka.managementPort }}
+      targetPort: {{ .Values.lighty.pekko.managementPort }}
       nodePort: {{ .Values.nodePort.managementNodePort }}
       {{- end }}
     {{- end }}

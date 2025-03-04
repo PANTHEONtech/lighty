@@ -21,7 +21,7 @@ How to use it
 
 2. Use ```LightyControllerModule``` to initialize Guice Injector
 ```
-  //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
+  //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Pekko)
   LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
   lightyController = lightyControllerBuilder
                 .from(defaultSingleNodeConfiguration)

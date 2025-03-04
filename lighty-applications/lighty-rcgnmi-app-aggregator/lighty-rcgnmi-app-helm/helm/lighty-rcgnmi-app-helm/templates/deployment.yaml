@@ -75,15 +75,15 @@ spec:
                       -Dlog4j.configurationFile={{ .Values.lighty.configDirectoryName }}/{{ .Values.lighty.loggerConfigFilename }}"
             {{- end }}
           ports:
-            # akka remoting
+            # pekko remoting
             - name: remoting
-              containerPort: {{ .Values.lighty.akka.remotingPort }}
+              containerPort: {{ .Values.lighty.pekko.remotingPort }}
               protocol: TCP
             # When
-            # akka.management.cluster.bootstrap.contact-point-discovery.port-name
+            # pekko.management.cluster.bootstrap.contact-point-discovery.port-name
             # is defined, it must correspond to this name:
             - name: management
-              containerPort: {{ .Values.lighty.akka.managementPort }}
+              containerPort: {{ .Values.lighty.pekko.managementPort }}
               protocol: TCP
             # restconf port
             - name: restconf

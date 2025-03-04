@@ -7,8 +7,6 @@
  */
 package io.lighty.core.controller.impl;
 
-import akka.actor.Terminated;
-import akka.management.javadsl.AkkaManagement;
 import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.Futures;
 import com.typesafe.config.Config;
@@ -39,6 +37,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.apache.pekko.actor.Terminated;
+import org.apache.pekko.management.javadsl.PekkoManagement;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.akka.impl.ActorSystemProviderImpl;
@@ -153,7 +153,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private RemoteOpsProvider remoteOpsProvider;
     private DOMActionService domActionService;
     private DOMActionProviderService domActionProviderService;
-    private AkkaEntityOwnershipService akkaEntityOwnershipService;
+    private AkkaEntityOwnershipService pekkoEntityOwnershipService;
     private DefaultEntityOwnershipService defaultEntityOwnershipService;
     private ClusterAdminRpcService clusterAdminRpcService;
     private EOSClusterSingletonServiceProvider clusterSingletonServiceProvider;
@@ -174,7 +174,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private ActionProviderService actionProviderService;
     private final LightySystemReadyMonitorImpl systemReadyMonitor;
     private List<Registration> modelsRegistration = new ArrayList<>();
-    private AkkaManagement akkaManagement;
+    private PekkoManagement pekkoManagement;
     private Optional<ClusteringHandler> clusteringHandler;
     private Optional<InitialConfigData> initialConfigData;
     private RpcService rpcConsumerRegistry;
@@ -232,8 +232,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.actorSystemProvider = new ActorSystemProviderImpl(this.actorSystemClassLoader,
                 QuarantinedMonitorActor.props(() -> { }), this.actorSystemConfig);
 
-        this.akkaManagement = AkkaManagement.get(actorSystemProvider.getActorSystem());
-        akkaManagement.start();
+        this.pekkoManagement = PekkoManagement.get(actorSystemProvider.getActorSystem());
+        pekkoManagement.start();
 
         //INIT cluster bootstrap
         this.clusteringHandler = ClusteringHandlerProvider.getClusteringHandler(actorSystemProvider,
@@ -303,21 +303,21 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
         // ENTITY OWNERSHIP
         try {
-            this.akkaEntityOwnershipService = new AkkaEntityOwnershipService(this.actorSystemProvider,
+            this.pekkoEntityOwnershipService = new AkkaEntityOwnershipService(this.actorSystemProvider,
                     this.rpcProviderService, bindingCodecContext);
         } catch (ExecutionException | InterruptedException e) {
-            LOG.error("Exception occurred while creating AkkaEntityOwnershipService", e);
+            LOG.error("Exception occurred while creating PekkoEntityOwnershipService", e);
             Thread.currentThread().interrupt();
             return false;
         }
 
         this.defaultEntityOwnershipService = new DefaultEntityOwnershipService(
-                akkaEntityOwnershipService, this.codec);
+                pekkoEntityOwnershipService, this.codec);
         this.clusterAdminRpcService =
-                new ClusterAdminRpcService(this.configDatastore, this.operDatastore, this.akkaEntityOwnershipService);
+                new ClusterAdminRpcService(this.configDatastore, this.operDatastore, this.pekkoEntityOwnershipService);
 
         this.clusterSingletonServiceProvider =
-                new EOSClusterSingletonServiceProvider(this.akkaEntityOwnershipService);
+                new EOSClusterSingletonServiceProvider(this.pekkoEntityOwnershipService);
 
         //create binding mount point service
         this.mountPointService = new BindingDOMMountPointServiceAdapter(this.codec, this.domMountPointService);
@@ -375,11 +375,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             this.clusterSingletonServiceProvider.close();
         }
         boolean stopSuccessful = true;
-        if (this.akkaEntityOwnershipService != null) {
+        if (this.pekkoEntityOwnershipService != null) {
             try {
-                this.akkaEntityOwnershipService.close();
+                this.pekkoEntityOwnershipService.close();
             } catch (ExecutionException e) {
-                LOG.error("Closing akka AkkaEntityOwnershipService failed!", e);
+                LOG.error("Closing pekko PekkoEntityOwnershipService failed!", e);
                 stopSuccessful = false;
             }
         }
@@ -401,20 +401,20 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
         modelsRegistration.forEach(Registration::close);
 
-        if (this.akkaManagement != null) {
-            this.akkaManagement.stop();
+        if (this.pekkoManagement != null) {
+            this.pekkoManagement.stop();
         }
         if (this.actorSystemProvider != null) {
 
             final CompletableFuture<Terminated> actorSystemTerminatedFuture = this.actorSystemProvider
                     .getActorSystem()
                     .getWhenTerminated().toCompletableFuture();
-            final int actorSystemPort = this.actorSystemConfig.getInt("akka.remote.artery.canonical.port");
+            final int actorSystemPort = this.actorSystemConfig.getInt("pekko.remote.artery.canonical.port");
 
             try {
                 this.actorSystemProvider.close();
             } catch (TimeoutException e) {
-                LOG.error("Closing akka ActorSystemProvider timed out!", e);
+                LOG.error("Closing pekko ActorSystemProvider timed out!", e);
                 stopSuccessful = false;
             }
 
@@ -518,7 +518,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     public DOMEntityOwnershipService getDOMEntityOwnershipService() {
-        return this.akkaEntityOwnershipService;
+        return this.pekkoEntityOwnershipService;
     }
 
     @Override

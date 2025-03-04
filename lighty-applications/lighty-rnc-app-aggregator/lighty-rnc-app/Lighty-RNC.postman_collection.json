@@ -220,7 +220,7 @@
 					"response": []
 				},
 				{
-					"name": "Akka down member",
+					"name": "Pekko down member",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -250,12 +250,12 @@
 								"opendaylight-cluster-data@10.1.1.34:25520"
 							]
 						},
-						"description": "May require akka http managment read only routes set to false."
+						"description": "May require pekko http managment read only routes set to false."
 					},
 					"response": []
 				},
 				{
-					"name": "Akka member leave cluster",
+					"name": "Pekko member leave cluster",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -285,7 +285,7 @@
 								"opendaylight-cluster-data@10.1.1.33:25520"
 							]
 						},
-						"description": "May require akka http managment read only routes set to false."
+						"description": "May require pekko http managment read only routes set to false."
 					},
 					"response": []
 				}

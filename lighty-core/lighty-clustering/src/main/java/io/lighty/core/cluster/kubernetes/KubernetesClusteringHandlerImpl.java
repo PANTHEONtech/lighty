@@ -7,8 +7,6 @@
  */
 package io.lighty.core.cluster.kubernetes;
 
-import akka.cluster.Cluster;
-import akka.management.cluster.bootstrap.ClusterBootstrap;
 import com.google.common.util.concurrent.ListenableScheduledFuture;
 import com.google.common.util.concurrent.ListeningScheduledExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -22,6 +20,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import org.apache.pekko.cluster.Cluster;
+import org.apache.pekko.management.cluster.bootstrap.ClusterBootstrap;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.mdsal.binding.api.RpcService;
@@ -36,14 +36,14 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(KubernetesClusteringHandlerImpl.class);
 
-    private final Config akkaDeploymentConfig;
+    private final Config pekkoDeploymentConfig;
     private final ActorSystemProvider actorSystemProvider;
     private Optional<Config> moduleShardsConfig;
 
     public KubernetesClusteringHandlerImpl(@NonNull final ActorSystemProvider actorSystemProvider,
-                                           @NonNull final Config akkaDeploymentConfig) {
+                                           @NonNull final Config pekkoDeploymentConfig) {
         this.actorSystemProvider = actorSystemProvider;
-        this.akkaDeploymentConfig = akkaDeploymentConfig;
+        this.pekkoDeploymentConfig = pekkoDeploymentConfig;
         this.moduleShardsConfig = Optional.empty();
     }
 
@@ -75,7 +75,7 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
         if (Cluster.get(actorSystemProvider.getActorSystem()).selfAddress()
                 .equals(Cluster.get(actorSystemProvider.getActorSystem()).state().getLeader())) {
             LOG.info("I am leader, generating custom module-shards.conf");
-            final List<String> memberRoles = akkaDeploymentConfig.getStringList("akka.cluster.roles");
+            final List<String> memberRoles = pekkoDeploymentConfig.getStringList("pekko.cluster.roles");
             final String data = ClusteringConfigUtils.generateModuleShardsForMembers(memberRoles);
             moduleShardsConfig = Optional.of(ConfigFactory.parseString(data));
             return;

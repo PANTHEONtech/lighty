@@ -12,7 +12,7 @@ import java.util.List;
 
 public final class ClusteringConfigUtils {
 
-    public static final String AKKA_DISCOVERY_METHOD_PATH = "akka.discovery.method";
+    public static final String AKKA_DISCOVERY_METHOD_PATH = "pekko.discovery.method";
     public static final String K8S_DISCOVERY_API_NAME = "kubernetes-api";
 
     private ClusteringConfigUtils() {

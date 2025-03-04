@@ -56,8 +56,8 @@ public final class RcGnmiAppModuleConfigUtils {
         LOG.debug("Loading lighty.io controller module configuration...");
         final ControllerConfiguration controllerConfig = ControllerConfigUtils
                 .getConfiguration(Files.newInputStream(path));
-        final Config akkaConfig = controllerConfig.getActorSystemConfig().getConfig().resolve();
-        controllerConfig.getActorSystemConfig().setConfig(akkaConfig);
+        final Config pekkoConfig = controllerConfig.getActorSystemConfig().getConfig().resolve();
+        controllerConfig.getActorSystemConfig().setConfig(pekkoConfig);
         LOG.debug("Loading lighty.io RESTCONF module configuration...");
         final RestConfConfiguration restconfConfig = RestConfConfigUtils
                 .getRestConfConfiguration(Files.newInputStream(path));
