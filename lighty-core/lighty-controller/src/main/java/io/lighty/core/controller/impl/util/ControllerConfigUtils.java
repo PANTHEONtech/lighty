@@ -58,7 +58,7 @@ public final class ControllerConfigUtils {
                 .YangModuleInfoImpl.getInstance(),
         org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.controller.entity.owners.norev
                 .YangModuleInfoImpl.getInstance(),
-        org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013
+        org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev250131
                 .YangModuleInfoImpl.getInstance(),
         org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930
                 .YangModuleInfoImpl.getInstance(),
