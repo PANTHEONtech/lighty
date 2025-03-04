@@ -17,7 +17,7 @@ import org.opendaylight.netconf.client.mdsal.api.SchemaResourceManager;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultBaseNetconfSchemaProvider;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultSchemaResourceManager;
 import org.opendaylight.netconf.common.NetconfTimer;
-import org.opendaylight.netconf.common.impl.DefaultNetconfTimer;
+import org.opendaylight.netconf.common.di.DefaultNetconfTimer;
 import org.opendaylight.netconf.topology.callhome.CallHomeMountService;
 import org.opendaylight.netconf.topology.callhome.CallHomeMountSshAuthProvider;
 import org.opendaylight.netconf.topology.callhome.CallHomeMountStatusReporter;

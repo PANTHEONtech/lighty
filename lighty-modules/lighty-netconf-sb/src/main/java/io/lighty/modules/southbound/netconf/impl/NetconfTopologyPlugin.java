@@ -21,7 +21,7 @@ import org.opendaylight.netconf.client.mdsal.impl.DefaultBaseNetconfSchemaProvid
 import org.opendaylight.netconf.client.mdsal.impl.DefaultCredentialProvider;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultSchemaResourceManager;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultSslContextFactoryProvider;
-import org.opendaylight.netconf.common.impl.DefaultNetconfTimer;
+import org.opendaylight.netconf.common.di.DefaultNetconfTimer;
 import org.opendaylight.netconf.keystore.legacy.NetconfKeystoreService;
 import org.opendaylight.netconf.keystore.legacy.impl.DefaultNetconfKeystoreService;
 import org.opendaylight.netconf.topology.impl.NetconfTopologyImpl;
