@@ -25,6 +25,7 @@ import io.lighty.core.controller.impl.services.LightySystemReadyService;
 import io.lighty.core.controller.impl.util.FileToDatastoreUtils;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -364,7 +365,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                 .newInstance(datastoreContext.getLogicalStoreType(), datastoreProperties);
         final DatastoreContextPropertiesUpdater updater = new DatastoreContextPropertiesUpdater(introspector,
                 datastoreProperties);
-        return DistributedDataStoreFactory.createInstance(domSchemaService, datastoreContext,
+        return DistributedDataStoreFactory.createInstance(Path.of("data"), domSchemaService, datastoreContext,
                 newDatastoreSnapshotRestore, newActorSystemProvider, introspector, updater, configuration);
     }
 
