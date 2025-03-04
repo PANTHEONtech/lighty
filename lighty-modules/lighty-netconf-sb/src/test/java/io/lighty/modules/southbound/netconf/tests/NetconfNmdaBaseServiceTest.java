@@ -30,6 +30,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.netconf.api.EffectiveOperation;
 import org.opendaylight.netconf.api.messages.NetconfMessage;
 import org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformer;
+import org.opendaylight.netconf.databind.DatabindContext;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Operational;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214.Running;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.monitoring.rev101004.NetconfState;
@@ -84,7 +85,8 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
                 .filter(child -> child.name().getNodeType().getLocalName().equals("filter-spec")).findAny();
         assertTrue(filter.isPresent());
 
-        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true, baseSchema);
+        NetconfMessageTransformer transformer = new NetconfMessageTransformer(DatabindContext.ofMountPoint(
+            mountContext), true, baseSchema);
         NetconfMessage netconfMessage = transformer.toRpcRequest(NETCONF_GET_DATA_QNAME, capturedNN.getValue());
         Element getData = getSpecificElementSubtree(netconfMessage.getDocument().getDocumentElement(),
                 NETCONF_GET_DATA_QNAME, NETCONF_GET_DATA_QNAME.getLocalName());
@@ -123,7 +125,8 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
         assertTrue(hasSpecificChild(children, "origin-filters"));
         assertTrue(hasSpecificChild(children, "config-filter"));
 
-        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true, baseSchema);
+        NetconfMessageTransformer transformer = new NetconfMessageTransformer(DatabindContext.ofMountPoint(
+            mountContext), true, baseSchema);
         NetconfMessage netconfMessage = transformer.toRpcRequest(NETCONF_GET_DATA_QNAME, capturedNN.getValue());
         Element getData = getSpecificElementSubtree(netconfMessage.getDocument().getDocumentElement(),
                 NETCONF_GET_DATA_QNAME, NETCONF_GET_DATA_QNAME.getLocalName());
@@ -166,7 +169,8 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
         assertTrue(hasSpecificChild(children, "default-operation"));
         assertTrue(hasSpecificChild(children, "edit-content"));
 
-        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true, baseSchema);
+        NetconfMessageTransformer transformer = new NetconfMessageTransformer(DatabindContext.ofMountPoint(
+            mountContext), true, baseSchema);
         NetconfMessage netconfMessage = transformer.toRpcRequest(NETCONF_EDIT_DATA_QNAME, capturedNN.getValue());
         Element editData = getSpecificElementSubtree(netconfMessage.getDocument().getDocumentElement(),
                 NETCONF_EDIT_DATA_QNAME, NETCONF_EDIT_DATA_QNAME.getLocalName());
