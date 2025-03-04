@@ -25,6 +25,6 @@ spec:
               service:
                 name: {{ include "lighty-rcgnmi-app-helm.fullname" . }}
                 port:
-                  number: {{ .Values.lighty.akka.managementPort }}
+                  number: {{ .Values.lighty.pekko.managementPort }}
     {{- end }}
   {{- end }}

@@ -58,8 +58,8 @@
       "frontendNoProgressTimeoutInSeconds": 900
     },
     "actorSystemConfig": {
-      "akkaConfigPath": "singlenode/akka-default.conf",
-      "factoryAkkaConfigPath": "singlenode/factory-akka-default.conf"
+      "pekkoConfigPath": "singlenode/pekko-default.conf",
+      "factoryPekkoConfigPath": "singlenode/factory-pekko.conf"
     },
     "schemaServiceConfig": {
       "topLevelModels": [

@@ -153,81 +153,81 @@
                 <artifactId>commons-collections4</artifactId>
                 <version>4.5.0</version>
             </dependency>
-            <!--akka management and bootstrap-->
+            <!--pekko management and bootstrap-->
             <dependency>
-                <groupId>com.typesafe.akka</groupId>
-                <artifactId>akka-remote_2.13</artifactId>
-                <version>2.6.21</version>
+                <groupId>org.apache.pekko</groupId>
+                <artifactId>pekko-remote_2.13</artifactId>
+                <version>1.0.2</version>
             </dependency>
             <dependency>
-                <groupId>com.typesafe.akka</groupId>
-                <artifactId>akka-slf4j_2.13</artifactId>
-                <version>2.6.21</version>
+                <groupId>org.apache.pekko</groupId>
+                <artifactId>pekko-slf4j_2.13</artifactId>
+                <version>1.0.2</version>
             </dependency>
             <dependency>
-                <groupId>com.typesafe.akka</groupId>
-                <artifactId>akka-cluster_2.13</artifactId>
-                <version>2.6.21</version>
+                <groupId>org.apache.pekko</groupId>
+                <artifactId>pekko-cluster_2.13</artifactId>
+                <version>1.0.2</version>
             </dependency>
             <dependency>
-                <groupId>com.typesafe.akka</groupId>
-                <artifactId>akka-discovery_2.13</artifactId>
-                <version>2.6.21</version>
+                <groupId>org.apache.pekko</groupId>
+                <artifactId>pekko-discovery_2.13</artifactId>
+                <version>1.0.2</version>
             </dependency>
             <dependency>
-                <groupId>com.typesafe.akka</groupId>
-                <artifactId>akka-protobuf_2.13</artifactId>
-                <version>2.6.21</version>
+                <groupId>org.apache.pekko</groupId>
+                <artifactId>pekko-protobuf_2.13</artifactId>
+                <version>1.0.2</version>
             </dependency>
             <dependency>
-                <groupId>com.typesafe.akka</groupId>
-                <artifactId>akka-coordination_2.13</artifactId>
-                <version>2.6.21</version>
+                <groupId>org.apache.pekko</groupId>
+                <artifactId>pekko-coordination_2.13</artifactId>
+                <version>1.0.2</version>
             </dependency>
             <dependency>
-                <groupId>com.typesafe.akka</groupId>
-                <artifactId>akka-distributed-data_2.13</artifactId>
-                <version>2.6.21</version>
+                <groupId>org.apache.pekko</groupId>
+                <artifactId>pekko-distributed-data_2.13</artifactId>
+                <version>1.0.2</version>
             </dependency>
             <dependency>
-                <groupId>com.typesafe.akka</groupId>
-                <artifactId>akka-cluster-tools_2.13</artifactId>
-                <version>2.6.21</version>
+                <groupId>org.apache.pekko</groupId>
+                <artifactId>pekko-cluster-tools_2.13</artifactId>
+                <version>1.0.2</version>
             </dependency>
             <dependency>
-                <groupId>com.typesafe.akka</groupId>
-                <artifactId>akka-cluster-sharding_2.13</artifactId>
-                <version>2.6.21</version>
+                <groupId>org.apache.pekko</groupId>
+                <artifactId>pekko-cluster-sharding_2.13</artifactId>
+                <version>1.0.2</version>
             </dependency>
             <dependency>
-                <groupId>com.typesafe.akka</groupId>
-                <artifactId>akka-actor_2.13</artifactId>
-                <version>2.6.21</version>
+                <groupId>org.apache.pekko</groupId>
+                <artifactId>pekko-actor_2.13</artifactId>
+                <version>1.0.2</version>
             </dependency>
             <dependency>
-                <groupId>com.typesafe.akka</groupId>
-                <artifactId>akka-stream_2.13</artifactId>
-                <version>2.6.21</version>
+                <groupId>org.apache.pekko</groupId>
+                <artifactId>pekko-stream_2.13</artifactId>
+                <version>1.0.2</version>
             </dependency>
             <dependency>
-                <groupId>com.lightbend.akka.management</groupId>
-                <artifactId>akka-management_2.13</artifactId>
-                <version>1.1.4</version>
+                <groupId>org.apache.pekko</groupId>
+                <artifactId>pekko-management_2.13</artifactId>
+                <version>1.1.0</version>
             </dependency>
             <dependency>
-                <groupId>com.lightbend.akka.management</groupId>
-                <artifactId>akka-management-cluster-http_2.13</artifactId>
-                <version>1.4.1</version>
+                <groupId>org.apache.pekko</groupId>
+                <artifactId>pekko-management-cluster-http_2.13</artifactId>
+                <version>1.1.0</version>
             </dependency>
             <dependency>
-                <groupId>com.lightbend.akka.management</groupId>
-                <artifactId>akka-management-cluster-bootstrap_2.13</artifactId>
-                <version>1.1.4</version>
+                <groupId>org.apache.pekko</groupId>
+                <artifactId>pekko-management-cluster-bootstrap_2.13</artifactId>
+                <version>1.1.0</version>
             </dependency>
             <dependency>
-                <groupId>com.lightbend.akka.discovery</groupId>
-                <artifactId>akka-discovery-kubernetes-api_2.13</artifactId>
-                <version>1.4.1</version>
+                <groupId>org.apache.pekko</groupId>
+                <artifactId>pekko-discovery-kubernetes-api_2.13</artifactId>
+                <version>1.1.0</version>
             </dependency>
             <dependency>
                 <groupId>org.json</groupId>

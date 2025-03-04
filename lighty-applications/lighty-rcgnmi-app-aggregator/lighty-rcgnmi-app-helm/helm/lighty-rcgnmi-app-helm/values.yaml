@@ -28,21 +28,21 @@ lighty:
     enableJmxRemoting: true
     jmxPort: 1099
 
-  akka:
-    # If true, overrides akka cluster configuration with default single-node
+  pekko:
+    # If true, overrides pekko cluster configuration with default single-node
     isSingleNode: true
-    # SplitBrainResolver strategy supported (out-of-the-box) by akka
+    # SplitBrainResolver strategy supported (out-of-the-box) by pekko
     sbrStrategy: keep-majority
     # Name of the config file must be same as property in configmap
-    akkaNodeConfigFilename: "akka-node-k8s.conf"
-    # At least three nodes are required for akka voting
+    pekkoNodeConfigFilename: "pekko-node-k8s.conf"
+    # At least three nodes are required for pekko voting
     minimumClusterNodes: 3
-    # Prefix for akka member name; in configmap POD IP address will be appended to prefix
+    # Prefix for pekko member name; in configmap POD IP address will be appended to prefix
     memberNamePrefix: "member-"
     remotingPort: 2552
     managementPort: 8558
     discovery:
-      # Where should akka look for other members to form cluster
+      # Where should pekko look for other members to form cluster
       podSelectorName: "app"
       podSelectorValue: "lighty-k8s-cluster"
       portName: "management"

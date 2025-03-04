@@ -56,7 +56,7 @@ using MyModule instance.
 ```
 public static void main(String[] args) {
     ...
-    //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Akka)
+    //1. initialize and start Lighty controller (MD-SAL, Controller, YangTools, Pekko)
     LightyController lightyController = new LightyControllerBuilder()
         .from(controllerConfiguration)
         .build();

@@ -21,9 +21,9 @@ public final class ClusteringHandlerProvider {
     }
 
     public static Optional<ClusteringHandler> getClusteringHandler(@NonNull ActorSystemProvider actorSystemProvider,
-                                                                   @NonNull Config akkaDeploymentConfig) {
-        if (ClusteringConfigUtils.isKubernetesDeployment(akkaDeploymentConfig)) {
-            return Optional.of(new KubernetesClusteringHandlerImpl(actorSystemProvider, akkaDeploymentConfig));
+                                                                   @NonNull Config pekkoDeploymentConfig) {
+        if (ClusteringConfigUtils.isKubernetesDeployment(pekkoDeploymentConfig)) {
+            return Optional.of(new KubernetesClusteringHandlerImpl(actorSystemProvider, pekkoDeploymentConfig));
         }
         return Optional.empty();
     }

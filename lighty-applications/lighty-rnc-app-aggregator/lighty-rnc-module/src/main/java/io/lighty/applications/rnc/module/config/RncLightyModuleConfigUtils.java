@@ -49,8 +49,8 @@ public final class RncLightyModuleConfigUtils {
             LOG.debug("Loading lighty.io controller module configuration from file...");
             controllerConfig = ControllerConfigUtils.getConfiguration(Files.newInputStream(configPath));
             addDefaultAppModels(controllerConfig);
-            final Config akkaConfig = controllerConfig.getActorSystemConfig().getConfig().resolve();
-            controllerConfig.getActorSystemConfig().setConfig(akkaConfig);
+            final Config pekkoConfig = controllerConfig.getActorSystemConfig().getConfig().resolve();
+            controllerConfig.getActorSystemConfig().setConfig(pekkoConfig);
             LOG.debug("lighty.io controller module configuration from file loaded!");
 
             LOG.debug("Loading lighty.io RESTCONF module configuration from file...");

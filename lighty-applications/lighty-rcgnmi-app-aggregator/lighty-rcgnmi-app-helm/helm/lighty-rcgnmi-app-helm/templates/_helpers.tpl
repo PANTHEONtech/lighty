@@ -61,5 +61,5 @@ Selector labels
 {{- define "lighty-rcgnmi-app-helm.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "lighty-rcgnmi-app-helm.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-{{ .Values.lighty.akka.discovery.podSelectorName }}: {{ .Values.lighty.akka.discovery.podSelectorValue }}
+{{ .Values.lighty.pekko.discovery.podSelectorName }}: {{ .Values.lighty.pekko.discovery.podSelectorValue }}
 {{- end -}}

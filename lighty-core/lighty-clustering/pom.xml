@@ -45,40 +45,40 @@
             <artifactId>eos-dom-akka</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lightbend.akka.management</groupId>
-            <artifactId>akka-management-cluster-bootstrap_2.13</artifactId>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-management-cluster-bootstrap_2.13</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-stream_2.13</artifactId>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-stream_2.13</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-remote_2.13</artifactId>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-remote_2.13</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-slf4j_2.13</artifactId>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-slf4j_2.13</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-cluster_2.13</artifactId>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-cluster_2.13</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-protobuf_2.13</artifactId>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-protobuf_2.13</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lightbend.akka.management</groupId>
-            <artifactId>akka-management_2.13</artifactId>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-management_2.13</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lightbend.akka.management</groupId>
-            <artifactId>akka-management-cluster-http_2.13</artifactId>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-management-cluster-http_2.13</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lightbend.akka.discovery</groupId>
-            <artifactId>akka-discovery-kubernetes-api_2.13</artifactId>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-discovery-kubernetes-api_2.13</artifactId>
         </dependency>
     </dependencies>
 
