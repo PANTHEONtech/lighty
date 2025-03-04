@@ -7,14 +7,14 @@
  */
 package io.lighty.core.cluster.kubernetes;
 
-import akka.actor.AbstractActor;
-import akka.actor.Props;
-import akka.cluster.Cluster;
-import akka.cluster.ClusterEvent;
-import akka.cluster.Member;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.cluster.Cluster;
+import org.apache.pekko.cluster.ClusterEvent;
+import org.apache.pekko.cluster.Member;
 import org.opendaylight.mdsal.binding.api.RpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev250131.RemoveAllShardReplicas;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev250131.RemoveAllShardReplicasInputBuilder;
