@@ -10,17 +10,18 @@ package io.lighty.modules.northbound.restconf.community.impl.tests;
 import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 import java.security.Principal;
+import java.rmi.ServerException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.netconf.databind.RequestException;
 import org.opendaylight.restconf.api.FormattableBody;
 import org.opendaylight.restconf.api.QueryParameters;
 import org.opendaylight.restconf.api.query.PrettyPrintParam;
 import org.opendaylight.restconf.server.api.AbstractServerRequest;
-import org.opendaylight.restconf.server.api.ServerException;
 import org.opendaylight.restconf.server.api.TransportSession;
 import org.opendaylight.restconf.server.api.YangErrorsBody;
 import org.opendaylight.yangtools.yang.common.ErrorTag;
@@ -87,7 +88,7 @@ public final class CompletingServerRequest<T> extends AbstractServerRequest<T> {
 
     @Override
     protected void onFailure(final YangErrorsBody errors) {
-        future.completeExceptionally(new ServerException(errors.errors(), null, "reconstructed for testing"));
+        future.completeExceptionally(new RequestException(errors.errors(), null, "reconstructed for testing"));
     }
 
     @Override
