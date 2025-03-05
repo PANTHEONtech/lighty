@@ -97,7 +97,7 @@ public final class BgpConfigUtils {
                     .YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.bgp.labeled.unicast.rev180329
                     .YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.bgp.linkstate.rev200120
+            org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.bgp.linkstate.rev241219
                     .YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.graph.rev220720
                     .YangModuleInfoImpl.getInstance()
