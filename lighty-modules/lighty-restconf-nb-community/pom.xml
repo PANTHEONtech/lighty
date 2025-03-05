@@ -91,6 +91,11 @@
             <artifactId>servlet-jersey2</artifactId>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.netconf</groupId>
+            <artifactId>restconf-server-api-testlib</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>
