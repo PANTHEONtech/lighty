@@ -249,8 +249,8 @@ public final class AAALightyShiroProvider {
     }
 
     private RealmAuthProvider buildRealmAuthProvider(
-            final PasswordCredentialAuth credentialAuth) {
-        return new BasicRealmAuthProvider(credentialAuth, iidmStore);
+            final PasswordCredentialAuth auth) {
+        return new BasicRealmAuthProvider(auth, iidmStore);
     }
 
     private void registerServletContexts(final LocalHttpServer httpService, final String moonEndpointPath) {
