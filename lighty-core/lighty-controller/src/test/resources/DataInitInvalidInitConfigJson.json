@@ -13,7 +13,7 @@
         {
           "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:distributed-datastore-provider",
           "name": "distributed-datastore-provider",
-          "revision": "2023-12-29"
+          "revision": "2025-01-30"
         },
         {
           "nameSpace": "http://netconfcentral.org/ns/toaster",
