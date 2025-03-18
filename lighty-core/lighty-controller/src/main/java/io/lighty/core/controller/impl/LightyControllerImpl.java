@@ -432,8 +432,10 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     private void createRemoteOpsProvider() {
-        final RemoteOpsProviderConfig remoteOpsProviderConfig = RemoteOpsProviderConfig.newInstance(
-                this.actorSystemProvider.getActorSystem().name(), this.metricCaptureEnabled, this.mailboxCapacity);
+        final RemoteOpsProviderConfig remoteOpsProviderConfig = new RemoteOpsProviderConfig.Builder(
+            this.actorSystemProvider.getActorSystem().name())
+                .metricCaptureEnabled(this.metricCaptureEnabled)
+                .mailboxCapacity(this.mailboxCapacity).build();
         this.remoteOpsProvider = RemoteOpsProviderFactory.createInstance(this.domRpcRouter.rpcProviderService(),
                 this.domRpcRouter.rpcService(), this.actorSystemProvider.getActorSystem(), remoteOpsProviderConfig,
                 this.domActionProviderService, this.domActionService);
