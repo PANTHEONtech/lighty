@@ -28,6 +28,7 @@ import org.opendaylight.aaa.api.ClaimCache;
 import org.opendaylight.aaa.api.CredentialAuth;
 import org.opendaylight.aaa.api.IDMStoreException;
 import org.opendaylight.aaa.api.IIDMStore;
+import org.opendaylight.aaa.api.PasswordCredentialAuth;
 import org.opendaylight.aaa.api.PasswordCredentials;
 import org.opendaylight.aaa.api.StoreBuilder;
 import org.opendaylight.aaa.api.password.service.PasswordHashService;
@@ -43,10 +44,10 @@ import org.opendaylight.aaa.shiro.filters.AAAShiroFilter;
 import org.opendaylight.aaa.shiro.idm.IdmLightApplication;
 import org.opendaylight.aaa.shiro.idm.IdmLightProxy;
 import org.opendaylight.aaa.shiro.moon.MoonTokenEndpoint;
+import org.opendaylight.aaa.shiro.realm.BasicRealmAuthProvider;
+import org.opendaylight.aaa.shiro.realm.RealmAuthProvider;
 import org.opendaylight.aaa.shiro.web.env.AAAWebEnvironment;
 import org.opendaylight.aaa.tokenauthrealm.auth.AuthenticationManager;
-import org.opendaylight.aaa.tokenauthrealm.auth.HttpBasicAuth;
-import org.opendaylight.aaa.tokenauthrealm.auth.TokenAuthenticators;
 import org.opendaylight.aaa.web.servlet.jersey2.JerseyServletSupport;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.DatastoreConfig;
@@ -68,7 +69,7 @@ public final class AAALightyShiroProvider {
     private final ShiroConfiguration shiroConfiguration;
     private final AuthenticationService authenticationService;
     private final DefaultPasswordHashService defaultPasswordHashService;
-    private TokenAuthenticators tokenAuthenticators;
+    private RealmAuthProvider realmAuthProvider;
     private CredentialAuth<PasswordCredentials> credentialAuth;
     private ClaimCache claimCache;
     private PasswordHashService passwordHashService;
@@ -109,7 +110,7 @@ public final class AAALightyShiroProvider {
             this.credentialAuth = idmLightProxy;
             this.claimCache = idmLightProxy;
         }
-        this.tokenAuthenticators = buildTokenAuthenticators(this.credentialAuth);
+        this.realmAuthProvider = buildRealmAuthProvider((PasswordCredentialAuth) this.credentialAuth);
         try {
             final StoreBuilder storeBuilder = new StoreBuilder(iidmStore);
             final String domain = storeBuilder.initDomainAndRolesWithoutUsers(IIDMStore.DEFAULT_DOMAIN);
@@ -143,7 +144,7 @@ public final class AAALightyShiroProvider {
                 dataBroker,
                 certificateManager,
                 authenticationService,
-                tokenAuthenticators,
+                realmAuthProvider,
                 passwordHashService,
                 new JerseyServletSupport());
 
@@ -208,8 +209,8 @@ public final class AAALightyShiroProvider {
         return aaaWebEnvironment;
     }
 
-    public TokenAuthenticators getTokenAuthenticators() {
-        return this.tokenAuthenticators;
+    public RealmAuthProvider getTokenAuthenticators() {
+        return this.realmAuthProvider;
     }
 
     public DefaultPasswordHashService getDefaultPasswordHashService() {
@@ -247,9 +248,9 @@ public final class AAALightyShiroProvider {
         });
     }
 
-    private static TokenAuthenticators buildTokenAuthenticators(
-            final CredentialAuth<PasswordCredentials> credentialAuth) {
-        return new TokenAuthenticators(new HttpBasicAuth(credentialAuth));
+    private RealmAuthProvider buildRealmAuthProvider(
+            final PasswordCredentialAuth auth) {
+        return new BasicRealmAuthProvider(auth, iidmStore);
     }
 
     private void registerServletContexts(final LocalHttpServer httpService, final String moonEndpointPath) {
