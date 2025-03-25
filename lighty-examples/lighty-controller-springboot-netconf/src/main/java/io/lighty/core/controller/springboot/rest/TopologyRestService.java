@@ -9,6 +9,7 @@
 package io.lighty.core.controller.springboot.rest;
 
 import io.lighty.core.controller.springboot.utils.Utils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
@@ -116,10 +117,10 @@ public class TopologyRestService {
 
         try {
             tx.commit().get(TIMEOUT, TimeUnit.SECONDS);
-            LOG.info("Topology {} was deleted from datastore", topologyId);
+            LOG.info("Topology {} was deleted from datastore", StringEscapeUtils.escapeJava(topologyId));
             return ResponseEntity.ok().build();
         } catch (ExecutionException | TimeoutException e) {
-            LOG.error("Could not delete topology {} from datastore", topologyId, e);
+            LOG.error("Could not delete topology {} from datastore", StringEscapeUtils.escapeJava(topologyId), e);
             return ResponseEntity.status(500).build();
         }
     }
