@@ -14,16 +14,16 @@
             "unit":"MILLISECONDS"
         },
         "actorSystemConfig":{
-            "akkaConfigPath":"singlenode/akka-default.conf",
-            "factoryAkkaConfigPath":"singlenode/factory-akka-default.conf"
+            "akkaConfigPath":"singlenode/pekko-default.conf",
+            "factoryAkkaConfigPath":"singlenode/factory-pekko.conf"
         },
         "schemaServiceConfig":{
             "topLevelModels":[
                 { "usedBy": "CONTROLLER", "name": "odl-general-entity", "revision": "2015-09-30", "nameSpace": "urn:opendaylight:params:xml:ns:yang:mdsal:core:general-entity"},
                 { "usedBy": "CONTROLLER", "name": "odl-entity-owners", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:entity-owners"},
-                { "usedBy": "CONTROLLER", "name": "cluster-admin", "revision": "2015-10-13", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:cluster:admin"},
+                { "usedBy": "CONTROLLER", "name": "cluster-admin", "revision": "2025-01-31", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:md:sal:cluster:admin"},
                 { "usedBy": "CONTROLLER", "name": "opendaylight-l2-types", "revision": "2013-08-27", "nameSpace": "urn:opendaylight:l2:types"},
-                { "usedBy": "CONTROLLER", "name": "distributed-datastore-provider", "revision": "2023-12-29", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:distributed-datastore-provider"},
+                { "usedBy": "CONTROLLER", "name": "distributed-datastore-provider", "revision": "2025-01-30", "nameSpace": "urn:opendaylight:params:xml:ns:yang:controller:config:distributed-datastore-provider"},
                 { "usedBy": "CONTROLLER", "name": "ietf-interfaces", "revision": "2018-02-20", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
                 { "usedBy": "CONTROLLER", "name": "iana-if-type","revision": "2023-01-26", "nameSpace": "urn:ietf:params:xml:ns:yang:iana-if-type"},
                 { "usedBy": "RESTCONF", "name": "ietf-yang-library", "revision": "2019-01-04", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-library"},

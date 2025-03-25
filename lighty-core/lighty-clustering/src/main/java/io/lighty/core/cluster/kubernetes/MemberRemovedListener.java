@@ -7,18 +7,19 @@
  */
 package io.lighty.core.cluster.kubernetes;
 
-import akka.actor.AbstractActor;
-import akka.actor.Props;
-import akka.cluster.Cluster;
-import akka.cluster.ClusterEvent;
-import akka.cluster.Member;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.cluster.Cluster;
+import org.apache.pekko.cluster.ClusterEvent;
+import org.apache.pekko.cluster.Member;
 import org.opendaylight.mdsal.binding.api.RpcService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.RemoveAllShardReplicas;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.RemoveAllShardReplicasInputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013.RemoveAllShardReplicasOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.cds.types.rev250131.MemberName;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev250131.RemoveAllShardReplicas;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev250131.RemoveAllShardReplicasInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev250131.RemoveAllShardReplicasOutput;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +73,8 @@ public class MemberRemovedListener extends AbstractActor {
 
                 final var removeRpc = clusterAdminRPCService.getRpc(RemoveAllShardReplicas.class);
                 RpcResult<RemoveAllShardReplicasOutput> rpcResult = removeRpc.invoke(
-                        new RemoveAllShardReplicasInputBuilder().setMemberName(removedMemberRole).build()).get();
+                        new RemoveAllShardReplicasInputBuilder().setMemberName(
+                            new MemberName(removedMemberRole)).build()).get();
                 if (rpcResult.isSuccessful()) {
                     LOG.info("RPC RemoveAllShards for member {} executed successfully", removedMemberRole);
                 } else {

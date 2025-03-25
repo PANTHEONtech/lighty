@@ -26,6 +26,7 @@ import org.opendaylight.netconf.api.EffectiveOperation;
 import org.opendaylight.netconf.api.messages.NetconfMessage;
 import org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformUtil;
 import org.opendaylight.netconf.client.mdsal.impl.NetconfMessageTransformer;
+import org.opendaylight.netconf.databind.DatabindContext;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.monitoring.rev101004.NetconfState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.monitoring.rev101004.netconf.state.Schemas;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.monitoring.rev101004.netconf.state.schemas.Schema;
@@ -76,7 +77,8 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
         assertEquals(children.size(), 1);
         assertTrue(hasSpecificChild(children, "filter"));
 
-        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true, baseSchema);
+        NetconfMessageTransformer transformer = new NetconfMessageTransformer(DatabindContext.ofModel(
+            effectiveModelContext), true, baseSchema);
         NetconfMessage netconfMessage = transformer.toRpcRequest(
                 NetconfMessageTransformUtil.NETCONF_GET_NODEID.getNodeType(), capturedNN.getValue());
         Element getElement =
@@ -115,7 +117,8 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
         assertTrue(hasSpecificChild(children, "source"));
         assertTrue(hasSpecificChild(children, "filter"));
 
-        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true, baseSchema);
+        NetconfMessageTransformer transformer = new NetconfMessageTransformer(DatabindContext.ofMountPoint(
+            mountContext), true, baseSchema);
         NetconfMessage netconfMessage = transformer.toRpcRequest(NetconfMessageTransformUtil.NETCONF_GET_CONFIG_NODEID
                         .getNodeType(), capturedNN.getValue());
         Element getElement =
@@ -171,7 +174,8 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
         assertTrue(hasSpecificChild(children, "edit-content"));
         assertTrue(hasSpecificChild(children, "error-option"));
 
-        NetconfMessageTransformer transformer = new NetconfMessageTransformer(mountContext, true, baseSchema);
+        NetconfMessageTransformer transformer = new NetconfMessageTransformer(DatabindContext.ofMountPoint(
+            mountContext), true, baseSchema);
         NetconfMessage netconfMessage = transformer.toRpcRequest(
                 NetconfMessageTransformUtil.NETCONF_EDIT_CONFIG_NODEID.getNodeType(), capturedNN.getValue());
         Element editData =
