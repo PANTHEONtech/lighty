@@ -15,14 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.glassfish.jersey.internal.guava.Preconditions;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.servlet.ServletContainer;
 import org.opendaylight.aaa.api.AuthenticationService;
 import org.opendaylight.aaa.api.ClaimCache;
 import org.opendaylight.aaa.api.CredentialAuth;
@@ -47,6 +41,9 @@ import org.opendaylight.aaa.shiro.web.env.AAAWebEnvironment;
 import org.opendaylight.aaa.tokenauthrealm.auth.AuthenticationManager;
 import org.opendaylight.aaa.tokenauthrealm.auth.HttpBasicAuth;
 import org.opendaylight.aaa.tokenauthrealm.auth.TokenAuthenticators;
+import org.opendaylight.aaa.web.FilterDetails;
+import org.opendaylight.aaa.web.ServletDetails;
+import org.opendaylight.aaa.web.WebContext;
 import org.opendaylight.aaa.web.servlet.jersey2.JerseyServletSupport;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.DatastoreConfig;
@@ -128,17 +125,6 @@ public final class AAALightyShiroProvider {
     }
 
     private void initAAAonServer(final LightyServerBuilder server) {
-        final ContextHandlerCollection contexts = new ContextHandlerCollection();
-        final ServletContextHandler mainHandler = new ServletContextHandler(contexts, "/auth", true, false);
-        final IdmLightApplication idmLightApplication = new IdmLightApplication(iidmStore, claimCache);
-        final ServletHolder idmLightServlet = new ServletHolder(new ServletContainer(ResourceConfig.forApplication(
-                idmLightApplication)));
-        idmLightServlet.setInitParameter("jersey.config.server.provider.packages",
-                "org.opendaylight.aaa.impl.provider");
-        mainHandler.addServlet(idmLightServlet, "/*");
-        server.addContextHandler(contexts);
-        this.handlers.add(contexts);
-        this.handlers.add(mainHandler);
         this.aaaWebEnvironment = new AAAWebEnvironment(shiroConfiguration,
                 dataBroker,
                 certificateManager,
@@ -151,17 +137,36 @@ public final class AAALightyShiroProvider {
         final CustomFilterAdapterConfigurationImpl customFilterAdapterConfig =
                 new CustomFilterAdapterConfigurationImpl();
         customFilterAdapterConfig.update(properties);
-        final FilterHolder customFilterAdapter = new FilterHolder(new CustomFilterAdapter(customFilterAdapterConfig));
-        server.addCommonFilter(customFilterAdapter, "/*");
 
-        final FilterHolder shiroFilter = new FilterHolder(new AAAShiroFilter(aaaWebEnvironment));
-        server.addCommonFilter(shiroFilter, "/*");
+        final var webContextBuilder = WebContext.builder()
+            .name("RealmManagement")
+            .contextPath("/auth")
+            .supportsSessions(true)
 
-        final FilterHolder crossOriginFilter = new FilterHolder(new CrossOriginFilter());
-        crossOriginFilter.setInitParameter("allowedMethods", "GET,POST,OPTIONS,DELETE,PUT,HEAD");
-        crossOriginFilter.setInitParameter("allowedHeaders",
-                "origin, content-type, accept, authorization, Authorization");
-        server.addCommonFilter(crossOriginFilter, "/*");
+            .addServlet(ServletDetails.builder()
+                .servlet(new JerseyServletSupport().createHttpServletBuilder(
+                    new IdmLightApplication(iidmStore, claimCache)).build())
+                .addUrlPattern("/*")
+                .build())
+
+            .addFilter(FilterDetails.builder()
+                .filter(new CustomFilterAdapter(customFilterAdapterConfig))
+                .addUrlPattern("/*")
+                .build())
+
+            .addFilter(FilterDetails.builder()
+                .filter(new AAAShiroFilter(aaaWebEnvironment))
+                .addUrlPattern("/*")
+                .build())
+
+            .addFilter(FilterDetails.builder()
+                .filter(new CrossOriginFilter())
+                .addUrlPattern("/*").putInitParam("allowedMethods", "GET,POST,OPTIONS,DELETE,PUT,HEAD").putInitParam(
+                    "allowedHeaders", "origin, content-type, accept, authorization, Authorization")
+                .build());
+
+
+        server.addContextHandler(webContextBuilder.build());
     }
 
     public static CompletableFuture<AAALightyShiroProvider> newInstance(final DataBroker dataBroker,
