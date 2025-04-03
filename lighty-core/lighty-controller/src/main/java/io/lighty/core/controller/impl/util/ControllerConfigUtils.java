@@ -54,11 +54,11 @@ public final class ControllerConfigUtils {
         org.opendaylight.yang.svc.v1.urn.opendaylight.yang.extension.yang.ext.rev130709
                 .YangModuleInfoImpl.getInstance(),
         org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.controller.config.distributed.datastore
-                .provider.rev231229
+                .provider.rev250130
                 .YangModuleInfoImpl.getInstance(),
         org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.controller.entity.owners.norev
                 .YangModuleInfoImpl.getInstance(),
-        org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev151013
+        org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev250131
                 .YangModuleInfoImpl.getInstance(),
         org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930
                 .YangModuleInfoImpl.getInstance(),

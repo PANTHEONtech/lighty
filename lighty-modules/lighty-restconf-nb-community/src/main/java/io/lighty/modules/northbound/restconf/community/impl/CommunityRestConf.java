@@ -105,10 +105,11 @@ public class CommunityRestConf extends AbstractLightyModule {
         final var server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService, domActionService,
             domMountPointService);
 
+        final MdsalRestconfStreamRegistry streamRegistry =
+            new MdsalRestconfStreamRegistry(domDataBroker, new JaxRsLocationProvider());
         this.jaxRsEndpoint = new JaxRsEndpoint(new JettyWebServer(httpPort), new LightyWebContextSecurer(),
             new JerseyServletSupport(), new CustomFilterAdapterConfigurationImpl(), server,
-            new MdsalRestconfStreamRegistry(new JaxRsLocationProvider(), domDataBroker),
-            JaxRsEndpoint.props(streamsConfiguration));
+            streamRegistry, JaxRsEndpoint.props(streamsConfiguration));
 
         final ServletContainer servletContainer8040 = new ServletContainer(ResourceConfig
             .forApplication(new Application() {
@@ -116,8 +117,8 @@ public class CommunityRestConf extends AbstractLightyModule {
                 public Set<Object> getSingletons() {
                     return Set.of(
                         new JsonJaxRsFormattableBodyWriter(), new XmlJaxRsFormattableBodyWriter(),
-                        new JaxRsRestconf(server, new MdsalRestconfStreamRegistry(new JaxRsLocationProvider(),
-                            domDataBroker), jaxRsEndpoint, ErrorTagMapping.RFC8040, PrettyPrintParam.FALSE));
+                        new JaxRsRestconf(server, streamRegistry, jaxRsEndpoint,
+                            ErrorTagMapping.RFC8040, PrettyPrintParam.FALSE));
                 }
             }));
 
