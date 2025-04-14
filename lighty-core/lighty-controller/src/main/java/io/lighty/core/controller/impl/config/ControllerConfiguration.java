@@ -202,8 +202,8 @@ public class ControllerConfiguration {
 
     public static class ActorSystemConfig {
 
-        private String akkaConfigPath = "singlenode/akka-default.conf";
-        private String factoryAkkaConfigPath = "singlenode/factory-akka-default.conf";
+        private String akkaConfigPath = "singlenode/pekko-default.conf";
+        private String factoryAkkaConfigPath = "singlenode/factory-pekko.conf";
 
         @JsonIgnore
         private Config config;
