@@ -24,24 +24,23 @@ public abstract class OpenApiLightyTest extends OpenApiLightyTestBase {
 
     public void simpleOpenApiModuleTest() {
         Assert.assertNotNull(getLightyController());
-        Assert.assertNotNull(getOpenApiModule());
+        Assert.assertNotNull(getJaxRsOpenapi());
     }
 
     public void testGetListOfMounts(UriInfo uriInfo) {
-        assertSuccessResponse(getOpenApiModule().getJaxRsOpenApi().getListOfMounts(uriInfo));
+        assertSuccessResponse(getJaxRsOpenapi().getListOfMounts(uriInfo));
     }
 
     public void testGetAllModulesDoc(UriInfo uriInfo) throws IOException {
-        assertSuccessResponse(getOpenApiModule().getJaxRsOpenApi().getAllModulesDoc(uriInfo, 0, 0, 0, 0));
+        assertSuccessResponse(getJaxRsOpenapi().getAllModulesDoc(uriInfo, 0, 0, 0, 0));
     }
 
     public void testGetDocByModule(UriInfo uriInfo, String modelName, String revisionDate) throws IOException {
-        assertSuccessResponse(
-            getOpenApiModule().getJaxRsOpenApi().getDocByModule(modelName, revisionDate, uriInfo, 0, 0));
+        assertSuccessResponse(getJaxRsOpenapi().getDocByModule(modelName, revisionDate, uriInfo, 0, 0));
     }
 
     public void testGetApiExplorer(UriInfo uriInfo) {
-        final Response response = getOpenApiModule().getJaxRsOpenApi().getApiExplorer(uriInfo);
+        final Response response = getJaxRsOpenapi().getApiExplorer(uriInfo);
 
         final int redirectCode = 303;
         Assert.assertEquals(response.getStatus(), redirectCode);
