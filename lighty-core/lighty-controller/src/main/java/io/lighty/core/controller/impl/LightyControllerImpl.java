@@ -7,8 +7,6 @@
  */
 package io.lighty.core.controller.impl;
 
-import akka.actor.Terminated;
-import akka.management.javadsl.AkkaManagement;
 import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.Futures;
 import com.typesafe.config.Config;
@@ -27,6 +25,7 @@ import io.lighty.core.controller.impl.services.LightySystemReadyService;
 import io.lighty.core.controller.impl.util.FileToDatastoreUtils;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +38,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.apache.pekko.actor.Terminated;
+import org.apache.pekko.management.javadsl.PekkoManagement;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.akka.impl.ActorSystemProviderImpl;
@@ -174,7 +175,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private ActionProviderService actionProviderService;
     private final LightySystemReadyMonitorImpl systemReadyMonitor;
     private List<Registration> modelsRegistration = new ArrayList<>();
-    private AkkaManagement akkaManagement;
+    private PekkoManagement pekkoManagement;
     private Optional<ClusteringHandler> clusteringHandler;
     private Optional<InitialConfigData> initialConfigData;
     private RpcService rpcConsumerRegistry;
@@ -232,8 +233,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.actorSystemProvider = new ActorSystemProviderImpl(this.actorSystemClassLoader,
                 QuarantinedMonitorActor.props(() -> { }), this.actorSystemConfig);
 
-        this.akkaManagement = AkkaManagement.get(actorSystemProvider.getActorSystem());
-        akkaManagement.start();
+        this.pekkoManagement = PekkoManagement.get(actorSystemProvider.getActorSystem());
+        pekkoManagement.start();
 
         //INIT cluster bootstrap
         this.clusteringHandler = ClusteringHandlerProvider.getClusteringHandler(actorSystemProvider,
@@ -364,7 +365,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
                 .newInstance(datastoreContext.getLogicalStoreType(), datastoreProperties);
         final DatastoreContextPropertiesUpdater updater = new DatastoreContextPropertiesUpdater(introspector,
                 datastoreProperties);
-        return DistributedDataStoreFactory.createInstance(domSchemaService, datastoreContext,
+        return DistributedDataStoreFactory.createInstance(Path.of("data"), domSchemaService, datastoreContext,
                 newDatastoreSnapshotRestore, newActorSystemProvider, introspector, updater, configuration);
     }
 
@@ -401,15 +402,15 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
         modelsRegistration.forEach(Registration::close);
 
-        if (this.akkaManagement != null) {
-            this.akkaManagement.stop();
+        if (this.pekkoManagement != null) {
+            this.pekkoManagement.stop();
         }
         if (this.actorSystemProvider != null) {
 
             final CompletableFuture<Terminated> actorSystemTerminatedFuture = this.actorSystemProvider
                     .getActorSystem()
                     .getWhenTerminated().toCompletableFuture();
-            final int actorSystemPort = this.actorSystemConfig.getInt("akka.remote.artery.canonical.port");
+            final int actorSystemPort = this.actorSystemConfig.getInt("pekko.remote.artery.canonical.port");
 
             try {
                 this.actorSystemProvider.close();
@@ -431,8 +432,10 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     private void createRemoteOpsProvider() {
-        final RemoteOpsProviderConfig remoteOpsProviderConfig = RemoteOpsProviderConfig.newInstance(
-                this.actorSystemProvider.getActorSystem().name(), this.metricCaptureEnabled, this.mailboxCapacity);
+        final RemoteOpsProviderConfig remoteOpsProviderConfig = new RemoteOpsProviderConfig.Builder(
+            this.actorSystemProvider.getActorSystem().name())
+                .metricCaptureEnabled(this.metricCaptureEnabled)
+                .mailboxCapacity(this.mailboxCapacity).build();
         this.remoteOpsProvider = RemoteOpsProviderFactory.createInstance(this.domRpcRouter.rpcProviderService(),
                 this.domRpcRouter.rpcService(), this.actorSystemProvider.getActorSystem(), remoteOpsProviderConfig,
                 this.domActionProviderService, this.domActionService);
