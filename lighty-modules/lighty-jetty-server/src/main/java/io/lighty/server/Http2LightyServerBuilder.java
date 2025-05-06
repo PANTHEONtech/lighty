@@ -15,22 +15,19 @@ import org.eclipse.jetty.http2.server.HTTP2ServerConnectionFactory;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
-import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 
-public class Http2LightyServerBuilder extends LightyServerBuilder {
-
+public class Http2LightyServerBuilder extends LightyJettyServerProvider {
     private final SecurityConfig securityConfig;
 
     public Http2LightyServerBuilder(final InetSocketAddress inetSocketAddress, final SecurityConfig config) {
         super(inetSocketAddress);
         this.securityConfig = config;
+        this.server = new LightyJettyWebServer();
     }
 
-    @Override
-    public Server build() {
-        super.server = new Server();
-        final var server = super.build();
+    public LightyJettyWebServer getServer() {
+
         // HTTPS Configuration
         final var httpsConfig = new HttpConfiguration();
         httpsConfig.setSecureScheme(HttpScheme.HTTPS.asString());
@@ -46,11 +43,14 @@ public class Http2LightyServerBuilder extends LightyServerBuilder {
 
         // SSL Connection Factory
         final var ssl = securityConfig.getSslConnectionFactory(alpn.getProtocol());
+        final var jettyServer = server.getServer();
 
         // HTTP/2 Connector
-        final var sslConnector = new ServerConnector(server, ssl, alpn, h2, new HttpConnectionFactory(httpsConfig));
+        final var sslConnector = new ServerConnector(
+            jettyServer, ssl, alpn, h2, new HttpConnectionFactory(httpsConfig));
         sslConnector.setPort(this.inetSocketAddress.getPort());
-        server.addConnector(sslConnector);
-        return server;
+        jettyServer.addConnector(sslConnector);
+
+        return super.server;
     }
 }
