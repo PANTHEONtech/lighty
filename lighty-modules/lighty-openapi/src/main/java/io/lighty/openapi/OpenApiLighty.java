@@ -12,7 +12,7 @@ import com.google.common.annotations.VisibleForTesting;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
-import io.lighty.server.LightyServerBuilder;
+import io.lighty.server.LightyJettyServerProvider;
 import java.util.Set;
 import javax.ws.rs.core.Application;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -38,13 +38,13 @@ public class OpenApiLighty extends AbstractLightyModule {
     private static final String TRUE = "true";
 
     private final RestConfConfiguration restConfConfiguration;
-    private final LightyServerBuilder jettyServerBuilder;
+    private final LightyJettyServerProvider jettyServerBuilder;
     private final LightyServices lightyServices;
 
     private JaxRsOpenApi jaxRsOpenApi;
 
     public OpenApiLighty(RestConfConfiguration restConfConfiguration,
-                         LightyServerBuilder jettyServerBuilder, LightyServices lightyServices) {
+                         LightyJettyServerProvider jettyServerBuilder, LightyServices lightyServices) {
         this.restConfConfiguration = restConfConfiguration;
         this.jettyServerBuilder = jettyServerBuilder;
         this.lightyServices = lightyServices;
