@@ -10,20 +10,12 @@ package io.lighty.modules.northbound.restconf.community.impl;
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Throwables;
 import io.lighty.core.controller.api.AbstractLightyModule;
-import io.lighty.modules.northbound.restconf.community.impl.root.resource.discovery.RootFoundApplication;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import io.lighty.server.LightyJettyServerProvider;
 import io.lighty.server.LightyJettyWebServer;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.util.Set;
 import javax.servlet.ServletException;
-import javax.ws.rs.core.Application;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.servlet.ServletContainer;
 import org.opendaylight.aaa.filterchain.configuration.impl.CustomFilterAdapterConfigurationImpl;
 import org.opendaylight.aaa.web.WebContext;
 import org.opendaylight.aaa.web.WebContextSecurer;
@@ -31,20 +23,14 @@ import org.opendaylight.aaa.web.servlet.jersey2.JerseyServletSupport;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
-import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
-import org.opendaylight.restconf.api.query.PrettyPrintParam;
 import org.opendaylight.restconf.server.jaxrs.JaxRsEndpoint;
 import org.opendaylight.restconf.server.jaxrs.JaxRsEndpointConfiguration;
 import org.opendaylight.restconf.server.jaxrs.JaxRsLocationProvider;
-import org.opendaylight.restconf.server.jaxrs.JaxRsRestconf;
-import org.opendaylight.restconf.server.jaxrs.JsonJaxRsFormattableBodyWriter;
-import org.opendaylight.restconf.server.jaxrs.XmlJaxRsFormattableBodyWriter;
 import org.opendaylight.restconf.server.mdsal.MdsalDatabindProvider;
 import org.opendaylight.restconf.server.mdsal.MdsalRestconfServer;
 import org.opendaylight.restconf.server.mdsal.MdsalRestconfStreamRegistry;
-import org.opendaylight.restconf.server.spi.ErrorTagMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,43 +40,41 @@ public class CommunityRestConf extends AbstractLightyModule {
 
     private final DOMDataBroker domDataBroker;
     private final DOMRpcService domRpcService;
-    private final DOMNotificationService domNotificationService;
     private final DOMMountPointService domMountPointService;
     private final DOMActionService domActionService;
     private final DOMSchemaService domSchemaService;
-    private final int httpPort;
     private final InetAddress inetAddress;
-    private final String restconfServletContextPath;
+    private final int httpPort;
     private LightyJettyWebServer jettyServer;
     private LightyJettyServerProvider lightyServerBuilder;
     private JaxRsEndpoint jaxRsEndpoint;
+    private WebContextSecurer webContextSecurer;
 
     public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMRpcService domRpcService,
-            final DOMActionService domActionService, final DOMNotificationService domNotificationService,
+            final DOMActionService domActionService,
             final DOMMountPointService domMountPointService,
-            final DOMSchemaService domSchemaService, final InetAddress inetAddress,
-            final int httpPort, final String restconfServletContextPath,
-            final LightyJettyServerProvider serverBuilder) {
+            final DOMSchemaService domSchemaService,
+            final InetAddress inetAddress,
+            final int httpPort,
+            final LightyJettyServerProvider serverBuilder,
+            final WebContextSecurer webContextSecurer) {
         this.domDataBroker = domDataBroker;
         this.domRpcService = domRpcService;
         this.domActionService = domActionService;
-        this.domNotificationService = domNotificationService;
         this.domMountPointService = domMountPointService;
         this.lightyServerBuilder = serverBuilder;
         this.domSchemaService = domSchemaService;
-        this.httpPort = httpPort;
         this.inetAddress = inetAddress;
-        this.restconfServletContextPath = restconfServletContextPath;
+        this.httpPort = httpPort;
+        this.webContextSecurer = (webContextSecurer == null) ? new LightyWebContextSecurer() : webContextSecurer;
     }
 
     public CommunityRestConf(final DOMDataBroker domDataBroker,
             final DOMRpcService domRpcService, final DOMActionService domActionService,
-            final DOMNotificationService domNotificationService, final DOMMountPointService domMountPointService,
-            final DOMSchemaService domSchemaService, final InetAddress inetAddress, final int httpPort,
-            final String restconfServletContextPath) {
-        this(domDataBroker, domRpcService, domActionService, domNotificationService,
-                domMountPointService, domSchemaService, inetAddress, httpPort,
-                restconfServletContextPath, null);
+            final DOMMountPointService domMountPointService, final DOMSchemaService domSchemaService,
+            final InetAddress inetAddress, final int httpPort, final WebContextSecurer webContextSecurer) {
+        this(domDataBroker, domRpcService, domActionService,
+                domMountPointService, domSchemaService, inetAddress, httpPort, null, webContextSecurer);
     }
 
     @Override
@@ -100,48 +84,24 @@ public class CommunityRestConf extends AbstractLightyModule {
 
         LOG.info("Starting RestconfApplication with configuration {}", streamsConfiguration);
 
-        if (lightyServerBuilder == null){
-            lightyServerBuilder = new LightyJettyServerProvider(new LightyJettyWebServer());
+        if (lightyServerBuilder == null) {
+            lightyServerBuilder = new LightyJettyServerProvider(new InetSocketAddress(inetAddress, httpPort));
         }
 
         final MdsalDatabindProvider databindProvider = new MdsalDatabindProvider(domSchemaService);
-        final var server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService, domActionService,
-            domMountPointService);
+        final var server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService,
+            domActionService, domMountPointService);
 
-        this.jettyServer = this.lightyServerBuilder.build();
-        this.jaxRsEndpoint = new JaxRsEndpoint(new LightyJettyWebServer(new InetSocketAddress(inetAddress, httpPort)),
-            new LightyWebContextSecurer(), new JerseyServletSupport(), new CustomFilterAdapterConfigurationImpl(),
-            server, new MdsalRestconfStreamRegistry(new JaxRsLocationProvider(), domDataBroker),
-            JaxRsEndpoint.props(streamsConfiguration));
-
-        final ServletContainer servletContainer8040 = new ServletContainer(ResourceConfig
-            .forApplication(new Application() {
-                @Override
-                public Set<Object> getSingletons() {
-                    return Set.of(
-                        new JsonJaxRsFormattableBodyWriter(), new XmlJaxRsFormattableBodyWriter(),
-                        new JaxRsRestconf(server, new MdsalRestconfStreamRegistry(new JaxRsLocationProvider(),
-                            domDataBroker), jaxRsEndpoint, ErrorTagMapping.RFC8040, PrettyPrintParam.FALSE));
-                }
-            }));
-
-        final ServletHolder jaxrs = new ServletHolder(servletContainer8040);
-
-        LOG.info("RestConf init complete, starting Jetty");
-        LOG.info("http address:port {}:{}, url prefix: {}", this.inetAddress.toString(), this.httpPort,
-            this.restconfServletContextPath);
-        final InetSocketAddress inetSocketAddress = new InetSocketAddress(this.inetAddress, this.httpPort);
-        final ContextHandlerCollection contexts = new ContextHandlerCollection();
-        final ServletContextHandler mainHandler =
-            new ServletContextHandler(contexts, this.restconfServletContextPath, true, false);
-        mainHandler.addServlet(jaxrs, "/*");
-
-        final ServletContextHandler rrdHandler =
-            new ServletContextHandler(contexts, "/.well-known", true, false);
-        final RootFoundApplication rootDiscoveryApp = new RootFoundApplication(restconfServletContextPath);
-        rrdHandler.addServlet(new ServletHolder(new ServletContainer(ResourceConfig
-            .forApplication(rootDiscoveryApp))), "/*");
-
+        this.jettyServer = this.lightyServerBuilder.getServer();
+        this.jaxRsEndpoint = new JaxRsEndpoint(
+            jettyServer,
+            this.webContextSecurer,
+            new JerseyServletSupport(),
+            new CustomFilterAdapterConfigurationImpl(),
+            server,
+            new MdsalRestconfStreamRegistry(new JaxRsLocationProvider(), domDataBroker),
+            JaxRsEndpoint.props(streamsConfiguration)
+        );
 
         LOG.info("Lighty RestConf started in {}", stopwatch.stop());
         return true;
@@ -195,7 +155,7 @@ public class CommunityRestConf extends AbstractLightyModule {
         @Override
         public void requireAuthentication(WebContext.Builder webContextBuilder,
             boolean asyncSupported, String... urlPatterns) {
-
+            //do nothing since shiro is not used
         }
 
         @Override
