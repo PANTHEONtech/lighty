@@ -27,7 +27,7 @@ import io.lighty.modules.southbound.netconf.impl.NetconfTopologyPluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
 import io.lighty.openapi.OpenApiLighty;
-import io.lighty.server.LightyServerBuilder;
+import io.lighty.server.LightyJettyServerProvider;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
@@ -143,7 +143,7 @@ public class Main {
         }
 
         //2. build RestConf server
-        LightyServerBuilder jettyServerBuilder = new LightyServerBuilder(new InetSocketAddress(
+        final LightyJettyServerProvider jettyServerBuilder = new LightyJettyServerProvider(new InetSocketAddress(
                 restconfConfiguration.getInetAddress(), restconfConfiguration.getHttpPort()));
         this.restconf = CommunityRestConfBuilder
                 .from(RestConfConfigUtils.getRestConfConfiguration(restconfConfiguration,

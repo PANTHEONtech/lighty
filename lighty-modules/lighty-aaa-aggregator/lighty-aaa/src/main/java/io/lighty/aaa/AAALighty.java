@@ -9,7 +9,7 @@ package io.lighty.aaa;
 
 import io.lighty.aaa.config.AAAConfiguration;
 import io.lighty.core.controller.api.AbstractLightyModule;
-import io.lighty.server.LightyServerBuilder;
+import io.lighty.server.LightyJettyServerProvider;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import org.opendaylight.aaa.api.CredentialAuth;
@@ -19,14 +19,14 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 public final class AAALighty extends AbstractLightyModule {
 
     private final AAAShiroProviderHandler aaaShiroProviderHandler;
-    private final LightyServerBuilder server;
+    private final LightyJettyServerProvider server;
     private final CredentialAuth<PasswordCredentials> credentialAuth;
     private final DataBroker dataBroker;
 
     private final AAAConfiguration aaaConfiguration;
 
     public AAALighty(final DataBroker dataBroker, final CredentialAuth<PasswordCredentials> credentialAuth,
-            final LightyServerBuilder server, final AAAConfiguration config) {
+            final LightyJettyServerProvider server, final AAAConfiguration config) {
         this.dataBroker = dataBroker;
         this.aaaConfiguration = config;
         this.credentialAuth = credentialAuth;

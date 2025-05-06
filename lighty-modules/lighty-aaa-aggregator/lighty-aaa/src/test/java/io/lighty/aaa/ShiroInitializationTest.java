@@ -15,7 +15,7 @@ import static org.testng.AssertJUnit.assertTrue;
 import io.lighty.aaa.config.AAAConfiguration;
 import io.lighty.aaa.config.CertificateManagerConfig;
 import io.lighty.aaa.util.AAAConfigUtils;
-import io.lighty.server.LightyServerBuilder;
+import io.lighty.server.LightyJettyServerProvider;
 import java.net.InetSocketAddress;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +44,7 @@ public class ShiroInitializationTest {
     private static final AAAConfiguration AAA_CONFIGURATION = AAAConfigUtils.createDefaultAAAConfiguration();
     private static final String BUNDLE_NAME = "opendaylight";
     @Mock
-    private LightyServerBuilder server;
+    private LightyJettyServerProvider server;
     @Mock
     private DataBroker bindingDataBroker;
     @Mock
@@ -108,7 +108,7 @@ public class ShiroInitializationTest {
                 CertificateManagerConfig.getDefault(bindingDataBroker, rpcProviderService));
 
         // Create a LightyServerBuilder object
-        final LightyServerBuilder serverBuilder = new LightyServerBuilder(
+        final LightyJettyServerProvider serverBuilder = new LightyJettyServerProvider(
                 new InetSocketAddress("localhost/127.0.0.1", 8182));
 
         // Create an AAALighty object

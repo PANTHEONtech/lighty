@@ -24,7 +24,7 @@ import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
-import io.lighty.server.LightyServerBuilder;
+import io.lighty.server.LightyJettyServerProvider;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -108,7 +108,7 @@ public final class Main {
         }
 
         // 2. Initialize and start Restconf server
-        final LightyServerBuilder jettyServerBuilder = new LightyServerBuilder(new InetSocketAddress(
+        final LightyJettyServerProvider jettyServerBuilder = new LightyJettyServerProvider(new InetSocketAddress(
                 restconfConfiguration.getInetAddress(), restconfConfiguration.getHttpPort()));
         this.restconf = CommunityRestConfBuilder
                 .from(RestConfConfigUtils.getRestConfConfiguration(restconfConfiguration,
@@ -134,8 +134,6 @@ public final class Main {
             throw new ModuleStartupException("AAA module startup failed!");
         }
 
-        // 4. Start Lighty jetty server
-        this.restconf.startServer();
     }
 
     private void closeLightyModule(final LightyModule module) {
