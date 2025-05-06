@@ -160,7 +160,7 @@ public class Main {
         lightyController.getServices().withJaxRsEndpoint(restconf.getJaxRsEndpoint());
 
         this.openApi =
-            new OpenApiLighty(restconfConfiguration, jettyServerBuilder, this.lightyController.getServices());
+            new OpenApiLighty(restconfConfiguration, jettyServerBuilder, this.lightyController.getServices(), null);
         final boolean openApiStartOk = this.openApi.start()
                 .get(modulesConfig.getModuleTimeoutSeconds(), TimeUnit.SECONDS);
         if (!openApiStartOk) {

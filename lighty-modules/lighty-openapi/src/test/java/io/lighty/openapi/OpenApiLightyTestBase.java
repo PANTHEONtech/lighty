@@ -20,6 +20,7 @@ import io.lighty.server.LightyJettyServerProvider;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
+import org.opendaylight.restconf.openapi.jaxrs.JaxRsOpenApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
@@ -39,6 +40,7 @@ public abstract class OpenApiLightyTestBase {
     private LightyController lightyController;
     private OpenApiLighty openApiModule;
     private CommunityRestConf communityRestConf;
+    private JaxRsOpenApi jaxRsOpenApi;
 
     @BeforeClass(timeOut = 60_000)
     public void startControllerAndRestConf() throws Exception {
@@ -63,11 +65,12 @@ public abstract class OpenApiLightyTestBase {
                 restConfConfiguration.getInetAddress(), restConfConfiguration.getHttpPort()));
 
         openApiModule = new OpenApiLighty(restConfConfiguration, jettyServerBuilder,
-                lightyController.getServices());
+                lightyController.getServices(), null);
         LOG.info("Starting Lighty OpenApi");
         openApiModule.start().get();
         communityRestConf.startServer();
         LOG.info("Lighty OpenApi started");
+        jaxRsOpenApi = new JaxRsOpenApi(openApiModule.getjaxRsOpenApi());
     }
 
     @BeforeMethod
@@ -115,7 +118,7 @@ public abstract class OpenApiLightyTestBase {
         return lightyController;
     }
 
-    OpenApiLighty getOpenApiModule() {
-        return openApiModule;
+    JaxRsOpenApi getJaxRsOpenapi() {
+        return jaxRsOpenApi;
     }
 }
