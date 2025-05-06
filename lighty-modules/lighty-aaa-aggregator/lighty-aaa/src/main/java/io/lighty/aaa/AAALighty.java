@@ -14,6 +14,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import org.opendaylight.aaa.api.CredentialAuth;
 import org.opendaylight.aaa.api.PasswordCredentials;
+import org.opendaylight.aaa.web.WebContextSecurer;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 
 public final class AAALighty extends AbstractLightyModule {
@@ -69,5 +70,9 @@ public final class AAALighty extends AbstractLightyModule {
         AAALightyShiroProvider getAaaLightyShiroProvider() {
             return this.aaaLightyShiroProvider;
         }
+    }
+
+    public WebContextSecurer webContextSecurer() {
+        return aaaShiroProviderHandler.getAaaLightyShiroProvider().webContextSecurer();
     }
 }
