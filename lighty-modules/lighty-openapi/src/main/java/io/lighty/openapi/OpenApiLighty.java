@@ -11,19 +11,23 @@ import com.fasterxml.jackson.core.JsonFactoryBuilder;
 import com.google.common.annotations.VisibleForTesting;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyServices;
+import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.server.LightyJettyServerProvider;
 import java.util.Set;
+import javax.servlet.ServletException;
 import javax.ws.rs.core.Application;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.servlet.DefaultServlet;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.servlet.ServletContainer;
+import org.opendaylight.aaa.web.ServletDetails;
+import org.opendaylight.aaa.web.WebContext;
+import org.opendaylight.aaa.web.WebContextSecurer;
+import org.opendaylight.aaa.web.servlet.jersey2.JerseyServletSupport;
+import org.opendaylight.restconf.openapi.api.OpenApiService;
 import org.opendaylight.restconf.openapi.impl.OpenApiServiceImpl;
 import org.opendaylight.restconf.openapi.jaxrs.JaxRsOpenApi;
 import org.opendaylight.restconf.openapi.jaxrs.OpenApiBodyWriter;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,71 +44,77 @@ public class OpenApiLighty extends AbstractLightyModule {
     private final RestConfConfiguration restConfConfiguration;
     private final LightyJettyServerProvider jettyServerBuilder;
     private final LightyServices lightyServices;
+    private final WebContextSecurer webContextSecurer;
+    private Registration registration;
+    private OpenApiService openApiService;
 
-    private JaxRsOpenApi jaxRsOpenApi;
-
-    public OpenApiLighty(RestConfConfiguration restConfConfiguration,
-                         LightyJettyServerProvider jettyServerBuilder, LightyServices lightyServices) {
+    public OpenApiLighty(final RestConfConfiguration restConfConfiguration,
+        final LightyJettyServerProvider jettyServerBuilder,
+        final LightyServices lightyServices, final @Nullable WebContextSecurer webContextSecurer) {
         this.restConfConfiguration = restConfConfiguration;
         this.jettyServerBuilder = jettyServerBuilder;
         this.lightyServices = lightyServices;
+        this.registration = null;
+        this.webContextSecurer = (webContextSecurer == null)
+            ? new CommunityRestConf.LightyWebContextSecurer() : webContextSecurer;
     }
 
     @Override
     protected boolean initProcedure() {
         LOG.info("initializing openapi");
-
-        //replace all slash characters from the beginning of the string
-        String basePathString = restConfConfiguration.getRestconfServletContextPath().replaceAll("^/+", "");
-        LOG.info("basePath: {}", basePathString);
-
-        final var openApiService = new OpenApiServiceImpl(lightyServices.getDOMSchemaService(),
+        this.openApiService = new OpenApiServiceImpl(lightyServices.getDOMSchemaService(),
             lightyServices.getDOMMountPointService(), lightyServices.getJaxRsEndpoint());
 
-        this.jaxRsOpenApi = new JaxRsOpenApi(openApiService);
-
-        final ServletContainer restServletContainer = new ServletContainer(ResourceConfig
-                .forApplication((new Application() {
+        final var webContextBuilder = WebContext.builder()
+            .name("OpenAPI")
+            .contextPath(OPENAPI_PATH)
+            .supportsSessions(true)
+            .addServlet(ServletDetails.builder()
+                .servlet(new JerseyServletSupport().createHttpServletBuilder(new Application() {
                     @Override
                     public Set<Object> getSingletons() {
                         return Set.of(new JaxRsOpenApi(openApiService),
                             new OpenApiBodyWriter(new JsonFactoryBuilder().build()));
                     }
-                })));
+                }).build())
+                .addUrlPattern("/api/v3/*")
+                .build())
+            .addServlet(addStaticResources("/explorer", "OpenApiStaticServlet"));
 
-        ServletHolder restServletHolder = new ServletHolder(restServletContainer);
+        webContextSecurer.requireAuthentication(webContextBuilder, "/*");
 
-        ContextHandlerCollection contexts = new ContextHandlerCollection();
-        ServletContextHandler mainHandler = new ServletContextHandler(contexts, OPENAPI_PATH, true, false);
-        mainHandler.addServlet(restServletHolder, "/api/v3/*");
-
-        addStaticResources(mainHandler, "/explorer", "static-content");
-
-        LOG.info("adding context handler ...");
-        jettyServerBuilder.addContextHandler(contexts);
+        try {
+            registration = jettyServerBuilder.getServer().registerWebContext(webContextBuilder.build());
+        } catch (ServletException e) {
+            LOG.error("Failed to register OpenApi web context: {}!", jettyServerBuilder.getClass(), e);
+            return false;
+        }
         return true;
     }
 
     @Override
     protected boolean stopProcedure() {
         LOG.info("shutting down openapi ...");
+        this.registration.close();
         return true;
     }
 
-    private void addStaticResources(ServletContextHandler mainHandler, String path, String servletName) {
-        LOG.info("initializing openapi UI at: http(s)://{hostname:port}{}{}/index.html", OPENAPI_PATH, path);
-        String externalResource = OpenApiLighty.class.getResource(path).toExternalForm();
+    private ServletDetails addStaticResources(String path, String servletName) {
+        final String externalResource = OpenApiLighty.class.getResource("/explorer").toExternalForm();
         LOG.info("externalResource: {}", externalResource);
-        DefaultServlet defaultServlet = new DefaultServlet();
-        ServletHolder holderPwd = new ServletHolder(servletName, defaultServlet);
-        holderPwd.setInitParameter("resourceBase", externalResource);
-        holderPwd.setInitParameter("dirAllowed", TRUE);
-        holderPwd.setInitParameter("pathInfoOnly", TRUE);
-        mainHandler.addServlet(holderPwd, path + "/*");
+
+        return ServletDetails.builder()
+            .servlet(new DefaultServlet())
+            .name(servletName)
+            .addUrlPattern(path + "/*")
+            .putInitParam("resourceBase", externalResource)
+            .putInitParam("dirAllowed", TRUE)
+            .putInitParam("pathInfoOnly", TRUE)
+            .build();
     }
 
     @VisibleForTesting
-    JaxRsOpenApi getJaxRsOpenApi() {
-        return jaxRsOpenApi;
+    OpenApiService getjaxRsOpenApi() {
+        return this.openApiService;
     }
 }

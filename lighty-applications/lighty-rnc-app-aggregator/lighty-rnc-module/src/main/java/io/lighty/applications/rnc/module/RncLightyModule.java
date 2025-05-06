@@ -144,7 +144,7 @@ public class RncLightyModule {
 
     private OpenApiLighty initOpenApiLighty(final RestConfConfiguration config,
             final LightyJettyServerProvider serverBuilder, final LightyServices services) {
-        return new OpenApiLighty(config, serverBuilder, services);
+        return new OpenApiLighty(config, serverBuilder, services, null);
     }
 
     private void startAndWaitLightyModule(final LightyModule lightyModule) throws RncLightyAppStartException {
