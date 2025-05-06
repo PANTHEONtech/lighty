@@ -16,7 +16,7 @@ import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
-import io.lighty.server.LightyServerBuilder;
+import io.lighty.server.LightyJettyServerProvider;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
@@ -59,7 +59,7 @@ public abstract class OpenApiLightyTestBase {
         lightyController.getServices().withJaxRsEndpoint(communityRestConf.getJaxRsEndpoint());
 
 
-        final LightyServerBuilder jettyServerBuilder = new LightyServerBuilder(new InetSocketAddress(
+        final LightyJettyServerProvider jettyServerBuilder = new LightyJettyServerProvider(new InetSocketAddress(
                 restConfConfiguration.getInetAddress(), restConfConfiguration.getHttpPort()));
 
         openApiModule = new OpenApiLighty(restConfConfiguration, jettyServerBuilder,
