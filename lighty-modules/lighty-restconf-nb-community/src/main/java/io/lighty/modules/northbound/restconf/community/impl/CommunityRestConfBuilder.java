@@ -8,7 +8,7 @@
 package io.lighty.modules.northbound.restconf.community.impl;
 
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
-import io.lighty.server.LightyServerBuilder;
+import io.lighty.server.LightyJettyServerProvider;
 
 /**
  * Builder for {@link CommunityRestConf}.
@@ -16,7 +16,7 @@ import io.lighty.server.LightyServerBuilder;
 public final class CommunityRestConfBuilder {
 
     private RestConfConfiguration restconfConfiguration = null;
-    private LightyServerBuilder lightyServerBuilder = null;
+    private LightyJettyServerProvider lightyServerBuilder = null;
 
 
     private CommunityRestConfBuilder(final RestConfConfiguration configuration) {
@@ -39,7 +39,7 @@ public final class CommunityRestConfBuilder {
      * @param serverBuilder input server builder.
      * @return instance of {@link CommunityRestConfBuilder}.
      */
-    public CommunityRestConfBuilder withLightyServer(final LightyServerBuilder serverBuilder) {
+    public CommunityRestConfBuilder withLightyServer(final LightyJettyServerProvider serverBuilder) {
         this.lightyServerBuilder = serverBuilder;
         return this;
     }
