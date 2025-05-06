@@ -9,6 +9,7 @@ package io.lighty.modules.northbound.restconf.community.impl;
 
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.server.LightyJettyServerProvider;
+import org.opendaylight.aaa.web.WebContextSecurer;
 
 /**
  * Builder for {@link CommunityRestConf}.
@@ -17,6 +18,7 @@ public final class CommunityRestConfBuilder {
 
     private RestConfConfiguration restconfConfiguration = null;
     private LightyJettyServerProvider lightyServerBuilder = null;
+    private WebContextSecurer webContextSecurer;
 
 
     private CommunityRestConfBuilder(final RestConfConfiguration configuration) {
@@ -45,6 +47,17 @@ public final class CommunityRestConfBuilder {
     }
 
     /**
+     * Inject lighty web securer.
+     *
+     * @param webSecurer input web securer (can be null for no auth).
+     * @return instance of {@link CommunityRestConfBuilder}.
+     */
+    public CommunityRestConfBuilder withWebSecurer(final WebContextSecurer webSecurer) {
+        this.webContextSecurer = webSecurer;
+        return this;
+    }
+
+    /**
      * Add ScheduledThreadPool.
      *
      * @param pool input scheduledThreadPool.
@@ -56,12 +69,16 @@ public final class CommunityRestConfBuilder {
      * @return instance of CommunityRestConf.
      */
     public CommunityRestConf build() {
-        return new CommunityRestConf(this.restconfConfiguration.getDomDataBroker(),
-            this.restconfConfiguration.getDomRpcService(),
-            this.restconfConfiguration.getDomActionService(), this.restconfConfiguration.getDomNotificationService(),
-            this.restconfConfiguration.getDomMountPointService(),
-            this.restconfConfiguration.getDomSchemaService(),
-            this.restconfConfiguration.getInetAddress(), this.restconfConfiguration.getHttpPort(),
-            this.restconfConfiguration.getRestconfServletContextPath(), this.lightyServerBuilder);
+        return new CommunityRestConf(
+            restconfConfiguration.getDomDataBroker(),
+            restconfConfiguration.getDomRpcService(),
+            restconfConfiguration.getDomActionService(),
+            restconfConfiguration.getDomMountPointService(),
+            restconfConfiguration.getDomSchemaService(),
+            restconfConfiguration.getInetAddress(),
+            restconfConfiguration.getHttpPort(),
+            lightyServerBuilder,
+            webContextSecurer
+        );
     }
 }
