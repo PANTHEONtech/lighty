@@ -93,6 +93,14 @@ sleep 1
 assertHttpStatusCode $(curl -o /dev/null -s -w "%{http_code} GET %{url_effective}\n" --user admin:admin -H "Content-Type: application/json" --insecure http://$MINIKUBE_IP:$CONTROLLER_PORT/restconf/operations)
 sleep 1
 
+# Ping simulator IP a few times
+echo "Pinging NETCONF simulator at $SIMULATOR_IP..."
+ping -c 3 "$SIMULATOR_IP"
+PING_STATUS=$?
+if [ $PING_STATUS -ne 0 ]; then
+  echo "ERROR: Simulator IP $SIMULATOR_IP is not reachable."
+fi
+
 # add node into topology
   assertHttpStatusCode $(curl -X PUT -o /dev/null -s -w "%{http_code} PUT %{url_effective}\n" http://"$MINIKUBE_IP":$CONTROLLER_PORT/restconf/data/network-topology:network-topology/topology=topology-netconf/node=node-"${SIMULATOR_IP//.}" \
   -H 'Content-Type: application/json' \
@@ -115,6 +123,17 @@ sleep 1
   }')
 sleep 1
 
+echo "Current topology:"
+curl --user admin:admin -H "Accept: application/json" --insecure http://"$MINIKUBE_IP":"$CONTROLLER_PORT"/restconf/data/network-topology:network-topology/topology=topology-netconf | jq
+
+echo "Attempting SSH connection to $SIMULATOR_IP..."
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -p "$SIMULATOR_PORT" admin@"$SIMULATOR_IP"
+
+SSH_STATUS=$?
+if [ $SSH_STATUS -ne 0 ]; then
+  echo "ERROR: SSH connection to $SIMULATOR_IP failed."
+fi
+
 printLine
 echo "Check if netconf-simulator is connected"
 connection_status="not-connected"
@@ -122,6 +141,7 @@ for i in {1..20} ; do
   connection_status=$(assertNodeConnected $(curl -X GET -s \
   'http://'"$MINIKUBE_IP"':'"$CONTROLLER_PORT"'/restconf/data/network-topology:network-topology/topology=topology-netconf/node='node-"${SIMULATOR_IP//.}"'/netconf-node-topology:netconf-node/connection-status'))
   echo -e "Connection status: $connection_status"
+
   if [[ $connection_status == "connected" ]]
   then
     echo -e "Test passed\n"
