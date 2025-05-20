@@ -16,10 +16,11 @@ import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
-import io.lighty.server.LightyServerBuilder;
+import io.lighty.server.LightyJettyServerProvider;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
+import org.opendaylight.restconf.openapi.jaxrs.JaxRsOpenApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
@@ -39,6 +40,7 @@ public abstract class OpenApiLightyTestBase {
     private LightyController lightyController;
     private OpenApiLighty openApiModule;
     private CommunityRestConf communityRestConf;
+    private JaxRsOpenApi jaxRsOpenApi;
 
     @BeforeClass(timeOut = 60_000)
     public void startControllerAndRestConf() throws Exception {
@@ -59,15 +61,16 @@ public abstract class OpenApiLightyTestBase {
         lightyController.getServices().withJaxRsEndpoint(communityRestConf.getJaxRsEndpoint());
 
 
-        final LightyServerBuilder jettyServerBuilder = new LightyServerBuilder(new InetSocketAddress(
+        final LightyJettyServerProvider jettyServerBuilder = new LightyJettyServerProvider(new InetSocketAddress(
                 restConfConfiguration.getInetAddress(), restConfConfiguration.getHttpPort()));
 
         openApiModule = new OpenApiLighty(restConfConfiguration, jettyServerBuilder,
-                lightyController.getServices());
+                lightyController.getServices(), null);
         LOG.info("Starting Lighty OpenApi");
         openApiModule.start().get();
         communityRestConf.startServer();
         LOG.info("Lighty OpenApi started");
+        jaxRsOpenApi = new JaxRsOpenApi(openApiModule.getjaxRsOpenApi());
     }
 
     @BeforeMethod
@@ -115,7 +118,7 @@ public abstract class OpenApiLightyTestBase {
         return lightyController;
     }
 
-    OpenApiLighty getOpenApiModule() {
-        return openApiModule;
+    JaxRsOpenApi getJaxRsOpenapi() {
+        return jaxRsOpenApi;
     }
 }
