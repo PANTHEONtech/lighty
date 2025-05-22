@@ -44,6 +44,12 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-->TODO remove this workaround when new version of spring-boot-starter-parent resolves https://security.snyk.io/vuln/SNYK-JAVA-ORGSPRINGFRAMEWORKSECURITY-10185684-->
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-core</artifactId>
+                <version>6.4.6</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
