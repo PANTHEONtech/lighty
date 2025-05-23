@@ -20,12 +20,17 @@ HTTP_STATUS_CODES=("200" "201" "202" "204")
 declare -a test_results
 
 # Start lighty-netconf-simulator in minikube network
-docker build -t lighty-netconf-simulator "${GITHUB_WORKSPACE}"/.github/workflows/lighty-rnc-app/simulator &> /dev/null
-docker run -d --rm --name netconf-simulator -p$SIMULATOR_PORT:$SIMULATOR_PORT lighty-netconf-simulator:latest
-echo "Docker with lighty-netconf-simulator is started.."
+docker build -t lighty-netconf-simulator:latest ${GITHUB_WORKSPACE}/.github/workflows/lighty-rnc-app/simulator
+kubectl delete pod netconf-simulator --ignore-not-found
+kubectl apply -f ${GITHUB_WORKSPACE}/.github/workflows/lighty-rnc-app/simulator/netconf-simulator.yaml
+
+# Wait until pod is ready
+echo "Waiting for netconf-simulator pod to be ready..."
+kubectl wait --for=condition=Ready pod/netconf-simulator --timeout=120s
+echo "lighty-netconf-simulator is started.."
 
 # Get netconf-simulator container's IP
-SIMULATOR_IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' netconf-simulator)
+SIMULATOR_IP=$(kubectl get pod netconf-simulator -o jsonpath="{.status.podIP}")
 
 # check if simulator has opened port
 for i in {1..20} ; do
@@ -280,4 +285,4 @@ sleep 15
 
 assertPodsTopologyResponse
 validateTestStatus
-docker stop netconf-simulator
+kubectl delete pod netconf-simulator --ignore-not-found
