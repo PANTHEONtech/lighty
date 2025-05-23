@@ -16,24 +16,28 @@ HTTP_STATUS_CODES=("200","201","202","204")
 declare -a test_results
 
 # Start lighty-netconf-simulator in minikube network
-docker build -t lighty-netconf-simulator ${GITHUB_WORKSPACE}/.github/workflows/lighty-rnc-app/simulator
-docker run -d --rm --name netconf-simulator -p$SIMULATOR_PORT:$SIMULATOR_PORT lighty-netconf-simulator:latest
+docker build -t lighty-netconf-simulator:latest ${GITHUB_WORKSPACE}/.github/workflows/lighty-rnc-app/simulator
+kubectl delete pod netconf-simulator --ignore-not-found
+kubectl apply -f ${GITHUB_WORKSPACE}/.github/workflows/lighty-rnc-app/simulator/netconf-simulator.yaml
 
-# Get netconf-simulator container's IP
-SIMULATOR_IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' netconf-simulator)
+# Wait until pod is ready
+echo "Waiting for netconf-simulator pod to be ready..."
+kubectl wait --for=condition=Ready pod/netconf-simulator --timeout=120s
+
+# Get simulator pod IP
+SIMULATOR_IP=$(kubectl get pod netconf-simulator -o jsonpath="{.status.podIP}")
 
 # List pods
-minikube kubectl -- get pods
+kubectl get pods
 
 # List Services
-minikube kubectl -- get services
+kubectl get Services
 
 # Logs pods
-pod_names=$(minikube kubectl -- get pods --no-headers -o custom-columns=":metadata.name")
-for pod_name in $pod_names; \
-do \
-  minikube kubectl -- logs $pod_name \
-;done
+for pod_name in $(kubectl get pods --no-headers -o custom-columns=":metadata.name"); do
+  echo -e "\n--- Logs for $pod_name ---"
+  kubectl logs "$pod_name"
+done
 
 # check if simulator has opened port
 for i in {1..20} ; do
@@ -163,4 +167,4 @@ then
   exit 1;
 fi
 
-docker stop netconf-simulator
+kubectl delete pod netconf-simulator --ignore-not-found
