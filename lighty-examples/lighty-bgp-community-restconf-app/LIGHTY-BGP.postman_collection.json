@@ -413,7 +413,7 @@
 	"variable": [
 		{
 			"key": "lighty-host",
-			"value": "http://127.0.0.1:8888"
+			"value": "http://127.0.1.1:8888"
 		}
 	]
 }

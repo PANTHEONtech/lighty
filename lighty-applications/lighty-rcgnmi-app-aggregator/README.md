@@ -73,7 +73,7 @@ Both of these options will load the YANG files into data-store, from which **lig
 2. Add the YANG model with the RPC request to the running app
 - 'YANG_MODEL' - Should have included escape characters before each double quotation marks character.
 ```
-curl --request POST 'http://127.0.0.1:8888/restconf/operations/gnmi-yang-storage:upload-yang-model' \
+curl --request POST 'http://127.0.1.1:8888/restconf/operations/gnmi-yang-storage:upload-yang-model' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "input": {
@@ -90,7 +90,7 @@ If the ```force-capability``` is specified, each ```GetRequest``` request contai
 
 ```
 curl -X PUT \
-  http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1 \
+  http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1 \
   -H 'Content-Type: application/json' \
   -d '{
     "node": [
@@ -129,7 +129,7 @@ lighty.io gNMI Southbound stores each of it's TLS client certificates in an MD-S
 ##### Add Certificate
 To add a client certificate, execute RPC `gnmi-certificate-storage:add-keystore-certificate`, for example:
 ```
-curl --request POST 'http://127.0.0.1:8888/restconf/operations/gnmi-certificate-storage:add-keystore-certificate' \
+curl --request POST 'http://127.0.1.1:8888/restconf/operations/gnmi-certificate-storage:add-keystore-certificate' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "input": {
@@ -154,7 +154,7 @@ By using this RPC, the client-key and passphrase will be encrypted using OpenDay
 To remove a certificate, execute RPC `gnmi-certificate-storage:remove-keystore-certificate`, for example, to delete a certificate stored under id `keystore-id-1`:
 
 ```
-curl --location --request POST 'http://127.0.0.1:8888/restconf/operations/gnmi-certificate-storage:remove-keystore-certificate' \
+curl --location --request POST 'http://127.0.1.1:8888/restconf/operations/gnmi-certificate-storage:remove-keystore-certificate' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "input": {
@@ -191,14 +191,14 @@ To establish connection and communication with gNMI device via RESTCONF, one nee
 To connect to a device with an [INSECURE/PLAINTEXT](#insecure-connection) connection, execute the following RESTCONF request:
 
 ```
-curl --request PUT 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1' \
+curl --request PUT 'http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "node": [
         {
             "node-id": "node-id-1",
             "connection-parameters": {
-                "host": "127.0.0.1",
+                "host": "127.0.1.1",
                 "port": 9090,
                 "connection-type": "INSECURE",
                 "credentials": {
@@ -221,14 +221,14 @@ To connect to a device with TLS, one needs to provide `keystore-id` under which 
 Example of creating mountpoint with custom certificates:
 
 ```
-curl --request PUT 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1' \
+curl --request PUT 'http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "node": [
         {
             "node-id": "node-id-1",
             "connection-parameters": {
-                "host": "127.0.0.1",
+                "host": "127.0.1.1",
                 "port": 9090,
                 "keystore-id": "keystore-id-1",
                 "credentials": {
@@ -246,14 +246,14 @@ curl --request PUT 'http://127.0.0.1:8888/restconf/data/network-topology:network
 ### Disconnect gNMI device
 To disconnect the device and to delete the mount point, simply DELETE the node from `gnmi-topology`
 ```
-curl --request DELETE 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1'
+curl --request DELETE 'http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1'
 ```
 
 ### State of Registered gNMI device
 Upon sending the [connection-request](#connecting-gnmi-device), lighty gNMI southbound writes the status of the connection to the node in datastore. To see the status, execute the following RESTCONF command: 
 
 ```
-curl --request GET 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1'
+curl --request GET 'http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1'
 ```
 
 If the device's mount point was created successfully, you should see `"node-status":"READY"` and all the capabilities, from which the schema context was created, in the response.  
@@ -270,12 +270,12 @@ For your convenience, we provide a [postman-collection](lighty-rcgnmi-app/lighty
 #### Example: RESTCONF gNMI GetRequest
 
 ```
-curl --location --request GET 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1/yang-ext:mount/openconfig-interfaces:interfaces'
+curl --location --request GET 'http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1/yang-ext:mount/openconfig-interfaces:interfaces'
 ```
 
 #### Example: RESTCONF gNMI SetRequest
 ```
-curl --request PUT 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1/yang-ext:mount/interfaces/interface=br0/ethernet/config' \
+curl --request PUT 'http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=node-id-1/yang-ext:mount/interfaces/interface=br0/ethernet/config' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "openconfig-if-ethernet:config": {
@@ -417,7 +417,7 @@ For example, if your initial json data contains node in gNMI topology:
           {
             "node-id": "device1",
             "connection-parameters": {
-              "host": "127.0.0.1",
+              "host": "127.0.1.1",
               "port": 9090,
               "connection-type" : "INSECURE"
             }
@@ -457,7 +457,7 @@ JAVA_OPTS = -Dcom.sun.management.jmxremote
              -Dcom.sun.management.jmxremote.local.only=false
              -Dcom.sun.management.jmxremote.port=<JMX_PORT>
              -Dcom.sun.management.jmxremote.rmi.port=<JMX_PORT>
-             -Djava.rmi.server.hostname=127.0.0.1
+             -Djava.rmi.server.hostname=127.0.1.1
 ```
 Then run `java $JAVA_OPTS -jar lighty-rcgnmi-app-<version> ...`
 

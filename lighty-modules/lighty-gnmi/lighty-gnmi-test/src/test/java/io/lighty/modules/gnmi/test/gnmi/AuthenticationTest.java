@@ -51,7 +51,7 @@ public class AuthenticationTest {
     private static final String WRONG_PASSWORD = "bar";
     private static final String UNAUTHENTICATED_WRONG_USERNAME_OR_PASSWORD
             = "io.grpc.StatusRuntimeException: UNAUTHENTICATED: Wrong username or password";
-    private static final String TARGET_HOST = "127.0.0.1";
+    private static final String TARGET_HOST = "127.0.1.1";
     private static final String INITIAL_DATA_PATH = "src/test/resources/json/initData";
     private static final String TEST_SCHEMA_PATH = "src/test/resources/additional/models";
     private static final String SIMULATOR_CONFIG = "/json/simulator_config.json";

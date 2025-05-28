@@ -43,7 +43,7 @@ public class FileServiceTest {
     private static final String SERVER_KEY = "src/test/resources/certs/server-pkcs8.key";
     private static final String SERVER_CERT = "src/test/resources/certs/server.crt";
     private static final int  TARGET_PORT = 10161;
-    private static final String TARGET_HOST = "127.0.0.1";
+    private static final String TARGET_HOST = "127.0.1.1";
     private static final int DUMMYFILE_CHUNKS = 5;
 
     private static SessionProvider sessionProvider;

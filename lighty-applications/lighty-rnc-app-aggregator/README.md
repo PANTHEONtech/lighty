@@ -78,7 +78,7 @@ By default, a test certificate is used (`lighty-rnc-module/src/main/resources/ke
 For generating a JKS file `keytool` utility can be used. Example of command to regenerate keystore with self-signed certificate:
 
 ```
-keytool -genkey -alias lightyio -keyalg RSA -keystore lightyio.jks -keysize 2048 -ext san=dns:lighty.io,dns:lightyio,dns:restconf.lighty.io,dns:management.lighty.io,dns:localhost,ip:127.0.0.1,ip:0.0.0.0 -validity 2000
+keytool -genkey -alias lightyio -keyalg RSA -keystore lightyio.jks -keysize 2048 -ext san=dns:lighty.io,dns:lightyio,dns:restconf.lighty.io,dns:management.lighty.io,dns:localhost,ip:127.0.1.1,ip:0.0.0.0 -validity 2000
 ```
 which creates new `lightyio.jks` keystore file with hostnames: `lighty.io, lightyio, restconf.lighty.io, management.lighty.io, localhost`
 
@@ -206,7 +206,7 @@ JAVA_OPTS = -Dcom.sun.management.jmxremote
              -Dcom.sun.management.jmxremote.local.only=false
              -Dcom.sun.management.jmxremote.port=<JMX_PORT>
              -Dcom.sun.management.jmxremote.rmi.port=<JMX_PORT>
-             -Djava.rmi.server.hostname=127.0.0.1
+             -Djava.rmi.server.hostname=127.0.1.1
 ```
 Then run `java $JAVA_OPTS -jar lighty-rnc-app-<version> ...`
 

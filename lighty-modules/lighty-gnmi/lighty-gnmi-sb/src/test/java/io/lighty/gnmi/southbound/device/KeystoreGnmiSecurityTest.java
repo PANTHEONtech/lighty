@@ -97,7 +97,7 @@ public class KeystoreGnmiSecurityTest {
     private static final String TEST_NODE = "test_node";
     private static final String TEST_USERNAME = "Test_Username";
     private static final String TEST_PASSWORD = "Test_Password";
-    private static final String ADDRESS = "127.0.0.1";
+    private static final String ADDRESS = "127.0.1.1";
 
     private static final AAAEncryptionServiceImpl AAA_ENCRYPTION_SERVICE = createEncryptionServiceWithErrorHandling();
     private static final String CA_CRT = "/certs/ca.crt";

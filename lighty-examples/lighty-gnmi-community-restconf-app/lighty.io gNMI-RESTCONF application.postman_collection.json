@@ -20,7 +20,7 @@
           }
         },
         "url": {
-          "raw": "http://127.0.0.1:8888/restconf/operations/gnmi-certificate-storage:add-keystore-certificate",
+          "raw": "http://127.0.1.1:8888/restconf/operations/gnmi-certificate-storage:add-keystore-certificate",
           "protocol": "http",
           "host": [
             "127",
@@ -56,7 +56,7 @@
           }
         },
         "url": {
-          "raw": "http://127.0.0.1:8888/restconf/data/gnmi-certificate-storage:keystore=keystore-id-1",
+          "raw": "http://127.0.1.1:8888/restconf/data/gnmi-certificate-storage:keystore=keystore-id-1",
           "protocol": "http",
           "host": [
             "127",
@@ -81,7 +81,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"node\": [\n        {\n            \"node-id\": \"gnmi-simulator\",\n            \"connection-parameters\": {\n                \"host\": \"127.0.0.1\",\n                \"port\": 10161,\n                \"keystore-id\": \"keystore-id-1\",\n                \"credentials\": {\n                    \"username\": \"admin\",\n                    \"password\": \"admin\"\n                }\n            },\n            \"extensions-parameters\": {\n                \"gnmi-parameters\": {\n                    \"use-model-name-prefix\": true\n                }\n            }\n        }\n    ]\n}",
+          "raw": "{\n    \"node\": [\n        {\n            \"node-id\": \"gnmi-simulator\",\n            \"connection-parameters\": {\n                \"host\": \"127.0.1.1\",\n                \"port\": 10161,\n                \"keystore-id\": \"keystore-id-1\",\n                \"credentials\": {\n                    \"username\": \"admin\",\n                    \"password\": \"admin\"\n                }\n            },\n            \"extensions-parameters\": {\n                \"gnmi-parameters\": {\n                    \"use-model-name-prefix\": true\n                }\n            }\n        }\n    ]\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -89,7 +89,7 @@
           }
         },
         "url": {
-          "raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator",
+          "raw": "http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator",
           "protocol": "http",
           "host": [
             "127",
@@ -127,7 +127,7 @@
           }
         },
         "url": {
-          "raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator",
+          "raw": "http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator",
           "protocol": "http",
           "host": [
             "127",
@@ -165,7 +165,7 @@
           }
         },
         "url": {
-          "raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-interfaces:interfaces",
+          "raw": "http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-interfaces:interfaces",
           "protocol": "http",
           "host": [
             "127",
@@ -205,7 +205,7 @@
           }
         },
         "url": {
-          "raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system",
+          "raw": "http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system",
           "protocol": "http",
           "host": [
             "127",
@@ -245,7 +245,7 @@
           }
         },
         "url": {
-          "raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication",
+          "raw": "http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication",
           "protocol": "http",
           "host": [
             "127",
@@ -284,7 +284,7 @@
           }
         },
         "url": {
-          "raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication",
+          "raw": "http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication",
           "protocol": "http",
           "host": [
             "127",
@@ -326,7 +326,7 @@
           }
         },
         "url": {
-          "raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication?content=config",
+          "raw": "http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication?content=config",
           "protocol": "http",
           "host": [
             "127",
@@ -374,7 +374,7 @@
           }
         },
         "url": {
-          "raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication?content=nonconfig",
+          "raw": "http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication?content=nonconfig",
           "protocol": "http",
           "host": [
             "127",
@@ -419,7 +419,7 @@
           }
         },
         "url": {
-          "raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication/config",
+          "raw": "http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication/config",
           "protocol": "http",
           "host": [
             "127",
@@ -459,7 +459,7 @@
           }
         },
         "url": {
-          "raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication/config",
+          "raw": "http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication/config",
           "protocol": "http",
           "host": [
             "127",
@@ -499,7 +499,7 @@
           }
         },
         "url": {
-          "raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator",
+          "raw": "http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator",
           "protocol": "http",
           "host": [
             "127",

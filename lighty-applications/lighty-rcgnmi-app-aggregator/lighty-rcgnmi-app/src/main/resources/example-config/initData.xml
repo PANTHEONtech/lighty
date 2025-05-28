@@ -6,7 +6,7 @@
             <node>
                 <node-id>device1</node-id>
                 <connection-parameters xmlns="urn:lighty:gnmi:topology">
-                    <host>127.0.0.1</host>
+                    <host>127.0.1.1</host>
                     <port>9090</port>
                     <connection-type>INSECURE</connection-type>
                 </connection-parameters>

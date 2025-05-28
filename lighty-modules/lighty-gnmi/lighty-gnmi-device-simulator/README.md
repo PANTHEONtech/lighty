@@ -153,7 +153,7 @@ This example will show how to execute basic operations on lighty.io gNMI device 
    GnmiSimulatorConfiguration gnmiSimulatorConfiguration = new GnmiSimulatorConfiguration()
             .setYangsPath(YANG_MODELS_PATH)
             .setInitialConfigDataPath(INITIAL_CONFIGURATION_PATH)
-            .setTargetAddress("127.0.0.1")
+            .setTargetAddress("127.0.1.1")
             .setCertPath(SERVER_CERTIFICATE)
             .setCertKeyPath(SERVER_PKCS8_KEY)
             .setUsername("Admin")
@@ -167,7 +167,7 @@ This example will show how to execute basic operations on lighty.io gNMI device 
 
 3) Get capabilities from gNMI device simulator
    ```
-   gnmic -a 127.0.0.1:9090 capabilities --tls-ca CA_CERTIFICATE --tls-cert CLIENT_CERTIFICATE --tls-key CLIENT_KEY \
+   gnmic -a 127.0.1.1:9090 capabilities --tls-ca CA_CERTIFICATE --tls-cert CLIENT_CERTIFICATE --tls-key CLIENT_KEY \
        -u Admin -p Admin
 
    gNMI version: 0.7.0
@@ -194,7 +194,7 @@ This example will show how to execute basic operations on lighty.io gNMI device 
 
 4) Get data from gNMI device simulator
    ```
-   gnmic -a 127.0.0.1:9090 --tls-ca CA_CERTIFICATE --tls-cert CLIENT_CERTIFICATE --tls-key CLIENT_KEY \
+   gnmic -a 127.0.1.1:9090 --tls-ca CA_CERTIFICATE --tls-cert CLIENT_CERTIFICATE --tls-key CLIENT_KEY \
    --path interfaces/interface[name=br0]/ethernet/config --encoding json_ietf -u Admin -p Admin
    [
      {
@@ -225,7 +225,7 @@ This example will show how to execute basic operations on lighty.io gNMI device 
       {"enable-flow-control": false,"openconfig-if-aggregate:aggregate-id": "admin","auto-negotiate": true,"port-speed": "openconfig-if-ethernet:SPEED_10MB"}
       ```
    ```
-   $ gnmic -a 127.0.0.1:9090 --tls-ca CA_CERTIFICATE --tls-cert CLIENT_CERTIFICATE --tls-key CLIENT_KEY \
+   $ gnmic -a 127.0.1.1:9090 --tls-ca CA_CERTIFICATE --tls-cert CLIENT_CERTIFICATE --tls-key CLIENT_KEY \
      set --update-path interfaces/interface[name=br0]/ethernet/config --update-file updateFile.json \
      --encoding json_ietf -u Admin -p Admin
    {

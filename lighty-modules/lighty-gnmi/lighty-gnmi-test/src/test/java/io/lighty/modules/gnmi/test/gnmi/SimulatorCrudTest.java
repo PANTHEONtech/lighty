@@ -40,7 +40,7 @@ public class SimulatorCrudTest {
     private static final Logger LOG = LoggerFactory.getLogger(SimulatorCrudTest.class);
 
     private static final int TARGET_PORT = 10161;
-    private static final String TARGET_HOST = "127.0.0.1";
+    private static final String TARGET_HOST = "127.0.1.1";
     private static final String INITIAL_DATA_PATH = "src/test/resources/json/initData";
     private static final String SIMULATOR_CONFIG = "/json/simulator_config.json";
     private static final String SERVER_KEY = "src/test/resources/certs/server-pkcs8.key";
