@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n      \"netconf-topology:node\" :[ \n    \t{\n\t      \"node-id\": \"node-1\",\n\t      \"host\": \"127.0.0.1\",\n          \"port\": 17830,\n\t      \"username\": \"admin\",\n\t      \"password\": \"admin\",\n\t      \"tcp-only\": false,\n\t      \"keepalive-delay\": 0\n        }\n    ]\n  }",
+							"raw": "{\n      \"netconf-topology:node\" :[ \n    \t{\n\t      \"node-id\": \"node-1\",\n\t      \"host\": \"127.0.1.1\",\n          \"port\": 17830,\n\t      \"username\": \"admin\",\n\t      \"password\": \"admin\",\n\t      \"tcp-only\": false,\n\t      \"keepalive-delay\": 0\n        }\n    ]\n  }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -24,7 +24,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=topology-netconf/node=node-1",
+							"raw": "http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=topology-netconf/node=node-1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -50,7 +50,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=topology-netconf/node=node-1",
+							"raw": "http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=topology-netconf/node=node-1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -76,7 +76,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=topology-netconf/node=node-1",
+							"raw": "http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=topology-netconf/node=node-1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -107,7 +107,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=topology-netconf/node=node-1/yang-ext:mount/",
+							"raw": "http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=topology-netconf/node=node-1/yang-ext:mount/",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -144,7 +144,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=topology-netconf/node=node-1/yang-ext:mount/toaster:toaster",
+							"raw": "http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=topology-netconf/node=node-1/yang-ext:mount/toaster:toaster",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -336,7 +336,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1/restconf/data",
+							"raw": "http://127.0.1.1/restconf/data",
 							"protocol": "http",
 							"host": [
 								"127",

@@ -109,7 +109,7 @@ public class ShiroInitializationTest {
 
         // Create a LightyServerBuilder object
         final LightyJettyServerProvider serverBuilder = new LightyJettyServerProvider(
-                new InetSocketAddress("localhost/127.0.0.1", 8182));
+                new InetSocketAddress("localhost/127.0.1.1", 8182));
 
         // Create an AAALighty object
         this.aaaLighty = new AAALighty(bindingDataBroker, null, serverBuilder, AAA_CONFIGURATION);

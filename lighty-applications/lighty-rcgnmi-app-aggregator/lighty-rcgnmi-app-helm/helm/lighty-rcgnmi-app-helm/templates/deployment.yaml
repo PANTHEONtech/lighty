@@ -67,7 +67,7 @@ spec:
                       -Dcom.sun.management.jmxremote.local.only=false
                       -Dcom.sun.management.jmxremote.port={{ .Values.lighty.jmx.jmxPort }}
                       -Dcom.sun.management.jmxremote.rmi.port={{ .Values.lighty.jmx.jmxPort }}
-                      -Djava.rmi.server.hostname=127.0.0.1
+                      -Djava.rmi.server.hostname=127.0.1.1
                       -Dlog4j.configurationFile={{ .Values.lighty.configDirectoryName }}/{{ .Values.lighty.loggerConfigFilename }}"
             {{ else }}
             - name: JAVA_OPTS

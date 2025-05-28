@@ -47,7 +47,7 @@ public abstract class GnmiITBase {
     private static final Logger LOG = LoggerFactory.getLogger(GnmiITBase.class);
 
     protected static final int DEVICE_PORT = 9090;
-    protected static final String DEVICE_IP = "127.0.0.1";
+    protected static final String DEVICE_IP = "127.0.1.1";
     protected static final Duration REQUEST_TIMEOUT_DURATION = Duration.ofMillis(10_000L);
     protected static final Duration POLL_INTERVAL_DURATION = Duration.ofMillis(1_000L);
     protected static final Duration WAIT_TIME_DURATION = Duration.ofMillis(10_000L);

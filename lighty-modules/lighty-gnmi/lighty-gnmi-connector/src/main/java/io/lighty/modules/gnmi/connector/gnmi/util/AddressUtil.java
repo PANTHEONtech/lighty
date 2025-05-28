@@ -15,5 +15,5 @@ public final class AddressUtil {
     }
 
     public static final String ANY_IPV4 = "0.0.0.0";
-    public static final String LOCALHOST = "127.0.0.1";
+    public static final String LOCALHOST = "127.0.1.1";
 }

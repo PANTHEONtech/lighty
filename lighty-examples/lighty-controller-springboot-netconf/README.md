@@ -112,7 +112,7 @@ curl -i -X PUT \
 '{
     "username": "admin",
     "password": "admin",
-    "address": "127.0.0.1",
+    "address": "127.0.1.1",
     "port": "17830"
 }' \
 "http://localhost:8888/services/data/netconf/id/test-device"

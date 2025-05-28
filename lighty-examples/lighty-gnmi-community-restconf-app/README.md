@@ -66,7 +66,7 @@ Certificates used in this example can be found [here](certificates). Only the cl
 to keystore with RPC. This RPC stores certificates in configuration data-store and encrypt their private key and passphrase.
 Adding required certificates for gNMI device to lighty.io gNMI application is performed by postman request `'Add Keystore'`.
 ```
-curl --request POST 'http://127.0.0.1:8888/restconf/operations/gnmi-certificate-storage:add-keystore-certificate' \
+curl --request POST 'http://127.0.1.1:8888/restconf/operations/gnmi-certificate-storage:add-keystore-certificate' \
 --header 'Content-Type: application/json' \
 --data-raw "{
     \"input\": {
@@ -82,14 +82,14 @@ curl --request POST 'http://127.0.0.1:8888/restconf/operations/gnmi-certificate-
 ### Connect simulator to controller
 Simulated gNMI device can be connected with `'Connect device'` request located in postman collection.
 ```
-curl --request PUT 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator' \
+curl --request PUT 'http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "node": [
         {
             "node-id": "gnmi-simulator",
             "connection-parameters": {
-                "host": "127.0.0.1",
+                "host": "127.0.1.1",
                 "port": 10161,
                 "keystore-id": "keystore-id-1",
                 "credentials": {
@@ -123,14 +123,14 @@ Provided postman-collection contains few examples for getting data from gNMI dev
 and `'Get Authentication'`. 
 The `'Get*'` requests show how to obtain information from controller, e.g. to get authentication information:
 ```
-curl --request GET 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication'
+curl --request GET 'http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication'
 ```
 
 ### Write configuration to device
 To write authentication information the PUT request `'Put Authentication config/state'` from postman collection can be
 used.
 ```
-curl --request PUT 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication' \
+curl --request PUT 'http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "openconfig-system:authentication": {
@@ -151,19 +151,19 @@ This request replace data in `authentication/config` container, remove the `admi
 `state`. All request setting the specific information on gNMI simulator are applying into CONFIGURATION datastore.
 To view and check changed configuration, the `'Get Authentication from CONFIG'` request is located in postman collection.
 ```
-curl --request GET 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication?content=config'
+curl --request GET 'http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication?content=config'
 ```
 To view actual running configuration of device, it is required to sent request with `?content=nonconfig` parameter
 at the end of the URL or execute request from postman collection `'Get Authentication from STATE'`.
 ```
-curl --request GET 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication?content=nonconfig'
+curl --request GET 'http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication?content=nonconfig'
 ```
 
 ### Update configuration on device
 To update data, the example request `'Update config data'` can be used. This request append new type to config
 authentication-method.
 ```
-curl --request PATCH 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication/config' \
+curl --request PATCH 'http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication/config' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "openconfig-system:config": {
@@ -175,22 +175,22 @@ curl --request PATCH 'http://127.0.0.1:8888/restconf/data/network-topology:netwo
 ```
 To validate request send GET request `'Get Authentication from CONFIG'`.
 ```
-curl --request GET 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication?content=config'
+curl --request GET 'http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication?content=config'
 ```
 
 ### Delete configuration from device
 For deleting `config` container send request `'Delete authentication config'`.
 ```
-curl --location --request DELETE 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication/config'
+curl --location --request DELETE 'http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication/config'
 ```
 To validate request send GET request `'Get Authentication from CONFIG'`.
 ```
-curl --request GET 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication?content=config'
+curl --request GET 'http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication?content=config'
 ```
 
 ### Disconnect the device from controller
 When is required restart of connection or removal of device, just send request `'Remove device'`.
 ```
-curl --request DELETE 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator'
+curl --request DELETE 'http://127.0.1.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator'
 ```
 For restarting connection it is required to send request `'Connect device'`

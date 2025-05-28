@@ -246,7 +246,7 @@ class SessionInitializeTest {
                 .setNodeId(new NodeId(nameOfNode))
                 .addAugmentation(new GnmiNodeBuilder().setConnectionParameters(
                         new ConnectionParametersBuilder()
-                                .setHost(new Host(new IpAddress(Ipv4Address.getDefaultInstance("127.0.0.1"))))
+                                .setHost(new Host(new IpAddress(Ipv4Address.getDefaultInstance("127.0.1.1"))))
                                 .setPort(new PortNumber(Uint16.valueOf(port)))
                                 .build())
                         .build())

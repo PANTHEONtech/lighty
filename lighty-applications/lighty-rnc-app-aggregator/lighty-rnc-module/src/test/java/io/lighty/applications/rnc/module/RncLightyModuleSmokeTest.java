@@ -33,8 +33,8 @@ import org.testng.annotations.Test;
 
 public class RncLightyModuleSmokeTest {
 
-    private static final String HTTPS_URI = "https://127.0.0.1:8888";
-    private static final String HTTP_URI = "http://127.0.0.1:8888";
+    private static final String HTTPS_URI = "https://127.0.1.1:8888";
+    private static final String HTTP_URI = "http://127.0.1.1:8888";
     private static final String TOPOLOGY_PATH = "/restconf/data/network-topology:network-topology";
 
     @Test

@@ -1,6 +1,6 @@
 {
   "gnmi_simulator": {
-    "targetAddress": "127.0.0.1",
+    "targetAddress": "127.0.1.1",
     "targetPort": 10161,
     "schemaServiceConfig": {
       "topLevelModels": [

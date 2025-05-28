@@ -10,7 +10,7 @@
                 <tcp-only xmlns="urn:opendaylight:netconf-node-topology">false</tcp-only>
                 <username xmlns="urn:opendaylight:netconf-node-topology">admin</username>
                 <password xmlns="urn:opendaylight:netconf-node-topology">admin</password>
-                <host xmlns="urn:opendaylight:netconf-node-topology">127.0.0.1</host>
+                <host xmlns="urn:opendaylight:netconf-node-topology">127.0.1.1</host>
                 <keepalive-delay xmlns="urn:opendaylight:netconf-node-topology">0</keepalive-delay>
             </node>
         </topology>

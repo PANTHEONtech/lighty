@@ -29,7 +29,7 @@ Once example application has been started using command ```java -jar lighty-comm
 RESTCONF web interface is available at URL ```http://localhost:8888/restconf/*```
 
 ##### URLs to start with
-* __POST__ ```http://127.0.0.1:8888/restconf/data/example-data-center:device/start```
+* __POST__ ```http://127.0.1.1:8888/restconf/data/example-data-center:device/start```
 
 In this example you invoke an action operating on the container "device" defined by
 [example-data-center](../../lighty-models/test/lighty-example-data-center/src/main/yang/example-data-center@2018-08-07.yang)
@@ -57,7 +57,7 @@ No data are modified during the execution. The implementation is using DOM API.
     }
 }
 ```
-* __POST__ ```http://127.0.0.1:8888/restconf/data/example-data-center:server=server-earth/reset```
+* __POST__ ```http://127.0.1.1:8888/restconf/data/example-data-center:server=server-earth/reset```
 
 In this example you invoke an action operating on the list "reset" defined by
 [example-data-center](../../lighty-models/test/lighty-example-data-center/src/main/yang/example-data-center@2018-08-07.yang)
