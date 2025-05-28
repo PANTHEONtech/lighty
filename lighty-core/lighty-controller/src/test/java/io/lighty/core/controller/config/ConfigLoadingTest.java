@@ -7,7 +7,6 @@
  */
 package io.lighty.core.controller.config;
 
-import akka.util.Timeout;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.lighty.core.controller.impl.config.ConfigurationException;
@@ -20,6 +19,7 @@ import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import org.apache.pekko.util.Timeout;
 import org.opendaylight.controller.cluster.datastore.DatastoreContext;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
