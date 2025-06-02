@@ -58,10 +58,9 @@ public final class CommunityRestConfBuilder {
     public CommunityRestConf build() {
         return new CommunityRestConf(this.restconfConfiguration.getDomDataBroker(),
             this.restconfConfiguration.getDomRpcService(),
-            this.restconfConfiguration.getDomActionService(), this.restconfConfiguration.getDomNotificationService(),
+            this.restconfConfiguration.getDomActionService(),
             this.restconfConfiguration.getDomMountPointService(),
             this.restconfConfiguration.getDomSchemaService(),
-            this.restconfConfiguration.getInetAddress(), this.restconfConfiguration.getHttpPort(),
-            this.restconfConfiguration.getRestconfServletContextPath(), this.lightyServerBuilder);
+            this.restconfConfiguration.getHttpPort());
     }
 }

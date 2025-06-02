@@ -31,6 +31,8 @@ public class LightyServerBuilder {
 
     protected final InetSocketAddress inetSocketAddress;
     protected final List<Handler> contexts;
+
+    // TODO use WebServer and its implementation JettyWebServer to #registerWebContext
     protected Server server;
 
     /**

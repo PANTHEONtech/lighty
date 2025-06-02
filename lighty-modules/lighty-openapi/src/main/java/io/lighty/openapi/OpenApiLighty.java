@@ -81,6 +81,8 @@ public class OpenApiLighty extends AbstractLightyModule {
         addStaticResources(mainHandler, "/explorer", "static-content");
 
         LOG.info("adding context handler ...");
+        // TODO to see how to build context see: org.opendaylight.restconf.openapi.jaxrs.WebInitializer
+        // jettyServerBuilder.registerWebContext(context);
         jettyServerBuilder.addContextHandler(contexts);
         return true;
     }
