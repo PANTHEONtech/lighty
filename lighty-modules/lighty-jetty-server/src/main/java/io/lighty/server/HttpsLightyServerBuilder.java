@@ -13,29 +13,30 @@ import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
-import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
 
-public class HttpsLightyServerBuilder extends LightyServerBuilder {
+public class HttpsLightyServerBuilder extends LightyJettyServerProvider {
     private final SecurityConfig securityConfig;
 
     public HttpsLightyServerBuilder(final InetSocketAddress inetSocketAddress, final SecurityConfig securityConfig) {
         super(inetSocketAddress);
-        this.server = new Server();
         this.securityConfig = securityConfig;
+        this.server = new LightyJettyWebServer();
     }
 
-    @Override
-    public Server build() {
-        final Server server = super.build();
+    public LightyJettyWebServer getServer() {
+
         final SslConnectionFactory ssl = securityConfig.getSslConnectionFactory(HttpVersion.HTTP_1_1.asString());
-        final ServerConnector sslConnector = new ServerConnector(server,
+
+        final var jettyServer = server.getServer();
+
+        final ServerConnector sslConnector = new ServerConnector(jettyServer,
                 ssl, httpConfiguration(this.inetSocketAddress));
         sslConnector.setPort(this.inetSocketAddress.getPort());
 
-        server.addConnector(sslConnector);
-        return server;
+        jettyServer.addConnector(sslConnector);
+        return super.server;
     }
 
     private HttpConnectionFactory httpConfiguration(final InetSocketAddress inetSocketAddress) {

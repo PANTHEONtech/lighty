@@ -68,6 +68,10 @@
             <groupId>org.opendaylight.aaa.web</groupId>
             <artifactId>servlet-jersey2</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+        </dependency>
 
         <!--Tests-->
         <dependency>

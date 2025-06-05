@@ -9,24 +9,26 @@ package io.lighty.aaa;
 
 import io.lighty.aaa.config.AAAConfiguration;
 import io.lighty.core.controller.api.AbstractLightyModule;
-import io.lighty.server.LightyServerBuilder;
+import io.lighty.server.LightyJettyServerProvider;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import org.opendaylight.aaa.api.CredentialAuth;
 import org.opendaylight.aaa.api.PasswordCredentials;
+import org.opendaylight.aaa.web.WebContextSecurer;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 
 public final class AAALighty extends AbstractLightyModule {
 
     private final AAAShiroProviderHandler aaaShiroProviderHandler;
-    private final LightyServerBuilder server;
+    private final LightyJettyServerProvider server;
     private final CredentialAuth<PasswordCredentials> credentialAuth;
     private final DataBroker dataBroker;
+    private WebContextSecurer webContextSecurer;
 
     private final AAAConfiguration aaaConfiguration;
 
     public AAALighty(final DataBroker dataBroker, final CredentialAuth<PasswordCredentials> credentialAuth,
-            final LightyServerBuilder server, final AAAConfiguration config) {
+            final LightyJettyServerProvider server, final AAAConfiguration config) {
         this.dataBroker = dataBroker;
         this.aaaConfiguration = config;
         this.credentialAuth = credentialAuth;
@@ -41,6 +43,7 @@ public final class AAALighty extends AbstractLightyModule {
         final CountDownLatch cdl = new CountDownLatch(1);
         newInstance.whenComplete((t, u) -> {
             AAALighty.this.aaaShiroProviderHandler.setAaaLightyShiroProvider(t);
+            this.webContextSecurer = aaaShiroProviderHandler.getAaaLightyShiroProvider().getWebContextSecurer();
             cdl.countDown();
         });
 
@@ -69,5 +72,9 @@ public final class AAALighty extends AbstractLightyModule {
         AAALightyShiroProvider getAaaLightyShiroProvider() {
             return this.aaaLightyShiroProvider;
         }
+    }
+
+    public WebContextSecurer getWebContextSecurer() {
+        return webContextSecurer;
     }
 }
