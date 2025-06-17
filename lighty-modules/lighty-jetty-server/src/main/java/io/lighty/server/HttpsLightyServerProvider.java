@@ -9,32 +9,49 @@ package io.lighty.server;
 
 import io.lighty.server.config.SecurityConfig;
 import java.net.InetSocketAddress;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.eclipse.jetty.http.HttpVersion;
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
-import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class HttpsLightyServerBuilder extends LightyServerBuilder {
-    private final SecurityConfig securityConfig;
+public class HttpsLightyServerProvider extends LightyJettyServerProvider {
+    private static final Logger LOG = LoggerFactory.getLogger(HttpsLightyServerProvider.class);
 
-    public HttpsLightyServerBuilder(final InetSocketAddress inetSocketAddress, final SecurityConfig securityConfig) {
-        super(inetSocketAddress);
-        this.server = new Server();
-        this.securityConfig = securityConfig;
+    public HttpsLightyServerProvider(final InetSocketAddress inetSocketAddress,
+        final SecurityConfig securityConfig) {
+        super(inetSocketAddress); // Let the superclass handle server creation
+        final SslConnectionFactory ssl = securityConfig.getSslConnectionFactory(HttpVersion.HTTP_1_1.asString());
+
+        final var jettyServer = server.getServer();
+
+        // Clear connectors added by superclass
+        for (Connector connector : jettyServer.getConnectors()) {
+            try {
+                connector.shutdown().get(5000, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                LOG.warn("Failed to stop existing connector", e);
+            }
+            jettyServer.removeConnector(connector);
+        }
+
+        // Add only the HTTPS connector
+        final ServerConnector sslConnector = new ServerConnector(jettyServer,
+            ssl, httpConfiguration(this.inetSocketAddress));
+        sslConnector.setPort(this.inetSocketAddress.getPort());
+
+        jettyServer.addConnector(sslConnector);
     }
 
     @Override
-    public Server build() {
-        final Server server = super.build();
-        final SslConnectionFactory ssl = securityConfig.getSslConnectionFactory(HttpVersion.HTTP_1_1.asString());
-        final ServerConnector sslConnector = new ServerConnector(server,
-                ssl, httpConfiguration(this.inetSocketAddress));
-        sslConnector.setPort(this.inetSocketAddress.getPort());
-
-        server.addConnector(sslConnector);
+    public LightyJettyWebServer getServer() {
         return server;
     }
 
@@ -48,3 +65,4 @@ public class HttpsLightyServerBuilder extends LightyServerBuilder {
         return new HttpConnectionFactory(httpsConfig);
     }
 }
+

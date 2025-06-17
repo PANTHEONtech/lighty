@@ -9,28 +9,37 @@ package io.lighty.server;
 
 import io.lighty.server.config.SecurityConfig;
 import java.net.InetSocketAddress;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.eclipse.jetty.alpn.server.ALPNServerConnectionFactory;
 import org.eclipse.jetty.http.HttpScheme;
 import org.eclipse.jetty.http2.server.HTTP2ServerConnectionFactory;
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
-import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class Http2LightyServerBuilder extends LightyServerBuilder {
+public class Http2LightyServerProvider extends LightyJettyServerProvider {
+    private static final Logger LOG = LoggerFactory.getLogger(Http2LightyServerProvider.class);
 
-    private final SecurityConfig securityConfig;
-
-    public Http2LightyServerBuilder(final InetSocketAddress inetSocketAddress, final SecurityConfig config) {
+    public Http2LightyServerProvider(final InetSocketAddress inetSocketAddress, final SecurityConfig config) {
         super(inetSocketAddress);
-        this.securityConfig = config;
-    }
+        final var jettyServer = server.getServer();
 
-    @Override
-    public Server build() {
-        super.server = new Server();
-        final var server = super.build();
+        // Clear connectors added by superclass
+        for (Connector connector : jettyServer.getConnectors()) {
+            try {
+                connector.shutdown().get(5000, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                LOG.warn("Failed to stop existing connector", e);
+            }
+            jettyServer.removeConnector(connector);
+        }
+
         // HTTPS Configuration
         final var httpsConfig = new HttpConfiguration();
         httpsConfig.setSecureScheme(HttpScheme.HTTPS.asString());
@@ -45,12 +54,17 @@ public class Http2LightyServerBuilder extends LightyServerBuilder {
         alpn.setDefaultProtocol(h2.getProtocol());
 
         // SSL Connection Factory
-        final var ssl = securityConfig.getSslConnectionFactory(alpn.getProtocol());
+        final var ssl = config.getSslConnectionFactory(alpn.getProtocol());
 
         // HTTP/2 Connector
-        final var sslConnector = new ServerConnector(server, ssl, alpn, h2, new HttpConnectionFactory(httpsConfig));
+        final var sslConnector = new ServerConnector(
+            jettyServer, ssl, alpn, h2, new HttpConnectionFactory(httpsConfig));
         sslConnector.setPort(this.inetSocketAddress.getPort());
-        server.addConnector(sslConnector);
+        jettyServer.addConnector(sslConnector);
+    }
+
+    @Override
+    public LightyJettyWebServer getServer() {
         return server;
     }
 }

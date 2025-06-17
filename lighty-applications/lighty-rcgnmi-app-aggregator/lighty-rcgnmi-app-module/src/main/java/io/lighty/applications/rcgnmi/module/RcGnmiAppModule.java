@@ -82,6 +82,7 @@ public class RcGnmiAppModule {
 
             this.lightyRestconf = initRestconf(this.appModuleConfig.getRestconfConfig(),
                     this.lightyController.getServices());
+            lightyController.getServices().withJaxRsEndpoint(lightyRestconf.getJaxRsEndpoint());
             startAndWaitLightyModule(this.lightyRestconf);
 
             final AAAEncryptionService encryptionService = createEncryptionServiceWithErrorHandling();
@@ -89,6 +90,7 @@ public class RcGnmiAppModule {
                     this.gnmiExecutorService, this.appModuleConfig.getGnmiConfiguration(), encryptionService,
                     this.customReactor);
             startAndWaitLightyModule(this.gnmiSouthboundModule);
+            lightyRestconf.startServer();
 
         } catch (RcGnmiAppException e) {
             LOG.error("Unable to initialize and start RCgNMI lighty.io module!", e);
