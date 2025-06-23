@@ -48,6 +48,7 @@ public final class RestConfConfigUtils {
     public static final int MAXIMUM_FRAGMENT_LENGTH = 0;
     public static final int IDLE_TIMEOUT =  30000;
     public static final int HEARTBEAT_INTERVAL = 10000;
+    private static String restconfConfigEndpointElementName = "restconf";
 
     private RestConfConfigUtils() {
         throw new UnsupportedOperationException();
@@ -72,6 +73,8 @@ public final class RestConfConfigUtils {
         if (!configNode.has(RESTCONF_CONFIG_ROOT_ELEMENT_NAME)) {
             LOG.warn("Json config does not contain {} element. Using defaults.", RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
             return new RestConfConfiguration();
+        } else {
+            hasRestconfServletContextPath(configNode);
         }
         final JsonNode restconfNode = configNode.path(RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
         RestConfConfiguration restconfConfiguration = null;
@@ -106,7 +109,9 @@ public final class RestConfConfigUtils {
         }
         if (!configNode.has(RESTCONF_CONFIG_ROOT_ELEMENT_NAME)) {
             LOG.warn("Json config does not contain {} element. Using defaults.", RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
-            return getDefaultRestConfConfiguration(lightyServices);
+            return new RestConfConfiguration();
+        } else {
+            hasRestconfServletContextPath(configNode);
         }
         final JsonNode restconfNode = configNode.path(RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
 
@@ -173,6 +178,15 @@ public final class RestConfConfigUtils {
     public static JaxRsEndpointConfiguration getStreamsConfiguration() {
         return new JaxRsEndpointConfiguration(ErrorTagMapping.RFC8040, PrettyPrintParam.FALSE,
             Uint16.valueOf(MAXIMUM_FRAGMENT_LENGTH), Uint32.valueOf(HEARTBEAT_INTERVAL),
-            RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
+            restconfConfigEndpointElementName);
+    }
+
+    private static void hasRestconfServletContextPath(final JsonNode configNode) {
+        if (!configNode.get(RESTCONF_CONFIG_ROOT_ELEMENT_NAME).has("restconfServletContextPath")) {
+            LOG.warn("Json config does not contain restconfServletContextPath element. Using default.");
+        } else {
+            restconfConfigEndpointElementName = configNode.get("restconf").get(
+                "restconfServletContextPath").asText().substring(1);
+        }
     }
 }
