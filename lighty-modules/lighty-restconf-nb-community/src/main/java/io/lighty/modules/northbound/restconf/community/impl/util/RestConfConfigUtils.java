@@ -170,9 +170,8 @@ public final class RestConfConfigUtils {
         return new RestConfConfiguration();
     }
 
-    public static JaxRsEndpointConfiguration getStreamsConfiguration() {
+    public static JaxRsEndpointConfiguration getStreamsConfiguration(final String restconfPath) {
         return new JaxRsEndpointConfiguration(ErrorTagMapping.RFC8040, PrettyPrintParam.FALSE,
-            Uint16.valueOf(MAXIMUM_FRAGMENT_LENGTH), Uint32.valueOf(HEARTBEAT_INTERVAL),
-            RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
+            Uint16.valueOf(MAXIMUM_FRAGMENT_LENGTH), Uint32.valueOf(HEARTBEAT_INTERVAL), restconfPath);
     }
 }

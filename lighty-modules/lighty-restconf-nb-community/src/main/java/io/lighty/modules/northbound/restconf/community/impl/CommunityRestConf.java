@@ -46,6 +46,7 @@ public class CommunityRestConf extends AbstractLightyModule {
     private final DOMActionService domActionService;
     private final DOMSchemaService domSchemaService;
     private final InetAddress inetAddress;
+    private final String restconfServletContextPath;
     private final int httpPort;
     private AbstractLightyWebServer jettyServer;
     private LightyJettyServerProvider lightyServerBuilder;
@@ -59,6 +60,7 @@ public class CommunityRestConf extends AbstractLightyModule {
             final DOMSchemaService domSchemaService,
             final InetAddress inetAddress,
             final int httpPort,
+            final String restconfServletContextPath,
             final LightyJettyServerProvider serverBuilder,
             final WebContextSecurer webContextSecurer) {
         this.domDataBroker = domDataBroker;
@@ -70,21 +72,25 @@ public class CommunityRestConf extends AbstractLightyModule {
         this.domSchemaService = domSchemaService;
         this.inetAddress = inetAddress;
         this.httpPort = httpPort;
+        this.restconfServletContextPath = restconfServletContextPath;
         this.webContextSecurer = (webContextSecurer == null) ? new LightyWebContextSecurer() : webContextSecurer;
     }
 
     public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMRpcService domRpcService,
             final DOMNotificationService domNotificationService, final DOMActionService domActionService,
             final DOMMountPointService domMountPointService, final DOMSchemaService domSchemaService,
-            final InetAddress inetAddress, final int httpPort, final WebContextSecurer webContextSecurer) {
+            final InetAddress inetAddress, final int httpPort,
+            final String restconfServletContextPath, final WebContextSecurer webContextSecurer) {
         this(domDataBroker, domRpcService, domNotificationService, domActionService,
-                domMountPointService, domSchemaService, inetAddress, httpPort, null, webContextSecurer);
+                domMountPointService, domSchemaService, inetAddress, httpPort,
+                restconfServletContextPath,null, webContextSecurer);
     }
 
     @Override
     protected boolean initProcedure() throws ServletException {
         final Stopwatch stopwatch = Stopwatch.createStarted();
-        final JaxRsEndpointConfiguration streamsConfiguration = RestConfConfigUtils.getStreamsConfiguration();
+        final JaxRsEndpointConfiguration streamsConfiguration =
+            RestConfConfigUtils.getStreamsConfiguration(restconfServletContextPath);
 
         LOG.info("Starting RestconfApplication with configuration {}", streamsConfiguration);
 
