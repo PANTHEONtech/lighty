@@ -132,7 +132,8 @@ public class RestConfConfiguration {
     }
 
     public String getRestconfServletContextPath() {
-        return this.restconfServletContextPath;
+        return restconfServletContextPath.startsWith("/")
+            ? this.restconfServletContextPath.substring(1) : this.restconfServletContextPath;
     }
 
     public void setRestconfServletContextPath(final String restconfServletContextPath) {

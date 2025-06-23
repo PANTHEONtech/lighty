@@ -78,6 +78,7 @@ public final class CommunityRestConfBuilder {
             restconfConfiguration.getDomSchemaService(),
             restconfConfiguration.getInetAddress(),
             restconfConfiguration.getHttpPort(),
+            restconfConfiguration.getRestconfServletContextPath(),
             lightyServerBuilder,
             webContextSecurer
         );
