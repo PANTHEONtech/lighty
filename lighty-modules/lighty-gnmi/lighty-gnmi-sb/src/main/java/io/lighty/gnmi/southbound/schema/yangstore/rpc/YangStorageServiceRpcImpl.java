@@ -16,7 +16,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import io.lighty.gnmi.southbound.schema.yangstore.service.YangDataStoreService;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.UploadYangModel;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.UploadYangModelInput;

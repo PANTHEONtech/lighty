@@ -19,7 +19,7 @@ import io.lighty.gnmi.southbound.mountpoint.requests.GnmiRequestException;
 import io.lighty.gnmi.southbound.mountpoint.requests.SetRequestFactory;
 import java.util.List;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
