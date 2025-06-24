@@ -16,6 +16,8 @@ import io.lighty.core.controller.impl.util.DatastoreConfigurationUtils;
 import io.lighty.core.controller.impl.util.FileToDatastoreUtils;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -25,7 +27,7 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import scala.concurrent.duration.Duration;
+import scala.concurrent.duration.FiniteDuration;
 
 public class ConfigLoadingTest {
 
@@ -38,14 +40,14 @@ public class ConfigLoadingTest {
         Assert.assertNotNull(configuration.getOperDatastoreContext());
         DatastoreContext configDatastoreContext = configuration.getConfigDatastoreContext();
         Assert.assertEquals(configDatastoreContext.getShardTransactionIdleTimeout(),
-            Duration.create(10, TimeUnit.MINUTES));
+            FiniteDuration.apply(10, TimeUnit.MINUTES));
         Assert.assertEquals(configDatastoreContext.getOperationTimeoutInMillis(), 5000);
         Assert.assertEquals(configDatastoreContext.getShardTransactionCommitTimeoutInSeconds(), 30);
         Assert.assertEquals(configDatastoreContext.getShardRaftConfig().getJournalRecoveryLogBatchSize(), 1);
         Assert.assertEquals(configDatastoreContext.getShardRaftConfig().getSnapshotBatchCount(), 20000);
         Assert.assertEquals(configDatastoreContext.getShardRaftConfig().getSnapshotDataThresholdPercentage(), 12);
         Assert.assertEquals(configDatastoreContext.getShardRaftConfig().getHeartBeatInterval(),
-            Duration.create(500, TimeUnit.MILLISECONDS));
+            Duration.of(500, ChronoUnit.MILLIS));
         Assert.assertEquals(configDatastoreContext.getShardTransactionCommitQueueCapacity(), 50000);
         Assert.assertEquals(configDatastoreContext.getShardInitializationTimeout(),
             new Timeout(300000, TimeUnit.MILLISECONDS));
@@ -64,14 +66,14 @@ public class ConfigLoadingTest {
 
         DatastoreContext operDatastoreContext = configuration.getOperDatastoreContext();
         Assert.assertEquals(operDatastoreContext.getShardTransactionIdleTimeout(),
-            Duration.create(10, TimeUnit.MINUTES));
+            FiniteDuration.apply(10, TimeUnit.MINUTES));
         Assert.assertEquals(operDatastoreContext.getOperationTimeoutInMillis(), 5000);
         Assert.assertEquals(operDatastoreContext.getShardTransactionCommitTimeoutInSeconds(), 30);
         Assert.assertEquals(operDatastoreContext.getShardRaftConfig().getJournalRecoveryLogBatchSize(), 1);
         Assert.assertEquals(operDatastoreContext.getShardRaftConfig().getSnapshotBatchCount(), 20000);
         Assert.assertEquals(operDatastoreContext.getShardRaftConfig().getSnapshotDataThresholdPercentage(), 12);
         Assert.assertEquals(operDatastoreContext.getShardRaftConfig().getHeartBeatInterval(),
-            Duration.create(500, TimeUnit.MILLISECONDS));
+            Duration.of(500, ChronoUnit.MILLIS));
         Assert.assertEquals(operDatastoreContext.getShardTransactionCommitQueueCapacity(), 50000);
         Assert.assertEquals(operDatastoreContext.getShardInitializationTimeout(),
             new Timeout(300000, TimeUnit.MILLISECONDS));
@@ -161,14 +163,14 @@ public class ConfigLoadingTest {
             DatastoreConfigurationUtils.DATASTORECTX_CONFIG_ROOT_ELEMENT_NAME, LogicalDatastoreType.CONFIGURATION);
         Assert.assertNotNull(dataStoreContext);
         Assert.assertEquals(dataStoreContext.getShardTransactionIdleTimeout(),
-            Duration.create(100, TimeUnit.MILLISECONDS));
+            FiniteDuration.apply(100, TimeUnit.MILLISECONDS));
         Assert.assertEquals(dataStoreContext.getOperationTimeoutInMillis(), 50000);
         Assert.assertEquals(dataStoreContext.getShardTransactionCommitTimeoutInSeconds(), 300);
         Assert.assertEquals(dataStoreContext.getShardRaftConfig().getJournalRecoveryLogBatchSize(), 10);
         Assert.assertEquals(dataStoreContext.getShardRaftConfig().getSnapshotBatchCount(), 200000);
         Assert.assertEquals(dataStoreContext.getShardRaftConfig().getSnapshotDataThresholdPercentage(), 15);
         Assert.assertEquals(dataStoreContext.getShardRaftConfig().getHeartBeatInterval(),
-            Duration.create(5000, TimeUnit.MILLISECONDS));
+            Duration.of(5000, ChronoUnit.MILLIS));
         Assert.assertEquals(dataStoreContext.getShardTransactionCommitQueueCapacity(), 500000);
         Assert.assertEquals(dataStoreContext.getShardInitializationTimeout(),
             new Timeout(3000000, TimeUnit.MILLISECONDS));
@@ -192,14 +194,14 @@ public class ConfigLoadingTest {
             DatastoreConfigurationUtils.DATASTORECTX_OPERATIONAL_ROOT_ELEMENT_NAME, LogicalDatastoreType.OPERATIONAL);
         Assert.assertNotNull(dataStoreContext);
         Assert.assertEquals(dataStoreContext.getShardTransactionIdleTimeout(),
-            Duration.create(-100, TimeUnit.MILLISECONDS));
+            FiniteDuration.apply(-100, TimeUnit.MILLISECONDS));
         Assert.assertEquals(dataStoreContext.getOperationTimeoutInMillis(), -50000);
         Assert.assertEquals(dataStoreContext.getShardTransactionCommitTimeoutInSeconds(), -300);
         Assert.assertEquals(dataStoreContext.getShardRaftConfig().getJournalRecoveryLogBatchSize(), -10);
         Assert.assertEquals(dataStoreContext.getShardRaftConfig().getSnapshotBatchCount(), -200000);
         Assert.assertEquals(dataStoreContext.getShardRaftConfig().getSnapshotDataThresholdPercentage(), 18);
         Assert.assertEquals(dataStoreContext.getShardRaftConfig().getHeartBeatInterval(),
-            Duration.create(-5000, TimeUnit.MILLISECONDS));
+            Duration.of(-5000, ChronoUnit.MILLIS));
         Assert.assertEquals(dataStoreContext.getShardTransactionCommitQueueCapacity(), -500000);
         Assert.assertEquals(dataStoreContext.getShardInitializationTimeout(),
             new Timeout(-3000000, TimeUnit.MILLISECONDS));
