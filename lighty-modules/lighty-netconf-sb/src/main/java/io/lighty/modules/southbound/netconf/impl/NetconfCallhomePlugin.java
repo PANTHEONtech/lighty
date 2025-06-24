@@ -11,7 +11,6 @@ import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyServices;
 import java.lang.annotation.Annotation;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 import org.opendaylight.netconf.client.mdsal.DeviceActionFactoryImpl;
 import org.opendaylight.netconf.client.mdsal.api.SchemaResourceManager;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultBaseNetconfSchemaProvider;
@@ -49,7 +48,7 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
 
         this.dispatcher =
             new CallHomeMountService(topologyId, timer,
-                new NetconfTopologySchemaAssembler(1, 1, 10, TimeUnit.SECONDS),
+                new NetconfTopologySchemaAssembler(1),
                 manager, defaultBaseNetconfSchemas, lightyServices.getBindingDataBroker(),
                 lightyServices.getDOMMountPointService(), new DeviceActionFactoryImpl(), configuration);
         this.provider = new IetfZeroTouchCallHomeServerProvider(timer, dispatcher, authProvider, recorder,
