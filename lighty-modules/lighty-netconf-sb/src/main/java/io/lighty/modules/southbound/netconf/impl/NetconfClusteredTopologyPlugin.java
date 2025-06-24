@@ -9,7 +9,6 @@ package io.lighty.modules.southbound.netconf.impl;
 
 import io.lighty.core.controller.api.LightyServices;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.opendaylight.netconf.client.NetconfClientFactory;
 import org.opendaylight.netconf.client.NetconfClientFactoryImpl;
@@ -65,7 +64,7 @@ public final class NetconfClusteredTopologyPlugin extends AbstractTopologyPlugin
         topology = new NetconfTopologyManager(defaultBaseNetconfSchemas,
                 lightyServices.getBindingDataBroker(),
                 lightyServices.getClusterSingletonServiceProvider(), new DefaultNetconfTimer(),
-                new NetconfTopologySchemaAssembler(1, 1, 0, TimeUnit.SECONDS), lightyServices.getActorSystemProvider(),
+                new NetconfTopologySchemaAssembler(1), lightyServices.getActorSystemProvider(),
                 netconfClientFactory, lightyServices.getDOMMountPointService(), encryptionService,
                 lightyServices.getRpcProviderService(), new DeviceActionFactoryImpl(), schemaResourceManager, factory);
         return true;
