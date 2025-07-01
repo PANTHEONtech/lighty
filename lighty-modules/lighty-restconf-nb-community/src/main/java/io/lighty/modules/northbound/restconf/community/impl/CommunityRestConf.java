@@ -23,6 +23,7 @@ import org.opendaylight.aaa.web.servlet.jersey2.JerseyServletSupport;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
+import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.restconf.server.jaxrs.JaxRsEndpoint;
@@ -40,6 +41,7 @@ public class CommunityRestConf extends AbstractLightyModule {
 
     private final DOMDataBroker domDataBroker;
     private final DOMRpcService domRpcService;
+    private final DOMNotificationService domNotificationService;
     private final DOMMountPointService domMountPointService;
     private final DOMActionService domActionService;
     private final DOMSchemaService domSchemaService;
@@ -51,6 +53,7 @@ public class CommunityRestConf extends AbstractLightyModule {
     private WebContextSecurer webContextSecurer;
 
     public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMRpcService domRpcService,
+            final DOMNotificationService domNotificationService,
             final DOMActionService domActionService,
             final DOMMountPointService domMountPointService,
             final DOMSchemaService domSchemaService,
@@ -60,6 +63,7 @@ public class CommunityRestConf extends AbstractLightyModule {
             final WebContextSecurer webContextSecurer) {
         this.domDataBroker = domDataBroker;
         this.domRpcService = domRpcService;
+        this.domNotificationService = domNotificationService;
         this.domActionService = domActionService;
         this.domMountPointService = domMountPointService;
         this.lightyServerBuilder = serverBuilder;
@@ -69,11 +73,11 @@ public class CommunityRestConf extends AbstractLightyModule {
         this.webContextSecurer = (webContextSecurer == null) ? new LightyWebContextSecurer() : webContextSecurer;
     }
 
-    public CommunityRestConf(final DOMDataBroker domDataBroker,
-            final DOMRpcService domRpcService, final DOMActionService domActionService,
+    public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMRpcService domRpcService,
+            final DOMNotificationService domNotificationService, final DOMActionService domActionService,
             final DOMMountPointService domMountPointService, final DOMSchemaService domSchemaService,
             final InetAddress inetAddress, final int httpPort, final WebContextSecurer webContextSecurer) {
-        this(domDataBroker, domRpcService, domActionService,
+        this(domDataBroker, domRpcService, domNotificationService, domActionService,
                 domMountPointService, domSchemaService, inetAddress, httpPort, null, webContextSecurer);
     }
 
@@ -99,7 +103,8 @@ public class CommunityRestConf extends AbstractLightyModule {
             new JerseyServletSupport(),
             new CustomFilterAdapterConfigurationImpl(),
             server,
-            new MdsalRestconfStreamRegistry(new JaxRsLocationProvider(), domDataBroker),
+            new MdsalRestconfStreamRegistry(domDataBroker, domNotificationService, domSchemaService,
+                new JaxRsLocationProvider(), databindProvider),
             JaxRsEndpoint.props(streamsConfiguration)
         );
 
