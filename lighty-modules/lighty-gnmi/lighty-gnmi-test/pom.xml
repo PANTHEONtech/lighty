@@ -21,6 +21,9 @@
     <artifactId>lighty-gnmi-test</artifactId>
     <version>22.0.0-SNAPSHOT</version>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/PANTHEONtech/lighty</url>
+
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
     </properties>

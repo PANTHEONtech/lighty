@@ -19,6 +19,9 @@
     <groupId>io.lighty.modules.gnmi</groupId>
     <artifactId>lighty-gnmi-connector</artifactId>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/PANTHEONtech/lighty</url>
+
     <dependencies>
         <dependency>
             <groupId>io.lighty.modules.gnmi</groupId>
