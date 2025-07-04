@@ -13,7 +13,7 @@
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-minimal-parent</artifactId>
         <version>20.4.0-SNAPSHOT</version>
-        <relativePath>../lighty-minimal-parent</relativePath>
+        <relativePath>../lighty-minimal-parent/pom.xml</relativePath>
     </parent>
 
     <!-- This is the main parent for building LightyModule jars. -->
