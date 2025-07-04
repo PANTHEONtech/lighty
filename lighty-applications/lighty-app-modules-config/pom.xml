@@ -19,6 +19,9 @@
     <groupId>io.lighty.applications</groupId>
     <artifactId>lighty-app-modules-config</artifactId>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/PANTHEONtech/lighty</url>
+
     <dependencies>
         <dependency>
             <groupId>io.lighty.core</groupId>
