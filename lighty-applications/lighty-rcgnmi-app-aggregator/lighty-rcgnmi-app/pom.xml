@@ -21,6 +21,9 @@
     <artifactId>lighty-rcgnmi-app</artifactId>
     <version>20.4.0-SNAPSHOT</version>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/PANTHEONtech/lighty</url>
+
     <properties>
         <application.main.class>io.lighty.applications.rcgnmi.app.RCgNMIApp</application.main.class>
         <application.attach.zip>true</application.attach.zip>
