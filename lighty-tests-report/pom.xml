@@ -18,6 +18,9 @@
     <groupId>io.lighty.tests.report</groupId>
     <artifactId>lighty-tests-report</artifactId>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/PANTHEONtech/lighty</url>
+
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
     </properties>

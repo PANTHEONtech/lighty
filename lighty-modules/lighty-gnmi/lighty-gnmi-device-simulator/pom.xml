@@ -21,6 +21,9 @@
     <artifactId>lighty-gnmi-device-simulator</artifactId>
     <version>20.4.0-SNAPSHOT</version>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/PANTHEONtech/lighty</url>
+
     <properties>
         <application.main.class>io.lighty.modules.gnmi.simulatordevice.main.GnmiSimulatorApp</application.main.class>
     </properties>
