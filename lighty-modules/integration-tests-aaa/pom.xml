@@ -23,6 +23,9 @@
     <groupId>io.lighty.modules.tests</groupId>
     <artifactId>integration-tests-aaa</artifactId>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/PANTHEONtech/lighty</url>
+
     <build>
         <plugins>
             <plugin>

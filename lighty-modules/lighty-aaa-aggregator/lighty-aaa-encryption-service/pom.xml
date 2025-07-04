@@ -18,6 +18,9 @@
     <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-aaa-encryption-service</artifactId>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/PANTHEONtech/lighty</url>
+
     <dependencies>
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
