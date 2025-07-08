@@ -59,8 +59,11 @@ public class YangPatchTest extends CommunityRestConfTestBase {
                 .node(CONTAINER_ID)
                 .build();
 
-        final PatchEntity entityReplace = new PatchEntity("edit1", Edit.Operation.Replace, targetNodeMerge,
-                patchContainerNode);
+        final DatabindContext databindContext = DatabindContext.ofModel(getLightyController()
+            .getServices().getDOMSchemaService().getGlobalContext());
+
+        final PatchEntity entityReplace = new PatchEntity(
+            "edit1", Edit.Operation.Replace, getPath(targetNodeMerge, databindContext), patchContainerNode);
         final PatchContext patchContext = new PatchContext("test-patch", List.of(entityReplace));
 
         final var strategy = new MdsalRestconfStrategy(DatabindContext.ofModel(getLightyController()
@@ -106,5 +109,11 @@ public class YangPatchTest extends CommunityRestConfTestBase {
                 .withNodeIdentifier(NodeIdentifier.create(CONTAINER_ID))
                 .withValue(Collections.singletonList(myList))
                 .build();
+    }
+
+    private DatabindPath.Data getPath(final YangInstanceIdentifier path, final DatabindContext databindContext) {
+        final var childAndStack = new DatabindPath.Data(
+            databindContext).databind().schemaTree().enterPath(path).orElseThrow();
+        return new DatabindPath.Data(databindContext, childAndStack.stack().toInference(), path, childAndStack.node());
     }
 }
