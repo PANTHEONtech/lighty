@@ -95,6 +95,33 @@
                         <extensions>true</extensions>
                         <configuration>
                             <publishingServerId>central</publishingServerId>
+                            <excludeArtifacts>
+                                <artifactId>example-applications-aggregator</artifactId>
+                                <artifactId>integration-tests-aaa</artifactId>
+                                <artifactId>integration-tests</artifactId>
+                                <artifactId>lighty-aaa-aggregator</artifactId>
+                                <artifactId>lighty-aggregator</artifactId>
+                                <artifactId>lighty-applications-aggregator</artifactId>
+                                <artifactId>lighty-bgp-community-restconf-app</artifactId>
+                                <artifactId>lighty-community-aaa-restconf-app</artifactId>
+                                <artifactId>lighty-community-restconf-actions-app</artifactId>
+                                <artifactId>lighty-community-restconf-netconf-app</artifactId>
+                                <artifactId>lighty-controller-springboot</artifactId>
+                                <artifactId>lighty-core-aggregator</artifactId>
+                                <artifactId>lighty-gnmi-models</artifactId>
+                                <artifactId>lighty-gnmi-test</artifactId>
+                                <artifactId>lighty-gnmi</artifactId>
+                                <artifactId>lighty-guice-app</artifactId>
+                                <artifactId>lighty-models-aggregator</artifactId>
+                                <artifactId>lighty-models-test-aggregator</artifactId>
+                                <artifactId>lighty-modules-aggregator</artifactId>
+                                <artifactId>lighty-rcgnmi-app-aggregator</artifactId>
+                                <artifactId>lighty-rcgnmi-app</artifactId>
+                                <artifactId>lighty-resources-aggregator</artifactId>
+                                <artifactId>lighty-rnc-aggregator</artifactId>
+                                <artifactId>lighty-rnc-app</artifactId>
+                                <artifactId>lighty-tests-report</artifactId>
+                            </excludeArtifacts>
                         </configuration>
                     </plugin>
                 </plugins>
