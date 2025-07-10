@@ -86,34 +86,33 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
                  the same level as identifier last path arg points to.
                 */
                 if (!identifier.isEmpty()) {
- 
                     final String lastPathArgName = identifier.getLastPathArgument().getNodeType().getLocalName();
                     JsonElement jsonObject = JsonParser.parseString(responseJson);
-
                     if (isResponseJsonDeeperThanRequested(lastPathArgName, jsonObject)) {
-                    final QName lastName = identifier.getLastPathArgument().getNodeType();
-                    final Module moduleByQName =
-                            DataConverter.findModuleByQName(lastName, schemaContextProvider.getSchemaContext())
-                                    .orElseThrow(() -> new GnmiCodecException(
-                                            String.format("Unable to find module of node %s", lastName)));
+                        final QName lastName = identifier.getLastPathArgument().getNodeType();
+                        final Module moduleByQName =
+                                DataConverter.findModuleByQName(lastName, schemaContextProvider.getSchemaContext())
+                                        .orElseThrow(() -> new GnmiCodecException(
+                                                String.format("Unable to find module of node %s", lastName)));
 
-                    final String wrapWith = String.format("%s:%s", moduleByQName.getName(),
-                            lastName.getLocalName());
-                    if (identifier.getLastPathArgument() instanceof NodeIdentifierWithPredicates) {
-                        final NodeIdentifierWithPredicates lastPathArgument
-                                = (NodeIdentifierWithPredicates) identifier.getLastPathArgument();
-                        responseJson = JsonUtils.wrapJsonWithArray(responseJson, wrapWith, gson, lastPathArgument,
-                            schemaContextProvider.getSchemaContext());
-                    } else {
-                        responseJson = JsonUtils.wrapJsonWithObject(responseJson, wrapWith, gson);
+                        final String wrapWith = String.format("%s:%s", moduleByQName.getName(),
+                                lastName.getLocalName());
+                        if (identifier.getLastPathArgument() instanceof NodeIdentifierWithPredicates) {
+                            final NodeIdentifierWithPredicates lastPathArgument
+                                    = (NodeIdentifierWithPredicates) identifier.getLastPathArgument();
+                            responseJson = JsonUtils.wrapJsonWithArray(responseJson, wrapWith, gson, lastPathArgument,
+                                schemaContextProvider.getSchemaContext());
+                        } else {
+                            responseJson = JsonUtils.wrapJsonWithObject(responseJson, wrapWith, gson);
+                        }
+                    } else if (isResponseJsonWithoutNamespace(jsonObject)) {
+                        // Add missing namespace to the response from the request.
+                        JsonElement responseJsonWithNamespace = addNamespaceToResponseJson(jsonObject, identifier,
+                            schemaContextProvider);
+                        responseJson = responseJsonWithNamespace.toString();
                     }
-                } else if (isResponseJsonWithoutNamespace(jsonObject)) {
-                    // Add missing namespace to the response from the request.
-                    JsonElement responseJsonWithNamespace = addNamespaceToResponseJson(jsonObject, identifier, schemaContextProvider);
-                    responseJson = responseJsonWithNamespace.toString();
                 }
-            }
-            return resolveJsonResponse(identifier, responseJson);
+                return resolveJsonResponse(identifier, responseJson);
                 /*
                  In the case of primitive values, only the value is present in response.
                  Since json parser works only with object, always wrap the value (wrapPrimitive()).
@@ -172,8 +171,8 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
         }
     }
 
-    private static JsonElement addNamespaceToResponseJson(JsonElement jsonElement, 
-                                                                final YangInstanceIdentifier identifier, 
+    private static JsonElement addNamespaceToResponseJson(JsonElement jsonElement,
+                                                                final YangInstanceIdentifier identifier,
                                                                 final SchemaContextProvider schemaContextProvider)
                                                                 throws GnmiCodecException {
         final QName lastName = identifier.getLastPathArgument().getNodeType();
@@ -184,7 +183,6 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
 
         final String moduleNameWithNamespace = String.format("%s:%s", moduleByQName.getName(),
                 lastName.getLocalName());
-        
         Map.Entry<String, JsonElement> entry = jsonElement.getAsJsonObject().entrySet().iterator().next();
         JsonObject jsonObject = new JsonObject();
         jsonObject.add(moduleNameWithNamespace, entry.getValue());
