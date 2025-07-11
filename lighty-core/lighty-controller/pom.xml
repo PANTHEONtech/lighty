@@ -13,7 +13,7 @@
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-parent</artifactId>
         <version>22.0.0-SNAPSHOT</version>
-        <relativePath>../lighty-parent</relativePath>
+        <relativePath>../lighty-parent/pom.xml</relativePath>
     </parent>
 
     <groupId>io.lighty.core</groupId>
@@ -21,6 +21,21 @@
 
     <name>${project.groupId}:${project.artifactId}</name>
     <url>https://github.com/PANTHEONtech/lighty</url>
+
+    <repositories>
+        <!-- TODO: Remove when will be available OFP ans Serviceutils release  -->
+        <repository>
+            <id>opendaylight-snapshot</id>
+            <name>opendaylight-snapshot</name>
+            <url>https://nexus.opendaylight.org/content/repositories/opendaylight.snapshot/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -103,7 +118,7 @@
         <!--odl-mdsal-dom-api-->
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>mdsal-dom-api</artifactId>
+            <artifactId>mdsal-dom-broker</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>

@@ -13,7 +13,7 @@
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-parent</artifactId>
         <version>22.0.0-SNAPSHOT</version>
-        <relativePath>../../lighty-core/lighty-parent</relativePath>
+        <relativePath>../../lighty-core/lighty-parent/pom.xml</relativePath>
     </parent>
 
     <groupId>io.lighty.modules</groupId>
@@ -21,6 +21,21 @@
 
     <name>${project.groupId}:${project.artifactId}</name>
     <url>https://github.com/PANTHEONtech/lighty</url>
+
+    <repositories>
+        <!-- TODO: Remove when will be available OFP ans Serviceutils release  -->
+        <repository>
+            <id>opendaylight-snapshot</id>
+            <name>opendaylight-snapshot</name>
+            <url>https://nexus.opendaylight.org/content/repositories/opendaylight.snapshot/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -90,6 +105,11 @@
             <groupId>org.opendaylight.aaa.web</groupId>
             <artifactId>servlet-jersey2</artifactId>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.netconf</groupId>
+            <artifactId>restconf-server-api-testlib</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

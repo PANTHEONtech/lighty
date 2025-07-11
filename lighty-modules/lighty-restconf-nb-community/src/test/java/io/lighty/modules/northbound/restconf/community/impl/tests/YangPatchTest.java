@@ -15,12 +15,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.netconf.databind.DatabindContext;
+import org.opendaylight.netconf.databind.DatabindPath;
 import org.opendaylight.restconf.mdsal.spi.data.MdsalRestconfStrategy;
 import org.opendaylight.restconf.server.api.DataYangPatchResult;
-import org.opendaylight.restconf.server.api.DatabindContext;
-import org.opendaylight.restconf.server.api.DatabindPath;
 import org.opendaylight.restconf.server.api.PatchContext;
 import org.opendaylight.restconf.server.api.PatchEntity;
+import org.opendaylight.restconf.server.api.testlib.CompletingServerRequest;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.patch.rev170222.yang.patch.yang.patch.Edit;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Revision;
@@ -58,8 +59,11 @@ public class YangPatchTest extends CommunityRestConfTestBase {
                 .node(CONTAINER_ID)
                 .build();
 
-        final PatchEntity entityReplace = new PatchEntity("edit1", Edit.Operation.Replace, targetNodeMerge,
-                patchContainerNode);
+        final DatabindContext databindContext = DatabindContext.ofModel(getLightyController()
+            .getServices().getDOMSchemaService().getGlobalContext());
+
+        final PatchEntity entityReplace = new PatchEntity(
+            "edit1", Edit.Operation.Replace, getPath(targetNodeMerge, databindContext), patchContainerNode);
         final PatchContext patchContext = new PatchContext("test-patch", List.of(entityReplace));
 
         final var strategy = new MdsalRestconfStrategy(DatabindContext.ofModel(getLightyController()
@@ -105,5 +109,11 @@ public class YangPatchTest extends CommunityRestConfTestBase {
                 .withNodeIdentifier(NodeIdentifier.create(CONTAINER_ID))
                 .withValue(Collections.singletonList(myList))
                 .build();
+    }
+
+    private DatabindPath.Data getPath(final YangInstanceIdentifier path, DatabindContext databindContext) {
+        final var childAndStack = new DatabindPath.Data(
+            databindContext).databind().schemaTree().enterPath(path).orElseThrow();
+        return new DatabindPath.Data(databindContext, childAndStack.stack().toInference(), path, childAndStack.node());
     }
 }

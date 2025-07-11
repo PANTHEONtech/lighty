@@ -72,6 +72,7 @@ public final class CommunityRestConfBuilder {
         return new CommunityRestConf(
             restconfConfiguration.getDomDataBroker(),
             restconfConfiguration.getDomRpcService(),
+            restconfConfiguration.getDomNotificationService(),
             restconfConfiguration.getDomActionService(),
             restconfConfiguration.getDomMountPointService(),
             restconfConfiguration.getDomSchemaService(),

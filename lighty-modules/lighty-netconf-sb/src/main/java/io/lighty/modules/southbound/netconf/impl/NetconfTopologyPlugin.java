@@ -9,7 +9,6 @@ package io.lighty.modules.southbound.netconf.impl;
 
 import io.lighty.core.controller.api.LightyServices;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.opendaylight.netconf.client.NetconfClientFactory;
 import org.opendaylight.netconf.client.NetconfClientFactoryImpl;
@@ -21,7 +20,7 @@ import org.opendaylight.netconf.client.mdsal.impl.DefaultBaseNetconfSchemaProvid
 import org.opendaylight.netconf.client.mdsal.impl.DefaultCredentialProvider;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultSchemaResourceManager;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultSslContextFactoryProvider;
-import org.opendaylight.netconf.common.impl.DefaultNetconfTimer;
+import org.opendaylight.netconf.common.di.DefaultNetconfTimer;
 import org.opendaylight.netconf.keystore.legacy.NetconfKeystoreService;
 import org.opendaylight.netconf.keystore.legacy.impl.DefaultNetconfKeystoreService;
 import org.opendaylight.netconf.topology.impl.NetconfTopologyImpl;
@@ -59,7 +58,7 @@ public final class NetconfTopologyPlugin extends AbstractTopologyPlugin {
         final SslContextFactoryProvider factoryProvider = new DefaultSslContextFactoryProvider(service);
         final NetconfClientConfigurationBuilderFactory factory = new NetconfClientConfigurationBuilderFactoryImpl(
             encryptionService, credentialProvider, factoryProvider);
-        final NetconfTopologySchemaAssembler assembler = new NetconfTopologySchemaAssembler(1,1,10, TimeUnit.SECONDS);
+        final NetconfTopologySchemaAssembler assembler = new NetconfTopologySchemaAssembler(1);
         final SchemaResourceManager schemaResourceManager =
                 new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
         netconfTopologyImpl = new NetconfTopologyImpl(topologyId, netconfFactory, new DefaultNetconfTimer(), assembler,
