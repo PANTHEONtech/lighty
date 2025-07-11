@@ -127,7 +127,6 @@ data:
 
         serialization-bindings {
           "com.google.protobuf.Message" = proto
-          "org.opendaylight.controller.cluster.datastore.messages.ReadyLocalTransaction" = readylocal
           "org.opendaylight.controller.cluster.raft.persisted.SimpleReplicatedLogEntry" = simpleReplicatedLogEntry
         }
       }
