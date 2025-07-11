@@ -19,6 +19,9 @@
     <artifactId>lighty-guice-app</artifactId>
     <packaging>jar</packaging>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/PANTHEONtech/lighty</url>
+
     <properties>
         <application.main.class>io.lighty.examples.controllers.guice.Main</application.main.class>
         <application.attach.zip>true</application.attach.zip>
