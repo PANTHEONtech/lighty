@@ -21,4 +21,7 @@
     <artifactId>lighty-gnmi-yang-storage-model</artifactId>
     <version>21.3.0-SNAPSHOT</version>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/PANTHEONtech/lighty</url>
+
 </project>

@@ -13,7 +13,7 @@
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-minimal-parent</artifactId>
         <version>21.3.0-SNAPSHOT</version>
-        <relativePath>../lighty-minimal-parent</relativePath>
+        <relativePath>../lighty-minimal-parent/pom.xml</relativePath>
     </parent>
 
     <!-- This is the main parent for building LightyModule jars. -->
@@ -28,7 +28,6 @@
     </description>
 
     <properties>
-        <maven.compiler.release>21</maven.compiler.release>
         <!-- Overrides Spring Boot slf4j and log4j2 dependency version -->
         <slf4j.version>2.0.17</slf4j.version>
         <log4j2.version>2.25.0</log4j2.version>
