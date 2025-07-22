@@ -162,8 +162,8 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
         return true;
     }
 
-    private static boolean isResponseJsonWithoutNamespace(JsonElement jsonElement) {
-        Map.Entry<String, JsonElement> firstElement = jsonElement.getAsJsonObject().entrySet().iterator().next();
+    private static boolean isResponseJsonWithoutNamespace(final JsonElement jsonElement) {
+        final Map.Entry<String, JsonElement> firstElement = jsonElement.getAsJsonObject().entrySet().iterator().next();
         if (firstElement.getKey().contains(":")) {
             return false;
         } else {
@@ -171,7 +171,7 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
         }
     }
 
-    private static JsonElement addNamespaceToResponseJson(JsonElement jsonElement,
+    private static JsonElement addNamespaceToResponseJson(final JsonElement jsonElement,
                                                                 final YangInstanceIdentifier identifier,
                                                                 final SchemaContextProvider schemaContextProvider)
                                                                 throws GnmiCodecException {
@@ -183,7 +183,7 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
 
         final String moduleNameWithNamespace = String.format("%s:%s", moduleByQName.getName(),
                 lastName.getLocalName());
-        Map.Entry<String, JsonElement> entry = jsonElement.getAsJsonObject().entrySet().iterator().next();
+        final Map.Entry<String, JsonElement> entry = jsonElement.getAsJsonObject().entrySet().iterator().next();
         JsonObject jsonObject = new JsonObject();
         jsonObject.add(moduleNameWithNamespace, entry.getValue());
         return jsonObject;
