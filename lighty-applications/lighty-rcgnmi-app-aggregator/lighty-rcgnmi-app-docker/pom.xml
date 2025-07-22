@@ -21,6 +21,7 @@
         <lighty.app.name>lighty-rcgnmi-app-${project.version}</lighty.app.name>
         <lighty.app.zip>${lighty.app.name}-bin.zip</lighty.app.zip>
         <lighty.app.jar>${lighty.app.name}.jar</lighty.app.jar>
+        <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
 
     <dependencies>
