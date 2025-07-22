@@ -115,9 +115,11 @@
                                 <artifactId>lighty-models-test-aggregator</artifactId>
                                 <artifactId>lighty-modules-aggregator</artifactId>
                                 <artifactId>lighty-rcgnmi-app-aggregator</artifactId>
+                                <artifactId>lighty-rcgnmi-app-docker</artifactId>
                                 <artifactId>lighty-rcgnmi-app</artifactId>
                                 <artifactId>lighty-resources-aggregator</artifactId>
                                 <artifactId>lighty-rnc-aggregator</artifactId>
+                                <artifactId>lighty-rnc-app-docker</artifactId>
                                 <artifactId>lighty-rnc-app</artifactId>
                                 <artifactId>lighty-tests-report</artifactId>
                             </excludeArtifacts>
