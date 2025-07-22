@@ -137,4 +137,27 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <licenses>
+        <license>
+            <name>Eclipse Public License 1.0</name>
+            <url>https://www.eclipse.org/legal/epl-v10.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:https://github.com/PANTHEONtech/lighty.git</connection>
+        <developerConnection>scm:git:https://github.com/PANTHEONtech/lighty.git</developerConnection>
+        <url>https://github.com/PANTHEONtech/lighty</url>
+        <tag>HEAD</tag>
+    </scm>
+    <developers>
+        <developer>
+            <id>rovarga</id>
+            <name>Robert Varga</name>
+            <email>robert.varga@pantheon.tech</email>
+            <organization>PANTHEON.tech s.r.o.</organization>
+            <organizationUrl>https://www.pantheon.tech</organizationUrl>
+        </developer>
+    </developers>
 </project>
