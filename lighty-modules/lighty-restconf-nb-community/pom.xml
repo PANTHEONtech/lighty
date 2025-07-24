@@ -74,6 +74,11 @@
             <groupId>org.opendaylight.netconf</groupId>
             <artifactId>sal-remote-impl</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.aaa.web</groupId>
+            <artifactId>servlet-jersey2</artifactId>
+            <scope>compile</scope>
+        </dependency>
 
         <!--Tests-->
         <dependency>
@@ -85,11 +90,6 @@
             <groupId>io.lighty.resources</groupId>
             <artifactId>singlenode-configuration</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.aaa.web</groupId>
-            <artifactId>servlet-jersey2</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.netconf</groupId>
