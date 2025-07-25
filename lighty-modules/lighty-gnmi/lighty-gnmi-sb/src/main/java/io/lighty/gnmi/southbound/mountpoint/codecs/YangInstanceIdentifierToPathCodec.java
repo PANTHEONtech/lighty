@@ -91,9 +91,15 @@ public class YangInstanceIdentifierToPathCodec implements Codec<YangInstanceIden
     private static void addKeysDefinitionNode(final YangInstanceIdentifier.NodeIdentifierWithPredicates identifier,
                                               final Gnmi.PathElem.Builder builder) {
         for (Map.Entry<QName, Object> entry : identifier.entrySet()) {
-            builder.putKey(entry.getKey().getLocalName(), entry.getValue().toString());
+            final String keyValue;
+            final var value = entry.getValue();
+            if (value instanceof QName qnameValue) {
+                keyValue = qnameValue.getLocalName();
+            } else {
+                keyValue = value.toString();
+            }
+            builder.putKey(entry.getKey().getLocalName(), keyValue);
         }
-
     }
 
     private static boolean doesDefineKeys(final YangInstanceIdentifier.PathArgument pathArgument) {
