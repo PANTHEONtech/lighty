@@ -202,7 +202,7 @@
                         <dependency>
                             <groupId>org.opendaylight.odlparent</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>14.0.8</version>
+                            <version>14.1.0</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -219,7 +219,7 @@
                         <dependency>
                             <groupId>org.opendaylight.odlparent</groupId>
                             <artifactId>spotbugs</artifactId>
-                            <version>14.0.8</version>
+                            <version>14.1.0</version>
                         </dependency>
                         <!-- The SpotBugs Maven plugin uses SLF4J-2 -->
                         <dependency>
