@@ -11,7 +11,7 @@
 
     <groupId>io.lighty.applications.rnc</groupId>
     <artifactId>lighty-rnc-app-docker</artifactId>
-    <version>22.0.0-SNAPSHOT</version>
+    <version>22.0.0</version>
 
     <properties>
         <image.name>lighty-rnc</image.name>
@@ -78,8 +78,7 @@
                         <phase>prepare-package</phase>
                         <configuration>
                             <target>
-                                <unzip src="${basedir}/../lighty-rnc-app/target/${lighty.app.zip}"
-                                       dest="${basedir}/target/docker-stage" />
+                                <unzip src="${basedir}/../lighty-rnc-app/target/${lighty.app.zip}" dest="${basedir}/target/docker-stage" />
                             </target>
                         </configuration>
                         <goals>
