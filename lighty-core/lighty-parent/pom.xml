@@ -31,7 +31,7 @@
         <maven.compiler.release>17</maven.compiler.release>
         <!-- Overrides Spring Boot slf4j and log4j2 dependency version -->
         <slf4j.version>2.0.17</slf4j.version>
-        <log4j2.version>2.25.0</log4j2.version>
+        <log4j2.version>2.25.1</log4j2.version>
     </properties>
 
     <dependencies>
