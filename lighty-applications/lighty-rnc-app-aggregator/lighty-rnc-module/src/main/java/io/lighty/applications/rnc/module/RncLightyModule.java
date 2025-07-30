@@ -27,8 +27,6 @@ import io.lighty.modules.southbound.netconf.impl.NetconfTopologyPluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
 import io.lighty.openapi.OpenApiLighty;
-import io.lighty.server.Http2LightyServerProvider;
-import io.lighty.server.HttpsLightyServerProvider;
 import io.lighty.server.LightyJettyServerProvider;
 import io.lighty.server.config.LightyServerConfig;
 import java.net.InetSocketAddress;
@@ -122,13 +120,7 @@ public class RncLightyModule {
         final var restConfConfiguration = RestConfConfigUtils.getRestConfConfiguration(rcConfig, services);
         final var inetSocketAddress = new InetSocketAddress(rcConfig.getInetAddress(), rcConfig.getHttpPort());
 
-        if (serverConfig.isUseHttp2()) {
-            jettyServerBuilder = new Http2LightyServerProvider(inetSocketAddress, serverConfig.getSecurityConfig());
-        } else if (serverConfig.isUseHttps()) {
-            jettyServerBuilder = new HttpsLightyServerProvider(inetSocketAddress, serverConfig.getSecurityConfig());
-        } else {
-            jettyServerBuilder = new LightyJettyServerProvider(inetSocketAddress);
-        }
+        jettyServerBuilder = new LightyJettyServerProvider(serverConfig, inetSocketAddress);
 
         return CommunityRestConfBuilder.from(restConfConfiguration)
             .withLightyServer(jettyServerBuilder)

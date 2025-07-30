@@ -7,17 +7,15 @@
  */
 package io.lighty.server;
 
+import io.lighty.server.config.LightyServerConfig;
 import java.net.InetSocketAddress;
-import javax.servlet.ServletException;
-import org.opendaylight.aaa.web.WebContext;
 
 /**
  * Provides user jetty server.
  */
 public class LightyJettyServerProvider {
 
-    protected final InetSocketAddress inetSocketAddress;
-    protected LightyJettyWebServer server;
+    private final AbstractLightyWebServer server;
 
     /**
      * Init new jetty server on specific port and address wrapped into {@link InetSocketAddress}.
@@ -25,39 +23,28 @@ public class LightyJettyServerProvider {
      * @param inetSocketAddress - port and address of server
      */
     public LightyJettyServerProvider(final InetSocketAddress inetSocketAddress) {
-        this.inetSocketAddress = inetSocketAddress;
-        this.server = new LightyJettyWebServer(inetSocketAddress);
+        this.server = new HttpLightyJettyWebServer(inetSocketAddress);
     }
 
     /**
-     * Init jetty server with existing ones.
+     * Create server with desired security.
      *
-     * @param server - jetty server
+     * @param config - get config option for the security (http/https/http2)
      */
-    public LightyJettyServerProvider(final LightyJettyWebServer server) {
-        this(new InetSocketAddress(0));
-        this.server = server;
-    }
-
-    /**
-     * Add specific handler for server to handle incoming HTTP requests.
-     *
-     * @param handler - specific handler
-     * @return instance of {@link LightyJettyServerProvider}
-     */
-    public LightyJettyServerProvider addContextHandler(final WebContext handler) {
-        try {
-            this.server.registerWebContext(handler);
-        } catch (ServletException e) {
-            throw new RuntimeException(e);
+    public LightyJettyServerProvider(final LightyServerConfig config, final InetSocketAddress inetSocketAddress) {
+        if (config.isUseHttp2()) {
+            this.server = new Http2LightyJettyWebServer(inetSocketAddress, config.getSecurityConfig());
+        } else if (config.isUseHttps()) {
+            this.server = new HttpsLightyJettyWebServer(inetSocketAddress, config.getSecurityConfig());
+        } else {
+            this.server = new HttpLightyJettyWebServer(inetSocketAddress);
         }
-        return this;
     }
 
     /**
      * Returns jetty server.
      */
-    public LightyJettyWebServer getServer() {
+    public AbstractLightyWebServer getServer() {
         return this.server;
     }
 }

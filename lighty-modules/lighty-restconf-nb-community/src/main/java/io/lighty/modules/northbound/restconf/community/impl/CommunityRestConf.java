@@ -11,8 +11,8 @@ import com.google.common.base.Stopwatch;
 import com.google.common.base.Throwables;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
+import io.lighty.server.AbstractLightyWebServer;
 import io.lighty.server.LightyJettyServerProvider;
-import io.lighty.server.LightyJettyWebServer;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import javax.servlet.ServletException;
@@ -47,7 +47,7 @@ public class CommunityRestConf extends AbstractLightyModule {
     private final DOMSchemaService domSchemaService;
     private final InetAddress inetAddress;
     private final int httpPort;
-    private LightyJettyWebServer jettyServer;
+    private AbstractLightyWebServer jettyServer;
     private LightyJettyServerProvider lightyServerBuilder;
     private JaxRsEndpoint jaxRsEndpoint;
     private WebContextSecurer webContextSecurer;
