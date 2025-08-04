@@ -222,7 +222,7 @@
             <dependency>
                 <groupId>org.apache.pekko</groupId>
                 <artifactId>pekko-management-cluster-bootstrap_2.13</artifactId>
-                <version>1.1.0</version>
+                <version>1.1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
