@@ -11,7 +11,6 @@ import static org.testng.AssertJUnit.assertNotNull;
 
 import io.lighty.server.util.LightyServerConfigUtils;
 import java.net.InetSocketAddress;
-import javax.servlet.ServletException;
 import org.opendaylight.aaa.filterchain.configuration.impl.CustomFilterAdapterConfigurationImpl;
 import org.opendaylight.aaa.filterchain.filters.CustomFilterAdapter;
 import org.opendaylight.aaa.web.FilterDetails;
@@ -25,7 +24,7 @@ public class LightyJettyServerProviderTest {
     private static final String HTTPS_CONFIG = "/httpsConfig.json";
 
     @Test
-    public void testServerBuilder() {
+    public void testServerBuilder() throws Exception {
         final var serverBuilder = new LightyJettyServerProvider(new InetSocketAddress(PORT));
         final var server = initLightyServer(serverBuilder);
         assertNotNull(server);
@@ -65,7 +64,8 @@ public class LightyJettyServerProviderTest {
         assertNotNull(server);
     }
 
-    private static LightyJettyServerProvider initLightyServer(final LightyJettyServerProvider serverProvider) {
+    private static LightyJettyServerProvider initLightyServer(final LightyJettyServerProvider serverProvider)
+            throws Exception {
         final WebContext webContext = WebContext.builder()
             .name("ExampleContext")
             .contextPath("/path")
@@ -75,11 +75,7 @@ public class LightyJettyServerProviderTest {
                 .build())
             .putContextParam("key", "value")
             .build();
-        try {
-            serverProvider.getServer().registerWebContext(webContext);
-        } catch (ServletException e) {
-            throw new RuntimeException(e);
-        }
+        serverProvider.getServer().registerWebContext(webContext);
         return serverProvider;
     }
 }
