@@ -36,7 +36,7 @@ public class RcGnmiAppModuleConfigUtilsTest {
         final RestConfConfiguration restconfConfig = rcGnmiAppConfiguration.getRestconfConfig();
         assertEquals(restconfConfig.getInetAddress().getCanonicalHostName(), "0.0.0.1");
         assertEquals(restconfConfig.getHttpPort(), 8181);
-        assertEquals(restconfConfig.getRestconfServletContextPath(), "/rests");
+        assertEquals(restconfConfig.getRestconfServletContextPath(), "rests");
         // Assert gnmi config
         final GnmiConfiguration gnmiConfiguration = rcGnmiAppConfiguration.getGnmiConfiguration();
         Assertions.assertEquals(5, gnmiConfiguration.getInitialYangsPaths().size());
@@ -66,7 +66,7 @@ public class RcGnmiAppModuleConfigUtilsTest {
         final RestConfConfiguration restconfConfig = rcGnmiAppConfiguration.getRestconfConfig();
         assertEquals(restconfConfig.getInetAddress().getCanonicalHostName(), "0.0.0.0");
         assertEquals(restconfConfig.getHttpPort(), 8888);
-        assertEquals(restconfConfig.getRestconfServletContextPath(), "/restconf");
+        assertEquals(restconfConfig.getRestconfServletContextPath(), "restconf");
         // Assert gnmi config
         final GnmiConfiguration gnmiConfiguration = rcGnmiAppConfiguration.getGnmiConfiguration();
         Assertions.assertTrue(gnmiConfiguration.getInitialYangsPaths().isEmpty());
@@ -96,7 +96,7 @@ public class RcGnmiAppModuleConfigUtilsTest {
         final RestConfConfiguration restconfConfig = rcGnmiAppConfiguration.getRestconfConfig();
         assertEquals(restconfConfig.getInetAddress().getCanonicalHostName(), "0.0.0.0");
         assertEquals(restconfConfig.getHttpPort(), 8888);
-        assertEquals(restconfConfig.getRestconfServletContextPath(), "/restconf");
+        assertEquals(restconfConfig.getRestconfServletContextPath(), "restconf");
         // Assert gnmi config
         final GnmiConfiguration gnmiConfiguration = rcGnmiAppConfiguration.getGnmiConfiguration();
         Assertions.assertTrue(gnmiConfiguration.getInitialYangsPaths().isEmpty());
