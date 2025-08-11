@@ -45,7 +45,7 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
                 lightyServices.getBindingDataBroker(), mountStatusReporter);
         final var recorder = new CallHomeMountStatusReporter(lightyServices.getBindingDataBroker());
         final NetconfTimer timer = new DefaultNetconfTimer();
-        CallHomeMountService.Configuration configuration = new Configuration(adress);
+        final CallHomeMountService.Configuration configuration = new Configuration(adress, port);
 
         this.dispatcher =
             new CallHomeMountService(topologyId, timer,
@@ -77,8 +77,10 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
     public static class Configuration implements CallHomeMountService.Configuration {
 
         private final String host;
+        private final int port;
 
-        public Configuration(final String host) {
+        public Configuration(final String host, final int port) {
+            this.port = port;
             this.host = host;
         }
 
@@ -89,12 +91,12 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
 
         @Override
         public int ssh$_$port() {
-            return 4334;
+            return port;
         }
 
         @Override
         public int tls$_$port() {
-            return 4335;
+            return port;
         }
 
         @Override

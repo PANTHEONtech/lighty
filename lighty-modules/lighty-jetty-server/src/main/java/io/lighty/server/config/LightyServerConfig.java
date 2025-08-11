@@ -21,6 +21,7 @@ public class LightyServerConfig {
     private boolean useHttp2 = false;
     private boolean needClientAuth = false;
     private boolean enableOpenApi = false;
+    private int callhomePort = 4334;
 
     public void setSecurityConfig(final SecurityConfig securityConfig) {
         this.securityConfig = securityConfig;
@@ -100,5 +101,13 @@ public class LightyServerConfig {
 
     public void setUseHttp2(boolean useHttp2) {
         this.useHttp2 = useHttp2;
+    }
+
+    public int getCallhomePort() {
+        return callhomePort;
+    }
+
+    public void setCallhomePort(int callhomePort) {
+        this.callhomePort = callhomePort;
     }
 }

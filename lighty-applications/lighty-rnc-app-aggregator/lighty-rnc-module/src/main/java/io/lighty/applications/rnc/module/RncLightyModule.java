@@ -94,7 +94,7 @@ public class RncLightyModule {
             callhomePlugin = new NetconfCallhomePluginBuilder(lightyController.getServices(),
                 rncModuleConfig.getNetconfConfig(),
                 rncModuleConfig.getRestconfConfig().getInetAddress().getHostAddress(),
-                4334).build();
+                rncModuleConfig.getServerConfig().getCallhomePort()).build();
             startAndWaitLightyModule(callhomePlugin);
             lightyRestconf.startServer();
         } catch (RncLightyAppStartException e) {
