@@ -121,6 +121,7 @@ public final class RncLightyModuleConfigUtils {
     private static void defaultModels(final Set<YangModuleInfo> modelPaths) {
         modelPaths.addAll(RestConfConfigUtils.YANG_MODELS);
         modelPaths.addAll(NetconfConfigUtils.NETCONF_TOPOLOGY_MODELS);
+        modelPaths.addAll(NetconfConfigUtils.NETCONF_CALLHOME_MODELS);
         modelPaths.addAll(AAAConfigUtils.YANG_MODELS);
     }
 }
