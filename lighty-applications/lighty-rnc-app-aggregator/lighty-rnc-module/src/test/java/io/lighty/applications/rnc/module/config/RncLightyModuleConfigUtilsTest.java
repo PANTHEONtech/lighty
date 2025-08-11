@@ -30,7 +30,7 @@ public class RncLightyModuleConfigUtilsTest {
         final var restconfConfig = rncConfig.getRestconfConfig();
         assertEquals(restconfConfig.getInetAddress().getCanonicalHostName(), "0.0.0.1");
         assertEquals(restconfConfig.getHttpPort(), 8181);
-        assertEquals(restconfConfig.getRestconfServletContextPath(), "/rests");
+        assertEquals(restconfConfig.getRestconfServletContextPath(), "rests");
 
         // Test Server configuration
         final var serverConfig = rncConfig.getServerConfig();
@@ -80,7 +80,7 @@ public class RncLightyModuleConfigUtilsTest {
         final var restconfConfig = rncConfig.getRestconfConfig();
         assertEquals(restconfConfig.getInetAddress().getCanonicalHostName(), "localhost");
         assertEquals(restconfConfig.getHttpPort(), 8888);
-        assertEquals(restconfConfig.getRestconfServletContextPath(), "/restconf");
+        assertEquals(restconfConfig.getRestconfServletContextPath(), "restconf");
 
         // Test Server configuration
         final var serverConfig = rncConfig.getServerConfig();
