@@ -22,6 +22,8 @@ import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
+import io.lighty.modules.southbound.netconf.impl.NetconfCallhomePlugin;
+import io.lighty.modules.southbound.netconf.impl.NetconfCallhomePluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.NetconfSBPlugin;
 import io.lighty.modules.southbound.netconf.impl.NetconfTopologyPluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
@@ -52,6 +54,7 @@ public class RncLightyModule {
     private AAALighty aaaLighty;
     private LightyJettyServerProvider jettyServerBuilder;
     private OpenApiLighty openApi;
+    private NetconfCallhomePlugin callhomePlugin;
 
     public RncLightyModule(final RncLightyModuleConfiguration rncModuleConfig) {
         LOG.info("Creating instance of RNC lighty.io module...");
@@ -86,7 +89,11 @@ public class RncLightyModule {
                                                  this.lightyController.getServices());
                 startAndWaitLightyModule(this.openApi);
             }
-
+            callhomePlugin = new NetconfCallhomePluginBuilder(lightyController.getServices(),
+                rncModuleConfig.getNetconfConfig(),
+                rncModuleConfig.getRestconfConfig().getInetAddress().getHostAddress(),
+                4334).build();
+            startAndWaitLightyModule(callhomePlugin);
             lightyRestconf.startServer();
         } catch (RncLightyAppStartException e) {
             LOG.error("Unable to initialize and start RNC lighty.io module!", e);
@@ -179,6 +186,9 @@ public class RncLightyModule {
         }
         if (this.lightyController != null) {
             success &= lightyController.shutdown(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
+        }
+        if (this.callhomePlugin != null) {
+            success &= callhomePlugin.shutdown(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
         }
         if (success) {
             LOG.info("RNC lighty.io module stopped successfully!");
