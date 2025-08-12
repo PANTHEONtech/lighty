@@ -36,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CommunityRestConf extends AbstractLightyModule {
-
     private static final Logger LOG = LoggerFactory.getLogger(CommunityRestConf.class);
 
     private final DOMDataBroker domDataBroker;
@@ -47,12 +46,13 @@ public class CommunityRestConf extends AbstractLightyModule {
     private final DOMSchemaService domSchemaService;
     private final InetAddress inetAddress;
     private final String restconfServletContextPath;
+    private final WebContextSecurer webContextSecurer;
     private final int httpPort;
     private AbstractLightyWebServer jettyServer;
     private LightyJettyServerProvider lightyServerBuilder;
     private JaxRsEndpoint jaxRsEndpoint;
-    private WebContextSecurer webContextSecurer;
     private MdsalRestconfStreamRegistry mdsalRestconfStreamRegistry;
+    private MdsalRestconfServer server;
 
     public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMRpcService domRpcService,
             final DOMNotificationService domNotificationService,
@@ -100,7 +100,7 @@ public class CommunityRestConf extends AbstractLightyModule {
         }
 
         final MdsalDatabindProvider databindProvider = new MdsalDatabindProvider(domSchemaService);
-        final var server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService,
+        this.server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService,
             domActionService, domMountPointService);
 
         this.jettyServer = this.lightyServerBuilder.getServer();
@@ -149,6 +149,15 @@ public class CommunityRestConf extends AbstractLightyModule {
                 LOG.info("Jetty stopped");
             } catch (final Exception e) {
                 LOG.error("{} failed to stop!", this.jettyServer.getClass(), e);
+                stopFailed = true;
+            }
+        }
+        if (server != null) {
+            try {
+                server.close();
+                LOG.info("MDSAL RESTCONF server stopped");
+            } catch (final Exception e) {
+                LOG.error("{} failed to stop!", this.server.getClass(), e);
                 stopFailed = true;
             }
         }
