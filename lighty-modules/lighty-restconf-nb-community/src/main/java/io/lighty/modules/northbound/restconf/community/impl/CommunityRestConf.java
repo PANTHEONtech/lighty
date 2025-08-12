@@ -52,6 +52,7 @@ public class CommunityRestConf extends AbstractLightyModule {
     private LightyJettyServerProvider lightyServerBuilder;
     private JaxRsEndpoint jaxRsEndpoint;
     private WebContextSecurer webContextSecurer;
+    private MdsalRestconfStreamRegistry mdsalRestconfStreamRegistry;
 
     public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMRpcService domRpcService,
             final DOMNotificationService domNotificationService,
@@ -103,14 +104,15 @@ public class CommunityRestConf extends AbstractLightyModule {
             domActionService, domMountPointService);
 
         this.jettyServer = this.lightyServerBuilder.getServer();
+        this.mdsalRestconfStreamRegistry = new MdsalRestconfStreamRegistry(domDataBroker, domNotificationService,
+            domSchemaService, new JaxRsLocationProvider(), databindProvider);
         this.jaxRsEndpoint = new JaxRsEndpoint(
             jettyServer,
             this.webContextSecurer,
             new JerseyServletSupport(),
             new CustomFilterAdapterConfigurationImpl(),
             server,
-            new MdsalRestconfStreamRegistry(domDataBroker, domNotificationService, domSchemaService,
-                new JaxRsLocationProvider(), databindProvider),
+            mdsalRestconfStreamRegistry,
             JaxRsEndpoint.props(streamsConfiguration)
         );
 
@@ -129,6 +131,15 @@ public class CommunityRestConf extends AbstractLightyModule {
                 LOG.info("jaxRsEndpoint stopped");
             } catch (final Exception e) {
                 LOG.error("{} failed to stop!", this.jaxRsEndpoint.getClass(), e);
+                stopFailed = true;
+            }
+        }
+        if (mdsalRestconfStreamRegistry != null) {
+            try {
+                mdsalRestconfStreamRegistry.close();
+                LOG.info("MDSAL RESTCONF stream registry stopped");
+            } catch (final Exception e) {
+                LOG.error("{} failed to stop!", mdsalRestconfStreamRegistry.getClass(), e);
                 stopFailed = true;
             }
         }
