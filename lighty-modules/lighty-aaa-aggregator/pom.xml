@@ -11,7 +11,7 @@
 
     <groupId>io.lighty.modules</groupId>
     <artifactId>lighty-aaa-aggregator</artifactId>
-    <version>20.4.0</version>
+    <version>20.5.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
