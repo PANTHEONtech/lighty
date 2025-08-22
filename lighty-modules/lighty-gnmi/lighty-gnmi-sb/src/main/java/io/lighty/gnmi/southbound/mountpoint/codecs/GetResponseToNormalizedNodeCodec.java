@@ -10,6 +10,7 @@ package io.lighty.gnmi.southbound.mountpoint.codecs;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import gnmi.Gnmi;
 import gnmi.Gnmi.Update;
@@ -84,22 +85,31 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
                  Check if response is rooted deeper than requested, if yes, wrap it so it is rooted at
                  the same level as identifier last path arg points to.
                 */
-                if (!identifier.isEmpty() && isResponseJsonDeeperThanRequested(identifier, responseJson)) {
-                    final QName lastName = identifier.getLastPathArgument().getNodeType();
-                    final Module moduleByQName =
-                            DataConverter.findModuleByQName(lastName, schemaContextProvider.getSchemaContext())
-                                    .orElseThrow(() -> new GnmiCodecException(
-                                            String.format("Unable to find module of node %s", lastName)));
+                if (!identifier.isEmpty()) {
+                    final String lastPathArgName = identifier.getLastPathArgument().getNodeType().getLocalName();
+                    JsonElement jsonObject = JsonParser.parseString(responseJson);
+                    if (isResponseJsonDeeperThanRequested(lastPathArgName, jsonObject)) {
+                        final QName lastName = identifier.getLastPathArgument().getNodeType();
+                        final Module moduleByQName =
+                                DataConverter.findModuleByQName(lastName, schemaContextProvider.getSchemaContext())
+                                        .orElseThrow(() -> new GnmiCodecException(
+                                                String.format("Unable to find module of node %s", lastName)));
 
-                    final String wrapWith = String.format("%s:%s", moduleByQName.getName(),
-                            lastName.getLocalName());
-                    if (identifier.getLastPathArgument() instanceof NodeIdentifierWithPredicates) {
-                        final NodeIdentifierWithPredicates lastPathArgument
-                                = (NodeIdentifierWithPredicates) identifier.getLastPathArgument();
-                        responseJson = JsonUtils.wrapJsonWithArray(responseJson, wrapWith, gson, lastPathArgument,
-                            schemaContextProvider.getSchemaContext());
-                    } else {
-                        responseJson = JsonUtils.wrapJsonWithObject(responseJson, wrapWith, gson);
+                        final String wrapWith = String.format("%s:%s", moduleByQName.getName(),
+                                lastName.getLocalName());
+                        if (identifier.getLastPathArgument() instanceof NodeIdentifierWithPredicates) {
+                            final NodeIdentifierWithPredicates lastPathArgument
+                                    = (NodeIdentifierWithPredicates) identifier.getLastPathArgument();
+                            responseJson = JsonUtils.wrapJsonWithArray(responseJson, wrapWith, gson, lastPathArgument,
+                                schemaContextProvider.getSchemaContext());
+                        } else {
+                            responseJson = JsonUtils.wrapJsonWithObject(responseJson, wrapWith, gson);
+                        }
+                    } else if (isResponseJsonWithoutNamespace(jsonObject)) {
+                        // Add missing namespace to the response from the request.
+                        JsonElement responseJsonWithNamespace = addNamespaceToResponseJson(jsonObject, identifier,
+                            schemaContextProvider);
+                        responseJson = responseJsonWithNamespace.toString();
                     }
                 }
                 return resolveJsonResponse(identifier, responseJson);
@@ -133,10 +143,8 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
         }
     }
 
-    private static boolean isResponseJsonDeeperThanRequested(final YangInstanceIdentifier identifier,
-                                                             final String responseJson) {
-        final String lastPathArgName = identifier.getLastPathArgument().getNodeType().getLocalName();
-        final JsonElement jsonObject = JsonParser.parseString(responseJson);
+    private static boolean isResponseJsonDeeperThanRequested(final String lastPathArgName,
+                                                              final JsonElement jsonObject) {
         if (!jsonObject.isJsonObject()) {
             return true;
         }
@@ -152,6 +160,33 @@ public class GetResponseToNormalizedNodeCodec implements BiCodec<Gnmi.GetRespons
             }
         }
         return true;
+    }
+
+    private static boolean isResponseJsonWithoutNamespace(final JsonElement jsonElement) {
+        final Map.Entry<String, JsonElement> firstElement = jsonElement.getAsJsonObject().entrySet().iterator().next();
+        if (firstElement.getKey().contains(":")) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private static JsonElement addNamespaceToResponseJson(final JsonElement jsonElement,
+                                                                final YangInstanceIdentifier identifier,
+                                                                final SchemaContextProvider schemaContextProvider)
+                                                                throws GnmiCodecException {
+        final QName lastName = identifier.getLastPathArgument().getNodeType();
+        final Module moduleByQName =
+                DataConverter.findModuleByQName(lastName, schemaContextProvider.getSchemaContext())
+                        .orElseThrow(() -> new GnmiCodecException(
+                                String.format("Unable to find module of node %s", lastName)));
+
+        final String moduleNameWithNamespace = String.format("%s:%s", moduleByQName.getName(),
+                lastName.getLocalName());
+        final Map.Entry<String, JsonElement> entry = jsonElement.getAsJsonObject().entrySet().iterator().next();
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add(moduleNameWithNamespace, entry.getValue());
+        return jsonObject;
     }
 
     @SuppressWarnings("IllegalCatch")
