@@ -22,6 +22,14 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- FIXME remove this when ODL bumps to newer netty version -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-bom</artifactId>
+                <version>4.1.124.Final</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.opendaylight.odlparent</groupId>
                 <artifactId>odlparent</artifactId>
