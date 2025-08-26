@@ -22,6 +22,12 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- FIXME remove this when ODL bumps to newer jetty -->
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-server</artifactId>
+                <version>9.4.58.v20250814</version>
+            </dependency>
             <dependency>
                 <groupId>org.opendaylight.odlparent</groupId>
                 <artifactId>odlparent</artifactId>
