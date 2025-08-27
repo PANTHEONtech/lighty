@@ -11,7 +11,7 @@
     <parent>
         <artifactId>lighty-app-parent</artifactId>
         <groupId>io.lighty.core</groupId>
-        <version>21.3.0</version>
+        <version>21.4.0-SNAPSHOT</version>
         <relativePath>../../lighty-core/lighty-app-parent/pom.xml</relativePath>
     </parent>
 
