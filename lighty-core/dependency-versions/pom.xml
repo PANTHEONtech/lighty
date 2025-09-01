@@ -25,8 +25,10 @@
             <!-- FIXME remove this when ODL bumps to newer jetty -->
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-server</artifactId>
+                <artifactId>jetty-bom</artifactId>
                 <version>9.4.58.v20250814</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.odlparent</groupId>
