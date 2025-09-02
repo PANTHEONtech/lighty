@@ -71,14 +71,27 @@ public final class NetconfTopologyPlugin extends AbstractTopologyPlugin {
 
     @Override
     protected boolean stopProcedure() {
-        if (netconfTopologyImpl != null) {
-            netconfTopologyImpl.close();
-        }
-        return true;
+        boolean success = true;
+        success &= closeResource(netconfTopologyImpl);
+        return success;
     }
 
     @Override
     public boolean isClustered() {
         return false;
+    }
+
+    @SuppressWarnings({"checkstyle:illegalCatch"})
+    private static boolean closeResource(final AutoCloseable resource) {
+        if (resource == null) {
+            return true;
+        }
+        try {
+            resource.close();
+            return true;
+        } catch (Exception e) {
+            LOG.error("{} failed to close!", resource.getClass().getName(), e);
+            return false;
+        }
     }
 }
