@@ -15,7 +15,6 @@ import org.opendaylight.netconf.client.mdsal.DeviceActionFactoryImpl;
 import org.opendaylight.netconf.client.mdsal.api.SchemaResourceManager;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultBaseNetconfSchemaProvider;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultSchemaResourceManager;
-import org.opendaylight.netconf.common.NetconfTimer;
 import org.opendaylight.netconf.common.di.DefaultNetconfTimer;
 import org.opendaylight.netconf.topology.callhome.CallHomeMountService;
 import org.opendaylight.netconf.topology.callhome.CallHomeMountSshAuthProvider;
@@ -33,6 +32,7 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
     private final CallHomeMountService dispatcher;
     private final CallHomeMountStatusReporter mountStatusReporter;
     private final NetconfTopologySchemaAssembler netconfTopologySchemaAssembler;
+    private final DefaultNetconfTimer timer;
 
     public NetconfCallhomePlugin(final LightyServices lightyServices, final String topologyId,
             final ExecutorService executorService, final String adress, final int port) {
@@ -44,7 +44,7 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
                 lightyServices.getBindingDataBroker());
         final CallHomeSshAuthProvider authProvider = new CallHomeMountSshAuthProvider(
                 lightyServices.getBindingDataBroker(), mountStatusReporter);
-        final NetconfTimer timer = new DefaultNetconfTimer();
+        timer = new DefaultNetconfTimer();
         final CallHomeMountService.Configuration configuration = new Configuration(adress, port);
         netconfTopologySchemaAssembler = new NetconfTopologySchemaAssembler(1);
 
@@ -69,6 +69,7 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
         success &= closeResource(provider);
         success &= closeResource(dispatcher);
         success &= closeResource(netconfTopologySchemaAssembler);
+        success &= closeResource(timer);
         success &= closeResource(mountStatusReporter);
         return success;
     }
