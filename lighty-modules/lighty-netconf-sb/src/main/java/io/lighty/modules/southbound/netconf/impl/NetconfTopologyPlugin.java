@@ -37,6 +37,8 @@ public final class NetconfTopologyPlugin extends AbstractTopologyPlugin {
     private NetconfTopologyImpl netconfTopologyImpl;
     private final AAAEncryptionService encryptionService;
     private final LightyServices lightyServices;
+    private NetconfTopologySchemaAssembler assembler;
+    private DefaultNetconfTimer timer;
 
     NetconfTopologyPlugin(final LightyServices lightyServices, final String topologyId,
             final ExecutorService executorService, final AAAEncryptionService encryptionService) {
@@ -53,15 +55,16 @@ public final class NetconfTopologyPlugin extends AbstractTopologyPlugin {
         final NetconfKeystoreService service = new DefaultNetconfKeystoreService(
                 lightyServices.getBindingDataBroker(), lightyServices.getRpcProviderService(),
                 lightyServices.getClusterSingletonServiceProvider(), encryptionService);
-        final NetconfClientFactory netconfFactory = new NetconfClientFactoryImpl(new DefaultNetconfTimer());
+        timer = new DefaultNetconfTimer();
+        final NetconfClientFactory netconfFactory = new NetconfClientFactoryImpl(timer);
         final CredentialProvider credentialProvider = new DefaultCredentialProvider(service);
         final SslContextFactoryProvider factoryProvider = new DefaultSslContextFactoryProvider(service);
         final NetconfClientConfigurationBuilderFactory factory = new NetconfClientConfigurationBuilderFactoryImpl(
             encryptionService, credentialProvider, factoryProvider);
-        final NetconfTopologySchemaAssembler assembler = new NetconfTopologySchemaAssembler(1);
+        assembler = new NetconfTopologySchemaAssembler(1);
         final SchemaResourceManager schemaResourceManager =
                 new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
-        netconfTopologyImpl = new NetconfTopologyImpl(topologyId, netconfFactory, new DefaultNetconfTimer(), assembler,
+        netconfTopologyImpl = new NetconfTopologyImpl(topologyId, netconfFactory, timer, assembler,
                 schemaResourceManager, lightyServices.getBindingDataBroker(), lightyServices.getDOMMountPointService(),
                 encryptionService, factory, lightyServices.getRpcProviderService(),
                 defaultBaseNetconfSchemas, new LightyDeviceActionFactory());
@@ -70,14 +73,29 @@ public final class NetconfTopologyPlugin extends AbstractTopologyPlugin {
 
     @Override
     protected boolean stopProcedure() {
-        if (netconfTopologyImpl != null) {
-            netconfTopologyImpl.close();
-        }
-        return true;
+        boolean success = true;
+        success &= closeResource(netconfTopologyImpl);
+        success &= closeResource(assembler);
+        success &= closeResource(timer);
+        return success;
     }
 
     @Override
     public boolean isClustered() {
         return false;
+    }
+
+    @SuppressWarnings({"checkstyle:illegalCatch"})
+    private boolean closeResource(AutoCloseable resource) {
+        if (resource == null) {
+            return true;
+        }
+        try {
+            resource.close();
+            return true;
+        } catch (Exception e) {
+            LOG.error("{} failed to close!", resource.getClass().getName(), e);
+            return false;
+        }
     }
 }

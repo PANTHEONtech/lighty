@@ -15,7 +15,6 @@ import org.opendaylight.netconf.client.mdsal.DeviceActionFactoryImpl;
 import org.opendaylight.netconf.client.mdsal.api.SchemaResourceManager;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultBaseNetconfSchemaProvider;
 import org.opendaylight.netconf.client.mdsal.impl.DefaultSchemaResourceManager;
-import org.opendaylight.netconf.common.NetconfTimer;
 import org.opendaylight.netconf.common.di.DefaultNetconfTimer;
 import org.opendaylight.netconf.topology.callhome.CallHomeMountService;
 import org.opendaylight.netconf.topology.callhome.CallHomeMountSshAuthProvider;
@@ -31,6 +30,9 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
 
     private final IetfZeroTouchCallHomeServerProvider provider;
     private final CallHomeMountService dispatcher;
+    private final CallHomeMountStatusReporter mountStatusReporter;
+    private final NetconfTopologySchemaAssembler netconfTopologySchemaAssembler;
+    private final DefaultNetconfTimer timer;
 
     public NetconfCallhomePlugin(final LightyServices lightyServices, final String topologyId,
             final ExecutorService executorService, final String adress, final int port) {
@@ -38,20 +40,20 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
         final DefaultBaseNetconfSchemaProvider defaultBaseNetconfSchemas = new
                 DefaultBaseNetconfSchemaProvider(lightyServices.getYangParserFactory());
         final SchemaResourceManager manager = new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
-        final var mountStatusReporter = new CallHomeMountStatusReporter(
+        mountStatusReporter = new CallHomeMountStatusReporter(
                 lightyServices.getBindingDataBroker());
         final CallHomeSshAuthProvider authProvider = new CallHomeMountSshAuthProvider(
                 lightyServices.getBindingDataBroker(), mountStatusReporter);
-        final var recorder = new CallHomeMountStatusReporter(lightyServices.getBindingDataBroker());
-        final NetconfTimer timer = new DefaultNetconfTimer();
+        timer = new DefaultNetconfTimer();
         final CallHomeMountService.Configuration configuration = new Configuration(adress, port);
+        netconfTopologySchemaAssembler = new NetconfTopologySchemaAssembler(1);
 
         this.dispatcher =
             new CallHomeMountService(topologyId, timer,
-                new NetconfTopologySchemaAssembler(1),
+                netconfTopologySchemaAssembler,
                 manager, defaultBaseNetconfSchemas, lightyServices.getBindingDataBroker(),
                 lightyServices.getDOMMountPointService(), new DeviceActionFactoryImpl(), configuration);
-        this.provider = new IetfZeroTouchCallHomeServerProvider(timer, dispatcher, authProvider, recorder,
+        this.provider = new IetfZeroTouchCallHomeServerProvider(timer, dispatcher, authProvider, mountStatusReporter,
                 configuration);
     }
 
@@ -63,14 +65,27 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
     @SuppressWarnings("checkstyle:illegalCatch")
     @Override
     protected boolean stopProcedure() {
+        boolean success = true;
+        success &= closeResource(provider);
+        success &= closeResource(dispatcher);
+        success &= closeResource(netconfTopologySchemaAssembler);
+        success &= closeResource(timer);
+        success &= closeResource(mountStatusReporter);
+        return success;
+    }
+
+    @SuppressWarnings({"checkstyle:illegalCatch"})
+    private boolean closeResource(AutoCloseable resource) {
+        if (resource == null) {
+            return true;
+        }
         try {
-            this.dispatcher.close();
-            this.provider.close();
-        } catch (final Exception e) {
-            LOG.error("{} failed to close!", this.provider.getClass(), e);
+            resource.close();
+            return true;
+        } catch (Exception e) {
+            LOG.error("{} failed to close!", resource.getClass().getName(), e);
             return false;
         }
-        return true;
     }
 
     public static class Configuration implements CallHomeMountService.Configuration {
