@@ -62,6 +62,7 @@ public class CommunityRestConf extends AbstractLightyModule {
     private final int httpPort;
     private final InetAddress inetAddress;
     private final String restconfServletContextPath;
+    private MdsalRestconfServer server;
     private Server jettyServer;
     private LightyServerBuilder lightyServerBuilder;
     private JaxRsEndpoint jaxRsEndpoint;
@@ -102,7 +103,7 @@ public class CommunityRestConf extends AbstractLightyModule {
         LOG.info("Starting RestconfApplication with configuration {}", streamsConfiguration);
 
         final MdsalDatabindProvider databindProvider = new MdsalDatabindProvider(domSchemaService);
-        final var server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService, domActionService,
+        server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService, domActionService,
             domMountPointService);
 
         this.jaxRsEndpoint = new JaxRsEndpoint(new JettyWebServer(httpPort), new LightyWebContextSecurer(),
@@ -177,6 +178,9 @@ public class CommunityRestConf extends AbstractLightyModule {
         }
         if (this.lightyServerBuilder != null) {
             this.lightyServerBuilder = null;
+        }
+        if (this.server != null) {
+            server.close();
         }
         return !stopFailed;
     }
