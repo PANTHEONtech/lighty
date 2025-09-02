@@ -63,14 +63,23 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
     @SuppressWarnings("checkstyle:illegalCatch")
     @Override
     protected boolean stopProcedure() {
+        boolean success = true;
+        success &= closeResource(dispatcher);
+        return success;
+    }
+
+    @SuppressWarnings({"checkstyle:illegalCatch"})
+    private static boolean closeResource(final AutoCloseable resource) {
+        if (resource == null) {
+            return true;
+        }
         try {
-            this.dispatcher.close();
-            this.provider.close();
-        } catch (final Exception e) {
-            LOG.error("{} failed to close!", this.provider.getClass(), e);
+            resource.close();
+            return true;
+        } catch (Exception e) {
+            LOG.error("{} failed to close!", resource.getClass().getName(), e);
             return false;
         }
-        return true;
     }
 
     public static class Configuration implements CallHomeMountService.Configuration {
