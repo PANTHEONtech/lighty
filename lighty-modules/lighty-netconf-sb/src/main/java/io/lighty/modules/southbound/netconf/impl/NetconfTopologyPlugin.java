@@ -38,6 +38,7 @@ public final class NetconfTopologyPlugin extends AbstractTopologyPlugin {
     private final AAAEncryptionService encryptionService;
     private final LightyServices lightyServices;
     private NetconfTopologySchemaAssembler assembler;
+    private DefaultNetconfTimer timer;
 
     NetconfTopologyPlugin(final LightyServices lightyServices, final String topologyId,
             final ExecutorService executorService, final AAAEncryptionService encryptionService) {
@@ -54,7 +55,8 @@ public final class NetconfTopologyPlugin extends AbstractTopologyPlugin {
         final NetconfKeystoreService service = new DefaultNetconfKeystoreService(
                 lightyServices.getBindingDataBroker(), lightyServices.getRpcProviderService(),
                 lightyServices.getClusterSingletonServiceProvider(), encryptionService);
-        final NetconfClientFactory netconfFactory = new NetconfClientFactoryImpl(new DefaultNetconfTimer());
+        timer = new DefaultNetconfTimer();
+        final NetconfClientFactory netconfFactory = new NetconfClientFactoryImpl(timer);
         final CredentialProvider credentialProvider = new DefaultCredentialProvider(service);
         final SslContextFactoryProvider factoryProvider = new DefaultSslContextFactoryProvider(service);
         final NetconfClientConfigurationBuilderFactory factory = new NetconfClientConfigurationBuilderFactoryImpl(
@@ -62,7 +64,7 @@ public final class NetconfTopologyPlugin extends AbstractTopologyPlugin {
         assembler = new NetconfTopologySchemaAssembler(1);
         final SchemaResourceManager schemaResourceManager =
                 new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
-        netconfTopologyImpl = new NetconfTopologyImpl(topologyId, netconfFactory, new DefaultNetconfTimer(), assembler,
+        netconfTopologyImpl = new NetconfTopologyImpl(topologyId, netconfFactory, timer, assembler,
                 schemaResourceManager, lightyServices.getBindingDataBroker(), lightyServices.getDOMMountPointService(),
                 encryptionService, factory, lightyServices.getRpcProviderService(),
                 defaultBaseNetconfSchemas, new LightyDeviceActionFactory());
@@ -74,6 +76,7 @@ public final class NetconfTopologyPlugin extends AbstractTopologyPlugin {
         boolean success = true;
         success &= closeResource(netconfTopologyImpl);
         success &= closeResource(assembler);
+        success &= closeResource(timer);
         return success;
     }
 
