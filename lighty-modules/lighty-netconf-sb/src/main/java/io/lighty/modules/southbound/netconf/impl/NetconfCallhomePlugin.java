@@ -31,6 +31,7 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
 
     private final IetfZeroTouchCallHomeServerProvider provider;
     private final CallHomeMountService dispatcher;
+    private final CallHomeMountStatusReporter mountStatusReporter;
 
     public NetconfCallhomePlugin(final LightyServices lightyServices, final String topologyId,
             final ExecutorService executorService, final String adress, final int port) {
@@ -38,11 +39,10 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
         final DefaultBaseNetconfSchemaProvider defaultBaseNetconfSchemas = new
                 DefaultBaseNetconfSchemaProvider(lightyServices.getYangParserFactory());
         final SchemaResourceManager manager = new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
-        final var mountStatusReporter = new CallHomeMountStatusReporter(
+        mountStatusReporter = new CallHomeMountStatusReporter(
                 lightyServices.getBindingDataBroker());
         final CallHomeSshAuthProvider authProvider = new CallHomeMountSshAuthProvider(
                 lightyServices.getBindingDataBroker(), mountStatusReporter);
-        final var recorder = new CallHomeMountStatusReporter(lightyServices.getBindingDataBroker());
         final NetconfTimer timer = new DefaultNetconfTimer();
         final CallHomeMountService.Configuration configuration = new Configuration(adress, port);
 
@@ -51,7 +51,7 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
                 new NetconfTopologySchemaAssembler(1),
                 manager, defaultBaseNetconfSchemas, lightyServices.getBindingDataBroker(),
                 lightyServices.getDOMMountPointService(), new DeviceActionFactoryImpl(), configuration);
-        this.provider = new IetfZeroTouchCallHomeServerProvider(timer, dispatcher, authProvider, recorder,
+        this.provider = new IetfZeroTouchCallHomeServerProvider(timer, dispatcher, authProvider, mountStatusReporter,
                 configuration);
     }
 
@@ -64,7 +64,9 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
     @Override
     protected boolean stopProcedure() {
         boolean success = true;
+        success &= closeResource(provider);
         success &= closeResource(dispatcher);
+        success &= closeResource(mountStatusReporter);
         return success;
     }
 
