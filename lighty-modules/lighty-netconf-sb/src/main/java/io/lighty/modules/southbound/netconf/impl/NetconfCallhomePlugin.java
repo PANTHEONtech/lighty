@@ -32,6 +32,7 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
     private final IetfZeroTouchCallHomeServerProvider provider;
     private final CallHomeMountService dispatcher;
     private final CallHomeMountStatusReporter mountStatusReporter;
+    private final NetconfTopologySchemaAssembler netconfTopologySchemaAssembler;
 
     public NetconfCallhomePlugin(final LightyServices lightyServices, final String topologyId,
             final ExecutorService executorService, final String adress, final int port) {
@@ -45,10 +46,11 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
                 lightyServices.getBindingDataBroker(), mountStatusReporter);
         final NetconfTimer timer = new DefaultNetconfTimer();
         final CallHomeMountService.Configuration configuration = new Configuration(adress, port);
+        netconfTopologySchemaAssembler = new NetconfTopologySchemaAssembler(1);
 
         this.dispatcher =
             new CallHomeMountService(topologyId, timer,
-                new NetconfTopologySchemaAssembler(1),
+                netconfTopologySchemaAssembler,
                 manager, defaultBaseNetconfSchemas, lightyServices.getBindingDataBroker(),
                 lightyServices.getDOMMountPointService(), new DeviceActionFactoryImpl(), configuration);
         this.provider = new IetfZeroTouchCallHomeServerProvider(timer, dispatcher, authProvider, mountStatusReporter,
@@ -66,6 +68,7 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
         boolean success = true;
         success &= closeResource(provider);
         success &= closeResource(dispatcher);
+        success &= closeResource(netconfTopologySchemaAssembler);
         success &= closeResource(mountStatusReporter);
         return success;
     }
