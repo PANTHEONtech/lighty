@@ -37,6 +37,7 @@ public final class NetconfTopologyPlugin extends AbstractTopologyPlugin {
     private NetconfTopologyImpl netconfTopologyImpl;
     private final AAAEncryptionService encryptionService;
     private final LightyServices lightyServices;
+    private final NetconfTopologySchemaAssembler assembler;
 
     NetconfTopologyPlugin(final LightyServices lightyServices, final String topologyId,
             final ExecutorService executorService, final AAAEncryptionService encryptionService) {
@@ -44,6 +45,7 @@ public final class NetconfTopologyPlugin extends AbstractTopologyPlugin {
         this.lightyServices = lightyServices;
         this.topologyId = topologyId;
         this.encryptionService = encryptionService;
+        assembler = new NetconfTopologySchemaAssembler(1);
     }
 
     @Override
@@ -58,7 +60,6 @@ public final class NetconfTopologyPlugin extends AbstractTopologyPlugin {
         final SslContextFactoryProvider factoryProvider = new DefaultSslContextFactoryProvider(service);
         final NetconfClientConfigurationBuilderFactory factory = new NetconfClientConfigurationBuilderFactoryImpl(
             encryptionService, credentialProvider, factoryProvider);
-        final NetconfTopologySchemaAssembler assembler = new NetconfTopologySchemaAssembler(1);
         final SchemaResourceManager schemaResourceManager =
                 new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
         netconfTopologyImpl = new NetconfTopologyImpl(topologyId, netconfFactory, new DefaultNetconfTimer(), assembler,
@@ -72,6 +73,7 @@ public final class NetconfTopologyPlugin extends AbstractTopologyPlugin {
     protected boolean stopProcedure() {
         boolean success = true;
         success &= closeResource(netconfTopologyImpl);
+        success &= closeResource(assembler);
         return success;
     }
 
