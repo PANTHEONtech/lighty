@@ -65,6 +65,7 @@ public class CommunityRestConf extends AbstractLightyModule {
     private Server jettyServer;
     private LightyServerBuilder lightyServerBuilder;
     private JaxRsEndpoint jaxRsEndpoint;
+    private MdsalRestconfServer server;
 
     public CommunityRestConf(final DOMDataBroker domDataBroker, final DOMRpcService domRpcService,
             final DOMActionService domActionService, final DOMNotificationService domNotificationService,
@@ -102,7 +103,7 @@ public class CommunityRestConf extends AbstractLightyModule {
         LOG.info("Starting RestconfApplication with configuration {}", streamsConfiguration);
 
         final MdsalDatabindProvider databindProvider = new MdsalDatabindProvider(domSchemaService);
-        final var server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService, domActionService,
+        this.server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService, domActionService,
             domMountPointService);
 
         this.jaxRsEndpoint = new JaxRsEndpoint(new JettyWebServer(httpPort), new LightyWebContextSecurer(),
@@ -172,6 +173,15 @@ public class CommunityRestConf extends AbstractLightyModule {
                 LOG.info("Jetty stopped");
             } catch (final Exception e) {
                 LOG.error("{} failed to stop!", this.jettyServer.getClass(), e);
+                stopFailed = true;
+            }
+        }
+        if (this.server != null) {
+            try {
+                server.close();
+                LOG.info("MDSAL RESTCONF server stopped");
+            } catch (final Exception e) {
+                LOG.error("{} failed to stop!", this.server.getClass(), e);
                 stopFailed = true;
             }
         }
