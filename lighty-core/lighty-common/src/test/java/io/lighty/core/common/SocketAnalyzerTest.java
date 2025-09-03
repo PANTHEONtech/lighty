@@ -18,18 +18,10 @@ public class SocketAnalyzerTest {
     private static final long TIMEOUT = 3;
 
     @Test
-    public void socketAnalyzerAwaitPortSuccess() throws IOException {
-        ServerSocket blockingSocket = null;
-        try {
-            final int availablePort = findAvailablePort();
-            blockingSocket = new ServerSocket(availablePort);
+    public void socketAnalyzerAwaitPortSuccess() throws IOException, InterruptedException {
+        final int availablePort = findAvailablePort();
+        try (ServerSocket ignored = new ServerSocket(availablePort)) {
             Assert.assertFalse(SocketAnalyzer.awaitPortAvailable(availablePort, TIMEOUT, TimeUnit.SECONDS));
-        } catch (InterruptedException | IOException e) {
-            Assert.fail("SocketAnalyzer test failed.", e);
-        } finally {
-            if (blockingSocket != null) {
-                blockingSocket.close();
-            }
         }
     }
 
