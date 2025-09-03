@@ -28,6 +28,7 @@ import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 public class ConverterUtilsTest extends AbstractCodecTest {
 
     public ConverterUtilsTest() throws YangParserException {
+        // Constructor required to declare YangParserException due to superclass.
     }
 
     @Test
