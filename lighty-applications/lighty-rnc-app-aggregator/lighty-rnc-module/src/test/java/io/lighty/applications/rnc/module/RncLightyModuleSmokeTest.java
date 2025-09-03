@@ -103,26 +103,32 @@ public class RncLightyModuleSmokeTest {
             new X509ExtendedTrustManager() {
                 @Override
                 public void checkClientTrusted(X509Certificate[] x509Certificates, String data, Socket socket) {
+                    // Trust all client certificates
                 }
 
                 @Override
                 public void checkClientTrusted(X509Certificate[] x509Certificates, String data, SSLEngine sslEngine) {
+                    // Trust all client certificates
                 }
 
                 @Override
                 public void checkClientTrusted(X509Certificate[] certs, final String authType) {
+                    // Trust all client certificates
                 }
 
                 @Override
                 public void checkServerTrusted(X509Certificate[] x509Certificates, String data, Socket socket) {
+                    // Trust all server certificates
                 }
 
                 @Override
                 public void checkServerTrusted(X509Certificate[] x509Certificates, String data, SSLEngine sslEngine) {
+                    // Trust all server certificates
                 }
 
                 @Override
                 public void checkServerTrusted(X509Certificate[] certs, final String authType) {
+                    // Trust all server certificates
                 }
 
                 @Override
