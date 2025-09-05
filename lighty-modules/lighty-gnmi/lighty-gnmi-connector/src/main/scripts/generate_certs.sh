@@ -90,4 +90,6 @@ openssl verify -verbose -CAfile ca.crt client.crt
 echo ""
 echo " == Validate Client with passphrase"
 openssl verify -verbose -CAfile ca.crt client.encrypted.crt
-
+echo ""
+echo " == Transform Client from PEM to RSA format"
+openssl rsa -in client.key -out client_new.key -traditional && mv client_new.key client.key
