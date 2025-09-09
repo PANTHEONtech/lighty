@@ -270,13 +270,13 @@
       "response": []
     },
     {
-      "name": "Put Authentication config/state",
+      "name": "Put Authentication config",
       "request": {
         "method": "PUT",
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"openconfig-system:authentication\": {\n        \"config\": {\n            \"authentication-method\": [\n                \"openconfig-aaa-types:TACACS_ALL\"\n            ]\n        },\n        \"state\": {\n            \"authentication-method\": [\n                \"openconfig-aaa-types:RADIUS_ALL\"\n            ]\n        }\n    }\n}",
+          "raw": "{\n    \"openconfig-system:authentication\": {\n        \"config\": {\n            \"authentication-method\": [\n                \"openconfig-aaa-types:TACACS_ALL\"\n            ]\n        }\n    }\n}",
           "options": {
             "raw": {
               "language": "json"

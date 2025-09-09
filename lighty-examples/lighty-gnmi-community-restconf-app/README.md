@@ -127,8 +127,7 @@ curl --request GET 'http://127.0.0.1:8888/restconf/data/network-topology:network
 ```
 
 ### Write configuration to device
-To write authentication information the PUT request `'Put Authentication config/state'` from postman collection can be
-used.
+To write authentication information the PUT request `'Put Authentication config'` from postman collection can be used.
 ```
 curl --request PUT 'http://127.0.0.1:8888/restconf/data/network-topology:network-topology/topology=gnmi-topology/node=gnmi-simulator/yang-ext:mount/openconfig-system:system/aaa/authentication' \
 --header 'Content-Type: application/json' \
@@ -137,11 +136,6 @@ curl --request PUT 'http://127.0.0.1:8888/restconf/data/network-topology:network
         "config": {
             "authentication-method": [
                 "openconfig-aaa-types:TACACS_ALL"
-            ]
-        },
-        "state": {
-            "authentication-method": [
-                "openconfig-aaa-types:RADIUS_ALL"
             ]
         }
     }
