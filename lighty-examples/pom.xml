@@ -26,5 +26,6 @@
         <module>lighty-community-restconf-actions-app</module>
         <module>lighty-bgp-community-restconf-app</module>
         <module>lighty-guice-app</module>
+        <module>lighty-community-netty-restconf-app</module>
     </modules>
 </project>
