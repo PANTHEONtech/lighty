@@ -30,5 +30,6 @@
         <module>integration-tests-aaa</module>
         <module>lighty-gnmi</module>
         <module>lighty-bgp</module>
+        <module>lighty-restconf-netty-nb-community</module>
     </modules>
 </project>
