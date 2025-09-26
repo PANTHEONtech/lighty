@@ -28,21 +28,34 @@ runs:
   using: "composite"
   steps:
     - name: Env docker image name
+      env:
+        APP_MODULES: ${{ inputs.app-modules }}
+        APP_DOCKER_POM_PATH: ${{ inputs.app-docker-pom-path }}
+        APP_HELM_VALUES_PATH: ${{ inputs.app-helm-values-path }}
+        DOCKER_IMAGE_NAME: ghcr.io/pantheontech/${{ inputs.image-name }}
+        DOCKER_IMAGE_VERSION: ${{ inputs.version }}\
+        DOCKER_IMAGE_TAG_LATEST: ${{ inputs.image-tag-latest }}
+        PUBLISH_ACCESS_KEY: ${{ inputs.publish-access-key }}
+        DOCKER_IMAGE_NAME_TAG: $DOCKER_IMAGE_NAME:${{ inputs.version }}
       shell: bash
       run: |
-        DOCKER_IMAGE_NAME=$(echo ghcr.io/pantheontech/${{ inputs.image-name }})
-        DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME:${{ inputs.version }})
+        echo "APP_MODULES=$(echo $APP_MODULES)" >> $GITHUB_ENV
+        echo "APP_DOCKER_POM_PATH=$(echo $APP_DOCKER_POM_PATH)" >> $GITHUB_ENV
+        echo "APP_HELM_VALUES_PATH=$(echo $APP_HELM_VALUES_PATH)" >> $GITHUB_ENV      
         echo "DOCKER_IMAGE_NAME=$(echo $DOCKER_IMAGE_NAME)" >> $GITHUB_ENV
+        echo "DOCKER_IMAGE_VERSION=$(echo $DOCKER_IMAGE_VERSION)" >> $GITHUB_ENV
+        echo "DOCKER_IMAGE_TAG_LATEST=$(echo $DOCKER_IMAGE_TAG_LATEST)" >> $GITHUB_ENV
+        echo "PUBLISH_ACCESS_KEY=$(echo PUBLISH_ACCESS_KEY)" >> $GITHUB_ENV
         echo "DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME_TAG)" >> $GITHUB_ENV
     - name: Build docker image
       shell: bash
-      run: mvn install -B -pl ${{ inputs.app-modules }} -P docker
+      run: mvn install -B -pl $APP_MODULES -P docker
     - name: Tag image
       shell: bash
       run: |
-        image_name=$(mvn help:evaluate -f ${{ inputs.app-docker-pom-path }} -Dexpression=image.name -q -DforceStdout)
+        image_name=$(mvn help:evaluate -f $APP_DOCKER_POM_PATH -Dexpression=image.name -q -DforceStdout)
         docker tag $image_name $DOCKER_IMAGE_NAME_TAG
-        if [ "${{ inputs.image-tag-latest }}" = 'true' ]; then
+        if [ $DOCKER_IMAGE_TAG_LATEST = 'true' ]; then
           docker tag $image_name $DOCKER_IMAGE_NAME:latest
         fi
         docker images | grep $image_name
@@ -53,12 +66,12 @@ runs:
     - name: Docker log in (ghcr.io)
       shell: bash
       run: |
-        echo ${{ inputs.publish-access-key}} | docker login  --username ${{ github.actor }} --password-stdin ghcr.io
+        echo $PUBLISH_ACCESS_KEY | docker login  --username ${{ github.actor }} --password-stdin ghcr.io
     - name: Publish docker image (ghcr.io)
       shell: bash
       run: |
         docker push $DOCKER_IMAGE_NAME_TAG
-        if [ "${{ inputs.image-tag-latest }}" = 'true' ]; then
+        if [ $DOCKER_IMAGE_TAG_LATEST = 'true' ]; then
           docker push $DOCKER_IMAGE_NAME:latest
         fi
     - name: Check if docker image is pullable  (ghcr.io)
@@ -73,8 +86,8 @@ runs:
     - name: Set image.name, image.version in values.yaml of helm chart
       shell: bash
       run: |
-        yq eval '.image.name="ghcr.io/pantheontech/${{ inputs.image-name }}" | .image.version="${{ inputs.version }}"' ${{ inputs.app-helm-values-path }} -i
+        yq eval '.image.name=$DOCKER_IMAGE_NAME | .image.version=$DOCKER_IMAGE_VERSION' $APP_HELM_VALUES_PATH -i
     - name: Print values.yaml
       shell: bash
       run: |
-        cat -A ${{ inputs.app-helm-values-path }}
+        cat -A $APP_HELM_VALUES_PATH
