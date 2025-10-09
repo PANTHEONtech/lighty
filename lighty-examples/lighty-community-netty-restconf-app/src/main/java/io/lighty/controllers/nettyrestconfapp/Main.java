@@ -24,8 +24,8 @@ import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import io.lighty.modules.northbound.netty.restconf.community.impl.NettyRestConf;
 import io.lighty.modules.northbound.netty.restconf.community.impl.NettyRestConfBuilder;
+import io.lighty.modules.northbound.netty.restconf.community.impl.config.NettyRestConfConfiguration;
 import io.lighty.modules.northbound.netty.restconf.community.impl.util.NettyRestConfUtils;
-import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import io.lighty.modules.southbound.netconf.impl.NetconfTopologyPluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
@@ -77,7 +77,7 @@ public class Main {
         LOG.info("https://github.com/PANTHEONtech/lighty");
         try {
             final ControllerConfiguration singleNodeConfiguration;
-            final RestConfConfiguration restconfConfiguration;
+            final NettyRestConfConfiguration restconfConfiguration;
             final AAAConfiguration aaaConfiguration;
             final NetconfConfiguration netconfSBPConfiguration;
             if (args.length > 0) {
@@ -138,7 +138,7 @@ public class Main {
     }
 
     private void startLighty(final ControllerConfiguration controllerConfiguration,
-        final RestConfConfiguration restconfConfiguration,
+        final NettyRestConfConfiguration restconfConfiguration,
         final AAAConfiguration aaaConfiguration,
         final NetconfConfiguration netconfSBPConfiguration)
         throws ConfigurationException, ExecutionException, InterruptedException, TimeoutException,
