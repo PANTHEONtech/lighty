@@ -35,10 +35,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
         </dependency>
         <dependency>
             <groupId>io.lighty.modules</groupId>
-            <artifactId>lighty-restconf-nb-community</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.lighty.modules</groupId>
             <artifactId>lighty-aaa</artifactId>
         </dependency>
 
