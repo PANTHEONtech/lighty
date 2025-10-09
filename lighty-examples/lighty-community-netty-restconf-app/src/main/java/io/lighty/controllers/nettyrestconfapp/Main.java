@@ -24,9 +24,8 @@ import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import io.lighty.modules.northbound.netty.restconf.community.impl.NettyRestConf;
 import io.lighty.modules.northbound.netty.restconf.community.impl.NettyRestConfBuilder;
+import io.lighty.modules.northbound.netty.restconf.community.impl.config.NettyRestConfConfiguration;
 import io.lighty.modules.northbound.netty.restconf.community.impl.util.NettyRestConfUtils;
-import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
-import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import io.lighty.modules.southbound.netconf.impl.NetconfTopologyPluginBuilder;
 import io.lighty.modules.southbound.netconf.impl.config.NetconfConfiguration;
 import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
@@ -77,7 +76,7 @@ public class Main {
         LOG.info("https://github.com/PANTHEONtech/lighty");
         try {
             final ControllerConfiguration singleNodeConfiguration;
-            final RestConfConfiguration restconfConfiguration;
+            final NettyRestConfConfiguration restconfConfiguration;
             final AAAConfiguration aaaConfiguration;
             final NetconfConfiguration netconfSBPConfiguration;
             if (args.length > 0) {
@@ -86,7 +85,8 @@ public class Main {
                 //1. get controller configuration
                 singleNodeConfiguration = ControllerConfigUtils.getConfiguration(Files.newInputStream(configPath));
                 //2. get RESTCONF NBP configuration
-                restconfConfiguration = RestConfConfigUtils.getRestConfConfiguration(Files.newInputStream(configPath));
+                restconfConfiguration = NettyRestConfUtils.getNettyRestConfConfiguration(
+                    Files.newInputStream(configPath));
                 //3. get AAA config
                 aaaConfiguration = AAAConfigUtils.getAAAConfiguration(Files.newInputStream(configPath));
                 if (!aaaConfiguration.isEnableAAA()) {
@@ -99,7 +99,7 @@ public class Main {
                     NetconfConfigUtils.createNetconfConfiguration(Files.newInputStream(configPath));
             } else {
                 LOG.info("using default configuration ...");
-                Set<YangModuleInfo> modelPaths = Stream.concat(RestConfConfigUtils.YANG_MODELS.stream(),
+                Set<YangModuleInfo> modelPaths = Stream.concat(NettyRestConfUtils.YANG_MODELS.stream(),
                     NetconfConfigUtils.NETCONF_TOPOLOGY_MODELS.stream()).collect(Collectors.toSet());
                 modelPaths.add(org.opendaylight.yang.svc.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321
                         .YangModuleInfoImpl.getInstance());
@@ -113,7 +113,7 @@ public class Main {
                 //1. get controller configuration
                 singleNodeConfiguration = ControllerConfigUtils.getDefaultSingleNodeConfiguration(modelPaths);
                 //2. get RESTCONF NBP configuration
-                restconfConfiguration = RestConfConfigUtils.getDefaultRestConfConfiguration();
+                restconfConfiguration = NettyRestConfUtils.getDefaultNettyRestConfConfiguration();
                 //3. AAA configuration
                 aaaConfiguration = AAAConfigUtils.createDefaultAAAConfiguration();
                 //4. NETCONF SBP configuration
@@ -138,7 +138,7 @@ public class Main {
     }
 
     private void startLighty(final ControllerConfiguration controllerConfiguration,
-        final RestConfConfiguration restconfConfiguration,
+        final NettyRestConfConfiguration restconfConfiguration,
         final AAAConfiguration aaaConfiguration,
         final NetconfConfiguration netconfSBPConfiguration)
         throws ConfigurationException, ExecutionException, InterruptedException, TimeoutException,
@@ -158,7 +158,7 @@ public class Main {
                 lightyController.getServices().getRpcProviderService()));
 
         this.restconf = NettyRestConfBuilder
-            .from(RestConfConfigUtils.getRestConfConfiguration(restconfConfiguration,
+            .from(NettyRestConfUtils.getNettyRestConfConfiguration(restconfConfiguration,
                 this.lightyController.getServices()))
             .withWebEnvironment(NettyRestConfUtils.getAaaWebEnvironment(
                 lightyController.getServices().getBindingDataBroker(),
