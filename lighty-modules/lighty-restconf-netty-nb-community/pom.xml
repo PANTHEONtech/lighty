@@ -26,6 +26,14 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
             <artifactId>lighty-controller</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.lighty.modules</groupId>
+            <artifactId>lighty-aaa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.netconf</groupId>
+            <artifactId>odl-device-notification</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.opendaylight.netconf</groupId>
             <artifactId>restconf-server</artifactId>
         </dependency>
@@ -34,12 +42,25 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
             <artifactId>restconf-server-mdsal</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.lighty.modules</groupId>
-            <artifactId>lighty-restconf-nb-community</artifactId>
+            <groupId>org.opendaylight.netconf.model</groupId>
+            <artifactId>sal-remote</artifactId>
+        </dependency>
+
+        <!--Tests-->
+        <dependency>
+            <groupId>io.lighty.resources</groupId>
+            <artifactId>singlenode-configuration</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.lighty.modules</groupId>
-            <artifactId>lighty-aaa</artifactId>
+            <groupId>org.opendaylight.netconf</groupId>
+            <artifactId>restconf-server-api-testlib</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.netconf.model</groupId>
+            <artifactId>test-models</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
