@@ -152,10 +152,6 @@ public class NettyRestConfConfiguration {
         return restconfServletContextPath;
     }
 
-    public void setRestconfServletContextPath(final String restconfServletContextPath) {
-        this.restconfServletContextPath = restconfServletContextPath;
-    }
-
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
