@@ -372,6 +372,9 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     protected boolean stopProcedure() throws InterruptedException, ExecutionException {
         LOG.debug("Lighty Controller stopProcedure");
+        if (yangLibraryWriter != null) {
+            yangLibraryWriter.close();
+        }
         if (this.clusterSingletonServiceProvider != null) {
             this.clusterSingletonServiceProvider.close();
         }
