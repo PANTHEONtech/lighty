@@ -7,24 +7,24 @@
  */
 package io.lighty.modules.northbound.netty.restconf.community.impl;
 
-import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
+import io.lighty.modules.northbound.netty.restconf.community.impl.config.NettyRestConfConfiguration;
 import org.apache.shiro.web.env.WebEnvironment;
 
 public final class NettyRestConfBuilder {
 
-    private final RestConfConfiguration restconfConfiguration;
+    private final NettyRestConfConfiguration restconfConfiguration;
     private WebEnvironment webEnvironment;
 
-    private NettyRestConfBuilder(final RestConfConfiguration configuration) {
+    private NettyRestConfBuilder(final NettyRestConfConfiguration configuration) {
         this.restconfConfiguration = configuration;
     }
 
     /**
-     * Create new instance of {@link NettyRestConfBuilder} from {@link RestConfConfiguration}.
+     * Create new instance of {@link NettyRestConfBuilder} from {@link NettyRestConfConfiguration}.
      * @param configuration input RestConf configuration.
      * @return instance of {@link NettyRestConfBuilder}.
      */
-    public static NettyRestConfBuilder from(final RestConfConfiguration configuration) {
+    public static NettyRestConfBuilder from(final NettyRestConfConfiguration configuration) {
         return new NettyRestConfBuilder(configuration);
     }
 
@@ -50,7 +50,7 @@ public final class NettyRestConfBuilder {
             restconfConfiguration.getDomNotificationService(),
             restconfConfiguration.getDomActionService(),
             restconfConfiguration.getDomMountPointService(),
-            restconfConfiguration.getDomSchemaService(),
+            restconfConfiguration.getSchemaService(),
             restconfConfiguration.getInetAddress(),
             restconfConfiguration.getHttpPort(),
             restconfConfiguration.getRestconfServletContextPath(),
