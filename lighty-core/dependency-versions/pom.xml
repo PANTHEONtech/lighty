@@ -42,7 +42,7 @@
             <dependency>
                 <groupId>org.opendaylight.aaa</groupId>
                 <artifactId>aaa-artifacts</artifactId>
-                <version>0.20.12</version>
+                <version>0.20.13</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
