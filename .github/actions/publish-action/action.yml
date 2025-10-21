@@ -36,7 +36,7 @@ runs:
         DOCKER_IMAGE_VERSION: ${{ inputs.version }}\
         DOCKER_IMAGE_TAG_LATEST: ${{ inputs.image-tag-latest }}
         PUBLISH_ACCESS_KEY: ${{ inputs.publish-access-key }}
-        DOCKER_IMAGE_NAME_TAG: $DOCKER_IMAGE_NAME:${{ inputs.version }}
+        DOCKER_IMAGE_NAME_TAG: ghcr.io/pantheontech/${{ inputs.image-name }}:${{ inputs.version }}
       shell: bash
       run: |
         echo "APP_MODULES=$(echo $APP_MODULES)" >> $GITHUB_ENV
