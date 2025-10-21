@@ -49,7 +49,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: "Publish RcGNMI docker and prepare helm-charts"
-        uses: ./.github/workflows/publish-action
+        uses: PANTHEONtech/lighty/.github/actions/publish-action@main
         with:
           app-modules: ${{ env.APP-MODULES }}
           app-docker-pom-path: ${{ env.APP-DOCKER-POM-PATH }}
