@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2021 PANTHEON.tech s.r.o. All Rights Reserved.
+
+  This program and the accompanying materials are made available under the
+  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+  and is available at https://www.eclipse.org/legal/epl-v10.html
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.lighty.core</groupId>
+        <artifactId>lighty-parent</artifactId>
+        <version>21.3.0-SNAPSHOT</version>
+        <relativePath>../lighty-parent/pom.xml</relativePath>
+    </parent>
+
+    <groupId>io.lighty.core</groupId>
+    <artifactId>app-parent</artifactId>
+    <packaging>pom</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/PANTHEONtech/lighty</url>
+    <description>
+        Utility parent for packaging final controller applications.
+    </description>
+
+    <properties>
+        <application.main.class>default.value</application.main.class>
+        <application.attach.zip>false</application.attach.zip>
+
+        <!-- Property controlling verbosity of unpack process -->
+        <lighty.silent.unpack>true</lighty.silent.unpack>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.lighty.resources</groupId>
+            <artifactId>log4j2-config</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.resources</groupId>
+            <artifactId>singlenode-configuration</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.resources</groupId>
+            <artifactId>start-script</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.resources</groupId>
+            <artifactId>controller-application-assembly</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>lighty-controller-app</id>
+            <activation>
+                <file>
+                    <exists>src/main/java</exists>
+                </file>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>io.lighty.core</groupId>
+                    <artifactId>lighty-controller</artifactId>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <mainClass>${application.main.class}</mainClass>
+                                    <!--
+                                        Config json uses unlocked snapshot filenames,
+                                        this is needed for the generated Class-Path to also have unlocked names.
+                                        https://stackoverflow.com/questions/41982167/maven-jar-plugin-wrong-class-path-entry-for-snapshot-dependency
+                                    -->
+                                    <useUniqueVersions>false</useUniqueVersions>
+                                    <!--
+                                        Setting Class-Path value to lib/ directly does not work for jars,
+                                        http://todayguesswhat.blogspot.sk/2011/03/jar-manifestmf-class-path-referencing.html
+                                    -->
+                                    <classpathPrefix>lib/</classpathPrefix>
+                                </manifest>
+                            </archive>
+                            <!--
+                                Exclude known resources from jar, so they are available for zip.
+                                https://stackoverflow.com/questions/4018394/having-maven2-copy-resources-to-the-build-directory-but-not-bundle-them-in-the
+                            -->
+                            <excludes>
+                                <exclude>/assembly/**</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <!--
+                                    A block of various resources, to be unpacked from artifacts
+                                    in order to avoid duplicates in source tree.
+                                    Part one, files that belong inside the jar.
+                                -->
+                                <id>unpack-jar-resources</id>
+                                <goals>
+                                    <goal>unpack-dependencies</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <includeGroupIds>io.lighty.resources</includeGroupIds>
+                                    <includeArtifactIds>log4j2-config</includeArtifactIds>
+                                    <excludes>META-INF\/**</excludes>
+                                    <excludeTransitive>true</excludeTransitive>
+                                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                                    <silent>${lighty.silent.unpack}</silent>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>copy-dependencies</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>copy-dependencies</goal>
+                                </goals>
+                                <configuration>
+                                    <includeScope>runtime</includeScope>
+                                    <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                                    <silent>${lighty.silent.unpack}</silent>
+                                </configuration>
+                            </execution>
+                            <!--
+                                A block of various resources, to be unpacked from artifacts
+                                in order to avoid duplicates in source tree.
+                                Part two, files that belong outside the jar.
+                            -->
+                            <execution>
+                                <id>unpack-assembly</id>
+                                <goals>
+                                    <goal>unpack-dependencies</goal>
+                                </goals>
+                                <phase>prepare-package</phase>
+                                <configuration>
+                                    <includeGroupIds>io.lighty.resources</includeGroupIds>
+                                    <includeArtifactIds>controller-application-assembly</includeArtifactIds>
+                                    <excludes>META-INF\/**</excludes>
+                                    <excludeTransitive>true</excludeTransitive>
+                                    <!-- This is a build time resource, not to be packaged. -->
+                                    <outputDirectory>${project.build.directory}/resources</outputDirectory>
+                                    <silent>${lighty.silent.unpack}</silent>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>unpack-singlenode-configuration</id>
+                                <goals>
+                                    <goal>unpack-dependencies</goal>
+                                </goals>
+                                <phase>prepare-package</phase>
+                                <configuration>
+                                    <includeGroupIds>io.lighty.resources</includeGroupIds>
+                                    <includeArtifactIds>singlenode-configuration</includeArtifactIds>
+                                    <excludes>META-INF\/**</excludes>
+                                    <excludeTransitive>true</excludeTransitive>
+                                    <!-- Other resources belong to the package. -->
+                                    <outputDirectory>${project.build.directory}/assembly/resources</outputDirectory>
+                                    <silent>${lighty.silent.unpack}</silent>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>unpack-start-script</id>
+                                <goals>
+                                    <goal>unpack-dependencies</goal>
+                                </goals>
+                                <phase>prepare-package</phase>
+                                <configuration>
+                                    <includeGroupIds>io.lighty.resources</includeGroupIds>
+                                    <includeArtifactIds>start-script</includeArtifactIds>
+                                    <excludes>META-INF\/**</excludes>
+                                    <includes>*.sh</includes>
+                                    <excludeTransitive>true</excludeTransitive>
+                                    <!-- Other resources belong to the package. -->
+                                    <outputDirectory>${project.build.directory}/assembly/resources</outputDirectory>
+                                    <silent>${lighty.silent.unpack}</silent>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Copy additional project-specific resources, typically json config files. -->
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-resources</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <resources>
+                                        <resource>
+                                            <directory>src/main/assembly/resources</directory>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                    <outputDirectory>${project.build.directory}/assembly/resources</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <!-- Finally this has to be run at the end to create the zip. -->
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>${project.build.directory}/resources/assembly-zip.xml</descriptor>
+                            </descriptors>
+                            <attach>${application.attach.zip}</attach>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>make-assembly</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

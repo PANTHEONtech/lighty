@@ -17,51 +17,56 @@
         <relativePath>../../../core/parent/pom.xml</relativePath>
     </parent>
 
-    <groupId>io.lighty.applications.rcgnmi</groupId>
-    <artifactId>lighty-rcgnmi-app-module</artifactId>
+    <groupId>io.lighty.modules.gnmi</groupId>
+    <artifactId>lighty-gnmi-test</artifactId>
     <version>21.3.0-SNAPSHOT</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <url>https://github.com/PANTHEONtech/lighty</url>
 
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
     <dependencies>
         <dependency>
-            <groupId>io.lighty.core</groupId>
-            <artifactId>lighty-controller</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.lighty.modules</groupId>
-            <artifactId>lighty-restconf-nb-community</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.lighty.modules</groupId>
-            <artifactId>lighty-aaa-encryption-service</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.lighty.modules.gnmi.southbound</groupId>
-            <artifactId>lighty-gnmi-sb</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.lighty.applications</groupId>
-            <artifactId>lighty-app-modules-config</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.aaa</groupId>
-            <artifactId>aaa-encrypt-service-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.lighty.resources</groupId>
-            <artifactId>singlenode-configuration</artifactId>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-subclass</artifactId>
+            <groupId>io.lighty.modules.gnmi</groupId>
+            <artifactId>lighty-gnmi-connector</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.modules.gnmi</groupId>
+            <artifactId>lighty-gnmi-device-simulator</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.applications.rcgnmi</groupId>
+            <artifactId>lighty-rcgnmi-app</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.lighty.models</groupId>
+            <artifactId>openconfig-models</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

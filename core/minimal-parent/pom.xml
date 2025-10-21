@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2018 PANTHEON.tech s.r.o. All Rights Reserved.
+
+  This program and the accompanying materials are made available under the
+  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+  and is available at https://www.eclipse.org/legal/epl-v10.html
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>io.lighty.core</groupId>
+    <artifactId>minimal-parent</artifactId>
+    <version>21.3.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/PANTHEONtech/lighty</url>
+    <description>
+        Minimal parent pom, which only defines source encoding and imports
+        lighty's dependencies.
+    </description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.lighty.core</groupId>
+                <artifactId>dependency-versions</artifactId>
+                <version>21.3.0-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.lighty.core</groupId>
+                <artifactId>lighty-bom</artifactId>
+                <version>21.3.0-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.6.1</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.9.5</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.2.8</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.7.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                            <excludeArtifacts>
+                                <artifactId>example-applications-aggregator</artifactId>
+                                <artifactId>integration-tests-aaa</artifactId>
+                                <artifactId>integration-tests</artifactId>
+                                <artifactId>lighty-aaa-aggregator</artifactId>
+                                <artifactId>lighty-aggregator</artifactId>
+                                <artifactId>lighty-applications-aggregator</artifactId>
+                                <artifactId>lighty-bgp-community-restconf-app</artifactId>
+                                <artifactId>lighty-community-aaa-restconf-app</artifactId>
+                                <artifactId>lighty-community-restconf-actions-app</artifactId>
+                                <artifactId>lighty-community-restconf-netconf-app</artifactId>
+                                <artifactId>lighty-controller-springboot</artifactId>
+                                <artifactId>lighty-core-aggregator</artifactId>
+                                <artifactId>lighty-gnmi-models</artifactId>
+                                <artifactId>lighty-gnmi-test</artifactId>
+                                <artifactId>lighty-gnmi</artifactId>
+                                <artifactId>lighty-guice-app</artifactId>
+                                <artifactId>lighty-models-aggregator</artifactId>
+                                <artifactId>lighty-models-test-aggregator</artifactId>
+                                <artifactId>lighty-modules-aggregator</artifactId>
+                                <artifactId>lighty-rcgnmi-app-aggregator</artifactId>
+                                <artifactId>lighty-rcgnmi-app-docker</artifactId>
+                                <artifactId>lighty-rcgnmi-app</artifactId>
+                                <artifactId>lighty-resources-aggregator</artifactId>
+                                <artifactId>lighty-rnc-aggregator</artifactId>
+                                <artifactId>lighty-rnc-app-docker</artifactId>
+                                <artifactId>lighty-rnc-app</artifactId>
+                                <artifactId>lighty-tests-report</artifactId>
+                            </excludeArtifacts>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <licenses>
+        <license>
+            <name>Eclipse Public License 1.0</name>
+            <url>https://www.eclipse.org/legal/epl-v10.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:https://github.com/PANTHEONtech/lighty.git</connection>
+        <developerConnection>scm:git:https://github.com/PANTHEONtech/lighty.git</developerConnection>
+        <url>https://github.com/PANTHEONtech/lighty</url>
+        <tag>HEAD</tag>
+    </scm>
+    <developers>
+        <developer>
+            <id>rovarga</id>
+            <name>Robert Varga</name>
+            <email>robert.varga@pantheon.tech</email>
+            <organization>PANTHEON.tech s.r.o.</organization>
+            <organizationUrl>https://www.pantheon.tech</organizationUrl>
+        </developer>
+    </developers>
+</project>

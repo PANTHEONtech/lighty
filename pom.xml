@@ -22,10 +22,10 @@
 
     <modules>
         <module>lighty-applications</module>
-        <module>lighty-core</module>
-        <module>lighty-models</module>
-        <module>lighty-modules</module>
-        <module>lighty-resources</module>
+        <module>core</module>
+        <module>models</module>
+        <module>modules</module>
+        <module>resources</module>
     </modules>
 
     <build>
