@@ -20,7 +20,6 @@
     </properties>
 
     <modules>
-        <module>test</module>
         <module>lighty-gnmi-models</module>
         <module>openconfig-models</module>
     </modules>

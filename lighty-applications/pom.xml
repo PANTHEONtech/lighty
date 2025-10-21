@@ -20,8 +20,6 @@
     </properties>
 
     <modules>
-        <module>lighty-rnc-app-aggregator</module>
         <module>lighty-rcgnmi-app-aggregator</module>
-        <module>lighty-app-modules-config</module>
     </modules>
 </project>

@@ -41,16 +41,6 @@
             <artifactId>commons-lang3</artifactId>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.opendaylight.aaa</groupId>
-            <artifactId>aaa-encrypt-service</artifactId>
-            <scope>test</scope>
-        </dependency>
-      <dependency>
-        <groupId>io.lighty.modules</groupId>
-        <artifactId>lighty-aaa</artifactId>
-        <scope>test</scope>
-      </dependency>
     </dependencies>
 
 </project>

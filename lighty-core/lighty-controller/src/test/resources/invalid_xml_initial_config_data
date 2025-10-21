@@ -1,6 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<data xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-    <toaster xmlns="http://netconfcentral.org/ns/toaster">
-        <invalidNode>200</invalidNode>
-    </toaster>
-</data>

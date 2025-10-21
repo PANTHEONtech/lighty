@@ -237,12 +237,6 @@
             <!-- Dependencies and resources which should not normally leak into production -->
             <dependency>
                 <groupId>io.lighty.models.test</groupId>
-                <artifactId>lighty-test-models</artifactId>
-                <version>21.3.0-SNAPSHOT</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>io.lighty.models.test</groupId>
                 <artifactId>lighty-toaster</artifactId>
                 <version>21.3.0-SNAPSHOT</version>
                 <scope>test</scope>

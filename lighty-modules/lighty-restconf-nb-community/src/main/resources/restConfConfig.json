@@ -1,7 +1,0 @@
-{
-  "restconf":{
-    "inetAddress": "127.0.0.1",
-    "httpPort":8888,
-    "restconfServletContextPath":"/restconf"
-  }
-}

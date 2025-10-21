@@ -26,13 +26,6 @@
         <module>lighty-binding-parent</module>
         <module>lighty-minimal-parent</module>
         <module>lighty-parent</module>
-
-        <module>lighty-clustering</module>
-        <module>lighty-codecs-util</module>
-        <module>lighty-common</module>
-        <module>lighty-controller</module>
-        <module>lighty-controller-spring-di</module>
-        <module>lighty-controller-guice-di</module>
     </modules>
 </project>
 

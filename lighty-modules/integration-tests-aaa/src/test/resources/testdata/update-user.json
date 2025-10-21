@@ -1,7 +1,0 @@
-{
-  "name": "newUser",
-  "description": "updated user",
-  "email": "newUser@pantheon.tech",
-  "password": "evenMoreSecretPass",
-  "domainid": "sdn"
-}

@@ -1,9 +1,0 @@
-{
-  "name": "newUser",
-  "description": "just another new user",
-  "enabled": 1,
-  "email": "newUser@sdn.tech",
-  "password": "verySecretPassword",
-  "salt": "foo",
-  "domainid": "sdn"
-}

@@ -1,9 +1,0 @@
-{
-  "test-models:inner-case": {
-    "sample-container": {
-      "name": "name",
-      "value": 1
-    },
-    "foo": "data"
-  }
-}

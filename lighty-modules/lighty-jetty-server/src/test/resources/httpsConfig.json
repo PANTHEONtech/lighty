@@ -1,7 +1,0 @@
-{
-  "lighty-server": {
-    "useHttps": true,
-    "needClientAuth": true,
-    "enableOpenApi": true
-  }
-}
