@@ -72,7 +72,6 @@
         <dependency>
             <groupId>io.lighty.models</groupId>
             <artifactId>openconfig-models</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.skyscreamer</groupId>
