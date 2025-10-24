@@ -16,7 +16,6 @@ import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.gnmi.southbound.lightymodule.GnmiSouthboundModule;
-import io.lighty.gnmi.southbound.lightymodule.GnmiSouthboundModuleBuilder;
 import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
@@ -89,7 +88,7 @@ public class RcGnmiAppModule {
             this.gnmiSouthboundModule = initGnmiModule(this.lightyController.getServices(),
                     this.gnmiExecutorService, this.appModuleConfig.getGnmiConfiguration(), encryptionService,
                     this.customReactor);
-            startAndWaitLightyModule(this.gnmiSouthboundModule);
+            gnmiSouthboundModule.init();
             lightyRestconf.startServer();
 
         } catch (RcGnmiAppException e) {
@@ -120,13 +119,8 @@ public class RcGnmiAppModule {
                                                 final AAAEncryptionService encryptionService,
                                                 final CrossSourceStatementReactor reactor) {
 
-        return new GnmiSouthboundModuleBuilder()
-                .withConfig(gnmiConfiguration)
-                .withLightyServices(services)
-                .withExecutorService(gnmiExecService)
-                .withEncryptionService(encryptionService)
-                .withReactor(reactor)
-                .build();
+        return new GnmiSouthboundModule(services.getBindingDataBroker(), services.getRpcProviderService(),
+            services.getDOMMountPointService(), encryptionService);
     }
 
     private void startAndWaitLightyModule(final LightyModule lightyModule) throws RcGnmiAppException {
@@ -162,7 +156,7 @@ public class RcGnmiAppModule {
             success &= lightyController.shutdown(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
         }
         if (this.gnmiSouthboundModule != null) {
-            success &= gnmiSouthboundModule.shutdown(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
+            gnmiSouthboundModule.close();
         }
         if (success) {
             LOG.info("RCgNMI lighty.io module stopped successfully!");
