@@ -24,11 +24,11 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
+            <groupId>org.opendaylight.ietf.model</groupId>
             <artifactId>iana-if-type</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+            <groupId>org.opendaylight.ietf.model</groupId>
             <artifactId>rfc8343</artifactId>
         </dependency>
     </dependencies>
