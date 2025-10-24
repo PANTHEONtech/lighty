@@ -164,11 +164,6 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-common</artifactId>
         </dependency>
-        <!-- controller - pekko-segmented-journal dependencies -->
-        <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>sal-akka-segmented-journal</artifactId>
-        </dependency>
         <!--odl-mdsal-remoterpc-connector-->
         <dependency>
             <groupId>org.opendaylight.controller</groupId>
