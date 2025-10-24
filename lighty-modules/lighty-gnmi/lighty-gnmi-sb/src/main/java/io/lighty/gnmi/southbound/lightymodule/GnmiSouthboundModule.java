@@ -8,6 +8,8 @@
 
 package io.lighty.gnmi.southbound.lightymodule;
 
+import static io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils.OPENCONFIG_YANG_MODELS;
+
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
@@ -54,7 +56,7 @@ public final class GnmiSouthboundModule extends AbstractLightyModule {
     @Override
     protected boolean initProcedure() {
         LOG.info("Starting lighty gNMI Southbound Module");
-        final List<YangLoaderService> initialLoaders = prepareByPathLoaders(gnmiConfiguration);
+        final List<YangLoaderService> initialLoaders = prepareByPathLoaders();
         try {
             gnmiProvider = new GnmiSouthboundProvider(lightyServices.getDOMMountPointService(),
                     lightyServices.getBindingDataBroker(), lightyServices.getRpcProviderService(), gnmiExecutorService,
@@ -84,16 +86,9 @@ public final class GnmiSouthboundModule extends AbstractLightyModule {
         return false;
     }
 
-    private List<YangLoaderService> prepareByPathLoaders(final GnmiConfiguration config) {
+    private List<YangLoaderService> prepareByPathLoaders() {
         final List<YangLoaderService> services = new ArrayList<>();
-        if (config != null) {
-            config.getInitialYangsPaths().stream()
-                    .map(path -> new ByPathYangLoaderService(Path.of(path)))
-                    .forEach(services::add);
-            if (config.getYangModulesInfo() != null) {
-                services.add(new ByClassPathYangLoaderService(config.getYangModulesInfo()));
-            }
-        }
+                services.add(new ByClassPathYangLoaderService(OPENCONFIG_YANG_MODELS));
         return services;
     }
 
