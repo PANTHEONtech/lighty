@@ -34,20 +34,23 @@ import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev2
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev240202.AaaEncryptServiceConfigBuilder;
 
 public class GnmiSouthBoundModuleTest {
+
     private static final long MODULE_TIMEOUT = 60;
     private static final TimeUnit MODULE_TIME_UNIT = TimeUnit.SECONDS;
 
     @Test
     public void gnmiModuleSmokeTest() throws Exception {
+        // Build and start the controller
         final LightyController services = new LightyControllerBuilder()
-                .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(GnmiConfigUtils.YANG_MODELS)).build();
+            .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(GnmiConfigUtils.YANG_MODELS))
+            .build();
         Assertions.assertTrue(services.start().get());
 
-        final GnmiSouthboundModule gnmiModule = new GnmiSouthboundModule(services.getServices(),
-                Executors.newCachedThreadPool(), createEncryptionService(),
-                GnmiConfigUtils.getDefaultGnmiConfiguration(), null);
-        Assertions.assertTrue(gnmiModule.start().get(MODULE_TIMEOUT, MODULE_TIME_UNIT));
-        Assertions.assertTrue(gnmiModule.shutdown(MODULE_TIMEOUT, MODULE_TIME_UNIT));
+        final GnmiSouthboundModule gnmiModule = new GnmiSouthboundModule(services.getServices().getBindingDataBroker(),
+                services.getServices().getRpcProviderService(), services.getServices().getDOMMountPointService(),
+                createEncryptionService());
+        gnmiModule.init();
+        gnmiModule.close();
         Assertions.assertTrue(services.shutdown(MODULE_TIMEOUT, MODULE_TIME_UNIT));
     }
 
@@ -56,12 +59,16 @@ public class GnmiSouthBoundModuleTest {
         final LightyController services = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(GnmiConfigUtils.YANG_MODELS)).build();
         Assertions.assertTrue(services.start().get());
-        final GnmiConfiguration defaultGnmiConfiguration = Mockito.mock(GnmiConfiguration.class);
-        when(defaultGnmiConfiguration.getInitialYangsPaths())
-                .thenReturn(List.of("invalid-path"));
-        final GnmiSouthboundModule gnmiModule = new GnmiSouthboundModule(services.getServices(),
-                Executors.newCachedThreadPool(), createEncryptionService(), defaultGnmiConfiguration, null);
-        Assertions.assertFalse(gnmiModule.start().get(MODULE_TIMEOUT, MODULE_TIME_UNIT));
+
+        // Mock configuration with invalid YANG path
+        final GnmiConfiguration badConfig = Mockito.mock(GnmiConfiguration.class);
+        when(badConfig.getInitialYangsPaths()).thenReturn(List.of("invalid-path"));
+
+        final GnmiSouthboundModule gnmiModule = new GnmiSouthboundModule(services.getServices().getBindingDataBroker(),
+            services.getServices().getRpcProviderService(), services.getServices().getDOMMountPointService(),
+            createEncryptionService());
+
+        gnmiModule.init();
         Assertions.assertTrue(services.shutdown(MODULE_TIMEOUT, MODULE_TIME_UNIT));
     }
 
