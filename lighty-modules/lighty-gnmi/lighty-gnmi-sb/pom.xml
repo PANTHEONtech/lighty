@@ -79,11 +79,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.lighty.modules</groupId>
-            <artifactId>lighty-aaa-encryption-service</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-subclass</artifactId>
             <scope>test</scope>
@@ -103,10 +98,6 @@
             <artifactId>aaa-encrypt-service-impl</artifactId>
             <scope>test</scope>
         </dependency>
-      <dependency>
-        <groupId>io.lighty.modules</groupId>
-        <artifactId>lighty-aaa</artifactId>
-      </dependency>
     </dependencies>
 
 </project>
