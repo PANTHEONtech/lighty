@@ -9,29 +9,21 @@ package io.lighty.gnmi.southbound.lightymodule;
 
 import static org.mockito.Mockito.when;
 
-import io.lighty.aaa.encrypt.service.impl.AAAEncryptionServiceImpl;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
 import io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
-import java.util.Base64;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.opendaylight.aaa.encrypt.impl.AAAEncryptionServiceImpl;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev240202.AaaEncryptServiceConfig;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev240202.AaaEncryptServiceConfigBuilder;
+import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev240202.EncryptServiceConfig;
+
 
 public class GnmiSouthBoundModuleTest {
 
@@ -72,27 +64,24 @@ public class GnmiSouthBoundModuleTest {
         Assertions.assertTrue(services.shutdown(MODULE_TIMEOUT, MODULE_TIME_UNIT));
     }
 
-    private static AAAEncryptionServiceImpl createEncryptionService()
-            throws NoSuchAlgorithmException, InvalidKeySpecException {
-        final AaaEncryptServiceConfig encrySrvConfig = getDefaultAaaEncryptServiceConfig();
-        final byte[] encryptionKeySalt = Base64.getDecoder().decode(encrySrvConfig.getEncryptSalt());
-        final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(encrySrvConfig.getEncryptMethod());
-        final KeySpec keySpec = new PBEKeySpec(encrySrvConfig.getEncryptKey().toCharArray(), encryptionKeySalt,
-                encrySrvConfig.getEncryptIterationCount(), encrySrvConfig.getEncryptKeyLength());
-        final SecretKey key
-                = new SecretKeySpec(keyFactory.generateSecret(keySpec).getEncoded(), encrySrvConfig.getEncryptType());
-        final GCMParameterSpec ivParameterSpec = new GCMParameterSpec(encrySrvConfig.getAuthTagLength(),
-                encryptionKeySalt);
-        return new AAAEncryptionServiceImpl(ivParameterSpec, encrySrvConfig.getCipherTransforms(), key);
-    }
+    /**
+     * Creates the official ODL AAAEncryptionServiceImpl with a test configuration.
+     */
+    private static AAAEncryptionServiceImpl createEncryptionService() {
+        final AaaEncryptServiceConfig config = new AaaEncryptServiceConfigBuilder()
+            .setEncryptKey("V1S1ED4OMeEh")
+            .setPasswordLength(12)
+            .setEncryptSalt("TdtWeHbch/7xP52/rp3Usw==")
+            .setEncryptMethod("PBKDF2WithHmacSHA1")
+            .setEncryptType("AES")
+            .setEncryptIterationCount(32768)
+            .setEncryptKeyLength(128)
+            .setAuthTagLength(128)
+            .setCipherTransforms("AES/GCM/NoPadding")
+            .build();
 
-    private static AaaEncryptServiceConfig getDefaultAaaEncryptServiceConfig() {
-        return new AaaEncryptServiceConfigBuilder().setEncryptKey("V1S1ED4OMeEh")
-                .setPasswordLength(12).setEncryptSalt("TdtWeHbch/7xP52/rp3Usw==")
-                .setEncryptMethod("PBKDF2WithHmacSHA1").setEncryptType("AES")
-                .setEncryptIterationCount(32768).setEncryptKeyLength(128)
-                .setAuthTagLength(128)
-                .setCipherTransforms("AES/GCM/NoPadding").build();
+        // This constructor internally handles key derivation, IV setup, etc.
+        return new AAAEncryptionServiceImpl((EncryptServiceConfig) config);
     }
 }
 
