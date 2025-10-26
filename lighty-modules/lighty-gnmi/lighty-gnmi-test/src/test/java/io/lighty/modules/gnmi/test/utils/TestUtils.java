@@ -9,7 +9,7 @@
 package io.lighty.modules.gnmi.test.utils;
 
 import com.google.common.io.CharStreams;
-import io.lighty.aaa.util.AAAConfigUtils;
+import io.lighty.gnmi.southbound.device.session.security.KeystoreGnmiSecurityProvider;
 import io.lighty.gnmi.southbound.device.session.security.SessionSecurityException;
 import io.lighty.modules.gnmi.connector.configuration.SecurityFactory;
 import io.lighty.modules.gnmi.connector.gnmi.session.impl.GnmiSessionFactoryImpl;
@@ -51,7 +51,7 @@ public final class TestUtils {
 
     private static KeyPair getKeyPair(final String clientKey) throws SessionSecurityException {
         try {
-            return AAAConfigUtils.decodePrivateKey(new StringReader(clientKey), PASSPHRASE);
+            return KeystoreGnmiSecurityProvider.decodePrivateKey(new StringReader(clientKey), PASSPHRASE);
         } catch (IOException e) {
             throw new SessionSecurityException("Error while creating KeyPair from private key and passphrase", e);
         }
