@@ -127,7 +127,7 @@ public class TopologyPluginsTest {
                 .child(Node.class, nodeKey);
         final DataBroker bindingDataBroker = this.lightyController.getServices().getBindingDataBroker();
         final WriteTransaction writeTransaction = bindingDataBroker.newWriteOnlyTransaction();
-        writeTransaction.mergeParentStructurePut(LogicalDatastoreType.CONFIGURATION, path, node);
+        writeTransaction.mergeParentStructurePut(LogicalDatastoreType.CONFIGURATION, path.toIdentifier(), node);
         writeTransaction.commit().get();
     }
 

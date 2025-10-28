@@ -26,6 +26,7 @@ import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
+import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
 import org.opendaylight.restconf.server.jaxrs.JaxRsEndpoint;
 import org.opendaylight.restconf.server.jaxrs.JaxRsEndpointConfiguration;
 import org.opendaylight.restconf.server.jaxrs.JaxRsLocationProvider;
@@ -104,8 +105,12 @@ public class CommunityRestConf extends AbstractLightyModule {
             domActionService, domMountPointService);
 
         this.jettyServer = this.lightyServerBuilder.getServer();
+        final ClusterSingletonServiceProvider cssProvider = service -> {
+            service.instantiateServiceInstance();
+            return service::closeServiceInstance;
+        };
         this.mdsalRestconfStreamRegistry = new MdsalRestconfStreamRegistry(domDataBroker, domNotificationService,
-            domSchemaService, new JaxRsLocationProvider(), databindProvider);
+            domSchemaService, new JaxRsLocationProvider(), databindProvider, cssProvider);
         this.jaxRsEndpoint = new JaxRsEndpoint(
             jettyServer,
             this.webContextSecurer,

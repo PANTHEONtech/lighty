@@ -63,7 +63,7 @@ public class TopologyRestService {
             final InstanceIdentifier<NetworkTopology> iid =
                     InstanceIdentifier.create(NetworkTopology.class);
             final Optional<NetworkTopology> readData =
-                    tx.read(LogicalDatastoreType.OPERATIONAL, iid).get(TIMEOUT, TimeUnit.SECONDS);
+                    tx.read(LogicalDatastoreType.OPERATIONAL, iid.toIdentifier()).get(TIMEOUT, TimeUnit.SECONDS);
 
             if (readData.isPresent() && readData.get().getTopology() != null) {
                 final List<String> topology = readData.get().nonnullTopology().values().stream()
@@ -90,7 +90,7 @@ public class TopologyRestService {
         final InstanceIdentifier<Topology> iid = InstanceIdentifier.create(NetworkTopology.class)
             .child(Topology.class, new TopologyKey(new TopologyId(topologyId)));
 
-        tx.put(LogicalDatastoreType.OPERATIONAL, iid, topology);
+        tx.put(LogicalDatastoreType.OPERATIONAL, iid.toIdentifier(), topology);
 
         try {
             tx.commit().get(TIMEOUT, TimeUnit.SECONDS);
@@ -113,7 +113,7 @@ public class TopologyRestService {
         final InstanceIdentifier<Topology> iid = InstanceIdentifier.create(NetworkTopology.class)
             .child(Topology.class, new TopologyKey(new TopologyId(topologyId)));
 
-        tx.delete(LogicalDatastoreType.OPERATIONAL, iid);
+        tx.delete(LogicalDatastoreType.OPERATIONAL, iid.toIdentifier());
 
         try {
             tx.commit().get(TIMEOUT, TimeUnit.SECONDS);

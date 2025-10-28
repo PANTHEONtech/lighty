@@ -64,7 +64,7 @@ class ModuleInitTest {
             final InstanceIdentifier<RoutingPolicy> routingPolicyIID = InstanceIdentifier.builderOfInherited(
                     OpenconfigRoutingPolicyData.class, RoutingPolicy.class).build();
             final Optional<RoutingPolicy> routingPolicy = readTransaction.read(LogicalDatastoreType.CONFIGURATION,
-                    routingPolicyIID).get(WAIT_TIME, TimeUnit.MILLISECONDS);
+                    routingPolicyIID.toIdentifier()).get(WAIT_TIME, TimeUnit.MILLISECONDS);
             assertTrue(routingPolicy.isPresent());
             // We are importing 2 routing policies (default-import + default-export)
             assertEquals(2, routingPolicy.get().getPolicyDefinitions().nonnullPolicyDefinition().size());
@@ -81,7 +81,7 @@ class ModuleInitTest {
             final InstanceIdentifier<NetworkInstances> networkInstancesIID = InstanceIdentifier.builderOfInherited(
                     OpenconfigNetworkInstanceData.class, NetworkInstances.class).build();
             final Optional<NetworkInstances> networkInstance = readTransaction.read(LogicalDatastoreType.CONFIGURATION,
-                    networkInstancesIID).get(WAIT_TIME, TimeUnit.MILLISECONDS);
+                    networkInstancesIID.toIdentifier()).get(WAIT_TIME, TimeUnit.MILLISECONDS);
             assertTrue(networkInstance.isPresent());
             assertNotNull(networkInstance.get().nonnullNetworkInstance()
                     .get(new NetworkInstanceKey("global-bgp")));

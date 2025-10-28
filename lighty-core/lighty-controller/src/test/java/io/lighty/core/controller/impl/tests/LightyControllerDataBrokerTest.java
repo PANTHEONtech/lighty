@@ -10,7 +10,6 @@ package io.lighty.core.controller.impl.tests;
 import io.lighty.core.controller.api.LightyController;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -25,17 +24,17 @@ public class LightyControllerDataBrokerTest extends LightyControllerTestBase {
         final LightyController lightyController = getLightyController();
         final org.opendaylight.mdsal.binding.api.DataBroker bindingDataBroker = lightyController.getServices()
                 .getBindingDataBroker();
-        bindingDataBroker.registerDataTreeChangeListener(
-            DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL, TestUtils.TOPOLOGY_IID), changes -> {
+        bindingDataBroker.registerTreeChangeListener(LogicalDatastoreType.OPERATIONAL,
+            TestUtils.TOPOLOGY_IID.toReference(), changes -> {
                 for (final DataTreeModification<Topology> change : changes) {
                     if (countDownLatch.getCount() == 2) {
                         // on first time - write
-                        Assert.assertNull(change.getRootNode().getDataBefore());
-                        Assert.assertNotNull(change.getRootNode().getDataAfter());
+                        Assert.assertNull(change.getRootNode().dataBefore());
+                        Assert.assertNotNull(change.getRootNode().dataAfter());
                     } else if (countDownLatch.getCount() == 1) {
                         // on second time - delete
-                        Assert.assertNotNull(change.getRootNode().getDataBefore());
-                        Assert.assertNull(change.getRootNode().getDataAfter());
+                        Assert.assertNotNull(change.getRootNode().dataBefore());
+                        Assert.assertNull(change.getRootNode().dataAfter());
                     } else {
                         Assert.fail("Too many DataTreeChange events, expected two");
                     }
@@ -51,7 +50,7 @@ public class LightyControllerDataBrokerTest extends LightyControllerTestBase {
 
         // 3. delete from TOPOLOGY model
         final WriteTransaction deleteTransaction = bindingDataBroker.newWriteOnlyTransaction();
-        deleteTransaction.delete(LogicalDatastoreType.OPERATIONAL, TestUtils.TOPOLOGY_IID);
+        deleteTransaction.delete(LogicalDatastoreType.OPERATIONAL, TestUtils.TOPOLOGY_IID.toIdentifier());
         deleteTransaction.commit().get();
 
         // 4. read from TOPOLOGY model

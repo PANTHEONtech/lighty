@@ -32,14 +32,14 @@ public class DataStoreServiceImpl implements DataStoreService {
     public <T extends DataObject> FluentFuture<? extends CommitInfo> writeData(final InstanceIdentifier<T> identifier,
             final T data) {
         final var writeTransaction = dataBroker.newWriteOnlyTransaction();
-        writeTransaction.put(LogicalDatastoreType.CONFIGURATION, identifier, data);
+        writeTransaction.put(LogicalDatastoreType.CONFIGURATION, identifier.toIdentifier(), data);
         return writeTransaction.commit();
     }
 
     @Override
     public <T extends DataObject> FluentFuture<Optional<T>> readFromDataBroker(final InstanceIdentifier<T> identifier) {
         try (var readTransaction = dataBroker.newReadOnlyTransaction()) {
-            return readTransaction.read(LogicalDatastoreType.CONFIGURATION, identifier);
+            return readTransaction.read(LogicalDatastoreType.CONFIGURATION, identifier.toIdentifier());
         }
     }
 
