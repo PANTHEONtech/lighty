@@ -60,7 +60,7 @@ final class TestUtils {
             final InstanceIdentifier<Topology> topologyInstanceIdentifier, final Topology topology)
                     throws ExecutionException, InterruptedException {
         final WriteTransaction writeTransaction = bindingDataBroker.newWriteOnlyTransaction();
-        writeTransaction.put(LogicalDatastoreType.OPERATIONAL, topologyInstanceIdentifier, topology);
+        writeTransaction.put(LogicalDatastoreType.OPERATIONAL, topologyInstanceIdentifier.toIdentifier(), topology);
         writeTransaction.commit().get();
     }
 
@@ -72,7 +72,7 @@ final class TestUtils {
                 InstanceIdentifier.builder(NetworkTopology.class).build();
 
         final FluentFuture<Optional<NetworkTopology>> upcommingRead = readOnlyTransaction
-                .read(LogicalDatastoreType.OPERATIONAL, networkTopologyInstanceIdentifier);
+                .read(LogicalDatastoreType.OPERATIONAL, networkTopologyInstanceIdentifier.toIdentifier());
         final Optional<NetworkTopology> networkTopologyOptional = upcommingRead.get(40, TimeUnit.MILLISECONDS);
         final long count;
         if (networkTopologyOptional.isPresent()) {

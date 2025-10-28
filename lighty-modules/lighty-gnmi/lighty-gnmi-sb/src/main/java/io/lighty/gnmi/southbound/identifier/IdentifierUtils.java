@@ -7,8 +7,6 @@
  */
 package io.lighty.gnmi.southbound.identifier;
 
-import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
@@ -32,9 +30,6 @@ public final class IdentifierUtils {
     public static final InstanceIdentifier<Topology> GNMI_TOPO_IID = InstanceIdentifier.builder(NetworkTopology.class)
             .child(Topology.class, new TopologyKey(new TopologyId(GNMI_TOPOLOGY_ID)))
             .build();
-
-    public static final DataTreeIdentifier<Node> GNMI_NODE_DTI = DataTreeIdentifier
-            .create(LogicalDatastoreType.CONFIGURATION, GNMI_TOPO_IID.child(Node.class));
 
     public static YangInstanceIdentifier nodeidToYii(final NodeId nodeId) {
         return YangInstanceIdentifier.builder()

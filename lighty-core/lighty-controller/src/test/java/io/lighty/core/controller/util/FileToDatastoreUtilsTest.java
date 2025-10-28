@@ -146,7 +146,7 @@ public class FileToDatastoreUtilsTest {
     private <T extends ChildOf<? extends DataRoot>> T readDataFromDatastore(
             final InstanceIdentifier<T> instanceIdentifier) throws Exception {
         try (ReadTransaction readTransaction = dataBroker.newReadOnlyTransaction()) {
-            return readTransaction.read(LogicalDatastoreType.CONFIGURATION, instanceIdentifier)
+            return readTransaction.read(LogicalDatastoreType.CONFIGURATION, instanceIdentifier.toIdentifier())
                     .get(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS).orElseThrow();
         }
     }

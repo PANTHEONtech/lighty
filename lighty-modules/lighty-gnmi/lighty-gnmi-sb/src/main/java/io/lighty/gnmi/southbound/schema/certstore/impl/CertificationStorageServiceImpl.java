@@ -26,6 +26,7 @@ import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev21050
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.KeystoreBuilder;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.KeystoreKey;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.RemoveKeystoreCertificateInput;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class CertificationStorageServiceImpl implements CertificationStorageService {
@@ -79,9 +80,9 @@ public class CertificationStorageServiceImpl implements CertificationStorageServ
                 Charset.defaultCharset());
     }
 
-    private InstanceIdentifier<Keystore> getKeystoreII(final String keystoreId) {
+    private DataObjectIdentifier.WithKey<Keystore, KeystoreKey> getKeystoreII(final String keystoreId) {
         return InstanceIdentifier
                 .builder(Keystore.class, new KeystoreKey(keystoreId))
-                .build();
+                .build().toIdentifier();
     }
 }

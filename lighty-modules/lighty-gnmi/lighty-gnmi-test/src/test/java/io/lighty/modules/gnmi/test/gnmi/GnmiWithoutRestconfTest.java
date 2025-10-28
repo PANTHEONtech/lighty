@@ -189,7 +189,7 @@ public class GnmiWithoutRestconfTest {
         final Node testGnmiNode = createNode(GNMI_NODE_ID, DEVICE_ADDRESS, DEVICE_PORT, getInsecureSecurityChoice());
         final WriteTransaction writeTransaction = bindingDataBroker.newWriteOnlyTransaction();
         final InstanceIdentifier<Node> nodeInstanceIdentifier = IdentifierUtils.gnmiNodeIID(testGnmiNode.getNodeId());
-        writeTransaction.put(LogicalDatastoreType.CONFIGURATION, nodeInstanceIdentifier, testGnmiNode);
+        writeTransaction.put(LogicalDatastoreType.CONFIGURATION, nodeInstanceIdentifier.toIdentifier(), testGnmiNode);
         writeTransaction.commit().get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
 
         //Verify that device is connected
@@ -375,7 +375,7 @@ public class GnmiWithoutRestconfTest {
                                                             final InstanceIdentifier<T> path)
             throws ExecutionException, InterruptedException, TimeoutException {
         try (ReadTransaction readTransaction = dataBroker.newReadOnlyTransaction();) {
-            return readTransaction.read(LogicalDatastoreType.OPERATIONAL, path)
+            return readTransaction.read(LogicalDatastoreType.OPERATIONAL, path.toIdentifier())
                     .get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
         }
     }
@@ -383,14 +383,14 @@ public class GnmiWithoutRestconfTest {
     private void deleteOperData(final DataBroker dataBroker, final InstanceIdentifier<?> path)
             throws ExecutionException, InterruptedException, TimeoutException {
         final WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        writeTransaction.delete(LogicalDatastoreType.OPERATIONAL, path);
+        writeTransaction.delete(LogicalDatastoreType.OPERATIONAL, path.toIdentifier());
         writeTransaction.commit().get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
     }
 
     private void deleteConfigData(final DataBroker dataBroker, final InstanceIdentifier<?> path)
             throws ExecutionException, InterruptedException, TimeoutException {
         final WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, path);
+        writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, path.toIdentifier());
         writeTransaction.commit().get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
     }
 
