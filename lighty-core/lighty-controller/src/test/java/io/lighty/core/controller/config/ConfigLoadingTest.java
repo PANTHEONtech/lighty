@@ -20,14 +20,11 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import org.apache.pekko.util.Timeout;
 import org.opendaylight.controller.cluster.datastore.DatastoreContext;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import scala.concurrent.duration.FiniteDuration;
 
 public class ConfigLoadingTest {
 
@@ -40,7 +37,7 @@ public class ConfigLoadingTest {
         Assert.assertNotNull(configuration.getOperDatastoreContext());
         DatastoreContext configDatastoreContext = configuration.getConfigDatastoreContext();
         Assert.assertEquals(configDatastoreContext.getShardTransactionIdleTimeout(),
-            FiniteDuration.apply(10, TimeUnit.MINUTES));
+            Duration.of(10, ChronoUnit.MINUTES));
         Assert.assertEquals(configDatastoreContext.getOperationTimeoutInMillis(), 5000);
         Assert.assertEquals(configDatastoreContext.getShardTransactionCommitTimeoutInSeconds(), 30);
         Assert.assertEquals(configDatastoreContext.getShardRaftConfig().getJournalRecoveryLogBatchSize(), 1);
@@ -50,9 +47,9 @@ public class ConfigLoadingTest {
             Duration.of(500, ChronoUnit.MILLIS));
         Assert.assertEquals(configDatastoreContext.getShardTransactionCommitQueueCapacity(), 50000);
         Assert.assertEquals(configDatastoreContext.getShardInitializationTimeout(),
-            new Timeout(300000, TimeUnit.MILLISECONDS));
+            Duration.of(300000, ChronoUnit.MILLIS));
         Assert.assertEquals(configDatastoreContext.getShardLeaderElectionTimeout(),
-            new Timeout(30000, TimeUnit.MILLISECONDS));
+            Duration.of(30000, ChronoUnit.MILLIS));
         Assert.assertEquals(configDatastoreContext.isPersistent(), true);
         Assert.assertEquals(configDatastoreContext.getShardBatchedModificationCount(), 1000);
         Assert.assertEquals(configDatastoreContext.getShardCommitQueueExpiryTimeoutInMillis(), 120000);
@@ -66,7 +63,7 @@ public class ConfigLoadingTest {
 
         DatastoreContext operDatastoreContext = configuration.getOperDatastoreContext();
         Assert.assertEquals(operDatastoreContext.getShardTransactionIdleTimeout(),
-            FiniteDuration.apply(10, TimeUnit.MINUTES));
+            Duration.of(10, ChronoUnit.MINUTES));
         Assert.assertEquals(operDatastoreContext.getOperationTimeoutInMillis(), 5000);
         Assert.assertEquals(operDatastoreContext.getShardTransactionCommitTimeoutInSeconds(), 30);
         Assert.assertEquals(operDatastoreContext.getShardRaftConfig().getJournalRecoveryLogBatchSize(), 1);
@@ -76,9 +73,9 @@ public class ConfigLoadingTest {
             Duration.of(500, ChronoUnit.MILLIS));
         Assert.assertEquals(operDatastoreContext.getShardTransactionCommitQueueCapacity(), 50000);
         Assert.assertEquals(operDatastoreContext.getShardInitializationTimeout(),
-            new Timeout(300000, TimeUnit.MILLISECONDS));
+            Duration.of(300000, ChronoUnit.MILLIS));
         Assert.assertEquals(operDatastoreContext.getShardLeaderElectionTimeout(),
-            new Timeout(30000, TimeUnit.MILLISECONDS));
+            Duration.of(30000, ChronoUnit.MILLIS));
         Assert.assertEquals(operDatastoreContext.isPersistent(), false);
         Assert.assertEquals(operDatastoreContext.getShardBatchedModificationCount(), 1000);
         Assert.assertEquals(operDatastoreContext.getShardCommitQueueExpiryTimeoutInMillis(), 120000);
@@ -163,7 +160,7 @@ public class ConfigLoadingTest {
             DatastoreConfigurationUtils.DATASTORECTX_CONFIG_ROOT_ELEMENT_NAME, LogicalDatastoreType.CONFIGURATION);
         Assert.assertNotNull(dataStoreContext);
         Assert.assertEquals(dataStoreContext.getShardTransactionIdleTimeout(),
-            FiniteDuration.apply(100, TimeUnit.MILLISECONDS));
+            Duration.of(100, ChronoUnit.MILLIS));
         Assert.assertEquals(dataStoreContext.getOperationTimeoutInMillis(), 50000);
         Assert.assertEquals(dataStoreContext.getShardTransactionCommitTimeoutInSeconds(), 300);
         Assert.assertEquals(dataStoreContext.getShardRaftConfig().getJournalRecoveryLogBatchSize(), 10);
@@ -173,9 +170,9 @@ public class ConfigLoadingTest {
             Duration.of(5000, ChronoUnit.MILLIS));
         Assert.assertEquals(dataStoreContext.getShardTransactionCommitQueueCapacity(), 500000);
         Assert.assertEquals(dataStoreContext.getShardInitializationTimeout(),
-            new Timeout(3000000, TimeUnit.MILLISECONDS));
+            Duration.of(3000000, ChronoUnit.MILLIS));
         Assert.assertEquals(dataStoreContext.getShardLeaderElectionTimeout(),
-            new Timeout(300000, TimeUnit.MILLISECONDS));
+            Duration.of(300000, ChronoUnit.MILLIS));
         Assert.assertEquals(dataStoreContext.isPersistent(), false);
         Assert.assertEquals(dataStoreContext.getShardBatchedModificationCount(), 10000);
         Assert.assertEquals(dataStoreContext.getShardCommitQueueExpiryTimeoutInMillis(), 1200000);
@@ -194,7 +191,7 @@ public class ConfigLoadingTest {
             DatastoreConfigurationUtils.DATASTORECTX_OPERATIONAL_ROOT_ELEMENT_NAME, LogicalDatastoreType.OPERATIONAL);
         Assert.assertNotNull(dataStoreContext);
         Assert.assertEquals(dataStoreContext.getShardTransactionIdleTimeout(),
-            FiniteDuration.apply(-100, TimeUnit.MILLISECONDS));
+            Duration.of(-100, ChronoUnit.MILLIS));
         Assert.assertEquals(dataStoreContext.getOperationTimeoutInMillis(), -50000);
         Assert.assertEquals(dataStoreContext.getShardTransactionCommitTimeoutInSeconds(), -300);
         Assert.assertEquals(dataStoreContext.getShardRaftConfig().getJournalRecoveryLogBatchSize(), -10);
@@ -204,9 +201,9 @@ public class ConfigLoadingTest {
             Duration.of(-5000, ChronoUnit.MILLIS));
         Assert.assertEquals(dataStoreContext.getShardTransactionCommitQueueCapacity(), -500000);
         Assert.assertEquals(dataStoreContext.getShardInitializationTimeout(),
-            new Timeout(-3000000, TimeUnit.MILLISECONDS));
+            Duration.of(-3000000, ChronoUnit.MILLIS));
         Assert.assertEquals(dataStoreContext.getShardLeaderElectionTimeout(),
-            new Timeout(-300000, TimeUnit.MILLISECONDS));
+            Duration.of(-300000, ChronoUnit.MILLIS));
         Assert.assertEquals(dataStoreContext.isPersistent(), true);
         Assert.assertEquals(dataStoreContext.getShardBatchedModificationCount(), -10000);
         Assert.assertEquals(dataStoreContext.getShardCommitQueueExpiryTimeoutInMillis(), -1200000);
