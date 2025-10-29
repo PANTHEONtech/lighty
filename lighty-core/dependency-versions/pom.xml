@@ -171,77 +171,77 @@
             <!--pekko management and bootstrap-->
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-remote_2.13</artifactId>
+                <artifactId>pekko-remote_3</artifactId>
                 <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-slf4j_2.13</artifactId>
+                <artifactId>pekko-slf4j_3</artifactId>
                 <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-cluster_2.13</artifactId>
+                <artifactId>pekko-cluster_3</artifactId>
                 <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-discovery_2.13</artifactId>
+                <artifactId>pekko-discovery_3</artifactId>
                 <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-protobuf-v3_2.13</artifactId>
+                <artifactId>pekko-protobuf-v3_3</artifactId>
                 <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-coordination_2.13</artifactId>
+                <artifactId>pekko-coordination_3</artifactId>
                 <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-distributed-data_2.13</artifactId>
+                <artifactId>pekko-distributed-data_3</artifactId>
                 <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-cluster-tools_2.13</artifactId>
+                <artifactId>pekko-cluster-tools_3</artifactId>
                 <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-cluster-sharding_2.13</artifactId>
+                <artifactId>pekko-cluster-sharding_3</artifactId>
                 <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-actor_2.13</artifactId>
+                <artifactId>pekko-actor_3</artifactId>
                 <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-stream_2.13</artifactId>
+                <artifactId>pekko-stream_3</artifactId>
                 <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-management_2.13</artifactId>
+                <artifactId>pekko-management_3</artifactId>
                 <version>1.0.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-management-cluster-http_2.13</artifactId>
+                <artifactId>pekko-management-cluster-http_3</artifactId>
                 <version>1.0.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-management-cluster-bootstrap_2.13</artifactId>
+                <artifactId>pekko-management-cluster-bootstrap_3</artifactId>
                 <version>1.0.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-discovery-kubernetes-api_2.13</artifactId>
+                <artifactId>pekko-discovery-kubernetes-api_3</artifactId>
                 <version>1.0.0</version>
             </dependency>
             <dependency>
