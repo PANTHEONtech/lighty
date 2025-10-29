@@ -184,10 +184,6 @@ data:
 
         journal.leveldb.dir = "target/journal"
         snapshot-store.local.dir = "target/snapshots"
-        # Use lz4 compression for LocalSnapshotStore snapshots
-        snapshot-store.local.use-lz4-compression = false
-        # Size of blocks for lz4 compression: 64KB, 256KB, 1MB or 4MB
-        snapshot-store.local.lz4-blocksize = 256KB
 
         journal {
           leveldb {
