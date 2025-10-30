@@ -8,6 +8,8 @@
 
 package io.lighty.gnmi.southbound.provider;
 
+import static io.lighty.gnmi.southbound.identifier.IdentifierUtils.GNMI_TOPO_IID;
+
 import io.lighty.gnmi.southbound.device.connection.DeviceConnectionInitializer;
 import io.lighty.gnmi.southbound.device.connection.DeviceConnectionManager;
 import io.lighty.gnmi.southbound.device.session.security.GnmiSecurityProvider;
@@ -47,6 +49,7 @@ import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.GnmiTopol
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.TopologyBuilder;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.TopologyTypesBuilder;
 import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
 import org.slf4j.Logger;
@@ -134,7 +137,8 @@ public class GnmiSouthboundProvider implements AutoCloseable {
 
         //-----Init gNMI topology------
         initGnmiTopology();
-        closeables.add(dataBroker.registerDataTreeChangeListener(IdentifierUtils.GNMI_NODE_DTI, topologyNodeListener));
+        closeables.add(dataBroker.registerTreeChangeListener(LogicalDatastoreType.CONFIGURATION, GNMI_TOPO_IID.child(
+            Node.class).toReference() , topologyNodeListener));
         LOG.info("gNMI south-bound has successfully started");
     }
 
@@ -146,11 +150,11 @@ public class GnmiSouthboundProvider implements AutoCloseable {
                         .build())
                 .build();
         @NonNull WriteTransaction configTx = dataBroker.newWriteOnlyTransaction();
-        configTx.merge(LogicalDatastoreType.CONFIGURATION, IdentifierUtils.GNMI_TOPO_IID, topology);
+        configTx.merge(LogicalDatastoreType.CONFIGURATION, GNMI_TOPO_IID.toIdentifier(), topology);
         configTx.commit().get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
 
         @NonNull WriteTransaction operTx = dataBroker.newWriteOnlyTransaction();
-        operTx.merge(LogicalDatastoreType.OPERATIONAL, IdentifierUtils.GNMI_TOPO_IID, topology);
+        operTx.merge(LogicalDatastoreType.OPERATIONAL, GNMI_TOPO_IID.toIdentifier(), topology);
         operTx.commit().get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
     }
 
