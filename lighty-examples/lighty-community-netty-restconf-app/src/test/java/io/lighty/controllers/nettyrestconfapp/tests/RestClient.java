@@ -40,6 +40,7 @@ public class RestClient implements AutoCloseable {
             LOG.info("initializing HTTP client");
             httpClientExecutor = Executors.newSingleThreadExecutor();
             this.httpClient = HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_1_1)
                 .executor(httpClientExecutor)
                 .build();
         } catch (Exception e) {
