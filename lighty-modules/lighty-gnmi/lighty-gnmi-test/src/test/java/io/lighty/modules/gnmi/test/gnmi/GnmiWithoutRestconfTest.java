@@ -20,7 +20,6 @@ import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import io.lighty.gnmi.southbound.identifier.IdentifierUtils;
 import io.lighty.gnmi.southbound.lightymodule.GnmiSouthboundModule;
-import io.lighty.gnmi.southbound.lightymodule.GnmiSouthboundModuleBuilder;
 import io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils;
 import io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration;
 import io.lighty.modules.gnmi.simulatordevice.impl.SimulatedGnmiDevice;
@@ -162,14 +161,10 @@ public class GnmiWithoutRestconfTest {
         Boolean controllerStartSuccessfully = lightyController.start().get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
         assertTrue(controllerStartSuccessfully);
 
-        gnmiSouthboundModule = new GnmiSouthboundModuleBuilder()
-                .withConfig(GnmiConfigUtils.getGnmiConfiguration(Files.newInputStream(CONFIGURATION_PATH)))
-                .withLightyServices(lightyController.getServices())
-                .withExecutorService(Executors.newCachedThreadPool())
-                .withEncryptionService(createEncryptionService())
-                .build();
-        Boolean gnmiStartSuccessfully = gnmiSouthboundModule.start().get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
-        assertTrue(gnmiStartSuccessfully);
+        gnmiSouthboundModule = new GnmiSouthboundModule(lightyController.getServices().getBindingDataBroker(),
+            lightyController.getServices().getRpcProviderService(),
+            lightyController.getServices().getDOMMountPointService(), createEncryptionService());
+        gnmiSouthboundModule.init();
 
         gnmiDevice = getUnsecureGnmiDevice(DEVICE_ADDRESS, DEVICE_PORT);
         gnmiDevice.start();
@@ -178,8 +173,8 @@ public class GnmiWithoutRestconfTest {
     @AfterAll
     public static void tearDown() {
         gnmiDevice.stop();
-        assertTrue(gnmiSouthboundModule.shutdown(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
-        assertTrue(lightyController.shutdown(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
+        gnmiSouthboundModule.close();
+    assertTrue(lightyController.shutdown(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
     }
 
     @Test

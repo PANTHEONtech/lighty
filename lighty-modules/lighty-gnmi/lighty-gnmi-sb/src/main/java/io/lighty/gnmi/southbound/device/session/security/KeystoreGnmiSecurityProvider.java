@@ -8,20 +8,28 @@
 
 package io.lighty.gnmi.southbound.device.session.security;
 
-import io.lighty.aaa.util.AAAConfigUtils;
 import io.lighty.gnmi.southbound.schema.certstore.service.CertificationStorageService;
 import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
 import io.lighty.modules.gnmi.connector.configuration.SecurityFactory;
 import io.lighty.modules.gnmi.connector.security.Security;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
+import java.security.Provider;
 import java.security.cert.CertificateException;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.PEMDecryptorProvider;
+import org.bouncycastle.openssl.PEMEncryptedKeyPair;
+import org.bouncycastle.openssl.PEMKeyPair;
+import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import org.bouncycastle.openssl.jcajce.JcePEMDecryptorProviderBuilder;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.certificate.storage.rev210504.Keystore;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.GnmiNode;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.topology.rev210316.security.SecurityChoice;
@@ -100,7 +108,7 @@ public class KeystoreGnmiSecurityProvider implements GnmiSecurityProvider {
 
     private KeyPair getKeyPair(final String clientKey, final String passphrase) throws SessionSecurityException {
         try {
-            return AAAConfigUtils.decodePrivateKey(
+            return decodePrivateKey(
                     new StringReader(this.certService
                             .decrypt(clientKey)
                             .replace("\\\\n", "\n")),
@@ -110,6 +118,26 @@ public class KeystoreGnmiSecurityProvider implements GnmiSecurityProvider {
         } catch (GeneralSecurityException e) {
             LOG.error("Failed do decrypt input {}", clientKey);
             throw new RuntimeException(e);
+        }
+    }
+
+    public static KeyPair decodePrivateKey(final Reader reader, final String passphrase) throws IOException {
+        try (PEMParser keyReader = new PEMParser(reader)) {
+            final Provider bcprov;
+            final var prov = java.security.Security.getProvider(BouncyCastleProvider.PROVIDER_NAME);
+            bcprov = prov != null ? prov : new BouncyCastleProvider();
+            JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
+            PEMDecryptorProvider decryptionProv = new JcePEMDecryptorProviderBuilder().setProvider(bcprov)
+                .build(passphrase.toCharArray());
+
+            Object privateKey = keyReader.readObject();
+            KeyPair keyPair;
+            if (privateKey instanceof PEMEncryptedKeyPair pemPrivateKey) {
+                keyPair = converter.getKeyPair(pemPrivateKey.decryptKeyPair(decryptionProv));
+            } else {
+                keyPair = converter.getKeyPair((PEMKeyPair) privateKey);
+            }
+            return keyPair;
         }
     }
 }
