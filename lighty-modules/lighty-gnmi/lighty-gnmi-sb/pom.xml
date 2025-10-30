@@ -11,10 +11,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.lighty.core</groupId>
-        <artifactId>lighty-parent</artifactId>
+        <groupId>io.lighty.modules.gnmi</groupId>
+        <artifactId>bnd-parent</artifactId>
         <version>23.0.0-SNAPSHOT</version>
-        <relativePath>../../../lighty-core/lighty-parent/pom.xml</relativePath>
+        <relativePath>../../../bnd-parent/pom.xml</relativePath>
     </parent>
 
     <groupId>io.lighty.modules.gnmi.southbound</groupId>
@@ -29,25 +29,30 @@
         <dependency>
             <groupId>io.lighty.modules.gnmi</groupId>
             <artifactId>lighty-gnmi-connector</artifactId>
+            <version>23.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.models.gnmi</groupId>
             <artifactId>lighty-gnmi-topology-model</artifactId>
+            <version>23.0.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.lighty.models.gnmi</groupId>
             <artifactId>lighty-gnmi-yang-storage-model</artifactId>
+            <version>23.0.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.lighty.models.gnmi</groupId>
             <artifactId>lighty-gnmi-certificates-storage-model</artifactId>
+            <version>23.0.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.lighty.models.gnmi</groupId>
             <artifactId>lighty-gnmi-force-capabilities</artifactId>
+            <version>23.0.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -78,10 +83,12 @@
         <dependency>
             <groupId>org.opendaylight.aaa</groupId>
             <artifactId>aaa-encrypt-service</artifactId>
+            <version>0.21.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
+            <version>4.5.0</version>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
@@ -172,10 +179,27 @@
             <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-binding-dom-adapter</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.gaul</groupId>
+                <artifactId>modernizer-maven-plugin</artifactId>
+                <configuration>
+                    <failOnViolations>false</failOnViolations>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
