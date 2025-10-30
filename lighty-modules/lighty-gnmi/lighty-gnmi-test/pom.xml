@@ -11,10 +11,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.lighty.core</groupId>
-        <artifactId>lighty-parent</artifactId>
+        <groupId>io.lighty.gnmi</groupId>
+        <artifactId>gnmi-parent</artifactId>
         <version>23.0.0-SNAPSHOT</version>
-        <relativePath>../../../lighty-core/lighty-parent/pom.xml</relativePath>
+        <relativePath>../../../gnmi-parent/pom.xml</relativePath>
     </parent>
 
     <groupId>io.lighty.modules.gnmi</groupId>
@@ -37,21 +37,25 @@
         <dependency>
             <groupId>io.lighty.modules.gnmi</groupId>
             <artifactId>lighty-gnmi-connector</artifactId>
+            <version>23.0.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.lighty.modules.gnmi</groupId>
             <artifactId>lighty-gnmi-device-simulator</artifactId>
+            <version>23.0.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.lighty.applications.rcgnmi</groupId>
             <artifactId>lighty-rcgnmi-app</artifactId>
+            <version>23.0.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.lighty.models</groupId>
             <artifactId>openconfig-models</artifactId>
+            <version>23.0.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
