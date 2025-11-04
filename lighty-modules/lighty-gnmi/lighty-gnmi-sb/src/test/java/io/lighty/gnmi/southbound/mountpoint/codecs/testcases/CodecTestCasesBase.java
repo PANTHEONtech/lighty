@@ -7,7 +7,6 @@
  */
 package io.lighty.gnmi.southbound.mountpoint.codecs.testcases;
 
-import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
 import io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils;
 import io.lighty.gnmi.southbound.mountpoint.codecs.TestSchemaContextProvider;
@@ -17,6 +16,7 @@ import io.lighty.gnmi.southbound.schema.provider.SchemaContextProvider;
 import java.nio.file.Paths;
 import java.util.List;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.junit.jupiter.api.Assertions;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
