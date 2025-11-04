@@ -10,13 +10,13 @@ package io.lighty.gnmi.southbound.mountpoint.codecs;
 
 import com.google.gson.Gson;
 import gnmi.Gnmi;
-import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.gnmi.southbound.mountpoint.codecs.testcases.YangInstanceNormToGnmiUpdateTestCases;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
 import java.io.IOException;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

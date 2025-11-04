@@ -40,6 +40,10 @@
             <artifactId>binding-runtime-spi</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>binding-spec</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
