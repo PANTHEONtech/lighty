@@ -9,17 +9,16 @@ package io.lighty.gnmi.southbound.lightymodule;
 
 import static org.mockito.Mockito.when;
 
-import io.lighty.core.controller.api.LightyController;
-import io.lighty.core.controller.impl.LightyControllerBuilder;
-import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
-import io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.opendaylight.aaa.encrypt.impl.AAAEncryptionServiceImpl;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev240202.AaaEncryptServiceConfig;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev240202.AaaEncryptServiceConfigBuilder;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev240202.EncryptServiceConfig;
@@ -27,41 +26,37 @@ import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev2
 
 public class GnmiSouthBoundModuleTest {
 
+    @Mock
+    private DataBroker dataBroker;
+    @Mock
+    private RpcProviderService rpcProviderService;
+    @Mock
+    private DOMMountPointService mountPointService;
+
     private static final long MODULE_TIMEOUT = 60;
     private static final TimeUnit MODULE_TIME_UNIT = TimeUnit.SECONDS;
 
     @Test
     public void gnmiModuleSmokeTest() throws Exception {
         // Build and start the controller
-        final LightyController services = new LightyControllerBuilder()
-            .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(GnmiConfigUtils.YANG_MODELS))
-            .build();
-        Assertions.assertTrue(services.start().get());
 
-        final GnmiSouthboundModule gnmiModule = new GnmiSouthboundModule(services.getServices().getBindingDataBroker(),
-                services.getServices().getRpcProviderService(), services.getServices().getDOMMountPointService(),
-                createEncryptionService());
+        final GnmiSouthboundModule gnmiModule = new GnmiSouthboundModule(dataBroker, rpcProviderService,
+            mountPointService, createEncryptionService());
         gnmiModule.init();
         gnmiModule.close();
-        Assertions.assertTrue(services.shutdown(MODULE_TIMEOUT, MODULE_TIME_UNIT));
     }
 
     @Test
     public void gnmiModuleStartFailedTest() throws Exception {
-        final LightyController services = new LightyControllerBuilder()
-                .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(GnmiConfigUtils.YANG_MODELS)).build();
-        Assertions.assertTrue(services.start().get());
 
         // Mock configuration with invalid YANG path
         final GnmiConfiguration badConfig = Mockito.mock(GnmiConfiguration.class);
         when(badConfig.getInitialYangsPaths()).thenReturn(List.of("invalid-path"));
 
-        final GnmiSouthboundModule gnmiModule = new GnmiSouthboundModule(services.getServices().getBindingDataBroker(),
-            services.getServices().getRpcProviderService(), services.getServices().getDOMMountPointService(),
-            createEncryptionService());
+        final GnmiSouthboundModule gnmiModule = new GnmiSouthboundModule(dataBroker, rpcProviderService,
+            mountPointService, createEncryptionService());
 
         gnmiModule.init();
-        Assertions.assertTrue(services.shutdown(MODULE_TIMEOUT, MODULE_TIME_UNIT));
     }
 
     /**
