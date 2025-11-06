@@ -21,6 +21,7 @@ import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import io.lighty.modules.bgp.config.BgpConfigUtils;
 import io.lighty.modules.bgp.deployer.BgpModule;
+import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
@@ -42,7 +43,7 @@ public class Main {
     private static final int APP_FAILED_TO_START_SC = 500;
 
     private LightyController controller;
-    private LightyModule restconf;
+    private CommunityRestConf restconf;
     private LightyModule bgpModule;
     private ModulesConfig modulesConfig = ModulesConfig.getDefaultModulesConfig();
     private boolean running = false;
@@ -114,6 +115,7 @@ public class Main {
                 .build();
         Preconditions.checkState(startLightyModule(restconf,  modulesConfig.getModuleTimeoutSeconds()),
                 "Unable to start restconf module");
+        restconf.startServer();
 
         bgpModule = new BgpModule(controller.getServices());
         Preconditions.checkState(startLightyModule(bgpModule,  modulesConfig.getModuleTimeoutSeconds()),
