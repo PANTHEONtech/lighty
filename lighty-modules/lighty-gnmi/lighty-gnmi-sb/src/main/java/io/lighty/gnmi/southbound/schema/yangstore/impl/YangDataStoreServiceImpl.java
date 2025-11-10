@@ -56,7 +56,8 @@ public class YangDataStoreServiceImpl implements YangDataStoreService {
                 .setBody(sanitizedModelBody)
                 .withKey(gnmiYangModelKey);
         final WriteTransaction writeTX = dataBroker.newWriteOnlyTransaction();
-        writeTX.merge(LogicalDatastoreType.OPERATIONAL, instanceIdentifier, gnmiYangModelBuilder.build());
+        writeTX.merge(LogicalDatastoreType.OPERATIONAL, instanceIdentifier.toIdentifier(),
+            gnmiYangModelBuilder.build());
         return writeTX.commit();
     }
 
@@ -66,7 +67,7 @@ public class YangDataStoreServiceImpl implements YangDataStoreService {
                 .child(GnmiYangModel.class, new GnmiYangModelKey(modelName, new ModuleVersionType(modelVersion)))
                 .build();
         try (ReadTransaction readOnlyTransaction = this.dataBroker.newReadOnlyTransaction()) {
-            return readOnlyTransaction.read(LogicalDatastoreType.OPERATIONAL, instanceIdentifier);
+            return readOnlyTransaction.read(LogicalDatastoreType.OPERATIONAL, instanceIdentifier.toIdentifier());
         }
     }
 
@@ -78,7 +79,7 @@ public class YangDataStoreServiceImpl implements YangDataStoreService {
 
         try (ReadTransaction readOnlyTransaction = this.dataBroker.newReadOnlyTransaction()) {
             final ListenableFuture<Optional<GnmiYangModels>> yangModelOptionalFuture = readOnlyTransaction.read(
-                    LogicalDatastoreType.OPERATIONAL, instanceIdentifier);
+                    LogicalDatastoreType.OPERATIONAL, instanceIdentifier.toIdentifier());
             return Futures.transform(yangModelOptionalFuture, yangModelOptional -> {
                 if (yangModelOptional.isPresent()) {
                     // Keep only models with requested name

@@ -84,7 +84,7 @@ public class NetconfDeviceRestService {
         Utils.logUserData(LOG, authentication);
         final Optional<Topology> netconfTopoOptional;
         try (final ReadTransaction tx = dataBroker.newReadOnlyTransaction()) {
-            netconfTopoOptional = tx.read(LogicalDatastoreType.OPERATIONAL, NETCONF_TOPOLOGY_IID)
+            netconfTopoOptional = tx.read(LogicalDatastoreType.OPERATIONAL, NETCONF_TOPOLOGY_IID.toIdentifier())
                     .get(TIMEOUT, TimeUnit.SECONDS);
         }
 
@@ -99,15 +99,15 @@ public class NetconfDeviceRestService {
         final List<NetconfDeviceResponse> devices = new ArrayList<>();
         for (Node node : netconfTopology.nonnullNode().values()) {
             NetconfDeviceResponse nodeResponse = NetconfDeviceResponse.from(node);
-            final Optional<MountPoint> netconfMountPoint = mountPointService.getMountPoint(NETCONF_TOPOLOGY_IID
-                    .child(Node.class, new NodeKey(node.getNodeId())));
+            final Optional<MountPoint> netconfMountPoint = mountPointService.findMountPoint(NETCONF_TOPOLOGY_IID
+                    .child(Node.class, new NodeKey(node.getNodeId())).toIdentifier());
             if (netconfMountPoint.isPresent()) {
                 final Optional<DataBroker> netconfDataBroker = netconfMountPoint.get().getService(DataBroker.class);
 
                 if (netconfDataBroker.isPresent()) {
                     final Optional<Toaster> toasterData;
                     try (final ReadTransaction netconfReadTx = netconfDataBroker.get().newReadOnlyTransaction()) {
-                        toasterData = netconfReadTx.read(LogicalDatastoreType.OPERATIONAL, TOASTER_IID)
+                        toasterData = netconfReadTx.read(LogicalDatastoreType.OPERATIONAL, TOASTER_IID.toIdentifier())
                                 .get(TIMEOUT, TimeUnit.SECONDS);
                     }
                     if (toasterData.isPresent() && toasterData.get().getDarknessFactor() != null) {
@@ -145,7 +145,7 @@ public class NetconfDeviceRestService {
                 .setTcpOnly(false)
                 .build()).build())
             .build();
-        tx.put(LogicalDatastoreType.CONFIGURATION, netconfDeviceIID, netconfDeviceData);
+        tx.put(LogicalDatastoreType.CONFIGURATION, netconfDeviceIID.toIdentifier(), netconfDeviceData);
 
         tx.commit().get(TIMEOUT, TimeUnit.SECONDS);
 
@@ -162,7 +162,7 @@ public class NetconfDeviceRestService {
         final InstanceIdentifier<Node> netconfDeviceIID = NETCONF_TOPOLOGY_IID
             .child(Node.class, new NodeKey(nodeId));
 
-        tx.delete(LogicalDatastoreType.CONFIGURATION, netconfDeviceIID);
+        tx.delete(LogicalDatastoreType.CONFIGURATION, netconfDeviceIID.toIdentifier());
 
         tx.commit().get(TIMEOUT, TimeUnit.SECONDS);
 

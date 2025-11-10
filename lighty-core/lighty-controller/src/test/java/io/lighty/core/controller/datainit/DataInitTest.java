@@ -16,7 +16,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -116,9 +115,8 @@ public class DataInitTest {
         // value from .xml/.json file
         final int expectedDarknessFactor = 200;
         ToasterListener listener = new ToasterListener(listenerLatch, expectedDarknessFactor);
-        dataBroker.registerDataTreeChangeListener(
-                DataTreeIdentifier.create(LogicalDatastoreType.CONFIGURATION, instanceIdentifier),
-                listener);
+        dataBroker.registerTreeChangeListener(
+                LogicalDatastoreType.CONFIGURATION, instanceIdentifier.toReference(), listener);
         return listener;
     }
 }
