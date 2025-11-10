@@ -88,16 +88,13 @@ public class NettyRestConf extends AbstractLightyModule {
 
         final PrincipalService service = new AAAShiroPrincipalService((AAAShiroWebEnvironment) webEnvironment);
         final var serverStackGrouping = new HttpServerStackConfiguration(new TcpBuilder().setTcp(tcpConfig).build());
-        final BootstrapFactory factory = new BootstrapFactory("lighty-restconf-nb-worker", 1);
         final NettyEndpointConfiguration configuration = new NettyEndpointConfiguration(ErrorTagMapping.RFC8040,
             PrettyPrintParam.FALSE, Uint16.valueOf(0), Uint32.valueOf(10000), restconfServletContextPath,
             MessageEncoding.JSON, serverStackGrouping);
         this.mdsalRestconfStreamRegistry = new MdsalRestconfStreamRegistry(domDataBroker, domNotificationService,
             domSchemaService, new JaxRsLocationProvider(), databindProvider);
-
-        nettyEndpoint =
-            new SimpleNettyEndpoint(server, service, mdsalRestconfStreamRegistry, factory,
-            configuration);
+        nettyEndpoint = new SimpleNettyEndpoint(server, service, mdsalRestconfStreamRegistry,
+            new BootstrapFactory("lighty-restconf-nb-worker", 0), configuration);
 
         return true;
     }
