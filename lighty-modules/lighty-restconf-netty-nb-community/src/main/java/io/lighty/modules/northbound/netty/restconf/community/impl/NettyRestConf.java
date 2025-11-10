@@ -20,11 +20,11 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.netconf.transport.http.HttpServerStackConfiguration;
-import org.opendaylight.netconf.transport.tcp.BootstrapFactory;
 import org.opendaylight.restconf.api.query.PrettyPrintParam;
 import org.opendaylight.restconf.server.AAAShiroPrincipalService;
 import org.opendaylight.restconf.server.MessageEncoding;
 import org.opendaylight.restconf.server.NettyEndpointConfiguration;
+import org.opendaylight.restconf.server.OSGiNettyEndpoint;
 import org.opendaylight.restconf.server.PrincipalService;
 import org.opendaylight.restconf.server.SimpleNettyEndpoint;
 import org.opendaylight.restconf.server.jaxrs.JaxRsLocationProvider;
@@ -88,17 +88,21 @@ public class NettyRestConf extends AbstractLightyModule {
 
         final PrincipalService service = new AAAShiroPrincipalService((AAAShiroWebEnvironment) webEnvironment);
         final var serverStackGrouping = new HttpServerStackConfiguration(new TcpBuilder().setTcp(tcpConfig).build());
-        final BootstrapFactory factory = new BootstrapFactory("lighty-restconf-nb-worker", 1);
         final NettyEndpointConfiguration configuration = new NettyEndpointConfiguration(ErrorTagMapping.RFC8040,
             PrettyPrintParam.FALSE, Uint16.valueOf(0), Uint32.valueOf(10000), restconfServletContextPath,
             MessageEncoding.JSON, serverStackGrouping);
         this.mdsalRestconfStreamRegistry = new MdsalRestconfStreamRegistry(domDataBroker, domNotificationService,
             domSchemaService, new JaxRsLocationProvider(), databindProvider);
 
-        nettyEndpoint =
-            new SimpleNettyEndpoint(server, service, mdsalRestconfStreamRegistry, factory,
-            configuration);
-
+        /**
+         * FIXME make number of work threads configurable
+         *
+         * 1. use new RestconfBootstrapFactory(bootstrapFactoryConfig)
+         * 2. create lighty.io config
+         * 2. hardcode 0 which is ODL netconf default allowing to use Netty default
+         */
+        final var pros = OSGiNettyEndpoint.props(bootstrapFactory, configuration);
+        nettyEndpoint = new OSGiNettyEndpoint(server, service, mdsalRestconfStreamRegistry, pros);
         return true;
     }
 
