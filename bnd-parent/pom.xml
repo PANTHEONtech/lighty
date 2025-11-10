@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright © 2025 PANTHEON.tech, s.r.o. and others.
+
+ This program and the accompanying materials are made available under the
+ terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ and is available at http://www.eclipse.org/legal/epl-v10.html
+ -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.opendaylight.controller</groupId>
+        <artifactId>bnd-parent</artifactId>
+        <version>11.0.2</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>io.lighty.modules.gnmi</groupId>
+    <artifactId>bnd-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>23.0.0-SNAPSHOT</version>
+    <name>${project.artifactId}</name>
+    <description>Bundle parent (bnd-based)</description>
+
+    <properties>
+        <odlparent.dependency.enforce>true</odlparent.dependency.enforce>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.19.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.odlparent</groupId>
+                <artifactId>odlparent</artifactId>
+                <version>14.1.3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.infrautils</groupId>
+                <artifactId>infrautils-artifacts</artifactId>
+                <version>7.1.7</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.aaa</groupId>
+                <artifactId>aaa-artifacts</artifactId>
+                <version>0.21.2</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.netconf</groupId>
+                <artifactId>netconf-artifacts</artifactId>
+                <version>9.0.1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.skyscreamer</groupId>
+                <artifactId>jsonassert</artifactId>
+                <version>1.5.3</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.beust</groupId>
+                <artifactId>jcommander</artifactId>
+                <version>1.82</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>
