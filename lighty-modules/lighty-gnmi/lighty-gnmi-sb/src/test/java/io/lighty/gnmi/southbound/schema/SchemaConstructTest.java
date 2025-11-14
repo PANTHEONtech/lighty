@@ -8,7 +8,6 @@
 
 package io.lighty.gnmi.southbound.schema;
 
-import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.gnmi.southbound.capabilities.GnmiDeviceCapability;
 import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
 import io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils;
@@ -33,6 +32,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

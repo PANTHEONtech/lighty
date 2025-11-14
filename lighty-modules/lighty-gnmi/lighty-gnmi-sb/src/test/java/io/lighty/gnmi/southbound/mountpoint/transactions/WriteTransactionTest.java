@@ -16,7 +16,6 @@ import static org.testng.AssertJUnit.assertNotNull;
 
 import com.google.gson.Gson;
 import gnmi.Gnmi;
-import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.gnmi.southbound.capabilities.GnmiDeviceCapability;
 import io.lighty.gnmi.southbound.device.connection.DeviceConnection;
 import io.lighty.gnmi.southbound.device.session.listener.GnmiConnectionStatusListener;
@@ -41,6 +40,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

@@ -16,7 +16,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.protobuf.ByteString;
 import gnmi.Gnmi;
-import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
 import java.io.IOException;
@@ -25,6 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 

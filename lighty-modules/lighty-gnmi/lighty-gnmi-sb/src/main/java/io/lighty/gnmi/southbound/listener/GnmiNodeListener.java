@@ -13,7 +13,6 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.lighty.gnmi.southbound.device.connection.DeviceConnectionManager;
 import io.lighty.gnmi.southbound.identifier.IdentifierUtils;
 import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
@@ -153,8 +152,6 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
         }
     }
 
-    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
-            justification = "False positive, method is actually called in connectNode()")
     private void writeConnectionFailureReasonToDatastore(NodeId nodeId, String message)
             throws InterruptedException, ExecutionException, TimeoutException {
         @NonNull final WriteTransaction tx = dataBroker.newWriteOnlyTransaction();

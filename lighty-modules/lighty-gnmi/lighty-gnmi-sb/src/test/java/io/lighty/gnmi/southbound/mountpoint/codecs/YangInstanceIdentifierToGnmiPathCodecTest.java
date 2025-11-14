@@ -9,7 +9,6 @@
 package io.lighty.gnmi.southbound.mountpoint.codecs;
 
 import gnmi.Gnmi;
-import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
 import io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils;
 import io.lighty.gnmi.southbound.mountpoint.codecs.testcases.YangInstanceIdentifiertoPathTestCases;
@@ -18,6 +17,7 @@ import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.opendaylight.yangtools.yang.common.QName;
