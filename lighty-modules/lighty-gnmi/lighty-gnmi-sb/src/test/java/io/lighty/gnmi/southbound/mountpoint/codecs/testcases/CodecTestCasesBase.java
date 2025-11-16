@@ -7,7 +7,6 @@
  */
 package io.lighty.gnmi.southbound.mountpoint.codecs.testcases;
 
-import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
 import io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils;
 import io.lighty.gnmi.southbound.mountpoint.codecs.TestSchemaContextProvider;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
@@ -16,8 +15,6 @@ import io.lighty.gnmi.southbound.schema.provider.SchemaContextProvider;
 import java.nio.file.Paths;
 import java.util.List;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.logging.log4j.core.config.ConfigurationException;
-import org.junit.jupiter.api.Assertions;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.Uint16;
@@ -35,7 +32,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
  */
 public class CodecTestCasesBase {
     private static final String BASE_YANGS_PATH = "src/test/resources/additional/test/schema";
-    private static final String OC_GNMI_CONFIG = "/lightyconfigs/openconfig_gnmi_config.json";
     private static final String OC_IF_TYPES_ID = "openconfig-if-types";
     private static final String OC_VLAN_ID = "openconfig-vlan";
     private static final String OC_PLATFORM_ID = "openconfig-platform";
@@ -45,12 +41,9 @@ public class CodecTestCasesBase {
 
     private final SchemaContextProvider schemaContextProvider;
 
-    public CodecTestCasesBase() throws YangLoadException, SchemaException, ConfigurationException {
-        final GnmiConfiguration gnmiConfiguration = GnmiConfigUtils.getGnmiConfiguration(
-                this.getClass().getResourceAsStream(OC_GNMI_CONFIG));
-        Assertions.assertNotNull(gnmiConfiguration.getYangModulesInfo());
+    public CodecTestCasesBase() throws SchemaException, YangLoadException {
         this.schemaContextProvider = TestSchemaContextProvider.createInstance(Paths.get(BASE_YANGS_PATH),
-                gnmiConfiguration.getYangModulesInfo());
+            GnmiConfigUtils.OPENCONFIG_YANG_MODELS);
     }
 
     /**
