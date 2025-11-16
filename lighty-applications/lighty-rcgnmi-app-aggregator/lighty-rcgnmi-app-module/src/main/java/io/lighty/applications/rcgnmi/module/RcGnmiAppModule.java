@@ -16,7 +16,6 @@ import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.gnmi.southbound.lightymodule.GnmiSouthboundModule;
-import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
@@ -86,7 +85,7 @@ public class RcGnmiAppModule {
 
             final AAAEncryptionService encryptionService = createEncryptionServiceWithErrorHandling();
             this.gnmiSouthboundModule = initGnmiModule(this.lightyController.getServices(),
-                    this.gnmiExecutorService, this.appModuleConfig.getGnmiConfiguration(), encryptionService,
+                    this.gnmiExecutorService,encryptionService,
                     this.customReactor);
             gnmiSouthboundModule.init();
             lightyRestconf.startServer();
@@ -115,7 +114,6 @@ public class RcGnmiAppModule {
 
     private GnmiSouthboundModule initGnmiModule(final LightyServices services,
                                                 final ExecutorService gnmiExecService,
-                                                final GnmiConfiguration gnmiConfiguration,
                                                 final AAAEncryptionService encryptionService,
                                                 final CrossSourceStatementReactor reactor) {
 

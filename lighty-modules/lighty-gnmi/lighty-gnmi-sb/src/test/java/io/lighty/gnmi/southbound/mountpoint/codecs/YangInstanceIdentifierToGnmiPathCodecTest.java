@@ -10,7 +10,6 @@ package io.lighty.gnmi.southbound.mountpoint.codecs;
 
 import gnmi.Gnmi;
 import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
-import io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils;
 import io.lighty.gnmi.southbound.mountpoint.codecs.testcases.YangInstanceIdentifiertoPathTestCases;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
@@ -72,8 +71,7 @@ public class YangInstanceIdentifierToGnmiPathCodecTest {
     public void yangInstanceIdentifierToPathCodecWithNotUniqueNameForRootElement()
             throws SchemaException, YangLoadException, ConfigurationException {
         //Init YangInstanceIdentifierToPathCodec with test schema context
-        final GnmiConfiguration gnmiConfiguration = GnmiConfigUtils.getGnmiConfiguration(
-                this.getClass().getResourceAsStream(OPENCONFIG_GNMI_CONFIG));
+        final GnmiConfiguration gnmiConfiguration = new GnmiConfiguration();
         Assertions.assertNotNull(gnmiConfiguration.getYangModulesInfo());
         final TestSchemaContextProvider contextProvider = TestSchemaContextProvider.createInstance(TEST_PATH,
                 gnmiConfiguration.getYangModulesInfo());
