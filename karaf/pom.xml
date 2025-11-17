@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright © 2025 PANTHEON.tech, s.r.o. and others.
+
+ This program and the accompanying materials are made available under the
+ terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ and is available at http://www.eclipse.org/legal/epl-v10.html
+ -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.opendaylight.odlparent</groupId>
+        <artifactId>karaf4-parent</artifactId>
+        <version>14.1.3</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>io.lighty.gnmi</groupId>
+    <artifactId>gnmi-karaf</artifactId>
+    <version>23.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.opendaylight.infrautils</groupId>
+                <artifactId>infrautils-artifacts</artifactId>
+                <version>7.1.7</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.netconf</groupId>
+                <artifactId>netconf-artifacts</artifactId>
+                <version>9.0.1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.lighty.gnmi</groupId>
+                <artifactId>gnmi-parent</artifactId>
+                <version>23.0.0-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <!-- scope is compile so all features (there is only one) are installed
+            into startup.properties and the feature repo itself is not installed -->
+            <groupId>org.apache.karaf.features</groupId>
+            <artifactId>framework</artifactId>
+            <type>kar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.controller</groupId>
+            <artifactId>features-controller-testing</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.infrautils</groupId>
+            <artifactId>features-infrautils</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.lighty.gnmi</groupId>
+            <artifactId>features-gnmi</artifactId>
+            <classifier>features</classifier>
+            <version>23.0.0-SNAPSHOT</version>
+            <type>xml</type>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.netconf</groupId>
+            <artifactId>features-netconf-testing</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.netconf</groupId>
+            <artifactId>features-netconf-experimental</artifactId>
+            <type>xml</type>
+            <classifier>features</classifier>
+            <scope>runtime</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.gaul</groupId>
+                    <artifactId>modernizer-maven-plugin</artifactId>
+                    <version>2.4.0</version>
+                    <executions>
+                        <execution>
+                            <id>modernizer</id>
+                            <phase>none</phase> <!-- disable plugin -->
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

@@ -38,6 +38,7 @@
         <module>bnd-parent</module>
         <module>features</module>
         <module>gnmi-parent</module>
+        <module>karaf</module>
     </modules>
 
     <build>
