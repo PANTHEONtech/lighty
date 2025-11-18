@@ -161,7 +161,7 @@ public class GnmiWithoutRestconfTest {
 
         gnmiSouthboundModule = new GnmiSouthboundModule(lightyController.getServices().getBindingDataBroker(),
             lightyController.getServices().getRpcProviderService(),
-            lightyController.getServices().getDOMMountPointService(), createEncryptionService());
+            lightyController.getServices().getDOMMountPointService(), createEncryptionService(), null, null);
         gnmiSouthboundModule.init();
 
         gnmiDevice = getUnsecureGnmiDevice(DEVICE_ADDRESS, DEVICE_PORT);

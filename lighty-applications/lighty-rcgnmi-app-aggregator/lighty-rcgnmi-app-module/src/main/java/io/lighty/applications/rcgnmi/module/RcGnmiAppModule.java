@@ -16,6 +16,7 @@ import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.gnmi.southbound.lightymodule.GnmiSouthboundModule;
+import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
@@ -30,7 +31,6 @@ import java.security.spec.KeySpec;
 import java.util.Base64;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import javax.crypto.NoSuchPaddingException;
@@ -39,11 +39,12 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev240202.AaaEncryptServiceConfig;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev240202.AaaEncryptServiceConfigBuilder;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
+import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
+import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
+import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,20 +56,15 @@ public class RcGnmiAppModule {
 
     private final long lightyModuleTimeout;
     private final RcGnmiAppConfiguration appModuleConfig;
-    private final ExecutorService gnmiExecutorService;
-    private final CrossSourceStatementReactor customReactor;
+
     private LightyController lightyController;
     private CommunityRestConf lightyRestconf;
     private GnmiSouthboundModule gnmiSouthboundModule;
 
-    public RcGnmiAppModule(final RcGnmiAppConfiguration appModuleConfig,
-                           final ExecutorService gnmiExecutorService,
-                           @Nullable final CrossSourceStatementReactor customReactor) {
+    public RcGnmiAppModule(final RcGnmiAppConfiguration appModuleConfig) {
         LOG.info("Creating instance of RgNMI lighty.io module...");
         this.appModuleConfig = Objects.requireNonNull(appModuleConfig);
-        this.gnmiExecutorService = Objects.requireNonNull(gnmiExecutorService);
         this.lightyModuleTimeout = appModuleConfig.getModulesConfig().getModuleTimeoutSeconds();
-        this.customReactor = customReactor;
         LOG.info("Instance of RCgNMI lighty.io module created!");
     }
 
@@ -85,8 +81,8 @@ public class RcGnmiAppModule {
 
             final AAAEncryptionService encryptionService = createEncryptionServiceWithErrorHandling();
             this.gnmiSouthboundModule = initGnmiModule(this.lightyController.getServices(),
-                    this.gnmiExecutorService,encryptionService,
-                    this.customReactor);
+                    lightyController.getServices().getYangParserFactory(), encryptionService,
+                    new AntlrXPathParserFactory(), appModuleConfig.getGnmiConfiguration());
             gnmiSouthboundModule.init();
             lightyRestconf.startServer();
 
@@ -113,12 +109,13 @@ public class RcGnmiAppModule {
     }
 
     private GnmiSouthboundModule initGnmiModule(final LightyServices services,
-                                                final ExecutorService gnmiExecService,
+                                                final YangParserFactory parserFactory,
                                                 final AAAEncryptionService encryptionService,
-                                                final CrossSourceStatementReactor reactor) {
+                                                final YangXPathParserFactory xpathParserFactory,
+                                                final GnmiConfiguration gnmiConfig) {
 
         return new GnmiSouthboundModule(services.getBindingDataBroker(), services.getRpcProviderService(),
-            services.getDOMMountPointService(), encryptionService);
+            services.getDOMMountPointService(), encryptionService, parserFactory, xpathParserFactory, gnmiConfig);
     }
 
     private void startAndWaitLightyModule(final LightyModule lightyModule) throws RcGnmiAppException {
