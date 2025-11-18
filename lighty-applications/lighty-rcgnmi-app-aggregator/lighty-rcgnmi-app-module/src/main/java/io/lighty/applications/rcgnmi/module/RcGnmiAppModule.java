@@ -118,7 +118,7 @@ public class RcGnmiAppModule {
                                                 final CrossSourceStatementReactor reactor) {
 
         return new GnmiSouthboundModule(services.getBindingDataBroker(), services.getRpcProviderService(),
-            services.getDOMMountPointService(), encryptionService);
+            services.getDOMMountPointService(), encryptionService, null, null);
     }
 
     private void startAndWaitLightyModule(final LightyModule lightyModule) throws RcGnmiAppException {

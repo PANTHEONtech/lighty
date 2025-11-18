@@ -112,7 +112,7 @@ public class WriteTransactionTest {
         Assertions.assertNotNull(gnmiConfiguration.getYangModulesInfo());
         final TestYangDataStoreService dataStoreService = new TestYangDataStoreService();
         final List<GnmiDeviceCapability> completeCapabilities
-                = new ByClassPathYangLoaderService(gnmiConfiguration.getYangModulesInfo()).load(dataStoreService);
+                = new ByClassPathYangLoaderService(gnmiConfiguration.getYangModulesInfo(), null).load(dataStoreService);
 
         final SchemaContextHolder schemaContextHolder = new SchemaContextHolderImpl(dataStoreService, null);
         final EffectiveModelContext schemaContext = schemaContextHolder.getSchemaContext(completeCapabilities);

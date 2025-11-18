@@ -35,29 +35,26 @@ import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.GeneralSecurityException;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
 import javax.xml.bind.DatatypeConverter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
-import org.opendaylight.aaa.encrypt.impl.AAAEncryptionServiceImpl;
+import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMDataBrokerAdapter;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev240202.AaaEncryptServiceConfig;
-import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev240202.AaaEncryptServiceConfigBuilder;
-import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev240202.EncryptServiceConfig;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Host;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
@@ -90,7 +87,9 @@ public class KeystoreGnmiSecurityTest {
     private static final String TEST_PASSWORD = "Test_Password";
     private static final String ADDRESS = "127.0.0.1";
 
-    private static final AAAEncryptionServiceImpl AAA_ENCRYPTION_SERVICE = createEncryptionServiceWithErrorHandling();
+    @Mock
+    private AAAEncryptionService aaaEncryptionService;
+
     private static final String CA_CRT = "/certs/ca.crt";
     private static final String CLIENT_ENCRYPTED_CRT = "/certs/client.encrypted.crt";
     private static final String CLIENT_ENCRYPTED_KEY = "/certs/client.encrypted.key";
@@ -117,7 +116,7 @@ public class KeystoreGnmiSecurityTest {
                 .thenAnswer(invocation -> CommitInfo.emptyFluentFuture());
 
         final CertificationStorageServiceImpl certificationStorageService
-                = new CertificationStorageServiceImpl(AAA_ENCRYPTION_SERVICE, dataBrokerMock);
+                = new CertificationStorageServiceImpl(aaaEncryptionService, dataBrokerMock);
         final KeystoreGnmiSecurityProvider securityProvider
                 = new KeystoreGnmiSecurityProvider(certificationStorageService);
 
@@ -404,23 +403,23 @@ public class KeystoreGnmiSecurityTest {
                 .build();
     }
 
-    private static Keystore getKeystore1WithPassResponse() throws IllegalBlockSizeException, BadPaddingException {
+    private Keystore getKeystore1WithPassResponse() throws GeneralSecurityException {
         return new KeystoreBuilder()
                 .setCaCertificate(getResource(CA_CRT))
                 .setClientCert(getResource(CLIENT_ENCRYPTED_CRT))
                 .setClientKey(DatatypeConverter.printBase64Binary(
-                        (AAA_ENCRYPTION_SERVICE.encrypt(getResource(CLIENT_ENCRYPTED_KEY).getBytes(
+                        (aaaEncryptionService.encrypt(getResource(CLIENT_ENCRYPTED_KEY).getBytes(
                                 Charset.defaultCharset())))))
                 .setPassphrase(
-                        DatatypeConverter.printBase64Binary(AAA_ENCRYPTION_SERVICE.encrypt(PASSPHRASE.getBytes())))
+                        DatatypeConverter.printBase64Binary(aaaEncryptionService.encrypt(PASSPHRASE.getBytes())))
                 .setKeystoreId(KEYSTORE_PASSPHRASE_ID_1)
                 .build();
     }
 
-    private static Keystore getKeystore2Response() throws IllegalBlockSizeException, BadPaddingException {
+    private Keystore getKeystore2Response() throws GeneralSecurityException {
         return new KeystoreBuilder().setCaCertificate(getResource(CA_CRT)).setClientCert(getResource(CLIENT_CRT))
                 .setClientKey(DatatypeConverter.printBase64Binary(
-                        (AAA_ENCRYPTION_SERVICE.encrypt((getResource(CLIENT_KEY).getBytes())))))
+                        (aaaEncryptionService.encrypt((getResource(CLIENT_KEY).getBytes())))))
                 .setKeystoreId(KEYSTORE_ID_2).build();
     }
 
@@ -435,35 +434,5 @@ public class KeystoreGnmiSecurityTest {
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(String.format("Failed to read resources at path [%s]", path), e);
         }
-    }
-
-    private static AAAEncryptionServiceImpl createEncryptionServiceWithErrorHandling() {
-        return createEncryptionService();
-    }
-
-    private static AAAEncryptionServiceImpl createEncryptionService() {
-        // Build configuration from your test constants
-        AaaEncryptServiceConfig config = new AaaEncryptServiceConfigBuilder()
-            .setEncryptKey("V1S1ED4OMeEh")
-            .setPasswordLength(12)
-            .setEncryptSalt("TdtWeHbch/7xP52/rp3Usw==")
-            .setEncryptMethod("PBKDF2WithHmacSHA1")
-            .setEncryptType("AES")
-            .setEncryptIterationCount(32768)
-            .setEncryptKeyLength(128)
-            .setAuthTagLength(128)
-            .setCipherTransforms("AES/GCM/NoPadding")
-            .build();
-
-        // The ODL impl expects EncryptServiceConfig, so cast is fine
-        return new AAAEncryptionServiceImpl((EncryptServiceConfig) config);
-    }
-
-    private static AaaEncryptServiceConfig getDefaultAaaEncryptServiceConfig() {
-        return new AaaEncryptServiceConfigBuilder().setEncryptKey("V1S1ED4OMeEh")
-                .setPasswordLength(12).setEncryptSalt("TdtWeHbch/7xP52/rp3Usw==")
-                .setEncryptMethod("PBKDF2WithHmacSHA1").setEncryptType("AES")
-                .setEncryptIterationCount(32768).setEncryptKeyLength(128)
-                .setAuthTagLength(128).setCipherTransforms("AES/GCM/NoPadding").build();
     }
 }

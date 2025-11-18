@@ -25,6 +25,10 @@ import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
+import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
+import org.opendaylight.yangtools.yang.parser.rfc7950.reactor.RFC7950Reactors;
+import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
+import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -44,24 +48,34 @@ public final class GnmiSouthboundModule {
     private final RpcProviderService rpcProviderService;
     private final DOMMountPointService domMountPointService;
     private final AAAEncryptionService encryptionService;
+    private final YangParserFactory parserFactory;
+    private final YangXPathParserFactory xpathParserFactory;
 
     private ExecutorService gnmiExecutor;
     private GnmiSouthboundProvider gnmiProvider;
 
     @Activate
-    public GnmiSouthboundModule(@Reference DataBroker dataBroker, @Reference RpcProviderService rpcProviderService,
-            @Reference DOMMountPointService domMountPointService, @Reference AAAEncryptionService encryptionService) {
+    public GnmiSouthboundModule(
+        @Reference DataBroker dataBroker,
+        @Reference RpcProviderService rpcProviderService,
+        @Reference DOMMountPointService domMountPointService,
+        @Reference AAAEncryptionService encryptionService,
+        @Reference YangParserFactory parserFactory,
+        @Reference YangXPathParserFactory xpathParserFactory) {
         this.dataBroker = Objects.requireNonNull(dataBroker);
         this.rpcProviderService = Objects.requireNonNull(rpcProviderService);
         this.domMountPointService = Objects.requireNonNull(domMountPointService);
         this.encryptionService = Objects.requireNonNull(encryptionService);
-
+        this.parserFactory = Objects.requireNonNull(parserFactory);
+        this.xpathParserFactory = Objects.requireNonNull(xpathParserFactory);
     }
 
     @Activate
     public void init() {
         LOG.info("Starting ODL gNMI Southbound Component");
         gnmiExecutor = Executors.newFixedThreadPool(4);
+        CrossSourceStatementReactor reactor = RFC7950Reactors.defaultReactorBuilder(xpathParserFactory).build();
+
         try {
             gnmiProvider = new GnmiSouthboundProvider(
                 domMountPointService,
@@ -70,7 +84,8 @@ public final class GnmiSouthboundModule {
                 gnmiExecutor,
                 prepareByPathLoaders(),
                 encryptionService,
-                null);
+                reactor);
+
             gnmiProvider.init();
             LOG.info("gNMI Southbound Provider initialized");
         } catch (ExecutionException | TimeoutException | YangLoadException e) {
@@ -99,7 +114,7 @@ public final class GnmiSouthboundModule {
 
     private List<YangLoaderService> prepareByPathLoaders() {
         final List<YangLoaderService> services = new ArrayList<>();
-        services.add(new ByClassPathYangLoaderService(OPENCONFIG_YANG_MODELS));
+        services.add(new ByClassPathYangLoaderService(OPENCONFIG_YANG_MODELS, parserFactory));
         return services;
     }
 }

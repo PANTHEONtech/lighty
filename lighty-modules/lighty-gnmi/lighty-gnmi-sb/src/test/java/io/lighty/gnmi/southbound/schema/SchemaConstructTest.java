@@ -58,12 +58,12 @@ public class SchemaConstructTest {
     @BeforeEach
     public void setup() throws YangLoadException, ConfigurationException {
         dataStoreService = new TestYangDataStoreService();
-        completeCapabilities = new ByPathYangLoaderService(Path.of(SCHEMA_PATH)).load(dataStoreService);
+        completeCapabilities = new ByPathYangLoaderService(Path.of(SCHEMA_PATH), null).load(dataStoreService);
         Assertions.assertFalse(completeCapabilities.isEmpty());
 
         final GnmiConfiguration gnmiConfiguration = new GnmiConfiguration();
         final List<GnmiDeviceCapability> openconfigCapabilities
-                = new ByClassPathYangLoaderService(gnmiConfiguration.getYangModulesInfo()).load(dataStoreService);
+                = new ByClassPathYangLoaderService(gnmiConfiguration.getYangModulesInfo(), null).load(dataStoreService);
         Assertions.assertFalse(openconfigCapabilities.isEmpty());
         completeCapabilities.addAll(openconfigCapabilities);
     }
