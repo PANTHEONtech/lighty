@@ -52,7 +52,13 @@ public final class GnmiConfigUtils {
         org.opendaylight.yang.svc.v1.http.openconfig.net.yang.types.inet.rev210107.YangModuleInfoImpl.getInstance(),
         org.opendaylight.yang.svc.v1.http.openconfig.net.yang.types.yang.rev210302.YangModuleInfoImpl.getInstance(),
         org.opendaylight.yang.svc.v1.http.openconfig.net.yang.vlan.rev190416.YangModuleInfoImpl.getInstance(),
-        org.opendaylight.yang.svc.v1.http.openconfig.net.yang.vlan.types.rev200630.YangModuleInfoImpl.getInstance()
+        org.opendaylight.yang.svc.v1.http.openconfig.net.yang.vlan.types.rev200630.YangModuleInfoImpl.getInstance(),
+        org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.YangModuleInfoImpl
+            .getInstance(),
+        org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.YangModuleInfoImpl
+            .getInstance(),
+        org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev230126.YangModuleInfoImpl
+            .getInstance()
     );
 
     private GnmiConfigUtils() {

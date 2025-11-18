@@ -19,10 +19,6 @@ import io.lighty.core.controller.impl.config.ConfigurationException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.concurrent.ExecutorService;
-import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,9 +69,7 @@ public class RCgNMIApp {
         // print yang modules loaded into controller
         LOG.info("Loaded YANG modules: {}", YangModuleUtils.generateJSONModelSetConfiguration(rgnmiModuleConfig
                 .getControllerConfig().getSchemaServiceConfig().getModels()));
-        final ExecutorService executorService = SpecialExecutors.newBoundedCachedThreadPool(10,
-                100, "gnmi_executor", Logger.class);
-        rcgnmiLightyModule = createRgnmiAppModule(rgnmiModuleConfig, executorService, null);
+        rcgnmiLightyModule = createRgnmiAppModule(rgnmiModuleConfig);
 
         // Initialize RcGNMI modules
         if (rcgnmiLightyModule.initModules()) {
@@ -90,10 +84,8 @@ public class RCgNMIApp {
 
     }
 
-    public RcGnmiAppModule createRgnmiAppModule(final RcGnmiAppConfiguration rcGnmiAppConfiguration,
-                                                final ExecutorService gnmiExecutorService,
-                                                @Nullable final CrossSourceStatementReactor customReactor) {
-        return new RcGnmiAppModule(rcGnmiAppConfiguration, gnmiExecutorService, customReactor);
+    public RcGnmiAppModule createRgnmiAppModule(final RcGnmiAppConfiguration rcGnmiAppConfiguration) {
+        return new RcGnmiAppModule(rcGnmiAppConfiguration);
     }
 
     public void stop() {

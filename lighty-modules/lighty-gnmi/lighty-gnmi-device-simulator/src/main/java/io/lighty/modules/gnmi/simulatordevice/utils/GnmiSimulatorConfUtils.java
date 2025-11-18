@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.opendaylight.yangtools.binding.meta.YangModelBindingProvider;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -107,24 +108,17 @@ public final class GnmiSimulatorConfUtils {
     private static Set<YangModuleInfo> getModelsFromClasspath(final Set<QName> filter) {
         Map<QName, YangModuleInfo> resolvedModules = new HashMap<>();
         ServiceLoader<YangModelBindingProvider> yangProviderLoader = ServiceLoader.load(YangModelBindingProvider.class);
-
-        for (QName moduleId : filter) {
-            Set<YangModuleInfo> filteredSet = new HashSet<>();
-
-            for (YangModelBindingProvider yangModelBindingProvider : yangProviderLoader) {
-                if (moduleId.equals(yangModelBindingProvider.getModuleInfo().getName())) {
-                    filteredSet.add(yangModelBindingProvider.getModuleInfo());
-                }
-            }
-
+        for (QName moduleId: filter) {
+            Set<YangModuleInfo> filteredSet = filterYangModelBindingProviders(moduleId, yangProviderLoader);
             for (YangModuleInfo yangModuleInfo : filteredSet) {
                 resolvedModules.put(yangModuleInfo.getName(), yangModuleInfo);
+
                 addDependencies(resolvedModules, yangModuleInfo.getImportedModules());
             }
         }
-
-        return Collections.unmodifiableSet(new HashSet<>(resolvedModules.values()));
+        return Collections.unmodifiableSet(resolvedModules.values().stream().collect(Collectors.toSet()));
     }
+
 
     private static void addDependencies(final Map<QName, YangModuleInfo> resolvedModules,
         final Collection<YangModuleInfo> importedModules) {
@@ -132,5 +126,16 @@ public final class GnmiSimulatorConfUtils {
             resolvedModules.put(yangModuleInfo.getName(), yangModuleInfo);
             addDependencies(resolvedModules, yangModuleInfo.getImportedModules());
         }
+    }
+
+    private static Set<YangModuleInfo> filterYangModelBindingProviders(final QName moduleId,
+        final ServiceLoader<YangModelBindingProvider> yangProviderLoader) {
+        Set<YangModuleInfo> filteredSet = new HashSet<>();
+        for (YangModelBindingProvider yangModelBindingProvider : yangProviderLoader) {
+            if (moduleId.equals(yangModelBindingProvider.getModuleInfo().getName())) {
+                filteredSet.add(yangModelBindingProvider.getModuleInfo());
+            }
+        }
+        return filteredSet;
     }
 }
