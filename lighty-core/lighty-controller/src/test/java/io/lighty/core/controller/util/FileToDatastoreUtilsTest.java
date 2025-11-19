@@ -54,16 +54,16 @@ public class FileToDatastoreUtilsTest {
     private static final DataObjectIdentifier<SampleList> SAMPLE_LIST_ID2_ID
             = DataObjectIdentifier.builder(SampleList.class, new SampleListKey("ID2")).build();
 
-    private static final YangInstanceIdentifier ROOT_YII = YangInstanceIdentifier.empty();
+    private static final YangInstanceIdentifier ROOT_YII = YangInstanceIdentifier.of();
 
     private static final DataObjectIdentifier<ChoiceContainer> CHOICE_CONTAINER_ID
             = DataObjectIdentifier.builder(ChoiceContainer.class).build();
 
-    private static final YangInstanceIdentifier INNER_CASE_YIID = YangInstanceIdentifier.create(
+    private static final YangInstanceIdentifier INNER_CASE_YIID = YangInstanceIdentifier.of(
             NodeIdentifier.create(ChoiceContainer.QNAME),
             NodeIdentifier.create(Snack.QNAME));
 
-    private static final YangInstanceIdentifier INNER_VALUE_YII = YangInstanceIdentifier.create(
+    private static final YangInstanceIdentifier INNER_VALUE_YII = YangInstanceIdentifier.of(
             NodeIdentifier.create(TopLevelContainer.QNAME),
             NodeIdentifier.create(SampleContainer.QNAME),
             NodeIdentifier.create(YangModuleInfoImpl.qnameOf("value")));

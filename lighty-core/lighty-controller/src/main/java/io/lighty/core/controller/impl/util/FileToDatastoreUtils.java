@@ -65,7 +65,7 @@ public final class FileToDatastoreUtils {
                 // Json deserialization needs parent identifier
                 final YangInstanceIdentifier parentIdentifier = yangInstanceIdentifier.getParent() != null
                         ? yangInstanceIdentifier.getParent()
-                        : YangInstanceIdentifier.empty();
+                        : YangInstanceIdentifier.of();
                 deserializedNode = new JsonNodeConverter(effectiveModelContext)
                         .deserialize(parentIdentifier, inputReader);
             } else if (fileFormat == ImportFileFormat.XML) {
@@ -104,7 +104,7 @@ public final class FileToDatastoreUtils {
             final EffectiveModelContext effectiveModelContext,
             final DOMDataBroker dataBroker, final boolean override)
             throws IOException, DeserializationException, InterruptedException, ExecutionException, TimeoutException {
-        importConfigDataFile(inputStream, YangInstanceIdentifier.empty(), fileFormat, effectiveModelContext, dataBroker,
+        importConfigDataFile(inputStream, YangInstanceIdentifier.of(), fileFormat, effectiveModelContext, dataBroker,
                 override);
     }
 

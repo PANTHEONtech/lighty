@@ -93,7 +93,7 @@ public class ConverterUtilsTest extends AbstractCodecTest {
     @Test
     public void testGetInnerSchemaNode() {
         final SchemaNode node = ConverterUtils.getSchemaNode(this.effectiveModelContext,
-                YangInstanceIdentifier.create(
+                YangInstanceIdentifier.of(
                         YangInstanceIdentifier.NodeIdentifier.create(TopLevelContainer.QNAME),
                         YangInstanceIdentifier.NodeIdentifier.create(SampleContainer.QNAME)))
                 .orElseThrow().dataSchemaNode();
