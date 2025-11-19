@@ -61,7 +61,7 @@ public class LightyGuiceAppTest {
 
     @Test
     public void testReadFromDomDataBroker() throws Exception {
-        final var identifier = YangInstanceIdentifier.create(NodeIdentifier.create(NetworkTopology.QNAME));
+        final var identifier = YangInstanceIdentifier.of(NodeIdentifier.create(NetworkTopology.QNAME));
         final var networkTopology = service.readFromDomDataBroker(identifier).get(TIMEOUT_SECONDS, TimeUnit.SECONDS);
         assertTrue(networkTopology.isPresent());
         assertTrue(networkTopology.get() instanceof ContainerNode);

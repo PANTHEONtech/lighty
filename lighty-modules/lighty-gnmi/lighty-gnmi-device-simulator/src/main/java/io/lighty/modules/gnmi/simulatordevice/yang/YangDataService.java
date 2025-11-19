@@ -121,13 +121,13 @@ public class YangDataService {
               (interfaces,alarms, components ...).
             */
             final NormalizedNode node =
-                    DataConverter.nodeFromJsonString(YangInstanceIdentifier.empty(), configJson, schemaContext);
+                    DataConverter.nodeFromJsonString(YangInstanceIdentifier.of(), configJson, schemaContext);
             /*
              If QName of parsed node is a root node (SchemaContext.NAME), that means we parsed multiple
               top-level element, in that case we need to write this node on ROOT YII.
             */
             if (node.name().getNodeType().equals(SchemaContext.NAME)) {
-                writeDataByPath(datastoreType, YangInstanceIdentifier.empty(), node);
+                writeDataByPath(datastoreType, YangInstanceIdentifier.of(), node);
             // Else we parsed only one top-level element, in that case we write this node on it's identifier.
             } else {
                 writeDataByPath(datastoreType, YangInstanceIdentifier.of(node.name().getNodeType()), node);
