@@ -10,7 +10,7 @@ package io.lighty.core.controller.impl.tests;
 import io.lighty.core.controller.api.LightyController;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import org.opendaylight.mdsal.binding.api.DataTreeModification;
+import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
@@ -37,15 +37,17 @@ public class LightyControllerDataBrokerTest extends LightyControllerTestBase {
                 .getBindingDataBroker();
         registration = bindingDataBroker.registerTreeChangeListener(LogicalDatastoreType.OPERATIONAL,
             TestUtils.TOPOLOGY_ID, changes -> {
-                for (final DataTreeModification<Topology> change : changes) {
+                for (final var change : changes) {
+                    final var rootNode = change.getRootNode();
                     if (countDownLatch.getCount() == 2) {
                         // on first time - write
-                        Assert.assertNull(change.getRootNode().getDataBefore());
-                        Assert.assertNotNull(change.getRootNode().getDataAfter());
+                        Assert.assertNull(rootNode.dataBefore());
+                        Assert.assertTrue(rootNode instanceof DataObjectModification.WithDataAfter<Topology>);
+                        Assert.assertNotNull(((DataObjectModification.WithDataAfter<Topology>) rootNode).dataAfter());
                     } else if (countDownLatch.getCount() == 1) {
                         // on second time - delete
-                        Assert.assertNotNull(change.getRootNode().getDataBefore());
-                        Assert.assertNull(change.getRootNode().getDataAfter());
+                        Assert.assertNotNull(rootNode.dataBefore());
+                        Assert.assertFalse(rootNode instanceof DataObjectModification.WithDataAfter<Topology>);
                     } else {
                         Assert.fail("Too many DataTreeChange events, expected two");
                     }

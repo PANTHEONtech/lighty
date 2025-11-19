@@ -10,7 +10,7 @@ package io.lighty.core.controller.datainit;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding.api.DataObjectModification;
+import org.opendaylight.mdsal.binding.api.DataObjectWritten;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster;
@@ -33,11 +33,10 @@ public class ToasterListener implements DataTreeChangeListener<Toaster> {
     public void onDataTreeChanged(@NonNull List<DataTreeModification<Toaster>> changes) {
         LOG.debug("Got onDataTreeChanged!");
         for (DataTreeModification<Toaster> modification : changes) {
-            DataObjectModification.ModificationType type = modification.getRootNode().getModificationType();
-            if (type == DataObjectModification.ModificationType.WRITE) {
+            final var rootNode = modification.getRootNode();
+            if (rootNode instanceof DataObjectWritten<Toaster> written) {
                 LOG.debug("Data tree changed: new write modification");
-                DataObjectModification<Toaster> rootNode = modification.getRootNode();
-                Toaster value = rootNode.getDataAfter();
+                final var value = written.dataAfter();
                 int darknessFactor = value.getDarknessFactor().intValue();
                 if (darknessFactor == expectedDarknessFactor) {
                     listenerLatch.countDown();
