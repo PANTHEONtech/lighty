@@ -16,10 +16,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
+import org.opendaylight.yangtools.concepts.Registration;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
@@ -30,11 +30,11 @@ public class DataInitTest {
     private static final String PATH_TO_INVALID_PATH_TO_INIT_CONFIG = "/DataInitInvalidInitPathConfig.json";
     private static final String PATH_TO_INVALID_JSON_NODES_INIT_CONFIG = "/DataInitInvalidInitConfigJson.json";
     private static final String PATH_TO_INVALID_XML_NODES_INIT_CONFIG = "/DataInitInvalidInitConfigXml.json";
-    private static final InstanceIdentifier<Toaster> NODE_YIID = InstanceIdentifier
-            .builder(Toaster.class).build();
+    private static final DataObjectIdentifier<Toaster> NODE_ID = DataObjectIdentifier.builder(Toaster.class).build();
     private static final long TIMEOUT_MILLIS = 20_000;
 
     private LightyController lightyController;
+    private Registration registration;
 
     /*
     1. Give some time to load init data
@@ -51,7 +51,7 @@ public class DataInitTest {
         CountDownLatch listenerLatch = new CountDownLatch(1);
         LightyServices services = lightyController.getServices();
         // Should receive notification even when listener is registered after data was changed
-        registerToasterListener(services.getBindingDataBroker(), NODE_YIID, listenerLatch);
+        registerToasterListener(services.getBindingDataBroker(), NODE_ID, listenerLatch);
         listenerLatch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         Assert.assertEquals(listenerLatch.getCount(), 0);
     }
@@ -71,7 +71,7 @@ public class DataInitTest {
         CountDownLatch listenerLatch = new CountDownLatch(1);
         LightyServices services = lightyController.getServices();
         // Should receive notification even when listener is registered after data was changed
-        registerToasterListener(services.getBindingDataBroker(), NODE_YIID, listenerLatch);
+        registerToasterListener(services.getBindingDataBroker(), NODE_ID, listenerLatch);
         listenerLatch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         Assert.assertEquals(listenerLatch.getCount(), 0);
     }
@@ -108,17 +108,18 @@ public class DataInitTest {
 
     @AfterMethod
     public void shutdownLighty() {
+        if (registration != null) {
+            registration.close();
+        }
         lightyController.shutdown(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
     }
 
     private ToasterListener registerToasterListener(final DataBroker dataBroker,
-            final InstanceIdentifier<Toaster> instanceIdentifier, final CountDownLatch listenerLatch) {
+            final DataObjectIdentifier<Toaster> identifier, final CountDownLatch listenerLatch) {
         // value from .xml/.json file
         final int expectedDarknessFactor = 200;
         ToasterListener listener = new ToasterListener(listenerLatch, expectedDarknessFactor);
-        dataBroker.registerDataTreeChangeListener(
-                DataTreeIdentifier.create(LogicalDatastoreType.CONFIGURATION, instanceIdentifier),
-                listener);
+        registration = dataBroker.registerTreeChangeListener(LogicalDatastoreType.CONFIGURATION, identifier, listener);
         return listener;
     }
 }

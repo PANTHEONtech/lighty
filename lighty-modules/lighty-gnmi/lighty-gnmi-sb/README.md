@@ -121,7 +121,7 @@ Creating a device connection and CRUD operation, is performed by writing data di
 ```java
         final Node testGnmiNode = createNode(GNMI_NODE_ID, DEVICE_ADDRESS, DEVICE_PORT, getInsecureSecurityChoice());
         final WriteTransaction writeTransaction = bindingDataBroker.newWriteOnlyTransaction();
-        final InstanceIdentifier<Node> nodeInstanceIdentifier = IdentifierUtils.gnmiNodeIID(testGnmiNode.getNodeId());
+        final DataObjectIdentifier<Node> nodeInstanceIdentifier = IdentifierUtils.gnmiNodeID(testGnmiNode.getNodeId());
         writeTransaction.put(LogicalDatastoreType.CONFIGURATION, nodeInstanceIdentifier, testGnmiNode);
         writeTransaction.commit().get();
 ```

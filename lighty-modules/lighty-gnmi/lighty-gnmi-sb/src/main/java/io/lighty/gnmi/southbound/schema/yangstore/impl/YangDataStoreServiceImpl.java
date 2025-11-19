@@ -27,7 +27,7 @@ import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.Modul
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.gnmi.yang.models.GnmiYangModel;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.gnmi.yang.models.GnmiYangModelBuilder;
 import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.gnmi.yang.models.GnmiYangModelKey;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +47,7 @@ public class YangDataStoreServiceImpl implements YangDataStoreService {
                                                                final String modelBody) {
         LOG.debug("Adding yang model {} with version {} to operational datastore", modelName, modelVersion);
         final GnmiYangModelKey gnmiYangModelKey = new GnmiYangModelKey(modelName, new ModuleVersionType(modelVersion));
-        final InstanceIdentifier<GnmiYangModel> instanceIdentifier = InstanceIdentifier.builder(GnmiYangModels.class)
+        final DataObjectIdentifier<GnmiYangModel> identifier = DataObjectIdentifier.builder(GnmiYangModels.class)
                 .child(GnmiYangModel.class, gnmiYangModelKey)
                 .build();
         final String sanitizedModelBody = YangModelSanitizer.removeRegexpPosix(modelBody);
@@ -56,29 +56,28 @@ public class YangDataStoreServiceImpl implements YangDataStoreService {
                 .setBody(sanitizedModelBody)
                 .withKey(gnmiYangModelKey);
         final WriteTransaction writeTX = dataBroker.newWriteOnlyTransaction();
-        writeTX.merge(LogicalDatastoreType.OPERATIONAL, instanceIdentifier, gnmiYangModelBuilder.build());
+        writeTX.merge(LogicalDatastoreType.OPERATIONAL, identifier, gnmiYangModelBuilder.build());
         return writeTX.commit();
     }
 
     @Override
     public ListenableFuture<Optional<GnmiYangModel>> readYangModel(final String modelName, final String modelVersion) {
-        final InstanceIdentifier<GnmiYangModel> instanceIdentifier = InstanceIdentifier.builder(GnmiYangModels.class)
+        final DataObjectIdentifier<GnmiYangModel> identifier = DataObjectIdentifier.builder(GnmiYangModels.class)
                 .child(GnmiYangModel.class, new GnmiYangModelKey(modelName, new ModuleVersionType(modelVersion)))
                 .build();
         try (ReadTransaction readOnlyTransaction = this.dataBroker.newReadOnlyTransaction()) {
-            return readOnlyTransaction.read(LogicalDatastoreType.OPERATIONAL, instanceIdentifier);
+            return readOnlyTransaction.read(LogicalDatastoreType.OPERATIONAL, identifier);
         }
     }
 
     @Override
     public ListenableFuture<Optional<GnmiYangModel>> readYangModel(final String modelName) {
         // In case we only know the modelName, return found module if only one is present in datastore
-        final InstanceIdentifier<GnmiYangModels> instanceIdentifier = InstanceIdentifier.builder(GnmiYangModels.class)
-                .build();
+        final var identifier = DataObjectIdentifier.builder(GnmiYangModels.class).build();
 
         try (ReadTransaction readOnlyTransaction = this.dataBroker.newReadOnlyTransaction()) {
             final ListenableFuture<Optional<GnmiYangModels>> yangModelOptionalFuture = readOnlyTransaction.read(
-                    LogicalDatastoreType.OPERATIONAL, instanceIdentifier);
+                    LogicalDatastoreType.OPERATIONAL, identifier);
             return Futures.transform(yangModelOptionalFuture, yangModelOptional -> {
                 if (yangModelOptional.isPresent()) {
                     // Keep only models with requested name
