@@ -16,7 +16,7 @@ import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
@@ -29,15 +29,16 @@ public class DataStoreServiceImpl implements DataStoreService {
     @Named("ClusteredDOMDataBroker")
     private DOMDataBroker domDataBroker;
 
-    public <T extends DataObject> FluentFuture<? extends CommitInfo> writeData(final InstanceIdentifier<T> identifier,
-            final T data) {
+    public <T extends DataObject> FluentFuture<? extends CommitInfo> writeData(
+            final DataObjectIdentifier<T> identifier, final T data) {
         final var writeTransaction = dataBroker.newWriteOnlyTransaction();
         writeTransaction.put(LogicalDatastoreType.CONFIGURATION, identifier, data);
         return writeTransaction.commit();
     }
 
     @Override
-    public <T extends DataObject> FluentFuture<Optional<T>> readFromDataBroker(final InstanceIdentifier<T> identifier) {
+    public <T extends DataObject> FluentFuture<Optional<T>> readFromDataBroker(
+            final DataObjectIdentifier<T> identifier) {
         try (var readTransaction = dataBroker.newReadOnlyTransaction()) {
             return readTransaction.read(LogicalDatastoreType.CONFIGURATION, identifier);
         }

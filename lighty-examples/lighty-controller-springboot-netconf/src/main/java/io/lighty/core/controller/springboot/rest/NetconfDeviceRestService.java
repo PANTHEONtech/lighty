@@ -41,7 +41,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.yang.common.Uint16;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,11 +64,13 @@ public class NetconfDeviceRestService {
 
     private static final Logger LOG = LoggerFactory.getLogger(NetconfDeviceRestService.class);
 
-    private static final InstanceIdentifier<Topology> NETCONF_TOPOLOGY_IID = InstanceIdentifier
-        .create(NetworkTopology.class)
-        .child(Topology.class, new TopologyKey(new TopologyId("topology-netconf")));
+    private static final DataObjectIdentifier<Topology> NETCONF_TOPOLOGY_ID = DataObjectIdentifier
+        .builder(NetworkTopology.class)
+        .child(Topology.class, new TopologyKey(new TopologyId("topology-netconf")))
+        .build();
     private static final long TIMEOUT = 1;
-    private static final InstanceIdentifier<Toaster> TOASTER_IID = InstanceIdentifier.create(Toaster.class);
+    private static final DataObjectIdentifier<Toaster> TOASTER_ID = DataObjectIdentifier.builder(Toaster.class)
+        .build();
 
     @Autowired
     @Qualifier("BindingDataBroker")
@@ -84,7 +86,7 @@ public class NetconfDeviceRestService {
         Utils.logUserData(LOG, authentication);
         final Optional<Topology> netconfTopoOptional;
         try (final ReadTransaction tx = dataBroker.newReadOnlyTransaction()) {
-            netconfTopoOptional = tx.read(LogicalDatastoreType.OPERATIONAL, NETCONF_TOPOLOGY_IID)
+            netconfTopoOptional = tx.read(LogicalDatastoreType.OPERATIONAL, NETCONF_TOPOLOGY_ID)
                     .get(TIMEOUT, TimeUnit.SECONDS);
         }
 
@@ -99,15 +101,17 @@ public class NetconfDeviceRestService {
         final List<NetconfDeviceResponse> devices = new ArrayList<>();
         for (Node node : netconfTopology.nonnullNode().values()) {
             NetconfDeviceResponse nodeResponse = NetconfDeviceResponse.from(node);
-            final Optional<MountPoint> netconfMountPoint = mountPointService.getMountPoint(NETCONF_TOPOLOGY_IID
-                    .child(Node.class, new NodeKey(node.getNodeId())));
+            final Optional<MountPoint> netconfMountPoint = mountPointService.findMountPoint(NETCONF_TOPOLOGY_ID
+                .toBuilder()
+                .child(Node.class, new NodeKey(node.getNodeId()))
+                .build());
             if (netconfMountPoint.isPresent()) {
                 final Optional<DataBroker> netconfDataBroker = netconfMountPoint.get().getService(DataBroker.class);
 
                 if (netconfDataBroker.isPresent()) {
                     final Optional<Toaster> toasterData;
                     try (final ReadTransaction netconfReadTx = netconfDataBroker.get().newReadOnlyTransaction()) {
-                        toasterData = netconfReadTx.read(LogicalDatastoreType.OPERATIONAL, TOASTER_IID)
+                        toasterData = netconfReadTx.read(LogicalDatastoreType.OPERATIONAL, TOASTER_ID)
                                 .get(TIMEOUT, TimeUnit.SECONDS);
                     }
                     if (toasterData.isPresent() && toasterData.get().getDarknessFactor() != null) {
@@ -129,8 +133,10 @@ public class NetconfDeviceRestService {
         Utils.logUserData(LOG, authentication);
         final WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         final NodeId nodeId = new NodeId(netconfDeviceId);
-        final InstanceIdentifier<Node> netconfDeviceIID = NETCONF_TOPOLOGY_IID
-            .child(Node.class, new NodeKey(nodeId));
+        final DataObjectIdentifier<Node> netconfDeviceID = NETCONF_TOPOLOGY_ID
+            .toBuilder()
+            .child(Node.class, new NodeKey(nodeId))
+            .build();
 
         final Node netconfDeviceData = new NodeBuilder()
             .setNodeId(nodeId)
@@ -145,7 +151,7 @@ public class NetconfDeviceRestService {
                 .setTcpOnly(false)
                 .build()).build())
             .build();
-        tx.put(LogicalDatastoreType.CONFIGURATION, netconfDeviceIID, netconfDeviceData);
+        tx.put(LogicalDatastoreType.CONFIGURATION, netconfDeviceID, netconfDeviceData);
 
         tx.commit().get(TIMEOUT, TimeUnit.SECONDS);
 
@@ -159,10 +165,12 @@ public class NetconfDeviceRestService {
         Utils.logUserData(LOG, authentication);
         final WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         final NodeId nodeId = new NodeId(netconfDeviceId);
-        final InstanceIdentifier<Node> netconfDeviceIID = NETCONF_TOPOLOGY_IID
-            .child(Node.class, new NodeKey(nodeId));
+        final DataObjectIdentifier<Node> netconfDeviceID = NETCONF_TOPOLOGY_ID
+            .toBuilder()
+            .child(Node.class, new NodeKey(nodeId))
+            .build();
 
-        tx.delete(LogicalDatastoreType.CONFIGURATION, netconfDeviceIID);
+        tx.delete(LogicalDatastoreType.CONFIGURATION, netconfDeviceID);
 
         tx.commit().get(TIMEOUT, TimeUnit.SECONDS);
 
