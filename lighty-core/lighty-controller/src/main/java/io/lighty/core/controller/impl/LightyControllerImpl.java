@@ -91,6 +91,12 @@ import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.broker.DOMMountPointServiceImpl;
 import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.mdsal.dom.broker.DOMRpcRouter;
+import org.opendaylight.mdsal.dom.broker.RouterDOMActionProviderService;
+import org.opendaylight.mdsal.dom.broker.RouterDOMActionService;
+import org.opendaylight.mdsal.dom.broker.RouterDOMNotificationService;
+import org.opendaylight.mdsal.dom.broker.RouterDOMPublishNotificationService;
+import org.opendaylight.mdsal.dom.broker.RouterDOMRpcProviderService;
+import org.opendaylight.mdsal.dom.broker.RouterDOMRpcService;
 import org.opendaylight.mdsal.dom.spi.FixedDOMSchemaService;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
@@ -99,6 +105,7 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
 import org.opendaylight.mdsal.singleton.impl.EOSClusterSingletonServiceProvider;
 import org.opendaylight.netconf.yanglib.writer.YangLibraryWriterSingleton;
+import org.opendaylight.raft.spi.DefaultRaftPolicyResolver;
 import org.opendaylight.restconf.server.jaxrs.JaxRsEndpoint;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.yangtools.binding.data.codec.impl.BindingCodecContext;
@@ -151,6 +158,10 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private DurationStatisticsTracker commitStatsTracker;
     private DOMDataBroker concurrentDOMDataBroker;
     private DOMRpcRouter domRpcRouter;
+    private RouterDOMRpcService routerDomRpcService;
+    private RouterDOMPublishNotificationService routerDOMPublishNotificationService;
+    private RouterDOMNotificationService routerDOMNotificationService;
+    private RouterDOMRpcProviderService routerDOMRpcProviderService;
     private RemoteOpsProvider remoteOpsProvider;
     private DOMActionService domActionService;
     private DOMActionProviderService domActionProviderService;
@@ -288,19 +299,20 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
         createConcurrentDOMDataBroker();
 
-        this.domRpcRouter = DOMRpcRouter.newInstance(this.schemaService);
-        this.domActionProviderService = domRpcRouter.actionProviderService();
-        this.domActionService = domRpcRouter.actionService();
-        createRemoteOpsProvider();
+        this.domRpcRouter = new DOMRpcRouter(this.schemaService);
+        this.domActionProviderService = new RouterDOMActionProviderService(domRpcRouter);
+        this.domActionService = new RouterDOMActionService(domRpcRouter);
 
         this.bindingAdapterFactory = new BindingAdapterFactory(getAdapterContext());
         this.actionProviderService = this.bindingAdapterFactory.createActionProviderService(
                 this.domActionProviderService);
         this.actionService = bindingAdapterFactory.createActionService(this.domActionService);
-        rpcConsumerRegistry = bindingAdapterFactory.createRpcService(domRpcRouter.rpcService());
+        routerDomRpcService = new RouterDOMRpcService(domRpcRouter);
+        rpcConsumerRegistry = bindingAdapterFactory.createRpcService(routerDomRpcService);
+        routerDOMRpcProviderService = new RouterDOMRpcProviderService(domRpcRouter);
+        this.rpcProviderService = new BindingDOMRpcProviderServiceAdapter(this.codec, routerDOMRpcProviderService);
 
-        this.rpcProviderService = new BindingDOMRpcProviderServiceAdapter(this.codec,
-                this.domRpcRouter.rpcProviderService());
+        createRemoteOpsProvider();
 
         // ENTITY OWNERSHIP
         try {
@@ -322,11 +334,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
         //create binding mount point service
         this.mountPointService = new BindingDOMMountPointServiceAdapter(this.codec, this.domMountPointService);
-
-        this.notificationService = new BindingDOMNotificationServiceAdapter(
-                this.codec, this.domNotificationRouter.notificationService());
+        this.routerDOMNotificationService = new RouterDOMNotificationService(domNotificationRouter);
+        this.notificationService = new BindingDOMNotificationServiceAdapter(this.codec, routerDOMNotificationService);
+        this.routerDOMPublishNotificationService = new RouterDOMPublishNotificationService(domNotificationRouter);
         this.notificationPublishService = new BindingDOMNotificationPublishServiceAdapter(
-                this.codec, this.domNotificationRouter.notificationPublishService());
+                this.codec, routerDOMPublishNotificationService);
 
         //create data broker
         this.dataBroker = bindingAdapterFactory.createDataBroker(concurrentDOMDataBroker);
@@ -360,7 +372,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             final DatastoreSnapshotRestore newDatastoreSnapshotRestore,
             final ActorSystemProvider newActorSystemProvider) {
         final DefaultDatastoreContextIntrospectorFactory introspectorFactory
-                = new DefaultDatastoreContextIntrospectorFactory(this.codec.currentSerializer());
+            = new DefaultDatastoreContextIntrospectorFactory(new DefaultRaftPolicyResolver(),
+            this.codec.currentSerializer());
         final DatastoreContextIntrospector introspector = introspectorFactory
                 .newInstance(datastoreContext.getLogicalStoreType(), datastoreProperties);
         final DatastoreContextPropertiesUpdater updater = new DatastoreContextPropertiesUpdater(introspector,
@@ -398,6 +411,9 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         }
         if (this.remoteOpsProvider != null) {
             this.remoteOpsProvider.close();
+        }
+        if (this.domRpcRouter != null) {
+            this.domRpcRouter.close();
         }
         if (this.domNotificationRouter != null) {
             this.domNotificationRouter.close();
@@ -439,9 +455,9 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             this.actorSystemProvider.getActorSystem().name())
                 .metricCaptureEnabled(this.metricCaptureEnabled)
                 .mailboxCapacity(this.mailboxCapacity).build();
-        this.remoteOpsProvider = RemoteOpsProviderFactory.createInstance(this.domRpcRouter.rpcProviderService(),
-                this.domRpcRouter.rpcService(), this.actorSystemProvider.getActorSystem(), remoteOpsProviderConfig,
-                this.domActionProviderService, this.domActionService);
+        this.remoteOpsProvider = RemoteOpsProviderFactory.createInstance(routerDOMRpcProviderService,
+            routerDomRpcService, this.actorSystemProvider.getActorSystem(), remoteOpsProviderConfig,
+            this.domActionProviderService, this.domActionService);
         this.remoteOpsProvider.start();
     }
 
@@ -549,12 +565,12 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     public DOMNotificationPublishService getDOMNotificationPublishService() {
-        return domNotificationRouter.notificationPublishService();
+        return routerDOMPublishNotificationService;
     }
 
     @Override
     public DOMNotificationService getDOMNotificationService() {
-        return domNotificationRouter.notificationService();
+        return routerDOMNotificationService;
     }
 
     @Override
@@ -564,12 +580,12 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     @Override
     public DOMRpcService getDOMRpcService() {
-        return this.domRpcRouter.rpcService();
+        return routerDomRpcService;
     }
 
     @Override
     public DOMRpcProviderService getDOMRpcProviderService() {
-        return this.domRpcRouter.rpcProviderService();
+        return routerDOMRpcProviderService;
     }
 
     @Override
