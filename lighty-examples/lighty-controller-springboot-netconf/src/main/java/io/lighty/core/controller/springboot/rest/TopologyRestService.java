@@ -19,7 +19,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.TopologyBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.TopologyKey;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,10 +60,9 @@ public class TopologyRestService {
         Utils.logUserData(LOG, authentication);
 
         try (final ReadTransaction tx = databroker.newReadOnlyTransaction()) {
-            final InstanceIdentifier<NetworkTopology> iid =
-                    InstanceIdentifier.create(NetworkTopology.class);
+            final var objectIdentifier = DataObjectIdentifier.builder(NetworkTopology.class).build();
             final Optional<NetworkTopology> readData =
-                    tx.read(LogicalDatastoreType.OPERATIONAL, iid).get(TIMEOUT, TimeUnit.SECONDS);
+                    tx.read(LogicalDatastoreType.OPERATIONAL, objectIdentifier).get(TIMEOUT, TimeUnit.SECONDS);
 
             if (readData.isPresent() && readData.get().getTopology() != null) {
                 final List<String> topology = readData.get().nonnullTopology().values().stream()
@@ -87,10 +86,11 @@ public class TopologyRestService {
         final Topology topology = new TopologyBuilder()
             .setTopologyId(new TopologyId(topologyId))
             .build();
-        final InstanceIdentifier<Topology> iid = InstanceIdentifier.create(NetworkTopology.class)
-            .child(Topology.class, new TopologyKey(new TopologyId(topologyId)));
+        final DataObjectIdentifier<Topology> objectIdentifier = DataObjectIdentifier.builder(NetworkTopology.class)
+            .child(Topology.class, new TopologyKey(new TopologyId(topologyId)))
+            .build();
 
-        tx.put(LogicalDatastoreType.OPERATIONAL, iid, topology);
+        tx.put(LogicalDatastoreType.OPERATIONAL, objectIdentifier, topology);
 
         try {
             tx.commit().get(TIMEOUT, TimeUnit.SECONDS);
@@ -110,10 +110,11 @@ public class TopologyRestService {
 
         final WriteTransaction tx = databroker.newWriteOnlyTransaction();
 
-        final InstanceIdentifier<Topology> iid = InstanceIdentifier.create(NetworkTopology.class)
-            .child(Topology.class, new TopologyKey(new TopologyId(topologyId)));
+        final DataObjectIdentifier<Topology> objectIdentifier = DataObjectIdentifier.builder(NetworkTopology.class)
+            .child(Topology.class, new TopologyKey(new TopologyId(topologyId)))
+            .build();
 
-        tx.delete(LogicalDatastoreType.OPERATIONAL, iid);
+        tx.delete(LogicalDatastoreType.OPERATIONAL, objectIdentifier);
 
         try {
             tx.commit().get(TIMEOUT, TimeUnit.SECONDS);

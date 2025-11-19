@@ -11,15 +11,15 @@ import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 public interface DataStoreService {
 
-    <T extends DataObject> FluentFuture<? extends CommitInfo> writeData(InstanceIdentifier<T> identifier, T data);
+    <T extends DataObject> FluentFuture<? extends CommitInfo> writeData(DataObjectIdentifier<T> identifier, T data);
 
-    <T extends DataObject> FluentFuture<Optional<T>> readFromDataBroker(InstanceIdentifier<T> identifier);
+    <T extends DataObject> FluentFuture<Optional<T>> readFromDataBroker(DataObjectIdentifier<T> identifier);
 
     FluentFuture<Optional<NormalizedNode>> readFromDomDataBroker(YangInstanceIdentifier identifier);
 
