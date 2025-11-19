@@ -21,7 +21,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.TopologyBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.testng.Assert;
@@ -30,12 +30,13 @@ final class TestUtils {
 
     private static final String NODE_ID = "test-node-id";
 
-    static final String TOPOLOGY_ID = "test-topo";
-    static final Topology TOPOLOGY =
-            new TopologyBuilder().setTopologyId(new TopologyId(TOPOLOGY_ID)).build();
-    static final InstanceIdentifier<Topology> TOPOLOGY_IID =
-            InstanceIdentifier.builder(NetworkTopology.class)
-            .child(Topology.class, TOPOLOGY.key()).build();
+    static final String TOPOLOGY_NAME = "test-topo";
+    static final Topology TOPOLOGY = new TopologyBuilder()
+        .setTopologyId(new TopologyId(TOPOLOGY_NAME))
+        .build();
+    static final DataObjectIdentifier<Topology> TOPOLOGY_ID = DataObjectIdentifier.builder(NetworkTopology.class)
+            .child(Topology.class, TOPOLOGY.key())
+            .build();
 
     private TestUtils() {
 
@@ -50,14 +51,14 @@ final class TestUtils {
     static YangInstanceIdentifier createTopologyNodeYIID() {
         return YangInstanceIdentifier.builder(createNetworkTopologyYIID())
                 .node(Topology.QNAME)
-                .nodeWithKey(Topology.QNAME, QName.create(Topology.QNAME, "TOPOLOGY-id"), TOPOLOGY_ID)
+                .nodeWithKey(Topology.QNAME, QName.create(Topology.QNAME, "TOPOLOGY-id"), TOPOLOGY_NAME)
                 .node(Node.QNAME)
                 .nodeWithKey(Node.QNAME, QName.create(Node.QNAME, "node-id"), NODE_ID)
                 .build();
     }
 
     static void writeToTopology(final DataBroker bindingDataBroker,
-            final InstanceIdentifier<Topology> topologyInstanceIdentifier, final Topology topology)
+            final DataObjectIdentifier<Topology> topologyInstanceIdentifier, final Topology topology)
                     throws ExecutionException, InterruptedException {
         final WriteTransaction writeTransaction = bindingDataBroker.newWriteOnlyTransaction();
         writeTransaction.put(LogicalDatastoreType.OPERATIONAL, topologyInstanceIdentifier, topology);
@@ -68,8 +69,8 @@ final class TestUtils {
             final int expectedCount) throws InterruptedException, ExecutionException, TimeoutException {
         final ReadTransaction readOnlyTransaction = bindingDataBroker.newReadOnlyTransaction();
 
-        final InstanceIdentifier<NetworkTopology> networkTopologyInstanceIdentifier =
-                InstanceIdentifier.builder(NetworkTopology.class).build();
+        final DataObjectIdentifier<NetworkTopology> networkTopologyInstanceIdentifier =
+            DataObjectIdentifier.builder(NetworkTopology.class).build();
 
         final FluentFuture<Optional<NetworkTopology>> upcommingRead = readOnlyTransaction
                 .read(LogicalDatastoreType.OPERATIONAL, networkTopologyInstanceIdentifier);

@@ -30,8 +30,8 @@ import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.container.group.SampleContainer;
 import org.opendaylight.yang.svc.v1.http.pantheon.tech.ns.test.models.rev180119.YangModuleInfoImpl;
 import org.opendaylight.yangtools.binding.ChildOf;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.binding.DataRoot;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
@@ -47,17 +47,17 @@ public class FileToDatastoreUtilsTest {
     private static final String OVERRIDE_VALUE_XML_PATH = "/data/leaf-value-4.xml";
     private static final String MULTIPLE_TOP_JSON_PATH = "/data/multiple-top-element.json";
     private static final String MULTIPLE_TOP_XML_PATH = "/data/multiple-top-element.xml";
-    private static final InstanceIdentifier<TopLevelContainer> TOP_LEVEL_CONTAINER_IID
-            = InstanceIdentifier.create(TopLevelContainer.class);
-    private static final InstanceIdentifier<SampleList> SAMPLE_LIST_ID1_IID
-            = InstanceIdentifier.builder(SampleList.class, new SampleListKey("ID1")).build();
-    private static final InstanceIdentifier<SampleList> SAMPLE_LIST_ID2_IID
-            = InstanceIdentifier.builder(SampleList.class, new SampleListKey("ID2")).build();
+    private static final DataObjectIdentifier<TopLevelContainer> TOP_LEVEL_CONTAINER_ID
+            = DataObjectIdentifier.builder(TopLevelContainer.class).build();
+    private static final DataObjectIdentifier<SampleList> SAMPLE_LIST_ID1_ID
+            = DataObjectIdentifier.builder(SampleList.class, new SampleListKey("ID1")).build();
+    private static final DataObjectIdentifier<SampleList> SAMPLE_LIST_ID2_ID
+            = DataObjectIdentifier.builder(SampleList.class, new SampleListKey("ID2")).build();
 
     private static final YangInstanceIdentifier ROOT_YII = YangInstanceIdentifier.empty();
 
-    private static final InstanceIdentifier<ChoiceContainer> CHOICE_CONTAINER_IID
-            = InstanceIdentifier.builder(ChoiceContainer.class).build();
+    private static final DataObjectIdentifier<ChoiceContainer> CHOICE_CONTAINER_ID
+            = DataObjectIdentifier.builder(ChoiceContainer.class).build();
 
     private static final YangInstanceIdentifier INNER_CASE_YIID = YangInstanceIdentifier.create(
             NodeIdentifier.create(ChoiceContainer.QNAME),
@@ -92,7 +92,7 @@ public class FileToDatastoreUtilsTest {
     public void testTopLevelNode() throws Exception {
         // Import inner-case and test choice node
         importFile(CASE_CONTAINER_PATH, INNER_CASE_YIID, ImportFileFormat.JSON);
-        ChoiceContainer choiceContainer = readDataFromDatastore(CHOICE_CONTAINER_IID);
+        ChoiceContainer choiceContainer = readDataFromDatastore(CHOICE_CONTAINER_ID);
         assertEquals(((SportsArena) choiceContainer.getSnack()).getInnerCase().getFoo(), "data");
         assertEquals(((SportsArena) choiceContainer.getSnack()).getInnerCase()
                 .getSampleContainer().getValue(), Uint32.ONE);
@@ -101,22 +101,22 @@ public class FileToDatastoreUtilsTest {
 
         // Import first JSON file, new top level container, expecting value = 1
         importFile(INITIAL_CONTAINER_PATH, ROOT_YII, ImportFileFormat.JSON);
-        TopLevelContainer topLevelContainer = readDataFromDatastore(TOP_LEVEL_CONTAINER_IID);
+        TopLevelContainer topLevelContainer = readDataFromDatastore(TOP_LEVEL_CONTAINER_ID);
         assertEquals(topLevelContainer.getSampleContainer().getValue().intValue(), 1);
 
         //Import second file, overrides whole top level container, expecting value = 2
         importFile(OVERRIDE_CONTAINER_PATH, ROOT_YII, ImportFileFormat.XML);
-        topLevelContainer = readDataFromDatastore(TOP_LEVEL_CONTAINER_IID);
+        topLevelContainer = readDataFromDatastore(TOP_LEVEL_CONTAINER_ID);
         assertEquals(topLevelContainer.getSampleContainer().getValue().intValue(), 2);
 
         // Import third file, overrides only inner leaf, expecting value = 3
         importFile(OVERRIDE_VALUE_JSON_PATH, INNER_VALUE_YII, ImportFileFormat.JSON);
-        topLevelContainer = readDataFromDatastore(TOP_LEVEL_CONTAINER_IID);
+        topLevelContainer = readDataFromDatastore(TOP_LEVEL_CONTAINER_ID);
         assertEquals(topLevelContainer.getSampleContainer().getValue().intValue(), 3);
 
         // Import fourth file, overrides only inner leaf, expecting value = 4
         importFile(OVERRIDE_VALUE_XML_PATH, INNER_VALUE_YII, ImportFileFormat.XML);
-        topLevelContainer = readDataFromDatastore(TOP_LEVEL_CONTAINER_IID);
+        topLevelContainer = readDataFromDatastore(TOP_LEVEL_CONTAINER_ID);
         assertEquals(topLevelContainer.getSampleContainer().getValue().intValue(), 4);
     }
 
@@ -124,29 +124,29 @@ public class FileToDatastoreUtilsTest {
     public void testMultipleTopElement() throws Exception {
         // Import multiple top element in JSON file, Expected value 5, ID1 value 1, ID2 value 2
         importFile(MULTIPLE_TOP_JSON_PATH, ROOT_YII, ImportFileFormat.JSON);
-        TopLevelContainer topLevelContainer = readDataFromDatastore(TOP_LEVEL_CONTAINER_IID);
+        TopLevelContainer topLevelContainer = readDataFromDatastore(TOP_LEVEL_CONTAINER_ID);
         assertEquals(topLevelContainer.getSampleContainer().getValue().intValue(), 5);
 
-        SampleList sampleListId1 = readDataFromDatastore(SAMPLE_LIST_ID1_IID);
+        SampleList sampleListId1 = readDataFromDatastore(SAMPLE_LIST_ID1_ID);
         assertEquals(sampleListId1.getValue().intValue(), 1);
-        SampleList sampleListId2 = readDataFromDatastore(SAMPLE_LIST_ID2_IID);
+        SampleList sampleListId2 = readDataFromDatastore(SAMPLE_LIST_ID2_ID);
         assertEquals(sampleListId2.getValue().intValue(), 2);
 
         // Import multiple top element in XML file, Expected value 6, ID1 value 3, ID2 value 4
         importFile(MULTIPLE_TOP_XML_PATH, ROOT_YII, ImportFileFormat.XML);
-        topLevelContainer = readDataFromDatastore(TOP_LEVEL_CONTAINER_IID);
+        topLevelContainer = readDataFromDatastore(TOP_LEVEL_CONTAINER_ID);
         assertEquals(topLevelContainer.getSampleContainer().getValue().intValue(), 6);
 
-        sampleListId1 = readDataFromDatastore(SAMPLE_LIST_ID1_IID);
+        sampleListId1 = readDataFromDatastore(SAMPLE_LIST_ID1_ID);
         assertEquals(sampleListId1.getValue().intValue(), 3);
-        sampleListId2 = readDataFromDatastore(SAMPLE_LIST_ID2_IID);
+        sampleListId2 = readDataFromDatastore(SAMPLE_LIST_ID2_ID);
         assertEquals(sampleListId2.getValue().intValue(), 4);
     }
 
     private <T extends ChildOf<? extends DataRoot>> T readDataFromDatastore(
-            final InstanceIdentifier<T> instanceIdentifier) throws Exception {
+            final DataObjectIdentifier<T> identifier) throws Exception {
         try (ReadTransaction readTransaction = dataBroker.newReadOnlyTransaction()) {
-            return readTransaction.read(LogicalDatastoreType.CONFIGURATION, instanceIdentifier)
+            return readTransaction.read(LogicalDatastoreType.CONFIGURATION, identifier)
                     .get(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS).orElseThrow();
         }
     }

@@ -33,11 +33,11 @@ public class ToasterListener implements DataTreeChangeListener<Toaster> {
     public void onDataTreeChanged(@NonNull List<DataTreeModification<Toaster>> changes) {
         LOG.debug("Got onDataTreeChanged!");
         for (DataTreeModification<Toaster> modification : changes) {
-            DataObjectModification.ModificationType type = modification.getRootNode().getModificationType();
+            DataObjectModification.ModificationType type = modification.getRootNode().modificationType();
             if (type == DataObjectModification.ModificationType.WRITE) {
                 LOG.debug("Data tree changed: new write modification");
                 DataObjectModification<Toaster> rootNode = modification.getRootNode();
-                Toaster value = rootNode.getDataAfter();
+                Toaster value = rootNode.dataAfter();
                 int darknessFactor = value.getDarknessFactor().intValue();
                 if (darknessFactor == expectedDarknessFactor) {
                     listenerLatch.countDown();

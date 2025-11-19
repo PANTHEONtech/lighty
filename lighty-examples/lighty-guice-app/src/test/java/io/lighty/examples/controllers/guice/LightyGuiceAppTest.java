@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -50,7 +50,7 @@ public class LightyGuiceAppTest {
 
     @Test
     public void testReadFromDataBroker() throws Exception {
-        final var identifier = InstanceIdentifier.create(NetworkTopology.class);
+        final var identifier = DataObjectIdentifier.builder(NetworkTopology.class).build();
         final var networkTopology = service.readFromDataBroker(identifier).get(TIMEOUT_SECONDS, TimeUnit.SECONDS);
         assertTrue(networkTopology.isPresent());
         final var topology = networkTopology.get().getTopology();

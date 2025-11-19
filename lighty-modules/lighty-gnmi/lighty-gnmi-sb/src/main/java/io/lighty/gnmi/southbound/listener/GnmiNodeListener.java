@@ -65,14 +65,14 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
         LOG.debug("Data tree change on gNMI topology triggered");
         for (final DataTreeModification<Node> change : changes) {
             final DataObjectModification<Node> rootNode = change.getRootNode();
-            final NodeId nodeId = IdentifierUtils.nodeIdOfPathArgument(rootNode.getIdentifier());
-            switch (rootNode.getModificationType()) {
+            final var nodeId = rootNode.coerceKeyStep(Node.class).key().getNodeId();
+            switch (rootNode.modificationType()) {
                 case WRITE:
                 case SUBTREE_MODIFIED:
                     if (nodeParamsUpdated(rootNode)) {
                         LOG.info("Received change in gNMI node connection configuration. Node ID: {}", nodeId);
                         disconnectNode(nodeId);
-                        connectNode(rootNode.getDataAfter());
+                        connectNode(rootNode.dataAfter());
                     }
                     break;
                 case DELETE:
@@ -80,7 +80,7 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
                     disconnectNode(nodeId);
                     break;
                 default:
-                    LOG.warn("Unsupported tree modification received, {}", rootNode.getModificationType());
+                    LOG.warn("Unsupported tree modification received, {}", rootNode.modificationType());
                     break;
             }
 
@@ -91,7 +91,7 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
         deviceConnectionManager.closeConnection(nodeId);
         // Delete operational data
         @NonNull WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        writeTransaction.delete(LogicalDatastoreType.OPERATIONAL, IdentifierUtils.gnmiNodeIID(nodeId));
+        writeTransaction.delete(LogicalDatastoreType.OPERATIONAL, IdentifierUtils.gnmiNodeID(nodeId));
         try {
             writeTransaction.commit().get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         } catch (ExecutionException | TimeoutException e) {
@@ -139,8 +139,8 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
     }
 
     private boolean nodeParamsUpdated(final DataObjectModification<Node> rootNode) {
-        final Node nodeBefore = rootNode.getDataBefore();
-        final Node nodeAfter = rootNode.getDataAfter();
+        final Node nodeBefore = rootNode.dataBefore();
+        final Node nodeAfter = rootNode.dataAfter();
         if (nodeBefore == null || nodeAfter == null) {
             return true;
         } else {
@@ -168,7 +168,7 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
                         .build())
                 .build();
 
-        tx.merge(LogicalDatastoreType.OPERATIONAL, IdentifierUtils.gnmiNodeIID(nodeId), operationalNode);
+        tx.merge(LogicalDatastoreType.OPERATIONAL, IdentifierUtils.gnmiNodeID(nodeId), operationalNode);
         tx.commit().get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
     }
 
