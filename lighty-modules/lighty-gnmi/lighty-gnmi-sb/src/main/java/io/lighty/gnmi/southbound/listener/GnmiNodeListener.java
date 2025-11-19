@@ -27,7 +27,8 @@ import java.util.concurrent.TimeoutException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.api.DataObjectModification;
+import org.opendaylight.mdsal.binding.api.DataObjectDeleted;
+import org.opendaylight.mdsal.binding.api.DataObjectModification.WithDataAfter;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
@@ -64,26 +65,22 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
     public void onDataTreeChanged(@NonNull List<DataTreeModification<Node>> changes) {
         LOG.debug("Data tree change on gNMI topology triggered");
         for (final DataTreeModification<Node> change : changes) {
-            final DataObjectModification<Node> rootNode = change.getRootNode();
+            final var rootNode = change.getRootNode();
             final var nodeId = rootNode.coerceKeyStep(Node.class).key().getNodeId();
-            switch (rootNode.modificationType()) {
-                case WRITE:
-                case SUBTREE_MODIFIED:
-                    if (nodeParamsUpdated(rootNode)) {
+            switch (rootNode) {
+                case WithDataAfter<Node> written -> {
+                    if (nodeParamsUpdated(written)) {
                         LOG.info("Received change in gNMI node connection configuration. Node ID: {}", nodeId);
                         disconnectNode(nodeId);
-                        connectNode(rootNode.dataAfter());
+                        connectNode(written.dataAfter());
                     }
-                    break;
-                case DELETE:
+                }
+                case DataObjectDeleted<Node> ignored -> {
                     LOG.info("Received delete node {} event, disconnecting ...", nodeId);
                     disconnectNode(nodeId);
-                    break;
-                default:
-                    LOG.warn("Unsupported tree modification received, {}", rootNode.modificationType());
-                    break;
+                }
+                default -> LOG.warn("Unsupported tree modification received, {}", rootNode.dataType());
             }
-
         }
     }
 
@@ -138,10 +135,10 @@ public class GnmiNodeListener implements DataTreeChangeListener<Node> {
         }, executorService);
     }
 
-    private boolean nodeParamsUpdated(final DataObjectModification<Node> rootNode) {
+    private boolean nodeParamsUpdated(final WithDataAfter<Node> rootNode) {
         final Node nodeBefore = rootNode.dataBefore();
         final Node nodeAfter = rootNode.dataAfter();
-        if (nodeBefore == null || nodeAfter == null) {
+        if (nodeBefore == null) {
             return true;
         } else {
             final GnmiNode before = requireNonNull(nodeBefore.augmentation(GnmiNode.class),
