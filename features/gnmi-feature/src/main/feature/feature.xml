@@ -1,0 +1,16 @@
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="gnmi-feature">
+    <feature name="gnmi-feature" version="${project.version}">
+
+        <bundle>wrap:mvn:com.google.protobuf/protobuf-java-util/3.25.8$overwrite=merge&amp;Import-Package=com.google.common.*;version="[32.0,34.0)",*</bundle>
+
+        <bundle>wrap:mvn:io.grpc/grpc-api/1.75.0$Bundle-SymbolicName=io.grpc.grpc-api&amp;Bundle-Version=1.75.0</bundle>
+        <bundle>wrap:mvn:io.grpc/grpc-core/1.75.0$Bundle-SymbolicName=io.grpc.grpc-core&amp;Bundle-Version=1.75.0&amp;Fragment-Host=io.grpc.grpc-api</bundle>
+
+        <bundle>wrap:mvn:io.grpc/grpc-netty/1.75.0$Bundle-SymbolicName=io.grpc.grpc-netty&amp;Bundle-Version=1.75.0&amp;Import-Package=io.grpc,io.grpc.internal,io.grpc.netty,io.netty.handler.proxy;resolution:=optional,io.netty.handler.codec.http2;resolution:=optional,*</bundle>
+
+        <bundle>wrap:mvn:com.google.errorprone/error_prone_annotations/2.23.0$overwrite=merge&amp;Export-Package=com.google.errorprone.annotations;version=2.23.0</bundle>
+
+        <bundle>wrap:mvn:io.netty/netty-handler-proxy/4.1.115.Final$overwrite=merge&amp;Import-Package=io.netty.handler.codec.http.*;resolution:=optional,io.netty.handler.codec.socksx.*;resolution:=optional,*&amp;Export-Package=io.netty.handler.proxy.*;version=4.1.115.Final</bundle>
+
+    </feature>
+</features>
