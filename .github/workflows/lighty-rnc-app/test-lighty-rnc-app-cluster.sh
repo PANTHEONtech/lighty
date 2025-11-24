@@ -126,6 +126,7 @@ assertNodeConnected() {
 
 assertPodsTopologyResponse() {
   local previousResponse=""
+  local currentNormalizedResponse=""
   for pod_controller_ip in $POD_CONTROLLER_IPS;
   do
     TOPOLOGY_RESPONSE=$(curl --request GET \
@@ -135,15 +136,19 @@ assertPodsTopologyResponse() {
         echo "Empty response from pod ip: $pod_controller_ip"
         test_results+=(1)
         continue
-      elif [[ -z "$previousResponse" ]]
+      fi
+
+      # Sort json objects to allow matching unordered JSON reply
+      currentNormalizedResponse=$(echo "$TOPOLOGY_RESPONSE" | jq -S '.')
+      if [[ -z "$previousResponse" ]]
       then
         # First request
         echo "first response $TOPOLOGY_RESPONSE"
-        previousResponse=$TOPOLOGY_RESPONSE
+        previousResponse=$currentNormalizedResponse
         continue
-      elif [[ "$previousResponse" != "$TOPOLOGY_RESPONSE" ]]
+      elif [[ "$previousResponse" != "$currentNormalizedResponse" ]]
       then
-        echo "Previous response doesn't match: [ $previousResponse ] with current response : [ $TOPOLOGY_RESPONSE ]"
+        echo "Previous response doesn't match: [ $previousResponse ] with current response :[ $currentNormalizedResponse ]"
         test_results+=(1)
         continue
       fi
