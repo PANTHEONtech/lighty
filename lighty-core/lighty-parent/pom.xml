@@ -192,7 +192,7 @@
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
                             <!-- This should match the dependency management on com.puppycrawl.tools:checkstyle above -->
-                            <version>11.0.1</version>
+                            <version>12.1.1</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>
