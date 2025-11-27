@@ -21,7 +21,11 @@ dist
 *.iws
 *.log
 
+# Auto-generated persistence files.
 persistence
 
 datastore-config.properties
 datastore-operational.properties
+
+**/incarnation-v1
+**/TermInfo.properties
