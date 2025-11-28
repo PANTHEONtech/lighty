@@ -86,7 +86,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeBuilder;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.Revision;
@@ -188,15 +188,15 @@ public class GnmiWithoutRestconfTest {
         //Write device to data-store
         final Node testGnmiNode = createNode(GNMI_NODE_ID, DEVICE_ADDRESS, DEVICE_PORT, getInsecureSecurityChoice());
         final WriteTransaction writeTransaction = bindingDataBroker.newWriteOnlyTransaction();
-        final InstanceIdentifier<Node> nodeInstanceIdentifier = IdentifierUtils.gnmiNodeIID(testGnmiNode.getNodeId());
-        writeTransaction.put(LogicalDatastoreType.CONFIGURATION, nodeInstanceIdentifier, testGnmiNode);
+        final var nodeObjectIdentifier = IdentifierUtils.gnmiNodeID(testGnmiNode.getNodeId());
+        writeTransaction.put(LogicalDatastoreType.CONFIGURATION, nodeObjectIdentifier, testGnmiNode);
         writeTransaction.commit().get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
 
         //Verify that device is connected
         Awaitility.waitAtMost(WAIT_TIME_DURATION)
                 .pollInterval(POLL_INTERVAL_DURATION)
                 .untilAsserted(() -> {
-                    final Optional<Node> node = readOperData(bindingDataBroker, nodeInstanceIdentifier);
+                    final Optional<Node> node = readOperData(bindingDataBroker, nodeObjectIdentifier);
                     assertTrue(node.isPresent());
                     final Node foundNode = node.get();
                     final GnmiNode gnmiNode = foundNode.augmentation(GnmiNode.class);
@@ -263,8 +263,8 @@ public class GnmiWithoutRestconfTest {
 
         //Remove device after test
         try {
-            deleteConfigData(bindingDataBroker, nodeInstanceIdentifier);
-            deleteOperData(bindingDataBroker, nodeInstanceIdentifier);
+            deleteConfigData(bindingDataBroker, nodeObjectIdentifier);
+            deleteOperData(bindingDataBroker, nodeObjectIdentifier);
         } catch (ExecutionException | InterruptedException e) {
             Assertions.fail("Failed to remove device data from gNMI", e);
         }
@@ -272,7 +272,7 @@ public class GnmiWithoutRestconfTest {
         Awaitility.waitAtMost(WAIT_TIME_DURATION)
                 .pollInterval(POLL_INTERVAL_DURATION)
                 .untilAsserted(() -> {
-                    final Optional<Node> node = readOperData(bindingDataBroker, nodeInstanceIdentifier);
+                    final Optional<Node> node = readOperData(bindingDataBroker, nodeObjectIdentifier);
                     assertFalse(node.isPresent());
                 });
     }
@@ -288,9 +288,7 @@ public class GnmiWithoutRestconfTest {
 
         //Test if certificates was added
         final DataBroker bindingDataBroker = lightyController.getServices().getBindingDataBroker();
-        final InstanceIdentifier<Keystore> keystoreII = InstanceIdentifier
-                .builder(Keystore.class, new KeystoreKey(CERT_ID))
-                .build();
+        final var keystoreII = DataObjectIdentifier.builder(Keystore.class, new KeystoreKey(CERT_ID)).build();
         final Optional<Keystore> keystore = readOperData(bindingDataBroker, keystoreII);
         assertTrue(keystore.isPresent());
         assertEquals(CA_VALUE, keystore.get().getCaCertificate());
@@ -312,7 +310,7 @@ public class GnmiWithoutRestconfTest {
 
         // Test if yang models was uploaded
         final DataBroker bindingDataBroker = lightyController.getServices().getBindingDataBroker();
-        final InstanceIdentifier<GnmiYangModel> yangModelII = InstanceIdentifier.builder(GnmiYangModels.class)
+        final DataObjectIdentifier<GnmiYangModel> yangModelII = DataObjectIdentifier.builder(GnmiYangModels.class)
                 .child(GnmiYangModel.class, new GnmiYangModelKey(YANG_NAME, new ModuleVersionType(YANG_VERSION)))
                 .build();
         final Optional<GnmiYangModel> gnmiYangModel = readOperData(bindingDataBroker, yangModelII);
@@ -372,7 +370,7 @@ public class GnmiWithoutRestconfTest {
     }
 
     private <T extends DataObject> Optional<T> readOperData(final DataBroker dataBroker,
-                                                            final InstanceIdentifier<T> path)
+                                                            final DataObjectIdentifier<T> path)
             throws ExecutionException, InterruptedException, TimeoutException {
         try (ReadTransaction readTransaction = dataBroker.newReadOnlyTransaction();) {
             return readTransaction.read(LogicalDatastoreType.OPERATIONAL, path)
@@ -380,14 +378,14 @@ public class GnmiWithoutRestconfTest {
         }
     }
 
-    private void deleteOperData(final DataBroker dataBroker, final InstanceIdentifier<?> path)
+    private void deleteOperData(final DataBroker dataBroker, final DataObjectIdentifier<?> path)
             throws ExecutionException, InterruptedException, TimeoutException {
         final WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         writeTransaction.delete(LogicalDatastoreType.OPERATIONAL, path);
         writeTransaction.commit().get(TIMEOUT_MILLIS,  TimeUnit.MILLISECONDS);
     }
 
-    private void deleteConfigData(final DataBroker dataBroker, final InstanceIdentifier<?> path)
+    private void deleteConfigData(final DataBroker dataBroker, final DataObjectIdentifier<?> path)
             throws ExecutionException, InterruptedException, TimeoutException {
         final WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, path);

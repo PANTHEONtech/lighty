@@ -312,7 +312,7 @@ public class GnmiCrudService {
     }
 
     private YangInstanceIdentifier instanceIdentifierFromPath(final QNameModule rootModule, final Path path) {
-        var resultIdentifier = YangInstanceIdentifier.empty();
+        var resultIdentifier = YangInstanceIdentifier.of();
         for (final PathElem pathElem : path.getElemList()) {
             final var pathElemName = ElementNameWithModuleName.parseFromString(pathElem.getName()).getElementName();
             if (resultIdentifier.isEmpty()) {

@@ -86,7 +86,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeBuilder;
 import org.opendaylight.yangtools.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.yang.common.Uint16;
 
 public class KeystoreGnmiSecurityTest {
@@ -401,14 +401,14 @@ public class KeystoreGnmiSecurityTest {
                 .build();
     }
 
-    private static InstanceIdentifier<Keystore> getKeystore1Identifier() {
-        return InstanceIdentifier
+    private static DataObjectIdentifier.WithKey<Keystore, KeystoreKey> getKeystore1Identifier() {
+        return DataObjectIdentifier
                 .builder(Keystore.class, new KeystoreKey(KEYSTORE_PASSPHRASE_ID_1))
                 .build();
     }
 
-    private static InstanceIdentifier<Keystore> getKeystore2Identifier() {
-        return InstanceIdentifier
+    private static DataObjectIdentifier.WithKey<Keystore, KeystoreKey> getKeystore2Identifier() {
+        return DataObjectIdentifier
                 .builder(Keystore.class, new KeystoreKey(KEYSTORE_ID_2))
                 .build();
     }
