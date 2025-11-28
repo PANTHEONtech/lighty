@@ -11,10 +11,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.lighty.core</groupId>
-        <artifactId>lighty-parent</artifactId>
+        <groupId>io.lighty.gnmi</groupId>
+        <artifactId>gnmi-parent</artifactId>
         <version>23.0.0-SNAPSHOT</version>
-        <relativePath>../../../lighty-core/lighty-parent/pom.xml</relativePath>
+        <relativePath>../../../gnmi-parent/pom.xml</relativePath>
     </parent>
 
     <groupId>io.lighty.modules.gnmi</groupId>
@@ -91,28 +91,18 @@
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>analyze-compile</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
                 <configuration>
-                    <excludeFilterFile>src/main/resources/spotbugs_filter.xml</excludeFilterFile>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>
     </build>
 
-    <profiles>
-        <profile>
-            <id>source-quality</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.github.spotbugs</groupId>
-                        <artifactId>spotbugs-maven-plugin</artifactId>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
 </project>

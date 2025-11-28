@@ -11,7 +11,6 @@ package io.lighty.gnmi.southbound.schema.impl;
 import com.google.common.collect.Sets;
 import com.google.common.io.CharSource;
 import io.lighty.gnmi.southbound.capabilities.GnmiDeviceCapability;
-import io.lighty.gnmi.southbound.schema.SchemaConstants;
 import io.lighty.gnmi.southbound.schema.SchemaContextHolder;
 import io.lighty.gnmi.southbound.schema.yangstore.service.YangDataStoreService;
 import io.lighty.gnmi.southbound.timeout.TimeoutUtils;
@@ -19,7 +18,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,7 +50,7 @@ public class SchemaContextHolderImpl implements SchemaContextHolder {
     public SchemaContextHolderImpl(final YangDataStoreService yangDataStoreService,
                                    final @Nullable CrossSourceStatementReactor reactor) {
         this.yangDataStoreService = yangDataStoreService;
-        this.yangReactor = Objects.requireNonNullElse(reactor, SchemaConstants.DEFAULT_YANG_REACTOR);
+        this.yangReactor = reactor;
         this.contextCache = new ConcurrentHashMap<>();
     }
 

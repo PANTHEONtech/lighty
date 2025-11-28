@@ -30,11 +30,8 @@ import java.util.stream.Stream;
 import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.model.api.source.YangTextSource;
 import org.opendaylight.yangtools.yang.model.spi.source.FileYangTextSource;
-import org.opendaylight.yangtools.yang.parser.api.YangParser;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
-import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
-import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
-import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
+import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,15 +42,12 @@ public class ByPathYangLoaderService implements YangLoaderService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ByPathYangLoaderService.class);
     private final Path yangsPath;
-    /**
-     * Parser used for validation of yang files.
-     */
-    private final YangParser yangParser;
+    private final YangParserFactory yangParser;
 
-    public ByPathYangLoaderService(final Path yangsPath) {
+    // UPDATED Constructor to accept YangParserFactory
+    public ByPathYangLoaderService(final Path yangsPath, final YangParserFactory yangParser) {
         this.yangsPath = Objects.requireNonNull(yangsPath);
-        final YangXPathParserFactory xpathFactory = new AntlrXPathParserFactory();
-        this.yangParser = new DefaultYangParserFactory(xpathFactory).createParser();
+        this.yangParser = Objects.requireNonNull(yangParser);
     }
 
     @Override
@@ -61,27 +55,29 @@ public class ByPathYangLoaderService implements YangLoaderService {
         try (Stream<Path> pathStream = Files.walk(yangsPath)) {
             final List<GnmiDeviceCapability> loadedModels = new ArrayList<>();
             final List<Path> paths = pathStream
-                    .filter(Files::isRegularFile)
-                    .map(Path::toFile)
-                    .filter(file -> file.getName().endsWith(YangConstants.RFC6020_YANG_FILE_EXTENSION))
-                    .map(File::toPath)
-                    .collect(Collectors.toList());
+                .filter(Files::isRegularFile)
+                .map(Path::toFile)
+                .filter(file -> file.getName().endsWith(YangConstants.RFC6020_YANG_FILE_EXTENSION))
+                .map(File::toPath)
+                .collect(Collectors.toList());
 
             for (Path path : paths) {
                 try (InputStream bodyInputStream = Files.newInputStream(path)) {
                     final YangTextSource yangTextSchemaSource = new FileYangTextSource(path);
-                    // This validates the yang
-                    this.yangParser.addSource(yangTextSchemaSource);
+
+                    // Now this works because yangParser is set in the constructor
+                    this.yangParser.createParser().addSource(yangTextSchemaSource);
+
                     final YangLoadModelUtil yangLoadModelUtil = new YangLoadModelUtil(yangTextSchemaSource,
-                            bodyInputStream);
+                        bodyInputStream);
                     storeService.addYangModel(yangLoadModelUtil.getModelName(), yangLoadModelUtil.getVersionToStore(),
-                                    yangLoadModelUtil.getModelBody())
-                            .get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+                            yangLoadModelUtil.getModelBody())
+                        .get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
 
                     loadedModels.add(new GnmiDeviceCapability(yangLoadModelUtil.getModelName(),
-                            yangLoadModelUtil.getModelSemVer(), yangLoadModelUtil.getModelRevision()));
+                        yangLoadModelUtil.getModelSemVer(), yangLoadModelUtil.getModelRevision()));
                     LOG.info("Loaded yang model {} with version {}", yangLoadModelUtil.getModelName(),
-                            yangLoadModelUtil.getVersionToStore());
+                        yangLoadModelUtil.getVersionToStore());
                 }
             }
             return loadedModels;
@@ -92,5 +88,4 @@ public class ByPathYangLoaderService implements YangLoaderService {
             throw new YangLoadException("Interrupted while loading yang files!", e);
         }
     }
-
 }

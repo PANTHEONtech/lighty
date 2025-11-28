@@ -40,8 +40,8 @@ public class TestSchemaContextProvider implements SchemaContextProvider {
     public static TestSchemaContextProvider createInstance(final Path path, final Set<YangModuleInfo> moduleInfoSet)
             throws YangLoadException, SchemaException {
         final TestYangDataStoreService dataStoreService = new TestYangDataStoreService();
-        final List<GnmiDeviceCapability> capabilities = new ByPathYangLoaderService(path).load(dataStoreService);
-        capabilities.addAll(new ByClassPathYangLoaderService(moduleInfoSet).load(dataStoreService));
+        final List<GnmiDeviceCapability> capabilities = new ByPathYangLoaderService(path, null).load(dataStoreService);
+        capabilities.addAll(new ByClassPathYangLoaderService(moduleInfoSet, null).load(dataStoreService));
 
         final SchemaContextHolder schemaContextHolder = new SchemaContextHolderImpl(dataStoreService, null);
         return new TestSchemaContextProvider(schemaContextHolder.getSchemaContext(capabilities));

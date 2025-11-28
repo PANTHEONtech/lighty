@@ -8,10 +8,8 @@
 
 package io.lighty.gnmi.southbound.schema;
 
-import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.gnmi.southbound.capabilities.GnmiDeviceCapability;
 import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
-import io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils;
 import io.lighty.gnmi.southbound.schema.impl.SchemaContextHolderImpl;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
@@ -33,6 +31,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,13 +58,12 @@ public class SchemaConstructTest {
     @BeforeEach
     public void setup() throws YangLoadException, ConfigurationException {
         dataStoreService = new TestYangDataStoreService();
-        completeCapabilities = new ByPathYangLoaderService(Path.of(SCHEMA_PATH)).load(dataStoreService);
+        completeCapabilities = new ByPathYangLoaderService(Path.of(SCHEMA_PATH), null).load(dataStoreService);
         Assertions.assertFalse(completeCapabilities.isEmpty());
 
-        final GnmiConfiguration gnmiConfiguration = GnmiConfigUtils.getGnmiConfiguration(
-                this.getClass().getResourceAsStream(OPENCONFIG_GNMI_CONFIG));
+        final GnmiConfiguration gnmiConfiguration = new GnmiConfiguration();
         final List<GnmiDeviceCapability> openconfigCapabilities
-                = new ByClassPathYangLoaderService(gnmiConfiguration.getYangModulesInfo()).load(dataStoreService);
+                = new ByClassPathYangLoaderService(gnmiConfiguration.getYangModulesInfo(), null).load(dataStoreService);
         Assertions.assertFalse(openconfigCapabilities.isEmpty());
         completeCapabilities.addAll(openconfigCapabilities);
     }
