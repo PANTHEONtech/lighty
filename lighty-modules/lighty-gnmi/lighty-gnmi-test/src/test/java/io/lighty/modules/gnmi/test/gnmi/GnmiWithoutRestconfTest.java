@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.lighty.aaa.encrypt.service.impl.AAAEncryptionServiceImpl;
+import io.lighty.applications.rcgnmi.module.RcGnmiAppModuleConfigUtils;
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.config.ConfigurationException;
@@ -95,6 +96,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.LeafSetEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafSetNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
+import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
+import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
 
 public class GnmiWithoutRestconfTest {
     private static final String INITIAL_JSON_DATA_PATH = "src/test/resources/json/initData";
@@ -161,7 +164,9 @@ public class GnmiWithoutRestconfTest {
 
         gnmiSouthboundModule = new GnmiSouthboundModule(lightyController.getServices().getBindingDataBroker(),
             lightyController.getServices().getRpcProviderService(),
-            lightyController.getServices().getDOMMountPointService(), createEncryptionService(), null, null);
+            lightyController.getServices().getDOMMountPointService(), createEncryptionService(),
+            new DefaultYangParserFactory(), new AntlrXPathParserFactory(),
+            RcGnmiAppModuleConfigUtils.loadConfiguration(CONFIGURATION_PATH).getGnmiConfiguration());
         gnmiSouthboundModule.init();
 
         gnmiDevice = getUnsecureGnmiDevice(DEVICE_ADDRESS, DEVICE_PORT);

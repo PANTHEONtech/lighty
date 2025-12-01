@@ -112,7 +112,8 @@ public class SchemaConstructTest {
      */
     @Test
     public void schemaConstructSemVerTest() throws SchemaException {
-        final SchemaContextHolderImpl schemaContextHolder = new SchemaContextHolderImpl(dataStoreService, RFC7950Reactors.defaultReactor());
+        final SchemaContextHolderImpl schemaContextHolder = new SchemaContextHolderImpl(dataStoreService,
+            RFC7950Reactors.defaultReactor());
         final EffectiveModelContext schemaContext = schemaContextHolder.getSchemaContext(completeCapabilities);
         // Check that every module in requested capabilities is contained in resulting schema
         assertSchemaContainsModels(schemaContext, completeCapabilities);

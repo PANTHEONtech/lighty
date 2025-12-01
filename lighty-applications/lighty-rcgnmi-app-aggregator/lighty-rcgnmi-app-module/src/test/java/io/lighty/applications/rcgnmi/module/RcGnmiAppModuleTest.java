@@ -14,7 +14,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import io.lighty.core.controller.impl.config.ConfigurationException;
-import java.util.concurrent.Executors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,8 +28,7 @@ public class RcGnmiAppModuleTest {
 
     @Test
     public void gnmiModuleSmokeTest() throws ConfigurationException {
-        rcgnmiModule = new RcGnmiAppModule(RcGnmiAppModuleConfigUtils.loadDefaultConfig(),
-                Executors.newCachedThreadPool(), null);
+        rcgnmiModule = new RcGnmiAppModule(RcGnmiAppModuleConfigUtils.loadDefaultConfig());
         assertTrue(rcgnmiModule.initModules());
     }
 
@@ -38,7 +36,7 @@ public class RcGnmiAppModuleTest {
     public void gnmiModuleStartFailedTest() throws ConfigurationException {
         final var config = spy(RcGnmiAppModuleConfigUtils.loadDefaultConfig());
         when(config.getControllerConfig()).thenReturn(null);
-        rcgnmiModule = new RcGnmiAppModule(config, Executors.newCachedThreadPool(), null);
+        rcgnmiModule = new RcGnmiAppModule(config);
         assertFalse(rcgnmiModule.initModules());
     }
 }

@@ -10,6 +10,7 @@ package io.lighty.gnmi.southbound.device;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -36,23 +37,24 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
+import java.util.Base64;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import javax.xml.bind.DatatypeConverter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
+import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMDataBrokerAdapter;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Host;
@@ -77,6 +79,7 @@ import org.opendaylight.yangtools.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Uint16;
 
+@ExtendWith(MockitoExtension.class)
 public class KeystoreGnmiSecurityTest {
 
     private static final String KEYSTORE_PASSPHRASE_ID_1 = "KeystoreID_1";
@@ -102,54 +105,56 @@ public class KeystoreGnmiSecurityTest {
     private GnmiSessionFactoryImpl gnmiSessionFactorySpy;
 
     @BeforeEach
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-        final BindingDOMDataBrokerAdapter dataBrokerMock = mock(BindingDOMDataBrokerAdapter.class);
+    public void setup() throws GeneralSecurityException {
+        lenient().when(aaaEncryptionService.encrypt(any(byte[].class)))
+            .thenAnswer(invocation -> invocation.getArgument(0));
+        lenient().when(aaaEncryptionService.decrypt(any(byte[].class)))
+            .thenAnswer(invocation -> invocation.getArgument(0));
+
+        final DataBroker dataBrokerMock = mock(DataBroker.class);
         final WriteTransaction wtxMock = mock(WriteTransaction.class);
         final ReadTransaction rtxMock = mock(ReadTransaction.class);
 
-        when(dataBrokerMock.newWriteOnlyTransaction())
-                .thenAnswer(invocation -> wtxMock);
-        when(dataBrokerMock.newReadOnlyTransaction())
-                .thenAnswer(invocation -> rtxMock);
-        when(wtxMock.commit())
-                .thenAnswer(invocation -> CommitInfo.emptyFluentFuture());
+        lenient().when(dataBrokerMock.newWriteOnlyTransaction()).thenReturn(wtxMock);
+        lenient().when(dataBrokerMock.newReadOnlyTransaction()).thenReturn(rtxMock);
+
+        lenient().doReturn(FluentFuture.from(Futures.immediateFuture(CommitInfo.empty())))
+            .when(wtxMock).commit();
 
         final CertificationStorageServiceImpl certificationStorageService
-                = new CertificationStorageServiceImpl(aaaEncryptionService, dataBrokerMock);
+            = new CertificationStorageServiceImpl(aaaEncryptionService, dataBrokerMock);
         final KeystoreGnmiSecurityProvider securityProvider
-                = new KeystoreGnmiSecurityProvider(certificationStorageService);
+            = new KeystoreGnmiSecurityProvider(certificationStorageService);
 
         final ExecutorService gnmiExecutorService = Executors.newCachedThreadPool();
 
-//      FIXME: refactor SessionManagerFactory & close code-base to easy test security with real instances
-//        connectionInitializer = new DeviceConnectionInitializer(securityProvider,
-//                new SessionManagerFactoryImpl(gnmiSessionFactorySpy), dataBrokerMock, gnmiExecutorService);
         final SessionManagerFactory sessionManagerFactoryMock = mock(SessionManagerFactory.class);
         final SessionManagerImpl sessionManagerMock = mock(SessionManagerImpl.class);
+
         when(sessionManagerMock.createSession(any()))
-                .thenAnswer(invocation1 -> {
-                    final SessionConfiguration sessionConfig = invocation1.getArgument(0);
-                    final SessionProviderImpl sessionProviderSpy =
-                            new SessionProviderImpl(sessionConfig, sessionManagerMock, mock(ManagedChannel.class),
-                                    gnmiSessionFactorySpy.createGnmiSession(sessionConfig, mock(ManagedChannel.class)));
+            .thenAnswer(invocation1 -> {
+                final SessionConfiguration sessionConfig = invocation1.getArgument(0);
 
-                    when(sessionProviderSpy.getChannelState())
-                            .thenAnswer(invocation2 -> ConnectivityState.READY);
+                ManagedChannel channelMock = mock(ManagedChannel.class);
+                lenient().when(channelMock.getState(any(Boolean.class))).thenReturn(ConnectivityState.READY);
 
-                    return sessionProviderSpy;
-                });
-        when(sessionManagerFactoryMock.createSessionManager(any()))
-                .thenAnswer(invocation -> sessionManagerMock);
+                return new SessionProviderImpl(
+                    sessionConfig,
+                    sessionManagerMock,
+                    channelMock,
+                    gnmiSessionFactorySpy.createGnmiSession(sessionConfig, channelMock)
+                );
+            });
 
+        when(sessionManagerFactoryMock.createSessionManager(any())).thenReturn(sessionManagerMock);
 
         connectionInitializer = new DeviceConnectionInitializer(securityProvider,
-                sessionManagerFactoryMock, dataBrokerMock, gnmiExecutorService);
+            sessionManagerFactoryMock, dataBrokerMock, gnmiExecutorService);
 
-        when(rtxMock.read(eq(LogicalDatastoreType.OPERATIONAL), eq(getKeystore1Identifier())))
-                .thenAnswer(in -> getReadResult(getKeystore1WithPassResponse()));
-        when(rtxMock.read(eq(LogicalDatastoreType.OPERATIONAL), eq(getKeystore2Identifier())))
-                .thenAnswer(in -> getReadResult(getKeystore2Response()));
+        lenient().when(rtxMock.read(eq(LogicalDatastoreType.OPERATIONAL), eq(getKeystore1Identifier())))
+            .thenAnswer(in -> getReadResult(getKeystore1WithPassResponse()));
+        lenient().when(rtxMock.read(eq(LogicalDatastoreType.OPERATIONAL), eq(getKeystore2Identifier())))
+            .thenAnswer(in -> getReadResult(getKeystore2Response()));
     }
 
     @AfterEach
@@ -165,7 +170,7 @@ public class KeystoreGnmiSecurityTest {
         deviceInitializerDevicesConnecting(node);
 
         final ArgumentCaptor<SessionConfiguration> sessionConfigCaptor
-                = ArgumentCaptor.forClass(SessionConfiguration.class);
+            = ArgumentCaptor.forClass(SessionConfiguration.class);
         verify(gnmiSessionFactorySpy).createGnmiSession(sessionConfigCaptor.capture(), any(ManagedChannel.class));
 
         Assertions.assertEquals(1, sessionConfigCaptor.getAllValues().size());
@@ -176,7 +181,6 @@ public class KeystoreGnmiSecurityTest {
         Assertions.assertEquals(PORT, capturedConfiguration.getAddress().getPort());
         Assertions.assertNull(capturedConfiguration.getPassword());
         Assertions.assertNull(capturedConfiguration.getUsername());
-
     }
 
     @Test
@@ -185,7 +189,7 @@ public class KeystoreGnmiSecurityTest {
         deviceInitializerDevicesConnecting(node);
 
         final ArgumentCaptor<SessionConfiguration> sessionConfigCaptor
-                = ArgumentCaptor.forClass(SessionConfiguration.class);
+            = ArgumentCaptor.forClass(SessionConfiguration.class);
         verify(gnmiSessionFactorySpy).createGnmiSession(sessionConfigCaptor.capture(), any(ManagedChannel.class));
 
         Assertions.assertEquals(1, sessionConfigCaptor.getAllValues().size());
@@ -204,7 +208,7 @@ public class KeystoreGnmiSecurityTest {
         deviceInitializerDevicesConnecting(node);
 
         final ArgumentCaptor<SessionConfiguration> sessionConfigCaptor
-                = ArgumentCaptor.forClass(SessionConfiguration.class);
+            = ArgumentCaptor.forClass(SessionConfiguration.class);
         verify(gnmiSessionFactorySpy).createGnmiSession(sessionConfigCaptor.capture(), any(ManagedChannel.class));
 
         Assertions.assertEquals(1, sessionConfigCaptor.getAllValues().size());
@@ -223,7 +227,7 @@ public class KeystoreGnmiSecurityTest {
         deviceInitializerDevicesConnecting(node);
 
         final ArgumentCaptor<SessionConfiguration> sessionConfigCaptor
-                = ArgumentCaptor.forClass(SessionConfiguration.class);
+            = ArgumentCaptor.forClass(SessionConfiguration.class);
         verify(gnmiSessionFactorySpy).createGnmiSession(sessionConfigCaptor.capture(), any(ManagedChannel.class));
 
         Assertions.assertEquals(1, sessionConfigCaptor.getAllValues().size());
@@ -242,12 +246,12 @@ public class KeystoreGnmiSecurityTest {
         deviceInitializerDevicesConnecting(node);
 
         verify(gnmiSessionFactorySpy, times(1))
-                .createGnmiSession(any(ManagedChannel.class), any(GnmiCallCredentials.class));
+            .createGnmiSession(any(ManagedChannel.class), any(GnmiCallCredentials.class));
         verify(gnmiSessionFactorySpy, times(0))
-                .createGnmiSession(any(ManagedChannel.class));
+            .createGnmiSession(any(ManagedChannel.class));
 
         final ArgumentCaptor<SessionConfiguration> sessionConfigCaptor
-                = ArgumentCaptor.forClass(SessionConfiguration.class);
+            = ArgumentCaptor.forClass(SessionConfiguration.class);
         verify(gnmiSessionFactorySpy).createGnmiSession(sessionConfigCaptor.capture(), any(ManagedChannel.class));
 
         Assertions.assertEquals(1, sessionConfigCaptor.getAllValues().size());
@@ -266,12 +270,12 @@ public class KeystoreGnmiSecurityTest {
         deviceInitializerDevicesConnecting(node);
 
         verify(gnmiSessionFactorySpy, times(1))
-                .createGnmiSession(any(ManagedChannel.class), any(GnmiCallCredentials.class));
+            .createGnmiSession(any(ManagedChannel.class), any(GnmiCallCredentials.class));
         verify(gnmiSessionFactorySpy, times(0))
-                .createGnmiSession(any(ManagedChannel.class));
+            .createGnmiSession(any(ManagedChannel.class));
 
         final ArgumentCaptor<SessionConfiguration> sessionConfigCaptor
-                = ArgumentCaptor.forClass(SessionConfiguration.class);
+            = ArgumentCaptor.forClass(SessionConfiguration.class);
         verify(gnmiSessionFactorySpy).createGnmiSession(sessionConfigCaptor.capture(), any(ManagedChannel.class));
 
         Assertions.assertEquals(1, sessionConfigCaptor.getAllValues().size());
@@ -287,16 +291,16 @@ public class KeystoreGnmiSecurityTest {
     @Test
     public void testCertificateWithPassphraseWithBasiAuth() throws Exception {
         final Node node
-                = createNode(TEST_NODE, PORT, getTlsSecurityChoice(KEYSTORE_PASSPHRASE_ID_1), getTestCredentials());
+            = createNode(TEST_NODE, PORT, getTlsSecurityChoice(KEYSTORE_PASSPHRASE_ID_1), getTestCredentials());
         deviceInitializerDevicesConnecting(node);
 
         verify(gnmiSessionFactorySpy, times(1))
-                .createGnmiSession(any(ManagedChannel.class), any(GnmiCallCredentials.class));
+            .createGnmiSession(any(ManagedChannel.class), any(GnmiCallCredentials.class));
         verify(gnmiSessionFactorySpy, times(0))
-                .createGnmiSession(any(ManagedChannel.class));
+            .createGnmiSession(any(ManagedChannel.class));
 
         final ArgumentCaptor<SessionConfiguration> sessionConfigCaptor
-                = ArgumentCaptor.forClass(SessionConfiguration.class);
+            = ArgumentCaptor.forClass(SessionConfiguration.class);
         verify(gnmiSessionFactorySpy).createGnmiSession(sessionConfigCaptor.capture(), any(ManagedChannel.class));
 
         Assertions.assertEquals(1, sessionConfigCaptor.getAllValues().size());
@@ -315,13 +319,13 @@ public class KeystoreGnmiSecurityTest {
         deviceInitializerDevicesConnecting(node);
 
         final ArgumentCaptor<SessionConfiguration> sessionConfigCaptor
-                = ArgumentCaptor.forClass(SessionConfiguration.class);
+            = ArgumentCaptor.forClass(SessionConfiguration.class);
         verify(gnmiSessionFactorySpy).createGnmiSession(sessionConfigCaptor.capture(), any(ManagedChannel.class));
         verify(gnmiSessionFactorySpy, times(1))
-                .createGnmiSession(any(ManagedChannel.class), any(GnmiCallCredentials.class));
+            .createGnmiSession(any(ManagedChannel.class), any(GnmiCallCredentials.class));
 
         verify(gnmiSessionFactorySpy, times(0))
-                .createGnmiSession(any(ManagedChannel.class));
+            .createGnmiSession(any(ManagedChannel.class));
 
         Assertions.assertEquals(1, sessionConfigCaptor.getAllValues().size());
         SessionConfiguration capturedConfiguration = sessionConfigCaptor.getValue();
@@ -345,20 +349,20 @@ public class KeystoreGnmiSecurityTest {
 
     private static SecurityChoice getInsecureSecurityChoice() {
         return new InsecureDebugOnlyBuilder()
-                .setConnectionType(InsecureDebugOnly.ConnectionType.INSECURE)
-                .build();
+            .setConnectionType(InsecureDebugOnly.ConnectionType.INSECURE)
+            .build();
     }
 
     private static SecurityChoice getNoTlsSecurityChoice() {
         return new InsecureDebugOnlyBuilder()
-                .setConnectionType(InsecureDebugOnly.ConnectionType.PLAINTEXT)
-                .build();
+            .setConnectionType(InsecureDebugOnly.ConnectionType.PLAINTEXT)
+            .build();
     }
 
     private static SecurityChoice getTlsSecurityChoice(String keystoreId) {
         return new SecureBuilder()
-                .setKeystoreId(keystoreId)
-                .build();
+            .setKeystoreId(keystoreId)
+            .build();
     }
 
     private static Node createNode(final String nameOfNode, final int port, final SecurityChoice securityChoice) {
@@ -366,61 +370,63 @@ public class KeystoreGnmiSecurityTest {
     }
 
     static Node createNode(final String nameOfNode, final int port, final SecurityChoice securityChoice,
-                           final Credentials credentials) {
+        final Credentials credentials) {
         ConnectionParametersBuilder connectionParametersBuilder = new ConnectionParametersBuilder()
-                .setHost(new Host(new IpAddress(Ipv4Address.getDefaultInstance(ADDRESS))))
-                .setPort(new PortNumber(Uint16.valueOf(port)))
-                .setSecurityChoice(securityChoice);
+            .setHost(new Host(new IpAddress(new Ipv4Address(ADDRESS))))
+            .setPort(new PortNumber(Uint16.valueOf(port)))
+            .setSecurityChoice(securityChoice);
 
         if (credentials != null) {
             connectionParametersBuilder.setCredentials(credentials);
         }
 
         return new NodeBuilder()
-                .setNodeId(new NodeId(nameOfNode))
-                .addAugmentation(new GnmiNodeBuilder()
-                        .setConnectionParameters(connectionParametersBuilder.build())
-                        .build())
-                .build();
+            .setNodeId(new NodeId(nameOfNode))
+            .addAugmentation(new GnmiNodeBuilder()
+                .setConnectionParameters(connectionParametersBuilder.build())
+                .build())
+            .build();
     }
 
     private static Credentials getTestCredentials() {
         return new CredentialsBuilder()
-                .setPassword(TEST_USERNAME)
-                .setUsername(TEST_PASSWORD)
-                .build();
+            .setPassword(TEST_USERNAME)
+            .setUsername(TEST_PASSWORD)
+            .build();
     }
 
     private static InstanceIdentifier<Keystore> getKeystore1Identifier() {
         return InstanceIdentifier
-                .builder(Keystore.class, new KeystoreKey(KEYSTORE_PASSPHRASE_ID_1))
-                .build();
+            .builder(Keystore.class, new KeystoreKey(KEYSTORE_PASSPHRASE_ID_1))
+            .build();
     }
 
     private static InstanceIdentifier<Keystore> getKeystore2Identifier() {
         return InstanceIdentifier
-                .builder(Keystore.class, new KeystoreKey(KEYSTORE_ID_2))
-                .build();
+            .builder(Keystore.class, new KeystoreKey(KEYSTORE_ID_2))
+            .build();
     }
 
     private Keystore getKeystore1WithPassResponse() throws GeneralSecurityException {
+        // Use java.util.Base64 instead of javax.xml.bind.DatatypeConverter
         return new KeystoreBuilder()
-                .setCaCertificate(getResource(CA_CRT))
-                .setClientCert(getResource(CLIENT_ENCRYPTED_CRT))
-                .setClientKey(DatatypeConverter.printBase64Binary(
-                        (aaaEncryptionService.encrypt(getResource(CLIENT_ENCRYPTED_KEY).getBytes(
-                                Charset.defaultCharset())))))
-                .setPassphrase(
-                        DatatypeConverter.printBase64Binary(aaaEncryptionService.encrypt(PASSPHRASE.getBytes())))
-                .setKeystoreId(KEYSTORE_PASSPHRASE_ID_1)
-                .build();
+            .setCaCertificate(getResource(CA_CRT))
+            .setClientCert(getResource(CLIENT_ENCRYPTED_CRT))
+            .setClientKey(Base64.getEncoder().encodeToString(
+                (aaaEncryptionService.encrypt(getResource(CLIENT_ENCRYPTED_KEY).getBytes(
+                    Charset.defaultCharset())))))
+            .setPassphrase(
+                Base64.getEncoder().encodeToString(aaaEncryptionService.encrypt(PASSPHRASE.getBytes())))
+            .setKeystoreId(KEYSTORE_PASSPHRASE_ID_1)
+            .build();
     }
 
     private Keystore getKeystore2Response() throws GeneralSecurityException {
+        // Use java.util.Base64 instead of javax.xml.bind.DatatypeConverter
         return new KeystoreBuilder().setCaCertificate(getResource(CA_CRT)).setClientCert(getResource(CLIENT_CRT))
-                .setClientKey(DatatypeConverter.printBase64Binary(
-                        (aaaEncryptionService.encrypt((getResource(CLIENT_KEY).getBytes())))))
-                .setKeystoreId(KEYSTORE_ID_2).build();
+            .setClientKey(Base64.getEncoder().encodeToString(
+                (aaaEncryptionService.encrypt((getResource(CLIENT_KEY).getBytes())))))
+            .setKeystoreId(KEYSTORE_ID_2).build();
     }
 
     private static <T extends DataObject> FluentFuture<Optional<T>> getReadResult(T data) {
