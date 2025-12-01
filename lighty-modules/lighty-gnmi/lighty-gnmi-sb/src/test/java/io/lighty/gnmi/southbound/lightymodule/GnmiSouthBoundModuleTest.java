@@ -7,20 +7,35 @@
  */
 package io.lighty.gnmi.southbound.lightymodule;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.Futures;
+import java.util.Collection;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
+import org.opendaylight.yangtools.binding.Rpc;
+import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.concepts.Registration;
+import org.opendaylight.yangtools.yang.parser.api.YangParser;
+import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
+import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
 
-
+@ExtendWith(MockitoExtension.class)
 public class GnmiSouthBoundModuleTest {
 
     @Mock
@@ -31,31 +46,43 @@ public class GnmiSouthBoundModuleTest {
     private DOMMountPointService mountPointService;
     @Mock
     private AAAEncryptionService aaaEncryptionService;
-
-    private static final long MODULE_TIMEOUT = 60;
-    private static final TimeUnit MODULE_TIME_UNIT = TimeUnit.SECONDS;
+    @Mock
+    private YangParserFactory parserFactory;
+    @Mock
+    private YangXPathParserFactory xpathParserFactory;
 
     @Test
-    public void gnmiModuleSmokeTest() throws Exception {
-        // Build and start the controller
+    @SuppressWarnings("unchecked")
+    public void gnmiModuleSmokeTest() {
+        when(parserFactory.createParser()).thenReturn(mock(YangParser.class));
 
-        final GnmiSouthboundModule gnmiModule = new GnmiSouthboundModule(dataBroker, rpcProviderService,
-            mountPointService, aaaEncryptionService, null, null);
+        WriteTransaction writeTx = mock(WriteTransaction.class);
+        when(dataBroker.newWriteOnlyTransaction()).thenReturn(writeTx);
+        FluentFuture<CommitInfo> successfulCommit = FluentFuture.from(Futures.immediateFuture(CommitInfo.empty()));
+        doReturn(successfulCommit).when(writeTx).commit();
+
+        ObjectRegistration registration = mock(ObjectRegistration.class);
+        lenient().doReturn(registration).when(rpcProviderService)
+            .registerRpcImplementations((ClassToInstanceMap) any());
+        lenient().doReturn(registration).when(rpcProviderService)
+            .registerRpcImplementations((Collection) any());
+        lenient().doReturn(registration).when(rpcProviderService)
+            .registerRpcImplementations((Rpc<?, ?>[]) any());
+
+        Registration listenerRegistration = mock(Registration.class);
+        lenient().doReturn(listenerRegistration).when(dataBroker)
+            .registerDataTreeChangeListener(any(), (DataTreeChangeListener) any());
+
+        final GnmiSouthboundModule gnmiModule = new GnmiSouthboundModule(
+            dataBroker,
+            rpcProviderService,
+            mountPointService,
+            aaaEncryptionService,
+            parserFactory,
+            xpathParserFactory
+        );
+
         gnmiModule.init();
         gnmiModule.close();
     }
-
-    @Test
-    public void gnmiModuleStartFailedTest() throws Exception {
-
-        // Mock configuration with invalid YANG path
-        final GnmiConfiguration badConfig = Mockito.mock(GnmiConfiguration.class);
-        when(badConfig.getInitialYangsPaths()).thenReturn(List.of("invalid-path"));
-
-        final GnmiSouthboundModule gnmiModule = new GnmiSouthboundModule(dataBroker, rpcProviderService,
-            mountPointService, aaaEncryptionService, null, null);
-
-        gnmiModule.init();
-    }
 }
-

@@ -20,6 +20,7 @@ import io.lighty.gnmi.southbound.capabilities.GnmiDeviceCapability;
 import io.lighty.gnmi.southbound.device.connection.DeviceConnection;
 import io.lighty.gnmi.southbound.device.session.listener.GnmiConnectionStatusListener;
 import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
+import io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils;
 import io.lighty.gnmi.southbound.mountpoint.broker.GnmiDataBroker;
 import io.lighty.gnmi.southbound.mountpoint.codecs.YangInstanceIdentifierToPathCodec;
 import io.lighty.gnmi.southbound.mountpoint.codecs.YangInstanceNormToGnmiUpdateCodec;
@@ -64,12 +65,14 @@ import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
+import org.opendaylight.yangtools.yang.parser.rfc7950.reactor.RFC7950Reactors;
+import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 public class WriteTransactionTest {
     private static final QNameModule INTERFACES_MODULE_QN_MODULE = QNameModule.of(
-            XMLNamespace.of("http://openconfig.net/yang/interfaces"), Revision.of("2021-04-06"));
-    private static final String OPENCONFIG_GNMI_CONFIG = "/lightyconfigs/openconfig_gnmi_config.json";
+        XMLNamespace.of("http://openconfig.net/yang/interfaces"), Revision.of("2021-04-06"));
     private static final QName INTERFACES_CONTAINER_QN = QName.create(INTERFACES_MODULE_QN_MODULE, "interfaces");
     private static final YangInstanceIdentifier TEST_PREPARE_DATASTORE_IID = YangInstanceIdentifier.builder()
             .node(INTERFACES_CONTAINER_QN)
@@ -109,12 +112,15 @@ public class WriteTransactionTest {
                 Mockito.mock(GnmiConnectionStatusListener.class), node);
 
         final GnmiConfiguration gnmiConfiguration = new GnmiConfiguration();
+        gnmiConfiguration.setYangModulesInfo(GnmiConfigUtils.OPENCONFIG_YANG_MODELS);
         Assertions.assertNotNull(gnmiConfiguration.getYangModulesInfo());
         final TestYangDataStoreService dataStoreService = new TestYangDataStoreService();
-        final List<GnmiDeviceCapability> completeCapabilities
-                = new ByClassPathYangLoaderService(gnmiConfiguration.getYangModulesInfo(), null).load(dataStoreService);
+        final DefaultYangParserFactory parserFactory = new DefaultYangParserFactory(new AntlrXPathParserFactory());
+        final List<GnmiDeviceCapability> completeCapabilities = new ByClassPathYangLoaderService(
+            gnmiConfiguration.getYangModulesInfo(), parserFactory).load(dataStoreService);
 
-        final SchemaContextHolder schemaContextHolder = new SchemaContextHolderImpl(dataStoreService, null);
+        final SchemaContextHolder schemaContextHolder = new SchemaContextHolderImpl(
+            dataStoreService, RFC7950Reactors.defaultReactor());
         final EffectiveModelContext schemaContext = schemaContextHolder.getSchemaContext(completeCapabilities);
         deviceConnection.setSchemaContext(schemaContext);
         final YangInstanceIdentifierToPathCodec yiiToPathCodec
