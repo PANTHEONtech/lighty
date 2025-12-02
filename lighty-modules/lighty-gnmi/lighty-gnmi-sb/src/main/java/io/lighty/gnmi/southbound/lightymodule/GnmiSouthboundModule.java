@@ -9,14 +9,17 @@
 package io.lighty.gnmi.southbound.lightymodule;
 
 import static io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils.OPENCONFIG_YANG_MODELS;
+import static java.util.Objects.requireNonNull;
 
+import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
 import io.lighty.gnmi.southbound.provider.GnmiSouthboundProvider;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoaderService;
 import io.lighty.gnmi.southbound.schema.loader.impl.ByClassPathYangLoaderService;
+import io.lighty.gnmi.southbound.schema.loader.impl.ByPathYangLoaderService;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,6 +53,7 @@ public final class GnmiSouthboundModule {
     private final AAAEncryptionService encryptionService;
     private final YangParserFactory parserFactory;
     private final YangXPathParserFactory xpathParserFactory;
+    private final GnmiConfiguration gnmiConfiguration;
 
     private ExecutorService gnmiExecutor;
     private GnmiSouthboundProvider gnmiProvider;
@@ -62,12 +66,21 @@ public final class GnmiSouthboundModule {
         @Reference AAAEncryptionService encryptionService,
         @Reference YangParserFactory parserFactory,
         @Reference YangXPathParserFactory xpathParserFactory) {
-        this.dataBroker = Objects.requireNonNull(dataBroker);
-        this.rpcProviderService = Objects.requireNonNull(rpcProviderService);
-        this.domMountPointService = Objects.requireNonNull(domMountPointService);
-        this.encryptionService = Objects.requireNonNull(encryptionService);
-        this.parserFactory = Objects.requireNonNull(parserFactory);
-        this.xpathParserFactory = Objects.requireNonNull(xpathParserFactory);
+        this(dataBroker, rpcProviderService, domMountPointService,
+            encryptionService, parserFactory, xpathParserFactory, null);
+    }
+
+    public GnmiSouthboundModule(DataBroker dataBroker, RpcProviderService rpcProviderService,
+        DOMMountPointService domMountPointService, AAAEncryptionService encryptionService,
+        YangParserFactory parserFactory, YangXPathParserFactory xpathParserFactory,
+        GnmiConfiguration gnmiConfiguration) {
+        this.dataBroker = requireNonNull(dataBroker);
+        this.rpcProviderService = requireNonNull(rpcProviderService);
+        this.domMountPointService = requireNonNull(domMountPointService);
+        this.encryptionService = requireNonNull(encryptionService);
+        this.parserFactory = requireNonNull(parserFactory);
+        this.xpathParserFactory = requireNonNull(xpathParserFactory);
+        this.gnmiConfiguration = gnmiConfiguration;
     }
 
     @Activate
@@ -82,7 +95,7 @@ public final class GnmiSouthboundModule {
                 dataBroker,
                 rpcProviderService,
                 gnmiExecutor,
-                prepareByPathLoaders(),
+                prepareByPathLoaders(gnmiConfiguration),
                 encryptionService,
                 reactor);
 
@@ -112,9 +125,18 @@ public final class GnmiSouthboundModule {
         }
     }
 
-    private List<YangLoaderService> prepareByPathLoaders() {
+    private List<YangLoaderService> prepareByPathLoaders(final GnmiConfiguration config) {
         final List<YangLoaderService> services = new ArrayList<>();
+        if (config != null) {
+            config.getInitialYangsPaths().stream()
+                .map(path -> new ByPathYangLoaderService(Path.of(path), parserFactory))
+                .forEach(services::add);
+            if (config.getYangModulesInfo() != null) {
+                services.add(new ByClassPathYangLoaderService(config.getYangModulesInfo(), parserFactory));
+            }
+        }
         services.add(new ByClassPathYangLoaderService(OPENCONFIG_YANG_MODELS, parserFactory));
+
         return services;
     }
 }
