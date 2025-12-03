@@ -58,7 +58,7 @@ public class GnmiMountPointRegistrator implements AutoCloseable {
 
         if (optRegistration.isPresent()) {
             try {
-                optRegistration.get().close();
+                optRegistration.orElseThrow().close();
             } finally {
                 LOG.debug("Mountpoint for node {} removed", nodeId.getValue());
                 registeredMountPoints.remove(nodeId);

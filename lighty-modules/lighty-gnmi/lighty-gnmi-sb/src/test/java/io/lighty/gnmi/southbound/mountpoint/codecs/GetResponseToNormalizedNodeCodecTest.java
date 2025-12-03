@@ -169,7 +169,7 @@ public class GetResponseToNormalizedNodeCodecTest {
     private static void assertEqualsCodecResult(final NormalizedNode expected,
                                                 final Optional<NormalizedNode> result) {
         Assertions.assertTrue(result.isPresent());
-        Assertions.assertEquals(expected, result.get());
+        Assertions.assertEquals(expected, result.orElseThrow());
     }
 
 }

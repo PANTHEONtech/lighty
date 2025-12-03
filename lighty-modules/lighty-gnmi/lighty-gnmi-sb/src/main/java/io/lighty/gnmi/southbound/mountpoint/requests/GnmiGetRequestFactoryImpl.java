@@ -48,9 +48,9 @@ public class GnmiGetRequestFactoryImpl implements GnmiGetRequestFactory {
                 parameters.getOverwriteDataType();
             if (overwriteDataType.isEmpty()) {
                 requestBuilder.setType(datastoreType);
-            } else if (overwriteDataType.get() != GnmiParameters.OverwriteDataType.NONE) {
+            } else if (overwriteDataType.orElseThrow() != GnmiParameters.OverwriteDataType.NONE) {
                 requestBuilder.setType(Gnmi.GetRequest.DataType
-                    .valueOf(overwriteDataType.get().getName()));
+                    .valueOf(overwriteDataType.orElseThrow().getName()));
             }
             final Optional<String> optPathTarget = parameters.getPathTarget();
             optPathTarget.ifPresent(pathTarget -> requestBuilder.setPrefix(Path.newBuilder().setTarget(pathTarget)));

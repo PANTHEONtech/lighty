@@ -136,17 +136,4 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.gaul</groupId>
-                <artifactId>modernizer-maven-plugin</artifactId>
-                <configuration>
-                    <failOnViolations>false</failOnViolations>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>

@@ -17,7 +17,6 @@ import io.lighty.applications.rnc.module.config.RncLightyModuleConfiguration;
 import io.lighty.core.common.models.YangModuleUtils;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +52,7 @@ public class Main {
 
         try {
             if (arguments.getConfigPath() != null) {
-                Path configPath = Paths.get(arguments.getConfigPath());
+                Path configPath = Path.of(arguments.getConfigPath());
                 rncModuleConfig = RncLightyModuleConfigUtils.loadConfigFromFile(configPath);
             } else {
                 rncModuleConfig = RncLightyModuleConfigUtils.loadDefaultConfig();

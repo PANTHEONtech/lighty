@@ -141,8 +141,8 @@ public class DeviceConnectionManager implements AutoCloseable {
                 final Optional<List<Gnmi.ModelData>> forceCapabilities =
                     deviceConnection.getConfigurableParameters().getModelDataList();
                 if (forceCapabilities.isPresent()) {
-                    final Gnmi.CapabilityResponse capabilitiesResponseBuilder =
-                        Gnmi.CapabilityResponse.newBuilder().addAllSupportedModels(forceCapabilities.get()).build();
+                    final Gnmi.CapabilityResponse capabilitiesResponseBuilder = Gnmi.CapabilityResponse.newBuilder()
+                        .addAllSupportedModels(forceCapabilities.orElseThrow()).build();
                     capabilitiesList.addAll(GnmiRequestUtils.fromCapabilitiesResponse(capabilitiesResponseBuilder));
                 } else {
                     capabilitiesList.addAll(GnmiRequestUtils.fromCapabilitiesResponse(capabilityResponse));

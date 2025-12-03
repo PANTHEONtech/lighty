@@ -94,21 +94,4 @@
             <scope>runtime</scope>
         </dependency>
     </dependencies>
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.gaul</groupId>
-                    <artifactId>modernizer-maven-plugin</artifactId>
-                    <version>2.4.0</version>
-                    <executions>
-                        <execution>
-                            <id>modernizer</id>
-                            <phase>none</phase> <!-- disable plugin -->
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
 </project>

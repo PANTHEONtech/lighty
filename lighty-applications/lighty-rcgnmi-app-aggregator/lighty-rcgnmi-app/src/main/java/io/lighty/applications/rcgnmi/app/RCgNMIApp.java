@@ -18,7 +18,6 @@ import io.lighty.core.common.models.YangModuleUtils;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +52,7 @@ public class RCgNMIApp {
                 .parse(args);
         try {
             if (arguments.getConfigPath() != null) {
-                final Path configPath = Paths.get(arguments.getConfigPath());
+                final Path configPath = Path.of(arguments.getConfigPath());
                 rgnmiModuleConfig = RcGnmiAppModuleConfigUtils.loadConfiguration(configPath);
             } else {
                 rgnmiModuleConfig = RcGnmiAppModuleConfigUtils.loadDefaultConfig();

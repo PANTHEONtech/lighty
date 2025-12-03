@@ -32,7 +32,6 @@ import io.lighty.modules.southbound.netconf.impl.util.NetconfConfigUtils;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -80,7 +79,7 @@ public class Main {
             final AAAConfiguration aaaConfiguration;
             final NetconfConfiguration netconfSBPConfiguration;
             if (args.length > 0) {
-                Path configPath = Paths.get(args[0]);
+                Path configPath = Path.of(args[0]);
                 LOG.info("using configuration from file {} ...", configPath);
                 //1. get controller configuration
                 singleNodeConfiguration = ControllerConfigUtils.getConfiguration(Files.newInputStream(configPath));
