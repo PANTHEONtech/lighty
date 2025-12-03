@@ -31,9 +31,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.internal.StringUtil;
-import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.file.Path;
 import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Set;
@@ -119,7 +119,7 @@ public class SimulatedGnmiDevice {
                 );
                 LOG.info("Combination of server certificate and key not provided, using default ones.");
             } else {
-                serverBuilder.useTransportSecurity(new File(certificatePath), new File(keyPath));
+                serverBuilder.useTransportSecurity(Path.of(certificatePath).toFile(), Path.of(keyPath).toFile());
             }
         }
 

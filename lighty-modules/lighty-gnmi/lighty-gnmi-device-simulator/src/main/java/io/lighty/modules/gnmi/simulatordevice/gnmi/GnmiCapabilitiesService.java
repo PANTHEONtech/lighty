@@ -50,9 +50,9 @@ public class GnmiCapabilitiesService {
                 .setName(module.getName());
             final Optional<SemVer> optSemVer = getSemVer(module);
             if (optSemVer.isPresent()) {
-                builder.setVersion(optSemVer.get().toString());
+                builder.setVersion(optSemVer.orElseThrow().toString());
             } else if (module.getRevision().isPresent()) {
-                builder.setVersion(module.getRevision().get().toString());
+                builder.setVersion(module.getRevision().orElseThrow().toString());
             }
             modelDataList.add(builder.build());
         }
