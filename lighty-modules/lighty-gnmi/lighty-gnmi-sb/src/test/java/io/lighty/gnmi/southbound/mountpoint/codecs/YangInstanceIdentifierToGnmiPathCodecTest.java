@@ -15,7 +15,6 @@ import io.lighty.gnmi.southbound.mountpoint.codecs.testcases.YangInstanceIdentif
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.junit.jupiter.api.Assertions;
@@ -25,7 +24,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 public class YangInstanceIdentifierToGnmiPathCodecTest {
 
-    private static final Path TEST_PATH = Paths.get("src/test/resources/not/unique/model/elements");
+    private static final Path TEST_PATH = Path.of("src/test/resources/not/unique/model/elements");
     private static final String NAMESPACE_ROOT1 = "tag:lighty.io.2021:yang:test:v1:gnmi:converter:root1";
     private static final String NAMESPACE_ROOT2 = "tag:lighty.io,2021:yang:test:v1:gnmi:converter:root2";
     private static final String ROOT_MODULE_NAME_1 = "root-model-1";

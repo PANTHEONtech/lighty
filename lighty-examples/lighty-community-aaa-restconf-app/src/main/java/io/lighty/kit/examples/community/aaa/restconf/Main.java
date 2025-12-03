@@ -28,7 +28,6 @@ import io.lighty.server.LightyJettyServerProvider;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.Security;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -64,7 +63,7 @@ public final class Main {
             final RestConfConfiguration restconfConfiguration;
             final AAAConfiguration aaaConfiguration;
             if (args.length > 0) {
-                final Path configPath = Paths.get(args[0]);
+                final Path configPath = Path.of(args[0]);
                 LOG.info("Lighty and Restconf starting, using configuration from file {} ...", configPath);
                 singleNodeConfiguration = ControllerConfigUtils.getConfiguration(Files.newInputStream(configPath));
                 restconfConfiguration = RestConfConfigUtils.getRestConfConfiguration(Files.newInputStream(configPath));

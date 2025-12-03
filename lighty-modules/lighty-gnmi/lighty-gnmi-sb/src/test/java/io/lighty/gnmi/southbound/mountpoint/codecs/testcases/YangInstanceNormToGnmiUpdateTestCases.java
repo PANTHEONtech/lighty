@@ -20,7 +20,6 @@ import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.logging.log4j.core.config.ConfigurationException;
@@ -28,7 +27,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 public class YangInstanceNormToGnmiUpdateTestCases extends CodecTestCasesBase {
-    private static final Path BASE_JSON_PATH = Paths.get(
+    private static final Path BASE_JSON_PATH = Path.of(
             "src/test/resources/codecs/jsons/reference_data_prefixed.json");
     private static final Gson GSON = new Gson();
 

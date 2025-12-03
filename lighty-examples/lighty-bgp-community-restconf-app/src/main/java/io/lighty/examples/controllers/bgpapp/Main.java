@@ -28,7 +28,6 @@ import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigU
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -86,7 +85,7 @@ public class Main {
                         RestConfConfigUtils.YANG_MODELS));
 
         if (mArgs.isPresent()) {
-            final Path configPath = Paths.get(mArgs.get().getConfigPath());
+            final Path configPath = Path.of(mArgs.get().getConfigPath());
             LOG.info("Using configuration from file {}", configPath);
             controllerConfiguration = ControllerConfigUtils.getConfiguration(Files.newInputStream(configPath));
 

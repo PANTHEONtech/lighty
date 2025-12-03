@@ -84,7 +84,7 @@ public class SchemaConstructTest {
         for (GnmiDeviceCapability capability : completeCapabilities) {
             if (capability.getVersionString().isPresent()) {
                 storedModels.add(dataStoreService
-                        .readYangModel(capability.getName(), capability.getVersionString().get())
+                        .readYangModel(capability.getName(), capability.getVersionString().orElseThrow())
                         .get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS).orElseThrow());
             } else {
                 storedModels.add(dataStoreService

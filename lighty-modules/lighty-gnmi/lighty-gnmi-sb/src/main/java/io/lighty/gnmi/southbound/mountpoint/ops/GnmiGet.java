@@ -75,7 +75,7 @@ public class GnmiGet {
                                 .apply(getResponse, path);
                         LOG.debug("[{}] Parsed Normalized nodes from gNMI GetResponse:\n{}", nodeId.getValue(),
                                 optNormalizedNode.isPresent()
-                                ? optNormalizedNode.get() : "NONE");
+                                ? optNormalizedNode.orElseThrow() : "NONE");
                         ret.set(optNormalizedNode);
                     } catch (GnmiCodecException ex) {
                         LOG.warn("[{}] Can't convert gNMI getResponse {} to normalized nodes", nodeId.getValue(),

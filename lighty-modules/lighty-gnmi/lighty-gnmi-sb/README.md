@@ -136,9 +136,9 @@ Device [node-status](../../../lighty-models/lighty-gnmi-models/lighty-gnmi-topol
         final DOMMountPointService domMountPointService = lightyController.getServices().getDOMMountPointService();
         final Optional<DOMMountPoint> mountPoint
                 = domMountPointService.getMountPoint(IdentifierUtils.nodeidToYii(testGnmiNode.getNodeId()));
-        final DOMMountPoint domMountPoint = mountPoint.get();
+        final DOMMountPoint domMountPoint = mountPoint.orElseThrow();
         final Optional<DOMDataBroker> service = domMountPoint.getService(DOMDataBroker.class);
-        final DOMDataBroker domDataBroker = service.get();
+        final DOMDataBroker domDataBroker = service.orElseThrow();
 ```
 
 5. Get openconfig interfaces data from gNMI device.

@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.security.GeneralSecurityException;
 import java.util.Base64;
 import java.util.Optional;
@@ -435,7 +435,7 @@ public class KeystoreGnmiSecurityTest {
 
     private static String getResource(String path) {
         try {
-            byte[] bytes = Files.readAllBytes(Paths.get(SessionInitializeTest.class.getResource(path).toURI()));
+            byte[] bytes = Files.readAllBytes(Path.of(SessionInitializeTest.class.getResource(path).toURI()));
             return new String(bytes);
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(String.format("Failed to read resources at path [%s]", path), e);

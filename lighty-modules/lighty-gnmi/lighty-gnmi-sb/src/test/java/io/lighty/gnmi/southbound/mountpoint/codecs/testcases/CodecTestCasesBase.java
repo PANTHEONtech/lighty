@@ -12,7 +12,7 @@ import io.lighty.gnmi.southbound.mountpoint.codecs.TestSchemaContextProvider;
 import io.lighty.gnmi.southbound.schema.impl.SchemaException;
 import io.lighty.gnmi.southbound.schema.loader.api.YangLoadException;
 import io.lighty.gnmi.southbound.schema.provider.SchemaContextProvider;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.List;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -42,7 +42,7 @@ public class CodecTestCasesBase {
     private final SchemaContextProvider schemaContextProvider;
 
     public CodecTestCasesBase() throws SchemaException, YangLoadException {
-        this.schemaContextProvider = TestSchemaContextProvider.createInstance(Paths.get(BASE_YANGS_PATH),
+        this.schemaContextProvider = TestSchemaContextProvider.createInstance(Path.of(BASE_YANGS_PATH),
             GnmiConfigUtils.OPENCONFIG_YANG_MODELS);
     }
 

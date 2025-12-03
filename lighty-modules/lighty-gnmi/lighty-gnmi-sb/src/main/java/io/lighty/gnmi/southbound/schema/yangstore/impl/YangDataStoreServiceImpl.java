@@ -83,12 +83,12 @@ public class YangDataStoreServiceImpl implements YangDataStoreService {
                 if (yangModelOptional.isPresent()) {
                     // Keep only models with requested name
                     final List<Map.Entry<GnmiYangModelKey, GnmiYangModel>> modelsWithRequestedName =
-                            yangModelOptional.get().nonnullGnmiYangModel().entrySet().stream()
+                            yangModelOptional.orElseThrow().nonnullGnmiYangModel().entrySet().stream()
                                     .filter(m -> m.getKey().getName().equals(modelName))
                                     .collect(Collectors.toList());
 
                     if (modelsWithRequestedName.size() == 1) {
-                        return Optional.of(modelsWithRequestedName.stream().findFirst().get().getValue());
+                        return Optional.of(modelsWithRequestedName.stream().findFirst().orElseThrow().getValue());
                     } else if (modelsWithRequestedName.size() > 1) {
                         LOG.warn("There are multiple version of model {} in datastore, unable to safely determine"
                                 + " which one to use, since only the model name is known", modelName);

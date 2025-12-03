@@ -198,14 +198,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.gaul</groupId>
-                <artifactId>modernizer-maven-plugin</artifactId>
-                <configuration>
-                    <failOnViolations>false</failOnViolations>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>3.8.1</version>

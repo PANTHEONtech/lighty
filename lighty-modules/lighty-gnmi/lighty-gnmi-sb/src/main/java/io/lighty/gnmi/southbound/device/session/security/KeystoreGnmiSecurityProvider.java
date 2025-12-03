@@ -80,7 +80,7 @@ public class KeystoreGnmiSecurityProvider implements GnmiSecurityProvider {
         }
         if (optionalKeystore.isPresent()) {
             LOG.debug("Creating Security from keystore [{}]", keystoreId);
-            return getSecurityWithCertificates(optionalKeystore.get());
+            return getSecurityWithCertificates(optionalKeystore.orElseThrow());
         }
         throw new SessionSecurityException(
                 String.format("Certificate with id [%s] is not found in datastore ", keystoreId));
