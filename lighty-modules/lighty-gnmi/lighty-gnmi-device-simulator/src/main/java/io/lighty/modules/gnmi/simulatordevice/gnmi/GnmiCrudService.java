@@ -180,7 +180,8 @@ public class GnmiCrudService {
                 Gnmi.UpdateResult updateResult;
                 if (!update.getVal().getJsonIetfVal().isEmpty()) {
                     // Json sets are permitted only for non simple types
-                    updateResult = processUpdateListNonSimpleValue(update, identifier, optModule.get(), isReplace);
+                    updateResult = processUpdateListNonSimpleValue(update, identifier, optModule.orElseThrow(),
+                        isReplace);
                 } else {
                     updateResult = processUpdateListSimpleValue(update, identifier);
                 }
@@ -302,7 +303,7 @@ public class GnmiCrudService {
             LOG.error("Unable to guess correct module for provided path (first elem: {})", pathFirstElem);
             return Collections.emptyMap();
         }
-        final QNameModule qNameModule = rootModule.get().getQNameModule();
+        final QNameModule qNameModule = rootModule.orElseThrow().getQNameModule();
 
         final Map<Gnmi.Path, YangInstanceIdentifier> resultMap = new HashMap<>();
         for (final Gnmi.Path reqPath : pathList) {

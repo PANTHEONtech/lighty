@@ -72,7 +72,7 @@ public class LoadAugmentationFromGnmiPath {
                     = this.dataService.readDataByPath(DatastoreType.CONFIGURATION, entry.getValue());
             Assert.assertTrue(result.isPresent(),
                     String.format("Failed to load [%s] from data-store", entry.getValue().getLastPathArgument()));
-            NormalizedNode normalizedNode = result.get();
+            NormalizedNode normalizedNode = result.orElseThrow();
             Assert.assertEquals(normalizedNode.name(), entry.getValue().getLastPathArgument());
             //Test to parse data retrieved from data-store to JSON format.
             Map.Entry<Path, String> resultInJsonFormat
