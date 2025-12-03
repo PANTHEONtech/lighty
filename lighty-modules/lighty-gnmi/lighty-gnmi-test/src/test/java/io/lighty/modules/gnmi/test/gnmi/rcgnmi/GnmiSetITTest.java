@@ -23,7 +23,7 @@ import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
@@ -440,7 +440,7 @@ public class GnmiSetITTest extends GnmiITBase {
 
     private static String getResource(final String path) {
         try {
-            final byte[] bytes = Files.readAllBytes(Paths.get(GnmiSetITTest.class.getResource(path).toURI()));
+            final byte[] bytes = Files.readAllBytes(Path.of(GnmiSetITTest.class.getResource(path).toURI()));
             return new String(bytes);
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(String.format("Failed to read resources at path [%s]", path), e);

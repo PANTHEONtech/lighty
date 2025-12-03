@@ -196,7 +196,7 @@ public class GnmiWithoutRestconfTest {
                 .untilAsserted(() -> {
                     final Optional<Node> node = readOperData(bindingDataBroker, nodeInstanceIdentifier);
                     assertTrue(node.isPresent());
-                    final Node foundNode = node.get();
+                    final Node foundNode = node.orElseThrow();
                     final GnmiNode gnmiNode = foundNode.augmentation(GnmiNode.class);
                     assertNotNull(gnmiNode);
                     final NodeState nodeState = gnmiNode.getNodeState();
@@ -210,16 +210,16 @@ public class GnmiWithoutRestconfTest {
         final Optional<DOMMountPoint> mountPoint
                 = domMountPointService.getMountPoint(IdentifierUtils.nodeidToYii(testGnmiNode.getNodeId()));
         assertTrue(mountPoint.isPresent());
-        final DOMMountPoint domMountPoint = mountPoint.get();
+        final DOMMountPoint domMountPoint = mountPoint.orElseThrow();
         final Optional<DOMDataBroker> service = domMountPoint.getService(DOMDataBroker.class);
         assertTrue(service.isPresent());
-        final DOMDataBroker domDataBroker = service.get();
+        final DOMDataBroker domDataBroker = service.orElseThrow();
 
         //GET Interfaces
         final YangInstanceIdentifier interfacesYIID = YangInstanceIdentifier.builder().node(INTERFACES_QNAME).build();
         final Optional<NormalizedNode> normalizedNode = readDOMConfigData(domDataBroker, interfacesYIID);
         assertTrue(normalizedNode.isPresent());
-        assertEquals(INTERFACES_QNAME, normalizedNode.get().name().getNodeType());
+        assertEquals(INTERFACES_QNAME, normalizedNode.orElseThrow().name().getNodeType());
 
         //SET data
         final YangInstanceIdentifier testLeafListYIID = YangInstanceIdentifier.builder()
@@ -230,7 +230,7 @@ public class GnmiWithoutRestconfTest {
         //GET created data
         final Optional<NormalizedNode> createdContainer = readDOMConfigData(domDataBroker, testLeafListYIID);
         assertTrue(createdContainer.isPresent());
-        assertEquals(TEST_DATA_CONTAINER_QN, createdContainer.get().name().getNodeType());
+        assertEquals(TEST_DATA_CONTAINER_QN, createdContainer.orElseThrow().name().getNodeType());
 
         //UPDATE data
         final ContainerNode updateTestDataContainerNode = getUpdateTestDataContainerNode();
@@ -239,9 +239,9 @@ public class GnmiWithoutRestconfTest {
         //GET updated data
         final Optional<NormalizedNode> updatedContainer = readDOMConfigData(domDataBroker, testLeafListYIID);
         assertTrue(updatedContainer.isPresent());
-        assertEquals(TEST_DATA_CONTAINER_QN, updatedContainer.get().name().getNodeType());
-        assertTrue(updatedContainer.get() instanceof ContainerNode);
-        ContainerNode containerNode = (ContainerNode) updatedContainer.get();
+        assertEquals(TEST_DATA_CONTAINER_QN, updatedContainer.orElseThrow().name().getNodeType());
+        assertTrue(updatedContainer.orElseThrow() instanceof ContainerNode);
+        ContainerNode containerNode = (ContainerNode) updatedContainer.orElseThrow();
         assertEquals(1, containerNode.body().toArray().length);
         assertTrue(containerNode.body().toArray()[0] instanceof LeafSetNode);
         LeafSetNode<?> leafSetNode = (LeafSetNode) containerNode.body().toArray()[0];
@@ -291,11 +291,11 @@ public class GnmiWithoutRestconfTest {
                 .build();
         final Optional<Keystore> keystore = readOperData(bindingDataBroker, keystoreII);
         assertTrue(keystore.isPresent());
-        assertEquals(CA_VALUE, keystore.get().getCaCertificate());
-        assertEquals(CLIENT_CERT, keystore.get().getClientCert());
+        assertEquals(CA_VALUE, keystore.orElseThrow().getCaCertificate());
+        assertEquals(CLIENT_CERT, keystore.orElseThrow().getClientCert());
         //Passphrase and client_key are encrypted before storing in data-store. So it shouldn't be same as provided
-        assertNotEquals(PASSPHRASE, keystore.get().getPassphrase());
-        assertNotEquals(CLIENT_KEY, keystore.get().getClientKey());
+        assertNotEquals(PASSPHRASE, keystore.orElseThrow().getPassphrase());
+        assertNotEquals(CLIENT_KEY, keystore.orElseThrow().getClientKey());
 
         //Remove created keystore after test
         deleteOperData(bindingDataBroker, keystoreII);
@@ -315,9 +315,9 @@ public class GnmiWithoutRestconfTest {
                 .build();
         final Optional<GnmiYangModel> gnmiYangModel = readOperData(bindingDataBroker, yangModelII);
         assertTrue(gnmiYangModel.isPresent());
-        assertEquals(YANG_BODY, gnmiYangModel.get().getBody());
-        assertEquals(YANG_NAME, gnmiYangModel.get().getName());
-        assertEquals(YANG_VERSION, gnmiYangModel.get().getVersion().getValue());
+        assertEquals(YANG_BODY, gnmiYangModel.orElseThrow().getBody());
+        assertEquals(YANG_NAME, gnmiYangModel.orElseThrow().getName());
+        assertEquals(YANG_VERSION, gnmiYangModel.orElseThrow().getVersion().getValue());
 
         //Remove created YANG model after test
         deleteOperData(bindingDataBroker, yangModelII);
