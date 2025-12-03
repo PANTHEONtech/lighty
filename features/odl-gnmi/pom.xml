@@ -17,10 +17,10 @@
         <version>23.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>io.lighty.gnmi</groupId>
-    <artifactId>gnmi-feature</artifactId>
+    <artifactId>odl-gnmi</artifactId>
     <version>23.0.0-SNAPSHOT</version>
     <packaging>feature</packaging>
+    <name>OpenDaylight :: gNMI</name>
 
     <dependencies>
         <dependency>
@@ -37,9 +37,9 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.inject</groupId>
+            <groupId>com.guicedee.services</groupId>
             <artifactId>javax.inject</artifactId>
-            <version>1</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>

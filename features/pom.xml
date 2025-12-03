@@ -31,7 +31,7 @@
         <module>parent</module>
 
         <module>features-gnmi</module>
-        <module>gnmi-feature</module>
+        <module>odl-gnmi</module>
     </modules>
 
 </project>
