@@ -132,7 +132,7 @@ public class GnmiConnectionStatusListener implements AutoCloseable {
                                 .build())
                         .build())
                 .build();
-        tx.merge(LogicalDatastoreType.OPERATIONAL, IdentifierUtils.gnmiNodeIID(nodeId), operationalNode);
+        tx.merge(LogicalDatastoreType.OPERATIONAL, IdentifierUtils.gnmiNodeID(nodeId), operationalNode);
         return (FluentFuture<CommitInfo>) tx.commit();
     }
 
@@ -143,7 +143,7 @@ public class GnmiConnectionStatusListener implements AutoCloseable {
         currentState = ConnectivityState.SHUTDOWN;
         // Delete connection state data from operational datastore
         @NonNull WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        writeTransaction.delete(LogicalDatastoreType.OPERATIONAL, IdentifierUtils.gnmiNodeIID(nodeId));
+        writeTransaction.delete(LogicalDatastoreType.OPERATIONAL, IdentifierUtils.gnmiNodeID(nodeId));
         writeTransaction.commit().get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
     }
 

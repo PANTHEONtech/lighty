@@ -19,6 +19,7 @@ import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
+import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
 import org.opendaylight.netconf.transport.http.HttpServerStackConfiguration;
 import org.opendaylight.netconf.transport.tcp.BootstrapFactory;
 import org.opendaylight.restconf.api.query.PrettyPrintParam;
@@ -91,8 +92,12 @@ public class NettyRestConf extends AbstractLightyModule {
         final NettyEndpointConfiguration configuration = new NettyEndpointConfiguration(ErrorTagMapping.RFC8040,
             PrettyPrintParam.FALSE, Uint16.valueOf(0), Uint32.valueOf(10000), restconfServletContextPath,
             MessageEncoding.JSON, serverStackGrouping);
+        final ClusterSingletonServiceProvider cssProvider = SingletonService -> {
+            SingletonService.instantiateServiceInstance();
+            return SingletonService::closeServiceInstance;
+        };
         this.mdsalRestconfStreamRegistry = new MdsalRestconfStreamRegistry(domDataBroker, domNotificationService,
-            domSchemaService, new JaxRsLocationProvider(), databindProvider);
+            domSchemaService, new JaxRsLocationProvider(), databindProvider, cssProvider);
         nettyEndpoint = new SimpleNettyEndpoint(server, service, mdsalRestconfStreamRegistry,
             new BootstrapFactory("lighty-restconf-nb-worker", 0), configuration);
 

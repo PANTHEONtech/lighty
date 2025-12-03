@@ -59,7 +59,7 @@ public class CodecTestCasesBase {
      * @return test case.
      */
     protected ImmutablePair<YangInstanceIdentifier, NormalizedNode> rootElementTestCase() {
-        return ImmutablePair.of(YangInstanceIdentifier.empty(), makeRoot());
+        return ImmutablePair.of(YangInstanceIdentifier.of(), makeRoot());
     }
 
     /**
@@ -69,7 +69,7 @@ public class CodecTestCasesBase {
      */
     protected ImmutablePair<YangInstanceIdentifier, NormalizedNode> topElementCase() {
         final YangInstanceIdentifier identifier =
-                YangInstanceIdentifier.create(
+                YangInstanceIdentifier.of(
                         getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interfaces"));
 
         return ImmutablePair.of(identifier, makeInterfaces());
@@ -83,7 +83,7 @@ public class CodecTestCasesBase {
      */
     protected ImmutablePair<YangInstanceIdentifier, NormalizedNode> listEntryCase(final boolean wrapInMapNode) {
         final YangInstanceIdentifier identifier =
-                YangInstanceIdentifier.create(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interfaces"))
+                YangInstanceIdentifier.of(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interfaces"))
                         .node(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface"))
                         .node(getMapEntryIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface", "name", "eth3"));
 
@@ -101,7 +101,7 @@ public class CodecTestCasesBase {
      */
     protected ImmutablePair<YangInstanceIdentifier, NormalizedNode> containerCase() {
         final YangInstanceIdentifier identifier =
-                YangInstanceIdentifier.create(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interfaces"))
+                YangInstanceIdentifier.of(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interfaces"))
                         .node(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface"))
                         .node(getMapEntryIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface", "name", "eth3"))
                         .node(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "config"));
@@ -117,7 +117,7 @@ public class CodecTestCasesBase {
      */
     protected ImmutablePair<YangInstanceIdentifier, NormalizedNode> containerAugmentedCase() {
         final YangInstanceIdentifier identifier =
-                YangInstanceIdentifier.create(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interfaces"))
+                YangInstanceIdentifier.of(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interfaces"))
                         .node(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface"))
                         .node(getMapEntryIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface", "name", "br0"))
                         .node(YangInstanceIdentifier.NodeIdentifier.create(
@@ -134,7 +134,7 @@ public class CodecTestCasesBase {
      */
     protected ImmutablePair<YangInstanceIdentifier, NormalizedNode> leafNumberCase() {
         final YangInstanceIdentifier identifier =
-                YangInstanceIdentifier.create(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interfaces"))
+                YangInstanceIdentifier.of(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interfaces"))
                         .node(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface"))
                         .node(getMapEntryIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface", "name", "eth3"))
                         .node(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "config"))
@@ -150,7 +150,7 @@ public class CodecTestCasesBase {
      */
     protected ImmutablePair<YangInstanceIdentifier, NormalizedNode> leafStringCase() {
         final YangInstanceIdentifier identifier =
-                YangInstanceIdentifier.create(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interfaces"))
+                YangInstanceIdentifier.of(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interfaces"))
                         .node(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface"))
                         .node(getMapEntryIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface", "name", "eth3"))
                         .node(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "config"))
@@ -167,7 +167,7 @@ public class CodecTestCasesBase {
      */
     protected ImmutablePair<YangInstanceIdentifier, NormalizedNode> leafBooleanCase() {
         final YangInstanceIdentifier identifier =
-                YangInstanceIdentifier.create(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interfaces"))
+                YangInstanceIdentifier.of(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interfaces"))
                         .node(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface"))
                         .node(getMapEntryIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface", "name", "eth3"))
                         .node(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "config"))
@@ -183,7 +183,7 @@ public class CodecTestCasesBase {
      */
     protected ImmutablePair<YangInstanceIdentifier, NormalizedNode> leafAgumentedCase() {
         final YangInstanceIdentifier identifier =
-                YangInstanceIdentifier.create(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interfaces"))
+                YangInstanceIdentifier.of(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interfaces"))
                         .node(getNodeIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface"))
                         .node(getMapEntryIdentifierOfNodeInModule(OC_INTERFACES_ID, "interface", "name", "br0"))
                         .node(YangInstanceIdentifier.NodeIdentifier.create(

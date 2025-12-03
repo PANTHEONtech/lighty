@@ -67,11 +67,13 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
 @RequestMapping(path = "netconf")
 public class NetconfDeviceRestService {
 
-    private static final InstanceIdentifier<Topology> NETCONF_TOPOLOGY_IID = InstanceIdentifier
-        .create(NetworkTopology.class)
-        .child(Topology.class, new TopologyKey(new TopologyId("topology-netconf")));
+    private static final DataObjectIdentifier<Topology> NETCONF_TOPOLOGY_ID = DataObjectIdentifier
+        .builder(NetworkTopology.class)
+        .child(Topology.class, new TopologyKey(new TopologyId("topology-netconf")))
+        .build();
     private static final long TIMEOUT = 1;
-    private static final InstanceIdentifier<Toaster> TOASTER_IID = InstanceIdentifier.create(Toaster.class);
+    private static final DataObjectIdentifier<Toaster> TOASTER_ID = DataObjectIdentifier.builder(Toaster.class)
+        .build();
 
     @Autowired
     @Qualifier("BindingDataBroker")

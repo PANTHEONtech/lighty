@@ -185,7 +185,7 @@ public class DeviceConnectionManager implements AutoCloseable {
                 .build();
 
         final WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-        tx.merge(LogicalDatastoreType.OPERATIONAL, IdentifierUtils.gnmiNodeIID(nodeId), operationalNode);
+        tx.merge(LogicalDatastoreType.OPERATIONAL, IdentifierUtils.gnmiNodeID(nodeId), operationalNode);
         tx.commit().get(TimeoutUtils.DATASTORE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
     }
 

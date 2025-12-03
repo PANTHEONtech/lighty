@@ -33,7 +33,7 @@
             <dependency>
                 <groupId>org.opendaylight.odlparent</groupId>
                 <artifactId>odlparent</artifactId>
-                <version>14.1.3</version>
+                <version>14.1.6</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -42,49 +42,56 @@
             <dependency>
                 <groupId>org.opendaylight.aaa</groupId>
                 <artifactId>aaa-artifacts</artifactId>
-                <version>0.21.2</version>
+                <version>0.22.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.controller</groupId>
                 <artifactId>controller-artifacts</artifactId>
-                <version>11.0.2</version>
+                <version>12.0.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.infrautils</groupId>
                 <artifactId>infrautils-artifacts</artifactId>
-                <version>7.1.7</version>
+                <version>7.1.9</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-artifacts</artifactId>
-                <version>14.0.18</version>
+                <version>15.0.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.netconf</groupId>
                 <artifactId>netconf-artifacts</artifactId>
-                <version>9.0.1</version>
+                <version>10.0.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.yangtools</groupId>
                 <artifactId>yangtools-artifacts</artifactId>
-                <version>14.0.17</version>
+                <version>14.0.20</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.bgpcep</groupId>
                 <artifactId>bgpcep-artifacts</artifactId>
-                <version>0.23.1</version>
+                <version>1.0.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.ietf</groupId>
+                <artifactId>ietf-artifacts</artifactId>
+                <version>1.0.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -103,7 +110,7 @@
             <dependency>
                 <groupId>com.typesafe</groupId>
                 <artifactId>config</artifactId>
-                <version>1.4.3</version>
+                <version>1.4.5</version>
             </dependency>
             <dependency>
                 <groupId>org.testng</groupId>
@@ -164,78 +171,78 @@
             <!--pekko management and bootstrap-->
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-remote_2.13</artifactId>
-                <version>1.0.3</version>
+                <artifactId>pekko-remote_3</artifactId>
+                <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-slf4j_2.13</artifactId>
-                <version>1.0.3</version>
+                <artifactId>pekko-slf4j_3</artifactId>
+                <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-cluster_2.13</artifactId>
-                <version>1.0.3</version>
+                <artifactId>pekko-cluster_3</artifactId>
+                <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-discovery_2.13</artifactId>
-                <version>1.0.3</version>
+                <artifactId>pekko-discovery_3</artifactId>
+                <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-protobuf_2.13</artifactId>
-                <version>1.0.3</version>
+                <artifactId>pekko-protobuf-v3_3</artifactId>
+                <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-coordination_2.13</artifactId>
-                <version>1.0.3</version>
+                <artifactId>pekko-coordination_3</artifactId>
+                <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-distributed-data_2.13</artifactId>
-                <version>1.0.3</version>
+                <artifactId>pekko-distributed-data_3</artifactId>
+                <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-cluster-tools_2.13</artifactId>
-                <version>1.0.3</version>
+                <artifactId>pekko-cluster-tools_3</artifactId>
+                <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-cluster-sharding_2.13</artifactId>
-                <version>1.0.3</version>
+                <artifactId>pekko-cluster-sharding_3</artifactId>
+                <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-actor_2.13</artifactId>
-                <version>1.0.3</version>
+                <artifactId>pekko-actor_3</artifactId>
+                <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-stream_2.13</artifactId>
-                <version>1.0.3</version>
+                <artifactId>pekko-stream_3</artifactId>
+                <version>1.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-management_2.13</artifactId>
-                <version>1.0.0</version>
+                <artifactId>pekko-management_3</artifactId>
+                <version>1.1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-management-cluster-http_2.13</artifactId>
-                <version>1.0.0</version>
+                <artifactId>pekko-management-cluster-http_3</artifactId>
+                <version>1.1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-management-cluster-bootstrap_2.13</artifactId>
-                <version>1.0.0</version>
+                <artifactId>pekko-management-cluster-bootstrap_3</artifactId>
+                <version>1.1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pekko</groupId>
-                <artifactId>pekko-discovery-kubernetes-api_2.13</artifactId>
-                <version>1.0.0</version>
+                <artifactId>pekko-discovery-kubernetes-api_3</artifactId>
+                <version>1.1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.json</groupId>
