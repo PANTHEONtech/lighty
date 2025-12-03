@@ -37,7 +37,7 @@
     <dependencies>
         <dependency>
             <groupId>io.lighty.gnmi</groupId>
-            <artifactId>gnmi-feature</artifactId>
+            <artifactId>odl-gnmi</artifactId>
             <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
