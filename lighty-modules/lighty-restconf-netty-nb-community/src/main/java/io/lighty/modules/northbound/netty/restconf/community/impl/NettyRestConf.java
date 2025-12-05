@@ -10,7 +10,6 @@ package io.lighty.modules.northbound.netty.restconf.community.impl;
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.modules.northbound.netty.restconf.community.impl.util.NettyRestConfUtils;
 import java.net.InetAddress;
-import java.util.concurrent.ExecutionException;
 import org.apache.shiro.web.env.WebEnvironment;
 import org.opendaylight.aaa.shiro.web.env.AAAShiroWebEnvironment;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
@@ -64,18 +63,14 @@ public class NettyRestConf extends AbstractLightyModule {
 
     private MdsalRestconfStreamRegistry mdsalRestconfStreamRegistry;
     private SimpleNettyEndpoint nettyEndpoint;
+    private MdsalDatabindProvider databindProvider;
+    private MdsalRestconfServer server;
 
     public NettyRestConf(final DOMDataBroker domDataBroker, final DOMRpcService domRpcService,
-            final DOMNotificationService domNotificationService,
-            final DOMActionService domActionService,
-            final DOMMountPointService domMountPointService,
-            final DOMSchemaService domSchemaService,
-            final InetAddress inetAddress,
-            final int httpPort,
-            final String restconfServletContextPath,
-            final String groupName,
-            final int workThreads,
-            final WebEnvironment webEnvironment) {
+            final DOMNotificationService domNotificationService, final DOMActionService domActionService,
+            final DOMMountPointService domMountPointService, final DOMSchemaService domSchemaService,
+            final InetAddress inetAddress, final int httpPort, final String restconfServletContextPath,
+            final String groupName, final int workThreads, final WebEnvironment webEnvironment) {
         this.domDataBroker = domDataBroker;
         this.domRpcService = domRpcService;
         this.domNotificationService = domNotificationService;
@@ -88,12 +83,11 @@ public class NettyRestConf extends AbstractLightyModule {
         this.groupName = groupName;
         this.workThreads = workThreads;
         this.webEnvironment = webEnvironment;
-        this.nettyEndpoint = null; //to resolve UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR
     }
 
     @Override
     protected boolean initProcedure() {
-        final MdsalDatabindProvider databindProvider = new MdsalDatabindProvider(domSchemaService);
+        databindProvider = new MdsalDatabindProvider(domSchemaService);
 
         this.mdsalRestconfStreamRegistry = new MdsalRestconfStreamRegistry(domDataBroker, domNotificationService,
             domSchemaService, new JaxRsLocationProvider(), databindProvider);
@@ -114,13 +108,12 @@ public class NettyRestConf extends AbstractLightyModule {
             new CreateDataChangeEventSubscriptionRpc(this.mdsalRestconfStreamRegistry, databindProvider,
                 domDataBroker);
 
-        final MdsalRestconfServer server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService,
+        server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService,
             domActionService, domMountPointService, createStreamRpc, subscribeDeviceRpc, establishSubscriptionRpc,
             modifySubscriptionRpc, deleteSubscriptionRpc, killSubscriptionRpc, createDataChangeEventSubscriptionRpc);
 
         final var tcpConfig = NettyRestConfUtils.getTcpConfig(
             IetfInetUtil.ipAddressFor(inetAddress), Uint16.valueOf(httpPort));
-
         final PrincipalService service = new AAAShiroPrincipalService((AAAShiroWebEnvironment) webEnvironment);
         final var serverStackGrouping = new HttpServerStackConfiguration(new TcpBuilder().setTcp(tcpConfig).build());
         final NettyEndpointConfiguration configuration = new NettyEndpointConfiguration(ErrorTagMapping.RFC8040,
@@ -134,14 +127,42 @@ public class NettyRestConf extends AbstractLightyModule {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:illegalCatch")
     protected boolean stopProcedure() {
-        try {
-            nettyEndpoint.close();
-        } catch (InterruptedException | ExecutionException e) {
-            LOG.error("Failed to stop Netty endpoint!", e);
-            return false;
+        boolean stopSuccessful = true;
+        if (nettyEndpoint != null) {
+            try {
+                nettyEndpoint.close();
+            } catch (Exception e) {
+                LOG.error("Failed to stop Netty endpoint!", e);
+                stopSuccessful = false;
+            }
+        }
+        if (mdsalRestconfStreamRegistry != null) {
+            try {
+                mdsalRestconfStreamRegistry.close();
+            } catch (Exception e) {
+                LOG.error("Failed to stop MdsalRestconfStreamRegistry!", e);
+                stopSuccessful = false;
+            }
+        }
+        if (server != null) {
+            try {
+                server.close();
+            } catch (Exception e) {
+                LOG.error("Failed to stop MdsalRestconfServer!", e);
+                stopSuccessful = false;
+            }
+        }
+        if (databindProvider != null) {
+            try {
+                databindProvider.close();
+            } catch (Exception e) {
+                LOG.error("Failed to stop MdsalDatabindProvider!", e);
+                stopSuccessful = false;
+            }
         }
         LOG.info("Netty endpoint stopped successfully.");
-        return true;
+        return stopSuccessful;
     }
 }
