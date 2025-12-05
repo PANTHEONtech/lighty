@@ -72,7 +72,9 @@ public class NettyRestConf extends AbstractLightyModule {
         this.domSchemaService = domSchemaService;
         this.inetAddress = inetAddress;
         this.httpPort = httpPort;
-        this.restconfServletContextPath = restconfServletContextPath;
+        // Remove "/" if it appears as the first character.
+        this.restconfServletContextPath = restconfServletContextPath.startsWith("/")
+            ? restconfServletContextPath.substring(1) : restconfServletContextPath;
         this.webEnvironment = webEnvironment;
         this.nettyEndpoint = null; //to resolve UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR
     }
