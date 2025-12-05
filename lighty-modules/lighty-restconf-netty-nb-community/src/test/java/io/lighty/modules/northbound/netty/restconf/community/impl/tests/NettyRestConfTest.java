@@ -17,5 +17,4 @@ public class NettyRestConfTest extends NettyRestConfTestBase {
         Assert.assertNotNull(getLightyController());
         Assert.assertNotNull(getNettyRestConf());
     }
-
 }

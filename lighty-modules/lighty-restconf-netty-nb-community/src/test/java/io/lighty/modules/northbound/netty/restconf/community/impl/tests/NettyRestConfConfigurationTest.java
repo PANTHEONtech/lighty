@@ -19,10 +19,8 @@ public class NettyRestConfConfigurationTest {
 
     @Test
     public void testNettyRestConfConfiguration() {
-        final NettyRestConfConfiguration defaultRestConfConfiguration =
-            NettyRestConfUtils.getDefaultNettyRestConfConfiguration();
-        final NettyRestConfConfiguration restConfConfiguration =
-            new NettyRestConfConfiguration(defaultRestConfConfiguration);
+        final var defaultRestConfConfiguration = NettyRestConfUtils.getDefaultNettyRestConfConfiguration();
+        final var restConfConfiguration = new NettyRestConfConfiguration(defaultRestConfConfiguration);
 
         Assert.assertEquals(defaultRestConfConfiguration, restConfConfiguration);
         Assert.assertEquals(restConfConfiguration.hashCode(), defaultRestConfConfiguration.hashCode());
