@@ -3,9 +3,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at https://www.eclipse.org/legal/epl-v10.html
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package io.lighty.modules.northbound.netty.restconf.community.impl.tests;
 
 import io.lighty.core.controller.impl.config.ConfigurationException;
@@ -19,10 +18,8 @@ public class NettyRestConfConfigurationTest {
 
     @Test
     public void testNettyRestConfConfiguration() {
-        final NettyRestConfConfiguration defaultRestConfConfiguration =
-            NettyRestConfUtils.getDefaultNettyRestConfConfiguration();
-        final NettyRestConfConfiguration restConfConfiguration =
-            new NettyRestConfConfiguration(defaultRestConfConfiguration);
+        final var defaultRestConfConfiguration = NettyRestConfUtils.getDefaultNettyRestConfConfiguration();
+        final var restConfConfiguration = new NettyRestConfConfiguration(defaultRestConfConfiguration);
 
         Assert.assertEquals(defaultRestConfConfiguration, restConfConfiguration);
         Assert.assertEquals(restConfConfiguration.hashCode(), defaultRestConfConfiguration.hashCode());
