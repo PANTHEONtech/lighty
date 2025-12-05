@@ -48,6 +48,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
 
         <!--Tests-->
         <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>singlenode-configuration</artifactId>
             <scope>test</scope>
@@ -56,6 +61,12 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
             <groupId>org.opendaylight.netconf</groupId>
             <artifactId>restconf-server-api-testlib</artifactId>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>junit-jupiter-api</artifactId>
+                    <groupId>org.junit.jupiter</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.netconf.model</groupId>
