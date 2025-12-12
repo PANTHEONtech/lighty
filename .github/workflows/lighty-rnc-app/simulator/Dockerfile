@@ -1,6 +1,6 @@
 ARG SIMULATOR_VERSION="22.1.0"
 
-FROM alpine:3.22.0 AS clone
+FROM alpine:3.23.0 AS clone
 
 ARG SIMULATOR_VERSION
 RUN apk add git
