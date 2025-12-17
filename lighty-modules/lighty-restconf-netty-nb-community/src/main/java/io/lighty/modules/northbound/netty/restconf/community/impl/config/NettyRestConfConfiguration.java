@@ -127,8 +127,7 @@ public class NettyRestConfConfiguration {
     }
 
     public String getRestconfServletContextPath() {
-        return restconfServletContextPath.startsWith("/")
-            ? restconfServletContextPath.substring(1) : restconfServletContextPath;
+        return restconfServletContextPath;
     }
 
     @Override
