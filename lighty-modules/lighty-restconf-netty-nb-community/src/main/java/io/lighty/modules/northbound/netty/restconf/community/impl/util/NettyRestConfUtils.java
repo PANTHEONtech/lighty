@@ -10,6 +10,7 @@ package io.lighty.modules.northbound.netty.restconf.community.impl.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.lighty.aaa.config.AAAConfiguration;
 import io.lighty.aaa.config.CertificateManagerConfig;
 import io.lighty.aaa.util.AAAConfigUtils;
@@ -76,6 +77,7 @@ public final class NettyRestConfUtils {
     public static final int MAXIMUM_FRAGMENT_LENGTH = 0;
     public static final int IDLE_TIMEOUT = 30000;
     public static final int HEARTBEAT_INTERVAL = 10000;
+    private static final String RESTCONF_SERVLET_CONTEXT_PATH = "restconfServletContextPath";
 
     private NettyRestConfUtils() {
         throw new UnsupportedOperationException();
@@ -153,7 +155,7 @@ public final class NettyRestConfUtils {
             LOG.warn("Json config does not contain {} element. Using defaults.", RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
             return new NettyRestConfConfiguration();
         }
-        final JsonNode restconfNode = configNode.path(RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
+        final JsonNode restconfNode = removeSlashFromContextPath(configNode.path(RESTCONF_CONFIG_ROOT_ELEMENT_NAME));
         NettyRestConfConfiguration restconfConfiguration = null;
         try {
             restconfConfiguration = mapper.treeToValue(restconfNode, NettyRestConfConfiguration.class);
@@ -189,7 +191,7 @@ public final class NettyRestConfUtils {
             LOG.warn("Json config does not contain {} element. Using defaults.", RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
             return getDefaultNettyRestConfConfiguration(lightyServices);
         }
-        final JsonNode restconfNode = configNode.path(RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
+        final JsonNode restconfNode = removeSlashFromContextPath(configNode.path(RESTCONF_CONFIG_ROOT_ELEMENT_NAME));
 
         NettyRestConfConfiguration restconfConfiguration = null;
         try {
@@ -256,5 +258,21 @@ public final class NettyRestConfUtils {
     public static JaxRsEndpointConfiguration getStreamsConfiguration(final String restconfPath) {
         return new JaxRsEndpointConfiguration(ErrorTagMapping.RFC8040, PrettyPrintParam.FALSE,
             Uint16.valueOf(MAXIMUM_FRAGMENT_LENGTH), Uint32.valueOf(HEARTBEAT_INTERVAL), restconfPath);
+    }
+
+    /**
+     * Removes the leading "/" from the value of {@code restconfServletContextPath}, if present.
+     *
+     * @param restconfNode the {@link JsonNode} containing the configuration
+     * @return the updated {@link JsonNode}
+     */
+    private static JsonNode removeSlashFromContextPath(final JsonNode restconfNode) {
+        if (restconfNode instanceof ObjectNode restconfObjectNode && restconfNode.has(RESTCONF_SERVLET_CONTEXT_PATH)) {
+            final var oldValue = restconfObjectNode.path(RESTCONF_SERVLET_CONTEXT_PATH).asText();
+            if (oldValue.startsWith("/")) {
+                restconfObjectNode.put(RESTCONF_SERVLET_CONTEXT_PATH, oldValue.substring(1));
+            }
+        }
+        return restconfNode;
     }
 }
