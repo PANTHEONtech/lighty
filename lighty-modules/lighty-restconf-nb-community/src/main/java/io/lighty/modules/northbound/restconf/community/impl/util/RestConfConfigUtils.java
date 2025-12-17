@@ -10,6 +10,7 @@ package io.lighty.modules.northbound.restconf.community.impl.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.lighty.core.controller.api.LightyServices;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
@@ -30,6 +31,7 @@ public final class RestConfConfigUtils {
     private static final Logger LOG = LoggerFactory.getLogger(RestConfConfigUtils.class);
 
     public static final String RESTCONF_CONFIG_ROOT_ELEMENT_NAME = "restconf";
+    private static final String RESTCONF_SERVLET_CONTEXT_PATH = "restconfServletContextPath";
     public static final Set<YangModuleInfo> YANG_MODELS = Set.of(
             org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104
                     .YangModuleInfoImpl.getInstance(),
@@ -73,7 +75,7 @@ public final class RestConfConfigUtils {
             LOG.warn("Json config does not contain {} element. Using defaults.", RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
             return new RestConfConfiguration();
         }
-        final JsonNode restconfNode = configNode.path(RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
+        final JsonNode restconfNode = removeSlashFromContextPath(configNode.path(RESTCONF_CONFIG_ROOT_ELEMENT_NAME));
         RestConfConfiguration restconfConfiguration = null;
         try {
             restconfConfiguration = mapper.treeToValue(restconfNode, RestConfConfiguration.class);
@@ -108,8 +110,7 @@ public final class RestConfConfigUtils {
             LOG.warn("Json config does not contain {} element. Using defaults.", RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
             return getDefaultRestConfConfiguration(lightyServices);
         }
-        final JsonNode restconfNode = configNode.path(RESTCONF_CONFIG_ROOT_ELEMENT_NAME);
-
+        final JsonNode restconfNode = removeSlashFromContextPath(configNode.path(RESTCONF_CONFIG_ROOT_ELEMENT_NAME));
         RestConfConfiguration restconfConfiguration = null;
         try {
             restconfConfiguration = mapper.treeToValue(restconfNode, RestConfConfiguration.class);
@@ -173,5 +174,21 @@ public final class RestConfConfigUtils {
     public static JaxRsEndpointConfiguration getStreamsConfiguration(final String restconfPath) {
         return new JaxRsEndpointConfiguration(ErrorTagMapping.RFC8040, PrettyPrintParam.FALSE,
             Uint16.valueOf(MAXIMUM_FRAGMENT_LENGTH), Uint32.valueOf(HEARTBEAT_INTERVAL), restconfPath);
+    }
+
+    /**
+     * Removes the leading "/" from the value of {@code restconfServletContextPath}, if present.
+     *
+     * @param restconfNode the {@link JsonNode} containing the configuration
+     * @return the updated {@link JsonNode}
+     */
+    private static JsonNode removeSlashFromContextPath(final JsonNode restconfNode) {
+        if (restconfNode instanceof ObjectNode restconfObjectNode && restconfNode.has(RESTCONF_SERVLET_CONTEXT_PATH)) {
+            final var oldValue = restconfObjectNode.path(RESTCONF_SERVLET_CONTEXT_PATH).asText();
+            if (oldValue.startsWith("/")) {
+                restconfObjectNode.put(RESTCONF_SERVLET_CONTEXT_PATH, oldValue.substring(1));
+            }
+        }
+        return restconfNode;
     }
 }

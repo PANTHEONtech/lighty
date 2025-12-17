@@ -36,7 +36,7 @@ public class RestConfConfiguration {
 
     private InetAddress inetAddress = InetAddress.getLoopbackAddress();
     private int httpPort = 8888;
-    private String restconfServletContextPath = "/restconf";
+    private String restconfServletContextPath = "restconf";
 
     public RestConfConfiguration() {
     }
@@ -132,8 +132,7 @@ public class RestConfConfiguration {
     }
 
     public String getRestconfServletContextPath() {
-        return restconfServletContextPath.startsWith("/")
-            ? this.restconfServletContextPath.substring(1) : this.restconfServletContextPath;
+        return this.restconfServletContextPath;
     }
 
     public void setRestconfServletContextPath(final String restconfServletContextPath) {
