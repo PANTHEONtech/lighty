@@ -21,12 +21,12 @@ build the project: ```mvn clean install```
 ### Start this demo example
 * build the project using ```mvn clean install```
 * go to target directory ```cd lighty-examples/lighty-community-restconf-netconf-app/target``` 
-* unzip example application bundle ```unzip  lighty-community-restconf-netconf-app-23.0.0-SNAPSHOT-bin.zip```
-* go to unzipped application directory ```cd lighty-community-restconf-netconf-app-23.0.0-SNAPSHOT```
-* start controller example controller application ```java -jar lighty-community-restconf-netconf-app-23.0.0-SNAPSHOT.jar``` 
+* unzip example application bundle ```unzip  lighty-community-restconf-netconf-app-23.0.0-bin.zip```
+* go to unzipped application directory ```cd lighty-community-restconf-netconf-app-23.0.0```
+* start controller example controller application ```java -jar lighty-community-restconf-netconf-app-23.0.0.jar``` 
 
 ### Test example application
-Once example application has been started using command ```java -jar lighty-community-restconf-netconf-app-23.0.0-SNAPSHOT.jar``` 
+Once example application has been started using command ```java -jar lighty-community-restconf-netconf-app-23.0.0.jar``` 
 RESTCONF web interface is available at URL ```http://localhost:8888/restconf/*```
 
 ##### URLs to start with
@@ -42,7 +42,7 @@ URLs for OpenApi: https://datatracker.ietf.org/doc/html/rfc8040
 
 ### Use custom config files
 There are two separated config files: for NETCONF SBP single node and for cluster.
-`java -jar lighty-community-restconf-netconf-app-23.0.0-SNAPSHOT.jar /path/to/singleNodeConfig.json`
+`java -jar lighty-community-restconf-netconf-app-23.0.0.jar /path/to/singleNodeConfig.json`
 
 Example configuration for single node is [here](src/main/assembly/resources/sampleConfigSingleNode.json)
 
