@@ -38,8 +38,9 @@
             <artifactId>lighty-aaa-encryption-service</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.lighty.modules.gnmi.southbound</groupId>
-            <artifactId>lighty-gnmi-sb</artifactId>
+            <groupId>org.opendaylight.gnmi</groupId>
+            <artifactId>gnmi-sb</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.applications</groupId>
