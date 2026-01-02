@@ -38,8 +38,9 @@
             <artifactId>lighty-aaa-encryption-service</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.lighty.modules.gnmi.southbound</groupId>
-            <artifactId>lighty-gnmi-sb</artifactId>
+            <groupId>org.opendaylight.gnmi</groupId>
+            <artifactId>gnmi-sb</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.applications</groupId>
@@ -48,6 +49,26 @@
         <dependency>
             <groupId>org.opendaylight.aaa</groupId>
             <artifactId>aaa-encrypt-service-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.gnmi</groupId>
+            <artifactId>certificates-storage-model</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.gnmi</groupId>
+            <artifactId>force-capabilities</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.gnmi</groupId>
+            <artifactId>topology-model</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.gnmi</groupId>
+            <artifactId>yang-storage-model</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.resources</groupId>
