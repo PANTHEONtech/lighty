@@ -23,6 +23,7 @@
     <modules>
         <module>lighty-rcgnmi-app</module>
         <module>lighty-rcgnmi-app-module</module>
+        <module>gnmi-device-simulator</module>
     </modules>
 
     <profiles>

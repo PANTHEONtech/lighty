@@ -10,8 +10,8 @@ package io.lighty.applications.rcgnmi.module;
 
 import io.lighty.applications.util.ModulesConfig;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
-import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
+import org.opendaylight.gnmi.southbound.yangmodule.config.GnmiConfiguration;
 
 public class RcGnmiAppConfiguration {
     private final ControllerConfiguration controllerConfig;
