@@ -146,7 +146,7 @@
         <!-- gNMI -->
         <dependency>
             <groupId>io.lighty.modules.gnmi.southbound</groupId>
-            <artifactId>lighty-gnmi-sb</artifactId>
+            <artifactId>lighty-gnmi</artifactId>
         </dependency>
 
 
