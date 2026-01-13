@@ -13,15 +13,16 @@ import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 
 public final class GnmiConfigUtils {
     public static final Set<YangModuleInfo> YANG_MODELS = Set.of(
-            org.opendaylight.yang.svc.v1.urn.lighty.gnmi.topology.rev210316
-                    .YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.svc.v1.urn.lighty.gnmi.yang.storage.rev210331
-                    .YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.svc.v1.urn.lighty.gnmi.force.capabilities.rev210702
-                    .YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.svc.v1.urn.lighty.gnmi.certificate.storage.rev210504
-                    .YangModuleInfoImpl.getInstance()
+        org.opendaylight.yang.svc.v1.urn.opendaylight.gnmi.topology.rev210316
+            .YangModuleInfoImpl.getInstance(),
+        org.opendaylight.yang.svc.v1.urn.opendaylight.gnmi.yang.storage.rev210331
+            .YangModuleInfoImpl.getInstance(),
+        org.opendaylight.yang.svc.v1.urn.opendaylight.gnmi.force.capabilities.rev210702
+            .YangModuleInfoImpl.getInstance(),
+        org.opendaylight.yang.svc.v1.urn.opendaylight.gnmi.certificate.storage.rev210504
+            .YangModuleInfoImpl.getInstance()
     );
+
 
     public static final Set<YangModuleInfo> OPENCONFIG_YANG_MODELS = Set.of(
         org.opendaylight.yang.svc.v1.http.openconfig.net.yang.aaa.rev200730.YangModuleInfoImpl.getInstance(),
