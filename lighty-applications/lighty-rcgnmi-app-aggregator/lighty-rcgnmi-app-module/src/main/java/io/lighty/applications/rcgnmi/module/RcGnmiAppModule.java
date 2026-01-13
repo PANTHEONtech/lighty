@@ -15,8 +15,6 @@ import io.lighty.core.controller.api.LightyServices;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
-import io.lighty.gnmi.southbound.lightymodule.GnmiSouthboundModuleBuilder;
-import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
 import io.lighty.gnmi.southbound.lightymodule.LightyGnmiSouthboundModule;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
@@ -43,6 +41,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
+import org.opendaylight.gnmi.southbound.yangmodule.config.GnmiConfiguration;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev240202.AaaEncryptServiceConfig;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev240202.AaaEncryptServiceConfigBuilder;
 import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
@@ -119,13 +118,8 @@ public class RcGnmiAppModule {
                                                 final AAAEncryptionService encryptionService,
                                                 final CrossSourceStatementReactor reactor) {
 
-        return new GnmiSouthboundModuleBuilder()
-                .withConfig(gnmiConfiguration)
-                .withLightyServices(services)
-                .withExecutorService(gnmiExecService)
-                .withEncryptionService(encryptionService)
-                .withReactor(reactor)
-                .build();
+        return new LightyGnmiSouthboundModule(services, gnmiExecService, encryptionService, gnmiConfiguration,
+            customReactor);
     }
 
     private void startAndWaitLightyModule(final LightyModule lightyModule) throws RcGnmiAppException {
