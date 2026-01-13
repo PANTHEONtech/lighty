@@ -74,9 +74,9 @@
         </dependency>
 
         <dependency>
-            <groupId>io.lighty.modules.gnmi.southbound</groupId>
-            <artifactId>lighty-gnmi-sb</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.opendaylight.gnmi</groupId>
+            <artifactId>gnmi-sb</artifactId>
+            <version>1.0.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
