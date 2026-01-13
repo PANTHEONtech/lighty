@@ -52,22 +52,18 @@
         <dependency>
             <groupId>org.opendaylight.gnmi</groupId>
             <artifactId>certificates-storage-model</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.gnmi</groupId>
             <artifactId>force-capabilities</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.gnmi</groupId>
             <artifactId>topology-model</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.gnmi</groupId>
             <artifactId>yang-storage-model</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.resources</groupId>
