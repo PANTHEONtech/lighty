@@ -42,10 +42,9 @@ import org.slf4j.LoggerFactory;
 /**
  * OSGi Declarative Service component starting the gNMI southbound provider.
  */
-@Component(immediate = true, service = GnmiSouthboundModule.class)
-public final class GnmiSouthboundModule {
-
-    private static final Logger LOG = LoggerFactory.getLogger(GnmiSouthboundModule.class);
+@Component(immediate = true, service = LightyGnmiSouthboundModule.class)
+public final class LightyGnmiSouthboundModule {
+    private static final Logger LOG = LoggerFactory.getLogger(LightyGnmiSouthboundModule.class);
 
     private final DataBroker dataBroker;
     private final RpcProviderService rpcProviderService;
@@ -59,7 +58,7 @@ public final class GnmiSouthboundModule {
     private GnmiSouthboundProvider gnmiProvider;
 
     @Activate
-    public GnmiSouthboundModule(
+    public LightyGnmiSouthboundModule(
         @Reference DataBroker dataBroker,
         @Reference RpcProviderService rpcProviderService,
         @Reference DOMMountPointService domMountPointService,
@@ -70,7 +69,7 @@ public final class GnmiSouthboundModule {
             encryptionService, parserFactory, xpathParserFactory, null);
     }
 
-    public GnmiSouthboundModule(DataBroker dataBroker, RpcProviderService rpcProviderService,
+    public LightyGnmiSouthboundModule(DataBroker dataBroker, RpcProviderService rpcProviderService,
         DOMMountPointService domMountPointService, AAAEncryptionService encryptionService,
         YangParserFactory parserFactory, YangXPathParserFactory xpathParserFactory,
         GnmiConfiguration gnmiConfiguration) {
