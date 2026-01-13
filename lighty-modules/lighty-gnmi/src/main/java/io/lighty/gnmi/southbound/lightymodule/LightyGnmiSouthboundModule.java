@@ -29,9 +29,9 @@ import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementR
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class GnmiSouthboundModule extends AbstractLightyModule {
+public final class LightyGnmiSouthboundModule extends AbstractLightyModule {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GnmiSouthboundModule.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LightyGnmiSouthboundModule.class);
     private final LightyServices lightyServices;
     private final AAAEncryptionService encryptionService;
     private final GnmiConfiguration gnmiConfiguration;
@@ -39,7 +39,7 @@ public final class GnmiSouthboundModule extends AbstractLightyModule {
     private final CrossSourceStatementReactor customReactor;
     private GnmiSouthboundProvider gnmiProvider;
 
-    public GnmiSouthboundModule(final LightyServices services, final ExecutorService gnmiExecutorService,
+    public LightyGnmiSouthboundModule(final LightyServices services, final ExecutorService gnmiExecutorService,
                                 final AAAEncryptionService encryptionService,
                                 @Nullable final GnmiConfiguration configuration,
                                 @Nullable final CrossSourceStatementReactor customReactor) {
