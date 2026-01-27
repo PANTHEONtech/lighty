@@ -15,7 +15,7 @@ import io.lighty.core.controller.api.LightyServices;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
-import io.lighty.gnmi.southbound.lightymodule.GnmiSouthboundModule;
+import io.lighty.gnmi.southbound.lightymodule.LightyGnmiSouthboundModule;
 import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
@@ -59,7 +59,7 @@ public class RcGnmiAppModule {
 
     private LightyController lightyController;
     private CommunityRestConf lightyRestconf;
-    private GnmiSouthboundModule gnmiSouthboundModule;
+    private LightyGnmiSouthboundModule lightyGnmiSouthboundModule;
 
     public RcGnmiAppModule(final RcGnmiAppConfiguration appModuleConfig) {
         LOG.info("Creating instance of RgNMI lighty.io module...");
@@ -80,10 +80,10 @@ public class RcGnmiAppModule {
             startAndWaitLightyModule(this.lightyRestconf);
 
             final AAAEncryptionService encryptionService = createEncryptionServiceWithErrorHandling();
-            this.gnmiSouthboundModule = initGnmiModule(this.lightyController.getServices(),
+            this.lightyGnmiSouthboundModule = initGnmiModule(this.lightyController.getServices(),
                     lightyController.getServices().getYangParserFactory(), encryptionService,
                     new AntlrXPathParserFactory(), appModuleConfig.getGnmiConfiguration());
-            gnmiSouthboundModule.init();
+            lightyGnmiSouthboundModule.init();
             lightyRestconf.startServer();
 
         } catch (RcGnmiAppException e) {
@@ -108,13 +108,13 @@ public class RcGnmiAppModule {
         return CommunityRestConfBuilder.from(conf).build();
     }
 
-    private GnmiSouthboundModule initGnmiModule(final LightyServices services,
+    private LightyGnmiSouthboundModule initGnmiModule(final LightyServices services,
                                                 final YangParserFactory parserFactory,
                                                 final AAAEncryptionService encryptionService,
                                                 final YangXPathParserFactory xpathParserFactory,
                                                 final GnmiConfiguration gnmiConfig) {
 
-        return new GnmiSouthboundModule(services.getBindingDataBroker(), services.getRpcProviderService(),
+        return new LightyGnmiSouthboundModule(services.getBindingDataBroker(), services.getRpcProviderService(),
             services.getDOMMountPointService(), encryptionService, parserFactory, xpathParserFactory, gnmiConfig);
     }
 
@@ -150,8 +150,8 @@ public class RcGnmiAppModule {
         if (this.lightyController != null) {
             success &= lightyController.shutdown(lightyModuleTimeout, DEFAULT_LIGHTY_MODULE_TIME_UNIT);
         }
-        if (this.gnmiSouthboundModule != null) {
-            gnmiSouthboundModule.close();
+        if (this.lightyGnmiSouthboundModule != null) {
+            lightyGnmiSouthboundModule.close();
         }
         if (success) {
             LOG.info("RCgNMI lighty.io module stopped successfully!");
