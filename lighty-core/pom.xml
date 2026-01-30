@@ -11,7 +11,7 @@
 
     <groupId>io.lighty.core</groupId>
     <artifactId>lighty-core-aggregator</artifactId>
-    <version>23.0.0</version>
+    <version>23.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
