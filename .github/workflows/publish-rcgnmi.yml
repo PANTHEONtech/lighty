@@ -31,10 +31,10 @@ jobs:
     steps:
       - name: Clone Repository
         if: ${{ github.event.inputs.checkout-ref == 'default' }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: "Clone Repository, Ref: ${{ github.event.inputs.checkout-ref }}"
         if: ${{ github.event.inputs.checkout-ref != 'default' }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.inputs.checkout-ref }}
       - name: Set up JDK 21
