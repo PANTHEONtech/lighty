@@ -1,4 +1,4 @@
-# lighty.io 23
+# lighty.io 24
 __lighty.io__ is a Software Development Kit powered by [OpenDaylight](https://www.opendaylight.org/) to support, ease & accelerate the development of
 Software-Defined Networking (SDN) solutions in Java. Developed by [PANTHEON.tech](https://pantheon.tech).
 
@@ -8,7 +8,7 @@ It utilizes core [OpenDaylight](https://www.opendaylight.org/) components, which
 [![Maven Central](https://maven-badges.sml.io/maven-central/io.lighty.core/lighty-bom/badge.svg)](https://maven-badges.sml.io/maven-central/io.lighty.core/lighty-bom)
 [![License](https://img.shields.io/badge/License-EPL%201.0-blue.svg)](https://opensource.org/licenses/EPL-1.0)
 
-_This branch maintains compatibility with __OpenDaylight 2025-09 Vanadium,__ release._
+_This branch maintains compatibility with __OpenDaylight 2026-03 Chromium,__ release._
 
 ## Features
 - [x] __Removed Karaf__: Having Java SE as a runtime, you can use a framework of your choice, not only Karaf
