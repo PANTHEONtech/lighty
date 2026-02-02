@@ -35,10 +35,6 @@
         <module>lighty-modules</module>
         <module>lighty-resources</module>
         <module>lighty-tests-report</module>
-        <module>bnd-parent</module>
-        <module>features</module>
-        <module>gnmi-parent</module>
-        <module>karaf</module>
     </modules>
 
     <build>

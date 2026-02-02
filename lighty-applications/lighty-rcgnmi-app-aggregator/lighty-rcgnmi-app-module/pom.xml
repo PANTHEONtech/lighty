@@ -50,6 +50,22 @@
             <artifactId>aaa-encrypt-service-impl</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.opendaylight.gnmi</groupId>
+            <artifactId>certificates-storage-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.gnmi</groupId>
+            <artifactId>force-capabilities</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.gnmi</groupId>
+            <artifactId>topology-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.gnmi</groupId>
+            <artifactId>yang-storage-model</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>singlenode-configuration</artifactId>
             <scope>test</scope>
