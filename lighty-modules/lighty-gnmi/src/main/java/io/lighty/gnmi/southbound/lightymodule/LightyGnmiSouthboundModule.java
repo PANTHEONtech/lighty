@@ -32,17 +32,9 @@ import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.opendaylight.yangtools.yang.parser.rfc7950.reactor.RFC7950Reactors;
 import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
 import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * OSGi Declarative Service component starting the gNMI southbound provider.
- */
-@Component(immediate = true, service = LightyGnmiSouthboundModule.class)
 public final class LightyGnmiSouthboundModule {
     private static final Logger LOG = LoggerFactory.getLogger(LightyGnmiSouthboundModule.class);
 
@@ -57,18 +49,6 @@ public final class LightyGnmiSouthboundModule {
     private ExecutorService gnmiExecutor;
     private GnmiSouthboundProvider gnmiProvider;
 
-    @Activate
-    public LightyGnmiSouthboundModule(
-        @Reference DataBroker dataBroker,
-        @Reference RpcProviderService rpcProviderService,
-        @Reference DOMMountPointService domMountPointService,
-        @Reference AAAEncryptionService encryptionService,
-        @Reference YangParserFactory parserFactory,
-        @Reference YangXPathParserFactory xpathParserFactory) {
-        this(dataBroker, rpcProviderService, domMountPointService,
-            encryptionService, parserFactory, xpathParserFactory, null);
-    }
-
     public LightyGnmiSouthboundModule(DataBroker dataBroker, RpcProviderService rpcProviderService,
         DOMMountPointService domMountPointService, AAAEncryptionService encryptionService,
         YangParserFactory parserFactory, YangXPathParserFactory xpathParserFactory,
@@ -82,7 +62,6 @@ public final class LightyGnmiSouthboundModule {
         this.gnmiConfiguration = gnmiConfiguration;
     }
 
-    @Activate
     public void init() {
         LOG.info("Starting ODL gNMI Southbound Component");
         gnmiExecutor = Executors.newFixedThreadPool(4);
@@ -109,7 +88,6 @@ public final class LightyGnmiSouthboundModule {
     }
 
     @SuppressWarnings({"checkstyle:illegalCatch"})
-    @Deactivate
     public void close() {
         LOG.info("Stopping ODL gNMI Southbound Component");
         if (gnmiProvider != null) {
