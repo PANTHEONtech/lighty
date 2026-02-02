@@ -8,8 +8,8 @@
 
 package io.lighty.gnmi.southbound.lightymodule;
 
-import static io.lighty.gnmi.southbound.lightymodule.util.GnmiConfigUtils.OPENCONFIG_YANG_MODELS;
 import static java.util.Objects.requireNonNull;
+import static org.opendaylight.gnmi.southbound.yangmodule.util.GnmiConfigUtils.OPENCONFIG_YANG_MODELS;
 
 import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
 import java.nio.file.Path;
