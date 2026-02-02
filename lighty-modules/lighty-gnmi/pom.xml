@@ -98,10 +98,5 @@
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-xpath-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.service.component.annotations</artifactId>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 </project>
