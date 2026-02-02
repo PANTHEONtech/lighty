@@ -44,7 +44,7 @@
     },
     "gnmi": {
         "initialYangsPaths" : [
-          "../../lighty-models/openconfig-models/src/main/yang"
+          "../../lighty-modules/lighty-gnmi/target/yang-files/META-INF/yang"
         ],
         "initialYangModels" : [
             {"name": "ietf-interfaces", "revision": "2018-02-20", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-interfaces"},
