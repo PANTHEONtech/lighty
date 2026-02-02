@@ -58,7 +58,7 @@ cp ../../lighty-applications/lighty-rcgnmi-app-aggregator/lighty-gnmi-device-sim
 
 Start the application with pre-prepared configuration [simulator_config.json](simulator/simulator_config.json)
 ```
-java -jar gnmi-device-simulator-23.0.0-SNAPSHOT.jar -c example_config.json
+java -jar lighty-gnmi-device-simulator-23.0.0-SNAPSHOT.jar -c simulator/simulator_config.json 
 ```
 
 ### Add client certificates to lighty.io gNMI keystore
