@@ -30,6 +30,11 @@
             <artifactId>gnmi-device-simulator</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.gnmi</groupId>
+            <artifactId>openconfig-models</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -55,6 +60,8 @@
                             </filter>
                         </filters>
                         <transformers>
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+
                             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                 <mainClass>org.opendaylight.gnmi.simulatordevice.main.GnmiSimulatorApp</mainClass>
                             </transformer>
