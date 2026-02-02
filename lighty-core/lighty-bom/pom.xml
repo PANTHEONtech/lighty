@@ -56,13 +56,6 @@
                 <version>23.0.0-SNAPSHOT</version>
             </dependency>
 
-            <!-- Models -->
-            <dependency>
-                <groupId>io.lighty.models</groupId>
-                <artifactId>openconfig-models</artifactId>
-                <version>23.0.0-SNAPSHOT</version>
-            </dependency>
-
             <!-- Modules -->
             <dependency>
                 <groupId>io.lighty.modules.tests</groupId>
