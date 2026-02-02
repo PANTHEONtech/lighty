@@ -6,7 +6,7 @@
     "certKeyPath": "certificates/server-pkcs8.key",
     "initialConfigDataPath": "simulator/initialConfigJsonData.json",
     "initialStateDataPath": "simulator/initialStateJsonData.json",
-    "yangsPath": "../../lighty-models/openconfig-models/src/main/yang",
+    "yangsPath": "../../lighty-modules/lighty-gnmi/target/yang-files/META-INF/yang",
     "username": "admin",
     "password": "admin",
     "schemaServiceConfig": {
