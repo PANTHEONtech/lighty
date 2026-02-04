@@ -17,6 +17,7 @@ import javax.servlet.DispatcherType;
 import javax.servlet.ServletException;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -105,6 +106,9 @@ public abstract class AbstractLightyWebServer implements WebServer {
                 urlPattern -> handler.addServlet(servletHolder, urlPattern)
             );
         });
+
+        // 5. Add session handler
+        handler.setSessionHandler(new SessionHandler());
 
         restart(handler);
 
