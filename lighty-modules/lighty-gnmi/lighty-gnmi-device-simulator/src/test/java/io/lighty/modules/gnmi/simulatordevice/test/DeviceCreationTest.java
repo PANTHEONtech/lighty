@@ -21,7 +21,7 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
-public class DeviceCreationTest {
+class DeviceCreationTest {
 
     private static final String INIT_DATA_PATH = "src/test/resources/initData";
     private static final String SIMULATOR_CONFIG = "/initData/simulator_config.json";
@@ -29,7 +29,7 @@ public class DeviceCreationTest {
     public static final String PASSWORD_TEST = "Test";
 
     @Test
-    public void deviceInitiatedWithDataTest()
+    void deviceInitiatedWithDataTest()
             throws IOException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfigurationMultipleTopElement = GnmiSimulatorConfUtils
@@ -72,7 +72,7 @@ public class DeviceCreationTest {
     }
 
     @Test
-    public void deviceInitiatedWithNoDataTest()
+    void deviceInitiatedWithNoDataTest()
             throws IOException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
@@ -93,7 +93,7 @@ public class DeviceCreationTest {
     }
 
     @Test
-    public void deviceInitiatedWithAuthTest()
+    void deviceInitiatedWithAuthTest()
             throws IOException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
@@ -117,7 +117,7 @@ public class DeviceCreationTest {
 
 
     @Test
-    public void initialDataPresentMultipleTopElemsTest()
+    void initialDataPresentMultipleTopElemsTest()
             throws IOException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
@@ -165,7 +165,7 @@ public class DeviceCreationTest {
     }
 
     @Test
-    public void initialDataPresentOneTopElemTest()
+    void initialDataPresentOneTopElemTest()
             throws IOException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
@@ -213,7 +213,7 @@ public class DeviceCreationTest {
     }
 
     @Test
-    public void initialDataPresentOneTopElemWithNoTLSTest()
+    void initialDataPresentOneTopElemWithNoTLSTest()
             throws IOException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
@@ -236,7 +236,7 @@ public class DeviceCreationTest {
     }
 
     @Test
-    public void initialDataPresentOneTopElemWithAuthorizationTest()
+    void initialDataPresentOneTopElemWithAuthorizationTest()
             throws IOException, EffectiveModelContextBuilderException {
 
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils

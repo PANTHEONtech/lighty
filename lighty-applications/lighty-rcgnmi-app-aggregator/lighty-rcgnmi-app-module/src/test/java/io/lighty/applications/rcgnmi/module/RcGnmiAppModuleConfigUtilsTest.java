@@ -23,13 +23,13 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class RcGnmiAppModuleConfigUtilsTest {
+class RcGnmiAppModuleConfigUtilsTest {
 
     private static final String CONFIG_PATH = "src/test/resources/config.json";
     private static final String EMPTY_CONFIG_PATH = "src/test/resources/config_empty.json";
 
     @Test
-    public void testConfigLoadedJson() throws IOException, ConfigurationException {
+    void testConfigLoadedJson() throws IOException, ConfigurationException {
         final RcGnmiAppConfiguration rcGnmiAppConfiguration = RcGnmiAppModuleConfigUtils.loadConfiguration(
                 Path.of(CONFIG_PATH));
         // Assert restconf config
@@ -59,7 +59,7 @@ public class RcGnmiAppModuleConfigUtilsTest {
     }
 
     @Test
-    public void testDefaultConfigLoadedEmptyJson() throws IOException, ConfigurationException {
+    void testDefaultConfigLoadedEmptyJson() throws IOException, ConfigurationException {
         final RcGnmiAppConfiguration rcGnmiAppConfiguration = RcGnmiAppModuleConfigUtils.loadConfiguration(
                 Path.of(EMPTY_CONFIG_PATH));
         // Assert restconf config
@@ -90,7 +90,7 @@ public class RcGnmiAppModuleConfigUtilsTest {
 
 
     @Test
-    public void testConfigLoadedDefaultConfig() throws ConfigurationException {
+    void testConfigLoadedDefaultConfig() throws ConfigurationException {
         final RcGnmiAppConfiguration rcGnmiAppConfiguration = RcGnmiAppModuleConfigUtils.loadDefaultConfig();
         // Assert restconf config
         final RestConfConfiguration restconfConfig = rcGnmiAppConfiguration.getRestconfConfig();

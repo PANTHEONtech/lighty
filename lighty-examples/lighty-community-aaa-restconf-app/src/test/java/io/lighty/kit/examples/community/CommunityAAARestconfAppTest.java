@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class CommunityAAARestconfAppTest {
+class CommunityAAARestconfAppTest {
 
     private static final String TEST_ADDRESS = "http://localhost:8888/restconf/data/ietf-yang-library:modules-state";
     private static final String BASIC_AUTH =
@@ -51,14 +51,14 @@ public class CommunityAAARestconfAppTest {
     }
 
     @Test
-    public void readDataCorrectCredentials() throws Exception {
+    void readDataCorrectCredentials() throws Exception {
         HttpResponse<String> response
                 = httpClient.send(createGetRequestJson(BASIC_AUTH), BodyHandlers.ofString());
         Assertions.assertEquals(HttpStatus.OK_200, response.statusCode());
     }
 
     @Test
-    public void readDataWrongCredentials() throws Exception {
+    void readDataWrongCredentials() throws Exception {
         HttpResponse<String> response
                 = httpClient.send(createGetRequestJson(BASIC_AUTH_WRONG), BodyHandlers.ofString());
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED_401, response.statusCode());

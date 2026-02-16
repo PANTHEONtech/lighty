@@ -15,7 +15,7 @@ import static org.testng.Assert.assertTrue;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import org.junit.jupiter.api.Test;
 
-public class ModulesConfigTest {
+class ModulesConfigTest {
 
     @Test
     void loadJsonConfig() throws ConfigurationException {

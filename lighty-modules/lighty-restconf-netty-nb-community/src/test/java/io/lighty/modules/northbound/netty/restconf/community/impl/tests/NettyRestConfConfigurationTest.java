@@ -14,10 +14,10 @@ import java.net.InetAddress;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class NettyRestConfConfigurationTest {
+class NettyRestConfConfigurationTest {
 
     @Test
-    public void testNettyRestConfConfiguration() {
+    void testNettyRestConfConfiguration() {
         final var defaultRestConfConfiguration = NettyRestConfUtils.getDefaultNettyRestConfConfiguration();
         final var restConfConfiguration = new NettyRestConfConfiguration(defaultRestConfConfiguration);
 
@@ -32,7 +32,7 @@ public class NettyRestConfConfigurationTest {
     }
 
     @Test
-    public void testNettyRestConfConfigurationUtilsLoadFromStream() throws ConfigurationException {
+    void testNettyRestConfConfigurationUtilsLoadFromStream() throws ConfigurationException {
         final var resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("restconf-config.json");
         final var restConfConfiguration = NettyRestConfUtils.getNettyRestConfConfiguration(resourceAsStream);
         Assert.assertNotNull(restConfConfiguration);

@@ -36,7 +36,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.SystemMapNode;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.testng.annotations.Test;
 
-public class YangPatchTest extends CommunityRestConfTestBase {
+class YangPatchTest extends CommunityRestConfTestBase {
 
     private static final QName BASE_Q_NAME = QName.create("instance:identifier:patch:module",
             "instance-identifier-patch-module", Revision.of("2015-11-21")).intern();
@@ -50,7 +50,7 @@ public class YangPatchTest extends CommunityRestConfTestBase {
     private static final String I_AM_LEAF_12_1 = "I am leaf12-1";
 
     @Test
-    public void patchDataReplaceTest() throws Exception {
+    void patchDataReplaceTest() throws Exception {
         assertNotNull(getLightyController());
         assertNotNull(getCommunityRestConf());
 

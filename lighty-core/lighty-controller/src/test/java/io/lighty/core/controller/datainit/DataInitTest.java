@@ -24,7 +24,7 @@ import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
-public class DataInitTest {
+class DataInitTest {
     private static final String PATH_TO_JSON_INIT_CONFIG = "/DataInitJsonConfig.json";
     private static final String PATH_TO_XML_INIT_CONFIG = "/DataInitXmlConfig.json";
     private static final String PATH_TO_INVALID_PATH_TO_INIT_CONFIG = "/DataInitInvalidInitPathConfig.json";
@@ -42,7 +42,7 @@ public class DataInitTest {
     3. Check if listener was triggered
     */
     @Test
-    public void testInitConfigDataLoadXML() throws Exception {
+    void testInitConfigDataLoadXML() throws Exception {
         InputStream configStream =  this.getClass().getResourceAsStream(PATH_TO_XML_INIT_CONFIG);
         lightyController = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getConfiguration(configStream))
@@ -62,7 +62,7 @@ public class DataInitTest {
     3. Check if listener was triggered
     */
     @Test
-    public void testInitConfigDataLoadJSON() throws Exception {
+    void testInitConfigDataLoadJSON() throws Exception {
         InputStream configStream =  this.getClass().getResourceAsStream(PATH_TO_JSON_INIT_CONFIG);
         lightyController = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getConfiguration(configStream))
@@ -77,7 +77,7 @@ public class DataInitTest {
     }
 
     @Test
-    public void testInvalidInitFilePath() throws Exception {
+    void testInvalidInitFilePath() throws Exception {
         InputStream configStream =  this.getClass().getResourceAsStream(PATH_TO_INVALID_PATH_TO_INIT_CONFIG);
         lightyController = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getConfiguration(configStream))
@@ -87,7 +87,7 @@ public class DataInitTest {
     }
 
     @Test
-    public void testInvalidInitConfigFileJSON() throws Exception {
+    void testInvalidInitConfigFileJSON() throws Exception {
         InputStream configStream =  this.getClass().getResourceAsStream(PATH_TO_INVALID_JSON_NODES_INIT_CONFIG);
         lightyController = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getConfiguration(configStream))
@@ -97,7 +97,7 @@ public class DataInitTest {
     }
 
     @Test
-    public void testInvalidInitConfigFileXML() throws Exception {
+    void testInvalidInitConfigFileXML() throws Exception {
         InputStream configStream =  this.getClass().getResourceAsStream(PATH_TO_INVALID_XML_NODES_INIT_CONFIG);
         lightyController = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getConfiguration(configStream))
@@ -107,7 +107,7 @@ public class DataInitTest {
     }
 
     @AfterMethod
-    public void shutdownLighty() {
+    void shutdownLighty() {
         if (registration != null) {
             registration.close();
         }

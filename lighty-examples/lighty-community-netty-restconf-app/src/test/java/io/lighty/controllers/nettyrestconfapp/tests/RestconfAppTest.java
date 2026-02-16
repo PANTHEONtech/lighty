@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
  * This test is roughly same as single-feature test in OpenDaylight which starts:
  * feature:install odl-netconf-all
  */
-public class RestconfAppTest {
+class RestconfAppTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(RestconfAppTest.class);
     private static final PasswordCredentials CORRECT_CREDENTIALS =
@@ -51,7 +51,7 @@ public class RestconfAppTest {
      * Perform basic GET operations via RESTCONF.
      */
     @Test
-    public void simpleApplicationTest() throws IOException, InterruptedException {
+    void simpleApplicationTest() throws IOException, InterruptedException {
         HttpResponse<String> operations;
         restClient.POST("restconf/data/network-topology:network-topology/topology=topology-netconf",
             """
@@ -76,7 +76,7 @@ public class RestconfAppTest {
     }
 
     @Test
-    public void simpleAuthorizationTest() throws IOException, InterruptedException {
+    void simpleAuthorizationTest() throws IOException, InterruptedException {
         HttpResponse<String> authStatus;
 
         authStatus = restClient.GET("restconf/data", CORRECT_CREDENTIALS);

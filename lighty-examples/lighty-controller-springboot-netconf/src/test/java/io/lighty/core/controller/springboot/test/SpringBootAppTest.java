@@ -32,7 +32,7 @@ import java.util.Arrays;
  * are used by REST client to test access to global data store.
  * This is integration test and requires free port 8080 on localhost.
  */
-public class SpringBootAppTest {
+class SpringBootAppTest {
 
     final private static Logger LOG = LoggerFactory.getLogger(SpringBootAppTest.class);
 
@@ -46,7 +46,7 @@ public class SpringBootAppTest {
     }
 
     @Test
-    public void simpleApplicationTest() throws Exception {
+    void simpleApplicationTest() throws Exception {
         ContentResponse contentResponse = null;
         ObjectMapper mapper = new ObjectMapper();
         String netconfTopologyId = "topology-netconf";
