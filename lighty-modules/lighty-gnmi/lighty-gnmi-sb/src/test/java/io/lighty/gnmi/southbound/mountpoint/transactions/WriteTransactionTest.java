@@ -67,7 +67,7 @@ import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-public class WriteTransactionTest {
+class WriteTransactionTest {
     private static final QNameModule INTERFACES_MODULE_QN_MODULE = QNameModule.of(
             XMLNamespace.of("http://openconfig.net/yang/interfaces"), Revision.of("2021-04-06"));
     private static final String OPENCONFIG_GNMI_CONFIG = "/lightyconfigs/openconfig_gnmi_config.json";
@@ -98,7 +98,7 @@ public class WriteTransactionTest {
 
 
     @BeforeEach
-    public void startUp() throws YangLoadException, SchemaException, ConfigurationException {
+    void startUp() throws YangLoadException, SchemaException, ConfigurationException {
         MockitoAnnotations.initMocks(this);
         this.gnmiSession = Mockito.mock(GnmiSession.class);
         Mockito.when(this.gnmiSession.set(any(Gnmi.SetRequest.class)))
@@ -129,7 +129,7 @@ public class WriteTransactionTest {
     }
 
     @Test
-    public void removePrepareReqFromListUpdateTest() throws ExecutionException, InterruptedException, TimeoutException,
+    void removePrepareReqFromListUpdateTest() throws ExecutionException, InterruptedException, TimeoutException,
             JSONException {
         final DOMDataTreeWriteTransaction writeTransaction = gnmiDataBroker.newWriteOnlyTransaction();
         writeTransaction.merge(LogicalDatastoreType.CONFIGURATION, TEST_CONFIG_IID, getTestDataContainerNode());
@@ -149,7 +149,7 @@ public class WriteTransactionTest {
     }
 
     @Test
-    public void removePrepareReqFromAddListTest() throws ExecutionException, InterruptedException, TimeoutException,
+    void removePrepareReqFromAddListTest() throws ExecutionException, InterruptedException, TimeoutException,
             JSONException {
         final DOMDataTreeWriteTransaction writeTransaction = gnmiDataBroker.newWriteOnlyTransaction();
         writeTransaction.put(LogicalDatastoreType.CONFIGURATION,  TEST_CONFIG_IID, getTestDataContainerNode());
@@ -169,7 +169,7 @@ public class WriteTransactionTest {
     }
 
     @Test
-    public void addMultipleMergeRequest() throws ExecutionException, InterruptedException, TimeoutException {
+    void addMultipleMergeRequest() throws ExecutionException, InterruptedException, TimeoutException {
         final DOMDataTreeWriteTransaction writeTransaction = gnmiDataBroker.newWriteOnlyTransaction();
         writeTransaction.merge(LogicalDatastoreType.CONFIGURATION,  TEST_CONFIG_IID, getTestDataContainerNode());
         writeTransaction.merge(LogicalDatastoreType.CONFIGURATION, TEST_CONFIG_IID, getTestDataContainerNode());
@@ -183,7 +183,7 @@ public class WriteTransactionTest {
     }
 
     @Test
-    public void removeEmptyPrepareReqFromUpdateListTest() throws ExecutionException, InterruptedException,
+    void removeEmptyPrepareReqFromUpdateListTest() throws ExecutionException, InterruptedException,
             TimeoutException, JSONException {
         final DOMDataTreeWriteTransaction writeTransaction = gnmiDataBroker.newWriteOnlyTransaction();
         writeTransaction.merge(LogicalDatastoreType.CONFIGURATION, TEST_CONFIG_IID, getTestDataContainerNode());

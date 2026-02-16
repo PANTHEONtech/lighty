@@ -25,7 +25,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-public class OpenApiTest {
+class OpenApiTest {
     private static final String BASE_URL = "http://localhost:8888";
     private static final String PRIMARY_NAME = "urls.primaryName";
     private static final String APIDOC_INDEX = "/openapi/explorer/index.html";
@@ -44,7 +44,7 @@ public class OpenApiTest {
     }
 
     @BeforeClass
-    public void startUp() throws Exception {
+    void startUp() throws Exception {
         final var configPath = Paths.get(Objects.requireNonNull(this.getClass()
                 .getResource("/openapi_config.json")).toURI());
         rncModule = new RncLightyModule(RncLightyModuleConfigUtils.loadConfigFromFile(configPath));
@@ -52,12 +52,12 @@ public class OpenApiTest {
     }
 
     @AfterClass
-    public void tearDown() {
+    void tearDown() {
         assertTrue(rncModule.close());
     }
 
     @Test(dataProvider = "openApiUris")
-    public void testOpenApiGet(final String uri) throws Exception {
+    void testOpenApiGet(final String uri) throws Exception {
         final var response = getRequest(uri, null, null);
         assertNotNull(response, String.format("OpenApi response for url [%s] is empty", uri));
         assertEquals(response.statusCode(), 200,
@@ -65,7 +65,7 @@ public class OpenApiTest {
     }
 
     @Test
-    public void testOpenApiGetWithQuery() throws Exception {
+    void testOpenApiGetWithQuery() throws Exception {
         final var apidoc = getRequest(APIDOC_INDEX, PRIMARY_NAME, "Controller resources - RestConf RFC 8040");
         assertNotNull(apidoc);
         assertEquals(apidoc.statusCode(), 200);

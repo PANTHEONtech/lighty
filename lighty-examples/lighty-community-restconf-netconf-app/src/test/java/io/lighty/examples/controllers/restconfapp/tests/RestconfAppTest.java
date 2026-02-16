@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
  * This test is roughly same as single-feature test in OpenDaylight which starts:
  * feature:install odl-netconf-all
  */
-public class RestconfAppTest {
+class RestconfAppTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(RestconfAppTest.class);
 
@@ -44,7 +44,7 @@ public class RestconfAppTest {
      * Perform basic GET operations via RESTCONF.
      */
     @Test
-    public void simpleApplicationTest() throws IOException, InterruptedException {
+    void simpleApplicationTest() throws IOException, InterruptedException {
         HttpResponse<String> operations;
         restClient.POST("restconf/data/network-topology:network-topology/topology=topology-netconf",
             """
@@ -68,7 +68,7 @@ public class RestconfAppTest {
      * Check if OpenApi service and UI is responding.
      */
     @Test
-    public void openApiURLsTest() throws IOException, InterruptedException {
+    void openApiURLsTest() throws IOException, InterruptedException {
         HttpResponse<String> operations;
         operations = restClient.GET("openapi/explorer/index.html");
         Assert.assertEquals(operations.statusCode(), 200);

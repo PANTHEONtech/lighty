@@ -17,10 +17,10 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class LightyControllerMountPointTest extends LightyControllerTestBase {
+class LightyControllerMountPointTest extends LightyControllerTestBase {
 
     @Test
-    public void domMountPointServiceTest() throws Exception {
+    void domMountPointServiceTest() throws Exception {
         final LightyController lightyController = getLightyController();
         final DOMMountPointService domMountPointService = lightyController.getServices().getDOMMountPointService();
 

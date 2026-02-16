@@ -17,10 +17,10 @@ import static org.mockito.Mockito.verify;
 import io.lighty.applications.rnc.module.RncLightyModule;
 import org.testng.annotations.Test;
 
-public class MainTest {
+class MainTest {
 
     @Test
-    public void testStartWithDefaultConfiguration() {
+    void testStartWithDefaultConfiguration() {
         Main app = spy(new Main());
         RncLightyModule lighty = mock(RncLightyModule.class);
         doReturn(true).when(lighty).initModules();
@@ -30,7 +30,7 @@ public class MainTest {
     }
 
     @Test
-    public void testStartWithConfigFile() {
+    void testStartWithConfigFile() {
         Main app = spy(new Main());
         RncLightyModule lighty = mock(RncLightyModule.class);
         doReturn(true).when(lighty).initModules();
@@ -40,7 +40,7 @@ public class MainTest {
     }
 
     @Test
-    public void testStartWithConfigFileNoSuchFile() {
+    void testStartWithConfigFileNoSuchFile() {
         Main app = spy(new Main());
         app.start(new String[] {"-c","no_config.json"});
         verify(app, never()).createRncLightyModule(any());

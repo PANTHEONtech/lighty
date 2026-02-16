@@ -41,7 +41,7 @@ import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.testng.annotations.Test;
 import org.w3c.dom.Element;
 
-public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
+class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
 
     private static final QName QNAME_BASE =
             org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601
@@ -51,7 +51,7 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
                     .get.config.input.source.config.source.Running.QNAME;
 
     @Test
-    public void testBaseServiceGetMock() {
+    void testBaseServiceGetMock() {
         YangInstanceIdentifier yangInstanceId = YangInstanceIdentifier.builder()
                 .node(NetconfState.QNAME)
                 .node(Schemas.QNAME)
@@ -90,7 +90,7 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
     }
 
     @Test
-    public void testBaseServiceGetConfigMock() {
+    void testBaseServiceGetConfigMock() {
         YangInstanceIdentifier yangInstanceId = YangInstanceIdentifier.builder()
                 .node(NetconfState.QNAME)
                 .node(Schemas.QNAME)
@@ -134,7 +134,7 @@ public class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
     }
 
     @Test
-    public void testBaseServiceEditConfigMock() {
+    void testBaseServiceEditConfigMock() {
         YangInstanceIdentifier yangInstanceId = YangInstanceIdentifier.builder()
                 .node(NetconfState.QNAME)
                 .node(Schemas.QNAME)

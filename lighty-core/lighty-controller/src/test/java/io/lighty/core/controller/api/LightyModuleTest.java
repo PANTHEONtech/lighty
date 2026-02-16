@@ -19,7 +19,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class LightyModuleTest {
+class LightyModuleTest {
     private static final long MAX_INIT_TIMEOUT = 15000L;
     private static final long MAX_SHUTDOWN_TIMEOUT = 15000L;
 
@@ -39,17 +39,17 @@ public class LightyModuleTest {
     }
 
     @BeforeMethod
-    public void initExecutor() {
+    void initExecutor() {
         this.executorService = Mockito.spy(new ScheduledThreadPoolExecutor(1));
     }
 
     @AfterMethod
-    public void shutdownExecutor() {
+    void shutdownExecutor() {
         this.executorService.shutdownNow();
     }
 
     @Test
-    public void testStartShutdown() throws Exception {
+    void testStartShutdown() throws Exception {
         this.moduleUnderTest = getModuleUnderTest(getExecutorService());
         this.moduleUnderTest.start().get(MAX_INIT_TIMEOUT, TimeUnit.MILLISECONDS);
         Mockito.verify(executorService, Mockito.times(1)).execute(Mockito.any());
@@ -58,7 +58,7 @@ public class LightyModuleTest {
     }
 
     @Test
-    public void testStartStop_whenAlreadyStartedStopped() throws Exception {
+    void testStartStop_whenAlreadyStartedStopped() throws Exception {
         this.moduleUnderTest = getModuleUnderTest(getExecutorService());
         try {
             this.moduleUnderTest.start().get(MAX_INIT_TIMEOUT, TimeUnit.MILLISECONDS);
@@ -74,7 +74,7 @@ public class LightyModuleTest {
     }
 
     @Test
-    public void testShutdown_before_start() throws Exception {
+    void testShutdown_before_start() throws Exception {
         this.moduleUnderTest = getModuleUnderTest(getExecutorService());
         this.moduleUnderTest.shutdown(MAX_SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
         Mockito.verify(executorService, Mockito.times(0)).execute(Mockito.any());

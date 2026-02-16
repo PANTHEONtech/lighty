@@ -25,14 +25,14 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class GuiceDITest {
+class GuiceDITest {
     private static final Logger LOG = LoggerFactory.getLogger(GuiceDITest.class);
 
     private LightyController lightyController;
     private TestService testService;
 
     @BeforeClass
-    public void init() throws ExecutionException, InterruptedException, ConfigurationException {
+    void init() throws ExecutionException, InterruptedException, ConfigurationException {
         ControllerConfiguration defaultSingleNodeConfiguration =
             ControllerConfigUtils.getDefaultSingleNodeConfiguration();
         LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
@@ -48,7 +48,7 @@ public class GuiceDITest {
 
     @AfterClass
     @SuppressWarnings("checkstyle:illegalCatch")
-    public void shutdown() {
+    void shutdown() {
         try {
             if (lightyController != null) {
                 lightyController.shutdown(60, TimeUnit.SECONDS);
@@ -59,132 +59,132 @@ public class GuiceDITest {
     }
 
     @Test
-    public void testDIDiagStatusService() {
+    void testDIDiagStatusService() {
         assertNotNull(testService.getDiagStatusService());
     }
 
     @Test
-    public void testDIActorSystemProvider() {
+    void testDIActorSystemProvider() {
         assertNotNull(testService.getActorSystemProvider());
     }
 
     @Test
-    public void testDISchemaContextProvider() {
+    void testDISchemaContextProvider() {
         assertNotNull(testService.getSchemaContext());
     }
 
     @Test
-    public void testDIDomSchemaService() {
+    void testDIDomSchemaService() {
         assertNotNull(testService.getDomSchemaService());
     }
 
     @Test
-    public void testDIDomNotificationSubscriptionListenerRegistry() {
+    void testDIDomNotificationSubscriptionListenerRegistry() {
         assertNotNull(testService.getDomNotificationSubscriptionListenerRegistry());
     }
 
     @Test
-    public void testDIDistributedDataStoreInterfaceConfig() {
+    void testDIDistributedDataStoreInterfaceConfig() {
         assertNotNull(testService.getDistributedDataStoreInterfaceConfig());
     }
 
     @Test
-    public void testDIDistributedDataStoreInterfaceOperational() {
+    void testDIDistributedDataStoreInterfaceOperational() {
         assertNotNull(testService.getDistributedDataStoreInterfaceOperational());
     }
 
     @Test
-    public void testDIBindingNormalizedNodeSerializer() {
+    void testDIBindingNormalizedNodeSerializer() {
         assertNotNull(testService.getBindingNormalizedNodeSerializer());
     }
 
     @Test
-    public void testDIBindingCodecTreeFactory() {
+    void testDIBindingCodecTreeFactory() {
         assertNotNull(testService.getBindingCodecTreeFactory());
     }
 
     @Test
-    public void testDIDomEntityOwnershipService() {
+    void testDIDomEntityOwnershipService() {
         assertNotNull(testService.getDomEntityOwnershipService());
     }
 
     @Test
-    public void testDIEntityOwnershipService() {
+    void testDIEntityOwnershipService() {
         assertNotNull(testService.getEntityOwnershipService());
     }
 
     @Test
-    public void testDIClusterAdminService() {
+    void testDIClusterAdminService() {
         assertNotNull(testService.getClusterAdminService());
     }
 
     @Test
-    public void testDIClusterSingletonServiceProvider() {
+    void testDIClusterSingletonServiceProvider() {
         assertNotNull(testService.getClusterSingletonServiceProvider());
     }
 
     @Test
-    public void testDIDomMountPointService() {
+    void testDIDomMountPointService() {
         assertNotNull(testService.getDomMountPointService());
     }
 
     @Test
-    public void testDIDomNotificationPublishService() {
+    void testDIDomNotificationPublishService() {
         assertNotNull(testService.getDomNotificationPublishService());
     }
 
     @Test
-    public void testDIDomNotificationService() {
+    void testDIDomNotificationService() {
         assertNotNull(testService.getDomNotificationService());
     }
 
     @Test
-    public void testDIDomDataBroker() {
+    void testDIDomDataBroker() {
         assertNotNull(testService.getDomDataBroker());
     }
 
     @Test
-    public void testDIDomRpcService() {
+    void testDIDomRpcService() {
         assertNotNull(testService.getDomRpcService());
     }
 
     @Test
-    public void testDIDomRpcProviderService() {
+    void testDIDomRpcProviderService() {
         assertNotNull(testService.getDomRpcProviderService());
     }
 
     @Test
-    public void testDIRpcProviderService() {
+    void testDIRpcProviderService() {
         assertNotNull(testService.getRpcProviderService());
     }
 
     @Test
-    public void testDIMountPointService() {
+    void testDIMountPointService() {
         assertNotNull(testService.getMountPointService());
     }
 
     @Test
-    public void testDINotificationService() {
+    void testDINotificationService() {
         assertNotNull(testService.getNotificationService());
     }
 
     @Test
-    public void testDINotificationPublishService() {
+    void testDINotificationPublishService() {
         assertNotNull(testService.getNotificationPublishService());
     }
 
     @Test
-    public void testDILightyServices() {
+    void testDILightyServices() {
         assertNotNull(testService.getLightyServices());
     }
 
     @Test
-    public void testDILightyModuleRegistryService() {
+    void testDILightyModuleRegistryService() {
         assertNotNull(testService.getLightyModuleRegistryService());
     }
 
     @Test
-    public void testDIBindingDataBroker() {
+    void testDIBindingDataBroker() {
         assertNotNull(testService.getBindingDataBroker());
     }
 

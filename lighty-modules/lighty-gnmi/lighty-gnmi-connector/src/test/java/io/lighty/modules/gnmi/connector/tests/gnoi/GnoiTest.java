@@ -35,7 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class GnoiTest {
+class GnoiTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(GnmiTest.class);
     private static final InetSocketAddress DEFAULT_SERVER_ADDRESS = new InetSocketAddress(AddressUtil.LOCALHOST, 9090);
@@ -48,7 +48,7 @@ public class GnoiTest {
     private Server server;
 
     @BeforeEach
-    public void before() throws IOException {
+    void before() throws IOException {
         service = new TestGnoiServiceImpl();
         server = ServerBuilder
                 .forPort(DEFAULT_SERVER_ADDRESS.getPort())
@@ -60,7 +60,7 @@ public class GnoiTest {
     }
 
     @AfterEach
-    public void after() {
+    void after() {
         LOG.info("Shutting down server");
         server.shutdown();
         try {
@@ -74,7 +74,7 @@ public class GnoiTest {
 
     @SuppressWarnings({"checkstyle:illegalCatch"})
     @Test
-    public void gnoiServicesInitiatedTest() throws Exception {
+    void gnoiServicesInitiatedTest() throws Exception {
         final SessionManager sessionManager = TestUtils.createSessionManagerWithCerts();
         try (SessionProvider session =
                      sessionManager.createSession(new SessionConfiguration(DEFAULT_SERVER_ADDRESS, true))) {
@@ -92,7 +92,7 @@ public class GnoiTest {
 
     @SuppressWarnings({"checkstyle:illegalCatch"})
     @Test
-    public void gnoiFileServiceTest() throws Exception {
+    void gnoiFileServiceTest() throws Exception {
         final SessionManager sessionManager = TestUtils.createSessionManagerWithCerts();
 
         try (SessionProvider session =

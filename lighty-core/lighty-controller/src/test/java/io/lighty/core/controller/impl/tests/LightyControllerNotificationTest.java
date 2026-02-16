@@ -20,10 +20,10 @@ import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absol
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class LightyControllerNotificationTest extends LightyControllerTestBase {
+class LightyControllerNotificationTest extends LightyControllerTestBase {
 
     @Test
-    public void domNotificationServiceTest() throws InterruptedException, ExecutionException {
+    void domNotificationServiceTest() throws InterruptedException, ExecutionException {
         final LightyController lightyController = getLightyController();
 
         // setup
