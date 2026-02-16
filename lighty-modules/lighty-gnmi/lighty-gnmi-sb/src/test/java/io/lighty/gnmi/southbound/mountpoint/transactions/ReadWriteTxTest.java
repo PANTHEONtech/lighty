@@ -22,7 +22,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 
-public class ReadWriteTxTest {
+class ReadWriteTxTest {
     private ReadWriteTx readWriteTx;
     @Mock
     private ReadOnlyTx readOnlyTx;
@@ -33,7 +33,7 @@ public class ReadWriteTxTest {
     private LogicalDatastoreType logicalDatastoreType;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.initMocks(this);
         yiid = YangInstanceIdentifier.builder()
                 .node(QName.create("test-namespace", "2021-05-03", "test-node"))
@@ -47,37 +47,37 @@ public class ReadWriteTxTest {
     }
 
     @Test
-    public void mergeTest() {
+    void mergeTest() {
         readWriteTx.merge(logicalDatastoreType, yiid, node);
         verify(writeOnlyTx, times(1)).merge(eq(logicalDatastoreType), eq(yiid), eq(node));
     }
 
     @Test
-    public void readTest() {
+    void readTest() {
         readWriteTx.read(logicalDatastoreType, yiid);
         verify(readOnlyTx, times(1)).read(eq(logicalDatastoreType), eq(yiid));
     }
 
     @Test
-    public void deleteTest() {
+    void deleteTest() {
         readWriteTx.delete(logicalDatastoreType, yiid);
         verify(writeOnlyTx, times(1)).delete(eq(logicalDatastoreType), eq(yiid));
     }
 
     @Test
-    public void cancelTest() {
+    void cancelTest() {
         readWriteTx.cancel();
         verify(writeOnlyTx, times(1)).cancel();
     }
 
     @Test
-    public void existsTest() {
+    void existsTest() {
         readWriteTx.exists(logicalDatastoreType, yiid);
         verify(readOnlyTx, times(1)).exists(eq(logicalDatastoreType), eq(yiid));
     }
 
     @Test
-    public void combinedTest() {
+    void combinedTest() {
         readWriteTx.merge(logicalDatastoreType, yiid, node);
         readWriteTx.exists(logicalDatastoreType, yiid);
         readWriteTx.delete(logicalDatastoreType, yiid);

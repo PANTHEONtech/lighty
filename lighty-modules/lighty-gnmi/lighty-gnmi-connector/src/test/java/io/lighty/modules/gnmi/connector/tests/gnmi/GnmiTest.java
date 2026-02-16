@@ -39,7 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 
-public class GnmiTest {
+class GnmiTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(GnmiTest.class);
     private static final InetSocketAddress DEFAULT_SERVER_ADDRESS = new InetSocketAddress(AddressUtil.LOCALHOST, 9090);
@@ -48,7 +48,7 @@ public class GnmiTest {
     private Server server;
 
     @BeforeEach
-    public void before() throws IOException {
+    void before() throws IOException {
         service = new TestGrpcServiceImpl();
         server = ServerBuilder
                 .forPort(DEFAULT_SERVER_ADDRESS.getPort())
@@ -59,7 +59,7 @@ public class GnmiTest {
     }
 
     @AfterEach
-    public void after() {
+    void after() {
         LOG.info("Shutting down server");
         server.shutdown();
         try {
@@ -72,7 +72,7 @@ public class GnmiTest {
     }
 
     @Test
-    public void rawGnmiTest() {
+    void rawGnmiTest() {
         LOG.info("Creating channel to server");
         final ManagedChannel channel = ManagedChannelBuilder
                 .forAddress(DEFAULT_SERVER_ADDRESS.getAddress().getHostAddress(), DEFAULT_SERVER_ADDRESS.getPort())
@@ -98,7 +98,7 @@ public class GnmiTest {
 
     @Test
     @SuppressWarnings("IllegalCatch")
-    public void lightyGnmiSessionTest() throws Exception {
+    void lightyGnmiSessionTest() throws Exception {
         final SessionManager sessionManager = TestUtils.createSessionManagerWithCerts();
         try (SessionProvider session =
                      sessionManager.createSession(new SessionConfiguration(DEFAULT_SERVER_ADDRESS, true))) {
@@ -122,7 +122,7 @@ public class GnmiTest {
     }
 
     @Test
-    public void sessionManagerChannelCachingTest() throws Exception {
+    void sessionManagerChannelCachingTest() throws Exception {
         // create second server
         final TestGrpcServiceImpl service2 = new TestGrpcServiceImpl();
         final Server server2 = ServerBuilder.forPort(8081).addService(service2).build();

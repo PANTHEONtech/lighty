@@ -25,7 +25,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.Assert;
 
-public class YangInstanceNormToGnmiUpdateCodecTest {
+class YangInstanceNormToGnmiUpdateCodecTest {
 
     private static YangInstanceNormToGnmiUpdateTestCases testCases;
     private static YangInstanceNormToGnmiUpdateCodec codec;
@@ -40,7 +40,7 @@ public class YangInstanceNormToGnmiUpdateCodecTest {
     }
 
     @Test
-    public void topLevelElementTest() throws Exception {
+    void topLevelElementTest() throws Exception {
         final Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> prepared =
                 testCases.topElementTestCase();
         final Gnmi.Update result = codec.apply(prepared.getKey().left, prepared.getKey().right);
@@ -48,7 +48,7 @@ public class YangInstanceNormToGnmiUpdateCodecTest {
     }
 
     @Test
-    public void listEntryCase() throws Exception {
+    void listEntryCase() throws Exception {
         final Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> prepared =
                 testCases.listEntryTestCase();
         final Gnmi.Update result = codec.apply(prepared.getKey().left, prepared.getKey().right);
@@ -56,7 +56,7 @@ public class YangInstanceNormToGnmiUpdateCodecTest {
     }
 
     @Test
-    public void containerCase() throws Exception {
+    void containerCase() throws Exception {
         Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> prepared =
                 testCases.containerTestCase();
         Gnmi.Update result = codec.apply(prepared.getKey().left, prepared.getKey().right);
@@ -69,7 +69,7 @@ public class YangInstanceNormToGnmiUpdateCodecTest {
     }
 
     @Test
-    public void simpleValuesTest() throws Exception {
+    void simpleValuesTest() throws Exception {
         // ------Boolean case:----------
         Map.Entry<ImmutablePair<YangInstanceIdentifier, NormalizedNode>, Gnmi.Update> prepared =
                 testCases.leafBooleanTestCase();

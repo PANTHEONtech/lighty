@@ -17,21 +17,21 @@ import org.opendaylight.aaa.web.FilterDetails;
 import org.opendaylight.aaa.web.WebContext;
 import org.testng.annotations.Test;
 
-public class LightyJettyServerProviderTest {
+class LightyJettyServerProviderTest {
 
     private static final int PORT = 8080;
     private static final String HTTP2_CONFIG = "/http2Config.json";
     private static final String HTTPS_CONFIG = "/httpsConfig.json";
 
     @Test
-    public void testServerBuilder() throws Exception {
+    void testServerBuilder() throws Exception {
         final var serverBuilder = new LightyJettyServerProvider(new InetSocketAddress(PORT));
         final var server = initLightyServer(serverBuilder);
         assertNotNull(server);
     }
 
     @Test
-    public void testHttpsDefaultServerBuilder() throws Exception {
+    void testHttpsDefaultServerBuilder() throws Exception {
         final var lightyServerConfig = LightyServerConfigUtils.getDefaultLightyServerConfig();
         final var serverBuilder = new LightyJettyServerProvider(lightyServerConfig, new InetSocketAddress(PORT));
         final var server = initLightyServer(serverBuilder);
@@ -39,7 +39,7 @@ public class LightyJettyServerProviderTest {
     }
 
     @Test
-    public void testHttp2DefaultServerBuilder() throws Exception {
+    void testHttp2DefaultServerBuilder() throws Exception {
         final var lightyServerConfig = LightyServerConfigUtils.getDefaultLightyServerConfig();
         final var serverBuilder = new LightyJettyServerProvider(lightyServerConfig, new InetSocketAddress(PORT));
         final var server = initLightyServer(serverBuilder);
@@ -47,7 +47,7 @@ public class LightyJettyServerProviderTest {
     }
 
     @Test
-    public void testHttp2CustomServerBuilder() throws Exception {
+    void testHttp2CustomServerBuilder() throws Exception {
         final var resourceAsStream = LightyJettyServerProviderTest.class.getResourceAsStream(HTTP2_CONFIG);
         final var lightyServerConfig = LightyServerConfigUtils.getServerConfiguration(resourceAsStream);
         final var serverBuilder = new LightyJettyServerProvider(lightyServerConfig, new InetSocketAddress(PORT));
@@ -56,7 +56,7 @@ public class LightyJettyServerProviderTest {
     }
 
     @Test
-    public void testHttpsCustomServerBuilder() throws Exception {
+    void testHttpsCustomServerBuilder() throws Exception {
         final var resourceAsStream = LightyJettyServerProviderTest.class.getResourceAsStream(HTTPS_CONFIG);
         final var lightyServerConfig = LightyServerConfigUtils.getServerConfiguration(resourceAsStream);
         final var serverBuilder = new LightyJettyServerProvider(lightyServerConfig, new InetSocketAddress(PORT));

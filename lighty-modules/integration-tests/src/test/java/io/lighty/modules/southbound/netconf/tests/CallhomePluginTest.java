@@ -25,7 +25,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 @Test
-public class CallhomePluginTest {
+class CallhomePluginTest {
     public static final long SHUTDOWN_TIMEOUT_MILLIS = 60_000;
 
     private LightyController lightyController;
@@ -33,7 +33,7 @@ public class CallhomePluginTest {
     private LightyModule netconfPlugin;
 
     @BeforeClass
-    public void beforeClass() throws ConfigurationException {
+    void beforeClass() throws ConfigurationException {
         lightyController = LightyTestUtils.startController(NetconfConfigUtils.NETCONF_CALLHOME_MODELS);
         RestConfConfiguration restConfConfig =
                 RestConfConfigUtils.getDefaultRestConfConfiguration();
@@ -46,7 +46,7 @@ public class CallhomePluginTest {
     }
 
     @AfterClass
-    public void afterClass() {
+    void afterClass() {
         if (netconfPlugin != null) {
             netconfPlugin.shutdown(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         }
@@ -59,7 +59,7 @@ public class CallhomePluginTest {
     }
 
     @Test
-    public void testStart() throws Exception {
+    void testStart() throws Exception {
         netconfPlugin.start().get();
         // check, whether TCP server is running on port
         try (Socket socket = new Socket()) {
