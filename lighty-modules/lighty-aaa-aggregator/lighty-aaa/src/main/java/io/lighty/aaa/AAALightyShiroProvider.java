@@ -83,7 +83,7 @@ public final class AAALightyShiroProvider {
         if (datastoreConfig != null && datastoreConfig.getStore().equals(DatastoreConfig.Store.H2DataStore)) {
             final IdmLightConfig config = new IdmLightConfigBuilder()
                     .dbDirectory(aaaConfiguration.getDbPath())
-                    .dbUser(aaaConfiguration.getUsername())
+                    .dbUser(aaaConfiguration.getDbUsername())
                     .dbPwd(aaaConfiguration.getDbPassword()).build();
             final PasswordServiceConfig passwordServiceConfig = new PasswordServiceConfigBuilder().setAlgorithm(
                     "SHA-512").setIterations(20000).build();
