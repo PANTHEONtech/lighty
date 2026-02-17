@@ -32,9 +32,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
@@ -47,7 +47,7 @@ public class GnmiTest {
     private TestGrpcServiceImpl service;
     private Server server;
 
-    @Before
+    @BeforeEach
     public void before() throws IOException {
         service = new TestGrpcServiceImpl();
         server = ServerBuilder
@@ -58,7 +58,7 @@ public class GnmiTest {
         server.start();
     }
 
-    @After
+    @AfterEach
     public void after() {
         LOG.info("Shutting down server");
         server.shutdown();
