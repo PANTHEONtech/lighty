@@ -7,14 +7,14 @@
  */
 package io.lighty.codecs.util;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import io.lighty.codecs.util.exception.DeserializationException;
 import io.lighty.codecs.util.exception.SerializationException;
 import java.io.StringReader;
 import java.io.Writer;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.ContainerIoRpcInput;
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.SampleList;
@@ -50,7 +50,7 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
     }
 
     @Test
-    public void testSerializeToasterData() throws SerializationException {
+    void testSerializeToasterData() throws SerializationException {
         final Writer serializeData = bindingSerializer.serializeData(toasterTopLevelContainerNode);
         assertValidXML(serializeData.toString());
     }
@@ -96,7 +96,7 @@ public class XmlNodeConverterTest extends AbstractCodecTest {
     }
 
     @Test
-    @Ignore("Not yet possible for ODL reasons")
+    @Disabled("Not yet possible for ODL reasons")
     public void testDeserializeNotification() throws DeserializationException {
         final NormalizedNode result = bindingSerializer.deserialize(
                 new StringReader(loadResourceAsString("notification.xml")));
