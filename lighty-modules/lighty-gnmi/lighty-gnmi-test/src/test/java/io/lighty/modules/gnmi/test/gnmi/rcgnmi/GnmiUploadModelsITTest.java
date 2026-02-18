@@ -32,7 +32,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GnmiUploadModelsITTest extends GnmiITBase {
+class GnmiUploadModelsITTest extends GnmiITBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(GnmiUploadModelsITTest.class);
 
@@ -89,7 +89,7 @@ public class GnmiUploadModelsITTest extends GnmiITBase {
     }
 
     @Test
-    public void uploadModelTest() throws InterruptedException, IOException, JSONException {
+    void uploadModelTest() throws InterruptedException, IOException, JSONException {
         //assert that uploaded yang currently does not exist in gnmi-yang-storage
         final HttpResponse<String> getYangStorageTestModelNonUploadedResponse = sendGetRequestJSON(YANG_MODEL_PATH);
         assertEquals(HttpURLConnection.HTTP_CONFLICT, getYangStorageTestModelNonUploadedResponse.statusCode());
@@ -119,7 +119,7 @@ public class GnmiUploadModelsITTest extends GnmiITBase {
     }
 
     @Test
-    public void reuploadModelTest() throws InterruptedException, IOException, JSONException {
+    void reuploadModelTest() throws InterruptedException, IOException, JSONException {
         final String testModel = REUPLOAD_YANG_NAME + ".yang";
         final String modelBody = TestUtils.readFile(RESOURCES_PATH + "additional/models/" + testModel);
         LOG.info("Content of YANG {} file to re-upload: {}", testModel, modelBody);

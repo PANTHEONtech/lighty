@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
-public class YangInstanceIdentifierToGnmiPathCodecTest {
+class YangInstanceIdentifierToGnmiPathCodecTest {
 
     private static final Path TEST_PATH = Paths.get("src/test/resources/not/unique/model/elements");
     private static final String OPENCONFIG_GNMI_CONFIG = "/lightyconfigs/openconfig_gnmi_config.json";
@@ -34,7 +34,7 @@ public class YangInstanceIdentifierToGnmiPathCodecTest {
     private static final String ROOT_CONTAINER = "root-container";
 
     @Test
-    public void yangInstanceIdentifierToPathCodecTest()
+    void yangInstanceIdentifierToPathCodecTest()
             throws SchemaException, YangLoadException, ConfigurationException {
         YangInstanceIdentifiertoPathTestCases testCases = new YangInstanceIdentifiertoPathTestCases();
         testCodec(true, testCases);
@@ -69,7 +69,7 @@ public class YangInstanceIdentifierToGnmiPathCodecTest {
     }
 
     @Test
-    public void yangInstanceIdentifierToPathCodecWithNotUniqueNameForRootElement()
+    void yangInstanceIdentifierToPathCodecWithNotUniqueNameForRootElement()
             throws SchemaException, YangLoadException, ConfigurationException {
         //Init YangInstanceIdentifierToPathCodec with test schema context
         final GnmiConfiguration gnmiConfiguration = GnmiConfigUtils.getGnmiConfiguration(

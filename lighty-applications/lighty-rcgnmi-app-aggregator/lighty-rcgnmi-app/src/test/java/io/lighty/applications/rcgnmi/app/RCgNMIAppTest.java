@@ -17,10 +17,10 @@ import io.lighty.applications.rcgnmi.module.RcGnmiAppModule;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-public class RCgNMIAppTest {
+class RCgNMIAppTest {
 
     @Test
-    public void testStartWithDefaultConfiguration() {
+    void testStartWithDefaultConfiguration() {
         final RCgNMIApp app = Mockito.spy(new RCgNMIApp());
         final RcGnmiAppModule appModule = Mockito.mock(RcGnmiAppModule.class);
         doReturn(true).when(appModule).initModules();
@@ -31,7 +31,7 @@ public class RCgNMIAppTest {
     }
 
     @Test
-    public void testStartWithConfigFile() {
+    void testStartWithConfigFile() {
         final RCgNMIApp app = Mockito.spy(new RCgNMIApp());
         final RcGnmiAppModule appModule = Mockito.mock(RcGnmiAppModule.class);
         doReturn(true).when(appModule).initModules();
@@ -42,7 +42,7 @@ public class RCgNMIAppTest {
     }
 
     @Test
-    public void testStartWithConfigFileNoSuchFile() {
+    void testStartWithConfigFileNoSuchFile() {
         final RCgNMIApp app = Mockito.spy(new RCgNMIApp());
         app.start(new String[]{"-c", "no_config.json"});
         verify(app, never()).createRgnmiAppModule(any(), any(), any());

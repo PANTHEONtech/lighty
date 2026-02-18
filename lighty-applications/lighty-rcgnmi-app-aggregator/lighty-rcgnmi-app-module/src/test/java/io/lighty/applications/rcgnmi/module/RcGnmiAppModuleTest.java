@@ -18,24 +18,24 @@ import java.util.concurrent.Executors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-public class RcGnmiAppModuleTest {
+class RcGnmiAppModuleTest {
 
     private RcGnmiAppModule rcgnmiModule;
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         assertTrue(rcgnmiModule.close());
     }
 
     @Test
-    public void gnmiModuleSmokeTest() throws ConfigurationException {
+    void gnmiModuleSmokeTest() throws ConfigurationException {
         rcgnmiModule = new RcGnmiAppModule(RcGnmiAppModuleConfigUtils.loadDefaultConfig(),
                 Executors.newCachedThreadPool(), null);
         assertTrue(rcgnmiModule.initModules());
     }
 
     @Test
-    public void gnmiModuleStartFailedTest() throws ConfigurationException {
+    void gnmiModuleStartFailedTest() throws ConfigurationException {
         final var config = spy(RcGnmiAppModuleConfigUtils.loadDefaultConfig());
         when(config.getControllerConfig()).thenReturn(null);
         rcgnmiModule = new RcGnmiAppModule(config, Executors.newCachedThreadPool(), null);

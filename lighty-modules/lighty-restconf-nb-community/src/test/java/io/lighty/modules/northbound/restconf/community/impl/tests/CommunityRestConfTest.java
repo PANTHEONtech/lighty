@@ -10,10 +10,10 @@ package io.lighty.modules.northbound.restconf.community.impl.tests;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class CommunityRestConfTest extends CommunityRestConfTestBase {
+class CommunityRestConfTest extends CommunityRestConfTestBase {
 
     @Test
-    public void simpleRestconfTest() {
+    void simpleRestconfTest() {
         Assert.assertNotNull(getLightyController());
         Assert.assertNotNull(getCommunityRestConf());
     }

@@ -13,10 +13,10 @@ import org.opendaylight.yangtools.yang.common.Uint64;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class DatastoreConfigurationConfigTest {
+class DatastoreConfigurationConfigTest {
 
     @Test
-    public void getDefaultTest() {
+    void getDefaultTest() {
         DatastoreConfig config = DatastoreConfigurationConfig.getDefault();
 
         Assert.assertNotNull(config);

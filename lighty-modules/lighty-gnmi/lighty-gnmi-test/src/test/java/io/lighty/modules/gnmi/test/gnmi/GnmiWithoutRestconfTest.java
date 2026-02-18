@@ -99,7 +99,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.LeafSetNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 
-public class GnmiWithoutRestconfTest {
+class GnmiWithoutRestconfTest {
     private static final String INITIAL_JSON_DATA_PATH = "src/test/resources/json/initData";
     private static final String TEST_SCHEMA_PATH = "src/test/resources/additional/models";
     private static final String SIMULATOR_CONFIG = "/json/simulator_config.json";
@@ -183,7 +183,7 @@ public class GnmiWithoutRestconfTest {
     }
 
     @Test
-    public void testCrudOperation() throws ExecutionException, InterruptedException, TimeoutException {
+    void testCrudOperation() throws ExecutionException, InterruptedException, TimeoutException {
         final DataBroker bindingDataBroker = lightyController.getServices().getBindingDataBroker();
         //Write device to data-store
         final Node testGnmiNode = createNode(GNMI_NODE_ID, DEVICE_ADDRESS, DEVICE_PORT, getInsecureSecurityChoice());
@@ -278,7 +278,7 @@ public class GnmiWithoutRestconfTest {
     }
 
     @Test
-    public void testRegisterCertificateToKeystore() throws ExecutionException, InterruptedException, TimeoutException {
+    void testRegisterCertificateToKeystore() throws ExecutionException, InterruptedException, TimeoutException {
         // Invoke RPC for registering certificates
         final ContainerNode certificateInput
                 = getCertificateInput(CERT_ID, CA_VALUE, CLIENT_CERT, CLIENT_KEY, PASSPHRASE);
@@ -302,7 +302,7 @@ public class GnmiWithoutRestconfTest {
     }
 
     @Test
-    public void testUpdatingYangModels() throws ExecutionException, InterruptedException, TimeoutException {
+    void testUpdatingYangModels() throws ExecutionException, InterruptedException, TimeoutException {
         // Invoke RPC for uploading yang models
         final ContainerNode yangModelInput = getYangModelInput(YANG_NAME, YANG_BODY, YANG_VERSION);
         lightyController.getServices().getDOMRpcService().invokeRpc(UPLOAD_YANG_RPC_QN, yangModelInput)

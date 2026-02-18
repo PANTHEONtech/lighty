@@ -34,7 +34,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GnmiSetITTest extends GnmiITBase {
+class GnmiSetITTest extends GnmiITBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(GnmiSetITTest.class);
     private static final String CONFIG_INTERFACE_INIT_DATA = getResource("/json/initData/config.json");
@@ -126,7 +126,7 @@ public class GnmiSetITTest extends GnmiITBase {
     }
 
     @Test
-    public void setContainerTest() throws InterruptedException, IOException, JSONException {
+    void setContainerTest() throws InterruptedException, IOException, JSONException {
         //assert value before set, does not equals value that should be set
         final JSONObject configContainerPayloadJSONObject = new JSONObject(INTERFACE_ETH3_CONFIG_PAYLOAD);
         final HttpResponse<String> getOcInterfaceEth3ConfigContainerBeforeResponse = sendGetRequestJSON(CONTAINER_PATH);
@@ -153,7 +153,7 @@ public class GnmiSetITTest extends GnmiITBase {
     }
 
     @Test
-    public void setAugmentedInterfaceListFromOuterModelTest() throws Exception {
+    void setAugmentedInterfaceListFromOuterModelTest() throws Exception {
         final String payload = getAugmentedTestInterfaceBody();
         //Set request
         final HttpResponse<String> setAugResponse = sendPutRequestJSON(AUGMENTED_TEST_INTERFACE_ETH10_PATH, payload);
@@ -162,7 +162,7 @@ public class GnmiSetITTest extends GnmiITBase {
     }
 
     @Test
-    public void setAugmentedDataFromInnerModelTest() throws Exception {
+    void setAugmentedDataFromInnerModelTest() throws Exception {
         final String payload = getAugmentedDataBody();
         //Set request
         final HttpResponse<String> setAugResponse = sendPutRequestJSON(AUGMENTED_TEST_DATA_PATH, payload);
@@ -171,7 +171,7 @@ public class GnmiSetITTest extends GnmiITBase {
     }
 
     @Test
-    public void setLeafTest() throws InterruptedException, IOException, JSONException {
+    void setLeafTest() throws InterruptedException, IOException, JSONException {
         final JSONObject configNameLeafPayloadJSONObject = new JSONObject(INTERFACE_ETH3_CONFIG_NAME_PAYLOAD);
         final HttpResponse<String> getOcInterfaceEth3ConfigNameLeafBeforeResponse = sendGetRequestJSON(LEAF_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, getOcInterfaceEth3ConfigNameLeafBeforeResponse.statusCode());
@@ -192,7 +192,7 @@ public class GnmiSetITTest extends GnmiITBase {
     }
 
     @Test
-    public void setLeafIdentityRefTest() throws InterruptedException, IOException, JSONException {
+    void setLeafIdentityRefTest() throws InterruptedException, IOException, JSONException {
         //Check if current data is not same as updating data
         final HttpResponse<String> getIdentityData = sendGetRequestJSON(IDENTITY_REF_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, getIdentityData.statusCode());
@@ -213,7 +213,7 @@ public class GnmiSetITTest extends GnmiITBase {
     }
 
     @Test
-    public void setConfigFalseDataTest() throws InterruptedException, IOException, JSONException {
+    void setConfigFalseDataTest() throws InterruptedException, IOException, JSONException {
         //check if min-links on the given path is default(not updated)
         final JSONObject minLinksPayloadJSONObject =
             new JSONObject(INTERFACE_BR0_STATE_AGGREGATE_MIN_LINKS_TYPE_PAYLOAD);
@@ -244,7 +244,7 @@ public class GnmiSetITTest extends GnmiITBase {
     }
 
     @Test
-    public void deleteLeafTest() throws InterruptedException, IOException, JSONException {
+    void deleteLeafTest() throws InterruptedException, IOException, JSONException {
         //assert default initialized state of name of interface eth3
         final HttpResponse<String> getOcInterfaceEth3ConfigNameLeafBeforeResponse =
             sendGetRequestJSON(GNMI_DEVICE_MOUNTPOINT + OPENCONFIG_INTERFACES + "/interface=eth3/config/name");
@@ -270,7 +270,7 @@ public class GnmiSetITTest extends GnmiITBase {
     }
 
     @Test
-    public void setSimpleListEntryTest() throws IOException, InterruptedException, JSONException {
+    void setSimpleListEntryTest() throws IOException, InterruptedException, JSONException {
         // Set simple list with
         final String listPath = GNMI_TEST_CONTAINER_PATH + "/test-list=" + LIST_ID_10;
         final String listBody = getSimpleListData(LIST_ID_10);
@@ -297,7 +297,7 @@ public class GnmiSetITTest extends GnmiITBase {
     }
 
     @Test
-    public void setSimpleListEntryInsideContainerTest() throws IOException, InterruptedException, JSONException {
+    void setSimpleListEntryInsideContainerTest() throws IOException, InterruptedException, JSONException {
         //Set list from container path
         final String setListBody = getNewListInContainerData();
         final HttpResponse<String> setListResponse = sendPutRequestJSON(GNMI_TEST_CONTAINER_PATH, setListBody);
@@ -322,7 +322,7 @@ public class GnmiSetITTest extends GnmiITBase {
     }
 
     @Test
-    public void setInterfaceListEntryTest() throws IOException, InterruptedException, JSONException {
+    void setInterfaceListEntryTest() throws IOException, InterruptedException, JSONException {
         // Replace data in interface config
         String setListPath = GNMI_DEVICE_MOUNTPOINT + OPENCONFIG_INTERFACES;
         String setListBody = getInterfaceContainerListBody(LIST_ID_10);
@@ -349,14 +349,14 @@ public class GnmiSetITTest extends GnmiITBase {
     }
 
     @Test
-    public void setNestedListInWrongWayTest() throws IOException, InterruptedException {
+    void setNestedListInWrongWayTest() throws IOException, InterruptedException {
         String nestedListBody = getNestedListBody();
         final HttpResponse<String> nestedListResponse = sendPutRequestJSON(WRONG_NESTED_LIST_PATH, nestedListBody);
         assertEquals(HttpURLConnection.HTTP_INTERNAL_ERROR, nestedListResponse.statusCode());
     }
 
     @Test
-    public void setNestedListTest() throws IOException, InterruptedException, JSONException {
+    void setNestedListTest() throws IOException, InterruptedException, JSONException {
         // Create data in base list
         String baseListBody = getBaseListBody();
         final HttpResponse<String> nestedResponse = sendPutRequestJSON(GNMI_TEST_BASE_LIST_PATH, baseListBody);
@@ -391,7 +391,7 @@ public class GnmiSetITTest extends GnmiITBase {
     }
 
     @Test
-    public void setLeafListEntryTest() throws InterruptedException, IOException, JSONException {
+    void setLeafListEntryTest() throws InterruptedException, IOException, JSONException {
         //Verify that leaf-list data are empty
         final HttpResponse<String> getInvalidResponse = sendGetRequestJSON(GNMI_TEST_CONTAINER_PATH);
         assertEquals(HttpURLConnection.HTTP_CONFLICT, getInvalidResponse.statusCode());

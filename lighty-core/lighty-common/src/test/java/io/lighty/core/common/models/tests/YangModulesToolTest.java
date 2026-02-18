@@ -14,15 +14,15 @@ import java.util.Set;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.testng.annotations.Test;
 
-public class YangModulesToolTest {
+class YangModulesToolTest {
 
     @Test
-    public void testPrintModelInfo() {
+    void testPrintModelInfo() {
         YangModulesTool.main(new String[]{});
     }
 
     @Test
-    public void testPrintConfiguration() {
+    void testPrintConfiguration() {
         final Set<YangModuleInfo> allModelsFromClasspath = YangModuleUtils.getAllModelsFromClasspath();
         YangModulesTool.printConfiguration(allModelsFromClasspath);
     }

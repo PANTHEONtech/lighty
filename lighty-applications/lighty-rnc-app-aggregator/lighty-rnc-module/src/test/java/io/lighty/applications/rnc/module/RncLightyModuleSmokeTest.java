@@ -31,14 +31,14 @@ import javax.net.ssl.X509ExtendedTrustManager;
 import org.eclipse.jetty.http.HttpStatus;
 import org.testng.annotations.Test;
 
-public class RncLightyModuleSmokeTest {
+class RncLightyModuleSmokeTest {
 
     private static final String HTTPS_URI = "https://127.0.0.1:8888";
     private static final String HTTP_URI = "http://127.0.0.1:8888";
     private static final String TOPOLOGY_PATH = "/restconf/data/network-topology:network-topology";
 
     @Test
-    public void rncLightyModuleDefaultConfigTest() throws Exception {
+    void rncLightyModuleDefaultConfigTest() throws Exception {
         final var rncModule = new RncLightyModule(RncLightyModuleConfigUtils.loadDefaultConfig());
         assertTrue(rncModule.initModules());
         final var httpResponse = HttpClient.newHttpClient()
@@ -48,7 +48,7 @@ public class RncLightyModuleSmokeTest {
     }
 
     @Test
-    public void rncLightyModuleHttpsTest() throws Exception {
+    void rncLightyModuleHttpsTest() throws Exception {
         final var resource = RncLightyModuleSmokeTest.class.getResource("/httpsConfig.json");
         final var rncConfig = RncLightyModuleConfigUtils.loadConfigFromFile(Paths.get(resource.getPath()));
         final var rncModule = new RncLightyModule(rncConfig);
@@ -60,7 +60,7 @@ public class RncLightyModuleSmokeTest {
     }
 
     @Test
-    public void rncLightyModuleHttp2Test() throws Exception {
+    void rncLightyModuleHttp2Test() throws Exception {
         final var resource = RncLightyModuleSmokeTest.class.getResource("/http2Config.json");
         final var rncConfig = RncLightyModuleConfigUtils.loadConfigFromFile(Paths.get(resource.getPath()));
         final var rncModule = new RncLightyModule(rncConfig);
@@ -72,7 +72,7 @@ public class RncLightyModuleSmokeTest {
     }
 
     @Test
-    public void rncLightyModuleStartFailed() throws ConfigurationException {
+    void rncLightyModuleStartFailed() throws ConfigurationException {
         final var config = spy(RncLightyModuleConfigUtils.loadDefaultConfig());
         when(config.getControllerConfig()).thenReturn(null);
         final var rncModule = new RncLightyModule(config);

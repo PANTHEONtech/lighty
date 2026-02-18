@@ -48,7 +48,7 @@ import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.testng.annotations.Test;
 import org.w3c.dom.Element;
 
-public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
+class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
     private static final Map<QName, Object> TEST_SCHEMA_KEYS = Map.of(
             QName.create(Schema.QNAME, "identifier"), "listkeyvalue1",
             QName.create(Schema.QNAME, "version"), "versionValue",
@@ -61,7 +61,7 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
             .build();
 
     @Test
-    public void testBaseServiceGetDataMock() {
+    void testBaseServiceGetDataMock() {
         DOMRpcService domRpcService = mock(DOMRpcService.class);
 
         NetconfNmdaBaseServiceImpl baseService = new NetconfNmdaBaseServiceImpl(new NodeId("node1"), domRpcService,
@@ -98,7 +98,7 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
     }
 
     @Test
-    public void testBaseServiceGetDataFullMock() {
+    void testBaseServiceGetDataFullMock() {
         DOMRpcService domRpcService = mock(DOMRpcService.class);
 
         Set<QName> originFilter = new HashSet<>();
@@ -143,7 +143,7 @@ public class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {
     }
 
     @Test
-    public void testBaseServiceEditDataMock() {
+    void testBaseServiceEditDataMock() {
         MapEntryNode schema = ImmutableNodes.newMapEntryBuilder()
                 .withNodeIdentifier(YangInstanceIdentifier.NodeIdentifierWithPredicates
                         .of(Schema.QNAME, TEST_SCHEMA_KEYS))

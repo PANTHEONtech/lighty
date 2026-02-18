@@ -36,7 +36,7 @@ public abstract class NetconfBaseServiceBaseTest {
     protected BaseNetconfSchema baseSchema;
 
     @BeforeClass
-    public void beforeTest() throws YangParserException {
+    void beforeTest() throws YangParserException {
         final Set<YangModuleInfo> yangModuleInfos = Set.of(
                 org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214
                         .YangModuleInfoImpl.getInstance(),

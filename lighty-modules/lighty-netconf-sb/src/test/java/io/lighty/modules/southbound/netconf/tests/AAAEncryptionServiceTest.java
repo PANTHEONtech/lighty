@@ -16,18 +16,18 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class AAAEncryptionServiceTest {
+class AAAEncryptionServiceTest {
 
     private AAAEncryptionService aaaEncryptionService;
 
     @BeforeClass
-    public void init() throws ConfigurationException {
+    void init() throws ConfigurationException {
         this.aaaEncryptionService = NetconfConfigUtils.createAAAEncryptionService(
                 NetconfConfigUtils.getDefaultAaaEncryptServiceConfig());
     }
 
     @Test
-    public void testStringEncryptionDecryption() throws GeneralSecurityException {
+    void testStringEncryptionDecryption() throws GeneralSecurityException {
         final byte[] rawData = "hello world".getBytes();
         final byte[] encryptedData = this.aaaEncryptionService.encrypt(rawData);
         Assert.assertNotNull(encryptedData);
@@ -38,7 +38,7 @@ public class AAAEncryptionServiceTest {
     }
 
     @Test
-    public void testByteEncryptionDecryption() throws GeneralSecurityException {
+    void testByteEncryptionDecryption() throws GeneralSecurityException {
         final String rawDataString = "hello world";
         final byte[] rawData = rawDataString.getBytes(StandardCharsets.UTF_8);
         final byte[] encryptedData = this.aaaEncryptionService.encrypt(rawData);
@@ -52,13 +52,13 @@ public class AAAEncryptionServiceTest {
     }
 
     @Test
-    public void testNullInputs() throws GeneralSecurityException {
+    void testNullInputs() throws GeneralSecurityException {
         Assert.assertNull(this.aaaEncryptionService.decrypt(null));
         Assert.assertNull(this.aaaEncryptionService.encrypt(null));
     }
 
     @Test
-    public void testEmptyInputs() throws GeneralSecurityException {
+    void testEmptyInputs() throws GeneralSecurityException {
         final byte[] byteData = new byte[0];
         final byte[] decryptedBytes = this.aaaEncryptionService.decrypt(byteData);
         Assert.assertNotNull(decryptedBytes);
@@ -69,7 +69,7 @@ public class AAAEncryptionServiceTest {
     }
 
     @Test
-    public void testDecryptBadByteData() throws GeneralSecurityException {
+    void testDecryptBadByteData() throws GeneralSecurityException {
         final byte[] byteData = "test data".getBytes(StandardCharsets.UTF_8);
         final byte[] decryptedBytes = this.aaaEncryptionService.decrypt(byteData);
         Assert.assertEquals(decryptedBytes, byteData);
