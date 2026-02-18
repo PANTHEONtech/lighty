@@ -22,7 +22,6 @@ import io.lighty.modules.gnmi.connector.session.api.SessionManager;
 import io.lighty.modules.gnmi.connector.session.api.SessionProvider;
 import io.lighty.modules.gnmi.connector.tests.commons.TestUtils;
 import io.lighty.modules.gnmi.connector.tests.commons.TimeoutUtil;
-import io.lighty.modules.gnmi.connector.tests.gnmi.GnmiTest;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.CountDownLatch;
@@ -37,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 class GnoiTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GnmiTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GnoiTest.class);
     private static final InetSocketAddress DEFAULT_SERVER_ADDRESS = new InetSocketAddress(AddressUtil.LOCALHOST, 9090);
 
     private static final int GNOI_RESPONSE_FILE_CHUNKS = 2;
