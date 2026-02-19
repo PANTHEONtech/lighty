@@ -173,7 +173,6 @@ public class Main {
         if (!openApiStartOk) {
             throw new ModuleStartupException("Lighty.io OpenApi startup failed!");
         }
-        this.restconf.startServer();
 
         //4. start NetConf SBP
         netconfSBPConfiguration = NetconfConfigUtils.injectServicesToTopologyConfig(
