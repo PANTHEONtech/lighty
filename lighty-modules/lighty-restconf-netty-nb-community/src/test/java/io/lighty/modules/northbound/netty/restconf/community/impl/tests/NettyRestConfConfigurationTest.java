@@ -21,6 +21,9 @@ class NettyRestConfConfigurationTest {
         final var defaultRestConfConfiguration = NettyRestConfUtils.getDefaultNettyRestConfConfiguration();
         final var restConfConfiguration = new NettyRestConfConfiguration(defaultRestConfConfiguration);
 
+        Assertions.assertEquals(0, defaultRestConfConfiguration.getWorkThreads());
+        Assertions.assertEquals("lighty-restconf-nb-worker", defaultRestConfConfiguration.getGroupName());
+
         Assertions.assertEquals(defaultRestConfConfiguration, restConfConfiguration);
         Assertions.assertEquals(restConfConfiguration.hashCode(), defaultRestConfConfiguration.hashCode());
 
@@ -38,6 +41,8 @@ class NettyRestConfConfigurationTest {
         Assertions.assertNotNull(restConfConfiguration);
         Assertions.assertEquals(5555, restConfConfiguration.getHttpPort());
         Assertions.assertEquals("127.0.0.3", restConfConfiguration.getInetAddress().getHostAddress());
+        Assertions.assertEquals("netty-group-name", restConfConfiguration.getGroupName());
+        Assertions.assertEquals(2, restConfConfiguration.getWorkThreads());
     }
 
 }
