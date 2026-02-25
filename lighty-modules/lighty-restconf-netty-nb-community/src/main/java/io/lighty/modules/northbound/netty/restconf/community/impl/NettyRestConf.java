@@ -52,18 +52,23 @@ public class NettyRestConf extends AbstractLightyModule {
     private final InetAddress inetAddress;
     private final int httpPort;
     private final String restconfServletContextPath;
+    private final String groupName;
+    private final int workThreads;
+
     private MdsalRestconfStreamRegistry mdsalRestconfStreamRegistry;
     private SimpleNettyEndpoint nettyEndpoint;
 
     public NettyRestConf(final DOMDataBroker domDataBroker, final DOMRpcService domRpcService,
-        final DOMNotificationService domNotificationService,
-        final DOMActionService domActionService,
-        final DOMMountPointService domMountPointService,
-        final DOMSchemaService domSchemaService,
-        final InetAddress inetAddress,
-        final int httpPort,
-        final String restconfServletContextPath,
-        final WebEnvironment webEnvironment) {
+            final DOMNotificationService domNotificationService,
+            final DOMActionService domActionService,
+            final DOMMountPointService domMountPointService,
+            final DOMSchemaService domSchemaService,
+            final InetAddress inetAddress,
+            final int httpPort,
+            final String restconfServletContextPath,
+            final String groupName,
+            final int workThreads,
+            final WebEnvironment webEnvironment) {
         this.domDataBroker = domDataBroker;
         this.domRpcService = domRpcService;
         this.domNotificationService = domNotificationService;
@@ -73,6 +78,8 @@ public class NettyRestConf extends AbstractLightyModule {
         this.inetAddress = inetAddress;
         this.httpPort = httpPort;
         this.restconfServletContextPath = restconfServletContextPath;
+        this.groupName = groupName;
+        this.workThreads = workThreads;
         this.webEnvironment = webEnvironment;
         this.nettyEndpoint = null; //to resolve UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR
     }
@@ -93,8 +100,9 @@ public class NettyRestConf extends AbstractLightyModule {
             MessageEncoding.JSON, serverStackGrouping, Uint32.valueOf(262144), Uint32.valueOf(16384));
         this.mdsalRestconfStreamRegistry = new MdsalRestconfStreamRegistry(domDataBroker, domNotificationService,
             domSchemaService, new JaxRsLocationProvider(), databindProvider);
+        final var bootstrapFactory = new BootstrapFactory(groupName, workThreads);
         nettyEndpoint = new SimpleNettyEndpoint(server, service, mdsalRestconfStreamRegistry,
-            new BootstrapFactory("lighty-restconf-nb-worker", 0), configuration);
+            bootstrapFactory, configuration);
 
         return true;
     }
