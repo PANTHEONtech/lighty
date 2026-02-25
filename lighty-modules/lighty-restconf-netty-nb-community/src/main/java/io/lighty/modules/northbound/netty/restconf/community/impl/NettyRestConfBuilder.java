@@ -54,6 +54,8 @@ public final class NettyRestConfBuilder {
             restconfConfiguration.getInetAddress(),
             restconfConfiguration.getHttpPort(),
             restconfConfiguration.getRestconfServletContextPath(),
+            restconfConfiguration.getGroupName(),
+            restconfConfiguration.getWorkThreads(),
             webEnvironment
         );
     }
