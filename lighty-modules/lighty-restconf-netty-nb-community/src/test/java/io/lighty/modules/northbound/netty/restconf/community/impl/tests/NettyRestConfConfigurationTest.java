@@ -21,8 +21,11 @@ public class NettyRestConfConfigurationTest {
         final var defaultRestConfConfiguration = NettyRestConfUtils.getDefaultNettyRestConfConfiguration();
         final var restConfConfiguration = new NettyRestConfConfiguration(defaultRestConfConfiguration);
 
-        Assert.assertEquals(defaultRestConfConfiguration, restConfConfiguration);
-        Assert.assertEquals(restConfConfiguration.hashCode(), defaultRestConfConfiguration.hashCode());
+        Assertions.assertEquals(0, defaultRestConfConfiguration.getWorkThreads());
+        Assertions.assertEquals("lighty-restconf-nb-worker", defaultRestConfConfiguration.getGroupName());
+
+        Assertions.assertEquals(defaultRestConfConfiguration, restConfConfiguration);
+        Assertions.assertEquals(restConfConfiguration.hashCode(), defaultRestConfConfiguration.hashCode());
 
         restConfConfiguration.setHttpPort(3333);
         restConfConfiguration.setInetAddress(InetAddress.getLoopbackAddress());
@@ -35,9 +38,11 @@ public class NettyRestConfConfigurationTest {
     public void testNettyRestConfConfigurationUtilsLoadFromStream() throws ConfigurationException {
         final var resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("restconf-config.json");
         final var restConfConfiguration = NettyRestConfUtils.getNettyRestConfConfiguration(resourceAsStream);
-        Assert.assertNotNull(restConfConfiguration);
-        Assert.assertEquals(restConfConfiguration.getHttpPort(), 5555);
-        Assert.assertEquals(restConfConfiguration.getInetAddress().getHostAddress(), "127.0.0.3");
+        Assertions.assertNotNull(restConfConfiguration);
+        Assertions.assertEquals(5555, restConfConfiguration.getHttpPort());
+        Assertions.assertEquals("127.0.0.3", restConfConfiguration.getInetAddress().getHostAddress());
+        Assertions.assertEquals("netty-group-name", restConfConfiguration.getGroupName());
+        Assertions.assertEquals(2, restConfConfiguration.getWorkThreads());
     }
 
 }
