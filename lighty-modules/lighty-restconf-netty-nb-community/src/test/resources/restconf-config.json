@@ -2,6 +2,8 @@
   "restconf": {
     "inetAddress": "127.0.0.3",
     "httpPort": 5555,
-    "restconfServletContextPath": "/restconf-path"
+    "restconfServletContextPath": "/restconf-path",
+    "workThreads": 2,
+    "groupName": "netty-group-name"
   }
 }
