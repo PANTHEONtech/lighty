@@ -59,6 +59,8 @@ public class NettyRestConf extends AbstractLightyModule {
     private final InetAddress inetAddress;
     private final int httpPort;
     private final String restconfServletContextPath;
+    private final String groupName;
+    private final int workThreads;
 
     private MdsalRestconfStreamRegistry mdsalRestconfStreamRegistry;
     private SimpleNettyEndpoint nettyEndpoint;
@@ -69,7 +71,7 @@ public class NettyRestConf extends AbstractLightyModule {
             final DOMNotificationService domNotificationService, final DOMActionService domActionService,
             final DOMMountPointService domMountPointService, final DOMSchemaService domSchemaService,
             final InetAddress inetAddress, final int httpPort, final String restconfServletContextPath,
-            final WebEnvironment webEnvironment) {
+            final String groupName, final int workThreads, final WebEnvironment webEnvironment) {
         this.domDataBroker = domDataBroker;
         this.domRpcService = domRpcService;
         this.domNotificationService = domNotificationService;
@@ -79,6 +81,8 @@ public class NettyRestConf extends AbstractLightyModule {
         this.inetAddress = inetAddress;
         this.httpPort = httpPort;
         this.restconfServletContextPath = restconfServletContextPath;
+        this.groupName = groupName;
+        this.workThreads = workThreads;
         this.webEnvironment = webEnvironment;
     }
 
@@ -125,8 +129,9 @@ public class NettyRestConf extends AbstractLightyModule {
             Uint64.valueOf(4L * 1024 * 1024),
             Uint64.valueOf(256L * 1024), Uint32.valueOf(100));
 
+        final var bootstrapFactory = new BootstrapFactory(groupName, workThreads);
         nettyEndpoint = new SimpleNettyEndpoint(server, service, mdsalRestconfStreamRegistry,
-            new BootstrapFactory("lighty-restconf-nb-worker", 0), configuration);
+            bootstrapFactory, configuration);
 
         return true;
     }
