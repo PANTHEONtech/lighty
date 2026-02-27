@@ -24,7 +24,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class LightyDiagStatusServiceImplTest {
+class LightyDiagStatusServiceImplTest {
 
     private static final String TEST_SERVICE = "testService";
     private static final String TEST_SERVICE_2 = "testService2";
@@ -35,13 +35,13 @@ public class LightyDiagStatusServiceImplTest {
     private SystemReadyMonitor systemReadyMonitor;
 
     @BeforeClass
-    public void init() {
+    void init() {
         MockitoAnnotations.initMocks(this);
         when(systemReadyMonitor.getSystemState()).thenReturn(SystemState.ACTIVE);
     }
 
     @Test
-    public void registerTest() {
+    void registerTest() {
         diagStatusService = new LightyDiagStatusServiceImpl(systemReadyMonitor);
         final ServiceRegistration serviceRegistration = diagStatusService.register(TEST_SERVICE);
         diagStatusService.register(TEST_SERVICE).report(
@@ -58,7 +58,7 @@ public class LightyDiagStatusServiceImplTest {
     }
 
     @Test
-    public void reportTest() {
+    void reportTest() {
         diagStatusService = new LightyDiagStatusServiceImpl(systemReadyMonitor);
         final ServiceRegistration serviceRegistration = diagStatusService.register(TEST_SERVICE_2);
 

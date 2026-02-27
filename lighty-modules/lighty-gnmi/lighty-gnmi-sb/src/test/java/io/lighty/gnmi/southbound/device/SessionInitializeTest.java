@@ -82,7 +82,7 @@ class SessionInitializeTest {
     private GnmiSession gnmiSessionMock;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         final ExecutorService gnmiExecutorService = Executors.newCachedThreadPool();
         scheduledService = Executors.newScheduledThreadPool(100);
 
@@ -121,7 +121,7 @@ class SessionInitializeTest {
         Tests behaviour of DevicesConnectionManager if nodes are not yet connected by DeviceSessionInitializerProvider.
      */
     @Test
-    public void deviceInitializerDevicesConnecting() throws Exception {
+    void deviceInitializerDevicesConnecting() throws Exception {
 
         final List<Node> gnmiNodes = prepareGnmiNodes(NUMBER_OF_NODES);
 
@@ -155,7 +155,7 @@ class SessionInitializeTest {
     }
 
     @Test
-    public void deviceInitializerDevicesReady() throws Exception {
+    void deviceInitializerDevicesReady() throws Exception {
 
         final List<Node> gnmiNodes = prepareGnmiNodes(NUMBER_OF_NODES);
 
@@ -184,7 +184,7 @@ class SessionInitializeTest {
          after the underlying gRPC channel state eventually (after some state changes) becomes READY
      */
     @Test
-    public void sessionCreationOnListenerStatusChangeTestAfter500ms()
+    void sessionCreationOnListenerStatusChangeTestAfter500ms()
             throws InterruptedException, ExecutionException, TimeoutException, SchemaException {
 
         final List<Node> gnmiNodes = prepareGnmiNodes(NUMBER_OF_NODES);

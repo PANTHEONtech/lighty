@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FileServiceTest {
+class FileServiceTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(FileServiceTest.class);
 
@@ -51,7 +51,7 @@ public class FileServiceTest {
 
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         final GnmiSimulatorConfiguration simulatorConfiguration = GnmiSimulatorConfUtils
                 .loadGnmiSimulatorConfiguration(this.getClass().getResourceAsStream(SIMULATOR_CONFIG));
         simulatorConfiguration.setTargetAddress(TARGET_HOST);
@@ -69,13 +69,13 @@ public class FileServiceTest {
     }
 
     @AfterEach
-    public void after() throws Exception {
+    void after() throws Exception {
         sessionProvider.close();
         target.stop();
     }
 
     @Test
-    public void downloadDummyFileTest() throws InterruptedException {
+    void downloadDummyFileTest() throws InterruptedException {
         final FileOuterClass.GetRequest request = FileOuterClass.GetRequest.newBuilder().build();
         final CountDownLatch syncLatch = new CountDownLatch(1);
         final StreamObserver<FileOuterClass.GetResponse> responseStreamObserver = new StreamObserver<>() {

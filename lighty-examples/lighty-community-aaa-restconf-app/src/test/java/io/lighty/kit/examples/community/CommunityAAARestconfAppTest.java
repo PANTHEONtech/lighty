@@ -19,12 +19,12 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Base64;
 import org.eclipse.jetty.http.HttpStatus;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class CommunityAAARestconfAppTest {
+class CommunityAAARestconfAppTest {
 
     private static final String TEST_ADDRESS = "http://localhost:8888/restconf/data/ietf-yang-library:modules-state";
     private static final String BASIC_AUTH =
@@ -36,7 +36,7 @@ public class CommunityAAARestconfAppTest {
     private static HttpClient httpClient;
     private static Main main;
 
-    @BeforeClass
+    @BeforeAll
     public static void startUp() {
         final URL config = CommunityAAARestconfAppTest.class.getResource(TEST_CONFIG_JSON);
         main = new Main();
@@ -44,24 +44,24 @@ public class CommunityAAARestconfAppTest {
         httpClient = HttpClient.newHttpClient();
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         httpClient = null;
         main.shutdown();
     }
 
     @Test
-    public void readDataCorrectCredentials() throws Exception {
+    void readDataCorrectCredentials() throws Exception {
         HttpResponse<String> response
                 = httpClient.send(createGetRequestJson(BASIC_AUTH), BodyHandlers.ofString());
-        Assert.assertEquals(HttpStatus.OK_200, response.statusCode());
+        Assertions.assertEquals(HttpStatus.OK_200, response.statusCode());
     }
 
     @Test
-    public void readDataWrongCredentials() throws Exception {
+    void readDataWrongCredentials() throws Exception {
         HttpResponse<String> response
                 = httpClient.send(createGetRequestJson(BASIC_AUTH_WRONG), BodyHandlers.ofString());
-        Assert.assertEquals(HttpStatus.UNAUTHORIZED_401, response.statusCode());
+        Assertions.assertEquals(HttpStatus.UNAUTHORIZED_401, response.statusCode());
     }
 
     private HttpRequest createGetRequestJson(final String basicAuth) {

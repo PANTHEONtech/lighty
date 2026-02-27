@@ -33,12 +33,12 @@ import org.mockito.Mockito;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev240202.AaaEncryptServiceConfig;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev240202.AaaEncryptServiceConfigBuilder;
 
-public class GnmiSouthBoundModuleTest {
+class GnmiSouthBoundModuleTest {
     private static final long MODULE_TIMEOUT = 60;
     private static final TimeUnit MODULE_TIME_UNIT = TimeUnit.SECONDS;
 
     @Test
-    public void gnmiModuleSmokeTest() throws Exception {
+    void gnmiModuleSmokeTest() throws Exception {
         final LightyController services = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(GnmiConfigUtils.YANG_MODELS)).build();
         Assertions.assertTrue(services.start().get());
@@ -52,7 +52,7 @@ public class GnmiSouthBoundModuleTest {
     }
 
     @Test
-    public void gnmiModuleStartFailedTest() throws Exception {
+    void gnmiModuleStartFailedTest() throws Exception {
         final LightyController services = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(GnmiConfigUtils.YANG_MODELS)).build();
         Assertions.assertTrue(services.start().get());

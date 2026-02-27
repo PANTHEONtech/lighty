@@ -40,7 +40,7 @@ import org.opendaylight.yang.gen.v1.urn.lighty.gnmi.yang.storage.rev210331.gnmi.
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.model.api.Module;
 
-public class SchemaConstructTest {
+class SchemaConstructTest {
 
     private static final String SCHEMA_PATH = "src/test/resources/additional/test/schema";
     private static final String OPENCONFIG_GNMI_CONFIG = "/lightyconfigs/openconfig_gnmi_config.json";
@@ -57,7 +57,7 @@ public class SchemaConstructTest {
         Creates and loads all models to TestYangDataStoreService.
      */
     @BeforeEach
-    public void setup() throws YangLoadException, ConfigurationException {
+    void setup() throws YangLoadException, ConfigurationException {
         dataStoreService = new TestYangDataStoreService();
         completeCapabilities = new ByPathYangLoaderService(Path.of(SCHEMA_PATH)).load(dataStoreService);
         Assertions.assertFalse(completeCapabilities.isEmpty());
@@ -74,7 +74,7 @@ public class SchemaConstructTest {
         Test that all loaded models have expected version types (semver, revision, empty).
      */
     @Test
-    public void schemaConstructRevisionTest() throws InterruptedException, ExecutionException, TimeoutException {
+    void schemaConstructRevisionTest() throws InterruptedException, ExecutionException, TimeoutException {
         // Get and assert that all models are read
         final List<GnmiYangModel> storedModels = new ArrayList<>();
         for (GnmiDeviceCapability capability : completeCapabilities) {
@@ -107,7 +107,7 @@ public class SchemaConstructTest {
             3. empty
      */
     @Test
-    public void schemaConstructSemVerTest() throws SchemaException {
+    void schemaConstructSemVerTest() throws SchemaException {
         final SchemaContextHolder schemaContextHolder = new SchemaContextHolderImpl(dataStoreService, null);
         final EffectiveModelContext schemaContext = schemaContextHolder.getSchemaContext(completeCapabilities);
         // Check that every module in requested capabilities is contained in resulting schema
@@ -120,7 +120,7 @@ public class SchemaConstructTest {
         Schema should be created successfully because of mechanism which determines imports and adds them to schema.
      */
     @Test
-    public void schemaConstructDependenciesTest() throws SchemaException {
+    void schemaConstructDependenciesTest() throws SchemaException {
         final SchemaContextHolder schemaContextHolder = new SchemaContextHolderImpl(
                 dataStoreService, null);
 
@@ -140,7 +140,7 @@ public class SchemaConstructTest {
         Test that SchemaContextHolderImpl correctly reports missing models if they are not found in datastore.
     */
     @Test
-    public void schemaConstructionModelsMissingTest()
+    void schemaConstructionModelsMissingTest()
             throws InterruptedException, ExecutionException, TimeoutException {
         final SchemaContextHolder schemaContextHolder = new SchemaContextHolderImpl(
                 dataStoreService, null);
@@ -168,7 +168,7 @@ public class SchemaConstructTest {
         reports missing models which are imports of models provided in capabilities.
     */
     @Test
-    public void schemaConstructionModelsImportsMissingTest()
+    void schemaConstructionModelsImportsMissingTest()
             throws InterruptedException, ExecutionException, TimeoutException {
         final SchemaContextHolder schemaContextHolder = new SchemaContextHolderImpl(
                 dataStoreService, null);
@@ -198,7 +198,7 @@ public class SchemaConstructTest {
         Test behaviour of schema context creation if some requested modules contains yang syntax errors.
      */
     @Test
-    public void schemaConstructWrongSyntaxTest()
+    void schemaConstructWrongSyntaxTest()
             throws IOException, InterruptedException, ExecutionException, TimeoutException {
         // Delete models with correct syntax and add them back with wrong syntax
         final List<File> filesInFolder = Files.walk(Path.of(SYNTAX_ERROR_YANGS_PATH))
@@ -232,7 +232,7 @@ public class SchemaConstructTest {
          modules are also missing.
      */
     @Test
-    public void schemaConstructWrongSyntaxAndMissingModelsTest()
+    void schemaConstructWrongSyntaxAndMissingModelsTest()
             throws IOException, InterruptedException, ExecutionException, TimeoutException {
         // Delete models with correct syntax and add them back with wrong syntax
         final List<File> filesInFolder = Files.walk(Path.of(SYNTAX_ERROR_YANGS_PATH))

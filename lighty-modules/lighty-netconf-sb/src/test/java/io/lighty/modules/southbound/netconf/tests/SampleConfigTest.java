@@ -20,12 +20,12 @@ import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 import org.testng.annotations.Test;
 
-public class SampleConfigTest {
+class SampleConfigTest {
 
     private static final long TIME_OUT = 30;
 
     @Test
-    public void loadTopLevelSingleNodeModelsFromJsonConfig() throws Exception {
+    void loadTopLevelSingleNodeModelsFromJsonConfig() throws Exception {
         final LightyController lightyController = getLightyController("sampleConfigSingleNode.json");
         assertTrue(lightyController.start().get(TIME_OUT, TimeUnit.SECONDS));
 
@@ -37,7 +37,7 @@ public class SampleConfigTest {
     }
 
     @Test
-    public void loadTopLevelClusterModelsFromJsonConfig() throws Exception {
+    void loadTopLevelClusterModelsFromJsonConfig() throws Exception {
         final LightyController lightyController = getLightyController("sampleConfigCluster.json");
         assertTrue(lightyController.start().get(TIME_OUT, TimeUnit.SECONDS));
 

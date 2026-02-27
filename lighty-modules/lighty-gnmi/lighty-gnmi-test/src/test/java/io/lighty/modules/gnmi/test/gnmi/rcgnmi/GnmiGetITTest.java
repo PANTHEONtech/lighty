@@ -36,7 +36,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GnmiGetITTest extends GnmiITBase {
+class GnmiGetITTest extends GnmiITBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(GnmiGetITTest.class);
     private static final String GET_CAPABILITIES_PATH
@@ -116,7 +116,7 @@ public class GnmiGetITTest extends GnmiITBase {
     }
 
     @Test
-    public void getCapabilitiesTest() throws InterruptedException, IOException, JSONException {
+    void getCapabilitiesTest() throws InterruptedException, IOException, JSONException {
         //assert all expected capabilities are contained in device response
         final HttpResponse<String> capabilitiesResponse = sendGetRequestJSON(GET_CAPABILITIES_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, capabilitiesResponse.statusCode());
@@ -129,7 +129,7 @@ public class GnmiGetITTest extends GnmiITBase {
     }
 
     @Test
-    public void getContainerTest() throws InterruptedException, IOException, JSONException {
+    void getContainerTest() throws InterruptedException, IOException, JSONException {
         //assert openconfig-interfaces container returns expected value
         final HttpResponse<String> getOcInterfacesContainerResponse = sendGetRequestJSON(INTERFACES_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, getOcInterfacesContainerResponse.statusCode());
@@ -139,7 +139,7 @@ public class GnmiGetITTest extends GnmiITBase {
     }
 
     @Test
-    public void getLeafTest() throws InterruptedException, IOException, JSONException {
+    void getLeafTest() throws InterruptedException, IOException, JSONException {
         //assert name which is of leaf type in gnmi openconfig-interfaces - interface - eth3
         final HttpResponse<String> getOcInterfaceEth3ConfigNameResponse =
             sendGetRequestJSON(INTERFACES_PATH + "/interface=eth3/config/name");
@@ -151,7 +151,7 @@ public class GnmiGetITTest extends GnmiITBase {
     }
 
     @Test
-    public void getLeafIdentityRefTest() throws InterruptedException, IOException, JSONException {
+    void getLeafIdentityRefTest() throws InterruptedException, IOException, JSONException {
         //assert type which is of leaf type(identityref) in gnmi openconfig-interfaces - interface - eth3
         final HttpResponse<String> getOcInterfaceEth3ConfigTypeResponse =
             sendGetRequestJSON(INTERFACES_PATH + "/interface=eth3/config/type");
@@ -163,7 +163,7 @@ public class GnmiGetITTest extends GnmiITBase {
     }
 
     @Test
-    public void getListEntryTest() throws InterruptedException, IOException, JSONException {
+    void getListEntryTest() throws InterruptedException, IOException, JSONException {
         //assert list entry in openconfig-interfaces - interface - eth3, and also if it is only one with that key
         final HttpResponse<String> getOcInterfaceEth3Response = sendGetRequestJSON(INTERFACES_PATH + "/interface=eth3");
         assertEquals(HttpURLConnection.HTTP_OK, getOcInterfaceEth3Response.statusCode());
@@ -176,7 +176,7 @@ public class GnmiGetITTest extends GnmiITBase {
     }
 
     @Test
-    public void getIncorrectListEntryTest() throws InterruptedException, IOException, JSONException {
+    void getIncorrectListEntryTest() throws InterruptedException, IOException, JSONException {
         //assert that request to list entry which does not exist - interface - ethNonExisting, will fail
         final HttpResponse<String> getOcInterfaceNonExistingResponse =
             sendGetRequestJSON(INTERFACES_PATH + "/interface=ethNonExisting");
@@ -185,7 +185,7 @@ public class GnmiGetITTest extends GnmiITBase {
     }
 
     @Test
-    public void getNonExistingDataTest() throws InterruptedException, IOException {
+    void getNonExistingDataTest() throws InterruptedException, IOException {
         //assert error for request to non existing interfacesincorrect container
         final HttpResponse<String> getOcInterfacesContainerWrongResponse =
             sendGetRequestJSON(INTERFACES_PATH + "incorrect");
@@ -193,7 +193,7 @@ public class GnmiGetITTest extends GnmiITBase {
     }
 
     @Test
-    public void getLeafWithRegexPosix() throws IOException, InterruptedException, JSONException {
+    void getLeafWithRegexPosix() throws IOException, InterruptedException, JSONException {
         final HttpResponse<String> openflowResponse = sendGetRequestJSON(OPENFLOW_PATH);
         assertEquals(HttpURLConnection.HTTP_OK, openflowResponse.statusCode());
         JSONAssert.assertEquals(getExpectedOcOpenflowJsonResult(), openflowResponse.body(), false);

@@ -16,10 +16,10 @@ import java.net.InetAddress;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class RestConfConfigurationTest {
+class RestConfConfigurationTest {
 
     @Test
-    public void testRestConfConfiguration() {
+    void testRestConfConfiguration() {
         RestConfConfiguration defaultRestConfConfiguration = RestConfConfigUtils.getDefaultRestConfConfiguration();
         RestConfConfiguration restConfConfiguration = new RestConfConfiguration(defaultRestConfConfiguration);
 
@@ -34,7 +34,7 @@ public class RestConfConfigurationTest {
     }
 
     @Test
-    public void testRestConfConfigurationUtilsLoadFromStrem() throws ConfigurationException {
+    void testRestConfConfigurationUtilsLoadFromStrem() throws ConfigurationException {
         InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("restconf-config.json");
         RestConfConfiguration restConfConfiguration = RestConfConfigUtils.getRestConfConfiguration(resourceAsStream);
         Assert.assertNotNull(restConfConfiguration);

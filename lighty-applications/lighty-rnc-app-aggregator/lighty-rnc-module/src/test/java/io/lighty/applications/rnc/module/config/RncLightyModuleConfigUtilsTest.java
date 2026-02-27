@@ -19,10 +19,10 @@ import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import org.testng.annotations.Test;
 
-public class RncLightyModuleConfigUtilsTest {
+class RncLightyModuleConfigUtilsTest {
 
     @Test
-    public void testLoadConfigFromFile() throws ConfigurationException, URISyntaxException {
+    void testLoadConfigFromFile() throws ConfigurationException, URISyntaxException {
         final var configPath = Paths.get(this.getClass().getResource("/config.json").toURI());
         var rncConfig = RncLightyModuleConfigUtils.loadConfigFromFile(configPath);
 
@@ -73,7 +73,7 @@ public class RncLightyModuleConfigUtilsTest {
     }
 
     @Test
-    public void testLoadDefaultConfig() throws ConfigurationException {
+    void testLoadDefaultConfig() throws ConfigurationException {
         final var rncConfig = RncLightyModuleConfigUtils.loadDefaultConfig();
 
         // Test Restconf configuration

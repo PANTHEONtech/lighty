@@ -22,24 +22,24 @@ public abstract class OpenApiLightyTest extends OpenApiLightyTestBase {
     protected static final String DEFAULT_REVISION_DATE = "2019-01-04";
 
 
-    public void simpleOpenApiModuleTest() {
+    void simpleOpenApiModuleTest() {
         Assert.assertNotNull(getLightyController());
         Assert.assertNotNull(getJaxRsOpenapi());
     }
 
-    public void testGetListOfMounts(UriInfo uriInfo) {
+    void testGetListOfMounts(UriInfo uriInfo) {
         assertSuccessResponse(getJaxRsOpenapi().getListOfMounts(uriInfo));
     }
 
-    public void testGetAllModulesDoc(UriInfo uriInfo) throws IOException {
+    void testGetAllModulesDoc(UriInfo uriInfo) throws IOException {
         assertSuccessResponse(getJaxRsOpenapi().getAllModulesDoc(uriInfo, 0, 0, 0, 0));
     }
 
-    public void testGetDocByModule(UriInfo uriInfo, String modelName, String revisionDate) throws IOException {
+    void testGetDocByModule(UriInfo uriInfo, String modelName, String revisionDate) throws IOException {
         assertSuccessResponse(getJaxRsOpenapi().getDocByModule(modelName, revisionDate, uriInfo, 0, 0));
     }
 
-    public void testGetApiExplorer(UriInfo uriInfo) {
+    void testGetApiExplorer(UriInfo uriInfo) {
         final Response response = getJaxRsOpenapi().getApiExplorer(uriInfo);
 
         final int redirectCode = 303;

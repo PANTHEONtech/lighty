@@ -7,7 +7,7 @@
  */
 package io.lighty.codecs.util;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import com.google.common.base.Strings;
 import com.google.common.io.Resources;
@@ -19,7 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ServiceLoader;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.opendaylight.netconf.api.xml.XmlUtil;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster.ToasterStatus;
@@ -195,7 +195,7 @@ public abstract class AbstractCodecTest {
         try {
             JsonParser.parseString(json);
         } catch (JsonSyntaxException e) {
-            Assert.fail(String.format("XML %s is not valid, reason: %s", json, e));
+            Assertions.fail(String.format("XML %s is not valid, reason: %s", json, e));
         }
     }
 
@@ -204,7 +204,7 @@ public abstract class AbstractCodecTest {
         try {
             XmlUtil.readXmlToDocument(xml);
         } catch (SAXException | IOException e) {
-            Assert.fail(String.format("XML %s is not valid, reason: %s", xml, e));
+            Assertions.fail(String.format("XML %s is not valid, reason: %s", xml, e));
         }
     }
 
