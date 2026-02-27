@@ -88,6 +88,7 @@ public class CommunityRestConf extends AbstractLightyModule {
                 restconfServletContextPath,null, webContextSecurer);
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     @Override
     protected boolean initProcedure() throws ServletException {
         final Stopwatch stopwatch = Stopwatch.createStarted();
@@ -121,6 +122,12 @@ public class CommunityRestConf extends AbstractLightyModule {
             JaxRsEndpoint.props(streamsConfiguration)
         );
 
+        try {
+            this.jettyServer.start();
+        } catch (final Exception e) {
+            Throwables.throwIfUnchecked(e);
+            throw new ServletException("Failed to start Jetty server for RestConf", e);
+        }
         LOG.info("Lighty RestConf started in {}", stopwatch.stop());
         return true;
     }
@@ -170,17 +177,6 @@ public class CommunityRestConf extends AbstractLightyModule {
             this.lightyServerBuilder = null;
         }
         return !stopFailed;
-    }
-
-    @SuppressWarnings("checkstyle:illegalCatch")
-    public void startServer() {
-        try {
-            this.jettyServer.start();
-        } catch (final Exception e) {
-            Throwables.throwIfUnchecked(e);
-            throw new IllegalStateException("Failed to start jetty!", e);
-        }
-        LOG.info("Jetty started");
     }
 
     public JaxRsEndpoint getJaxRsEndpoint() {

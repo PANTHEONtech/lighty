@@ -94,7 +94,6 @@ public class RncLightyModule {
                 rncModuleConfig.getRestconfConfig().getInetAddress().getHostAddress(),
                 rncModuleConfig.getServerConfig().getCallhomePort()).build();
             startAndWaitLightyModule(callhomePlugin);
-            lightyRestconf.startServer();
         } catch (RncLightyAppStartException e) {
             LOG.error("Unable to initialize and start RNC lighty.io module!", e);
             return false;

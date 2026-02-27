@@ -90,7 +90,6 @@ public class RcGnmiAppModule {
                     this.gnmiExecutorService, this.appModuleConfig.getGnmiConfiguration(), encryptionService,
                     this.customReactor);
             startAndWaitLightyModule(this.gnmiSouthboundModule);
-            lightyRestconf.startServer();
 
         } catch (RcGnmiAppException e) {
             LOG.error("Unable to initialize and start RCgNMI lighty.io module!", e);
