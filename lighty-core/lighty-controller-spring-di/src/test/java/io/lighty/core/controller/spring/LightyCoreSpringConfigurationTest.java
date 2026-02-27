@@ -58,7 +58,7 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
  * can not create ApplicationContext properly.
  */
 @SpringBootTest
-public class LightyCoreSpringConfigurationTest extends AbstractJUnit4SpringContextTests {
+class LightyCoreSpringConfigurationTest extends AbstractJUnit4SpringContextTests {
 
     private static final Logger LOG = LoggerFactory.getLogger(LightyCoreSpringConfigurationTest.class);
 
@@ -143,7 +143,7 @@ public class LightyCoreSpringConfigurationTest extends AbstractJUnit4SpringConte
     DataBroker bindingDataBrokerTestProperty;
 
     @Test
-    public void testLightyBeansExists() {
+    void testLightyBeansExists() {
         assertNotNull(lightyControllerTestProperty);
         assertNotNull(lightyModuleRegistryServiceTestProperty);
         assertNotNull(diagStatusServiceTestProperty);

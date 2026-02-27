@@ -83,7 +83,7 @@ public final class AAALightyShiroProvider {
         if (datastoreConfig != null && datastoreConfig.getStore().equals(DatastoreConfig.Store.H2DataStore)) {
             final IdmLightConfig config = new IdmLightConfigBuilder()
                     .dbDirectory(aaaConfiguration.getDbPath())
-                    .dbUser(aaaConfiguration.getUsername())
+                    .dbUser(aaaConfiguration.getDbUsername())
                     .dbPwd(aaaConfiguration.getDbPassword()).build();
             final PasswordServiceConfig passwordServiceConfig = new PasswordServiceConfigBuilder().setAlgorithm(
                     "SHA-512").setIterations(20000).build();
@@ -101,18 +101,28 @@ public final class AAALightyShiroProvider {
             this.credentialAuth = idmLightProxy;
             this.claimCache = idmLightProxy;
         }
-        this.realmAuthProvider = buildTokenAuthenticators((PasswordCredentialAuth) this.credentialAuth, iidmStore);
         try {
             final StoreBuilder storeBuilder = new StoreBuilder(iidmStore);
-            final String domain = storeBuilder.initDomainAndRolesWithoutUsers(IIDMStore.DEFAULT_DOMAIN);
-            if (domain != null) {
-                // If is not exist. If domain already exist on path, will be used instead
+            final String initDomain = storeBuilder.initDomainAndRolesWithoutUsers(IIDMStore.DEFAULT_DOMAIN);
+
+            // If the domain already exists, the init method returns null.
+            // We fallback to the default domain string to ensure we have a valid ID for user creation.
+            final String domain = initDomain == null ? IIDMStore.DEFAULT_DOMAIN : initDomain;
+            // Create custom user from the JSON config
+            try {
                 storeBuilder.createUser(domain, aaaConfiguration.getUsername(), aaaConfiguration.getPassword(), true);
+                LOG.info("Pre-seeded database with custom user '{}'", aaaConfiguration.getUsername());
+            } catch (IDMStoreException e) {
+                LOG.debug("User already exists, skipping creation.");
             }
 
         } catch (final IDMStoreException e) {
-            LOG.error("Failed to initialize data in store", e);
+            LOG.error("Failed to pre-seed data in store", e);
         }
+        // Because the database is no longer empty, BasicRealmAuthProvider will
+        // see the existing domain/users and gracefully skip its hardcoded admin injection
+        this.realmAuthProvider = buildTokenAuthenticators((PasswordCredentialAuth) this.credentialAuth, iidmStore);
+
         initAAAonServer(server);
     }
 

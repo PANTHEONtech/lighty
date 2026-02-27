@@ -33,7 +33,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.testng.annotations.Test;
 
-public class YangPatchTest extends NettyRestConfTestBase {
+class YangPatchTest extends NettyRestConfTestBase {
     private static final QName BASE_Q_NAME = QName.create("instance:identifier:patch:module",
             "instance-identifier-patch-module", Revision.of("2015-11-21")).intern();
     private static final QName EXAMPLE_LIST = QName.create(BASE_Q_NAME, "my-list1").intern();
@@ -49,7 +49,7 @@ public class YangPatchTest extends NettyRestConfTestBase {
     private static final String I_AM_LEAF_12_1 = "I am leaf12-1";
 
     @Test
-    public void patchDataReplaceTest() throws Exception {
+    void patchDataReplaceTest() throws Exception {
         assertNotNull(getLightyController());
         assertNotNull(getNettyRestConf());
 

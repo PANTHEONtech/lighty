@@ -30,7 +30,7 @@ class GnmiDataConverterTest {
     private static final String YANG_MODEL_2_FILE_NAME = "rootModel2.yang";
 
     @Test
-    public void findCorrectRootYangModel() throws ReactorException, YangSyntaxErrorException, IOException {
+    void findCorrectRootYangModel() throws ReactorException, YangSyntaxErrorException, IOException {
         EffectiveModelContext schemaContext = prepareSchemaWithMultipleRootContainersWithSameName();
         final Optional<? extends Module> rootModel1
                 = DataConverter.findModuleByElement("root-model-1:root-container", schemaContext);

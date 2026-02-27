@@ -25,7 +25,7 @@ import org.testng.annotations.Test;
  * This test is roughly same as single-feature test in OpenDaylight which starts:
  * feature:install odl-netconf-all
  */
-public class RestconfActionsAppTest {
+class RestconfActionsAppTest {
     private static final Logger LOG = LoggerFactory.getLogger(RestconfActionsAppTest.class);
 
     private static final String DOM_ACTION_PATH = "restconf/data/example-data-center:device/start";
@@ -52,7 +52,7 @@ public class RestconfActionsAppTest {
      * Perform basic GET operations via RESTCONF.
      */
     @Test
-    public void simpleApplicationTest() throws Exception {
+    void simpleApplicationTest() throws Exception {
         HttpResponse<String> operations;
         restClient.POST("restconf/data/network-topology:network-topology/topology=topology-netconf",
             """
@@ -75,7 +75,7 @@ public class RestconfActionsAppTest {
      * Check if OpenApi service and UI is responding.
      */
     @Test
-    public void openApiURLsTest() throws Exception {
+    void openApiURLsTest() throws Exception {
         HttpResponse<String> operations;
         operations = restClient.GET("openapi/explorer/index.html");
         assertEquals(operations.statusCode(), 200);
@@ -87,7 +87,7 @@ public class RestconfActionsAppTest {
      * Check that it is possible to invoke example DOM action.
      */
     @Test
-    public void domActionInvocationTest() throws Exception {
+    void domActionInvocationTest() throws Exception {
         final var response = restClient.POST(DOM_ACTION_PATH, DOM_ACTION_INPUT);
         assertEquals(response.statusCode(), 200);
         assertEquals(response.body(), DOM_ACTION_OUTPUT);
@@ -97,7 +97,7 @@ public class RestconfActionsAppTest {
      * Check that it is possible to invoke example binding action.
      */
     @Test
-    public void bindingActionInvocationTest() throws Exception {
+    void bindingActionInvocationTest() throws Exception {
         final var response = restClient.POST(BINDING_ACTION_PATH, BINDING_ACTION_INPUT);
         assertEquals(response.statusCode(), 200);
         assertEquals(response.body(), BINDING_ACTION_OUTPUT);

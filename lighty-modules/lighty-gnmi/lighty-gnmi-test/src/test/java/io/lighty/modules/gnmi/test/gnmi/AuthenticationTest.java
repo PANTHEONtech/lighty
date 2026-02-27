@@ -42,7 +42,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AuthenticationTest {
+class AuthenticationTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(AuthenticationTest.class);
     private static final String USERNAME = "admin";
@@ -64,7 +64,7 @@ public class AuthenticationTest {
     private static final int TARGET_PORT = 10161;
 
     @Test
-    public void crudSimpleValueWithAuthenticationTest() throws Exception {
+    void crudSimpleValueWithAuthenticationTest() throws Exception {
         final SimulatedGnmiDevice device = startDeviceWithAuthentication(USERNAME, PASSWORD);
         final Path pathToMtu = getPathToMtu();
         final GetRequest getRequest = getGnmiRequest(pathToMtu);
@@ -130,7 +130,7 @@ public class AuthenticationTest {
     }
 
     @Test
-    public void crudSimpleValueWithWrongAuthenticationTest() throws Exception {
+    void crudSimpleValueWithWrongAuthenticationTest() throws Exception {
         final SimulatedGnmiDevice device = startDeviceWithAuthentication(USERNAME, PASSWORD);
         final Path pathToMtu = getPathToMtu();
         final GetRequest getRequest = getGnmiRequest(pathToMtu);
@@ -160,7 +160,7 @@ public class AuthenticationTest {
     }
 
     @Test
-    public void crudSimpleValueWithNoTlsTest() throws Exception {
+    void crudSimpleValueWithNoTlsTest() throws Exception {
         final SimulatedGnmiDevice device = startDeviceInNotTlsMode();
         final Path pathToMtu = getPathToMtu();
         final GetRequest getRequest = getGnmiRequest(pathToMtu);
@@ -226,7 +226,7 @@ public class AuthenticationTest {
     }
 
     @Test
-    public void crudSimpleValueWithNoTlsDeviceAndTlsSessionTest() throws Exception {
+    void crudSimpleValueWithNoTlsDeviceAndTlsSessionTest() throws Exception {
         final SimulatedGnmiDevice device = startDeviceInNotTlsMode();
         final Path pathToMtu = getPathToMtu();
         final GetRequest getRequest = getGnmiRequest(pathToMtu);

@@ -40,7 +40,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class ShiroInitializationTest {
+class ShiroInitializationTest {
     private static final AAAConfiguration AAA_CONFIGURATION = AAAConfigUtils.createDefaultAAAConfiguration();
     private static final String BUNDLE_NAME = "opendaylight";
     @Mock
@@ -56,7 +56,7 @@ public class ShiroInitializationTest {
     private AAALighty aaaLighty;
 
     @BeforeClass
-    public void init() {
+    void init() {
         // Initialize the mock objects
         MockitoAnnotations.initMocks(this);
 
@@ -81,7 +81,7 @@ public class ShiroInitializationTest {
     }
 
     @AfterMethod
-    public void tearDown() {
+    void tearDown() {
         if (aaaLighty != null) {
             // Stop the object and ensure that stopping was successful
             assertTrue(aaaLighty.stopProcedure());
@@ -91,7 +91,7 @@ public class ShiroInitializationTest {
 
     // Test that the AAALighty object can be stopped after failing to initialize
     @Test
-    public void testStopProcedureWithFailedInitialization() {
+    void testStopProcedureWithFailedInitialization() {
         // Create an AAALighty object with mocked dependencies
         this.aaaLighty = new AAALighty(bindingDataBroker, credentialAuth, server, AAA_CONFIGURATION);
         // Ensure that the object was created successfully
@@ -102,7 +102,7 @@ public class ShiroInitializationTest {
 
     // Test that the AAALighty object can be successfully initialized and stopped
     @Test
-    public void testSuccessfulInitialization() throws InterruptedException {
+    void testSuccessfulInitialization() throws InterruptedException {
         // set CertificateManager
         AAA_CONFIGURATION.setCertificateManager(
                 CertificateManagerConfig.getDefault(bindingDataBroker, rpcProviderService));
