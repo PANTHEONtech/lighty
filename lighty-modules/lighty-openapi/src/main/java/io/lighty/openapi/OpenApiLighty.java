@@ -59,7 +59,7 @@ public class OpenApiLighty extends AbstractLightyModule {
         LOG.info("basePath: {}", basePathString);
 
         final var openApiService = new OpenApiServiceImpl(lightyServices.getDOMSchemaService(),
-            lightyServices.getDOMMountPointService(), lightyServices.getJaxRsEndpoint());
+            lightyServices.getDOMMountPointService());
 
         this.jaxRsOpenApi = new JaxRsOpenApi(openApiService, basePathString);
 
