@@ -61,13 +61,13 @@ public class OpenApiLighty extends AbstractLightyModule {
         final var openApiService = new OpenApiServiceImpl(lightyServices.getDOMSchemaService(),
             lightyServices.getDOMMountPointService(), lightyServices.getJaxRsEndpoint());
 
-        this.jaxRsOpenApi = new JaxRsOpenApi(openApiService);
+        this.jaxRsOpenApi = new JaxRsOpenApi(openApiService, basePathString);
 
         final ServletContainer restServletContainer = new ServletContainer(ResourceConfig
                 .forApplication((new Application() {
                     @Override
                     public Set<Object> getSingletons() {
-                        return Set.of(new JaxRsOpenApi(openApiService),
+                        return Set.of(new JaxRsOpenApi(openApiService, basePathString),
                             new OpenApiBodyWriter(new JsonFactoryBuilder().build()));
                     }
                 })));
