@@ -102,20 +102,15 @@ public final class AAALightyShiroProvider {
             this.claimCache = idmLightProxy;
         }
         try {
-            final StoreBuilder storeBuilder = new StoreBuilder(iidmStore);
-            final String initDomain = storeBuilder.initDomainAndRolesWithoutUsers(IIDMStore.DEFAULT_DOMAIN);
-
-            // If the domain already exists, the init method returns null.
-            // We fallback to the default domain string to ensure we have a valid ID for user creation.
-            final String domain = initDomain == null ? IIDMStore.DEFAULT_DOMAIN : initDomain;
-            // Create custom user from the JSON config
-            try {
-                storeBuilder.createUser(domain, aaaConfiguration.getUsername(), aaaConfiguration.getPassword(), true);
-                LOG.info("Pre-seeded database with custom user '{}'", aaaConfiguration.getUsername());
-            } catch (IDMStoreException e) {
-                LOG.debug("User already exists, skipping creation.");
+            final var storeBuilder = new StoreBuilder(iidmStore);
+            final var created = storeBuilder.initDomainAndRolesWithoutUsers(IIDMStore.DEFAULT_DOMAIN);
+            if (created == null) {
+                LOG.debug("Default AAA domain has been already there, nothing to create");
+            } else {
+                LOG.debug("Default AAA domain has been created");
             }
-
+            storeBuilder.createUser(IIDMStore.DEFAULT_DOMAIN, aaaConfiguration.getUsername(),
+                aaaConfiguration.getPassword(), true);
         } catch (final IDMStoreException e) {
             LOG.error("Failed to pre-seed data in store", e);
         }
