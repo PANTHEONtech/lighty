@@ -63,8 +63,8 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
             <scope>test</scope>
             <exclusions>
                 <exclusion>
-                    <artifactId>junit-jupiter-api</artifactId>
                     <groupId>org.junit.jupiter</groupId>
+                    <artifactId>junit-jupiter</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
