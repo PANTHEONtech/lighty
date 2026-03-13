@@ -67,8 +67,7 @@ public class OpenApiLighty extends AbstractLightyModule {
                 .forApplication((new Application() {
                     @Override
                     public Set<Object> getSingletons() {
-                        return Set.of(new JaxRsOpenApi(openApiService, basePathString),
-                            new OpenApiBodyWriter(new JsonFactoryBuilder().build()));
+                        return Set.of(jaxRsOpenApi, new OpenApiBodyWriter(new JsonFactoryBuilder().build()));
                     }
                 })));
 
