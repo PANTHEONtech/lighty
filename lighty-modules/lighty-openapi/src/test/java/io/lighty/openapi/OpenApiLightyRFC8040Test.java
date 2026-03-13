@@ -9,7 +9,7 @@
 package io.lighty.openapi;
 
 import java.io.IOException;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 class OpenApiLightyRFC8040Test extends OpenApiLightyTest {
 

@@ -7,9 +7,9 @@
  */
 package io.lighty.applications.rnc.module.config;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.lighty.applications.util.ModulesConfig;
 import io.lighty.core.controller.impl.config.ConfigurationException;
@@ -17,7 +17,7 @@ import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.DatastoreConfigurationUtils;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 class RncLightyModuleConfigUtilsTest {
 
@@ -28,48 +28,48 @@ class RncLightyModuleConfigUtilsTest {
 
         // Test Restconf configuration
         final var restconfConfig = rncConfig.getRestconfConfig();
-        assertEquals(restconfConfig.getInetAddress().getCanonicalHostName(), "0.0.0.1");
-        assertEquals(restconfConfig.getHttpPort(), 8181);
-        assertEquals(restconfConfig.getRestconfServletContextPath(), "rests");
+        assertEquals("0.0.0.1", restconfConfig.getInetAddress().getCanonicalHostName());
+        assertEquals(8181, restconfConfig.getHttpPort());
+        assertEquals("rests", restconfConfig.getRestconfServletContextPath());
 
         // Test Server configuration
         final var serverConfig = rncConfig.getServerConfig();
         assertFalse(serverConfig.isUseHttps());
         assertTrue(serverConfig.isUseHttp2());
-        assertEquals(serverConfig.getKeyStoreFilePath(), "src/test/resources/keystore/KeyStore.jks");
+        assertEquals("src/test/resources/keystore/KeyStore.jks", serverConfig.getKeyStoreFilePath());
         assertFalse(serverConfig.getKeyStorePassword().isEmpty());
-        assertEquals(serverConfig.getKeyStoreType(), "JKS");
+        assertEquals("JKS", serverConfig.getKeyStoreType());
 
         // Test AAA configuration
         final var aaaConfig = rncConfig.getAaaConfig();
-        assertEquals(aaaConfig.getMoonEndpointPath(), "/moon");
-        assertEquals(aaaConfig.getDbPassword(), "bar");
-        assertEquals(aaaConfig.getDbUsername(), "foo");
+        assertEquals("/moon", aaaConfig.getMoonEndpointPath());
+        assertEquals("bar", aaaConfig.getDbPassword());
+        assertEquals("foo", aaaConfig.getDbUsername());
         assertFalse(aaaConfig.isEnableAAA());
 
         // Test Controller configuration
         final var controllerConfig = rncConfig.getControllerConfig();
-        assertEquals(controllerConfig.getRestoreDirectoryPath(), "./clustered-datastore-restore-test");
-        assertEquals(controllerConfig.getMaxDataBrokerFutureCallbackPoolSize(), 20);
-        assertEquals(controllerConfig.getMaxDataBrokerFutureCallbackQueueSize(), 2000);
+        assertEquals("./clustered-datastore-restore-test", controllerConfig.getRestoreDirectoryPath());
+        assertEquals(20, controllerConfig.getMaxDataBrokerFutureCallbackPoolSize());
+        assertEquals(2000, controllerConfig.getMaxDataBrokerFutureCallbackQueueSize());
         assertTrue(controllerConfig.isMetricCaptureEnabled());
-        assertEquals(controllerConfig.getMailboxCapacity(), 2000);
-        assertEquals(controllerConfig.getModuleShardsConfig(), "module-shards.conf");
-        assertEquals(controllerConfig.getModulesConfig(), "modules.conf");
-        assertEquals(controllerConfig.getDomNotificationRouterConfig(),
-                new ControllerConfiguration.DOMNotificationRouterConfig());
+        assertEquals(2000, controllerConfig.getMailboxCapacity());
+        assertEquals("module-shards.conf", controllerConfig.getModuleShardsConfig());
+        assertEquals("modules.conf", controllerConfig.getModulesConfig());
+        assertEquals(new ControllerConfiguration.DOMNotificationRouterConfig(),
+                controllerConfig.getDomNotificationRouterConfig());
         assertTrue(controllerConfig.getDistributedEosProperties().isEmpty());
-        assertEquals(controllerConfig.getDatastoreProperties(),
-                DatastoreConfigurationUtils.getDefaultDatastoreProperties());
+        assertEquals(DatastoreConfigurationUtils.getDefaultDatastoreProperties(),
+            controllerConfig.getDatastoreProperties());
 
         // Test Netconf configuration
         final var netconfConfig = rncConfig.getNetconfConfig();
-        assertEquals(netconfConfig.getTopologyId(), "topology-netconf-test");
-        assertEquals(netconfConfig.getWriteTxTimeout(), 0);
+        assertEquals("topology-netconf-test", netconfConfig.getTopologyId());
+        assertEquals(0, netconfConfig.getWriteTxTimeout());
         assertFalse(netconfConfig.isClusterEnabled());
 
         final ModulesConfig moduleConfig = rncConfig.getModuleConfig();
-        assertEquals(moduleConfig.getModuleTimeoutSeconds(), 180);
+        assertEquals(180, moduleConfig.getModuleTimeoutSeconds());
     }
 
     @Test
@@ -78,46 +78,46 @@ class RncLightyModuleConfigUtilsTest {
 
         // Test Restconf configuration
         final var restconfConfig = rncConfig.getRestconfConfig();
-        assertEquals(restconfConfig.getInetAddress().getCanonicalHostName(), "localhost");
-        assertEquals(restconfConfig.getHttpPort(), 8888);
-        assertEquals(restconfConfig.getRestconfServletContextPath(), "restconf");
+        assertEquals("localhost", restconfConfig.getInetAddress().getCanonicalHostName());
+        assertEquals(8888, restconfConfig.getHttpPort());
+        assertEquals("restconf", restconfConfig.getRestconfServletContextPath());
 
         // Test Server configuration
         final var serverConfig = rncConfig.getServerConfig();
         assertFalse(serverConfig.isUseHttps());
-        assertEquals(serverConfig.getKeyStoreFilePath(), "keystore/lightyio.jks");
+        assertEquals("keystore/lightyio.jks", serverConfig.getKeyStoreFilePath());
         assertFalse(serverConfig.getKeyStorePassword().isEmpty());
-        assertEquals(serverConfig.getKeyStoreType(), "JKS");
+        assertEquals("JKS", serverConfig.getKeyStoreType());
 
         // Test AAA configuration
         final var aaaConfig = rncConfig.getAaaConfig();
-        assertEquals(aaaConfig.getMoonEndpointPath(), "/moon");
-        assertEquals(aaaConfig.getDbPassword(), "bar");
-        assertEquals(aaaConfig.getDbUsername(), "foo");
+        assertEquals("/moon", aaaConfig.getMoonEndpointPath());
+        assertEquals("bar", aaaConfig.getDbPassword());
+        assertEquals("foo", aaaConfig.getDbUsername());
         assertFalse(aaaConfig.isEnableAAA());
 
         // Test Controller configuration
         final var controllerConfig = rncConfig.getControllerConfig();
-        assertEquals(controllerConfig.getRestoreDirectoryPath(), "./clustered-datastore-restore");
-        assertEquals(controllerConfig.getMaxDataBrokerFutureCallbackPoolSize(), 10);
-        assertEquals(controllerConfig.getMaxDataBrokerFutureCallbackQueueSize(), 1000);
+        assertEquals("./clustered-datastore-restore", controllerConfig.getRestoreDirectoryPath());
+        assertEquals(10, controllerConfig.getMaxDataBrokerFutureCallbackPoolSize());
+        assertEquals(1000, controllerConfig.getMaxDataBrokerFutureCallbackQueueSize());
         assertFalse(controllerConfig.isMetricCaptureEnabled());
-        assertEquals(controllerConfig.getMailboxCapacity(), 1000);
-        assertEquals(controllerConfig.getModuleShardsConfig(), "configuration/initial/module-shards.conf");
-        assertEquals(controllerConfig.getModulesConfig(), "configuration/initial/modules.conf");
-        assertEquals(controllerConfig.getDomNotificationRouterConfig(),
-                new ControllerConfiguration.DOMNotificationRouterConfig());
+        assertEquals(1000, controllerConfig.getMailboxCapacity());
+        assertEquals("configuration/initial/module-shards.conf", controllerConfig.getModuleShardsConfig());
+        assertEquals("configuration/initial/modules.conf", controllerConfig.getModulesConfig());
+        assertEquals(new ControllerConfiguration.DOMNotificationRouterConfig(),
+            controllerConfig.getDomNotificationRouterConfig());
         assertTrue(controllerConfig.getDistributedEosProperties().isEmpty());
-        assertEquals(controllerConfig.getDatastoreProperties(),
-                DatastoreConfigurationUtils.getDefaultDatastoreProperties());
+        assertEquals(DatastoreConfigurationUtils.getDefaultDatastoreProperties(),
+            controllerConfig.getDatastoreProperties());
 
         // Test Netconf configuration
         final var netconfConfig = rncConfig.getNetconfConfig();
-        assertEquals(netconfConfig.getTopologyId(), "topology-netconf");
-        assertEquals(netconfConfig.getWriteTxTimeout(), 0);
+        assertEquals("topology-netconf", netconfConfig.getTopologyId());
+        assertEquals(0, netconfConfig.getWriteTxTimeout());
         assertFalse(netconfConfig.isClusterEnabled());
 
         final ModulesConfig moduleConfig = rncConfig.getModuleConfig();
-        assertEquals(moduleConfig.getModuleTimeoutSeconds(), 60);
+        assertEquals(60, moduleConfig.getModuleTimeoutSeconds());
     }
 }

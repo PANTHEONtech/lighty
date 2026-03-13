@@ -7,7 +7,7 @@
  */
 package io.lighty.core.controller.guice.tests;
 
-import static org.testng.AssertJUnit.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -19,20 +19,20 @@ import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.ControllerConfigUtils;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 class GuiceDITest {
     private static final Logger LOG = LoggerFactory.getLogger(GuiceDITest.class);
 
-    private LightyController lightyController;
-    private TestService testService;
+    private static LightyController lightyController;
+    private static TestService testService;
 
-    @BeforeClass
-    void init() throws ExecutionException, InterruptedException, ConfigurationException {
+    @BeforeAll
+    static void init() throws ExecutionException, InterruptedException, ConfigurationException {
         ControllerConfiguration defaultSingleNodeConfiguration =
             ControllerConfigUtils.getDefaultSingleNodeConfiguration();
         LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
@@ -46,9 +46,9 @@ class GuiceDITest {
         testService = injector.getInstance(TestService.class);
     }
 
-    @AfterClass
+    @AfterAll
     @SuppressWarnings("checkstyle:illegalCatch")
-    void shutdown() {
+    static void shutdown() {
         try {
             if (lightyController != null) {
                 lightyController.shutdown(60, TimeUnit.SECONDS);

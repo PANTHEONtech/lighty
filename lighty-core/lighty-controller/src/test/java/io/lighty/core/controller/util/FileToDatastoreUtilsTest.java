@@ -8,8 +8,8 @@
 
 package io.lighty.core.controller.util;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
@@ -18,6 +18,9 @@ import io.lighty.core.controller.impl.util.FileToDatastoreUtils;
 import io.lighty.core.controller.impl.util.FileToDatastoreUtils.ImportFileFormat;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -35,9 +38,6 @@ import org.opendaylight.yangtools.binding.DataRoot;
 import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 class FileToDatastoreUtilsTest {
     private static final String INITIAL_CONTAINER_PATH = "/data/container-value-1.json";
@@ -70,11 +70,11 @@ class FileToDatastoreUtilsTest {
 
     private static final long TIMEOUT_MILLIS = 60_000;
 
-    private LightyController lightyController;
-    private DataBroker dataBroker;
+    private static LightyController lightyController;
+    private static DataBroker dataBroker;
 
-    @BeforeClass
-    void startUp() throws Exception {
+    @BeforeAll
+    static void startUp() throws Exception {
         lightyController = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(
                         Set.of(YangModuleInfoImpl.getInstance())))
@@ -83,8 +83,8 @@ class FileToDatastoreUtilsTest {
         dataBroker = lightyController.getServices().getBindingDataBroker();
     }
 
-    @AfterClass
-    void tearDown() {
+    @AfterAll
+    static void tearDown() {
         assertTrue(lightyController.shutdown(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
     }
 
@@ -93,31 +93,31 @@ class FileToDatastoreUtilsTest {
         // Import inner-case and test choice node
         importFile(CASE_CONTAINER_PATH, INNER_CASE_YIID, ImportFileFormat.JSON);
         ChoiceContainer choiceContainer = readDataFromDatastore(CHOICE_CONTAINER_ID);
-        assertEquals(((SportsArena) choiceContainer.getSnack()).getInnerCase().getFoo(), "data");
-        assertEquals(((SportsArena) choiceContainer.getSnack()).getInnerCase()
-                .getSampleContainer().getValue(), Uint32.ONE);
-        assertEquals(((SportsArena) choiceContainer.getSnack()).getInnerCase()
-                .getSampleContainer().getName(), "name");
+        assertEquals("data", ((SportsArena) choiceContainer.getSnack()).getInnerCase().getFoo());
+        assertEquals(Uint32.ONE, ((SportsArena) choiceContainer.getSnack()).getInnerCase()
+                .getSampleContainer().getValue());
+        assertEquals("name", ((SportsArena) choiceContainer.getSnack()).getInnerCase()
+                .getSampleContainer().getName());
 
         // Import first JSON file, new top level container, expecting value = 1
         importFile(INITIAL_CONTAINER_PATH, ROOT_YII, ImportFileFormat.JSON);
         TopLevelContainer topLevelContainer = readDataFromDatastore(TOP_LEVEL_CONTAINER_ID);
-        assertEquals(topLevelContainer.getSampleContainer().getValue().intValue(), 1);
+        assertEquals(1, topLevelContainer.getSampleContainer().getValue().intValue());
 
         //Import second file, overrides whole top level container, expecting value = 2
         importFile(OVERRIDE_CONTAINER_PATH, ROOT_YII, ImportFileFormat.XML);
         topLevelContainer = readDataFromDatastore(TOP_LEVEL_CONTAINER_ID);
-        assertEquals(topLevelContainer.getSampleContainer().getValue().intValue(), 2);
+        assertEquals(2, topLevelContainer.getSampleContainer().getValue().intValue());
 
         // Import third file, overrides only inner leaf, expecting value = 3
         importFile(OVERRIDE_VALUE_JSON_PATH, INNER_VALUE_YII, ImportFileFormat.JSON);
         topLevelContainer = readDataFromDatastore(TOP_LEVEL_CONTAINER_ID);
-        assertEquals(topLevelContainer.getSampleContainer().getValue().intValue(), 3);
+        assertEquals(3, topLevelContainer.getSampleContainer().getValue().intValue());
 
         // Import fourth file, overrides only inner leaf, expecting value = 4
         importFile(OVERRIDE_VALUE_XML_PATH, INNER_VALUE_YII, ImportFileFormat.XML);
         topLevelContainer = readDataFromDatastore(TOP_LEVEL_CONTAINER_ID);
-        assertEquals(topLevelContainer.getSampleContainer().getValue().intValue(), 4);
+        assertEquals(4, topLevelContainer.getSampleContainer().getValue().intValue());
     }
 
     @Test
@@ -125,22 +125,22 @@ class FileToDatastoreUtilsTest {
         // Import multiple top element in JSON file, Expected value 5, ID1 value 1, ID2 value 2
         importFile(MULTIPLE_TOP_JSON_PATH, ROOT_YII, ImportFileFormat.JSON);
         TopLevelContainer topLevelContainer = readDataFromDatastore(TOP_LEVEL_CONTAINER_ID);
-        assertEquals(topLevelContainer.getSampleContainer().getValue().intValue(), 5);
+        assertEquals(5, topLevelContainer.getSampleContainer().getValue().intValue());
 
         SampleList sampleListId1 = readDataFromDatastore(SAMPLE_LIST_ID1_ID);
-        assertEquals(sampleListId1.getValue().intValue(), 1);
+        assertEquals(1, sampleListId1.getValue().intValue());
         SampleList sampleListId2 = readDataFromDatastore(SAMPLE_LIST_ID2_ID);
-        assertEquals(sampleListId2.getValue().intValue(), 2);
+        assertEquals(2, sampleListId2.getValue().intValue());
 
         // Import multiple top element in XML file, Expected value 6, ID1 value 3, ID2 value 4
         importFile(MULTIPLE_TOP_XML_PATH, ROOT_YII, ImportFileFormat.XML);
         topLevelContainer = readDataFromDatastore(TOP_LEVEL_CONTAINER_ID);
-        assertEquals(topLevelContainer.getSampleContainer().getValue().intValue(), 6);
+        assertEquals(6, topLevelContainer.getSampleContainer().getValue().intValue());
 
         sampleListId1 = readDataFromDatastore(SAMPLE_LIST_ID1_ID);
-        assertEquals(sampleListId1.getValue().intValue(), 3);
+        assertEquals(3, sampleListId1.getValue().intValue());
         sampleListId2 = readDataFromDatastore(SAMPLE_LIST_ID2_ID);
-        assertEquals(sampleListId2.getValue().intValue(), 4);
+        assertEquals(4, sampleListId2.getValue().intValue());
     }
 
     private <T extends ChildOf<? extends DataRoot>> T readDataFromDatastore(

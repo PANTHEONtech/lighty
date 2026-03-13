@@ -7,8 +7,8 @@
  */
 package io.lighty.modules.southbound.netconf.tests;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
@@ -18,7 +18,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 class SampleConfigTest {
 
@@ -33,7 +33,7 @@ class SampleConfigTest {
             .getModules().size();
         assertTrue(lightyController.shutdown(TIME_OUT, TimeUnit.SECONDS));
 
-        assertEquals(loadedModulesSize, 26);
+        assertEquals(26, loadedModulesSize);
     }
 
     @Test
@@ -45,7 +45,7 @@ class SampleConfigTest {
             .getModules().size();
         assertTrue(lightyController.shutdown(TIME_OUT, TimeUnit.SECONDS));
 
-        assertEquals(loadedModulesSize, 26);
+        assertEquals(26, loadedModulesSize);
     }
 
     private LightyController getLightyController(final String resource) throws Exception {

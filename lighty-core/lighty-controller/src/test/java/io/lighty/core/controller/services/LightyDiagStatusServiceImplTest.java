@@ -7,10 +7,14 @@
  */
 package io.lighty.core.controller.services;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 import io.lighty.core.controller.impl.services.LightyDiagStatusServiceImpl;
 import java.util.Collection;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
@@ -20,9 +24,6 @@ import org.opendaylight.infrautils.diagstatus.ServiceState;
 import org.opendaylight.infrautils.diagstatus.ServiceStatusSummary;
 import org.opendaylight.infrautils.ready.SystemReadyMonitor;
 import org.opendaylight.infrautils.ready.SystemState;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 class LightyDiagStatusServiceImplTest {
 
@@ -34,7 +35,7 @@ class LightyDiagStatusServiceImplTest {
     @Mock
     private SystemReadyMonitor systemReadyMonitor;
 
-    @BeforeClass
+    @BeforeEach
     void init() {
         MockitoAnnotations.initMocks(this);
         when(systemReadyMonitor.getSystemState()).thenReturn(SystemState.ACTIVE);
@@ -47,14 +48,14 @@ class LightyDiagStatusServiceImplTest {
         diagStatusService.register(TEST_SERVICE).report(
             new ServiceDescriptor(TEST_SERVICE_2, ServiceState.STARTING, TEST_SERVICE_2_INFO));
 
-        Assert.assertEquals(diagStatusService.getAllServiceDescriptors().size(), 2);
-        Assert.assertNotNull(diagStatusService.getServiceDescriptor(TEST_SERVICE));
-        Assert.assertNotNull(diagStatusService.getServiceDescriptor(TEST_SERVICE_2));
+        assertEquals(2, diagStatusService.getAllServiceDescriptors().size());
+        assertNotNull(diagStatusService.getServiceDescriptor(TEST_SERVICE));
+        assertNotNull(diagStatusService.getServiceDescriptor(TEST_SERVICE_2));
 
         validateServiceStatus(diagStatusService.getServiceStatusSummary(), false, ServiceState.STARTING);
 
         serviceRegistration.close();
-        Assert.assertEquals(diagStatusService.getAllServiceDescriptors().size(), 1);
+        assertEquals(1, diagStatusService.getAllServiceDescriptors().size());
     }
 
     @Test
@@ -62,8 +63,8 @@ class LightyDiagStatusServiceImplTest {
         diagStatusService = new LightyDiagStatusServiceImpl(systemReadyMonitor);
         final ServiceRegistration serviceRegistration = diagStatusService.register(TEST_SERVICE_2);
 
-        Assert.assertEquals(diagStatusService.getAllServiceDescriptors().size(), 1);
-        Assert.assertNotNull(diagStatusService.getServiceDescriptor(TEST_SERVICE_2));
+        assertEquals(1, diagStatusService.getAllServiceDescriptors().size());
+        assertNotNull(diagStatusService.getServiceDescriptor(TEST_SERVICE_2));
 
         validateServiceStatus(diagStatusService.getServiceStatusSummary(), false, ServiceState.STARTING);
         diagStatusService.register(TEST_SERVICE_2).report(
@@ -71,18 +72,18 @@ class LightyDiagStatusServiceImplTest {
         validateServiceStatus(diagStatusService.getServiceStatusSummary(), true, ServiceState.OPERATIONAL);
 
         serviceRegistration.close();
-        Assert.assertEquals(diagStatusService.getAllServiceDescriptors().size(), 0);
+        assertEquals(0, diagStatusService.getAllServiceDescriptors().size());
     }
 
     private static void validateServiceStatus(final ServiceStatusSummary serviceStatusSummary, final boolean operState,
             final ServiceState srvState) {
         Collection<ServiceDescriptor> statusSummary;
-        Assert.assertEquals(serviceStatusSummary.isOperational(), operState);
-        Assert.assertEquals(serviceStatusSummary.getSystemReadyState(), SystemState.ACTIVE);
+        assertEquals(operState, serviceStatusSummary.isOperational());
+        assertEquals(SystemState.ACTIVE, serviceStatusSummary.getSystemReadyState());
         statusSummary = serviceStatusSummary.getStatusSummary();
 
         for (ServiceDescriptor srvDesc : statusSummary) {
-            Assert.assertEquals(srvDesc.getServiceState(), srvState);
+            assertEquals(srvState, srvDesc.getServiceState());
         }
     }
 }

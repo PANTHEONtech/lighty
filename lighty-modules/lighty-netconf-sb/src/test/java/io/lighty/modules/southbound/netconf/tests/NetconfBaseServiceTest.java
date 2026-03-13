@@ -7,18 +7,19 @@
  */
 package io.lighty.modules.southbound.netconf.tests;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
 
 import io.lighty.modules.southbound.netconf.impl.NetconfBaseService;
 import io.lighty.modules.southbound.netconf.impl.NetconfBaseServiceImpl;
 import java.util.Collection;
 import java.util.Optional;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
@@ -38,7 +39,6 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
-import org.testng.annotations.Test;
 import org.w3c.dom.Element;
 
 class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
@@ -74,7 +74,7 @@ class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
         Collection<DataContainerChild> children =
                 ((ContainerNode) capturedNN.getValue()).body();
         assertFalse(children.isEmpty());
-        assertEquals(children.size(), 1);
+        assertEquals(1, children.size());
         assertTrue(hasSpecificChild(children, "filter"));
 
         NetconfMessageTransformer transformer = new NetconfMessageTransformer(DatabindContext.ofModel(
@@ -113,7 +113,7 @@ class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
         Collection<DataContainerChild> children =
                 ((ContainerNode) capturedNN.getValue()).body();
         assertFalse(children.isEmpty());
-        assertEquals(children.size(), 2);
+        assertEquals(2, children.size());
         assertTrue(hasSpecificChild(children, "source"));
         assertTrue(hasSpecificChild(children, "filter"));
 
@@ -168,7 +168,7 @@ class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
         Collection<DataContainerChild> children =
                 ((ContainerNode) capturedNN.getValue()).body();
         assertFalse(children.isEmpty());
-        assertEquals(children.size(), 4);
+        assertEquals(4, children.size());
         assertTrue(hasSpecificChild(children, "target"));
         assertTrue(hasSpecificChild(children, "default-operation"));
         assertTrue(hasSpecificChild(children, "edit-content"));
@@ -193,6 +193,6 @@ class NetconfBaseServiceTest extends NetconfBaseServiceBaseTest {
         final Element schemaElement = getSpecificElementSubtree(schemasElement, NetconfState.QNAME, "schema");
         assertNotNull(schemaElement);
         final Element versionElement = getSpecificElementSubtree(schemaElement, NetconfState.QNAME, "version");
-        assertEquals(versionElement.getTextContent(), editVersionValue);
+        assertEquals(editVersionValue, versionElement.getTextContent());
     }
 }

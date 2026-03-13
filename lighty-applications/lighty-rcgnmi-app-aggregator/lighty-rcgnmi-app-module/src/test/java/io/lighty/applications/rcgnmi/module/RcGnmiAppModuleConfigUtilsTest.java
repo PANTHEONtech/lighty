@@ -8,9 +8,9 @@
 
 package io.lighty.applications.rcgnmi.module;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.lighty.applications.util.ModulesConfig;
 import io.lighty.core.controller.impl.config.ConfigurationException;
@@ -20,7 +20,6 @@ import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import java.io.IOException;
 import java.nio.file.Path;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class RcGnmiAppModuleConfigUtilsTest {
@@ -34,26 +33,26 @@ class RcGnmiAppModuleConfigUtilsTest {
                 Path.of(CONFIG_PATH));
         // Assert restconf config
         final RestConfConfiguration restconfConfig = rcGnmiAppConfiguration.getRestconfConfig();
-        assertEquals(restconfConfig.getInetAddress().getCanonicalHostName(), "0.0.0.1");
-        assertEquals(restconfConfig.getHttpPort(), 8181);
-        assertEquals(restconfConfig.getRestconfServletContextPath(), "rests");
+        assertEquals("0.0.0.1", restconfConfig.getInetAddress().getCanonicalHostName());
+        assertEquals(8181, restconfConfig.getHttpPort());
+        assertEquals("rests", restconfConfig.getRestconfServletContextPath());
         // Assert gnmi config
         final GnmiConfiguration gnmiConfiguration = rcGnmiAppConfiguration.getGnmiConfiguration();
-        Assertions.assertEquals(5, gnmiConfiguration.getInitialYangsPaths().size());
+        assertEquals(5, gnmiConfiguration.getInitialYangsPaths().size());
         // Assert controller config
         final ControllerConfiguration controllerConfig = rcGnmiAppConfiguration.getControllerConfig();
-        assertEquals(controllerConfig.getRestoreDirectoryPath(), "./clustered-datastore-restore-test");
-        assertEquals(controllerConfig.getMaxDataBrokerFutureCallbackPoolSize(), 20);
-        assertEquals(controllerConfig.getMaxDataBrokerFutureCallbackQueueSize(), 2000);
+        assertEquals("./clustered-datastore-restore-test", controllerConfig.getRestoreDirectoryPath());
+        assertEquals(20, controllerConfig.getMaxDataBrokerFutureCallbackPoolSize());
+        assertEquals(2000, controllerConfig.getMaxDataBrokerFutureCallbackQueueSize());
         assertTrue(controllerConfig.isMetricCaptureEnabled());
-        assertEquals(controllerConfig.getMailboxCapacity(), 2000);
-        assertEquals(controllerConfig.getModuleShardsConfig(), "module-shards.conf");
-        assertEquals(controllerConfig.getModulesConfig(), "modules.conf");
-        assertEquals(controllerConfig.getDomNotificationRouterConfig(),
-                new ControllerConfiguration.DOMNotificationRouterConfig());
+        assertEquals(2000, controllerConfig.getMailboxCapacity());
+        assertEquals("module-shards.conf", controllerConfig.getModuleShardsConfig());
+        assertEquals("modules.conf", controllerConfig.getModulesConfig());
+        assertEquals(new ControllerConfiguration.DOMNotificationRouterConfig(),
+            controllerConfig.getDomNotificationRouterConfig());
         assertTrue(controllerConfig.getDistributedEosProperties().isEmpty());
-        assertEquals(controllerConfig.getDatastoreProperties(),
-                DatastoreConfigurationUtils.getDefaultDatastoreProperties());
+        assertEquals(DatastoreConfigurationUtils.getDefaultDatastoreProperties(),
+            controllerConfig.getDatastoreProperties());
         final ModulesConfig modulesConfig = rcGnmiAppConfiguration.getModulesConfig();
         assertEquals(180, modulesConfig.getModuleTimeoutSeconds());
     }
@@ -64,26 +63,26 @@ class RcGnmiAppModuleConfigUtilsTest {
                 Path.of(EMPTY_CONFIG_PATH));
         // Assert restconf config
         final RestConfConfiguration restconfConfig = rcGnmiAppConfiguration.getRestconfConfig();
-        assertEquals(restconfConfig.getInetAddress().getCanonicalHostName(), "0.0.0.0");
-        assertEquals(restconfConfig.getHttpPort(), 8888);
-        assertEquals(restconfConfig.getRestconfServletContextPath(), "restconf");
+        assertEquals("0.0.0.0", restconfConfig.getInetAddress().getCanonicalHostName());
+        assertEquals(8888, restconfConfig.getHttpPort());
+        assertEquals("restconf", restconfConfig.getRestconfServletContextPath());
         // Assert gnmi config
         final GnmiConfiguration gnmiConfiguration = rcGnmiAppConfiguration.getGnmiConfiguration();
-        Assertions.assertTrue(gnmiConfiguration.getInitialYangsPaths().isEmpty());
+        assertTrue(gnmiConfiguration.getInitialYangsPaths().isEmpty());
         // Assert controller config
         final ControllerConfiguration controllerConfig = rcGnmiAppConfiguration.getControllerConfig();
-        assertEquals(controllerConfig.getRestoreDirectoryPath(), "./clustered-datastore-restore");
-        assertEquals(controllerConfig.getMaxDataBrokerFutureCallbackPoolSize(), 10);
-        assertEquals(controllerConfig.getMaxDataBrokerFutureCallbackQueueSize(), 1000);
+        assertEquals("./clustered-datastore-restore", controllerConfig.getRestoreDirectoryPath());
+        assertEquals(10, controllerConfig.getMaxDataBrokerFutureCallbackPoolSize());
+        assertEquals(1000, controllerConfig.getMaxDataBrokerFutureCallbackQueueSize());
         assertFalse(controllerConfig.isMetricCaptureEnabled());
-        assertEquals(controllerConfig.getMailboxCapacity(), 1000);
-        assertEquals(controllerConfig.getModuleShardsConfig(), "configuration/initial/module-shards.conf");
-        assertEquals(controllerConfig.getModulesConfig(), "configuration/initial/modules.conf");
-        assertEquals(controllerConfig.getDomNotificationRouterConfig(),
-                new ControllerConfiguration.DOMNotificationRouterConfig());
+        assertEquals(1000, controllerConfig.getMailboxCapacity());
+        assertEquals("configuration/initial/module-shards.conf", controllerConfig.getModuleShardsConfig());
+        assertEquals("configuration/initial/modules.conf", controllerConfig.getModulesConfig());
+        assertEquals(new ControllerConfiguration.DOMNotificationRouterConfig(),
+            controllerConfig.getDomNotificationRouterConfig());
         assertTrue(controllerConfig.getDistributedEosProperties().isEmpty());
-        assertEquals(controllerConfig.getDatastoreProperties(),
-                DatastoreConfigurationUtils.getDefaultDatastoreProperties());
+        assertEquals(DatastoreConfigurationUtils.getDefaultDatastoreProperties(),
+            controllerConfig.getDatastoreProperties());
         final ModulesConfig modulesConfig = rcGnmiAppConfiguration.getModulesConfig();
         assertEquals(60, modulesConfig.getModuleTimeoutSeconds());
     }
@@ -94,26 +93,26 @@ class RcGnmiAppModuleConfigUtilsTest {
         final RcGnmiAppConfiguration rcGnmiAppConfiguration = RcGnmiAppModuleConfigUtils.loadDefaultConfig();
         // Assert restconf config
         final RestConfConfiguration restconfConfig = rcGnmiAppConfiguration.getRestconfConfig();
-        assertEquals(restconfConfig.getInetAddress().getCanonicalHostName(), "0.0.0.0");
-        assertEquals(restconfConfig.getHttpPort(), 8888);
-        assertEquals(restconfConfig.getRestconfServletContextPath(), "restconf");
+        assertEquals("0.0.0.0", restconfConfig.getInetAddress().getCanonicalHostName());
+        assertEquals(8888, restconfConfig.getHttpPort());
+        assertEquals("restconf", restconfConfig.getRestconfServletContextPath());
         // Assert gnmi config
         final GnmiConfiguration gnmiConfiguration = rcGnmiAppConfiguration.getGnmiConfiguration();
-        Assertions.assertTrue(gnmiConfiguration.getInitialYangsPaths().isEmpty());
+        assertTrue(gnmiConfiguration.getInitialYangsPaths().isEmpty());
         // Assert controller config
         final ControllerConfiguration controllerConfig = rcGnmiAppConfiguration.getControllerConfig();
-        assertEquals(controllerConfig.getRestoreDirectoryPath(), "./clustered-datastore-restore");
-        assertEquals(controllerConfig.getMaxDataBrokerFutureCallbackPoolSize(), 10);
-        assertEquals(controllerConfig.getMaxDataBrokerFutureCallbackQueueSize(), 1000);
+        assertEquals("./clustered-datastore-restore", controllerConfig.getRestoreDirectoryPath());
+        assertEquals(10, controllerConfig.getMaxDataBrokerFutureCallbackPoolSize());
+        assertEquals(1000, controllerConfig.getMaxDataBrokerFutureCallbackQueueSize());
         assertFalse(controllerConfig.isMetricCaptureEnabled());
-        assertEquals(controllerConfig.getMailboxCapacity(), 1000);
-        assertEquals(controllerConfig.getModuleShardsConfig(), "configuration/initial/module-shards.conf");
-        assertEquals(controllerConfig.getModulesConfig(), "configuration/initial/modules.conf");
-        assertEquals(controllerConfig.getDomNotificationRouterConfig(),
-                new ControllerConfiguration.DOMNotificationRouterConfig());
+        assertEquals(1000, controllerConfig.getMailboxCapacity());
+        assertEquals("configuration/initial/module-shards.conf", controllerConfig.getModuleShardsConfig());
+        assertEquals("configuration/initial/modules.conf", controllerConfig.getModulesConfig());
+        assertEquals(new ControllerConfiguration.DOMNotificationRouterConfig(),
+            controllerConfig.getDomNotificationRouterConfig());
         assertTrue(controllerConfig.getDistributedEosProperties().isEmpty());
-        assertEquals(controllerConfig.getDatastoreProperties(),
-                DatastoreConfigurationUtils.getDefaultDatastoreProperties());
+        assertEquals(DatastoreConfigurationUtils.getDefaultDatastoreProperties(),
+            controllerConfig.getDatastoreProperties());
         final ModulesConfig modulesConfig = rcGnmiAppConfiguration.getModulesConfig();
         assertEquals(60, modulesConfig.getModuleTimeoutSeconds());
     }
