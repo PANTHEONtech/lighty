@@ -48,11 +48,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
 
         <!--Tests-->
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>singlenode-configuration</artifactId>
             <scope>test</scope>
