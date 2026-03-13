@@ -7,15 +7,15 @@
  */
 package io.lighty.examples.controller.actions;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.lighty.examples.controllers.actions.Main;
 import java.net.http.HttpResponse;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 /**
  * This test starts Lighty.io RESTCONF Actions application.
@@ -41,7 +41,7 @@ class RestconfActionsAppTest {
     private static Main restconfApp;
     private static RestClient restClient;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         restconfApp = new Main();
         restconfApp.start();
@@ -64,11 +64,11 @@ class RestconfActionsAppTest {
                         ]
                     }""");
         operations = restClient.GET("restconf/operations");
-        assertEquals(operations.statusCode(), 200);
+        assertEquals(200, operations.statusCode());
         operations = restClient.GET("restconf/data/network-topology:network-topology?content=config");
-        assertEquals(operations.statusCode(), 200);
+        assertEquals(200, operations.statusCode());
         operations = restClient.GET("restconf/data/network-topology:network-topology?content=nonconfig");
-        assertEquals(operations.statusCode(), 200);
+        assertEquals(200, operations.statusCode());
     }
 
     /**
@@ -78,9 +78,9 @@ class RestconfActionsAppTest {
     void openApiURLsTest() throws Exception {
         HttpResponse<String> operations;
         operations = restClient.GET("openapi/explorer/index.html");
-        assertEquals(operations.statusCode(), 200);
+        assertEquals(200, operations.statusCode());
         operations = restClient.GET("openapi/explorer/index.html");
-        assertEquals(operations.statusCode(), 200);
+        assertEquals(200, operations.statusCode());
     }
 
     /**
@@ -89,8 +89,8 @@ class RestconfActionsAppTest {
     @Test
     void domActionInvocationTest() throws Exception {
         final var response = restClient.POST(DOM_ACTION_PATH, DOM_ACTION_INPUT);
-        assertEquals(response.statusCode(), 200);
-        assertEquals(response.body(), DOM_ACTION_OUTPUT);
+        assertEquals(200, response.statusCode());
+        assertEquals(DOM_ACTION_OUTPUT, response.body());
     }
 
     /**
@@ -99,12 +99,12 @@ class RestconfActionsAppTest {
     @Test
     void bindingActionInvocationTest() throws Exception {
         final var response = restClient.POST(BINDING_ACTION_PATH, BINDING_ACTION_INPUT);
-        assertEquals(response.statusCode(), 200);
-        assertEquals(response.body(), BINDING_ACTION_OUTPUT);
+        assertEquals(200, response.statusCode());
+        assertEquals(BINDING_ACTION_OUTPUT, response.body());
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
-    @AfterClass
+    @AfterAll
     public static void shutdown() {
         restconfApp.shutdown();
         try {

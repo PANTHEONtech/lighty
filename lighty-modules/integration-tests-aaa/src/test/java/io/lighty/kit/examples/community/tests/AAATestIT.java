@@ -8,7 +8,7 @@
 package io.lighty.kit.examples.community.tests;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.lighty.kit.examples.community.aaa.restconf.Main;
 import java.io.File;
@@ -28,15 +28,17 @@ import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AAATestIT {
 
     private static final Logger LOG = LoggerFactory.getLogger(AAATestIT.class);
@@ -75,7 +77,7 @@ public class AAATestIT {
     private HttpClient httpClientWrongCredentials;
     private Main main;
 
-    @BeforeClass
+    @BeforeAll
     public void initClass() throws Exception {
         LOG.info("init restconf and controller");
         this.main = new Main();
@@ -93,7 +95,7 @@ public class AAATestIT {
         GRANT_ADMIN_ROLE_DATA = TestUtils.readResource("/testdata/grant-admin-role-data.json");
     }
 
-    @BeforeMethod
+    @BeforeEach
     public void init() throws Exception {
         LOG.info("start all http clients");
         httpClient = new HttpClient();
@@ -119,9 +121,9 @@ public class AAATestIT {
         final Connection userConnectionWrong = new Connection(httpClientWrongCredentials, wrongAuth);
         final Connection userConnectionCorrect = new Connection(httpClientOther, newUserAuth);
 
-        assertEquals(getAllUsers(adminConnectionCorrect).getStatus(), HttpStatus.OK_200);
-        assertEquals(getAllUsers(userConnectionWrong).getStatus(), HttpStatus.UNAUTHORIZED_401);
-        assertEquals(getAllUsers(userConnectionCorrect).getStatus(), HttpStatus.UNAUTHORIZED_401);
+        assertEquals(HttpStatus.OK_200, getAllUsers(adminConnectionCorrect).getStatus());
+        assertEquals(HttpStatus.UNAUTHORIZED_401, getAllUsers(userConnectionWrong).getStatus());
+        assertEquals(HttpStatus.UNAUTHORIZED_401, getAllUsers(userConnectionCorrect).getStatus());
     }
 
     @Test
@@ -129,107 +131,107 @@ public class AAATestIT {
         LOG.info("Add new user test");
 
         final ContentResponse getAllUsersExpectOne = getAllUsers(adminConnectionCorrect);
-        assertEquals(getAllUsersExpectOne.getStatus(), HttpStatus.OK_200);
-        assertEquals(getUsersArrayFromResponse(getAllUsersExpectOne).length(), 1);
+        assertEquals(HttpStatus.OK_200, getAllUsersExpectOne.getStatus());
+        assertEquals(1, getUsersArrayFromResponse(getAllUsersExpectOne).length());
 
         final ContentResponse addUserResponse = addUser(adminConnectionCorrect, NEW_USER_DATA);
-        assertEquals(addUserResponse.getStatus(), HttpStatus.CREATED_201);
+        assertEquals(HttpStatus.CREATED_201, addUserResponse.getStatus());
         final UserDetails newUserDetails = getUsersDetailsFromResponse(addUserResponse);
-        assertEquals(newUserDetails.userid, NEW_USER_SDN);
+        assertEquals(NEW_USER_SDN, newUserDetails.userid);
 
         final ContentResponse getAllUsersResponse = getAllUsers(adminConnectionCorrect);
-        assertEquals(getAllUsersResponse.getStatus(), HttpStatus.OK_200);
-        assertEquals(getUsersArrayFromResponse(getAllUsersResponse).length(), 2);
+        assertEquals(HttpStatus.OK_200, getAllUsersResponse.getStatus());
+        assertEquals(2, getUsersArrayFromResponse(getAllUsersResponse).length());
 
         final Connection userConnectionUnauthorized = new Connection(httpClientOther, this.newUserAuth);
-        assertEquals(getAllUsers(userConnectionUnauthorized).getStatus(), HttpStatus.UNAUTHORIZED_401);
+        assertEquals(HttpStatus.UNAUTHORIZED_401, getAllUsers(userConnectionUnauthorized).getStatus());
 
         // grant admin role
         final ContentResponse grantUserResponse =
             grantUser(adminConnectionCorrect, NEW_USER_SDN, GRANT_ADMIN_ROLE_DATA);
-        assertEquals(grantUserResponse.getStatus(), HttpStatus.CREATED_201);
+        assertEquals(HttpStatus.CREATED_201, grantUserResponse.getStatus());
         final String newUserGrantIdValue = new JSONObject(grantUserResponse.getContentAsString()).getString(GRANT_ID);
-        assertEquals(newUserGrantIdValue, NEW_USER_GRANT_ID);
+        assertEquals(NEW_USER_GRANT_ID, newUserGrantIdValue);
 
         final Connection userConnectionGranted = new Connection(httpClientOther, this.newUserAuth);
         final Connection userConnectionWrong = new Connection(httpClientWrongCredentials, this.wrongAuth);
-        assertEquals(getAllUsers(userConnectionGranted).getStatus(), HttpStatus.OK_200);
-        assertEquals(getAllUsers(userConnectionWrong).getStatus(), HttpStatus.UNAUTHORIZED_401);
+        assertEquals(HttpStatus.OK_200, getAllUsers(userConnectionGranted).getStatus());
+        assertEquals(HttpStatus.UNAUTHORIZED_401, getAllUsers(userConnectionWrong).getStatus());
     }
 
     @Test
     public void getSpecificUsersTest() throws Exception {
         LOG.info("get specific user test");
-        assertEquals(addUser(adminConnectionCorrect, NEW_USER_DATA).getStatus(), HttpStatus.CREATED_201);
+        assertEquals(HttpStatus.CREATED_201, addUser(adminConnectionCorrect, NEW_USER_DATA).getStatus());
 
         final ContentResponse getNewUserResponse = getSpecificUser(adminConnectionCorrect, NEW_USER_SDN);
-        assertEquals(getNewUserResponse.getStatus(), HttpStatus.OK_200);
+        assertEquals(HttpStatus.OK_200, getNewUserResponse.getStatus());
         final UserDetails newUserDetails = getUsersDetailsFromResponse(getNewUserResponse);
-        assertEquals(newUserDetails.userid, NEW_USER_SDN);
-        assertEquals(newUserDetails.name, NEW_USER);
+        assertEquals(NEW_USER_SDN, newUserDetails.userid);
+        assertEquals(NEW_USER, newUserDetails.name);
 
         final ContentResponse getAdminUserResponse = getSpecificUser(adminConnectionCorrect, ADMIN_SDN);
-        assertEquals(getAdminUserResponse.getStatus(), HttpStatus.OK_200);
+        assertEquals(HttpStatus.OK_200, getAdminUserResponse.getStatus());
         final UserDetails adminDetails = getUsersDetailsFromResponse(getAdminUserResponse);
-        assertEquals(adminDetails.userid, ADMIN_SDN);
-        assertEquals(adminDetails.name, ADMIN);
+        assertEquals(ADMIN_SDN, adminDetails.userid);
+        assertEquals(ADMIN, adminDetails.name);
     }
 
     @Test
     public void updateUserInfoTest() throws Exception {
         LOG.info("Update user data and try to use them");
-        assertEquals(addUser(adminConnectionCorrect, NEW_USER_DATA).getStatus(), HttpStatus.CREATED_201);
-        assertEquals(updateUser(adminConnectionCorrect, NEW_USER_SDN, UPDATE_USER_DATA).getStatus(), HttpStatus.OK_200);
+        assertEquals(HttpStatus.CREATED_201, addUser(adminConnectionCorrect, NEW_USER_DATA).getStatus());
+        assertEquals(HttpStatus.OK_200, updateUser(adminConnectionCorrect, NEW_USER_SDN, UPDATE_USER_DATA).getStatus());
 
         final ContentResponse getNewUserResponse = getSpecificUser(adminConnectionCorrect, NEW_USER_SDN);
-        assertEquals(getNewUserResponse.getStatus(), HttpStatus.OK_200);
+        assertEquals(HttpStatus.OK_200, getNewUserResponse.getStatus());
         final UserDetails newUserDetails = getUsersDetailsFromResponse(getNewUserResponse);
-        assertEquals(newUserDetails.userid, NEW_USER_SDN);
-        assertEquals(newUserDetails.name, NEW_USER);
+        assertEquals(NEW_USER_SDN, newUserDetails.userid);
+        assertEquals(NEW_USER, newUserDetails.name);
 
         //grant admin role
         final ContentResponse grantUserResponse =
                 grantUser(adminConnectionCorrect, NEW_USER_SDN, GRANT_ADMIN_ROLE_DATA);
-        assertEquals(grantUserResponse.getStatus(), HttpStatus.CREATED_201);
+        assertEquals(HttpStatus.CREATED_201, grantUserResponse.getStatus());
         final String newUserGrantIdValue = new JSONObject(grantUserResponse.getContentAsString()).getString(GRANT_ID);
-        assertEquals(newUserGrantIdValue, NEW_USER_GRANT_ID);
+        assertEquals(NEW_USER_GRANT_ID, newUserGrantIdValue);
 
         final Connection userConnectionAuthUpdated = new Connection(httpClientOther, this.newUserAuthUpdated);
-        assertEquals(getAllUsers(userConnectionAuthUpdated).getStatus(), HttpStatus.OK_200);
+        assertEquals(HttpStatus.OK_200, getAllUsers(userConnectionAuthUpdated).getStatus());
     }
 
     @Test
     public void deleteUserTest() throws Exception {
         LOG.info("delete user");
-        assertEquals(addUser(adminConnectionCorrect, NEW_USER_DATA).getStatus(), HttpStatus.CREATED_201);
+        assertEquals(HttpStatus.CREATED_201, addUser(adminConnectionCorrect, NEW_USER_DATA).getStatus());
 
-        assertEquals(deleteUser(adminConnectionCorrect, NEW_USER_SDN).getStatus(), HttpStatus.NO_CONTENT_204);
+        assertEquals(HttpStatus.NO_CONTENT_204, deleteUser(adminConnectionCorrect, NEW_USER_SDN).getStatus());
         assertUsersExist(adminConnectionCorrect, UserDetails.of(ADMIN, ADMIN_DESCRIPTION, ADMIN_SDN));
     }
 
     @Test
     public void readNotExistingUserExpectError() throws Exception {
         LOG.info("get specific not existing user");
-        assertEquals(getSpecificUser(adminConnectionCorrect, NEW_USER).getStatus(), HttpStatus.NOT_FOUND_404);
+        assertEquals(HttpStatus.NOT_FOUND_404, getSpecificUser(adminConnectionCorrect, NEW_USER).getStatus());
     }
 
     @Test
     public void deleteNotExistingUserExpectError() throws Exception {
         LOG.info("delete specific not existing user");
-        assertEquals(deleteUser(adminConnectionCorrect, NEW_USER_SDN).getStatus(), HttpStatus.NOT_FOUND_404);
+        assertEquals(HttpStatus.NOT_FOUND_404, deleteUser(adminConnectionCorrect, NEW_USER_SDN).getStatus());
     }
 
     @Test
     public void readDataCorrectCredentials() throws Exception {
         LOG.info("try to get modules state with correct credentials");
-        assertEquals(getSomeData(adminConnectionCorrect).getStatus(), HttpStatus.OK_200);
+        assertEquals(HttpStatus.OK_200, getSomeData(adminConnectionCorrect).getStatus());
     }
 
     @Test
     public void readDataWrongCredentials() throws Exception {
         LOG.info("try to get modules state with incorrect credentials");
         final Connection adminConnectionWrong = new Connection(httpClient, this.wrongAuth);
-        assertEquals(getSomeData(adminConnectionWrong).getStatus(), HttpStatus.UNAUTHORIZED_401);
+        assertEquals(HttpStatus.UNAUTHORIZED_401, getSomeData(adminConnectionWrong).getStatus());
     }
 
     private ContentResponse addUser(final Connection connection, String userData)
@@ -283,7 +285,7 @@ public class AAATestIT {
             throws Exception {
         final ContentResponse getUsersResponse = sendGetRequestJSON(connection, ALL_USERS_PATH);
         // 2. Check if their info is as expected
-        assertEquals(getUsersResponse.getStatus(), HttpStatus.OK_200);
+        assertEquals(HttpStatus.OK_200, getUsersResponse.getStatus());
         final JSONObject responseObject = new JSONObject(getUsersResponse.getContentAsString());
         final JSONArray usersJson = responseObject.getJSONArray(USERS);
         assertEquals(usersJson.length(), usersJson.length());
@@ -296,13 +298,13 @@ public class AAATestIT {
                     found = true;
                 }
             }
-            Assert.assertTrue(found);
+            Assertions.assertTrue(found);
         }
     }
 
     private void checkAndDeleteNonAdminUsers() throws Exception {
         final ContentResponse response = sendGetRequestJSON(adminConnectionCorrect, ALL_USERS_PATH);
-        assertEquals(response.getStatus(), HttpStatus.OK_200);
+        assertEquals(HttpStatus.OK_200, response.getStatus());
         final JSONArray users = new JSONObject(response.getContentAsString()).getJSONArray(USERS);
         if (users.length() > 1) {
             for (int i = 0; i < users.length(); i++) {
@@ -356,7 +358,7 @@ public class AAATestIT {
             .send();
     }
 
-    @AfterMethod
+    @AfterEach
     public void cleanUp() throws Exception {
         checkAndDeleteNonAdminUsers();
         LOG.info("stopping all the http clients");
@@ -365,7 +367,7 @@ public class AAATestIT {
         httpClientWrongCredentials.stop();
     }
 
-    @AfterClass
+    @AfterAll
     public void shutdown() {
         LOG.info("removing db files");
         File currentDirFile = new File(".");
