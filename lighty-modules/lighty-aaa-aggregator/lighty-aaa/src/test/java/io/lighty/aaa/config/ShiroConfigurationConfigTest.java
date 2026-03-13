@@ -9,11 +9,11 @@ package io.lighty.aaa.config;
 
 import java.util.List;
 import org.eclipse.jdt.annotation.Nullable;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.ShiroConfiguration;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.shiro.ini.Main;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.shiro.ini.Urls;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 class ShiroConfigurationConfigTest {
 
@@ -24,18 +24,18 @@ class ShiroConfigurationConfigTest {
         @Nullable List<Main> mains = configuration.getMain();
         @Nullable List<Urls> urls = configuration.getUrls();
 
-        Assert.assertNotNull(mains);
-        Assert.assertTrue(containsMainKey("tokenAuthRealm", mains));
-        Assert.assertTrue(containsMainKey("securityManager.realms", mains));
-        Assert.assertTrue(containsMainKey("accountingListener", mains));
-        Assert.assertTrue(containsMainKey("securityManager.authenticator.authenticationListeners", mains));
-        Assert.assertTrue(containsMainKey("dynamicAuthorization", mains));
+        Assertions.assertNotNull(mains);
+        Assertions.assertTrue(containsMainKey("tokenAuthRealm", mains));
+        Assertions.assertTrue(containsMainKey("securityManager.realms", mains));
+        Assertions.assertTrue(containsMainKey("accountingListener", mains));
+        Assertions.assertTrue(containsMainKey("securityManager.authenticator.authenticationListeners", mains));
+        Assertions.assertTrue(containsMainKey("dynamicAuthorization", mains));
 
-        Assert.assertNotNull(urls);
-        Assert.assertTrue(containsUrlKey("/operations/cluster-admin**", urls));
-        Assert.assertTrue(containsUrlKey("/v1/**", urls));
-        Assert.assertTrue(containsUrlKey("/config/aaa*/**", urls));
-        Assert.assertTrue(containsUrlKey("/**", urls));
+        Assertions.assertNotNull(urls);
+        Assertions.assertTrue(containsUrlKey("/operations/cluster-admin**", urls));
+        Assertions.assertTrue(containsUrlKey("/v1/**", urls));
+        Assertions.assertTrue(containsUrlKey("/config/aaa*/**", urls));
+        Assertions.assertTrue(containsUrlKey("/**", urls));
     }
 
     private boolean containsMainKey(String key, List<Main> mains) {

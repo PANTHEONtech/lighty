@@ -13,8 +13,8 @@ import java.net.URI;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
-import org.testng.Assert;
 
 public abstract class OpenApiLightyTest extends OpenApiLightyTestBase {
 
@@ -23,8 +23,8 @@ public abstract class OpenApiLightyTest extends OpenApiLightyTestBase {
 
 
     void simpleOpenApiModuleTest() {
-        Assert.assertNotNull(getLightyController());
-        Assert.assertNotNull(getJaxRsOpenapi());
+        Assertions.assertNotNull(getLightyController());
+        Assertions.assertNotNull(getJaxRsOpenapi());
     }
 
     void testGetListOfMounts(UriInfo uriInfo) {
@@ -43,12 +43,12 @@ public abstract class OpenApiLightyTest extends OpenApiLightyTestBase {
         final Response response = getJaxRsOpenapi().getApiExplorer(uriInfo);
 
         final int redirectCode = 303;
-        Assert.assertEquals(response.getStatus(), redirectCode);
+        Assertions.assertEquals(response.getStatus(), redirectCode);
     }
 
     private void assertSuccessResponse(Response response) {
-        Assert.assertEquals(response.getStatus(), 200);
-        Assert.assertNotNull(response.getEntity());
+        Assertions.assertEquals(response.getStatus(), 200);
+        Assertions.assertNotNull(response.getEntity());
     }
 
     protected UriInfo mockUriInfo(String path) {

@@ -10,6 +10,8 @@ package io.lighty.core.controller.impl.tests;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.lighty.core.controller.api.LightyController;
 import java.util.concurrent.ExecutionException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
@@ -17,8 +19,6 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.stmt.SchemaNodeIdentifier.Absolute;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 class LightyControllerNotificationTest extends LightyControllerTestBase {
 
@@ -45,7 +45,7 @@ class LightyControllerNotificationTest extends LightyControllerTestBase {
         final DOMNotificationService domNotificationService = lightyController.getServices()
                 .getDOMNotificationService();
         domNotificationService.registerNotificationListener(notification -> {
-            Assert.assertEquals(notification, testNotification);
+            Assertions.assertEquals(notification, testNotification);
             listenerMethodsCalled[0]++;
         }, absolutePath);
 
@@ -58,7 +58,7 @@ class LightyControllerNotificationTest extends LightyControllerTestBase {
         offerListenFuture.get();
 
         // 3. check received notifications
-        Assert.assertEquals(listenerMethodsCalled[0], 2);
+        Assertions.assertEquals(listenerMethodsCalled[0], 2);
     }
 }
 
