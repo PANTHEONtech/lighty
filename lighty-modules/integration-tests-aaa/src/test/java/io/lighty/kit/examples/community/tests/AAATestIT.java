@@ -8,7 +8,7 @@
 package io.lighty.kit.examples.community.tests;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.lighty.kit.examples.community.aaa.restconf.Main;
 import java.io.File;
@@ -28,15 +28,17 @@ import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AAATestIT {
 
     private static final Logger LOG = LoggerFactory.getLogger(AAATestIT.class);
@@ -75,7 +77,7 @@ public class AAATestIT {
     private HttpClient httpClientWrongCredentials;
     private Main main;
 
-    @BeforeClass
+    @BeforeAll
     public void initClass() throws Exception {
         LOG.info("init restconf and controller");
         this.main = new Main();
@@ -93,7 +95,7 @@ public class AAATestIT {
         GRANT_ADMIN_ROLE_DATA = TestUtils.readResource("/testdata/grant-admin-role-data.json");
     }
 
-    @BeforeMethod
+    @BeforeEach
     public void init() throws Exception {
         LOG.info("start all http clients");
         httpClient = new HttpClient();
@@ -296,7 +298,7 @@ public class AAATestIT {
                     found = true;
                 }
             }
-            Assert.assertTrue(found);
+            Assertions.assertTrue(found);
         }
     }
 
@@ -356,7 +358,7 @@ public class AAATestIT {
             .send();
     }
 
-    @AfterMethod
+    @AfterEach
     public void cleanUp() throws Exception {
         checkAndDeleteNonAdminUsers();
         LOG.info("stopping all the http clients");
@@ -365,7 +367,7 @@ public class AAATestIT {
         httpClientWrongCredentials.stop();
     }
 
-    @AfterClass
+    @AfterAll
     public void shutdown() {
         LOG.info("removing db files");
         File currentDirFile = new File(".");

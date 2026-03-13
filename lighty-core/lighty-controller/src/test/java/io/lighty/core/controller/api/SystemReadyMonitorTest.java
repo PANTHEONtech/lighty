@@ -11,24 +11,24 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import io.lighty.core.controller.impl.services.LightySystemReadyMonitorImpl;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.opendaylight.infrautils.ready.SystemReadyListener;
 import org.opendaylight.infrautils.ready.SystemState;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
-class SystemReadyMonitorTest {
+public class SystemReadyMonitorTest {
 
     @Test
-    void testSystemBootFailed() throws Exception {
+    public void testSystemBootFailed() throws Exception {
         SystemReadyListener listener1 = Mockito.mock(SystemReadyListener.class);
         SystemReadyListener listener2 = Mockito.mock(SystemReadyListener.class);
         LightySystemReadyMonitorImpl systemReadyMonitor = new LightySystemReadyMonitorImpl();
-        Assert.assertTrue(SystemState.BOOTING.equals(systemReadyMonitor.getSystemState()));
+        Assertions.assertTrue(SystemState.BOOTING.equals(systemReadyMonitor.getSystemState()));
         systemReadyMonitor.registerListener(listener1);
         systemReadyMonitor.registerListener(listener2);
-        Assert.assertEquals(2, systemReadyMonitor.onSystemBootFailed());
-        Assert.assertTrue(SystemState.FAILURE.equals(systemReadyMonitor.getSystemState()));
+        Assertions.assertEquals(2, systemReadyMonitor.onSystemBootFailed());
+        Assertions.assertTrue(SystemState.FAILURE.equals(systemReadyMonitor.getSystemState()));
         verify(listener1, times(0)).onSystemBootReady();
         verify(listener2, times(0)).onSystemBootReady();
 
@@ -41,15 +41,15 @@ class SystemReadyMonitorTest {
     }
 
     @Test
-    void testSystemBootOK() throws Exception {
+    public void testSystemBootOK() throws Exception {
         SystemReadyListener listener1 = Mockito.mock(SystemReadyListener.class);
         SystemReadyListener listener2 = Mockito.mock(SystemReadyListener.class);
         LightySystemReadyMonitorImpl systemReadyMonitor = new LightySystemReadyMonitorImpl();
-        Assert.assertTrue(SystemState.BOOTING.equals(systemReadyMonitor.getSystemState()));
+        Assertions.assertEquals(SystemState.BOOTING, systemReadyMonitor.getSystemState());
         systemReadyMonitor.registerListener(listener1);
         systemReadyMonitor.registerListener(listener2);
-        Assert.assertEquals(2, systemReadyMonitor.onSystemBootReady());
-        Assert.assertTrue(SystemState.ACTIVE.equals(systemReadyMonitor.getSystemState()));
+        Assertions.assertEquals(2, systemReadyMonitor.onSystemBootReady());
+        Assertions.assertEquals(SystemState.ACTIVE, systemReadyMonitor.getSystemState());
         verify(listener1, times(1)).onSystemBootReady();
         verify(listener2, times(1)).onSystemBootReady();
 

@@ -11,12 +11,12 @@ package io.lighty.examples.controllers.restconfapp.tests;
 import io.lighty.examples.controllers.restconfapp.Main;
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 /**
  * This test starts lighty.io RESTCONF / NETCONF application.
@@ -33,7 +33,7 @@ class RestconfAppTest {
     private static Main restconfApp;
     private static RestClient restClient;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         restconfApp = new Main();
         restconfApp.start();
@@ -57,11 +57,11 @@ class RestconfAppTest {
                     }""");
 
         operations = restClient.GET("restconf/operations");
-        Assert.assertEquals(operations.statusCode(), 200);
+        Assertions.assertEquals(operations.statusCode(), 200);
         operations = restClient.GET("restconf/data/network-topology:network-topology?content=config");
-        Assert.assertEquals(operations.statusCode(), 200);
+        Assertions.assertEquals(operations.statusCode(), 200);
         operations = restClient.GET("restconf/data/network-topology:network-topology?content=nonconfig");
-        Assert.assertEquals(operations.statusCode(), 200);
+        Assertions.assertEquals(operations.statusCode(), 200);
     }
 
     /**
@@ -71,13 +71,13 @@ class RestconfAppTest {
     void openApiURLsTest() throws IOException, InterruptedException {
         HttpResponse<String> operations;
         operations = restClient.GET("openapi/explorer/index.html");
-        Assert.assertEquals(operations.statusCode(), 200);
+        Assertions.assertEquals(operations.statusCode(), 200);
         operations = restClient.GET("openapi/explorer/index.html");
-        Assert.assertEquals(operations.statusCode(), 200);
+        Assertions.assertEquals(operations.statusCode(), 200);
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
-    @AfterClass
+    @AfterAll
     public static void shutdown() {
         restconfApp.shutdown();
         try {

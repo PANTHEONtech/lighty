@@ -7,24 +7,25 @@
  */
 package io.lighty.aaa.config;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertTrue;
 
 import io.lighty.aaa.util.AAAConfigUtils;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 class AAAConfigUtilsTest {
 
-    @Test(expectedExceptions = ConfigurationException.class)
+    @Test
     void testNotAllowedToCreateAAAConfigUtils() throws Exception {
         final var configStream = mock(InputStream.class);
-        AAAConfigUtils.getAAAConfiguration(configStream);
+        assertThrows(ConfigurationException.class, () -> AAAConfigUtils.getAAAConfiguration(configStream));
     }
 
     @Test

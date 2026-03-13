@@ -7,6 +7,8 @@
  */
 package io.lighty.core.controller.impl.tests;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -24,7 +26,6 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.testng.Assert;
 
 final class TestUtils {
 
@@ -82,7 +83,7 @@ final class TestUtils {
         } else {
             count = 0;
         }
-        Assert.assertEquals(count, expectedCount);
+        assertEquals(count, expectedCount);
     }
 
 }

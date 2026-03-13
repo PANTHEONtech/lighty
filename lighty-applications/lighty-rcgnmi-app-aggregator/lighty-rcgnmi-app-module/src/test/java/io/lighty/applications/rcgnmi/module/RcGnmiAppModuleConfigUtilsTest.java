@@ -8,9 +8,9 @@
 
 package io.lighty.applications.rcgnmi.module;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.lighty.applications.util.ModulesConfig;
 import io.lighty.core.controller.impl.config.ConfigurationException;
@@ -20,7 +20,6 @@ import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import java.io.IOException;
 import java.nio.file.Path;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class RcGnmiAppModuleConfigUtilsTest {
@@ -39,7 +38,7 @@ class RcGnmiAppModuleConfigUtilsTest {
         assertEquals(restconfConfig.getRestconfServletContextPath(), "rests");
         // Assert gnmi config
         final GnmiConfiguration gnmiConfiguration = rcGnmiAppConfiguration.getGnmiConfiguration();
-        Assertions.assertEquals(5, gnmiConfiguration.getInitialYangsPaths().size());
+        assertEquals(5, gnmiConfiguration.getInitialYangsPaths().size());
         // Assert controller config
         final ControllerConfiguration controllerConfig = rcGnmiAppConfiguration.getControllerConfig();
         assertEquals(controllerConfig.getRestoreDirectoryPath(), "./clustered-datastore-restore-test");
@@ -69,7 +68,7 @@ class RcGnmiAppModuleConfigUtilsTest {
         assertEquals(restconfConfig.getRestconfServletContextPath(), "restconf");
         // Assert gnmi config
         final GnmiConfiguration gnmiConfiguration = rcGnmiAppConfiguration.getGnmiConfiguration();
-        Assertions.assertTrue(gnmiConfiguration.getInitialYangsPaths().isEmpty());
+        assertTrue(gnmiConfiguration.getInitialYangsPaths().isEmpty());
         // Assert controller config
         final ControllerConfiguration controllerConfig = rcGnmiAppConfiguration.getControllerConfig();
         assertEquals(controllerConfig.getRestoreDirectoryPath(), "./clustered-datastore-restore");
@@ -99,7 +98,7 @@ class RcGnmiAppModuleConfigUtilsTest {
         assertEquals(restconfConfig.getRestconfServletContextPath(), "restconf");
         // Assert gnmi config
         final GnmiConfiguration gnmiConfiguration = rcGnmiAppConfiguration.getGnmiConfiguration();
-        Assertions.assertTrue(gnmiConfiguration.getInitialYangsPaths().isEmpty());
+        assertTrue(gnmiConfiguration.getInitialYangsPaths().isEmpty());
         // Assert controller config
         final ControllerConfiguration controllerConfig = rcGnmiAppConfiguration.getControllerConfig();
         assertEquals(controllerConfig.getRestoreDirectoryPath(), "./clustered-datastore-restore");
