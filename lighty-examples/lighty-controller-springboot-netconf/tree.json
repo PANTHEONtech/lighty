@@ -1,0 +1,353 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------< io.lighty.core:lighty-controller-springboot >-------------
+[INFO] Building lighty-controller-springboot 24.0.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- dependency:3.9.0:tree (default-cli) @ lighty-controller-springboot ---
+[INFO] io.lighty.core:lighty-controller-springboot:jar:24.0.0-SNAPSHOT
+[INFO] +- org.springframework.boot:spring-boot-starter-security:jar:4.0.3:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter:jar:4.0.3:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot-starter-logging:jar:4.0.3:compile
+[INFO] |  |  |  +- ch.qos.logback:logback-classic:jar:1.5.32:compile
+[INFO] |  |  |  |  \- ch.qos.logback:logback-core:jar:1.5.32:compile
+[INFO] |  |  |  +- org.apache.logging.log4j:log4j-to-slf4j:jar:2.24.3:compile
+[INFO] |  |  |  \- org.slf4j:jul-to-slf4j:jar:2.0.17:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot-autoconfigure:jar:4.0.3:compile
+[INFO] |  |  \- org.yaml:snakeyaml:jar:2.5:compile
+[INFO] |  +- org.springframework.boot:spring-boot-security:jar:4.0.3:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot:jar:4.0.3:compile
+[INFO] |  |  +- org.springframework.security:spring-security-config:jar:7.0.3:compile
+[INFO] |  |  |  \- org.springframework.security:spring-security-core:jar:7.0.3:compile
+[INFO] |  |  |     \- org.springframework.security:spring-security-crypto:jar:7.0.3:compile
+[INFO] |  |  \- org.springframework.security:spring-security-web:jar:7.0.3:compile
+[INFO] |  \- org.springframework:spring-aop:jar:7.0.5:compile
+[INFO] |     \- org.springframework:spring-beans:jar:7.0.5:compile
+[INFO] +- org.springframework.boot:spring-boot-starter-web:jar:4.0.3:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter-jackson:jar:4.0.3:compile
+[INFO] |  |  \- org.springframework.boot:spring-boot-jackson:jar:4.0.3:compile
+[INFO] |  |     \- tools.jackson.core:jackson-databind:jar:3.0.4:compile
+[INFO] |  |        \- tools.jackson.core:jackson-core:jar:3.0.4:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter-tomcat:jar:4.0.3:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot-starter-tomcat-runtime:jar:4.0.3:compile
+[INFO] |  |  |  +- org.springframework.boot:spring-boot-web-server:jar:4.0.3:compile
+[INFO] |  |  |  +- org.apache.tomcat.embed:tomcat-embed-core:jar:11.0.18:compile
+[INFO] |  |  |  +- org.apache.tomcat.embed:tomcat-embed-el:jar:11.0.18:compile
+[INFO] |  |  |  \- org.apache.tomcat.embed:tomcat-embed-websocket:jar:11.0.18:compile
+[INFO] |  |  \- org.springframework.boot:spring-boot-tomcat:jar:4.0.3:compile
+[INFO] |  +- org.springframework.boot:spring-boot-http-converter:jar:4.0.3:compile
+[INFO] |  |  \- org.springframework:spring-web:jar:7.0.5:compile
+[INFO] |  \- org.springframework.boot:spring-boot-webmvc:jar:4.0.3:compile
+[INFO] |     +- org.springframework.boot:spring-boot-servlet:jar:4.0.3:compile
+[INFO] |     \- org.springframework:spring-webmvc:jar:7.0.5:compile
+[INFO] +- org.springframework.boot:spring-boot-starter-webmvc:jar:4.0.3:compile
+[INFO] +- io.lighty.core:lighty-controller-spring-di:jar:24.0.0-SNAPSHOT:compile
+[INFO] |  +- io.lighty.core:lighty-controller:jar:24.0.0-SNAPSHOT:compile
+[INFO] |  |  +- io.lighty.core:lighty-common:jar:24.0.0-SNAPSHOT:compile
+[INFO] |  |  +- io.lighty.core:lighty-clustering:jar:24.0.0-SNAPSHOT:compile
+[INFO] |  |  |  +- org.opendaylight.controller:eos-dom-akka:jar:12.0.3:compile
+[INFO] |  |  |  +- org.apache.pekko:pekko-management-cluster-bootstrap_3:jar:1.1.1:compile
+[INFO] |  |  |  |  +- org.apache.pekko:pekko-discovery_3:jar:1.2.1:compile
+[INFO] |  |  |  |  +- org.apache.pekko:pekko-http-core_3:jar:1.1.0:compile
+[INFO] |  |  |  |  |  +- org.apache.pekko:pekko-parsing_3:jar:1.1.0:compile
+[INFO] |  |  |  |  |  \- org.parboiled:parboiled_3:jar:2.5.1:compile
+[INFO] |  |  |  |  \- org.apache.pekko:pekko-http-spray-json_3:jar:1.1.0:compile
+[INFO] |  |  |  |     \- io.spray:spray-json_3:jar:1.3.6:compile
+[INFO] |  |  |  +- org.apache.pekko:pekko-stream_3:jar:1.2.1:compile
+[INFO] |  |  |  |  +- org.apache.pekko:pekko-actor_3:jar:1.2.1:compile
+[INFO] |  |  |  |  \- org.scala-lang:scala3-library_3:jar:3.3.6:compile
+[INFO] |  |  |  |     \- org.scala-lang:scala-library:jar:2.13.16:compile
+[INFO] |  |  |  +- org.apache.pekko:pekko-remote_3:jar:1.2.1:compile
+[INFO] |  |  |  |  \- org.apache.pekko:pekko-pki_3:jar:1.2.1:compile
+[INFO] |  |  |  |     \- com.hierynomus:asn-one:jar:0.6.0:compile
+[INFO] |  |  |  +- org.apache.pekko:pekko-slf4j_3:jar:1.2.1:compile
+[INFO] |  |  |  +- org.apache.pekko:pekko-cluster_3:jar:1.2.1:compile
+[INFO] |  |  |  |  \- org.apache.pekko:pekko-coordination_3:jar:1.2.1:compile
+[INFO] |  |  |  +- org.apache.pekko:pekko-protobuf-v3_3:jar:1.2.1:compile
+[INFO] |  |  |  +- org.apache.pekko:pekko-management_3:jar:1.1.1:compile
+[INFO] |  |  |  |  \- org.apache.pekko:pekko-http_3:jar:1.1.0:compile
+[INFO] |  |  |  +- org.apache.pekko:pekko-management-cluster-http_3:jar:1.1.1:compile
+[INFO] |  |  |  |  \- org.apache.pekko:pekko-cluster-sharding_3:jar:1.2.1:compile
+[INFO] |  |  |  |     +- org.apache.pekko:pekko-distributed-data_3:jar:1.2.1:compile
+[INFO] |  |  |  |     +- org.apache.pekko:pekko-persistence_3:jar:1.2.1:compile
+[INFO] |  |  |  |     \- org.apache.pekko:pekko-cluster-tools_3:jar:1.2.1:compile
+[INFO] |  |  |  \- org.apache.pekko:pekko-discovery-kubernetes-api_3:jar:1.1.1:compile
+[INFO] |  |  |     \- org.apache.pekko:pekko-management-pki_3:jar:1.1.1:compile
+[INFO] |  |  +- io.lighty.core:lighty-codecs-util:jar:24.0.0-SNAPSHOT:compile
+[INFO] |  |  |  \- org.opendaylight.yangtools:binding-generator:jar:14.0.20:compile
+[INFO] |  |  +- org.opendaylight.infrautils:diagstatus-api:jar:7.1.9:compile
+[INFO] |  |  |  \- org.opendaylight.infrautils:ready-api:jar:7.1.9:compile
+[INFO] |  |  +- org.opendaylight.yangtools:concepts:jar:14.0.20:compile
+[INFO] |  |  +- org.opendaylight.yangtools:yang-common:jar:14.0.20:compile
+[INFO] |  |  +- org.opendaylight.aaa:aaa-cert:jar:0.22.3:compile
+[INFO] |  |  |  \- org.bouncycastle:bcpkix-jdk18on:jar:1.82:compile
+[INFO] |  |  |     \- org.bouncycastle:bcutil-jdk18on:jar:1.82:compile
+[INFO] |  |  +- org.opendaylight.mdsal:mdsal-common-api:jar:15.0.2:compile
+[INFO] |  |  +- org.opendaylight.yangtools:yang-parser-api:jar:14.0.20:compile
+[INFO] |  |  +- org.opendaylight.yangtools:yang-model-api:jar:14.0.20:compile
+[INFO] |  |  |  \- org.opendaylight.yangtools:yang-xpath-api:jar:14.0.20:compile
+[INFO] |  |  +- org.opendaylight.yangtools:yang-data-util:jar:14.0.20:compile
+[INFO] |  |  +- org.opendaylight.yangtools:yang-data-api:jar:14.0.20:compile
+[INFO] |  |  |  \- org.immutables:value:jar:annotations:2.11.6:compile (optional)
+[INFO] |  |  +- org.opendaylight.yangtools:yang-data-impl:jar:14.0.20:compile
+[INFO] |  |  +- org.opendaylight.yangtools:binding-data-codec-dynamic:jar:14.0.20:compile
+[INFO] |  |  |  +- org.opendaylight.yangtools:binding-data-codec-spi:jar:14.0.20:compile
+[INFO] |  |  |  +- org.opendaylight.yangtools:binding-loader:jar:14.0.20:compile
+[INFO] |  |  |  +- org.opendaylight.yangtools:binding-model:jar:14.0.20:compile
+[INFO] |  |  |  \- org.opendaylight.yangtools:binding-reflect:jar:14.0.20:compile
+[INFO] |  |  +- org.opendaylight.mdsal.model:yang-ext:jar:2013.09.07.27.2:compile
+[INFO] |  |  +- org.opendaylight.mdsal:mdsal-binding-api:jar:15.0.2:compile
+[INFO] |  |  +- org.opendaylight.mdsal:mdsal-dom-broker:jar:15.0.2:compile
+[INFO] |  |  |  \- org.opendaylight.yangtools:yang-data-tree-api:jar:14.0.20:compile
+[INFO] |  |  +- org.opendaylight.mdsal:mdsal-dom-spi:jar:15.0.2:compile
+[INFO] |  |  |  +- org.opendaylight.yangtools:odlext-model-api:jar:14.0.20:compile
+[INFO] |  |  |  \- org.opendaylight.yangtools:yang-data-tree-spi:jar:14.0.20:compile
+[INFO] |  |  +- org.opendaylight.mdsal:mdsal-binding-dom-adapter:jar:15.0.2:compile
+[INFO] |  |  +- org.opendaylight.ietf.model:iana-if-type:jar:1.0.2:compile
+[INFO] |  |  |  \- org.opendaylight.ietf.model:rfc8343:jar:1.0.2:compile
+[INFO] |  |  +- org.opendaylight.mdsal.model:opendaylight-l2-types:jar:2013.08.27.27.2:compile
+[INFO] |  |  +- org.opendaylight.mdsal.model:ietf-topology:jar:2013.10.21.27.2:compile
+[INFO] |  |  +- org.opendaylight.mdsal:mdsal-eos-dom-api:jar:15.0.2:compile
+[INFO] |  |  |  \- org.opendaylight.mdsal:mdsal-eos-common-api:jar:15.0.2:compile
+[INFO] |  |  +- org.opendaylight.mdsal:mdsal-eos-binding-api:jar:15.0.2:compile
+[INFO] |  |  |  \- org.opendaylight.mdsal.model:general-entity:jar:15.0.2:compile
+[INFO] |  |  +- org.opendaylight.mdsal:mdsal-eos-binding-adapter:jar:15.0.2:compile
+[INFO] |  |  +- org.opendaylight.mdsal:mdsal-singleton-impl:jar:15.0.2:compile
+[INFO] |  |  +- org.opendaylight.yangtools:binding-data-codec-api:jar:14.0.20:compile
+[INFO] |  |  +- com.typesafe:config:jar:1.4.5:compile
+[INFO] |  |  +- io.netty:netty-transport:jar:4.2.7.Final:compile
+[INFO] |  |  |  +- io.netty:netty-buffer:jar:4.2.7.Final:compile
+[INFO] |  |  |  \- io.netty:netty-resolver:jar:4.2.7.Final:compile
+[INFO] |  |  +- io.netty:netty-common:jar:4.2.7.Final:compile
+[INFO] |  |  +- org.opendaylight.controller:sal-remoterpc-connector:jar:12.0.3:compile
+[INFO] |  |  |  +- org.opendaylight.yangtools:yang-data-codec-binfmt:jar:14.0.20:compile
+[INFO] |  |  |  \- org.opendaylight.controller:sal-common-util:jar:12.0.3:compile
+[INFO] |  |  +- org.opendaylight.controller:sal-distributed-datastore:jar:12.0.3:compile
+[INFO] |  |  |  +- org.apache.commons:commons-text:jar:1.14.0:compile
+[INFO] |  |  |  +- org.opendaylight.controller:raft-api:jar:12.0.3:compile
+[INFO] |  |  |  +- org.opendaylight.controller:raft-spi:jar:12.0.3:compile
+[INFO] |  |  |  |  \- org.lz4:lz4-java:jar:1.8.0:compile
+[INFO] |  |  |  +- org.opendaylight.controller:sal-akka-raft:jar:12.0.3:compile
+[INFO] |  |  |  |  \- org.opendaylight.controller:raft-journal:jar:12.0.3:compile
+[INFO] |  |  |  +- org.opendaylight.controller:cds-access-api:jar:12.0.3:compile
+[INFO] |  |  |  +- org.opendaylight.controller:cds-access-client:jar:12.0.3:compile
+[INFO] |  |  |  +- org.opendaylight.controller:cds-dom-api:jar:12.0.3:compile
+[INFO] |  |  |  +- org.opendaylight.controller:cds-mgmt-api:jar:12.0.3:compile
+[INFO] |  |  |  \- org.opendaylight.yangtools:yang-data-tree-ri:jar:14.0.20:compile
+[INFO] |  |  +- org.opendaylight.controller:sal-cluster-admin-api:jar:12.0.3:compile
+[INFO] |  |  +- org.opendaylight.controller:sal-cluster-admin-impl:jar:12.0.3:compile
+[INFO] |  |  +- org.opendaylight.netconf:yanglib-mdsal-writer:jar:10.0.2:compile
+[INFO] |  |  \- org.opendaylight.netconf:restconf-server-jaxrs:jar:10.0.2:compile
+[INFO] |  |     +- jakarta.ws.rs:jakarta.ws.rs-api:jar:4.0.0:compile
+[INFO] |  |     +- javax.servlet:javax.servlet-api:jar:3.1.0:compile
+[INFO] |  |     +- org.opendaylight.aaa:aaa-filterchain:jar:0.22.3:compile
+[INFO] |  |     +- org.opendaylight.aaa.web:servlet-api:jar:0.22.3:compile
+[INFO] |  |     \- org.opendaylight.aaa.web:web-api:jar:0.22.3:compile
+[INFO] |  +- org.springframework:spring-context:jar:7.0.5:compile
+[INFO] |  |  +- org.springframework:spring-expression:jar:7.0.5:compile
+[INFO] |  |  \- io.micrometer:micrometer-observation:jar:1.16.3:compile
+[INFO] |  |     \- io.micrometer:micrometer-commons:jar:1.16.3:compile
+[INFO] |  +- jakarta.annotation:jakarta.annotation-api:jar:3.0.0:compile
+[INFO] |  +- org.slf4j:slf4j-api:jar:2.0.17:compile
+[INFO] |  +- org.apache.logging.log4j:log4j-slf4j2-impl:jar:2.24.3:compile
+[INFO] |  +- org.apache.logging.log4j:log4j-core:jar:2.24.3:compile
+[INFO] |  +- org.apache.logging.log4j:log4j-api:jar:2.24.3:compile
+[INFO] |  \- org.eclipse.jdt:org.eclipse.jdt.annotation:jar:2.4.0:compile
+[INFO] +- io.lighty.resources:singlenode-configuration:jar:24.0.0-SNAPSHOT:compile
+[INFO] +- io.lighty.modules:lighty-netconf-sb:jar:24.0.0-SNAPSHOT:compile
+[INFO] |  +- com.google.guava:guava:jar:33.5.0-jre:compile
+[INFO] |  |  +- com.google.guava:failureaccess:jar:1.0.3:compile
+[INFO] |  |  +- com.google.guava:listenablefuture:jar:9999.0-empty-to-avoid-conflict-with-guava:compile
+[INFO] |  |  +- org.jspecify:jspecify:jar:1.0.0:compile
+[INFO] |  |  +- com.google.errorprone:error_prone_annotations:jar:2.43.0:compile
+[INFO] |  |  \- com.google.j2objc:j2objc-annotations:jar:3.1:compile
+[INFO] |  +- io.lighty.modules:lighty-aaa-encryption-service:jar:24.0.0-SNAPSHOT:compile
+[INFO] |  +- org.opendaylight.netconf:netconf-topology-impl:jar:10.0.2:compile
+[INFO] |  |  +- org.opendaylight.ietf.model:rfc6991-ietf-inet-types:jar:1.0.2:compile
+[INFO] |  |  |  \- org.opendaylight.ietf:ietf-type-util:jar:1.0.2:compile
+[INFO] |  |  +- org.opendaylight.mdsal:mdsal-dom-api:jar:15.0.2:compile
+[INFO] |  |  +- org.opendaylight.netconf:netconf-client:jar:10.0.2:compile
+[INFO] |  |  |  +- org.opendaylight.ietf.model:rfc9640:jar:1.0.2:compile
+[INFO] |  |  |  +- org.opendaylight.ietf.model:rfc9642:jar:1.0.2:compile
+[INFO] |  |  |  +- org.opendaylight.ietf.model:rfc9643-ietf-tcp-common:jar:1.0.2:compile
+[INFO] |  |  |  +- org.opendaylight.ietf.model:rfc9645-ietf-tls-client:jar:1.0.2:compile
+[INFO] |  |  |  +- org.opendaylight.netconf:netconf-codec:jar:10.0.2:compile
+[INFO] |  |  |  \- org.opendaylight.netconf:shaded-exificient:jar:10.0.2:compile
+[INFO] |  |  +- org.opendaylight.netconf:netconf-common:jar:10.0.2:compile
+[INFO] |  |  \- org.opendaylight.netconf:netconf-topology:jar:10.0.2:compile
+[INFO] |  |     \- org.opendaylight.yangtools:codegen-extensions:jar:14.0.20:compile
+[INFO] |  +- org.opendaylight.netconf:netconf-topology-singleton:jar:10.0.2:compile
+[INFO] |  |  +- org.opendaylight.controller:repackaged-pekko:jar:12.0.3:compile
+[INFO] |  |  |  +- com.typesafe:ssl-config-core_3:jar:0.6.1:compile
+[INFO] |  |  |  +- io.aeron:aeron-annotations:jar:1.45.1:compile
+[INFO] |  |  |  +- io.aeron:aeron-client:jar:1.45.1:compile
+[INFO] |  |  |  +- io.aeron:aeron-driver:jar:1.45.1:compile
+[INFO] |  |  |  +- org.agrona:agrona:jar:1.22.0:compile
+[INFO] |  |  |  +- org.lmdbjava:lmdbjava:jar:0.9.1:compile
+[INFO] |  |  |  \- org.reactivestreams:reactive-streams:jar:1.0.4:compile
+[INFO] |  |  +- org.opendaylight.controller:scala3-library:jar:12.0.3:compile
+[INFO] |  |  +- org.opendaylight.controller:sal-clustering-commons:jar:12.0.3:compile
+[INFO] |  |  |  +- io.dropwizard.metrics:metrics-core:jar:4.2.37:compile
+[INFO] |  |  |  +- io.dropwizard.metrics:metrics-graphite:jar:4.2.37:compile
+[INFO] |  |  |  |  \- com.rabbitmq:amqp-client:jar:5.27.1:compile
+[INFO] |  |  |  |     \- io.netty:netty-codec:jar:4.2.7.Final:compile
+[INFO] |  |  |  |        +- io.netty:netty-codec-compression:jar:4.2.7.Final:compile
+[INFO] |  |  |  |        +- io.netty:netty-codec-protobuf:jar:4.2.7.Final:compile
+[INFO] |  |  |  |        \- io.netty:netty-codec-marshalling:jar:4.2.7.Final:compile
+[INFO] |  |  |  \- io.dropwizard.metrics:metrics-jmx:jar:4.2.37:compile
+[INFO] |  |  +- org.opendaylight.mdsal:mdsal-singleton-api:jar:15.0.2:compile
+[INFO] |  |  +- org.opendaylight.netconf:databind:jar:10.0.2:compile
+[INFO] |  |  +- org.opendaylight.netconf:netconf-api:jar:10.0.2:compile
+[INFO] |  |  +- org.opendaylight.netconf:restconf-mdsal-spi:jar:10.0.2:compile
+[INFO] |  |  |  \- org.opendaylight.ietf.model:rfc8040-ietf-restconf:jar:1.0.2:compile
+[INFO] |  |  +- org.opendaylight.netconf:restconf-server-spi:jar:10.0.2:compile
+[INFO] |  |  |  +- org.opendaylight.ietf.model:rfc8639:jar:1.0.2:compile
+[INFO] |  |  |  |  \- org.opendaylight.ietf.model:rfc8529:jar:1.0.2:compile
+[INFO] |  |  |  |     +- org.opendaylight.ietf.model:rfc8344:jar:1.0.2:compile
+[INFO] |  |  |  |     \- org.opendaylight.ietf.model:rfc8528:jar:1.0.2:compile
+[INFO] |  |  |  +- org.opendaylight.yangtools:rfc8040-model-api:jar:14.0.20:compile
+[INFO] |  |  |  \- org.opendaylight.yangtools:yang-model-export:jar:14.0.20:compile
+[INFO] |  |  +- org.opendaylight.yangtools:util:jar:14.0.20:compile
+[INFO] |  |  |  \- tech.pantheon.triemap:triemap:jar:1.3.2:compile
+[INFO] |  |  +- org.opendaylight.yangtools:yang-repo-api:jar:14.0.20:compile
+[INFO] |  |  \- org.opendaylight.yangtools:yang-repo-spi:jar:14.0.20:compile
+[INFO] |  +- org.opendaylight.netconf:callhome-provider:jar:10.0.2:compile
+[INFO] |  |  +- io.netty:netty-handler:jar:4.2.7.Final:compile
+[INFO] |  |  |  +- io.netty:netty-transport-native-unix-common:jar:4.2.7.Final:compile
+[INFO] |  |  |  \- io.netty:netty-codec-base:jar:4.2.7.Final:compile
+[INFO] |  |  +- org.bouncycastle:bcprov-jdk18on:jar:1.82:compile
+[INFO] |  |  +- org.opendaylight.ietf.model:iana-ssh-encryption-algs:jar:1.0.2:compile
+[INFO] |  |  +- org.opendaylight.ietf.model:iana-ssh-key-exchange-algs:jar:1.0.2:compile
+[INFO] |  |  +- org.opendaylight.ietf.model:iana-ssh-mac-algs:jar:1.0.2:compile
+[INFO] |  |  +- org.opendaylight.ietf.model:iana-ssh-public-key-algs:jar:1.0.2:compile
+[INFO] |  |  +- org.opendaylight.ietf.model:rfc9643-ietf-tcp-client:jar:1.0.2:compile
+[INFO] |  |  +- org.opendaylight.ietf.model:rfc9643-ietf-tcp-server:jar:1.0.2:compile
+[INFO] |  |  +- org.opendaylight.ietf.model:rfc9644-ietf-ssh-client:jar:1.0.2:compile
+[INFO] |  |  |  +- org.opendaylight.ietf.model:rfc8341:jar:1.0.2:compile
+[INFO] |  |  |  \- org.opendaylight.ietf.model:rfc9641:jar:1.0.2:compile
+[INFO] |  |  +- org.opendaylight.ietf.model:rfc9644-ietf-ssh-common:jar:1.0.2:compile
+[INFO] |  |  +- org.opendaylight.netconf:keystore-legacy:jar:10.0.2:compile
+[INFO] |  |  +- org.opendaylight.netconf:netconf-netty-util:jar:10.0.2:compile
+[INFO] |  |  +- org.opendaylight.netconf:shaded-sshd:jar:10.0.2:compile
+[INFO] |  |  +- org.opendaylight.netconf:transport-api:jar:10.0.2:compile
+[INFO] |  |  |  \- io.netty:netty-transport-classes-epoll:jar:4.2.7.Final:compile
+[INFO] |  |  +- org.opendaylight.netconf:transport-ssh:jar:10.0.2:compile
+[INFO] |  |  |  +- org.opendaylight.ietf.model:iana-crypt-hash:jar:1.0.2:compile
+[INFO] |  |  |  +- org.opendaylight.ietf.model:rfc9644-ietf-ssh-server:jar:1.0.2:compile
+[INFO] |  |  |  \- org.opendaylight.netconf:transport-crypto:jar:10.0.2:compile
+[INFO] |  |  +- org.opendaylight.netconf:transport-tcp:jar:10.0.2:compile
+[INFO] |  |  \- org.opendaylight.netconf:transport-tls:jar:10.0.2:compile
+[INFO] |  |     +- org.opendaylight.ietf.model:iana-tls-cipher-suite-algs:jar:1.0.2:compile
+[INFO] |  |     +- org.opendaylight.ietf.model:rfc9645-ietf-tls-common:jar:1.0.2:compile
+[INFO] |  |     \- org.opendaylight.ietf.model:rfc9645-ietf-tls-server:jar:1.0.2:compile
+[INFO] |  +- org.opendaylight.ietf.model:rfc6241:jar:1.0.2:compile
+[INFO] |  +- org.opendaylight.ietf.model:rfc6022:jar:1.0.2:compile
+[INFO] |  |  \- org.opendaylight.ietf.model:rfc6991-ietf-yang-types:jar:1.0.2:compile
+[INFO] |  +- org.opendaylight.ietf.model:rfc8526:jar:1.0.2:compile
+[INFO] |  |  +- org.opendaylight.ietf.model:rfc6243:jar:1.0.2:compile
+[INFO] |  |  +- org.opendaylight.ietf.model:rfc8342-ietf-datastores:jar:1.0.2:compile
+[INFO] |  |  \- org.opendaylight.ietf.model:rfc8342-ietf-origin:jar:1.0.2:compile
+[INFO] |  |     \- org.opendaylight.ietf.model:rfc7952:jar:1.0.2:compile
+[INFO] |  +- org.opendaylight.aaa:aaa-encrypt-service:jar:0.22.3:compile
+[INFO] |  +- org.opendaylight.aaa:aaa-encrypt-service-impl:jar:0.22.3:compile
+[INFO] |  |  +- org.apache.commons:commons-lang3:jar:3.19.0:compile
+[INFO] |  |  \- org.opendaylight.odlparent:logging-markers:jar:14.1.6:compile
+[INFO] |  \- org.opendaylight.netconf:netconf-client-mdsal:jar:10.0.2:compile
+[INFO] |     +- org.checkerframework:checker-qual:jar:3.51.1:compile
+[INFO] |     +- org.opendaylight.ietf.model:rfc6470:jar:1.0.2:compile
+[INFO] |     +- org.opendaylight.ietf.model:rfc8072:jar:1.0.2:compile
+[INFO] |     +- org.opendaylight.ietf.model:rfc8525:jar:1.0.2:compile
+[INFO] |     +- org.opendaylight.netconf:netconf-common-mdsal:jar:10.0.2:compile
+[INFO] |     +- org.opendaylight.netconf:netconf-dom-api:jar:10.0.2:compile
+[INFO] |     +- org.opendaylight.netconf:restconf-api:jar:10.0.2:compile
+[INFO] |     +- org.opendaylight.netconf:restconf-server-api:jar:10.0.2:compile
+[INFO] |     +- org.opendaylight.netconf.model:rfc5277:jar:10.0.2:compile
+[INFO] |     +- org.opendaylight.yangtools:binding-runtime-api:jar:14.0.20:compile
+[INFO] |     +- org.opendaylight.yangtools:binding-runtime-spi:jar:14.0.20:compile
+[INFO] |     +- org.opendaylight.yangtools:rfc8528-model-api:jar:14.0.20:compile
+[INFO] |     +- org.opendaylight.yangtools:yang-data-codec-gson:jar:14.0.20:compile
+[INFO] |     +- org.opendaylight.yangtools:yang-data-codec-xml:jar:14.0.20:compile
+[INFO] |     |  +- org.codehaus.woodstox:stax2-api:jar:4.2.2:compile
+[INFO] |     |  \- org.opendaylight.yangtools:rfc7952-model-api:jar:14.0.20:compile
+[INFO] |     +- org.opendaylight.yangtools:yang-data-spi:jar:14.0.20:compile
+[INFO] |     +- org.opendaylight.yangtools:yang-model-spi:jar:14.0.20:compile
+[INFO] |     |  \- org.opendaylight.yangtools:yang-ir:jar:14.0.20:compile
+[INFO] |     +- org.opendaylight.yangtools:yang-model-util:jar:14.0.20:compile
+[INFO] |     +- org.opendaylight.yangtools:yang-parser-impl:jar:14.0.20:compile
+[INFO] |     |  +- org.opendaylight.yangtools:yang-parser-spi:jar:14.0.20:compile
+[INFO] |     |  +- org.opendaylight.yangtools:yang-parser-reactor:jar:14.0.20:compile
+[INFO] |     |  +- org.opendaylight.yangtools:odlext-parser-support:jar:14.0.20:compile
+[INFO] |     |  +- org.opendaylight.yangtools:openconfig-parser-support:jar:14.0.20:compile
+[INFO] |     |  |  \- org.opendaylight.yangtools:openconfig-model-api:jar:14.0.20:compile
+[INFO] |     |  +- org.opendaylight.yangtools:rfc6241-parser-support:jar:14.0.20:compile
+[INFO] |     |  |  \- org.opendaylight.yangtools:rfc6241-model-api:jar:14.0.20:compile
+[INFO] |     |  +- org.opendaylight.yangtools:rfc6536-parser-support:jar:14.0.20:compile
+[INFO] |     |  |  \- org.opendaylight.yangtools:rfc6536-model-api:jar:14.0.20:compile
+[INFO] |     |  +- org.opendaylight.yangtools:rfc6643-parser-support:jar:14.0.20:compile
+[INFO] |     |  |  \- org.opendaylight.yangtools:rfc6643-model-api:jar:14.0.20:compile
+[INFO] |     |  +- org.opendaylight.yangtools:rfc7952-parser-support:jar:14.0.20:compile
+[INFO] |     |  +- org.opendaylight.yangtools:rfc8040-parser-support:jar:14.0.20:compile
+[INFO] |     |  +- org.opendaylight.yangtools:rfc8528-parser-support:jar:14.0.20:compile
+[INFO] |     |  +- org.opendaylight.yangtools:rfc8639-parser-support:jar:14.0.20:compile
+[INFO] |     |  |  \- org.opendaylight.yangtools:rfc8639-model-api:jar:14.0.20:compile
+[INFO] |     |  +- org.opendaylight.yangtools:rfc8819-parser-support:jar:14.0.20:compile
+[INFO] |     |  |  \- org.opendaylight.yangtools:rfc8819-model-api:jar:14.0.20:compile
+[INFO] |     |  \- org.opendaylight.yangtools:yang-xpath-impl:jar:14.0.20:compile
+[INFO] |     +- org.opendaylight.yangtools:yang-parser-rfc7950:jar:14.0.20:compile
+[INFO] |     |  +- org.antlr:antlr4-runtime:jar:4.13.2:compile
+[INFO] |     |  \- org.opendaylight.yangtools:yang-model-ri:jar:14.0.20:compile
+[INFO] |     \- org.opendaylight.yangtools:yang-repo-fs:jar:14.0.20:compile
+[INFO] +- io.lighty.models.test:lighty-toaster:jar:24.0.0-SNAPSHOT:compile
+[INFO] |  \- org.opendaylight.yangtools:binding-spec:jar:14.0.20:compile
+[INFO] +- org.casbin:jcasbin:jar:1.94.0:compile
+[INFO] |  +- io.github.aviatorscript:aviator:jar:5.9.0:compile
+[INFO] |  +- com.github.seancfoley:ipaddress:jar:5.5.1:compile
+[INFO] |  +- commons-io:commons-io:jar:2.21.0:compile
+[INFO] |  +- org.apache.commons:commons-csv:jar:1.12.0:compile
+[INFO] |  |  \- commons-codec:commons-codec:jar:1.19.0:compile
+[INFO] |  +- com.google.code.gson:gson:jar:2.13.2:compile
+[INFO] |  \- com.fasterxml.jackson.core:jackson-databind:jar:2.19.4:compile
+[INFO] |     +- com.fasterxml.jackson.core:jackson-annotations:jar:2.19.4:compile
+[INFO] |     \- com.fasterxml.jackson.core:jackson-core:jar:2.19.4:compile
+[INFO] +- org.springframework.boot:spring-boot-starter-test:jar:4.0.3:test
+[INFO] |  +- org.springframework.boot:spring-boot-test:jar:4.0.3:test
+[INFO] |  +- org.springframework.boot:spring-boot-test-autoconfigure:jar:4.0.3:test
+[INFO] |  +- com.jayway.jsonpath:json-path:jar:2.10.0:test
+[INFO] |  +- jakarta.xml.bind:jakarta.xml.bind-api:jar:4.0.4:compile
+[INFO] |  |  \- jakarta.activation:jakarta.activation-api:jar:2.1.4:compile
+[INFO] |  +- net.minidev:json-smart:jar:2.6.0:test
+[INFO] |  |  \- net.minidev:accessors-smart:jar:2.6.0:test
+[INFO] |  |     \- org.ow2.asm:asm:jar:9.8:test
+[INFO] |  +- org.assertj:assertj-core:jar:3.27.6:test
+[INFO] |  +- org.awaitility:awaitility:jar:4.3.0:test
+[INFO] |  +- org.hamcrest:hamcrest:jar:3.0:test
+[INFO] |  +- org.junit.jupiter:junit-jupiter:jar:5.14.0:test
+[INFO] |  |  +- org.junit.jupiter:junit-jupiter-api:jar:5.14.0:test
+[INFO] |  |  |  +- org.opentest4j:opentest4j:jar:1.3.0:test
+[INFO] |  |  |  +- org.junit.platform:junit-platform-commons:jar:1.14.0:test
+[INFO] |  |  |  \- org.apiguardian:apiguardian-api:jar:1.1.2:test
+[INFO] |  |  +- org.junit.jupiter:junit-jupiter-params:jar:5.14.0:test
+[INFO] |  |  \- org.junit.jupiter:junit-jupiter-engine:jar:5.14.0:test
+[INFO] |  |     \- org.junit.platform:junit-platform-engine:jar:1.14.0:test
+[INFO] |  +- org.mockito:mockito-core:jar:5.20.0:test
+[INFO] |  |  +- net.bytebuddy:byte-buddy:jar:1.17.8:compile
+[INFO] |  |  +- net.bytebuddy:byte-buddy-agent:jar:1.17.8:test
+[INFO] |  |  \- org.objenesis:objenesis:jar:3.3:test
+[INFO] |  +- org.mockito:mockito-junit-jupiter:jar:5.20.0:test
+[INFO] |  +- org.skyscreamer:jsonassert:jar:1.5.3:test
+[INFO] |  |  \- com.vaadin.external.google:android-json:jar:0.0.20131108.vaadin1:test
+[INFO] |  +- org.springframework:spring-core:jar:7.0.5:compile
+[INFO] |  |  \- commons-logging:commons-logging:jar:1.3.5:compile
+[INFO] |  +- org.springframework:spring-test:jar:7.0.5:test
+[INFO] |  \- org.xmlunit:xmlunit-core:jar:2.10.4:test
+[INFO] \- org.eclipse.jetty:jetty-client:jar:9.4.58.v20250814:test
+[INFO]    +- org.eclipse.jetty:jetty-http:jar:9.4.58.v20250814:test
+[INFO]    |  \- org.eclipse.jetty:jetty-util:jar:9.4.58.v20250814:test
+[INFO]    \- org.eclipse.jetty:jetty-io:jar:9.4.58.v20250814:test
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.970 s
+[INFO] Finished at: 2026-02-27T16:06:54+01:00
+[INFO] ------------------------------------------------------------------------
