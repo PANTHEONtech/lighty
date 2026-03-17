@@ -106,7 +106,10 @@ class YangModelUtilsTests {
     void moduleIdEqualsTest(ModuleId moduleId, Object other, boolean expectedResult) {
         assertEquals(expectedResult, moduleId.equals(other));
         if (other != null) {
-            assertTrue(moduleId.hashCode() == other.hashCode() == expectedResult);
+            if (expectedResult) {
+                assertEquals(moduleId.hashCode(), other.hashCode(),
+                    "Equal objects must have equal hash codes");
+            }
         } else {
             assertFalse(expectedResult);
         }
