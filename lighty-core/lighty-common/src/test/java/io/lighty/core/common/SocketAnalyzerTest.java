@@ -13,12 +13,12 @@ import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class SocketAnalyzerTest {
+class SocketAnalyzerTest {
 
     private static final long TIMEOUT = 3;
 
     @Test
-    public void socketAnalyzerAwaitPortSuccess() throws IOException, InterruptedException {
+    void socketAnalyzerAwaitPortSuccess() throws IOException, InterruptedException {
         final int availablePort = findAvailablePort();
         try (ServerSocket ignored = new ServerSocket(availablePort)) {
             Assertions.assertFalse(SocketAnalyzer.awaitPortAvailable(availablePort, TIMEOUT, TimeUnit.SECONDS));

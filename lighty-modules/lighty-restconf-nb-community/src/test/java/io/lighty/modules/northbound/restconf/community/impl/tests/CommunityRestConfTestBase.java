@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 /**
  * author: vincent on 15.8.2017.
  */
-public abstract class CommunityRestConfTestBase {
+abstract class CommunityRestConfTestBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(CommunityRestConfTestBase.class);
     public static final long SHUTDOWN_TIMEOUT_MILLIS = 60_000;
@@ -70,7 +70,7 @@ public abstract class CommunityRestConfTestBase {
 
     @BeforeAll
     @Timeout(value = 60_000, unit = TimeUnit.MILLISECONDS)
-    public static void startControllerAndRestConf() throws Exception {
+    static void startControllerAndRestConf() throws Exception {
 
         final Set<YangModuleInfo> moduleInfos = new java.util.HashSet<>(RestConfConfigUtils.YANG_MODELS);
         moduleInfos.add(org.opendaylight.yang.svc.v1.instance.identifier.patch.module.rev151121
@@ -97,13 +97,13 @@ public abstract class CommunityRestConfTestBase {
     }
 
     @BeforeEach
-    public void handleTestMethodName(TestInfo testInfo) {
+    void handleTestMethodName(TestInfo testInfo) {
         String testName = testInfo.getTestMethod().map(Method::getName).orElse(testInfo.getDisplayName());
         LOG.info("Running test {}", testName);
     }
 
     @AfterAll
-    public static void shutdownLighty() {
+    static void shutdownLighty() {
         if (communityRestConf != null) {
             communityRestConf.shutdown(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         }
