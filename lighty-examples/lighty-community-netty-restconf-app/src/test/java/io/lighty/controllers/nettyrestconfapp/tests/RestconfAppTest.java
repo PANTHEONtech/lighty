@@ -41,7 +41,7 @@ class RestconfAppTest {
     private static RestClient restClient;
 
     @BeforeAll
-    public static void init() {
+    static void init() {
         restconfApp = new Main();
         restconfApp.start(new String[]{CONFIG.getPath()}, false);
         restClient = new RestClient("http://localhost:8888/");
@@ -87,7 +87,7 @@ class RestconfAppTest {
 
     @SuppressWarnings("checkstyle:illegalCatch")
     @AfterAll
-    public static void shutdown() {
+    static void shutdown() {
         restconfApp.shutdown();
         try {
             restClient.close();

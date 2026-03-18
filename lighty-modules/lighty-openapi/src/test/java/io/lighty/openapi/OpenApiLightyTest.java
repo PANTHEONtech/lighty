@@ -16,7 +16,7 @@ import javax.ws.rs.core.UriInfo;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
 
-public abstract class OpenApiLightyTest extends OpenApiLightyTestBase {
+abstract class OpenApiLightyTest extends OpenApiLightyTestBase {
 
     protected static final String DEFAULT_MODEL_NAME = "ietf-yang-library";
     protected static final String DEFAULT_REVISION_DATE = "2019-01-04";

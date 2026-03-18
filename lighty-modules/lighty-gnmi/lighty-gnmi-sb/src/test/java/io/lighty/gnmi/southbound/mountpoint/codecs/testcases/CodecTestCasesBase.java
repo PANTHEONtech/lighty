@@ -33,7 +33,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 /**
  * Contains various YangInstanceIdentifier and NormalizeNode pairs uses for testing codecs.
  */
-public class CodecTestCasesBase {
+class CodecTestCasesBase {
     private static final String BASE_YANGS_PATH = "src/test/resources/additional/test/schema";
     private static final String OC_GNMI_CONFIG = "/lightyconfigs/openconfig_gnmi_config.json";
     private static final String OC_IF_TYPES_ID = "openconfig-if-types";
@@ -45,7 +45,7 @@ public class CodecTestCasesBase {
 
     private final SchemaContextProvider schemaContextProvider;
 
-    public CodecTestCasesBase() throws YangLoadException, SchemaException, ConfigurationException {
+    CodecTestCasesBase() throws YangLoadException, SchemaException, ConfigurationException {
         final GnmiConfiguration gnmiConfiguration = GnmiConfigUtils.getGnmiConfiguration(
                 this.getClass().getResourceAsStream(OC_GNMI_CONFIG));
         Assertions.assertNotNull(gnmiConfiguration.getYangModulesInfo());

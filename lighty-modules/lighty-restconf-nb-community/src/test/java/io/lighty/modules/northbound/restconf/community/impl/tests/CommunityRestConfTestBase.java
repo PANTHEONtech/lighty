@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 /**
  * author: vincent on 15.8.2017.
  */
-public abstract class CommunityRestConfTestBase {
+abstract class CommunityRestConfTestBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(CommunityRestConfTestBase.class);
     public static final long SHUTDOWN_TIMEOUT_MILLIS = 60_000;
@@ -38,7 +38,7 @@ public abstract class CommunityRestConfTestBase {
     private static CommunityRestConf communityRestConf;
 
     @BeforeAll
-    public static void startControllerAndRestConf() throws Exception {
+    static void startControllerAndRestConf() throws Exception {
 
         final Set<YangModuleInfo> moduleInfos = new java.util.HashSet<>(RestConfConfigUtils.YANG_MODELS);
         moduleInfos.add(org.opendaylight.yang.svc.v1.instance.identifier.patch.module.rev151121
@@ -65,7 +65,7 @@ public abstract class CommunityRestConfTestBase {
     }
 
     @BeforeEach
-    public void handleTestMethodName(final TestInfo testInfo) {
+    void handleTestMethodName(final TestInfo testInfo) {
         String testName = testInfo.getTestMethod()
             .map(Method::getName)
             .orElse("unknown");
@@ -74,7 +74,7 @@ public abstract class CommunityRestConfTestBase {
     }
 
     @AfterEach
-    public void afterTest(final TestInfo testInfo) {
+    void afterTest(final TestInfo testInfo) {
         String testName = testInfo.getTestMethod()
             .map(Method::getName)
             .orElse("unknown");
@@ -83,7 +83,7 @@ public abstract class CommunityRestConfTestBase {
     }
 
     @AfterAll
-    public static void shutdownLighty() {
+    static void shutdownLighty() {
         if (communityRestConf != null) {
             communityRestConf.shutdown(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         }
