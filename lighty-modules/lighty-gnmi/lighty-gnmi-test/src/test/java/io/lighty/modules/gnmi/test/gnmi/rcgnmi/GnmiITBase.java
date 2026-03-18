@@ -42,7 +42,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class GnmiITBase {
+abstract class GnmiITBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(GnmiITBase.class);
 
@@ -61,7 +61,7 @@ public abstract class GnmiITBase {
     protected static HttpClient httpClient;
 
     @BeforeAll
-    public static void setup() {
+    static void setup() {
         httpClientExecutor = Executors.newSingleThreadExecutor();
         httpClient = HttpClient.newBuilder().executor(httpClientExecutor).build();
 
@@ -70,13 +70,13 @@ public abstract class GnmiITBase {
     }
 
     @AfterAll
-    public static void teardown() {
+    static void teardown() {
         httpClientExecutor.shutdownNow();
         application.stop();
     }
 
     @AfterEach
-    public void cleanup() {
+    void cleanup() {
         LOG.info("Performing cleanup!");
         /*
         disconnect device GNMI_NODE_ID after each test in all of inherited classes

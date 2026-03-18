@@ -39,7 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AAATestIT {
+class AAATestIT {
 
     private static final Logger LOG = LoggerFactory.getLogger(AAATestIT.class);
     public static final long SHUTDOWN_TIMEOUT_MILLIS = 60_000;
@@ -78,7 +78,7 @@ public class AAATestIT {
     private Main main;
 
     @BeforeAll
-    public void initClass() throws Exception {
+    void initClass() throws Exception {
         LOG.info("init restconf and controller");
         this.main = new Main();
         this.main.start(new String[]{}, false);
@@ -96,7 +96,7 @@ public class AAATestIT {
     }
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         LOG.info("start all http clients");
         httpClient = new HttpClient();
         httpClient.setIdleTimeout(60000 * 60);
@@ -113,7 +113,7 @@ public class AAATestIT {
     }
 
     @Test
-    public void getAndCheckDefaultAdminUsersTest() throws Exception {
+    void getAndCheckDefaultAdminUsersTest() throws Exception {
         LOG.info("Get all user tests");
 
         assertUsersExist(adminConnectionCorrect, UserDetails.of(ADMIN, ADMIN_DESCRIPTION, ADMIN_SDN));
@@ -127,7 +127,7 @@ public class AAATestIT {
     }
 
     @Test
-    public void addUserTest() throws Exception {
+    void addUserTest() throws Exception {
         LOG.info("Add new user test");
 
         final ContentResponse getAllUsersExpectOne = getAllUsers(adminConnectionCorrect);
@@ -160,7 +160,7 @@ public class AAATestIT {
     }
 
     @Test
-    public void getSpecificUsersTest() throws Exception {
+    void getSpecificUsersTest() throws Exception {
         LOG.info("get specific user test");
         assertEquals(HttpStatus.CREATED_201, addUser(adminConnectionCorrect, NEW_USER_DATA).getStatus());
 
@@ -178,7 +178,7 @@ public class AAATestIT {
     }
 
     @Test
-    public void updateUserInfoTest() throws Exception {
+    void updateUserInfoTest() throws Exception {
         LOG.info("Update user data and try to use them");
         assertEquals(HttpStatus.CREATED_201, addUser(adminConnectionCorrect, NEW_USER_DATA).getStatus());
         assertEquals(HttpStatus.OK_200, updateUser(adminConnectionCorrect, NEW_USER_SDN, UPDATE_USER_DATA).getStatus());
@@ -201,7 +201,7 @@ public class AAATestIT {
     }
 
     @Test
-    public void deleteUserTest() throws Exception {
+    void deleteUserTest() throws Exception {
         LOG.info("delete user");
         assertEquals(HttpStatus.CREATED_201, addUser(adminConnectionCorrect, NEW_USER_DATA).getStatus());
 
@@ -210,25 +210,25 @@ public class AAATestIT {
     }
 
     @Test
-    public void readNotExistingUserExpectError() throws Exception {
+    void readNotExistingUserExpectError() throws Exception {
         LOG.info("get specific not existing user");
         assertEquals(HttpStatus.NOT_FOUND_404, getSpecificUser(adminConnectionCorrect, NEW_USER).getStatus());
     }
 
     @Test
-    public void deleteNotExistingUserExpectError() throws Exception {
+    void deleteNotExistingUserExpectError() throws Exception {
         LOG.info("delete specific not existing user");
         assertEquals(HttpStatus.NOT_FOUND_404, deleteUser(adminConnectionCorrect, NEW_USER_SDN).getStatus());
     }
 
     @Test
-    public void readDataCorrectCredentials() throws Exception {
+    void readDataCorrectCredentials() throws Exception {
         LOG.info("try to get modules state with correct credentials");
         assertEquals(HttpStatus.OK_200, getSomeData(adminConnectionCorrect).getStatus());
     }
 
     @Test
-    public void readDataWrongCredentials() throws Exception {
+    void readDataWrongCredentials() throws Exception {
         LOG.info("try to get modules state with incorrect credentials");
         final Connection adminConnectionWrong = new Connection(httpClient, this.wrongAuth);
         assertEquals(HttpStatus.UNAUTHORIZED_401, getSomeData(adminConnectionWrong).getStatus());
@@ -368,7 +368,7 @@ public class AAATestIT {
     }
 
     @AfterAll
-    public void shutdown() {
+    void shutdown() {
         LOG.info("removing db files");
         File currentDirFile = new File(".");
         String lightyTestsPath = currentDirFile.getAbsolutePath();

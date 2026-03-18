@@ -21,7 +21,7 @@ import org.junit.jupiter.api.TestInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class LightyControllerTestBase {
+abstract class LightyControllerTestBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(LightyControllerTestBase.class);
     public static final long SHUTDOWN_TIMEOUT_MILLIS = 60_000;
@@ -29,7 +29,7 @@ public abstract class LightyControllerTestBase {
     private static LightyController lightyController;
 
     @BeforeAll
-    public static void startLighty() throws Exception {
+    static void startLighty() throws Exception {
         LOG.info("startLighty from TestBase called");
         LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
         lightyController = lightyControllerBuilder.from(ControllerConfigUtils.getDefaultSingleNodeConfiguration())
@@ -41,7 +41,7 @@ public abstract class LightyControllerTestBase {
     }
 
     @BeforeEach
-    public void handleTestMethodName(final TestInfo testInfo) {
+    void handleTestMethodName(final TestInfo testInfo) {
         String testName = testInfo.getTestMethod()
             .map(Method::getName)
             .orElse("unknown");
@@ -50,7 +50,7 @@ public abstract class LightyControllerTestBase {
     }
 
     @AfterEach
-    public void afterTest(final TestInfo testInfo) {
+    void afterTest(final TestInfo testInfo) {
         String testName = testInfo.getTestMethod()
             .map(Method::getName)
             .orElse("unknown");
@@ -59,7 +59,7 @@ public abstract class LightyControllerTestBase {
     }
 
     @AfterAll
-    public static void shutdownLighty() {
+    static void shutdownLighty() {
         if (lightyController != null) {
             LOG.info("Shutting down Lighty controller");
             lightyController.shutdown(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);

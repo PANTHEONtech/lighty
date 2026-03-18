@@ -27,7 +27,7 @@ import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
 import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
 import org.w3c.dom.Element;
 
-public abstract class NetconfBaseServiceBaseTest {
+abstract class NetconfBaseServiceBaseTest {
 
     protected static EffectiveModelContext effectiveModelContext;
     protected static MountPointContext mountContext;

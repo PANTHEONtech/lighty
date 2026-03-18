@@ -40,7 +40,7 @@ class SpringBootAppTest {
     private static RestClient restClient;
 
     @BeforeAll
-    public static void init() {
+    static void init() {
         appContext = SpringApplication.run(MainApp.class, new String[]{});
         restClient = new RestClient("http://localhost:8888/");
     }
@@ -97,7 +97,7 @@ class SpringBootAppTest {
 
     @SuppressWarnings("checkstyle:illegalCatch")
     @AfterAll
-    public static void shutdown() {
+    static void shutdown() {
         if (appContext != null) {
             appContext.stop();
         }

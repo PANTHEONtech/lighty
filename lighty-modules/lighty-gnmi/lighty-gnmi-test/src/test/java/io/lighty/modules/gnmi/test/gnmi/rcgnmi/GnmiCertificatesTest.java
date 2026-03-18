@@ -62,7 +62,7 @@ class GnmiCertificatesTest extends GnmiITBase {
     private static SimulatedGnmiDevice device;
 
     @BeforeAll
-    public static void setupDevice() throws ConfigurationException {
+    static void setupDevice() throws ConfigurationException {
         device = getSecureGnmiDevice(DEVICE_IP, DEVICE_PORT, KEY_PATH, CERTIFICATE_PATH, USERNAME, PASSWORD);
         try {
             device.start();

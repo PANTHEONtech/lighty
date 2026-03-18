@@ -48,7 +48,7 @@ import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
 import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
 import org.xml.sax.SAXException;
 
-public abstract class AbstractCodecTest {
+abstract class AbstractCodecTest {
     protected static final QName MAKE_TOAST_RPC_QNAME = qOfToasterModel("make-toast");
     protected static final QName CONTAINER_RPC_QNAME = qOfTestModel("container-io-rpc");
     protected static final QName LEAF_RPC_QNAME = qOfTestModel("simple-input-output-rpc");
@@ -68,7 +68,7 @@ public abstract class AbstractCodecTest {
     protected final BindingCodecContext bindingCodecContext;
     protected final EffectiveModelContext effectiveModelContext;
 
-    public AbstractCodecTest() throws YangParserException {
+    AbstractCodecTest() throws YangParserException {
         this.bindingCodecContext = createCodecContext(loadModuleInfos());
         this.effectiveModelContext = bindingCodecContext.getRuntimeContext().modelContext();
 

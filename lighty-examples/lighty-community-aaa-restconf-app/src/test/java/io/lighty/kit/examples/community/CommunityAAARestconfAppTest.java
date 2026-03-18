@@ -37,7 +37,7 @@ class CommunityAAARestconfAppTest {
     private static Main main;
 
     @BeforeAll
-    public static void startUp() {
+    static void startUp() {
         final URL config = CommunityAAARestconfAppTest.class.getResource(TEST_CONFIG_JSON);
         main = new Main();
         main.start(new String[]{config.getPath()}, false);
@@ -45,7 +45,7 @@ class CommunityAAARestconfAppTest {
     }
 
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         httpClient = null;
         main.shutdown();
     }

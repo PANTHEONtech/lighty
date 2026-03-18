@@ -35,7 +35,7 @@ class LightyGuiceAppTest {
     private static DataStoreService service;
 
     @BeforeAll
-    public static void startUp() {
+    static void startUp() {
         final var capturedService = ArgumentCaptor.forClass(DataStoreServiceImpl.class);
         main = Mockito.spy(new Main());
         main.start(new String[]{}, false);
@@ -44,7 +44,7 @@ class LightyGuiceAppTest {
     }
 
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         main.shutdown();
     }
 
