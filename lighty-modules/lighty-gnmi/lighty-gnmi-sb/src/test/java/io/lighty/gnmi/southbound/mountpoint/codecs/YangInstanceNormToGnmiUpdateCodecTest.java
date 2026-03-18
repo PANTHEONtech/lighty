@@ -30,7 +30,7 @@ class YangInstanceNormToGnmiUpdateCodecTest {
     private static YangInstanceNormToGnmiUpdateCodec codec;
 
     @BeforeAll
-    public static void init() throws IOException, YangLoadException, SchemaException, ConfigurationException {
+    static void init() throws IOException, YangLoadException, SchemaException, ConfigurationException {
         testCases = new YangInstanceNormToGnmiUpdateTestCases();
         codec = new YangInstanceNormToGnmiUpdateCodec(
                 testCases.getSchemaContextProvider(),

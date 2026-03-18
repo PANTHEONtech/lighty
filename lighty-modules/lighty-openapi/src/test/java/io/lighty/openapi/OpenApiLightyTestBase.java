@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Base class for lighty-openApi tests handlin starting and shutting-down of lighty with restConf and openApi module.
  */
-public abstract class OpenApiLightyTestBase {
+abstract class OpenApiLightyTestBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(OpenApiLightyTestBase.class);
     public static final long SHUTDOWN_TIMEOUT_MILLIS = 60_000;
@@ -75,7 +75,7 @@ public abstract class OpenApiLightyTestBase {
 
     @BeforeAll
     @Timeout(value = 60_000, unit = TimeUnit.MILLISECONDS)
-    public static void startControllerAndRestConf() throws Exception {
+    static void startControllerAndRestConf() throws Exception {
         LOG.info("Building LightyController");
         LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
         lightyController = lightyControllerBuilder.from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(
@@ -105,13 +105,13 @@ public abstract class OpenApiLightyTestBase {
     }
 
     @BeforeEach
-    public void handleTestMethodName(TestInfo testInfo) {
+    void handleTestMethodName(TestInfo testInfo) {
         String testName = testInfo.getTestMethod().map(Method::getName).orElse(testInfo.getDisplayName());
         LOG.info("Running test {}", testName);
     }
 
     @AfterAll
-    public static void shutdownLighty() {
+    static void shutdownLighty() {
         if (openApiModule != null) {
             openApiModule.shutdown(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         }

@@ -33,7 +33,7 @@ import org.junit.jupiter.api.extension.TestWatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class NettyRestConfTestBase {
+abstract class NettyRestConfTestBase {
     private static final Logger LOG = LoggerFactory.getLogger(NettyRestConfTestBase.class);
     private static final long SHUTDOWN_TIMEOUT_MILLIS = 60_000;
 
@@ -69,7 +69,7 @@ public abstract class NettyRestConfTestBase {
 
     @BeforeAll
     @Timeout(value = 60_000, unit = TimeUnit.MILLISECONDS)
-    public static void startControllerAndRestConf() throws Exception {
+    static void startControllerAndRestConf() throws Exception {
         final var moduleInfos = new HashSet<>(NettyRestConfUtils.YANG_MODELS);
         moduleInfos.add(org.opendaylight.yang.svc.v1.instance.identifier.patch.module.rev151121
             .YangModuleInfoImpl.getInstance());
@@ -108,13 +108,13 @@ public abstract class NettyRestConfTestBase {
     }
 
     @BeforeEach
-    public void handleTestMethodName(final TestInfo testInfo) {
+    void handleTestMethodName(final TestInfo testInfo) {
         String testName = testInfo.getTestMethod().map(Method::getName).orElse(testInfo.getDisplayName());
         LOG.info("Running test {}", testName);
     }
 
     @AfterAll
-    public static void shutdownLighty() {
+    static void shutdownLighty() {
         boolean nettyShutdownResult = true;
         boolean lightyShutdownResult = true;
         if (nettyRestConf != null) {
