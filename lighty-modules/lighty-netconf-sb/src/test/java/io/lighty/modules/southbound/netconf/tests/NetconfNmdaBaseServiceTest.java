@@ -10,13 +10,13 @@ package io.lighty.modules.southbound.netconf.tests;
 import static io.lighty.modules.southbound.netconf.impl.NetconfNmdaBaseServiceImpl.NETCONF_EDIT_DATA_QNAME;
 import static io.lighty.modules.southbound.netconf.impl.NetconfNmdaBaseServiceImpl.NETCONF_GET_DATA_QNAME;
 import static io.lighty.modules.southbound.netconf.impl.NetconfNmdaBaseServiceImpl.NETCONF_NMDA_EXTENSION_QNAME;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
 
 import io.lighty.modules.southbound.netconf.impl.NetconfNmdaBaseServiceImpl;
 import java.util.Collection;
@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
@@ -45,7 +46,6 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
-import org.testng.annotations.Test;
 import org.w3c.dom.Element;
 
 class NetconfNmdaBaseServiceTest extends NetconfBaseServiceBaseTest {

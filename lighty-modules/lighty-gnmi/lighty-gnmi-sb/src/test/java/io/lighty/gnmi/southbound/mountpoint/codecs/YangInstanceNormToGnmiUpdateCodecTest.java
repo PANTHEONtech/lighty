@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.skyscreamer.jsonassert.JSONAssert;
-import org.testng.Assert;
 
 class YangInstanceNormToGnmiUpdateCodecTest {
 
@@ -31,7 +30,7 @@ class YangInstanceNormToGnmiUpdateCodecTest {
     private static YangInstanceNormToGnmiUpdateCodec codec;
 
     @BeforeAll
-    public static void init() throws IOException, YangLoadException, SchemaException, ConfigurationException {
+    static void init() throws IOException, YangLoadException, SchemaException, ConfigurationException {
         testCases = new YangInstanceNormToGnmiUpdateTestCases();
         codec = new YangInstanceNormToGnmiUpdateCodec(
                 testCases.getSchemaContextProvider(),
@@ -113,7 +112,7 @@ class YangInstanceNormToGnmiUpdateCodecTest {
                         second.getJsonIetfVal().toStringUtf8(), true);
                 break;
             default:
-                Assert.fail("Unexpected value");
+                Assertions.fail("Unexpected value");
         }
     }
 }

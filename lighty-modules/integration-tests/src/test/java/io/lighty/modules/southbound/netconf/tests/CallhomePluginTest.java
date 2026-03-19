@@ -20,20 +20,19 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.concurrent.TimeUnit;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-@Test
 class CallhomePluginTest {
     public static final long SHUTDOWN_TIMEOUT_MILLIS = 60_000;
 
-    private LightyController lightyController;
-    private CommunityRestConf restConf;
-    private LightyModule netconfPlugin;
+    private static LightyController lightyController;
+    private static CommunityRestConf restConf;
+    private static LightyModule netconfPlugin;
 
-    @BeforeClass
-    void beforeClass() throws ConfigurationException {
+    @BeforeAll
+    static void beforeClass() throws ConfigurationException {
         lightyController = LightyTestUtils.startController(NetconfConfigUtils.NETCONF_CALLHOME_MODELS);
         RestConfConfiguration restConfConfig =
                 RestConfConfigUtils.getDefaultRestConfConfiguration();
@@ -45,8 +44,8 @@ class CallhomePluginTest {
                 restConfConfig.getInetAddress().getHostAddress(), 4334).build();
     }
 
-    @AfterClass
-    void afterClass() {
+    @AfterAll
+    static void afterClass() {
         if (netconfPlugin != null) {
             netconfPlugin.shutdown(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         }

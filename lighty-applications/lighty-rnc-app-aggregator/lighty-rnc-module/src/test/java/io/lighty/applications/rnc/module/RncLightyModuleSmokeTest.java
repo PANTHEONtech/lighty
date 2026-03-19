@@ -7,11 +7,11 @@
  */
 package io.lighty.applications.rnc.module;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-import static org.testng.AssertJUnit.assertEquals;
 
 import io.lighty.applications.rnc.module.config.RncLightyModuleConfigUtils;
 import io.lighty.core.controller.impl.config.ConfigurationException;
@@ -29,7 +29,7 @@ import javax.net.ssl.SSLEngine;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509ExtendedTrustManager;
 import org.eclipse.jetty.http.HttpStatus;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 class RncLightyModuleSmokeTest {
 

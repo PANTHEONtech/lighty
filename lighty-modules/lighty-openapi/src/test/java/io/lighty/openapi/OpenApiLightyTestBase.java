@@ -19,31 +19,63 @@ import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigU
 import io.lighty.server.LightyJettyServerProvider;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.extension.TestWatcher;
 import org.opendaylight.restconf.openapi.jaxrs.JaxRsOpenApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.ITestResult;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 
 /**
  * Base class for lighty-openApi tests handlin starting and shutting-down of lighty with restConf and openApi module.
  */
-public abstract class OpenApiLightyTestBase {
+abstract class OpenApiLightyTestBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(OpenApiLightyTestBase.class);
     public static final long SHUTDOWN_TIMEOUT_MILLIS = 60_000;
 
-    private LightyController lightyController;
-    private OpenApiLighty openApiModule;
-    private CommunityRestConf communityRestConf;
-    private JaxRsOpenApi jaxRsOpenApi;
+    private static LightyController lightyController;
+    private static OpenApiLighty openApiModule;
+    private static CommunityRestConf communityRestConf;
+    private static JaxRsOpenApi jaxRsOpenApi;
 
-    @BeforeClass(timeOut = 60_000)
-    public void startControllerAndRestConf() throws Exception {
+    @RegisterExtension
+    final TestWatcher resultLogger = new TestWatcher() {
+        @Override
+        public void testSuccessful(ExtensionContext context) {
+            LOG.info("Test {} completed and resulted in SUCCESS, with throwables null",
+                context.getRequiredTestMethod().getName());
+        }
+
+        @Override
+        public void testFailed(ExtensionContext context, Throwable cause) {
+            LOG.info("Test {} completed and resulted in FAILURE, with throwables {}",
+                context.getRequiredTestMethod().getName(), cause);
+        }
+
+        @Override
+        public void testAborted(ExtensionContext context, Throwable cause) {
+            LOG.info("Test {} completed and resulted in SKIP/ABORTED, with throwables {}",
+                context.getRequiredTestMethod().getName(), cause);
+        }
+
+        @Override
+        public void testDisabled(ExtensionContext context, Optional<String> reason) {
+            LOG.info("Test {} completed and resulted in DISABLED",
+                context.getRequiredTestMethod().getName());
+        }
+    };
+
+    @BeforeAll
+    @Timeout(value = 60_000, unit = TimeUnit.MILLISECONDS)
+    static void startControllerAndRestConf() throws Exception {
         LOG.info("Building LightyController");
         LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
         lightyController = lightyControllerBuilder.from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(
@@ -55,61 +87,36 @@ public abstract class OpenApiLightyTestBase {
         LOG.info("LightyController started");
 
         final RestConfConfiguration restConfConfiguration = RestConfConfigUtils
-                .getDefaultRestConfConfiguration(lightyController.getServices());
+            .getDefaultRestConfConfiguration(lightyController.getServices());
         communityRestConf = CommunityRestConfBuilder.from(restConfConfiguration).build();
         communityRestConf.start().get();
         lightyController.getServices().withJaxRsEndpoint(communityRestConf.getJaxRsEndpoint());
 
 
         final LightyJettyServerProvider jettyServerBuilder = new LightyJettyServerProvider(new InetSocketAddress(
-                restConfConfiguration.getInetAddress(), restConfConfiguration.getHttpPort()));
+            restConfConfiguration.getInetAddress(), restConfConfiguration.getHttpPort()));
 
         openApiModule = new OpenApiLighty(restConfConfiguration, jettyServerBuilder,
-                lightyController.getServices(), null);
+            lightyController.getServices(), null);
         LOG.info("Starting Lighty OpenApi");
         openApiModule.start().get();
         LOG.info("Lighty OpenApi started");
         jaxRsOpenApi = new JaxRsOpenApi(openApiModule.getjaxRsOpenApi());
     }
 
-    @BeforeMethod
-    public void handleTestMethodName(Method method) {
-        String testName = method.getName();
+    @BeforeEach
+    void handleTestMethodName(TestInfo testInfo) {
+        String testName = testInfo.getTestMethod().map(Method::getName).orElse(testInfo.getDisplayName());
         LOG.info("Running test {}", testName);
     }
 
-    @AfterMethod
-    public void afterTest(ITestResult result) {
-        LOG.info("Test {} completed and resulted in {}, with throwables {}",
-                result.getName(), parseTestNGStatus(result.getStatus()), result.getThrowable());
-    }
-
-    @AfterClass
-    public void shutdownLighty() {
+    @AfterAll
+    static void shutdownLighty() {
         if (openApiModule != null) {
             openApiModule.shutdown(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         }
         if (lightyController != null) {
             lightyController.shutdown(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-        }
-    }
-
-    private String parseTestNGStatus(int testResultStatus) {
-        switch (testResultStatus) {
-            case -1:
-                return "CREATED";
-            case 1:
-                return "SUCCESS";
-            case 2:
-                return "FAILURE";
-            case 3:
-                return "SKIP";
-            case 4:
-                return "SUCCESS_PERCENTAGE_FAILURE";
-            case 16:
-                return "STARTED";
-            default:
-                return "N/A";
         }
     }
 

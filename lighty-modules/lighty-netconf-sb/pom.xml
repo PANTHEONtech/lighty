@@ -70,11 +70,6 @@
             <artifactId>netconf-client-mdsal</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-subclass</artifactId>
             <scope>test</scope>
