@@ -30,9 +30,8 @@ public interface LightyModule {
      * Shutdown module.
      *
      * @return true if module shutdown was successful, false or exception otherwise.
-     * @throws Exception thrown while module shutdown failed
      */
-    ListenableFuture<Boolean> shutdown() throws Exception;
+    ListenableFuture<Boolean> shutdown();
 
     /**
      * Shutdown module and wait for completion for specified amount of time.

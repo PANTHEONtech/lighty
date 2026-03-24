@@ -33,7 +33,6 @@ public final class YangModulesTool {
         printModelInfo(allModelsFromClasspath);
     }
 
-    @SuppressFBWarnings(value = "SLF4J_SIGN_ONLY_FORMAT", justification = "Utility")
     public static void printModelInfo(final Set<YangModuleInfo> allModelsFromClasspath) {
         final int prefixLength = 0;
         final Set<YangModuleInfo> topLevelModels = YangModuleUtils.filterTopLevelModels(allModelsFromClasspath);
