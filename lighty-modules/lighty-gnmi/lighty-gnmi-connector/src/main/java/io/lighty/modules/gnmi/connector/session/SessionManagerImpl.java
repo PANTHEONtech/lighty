@@ -58,7 +58,7 @@ public class SessionManagerImpl implements SessionCloseDelegate, SessionManager 
                 try {
                     builder.sslContext(this.security.getSslContext());
                 } catch (final SSLException e) {
-                    throw new RuntimeException("Failed to create SSL Context!", e);
+                    throw new IllegalStateException("Failed to create SSL Context!", e);
                 }
             }
             channel = builder.build();
@@ -87,7 +87,7 @@ public class SessionManagerImpl implements SessionCloseDelegate, SessionManager 
             final ManagedChannel channel = channelCache.remove(session.getConfiguration());
             final boolean res = channel.shutdown().awaitTermination(CHANNEL_TERMINATION_MILLIS, TimeUnit.MILLISECONDS);
             if (!res) {
-                throw new RuntimeException(String.format("Shutdown of session to server %s failed",
+                throw new IllegalStateException(String.format("Shutdown of session to server %s failed",
                         session.getConfiguration().getAddress()));
             }
         }

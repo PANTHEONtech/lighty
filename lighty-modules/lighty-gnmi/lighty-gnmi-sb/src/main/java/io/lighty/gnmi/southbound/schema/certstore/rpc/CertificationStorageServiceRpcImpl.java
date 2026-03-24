@@ -49,7 +49,7 @@ public class CertificationStorageServiceRpcImpl {
             writeResult = this.certStorage.writeCertificates(input);
         } catch (GeneralSecurityException e) {
             LOG.error("Failed do encrypt input {}", input);
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
         final SettableFuture<RpcResult<AddKeystoreCertificateOutput>> rpcResult = SettableFuture.create();
 

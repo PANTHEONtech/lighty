@@ -89,11 +89,11 @@ public class YangDataService {
             tpcc.commit().get();
         } catch (final ExecutionException exception) {
             LOG.error("Unable to commit changes to datastore", exception);
-            throw new RuntimeException("Unable to commit changes to datastore", exception);
+            throw new IllegalStateException("Unable to commit changes to datastore", exception);
         } catch (InterruptedException e) {
             LOG.error("Interrupted while committing changes to datastore", e);
             Thread.currentThread().interrupt();
-            throw new RuntimeException("Interrupted while committing changes to datastore", e);
+            throw new IllegalStateException("Interrupted while committing changes to datastore", e);
         }
     }
 

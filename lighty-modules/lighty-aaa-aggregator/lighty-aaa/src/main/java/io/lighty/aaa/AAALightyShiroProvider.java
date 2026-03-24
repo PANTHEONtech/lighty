@@ -156,7 +156,7 @@ public final class AAALightyShiroProvider {
             this.webInitializer = new WebInitializer(server.getServer(), claimCache, new JerseyServletSupport(),
                 webContextSecurer, iidmStore, customFilterAdapterConfig);
         } catch (ServletException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
 
     }

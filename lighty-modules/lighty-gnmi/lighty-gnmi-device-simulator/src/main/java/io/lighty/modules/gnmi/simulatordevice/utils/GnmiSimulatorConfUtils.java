@@ -40,7 +40,7 @@ public final class GnmiSimulatorConfUtils {
         try {
             configNode = mapper.readTree(jsonConfigInputStream);
         } catch (final IOException e) {
-            throw new RuntimeException("Cannot deserialize Json content to Json tree nodes", e);
+            throw new IllegalStateException("Cannot deserialize Json content to Json tree nodes", e);
         }
         if (!configNode.has(CONFIG_ROOT_ELEMENT_NAME)) {
             LOG.warn("Json config does not contain {} element. Using defaults.", CONFIG_ROOT_ELEMENT_NAME);
@@ -57,7 +57,7 @@ public final class GnmiSimulatorConfUtils {
             }
 
         } catch (final JsonProcessingException e) {
-            throw new RuntimeException(String.format("Cannot bind Json tree to type: %s",
+            throw new IllegalStateException(String.format("Cannot bind Json tree to type: %s",
                 io.lighty.modules.gnmi.simulatordevice.config.GnmiSimulatorConfiguration.class), e);
         }
         return gnmiSimulatorConfiguration;

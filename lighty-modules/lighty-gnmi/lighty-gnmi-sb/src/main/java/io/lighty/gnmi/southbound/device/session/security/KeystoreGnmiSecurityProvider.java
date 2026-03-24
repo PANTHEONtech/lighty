@@ -109,7 +109,7 @@ public class KeystoreGnmiSecurityProvider implements GnmiSecurityProvider {
             throw new SessionSecurityException("Error while creating KeyPair from private key and passphrase", e);
         } catch (GeneralSecurityException e) {
             LOG.error("Failed do decrypt input {}", clientKey);
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 }

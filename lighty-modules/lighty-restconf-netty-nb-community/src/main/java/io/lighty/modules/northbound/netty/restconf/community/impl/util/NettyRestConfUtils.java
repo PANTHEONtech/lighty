@@ -110,7 +110,7 @@ public final class NettyRestConfUtils {
             }
 
         } catch (IDMStoreException e) {
-            throw new RuntimeException("Failed to create user: ", e);
+            throw new IllegalStateException("Failed to create user: ", e);
         }
 
         return new AAAWebEnvironment(

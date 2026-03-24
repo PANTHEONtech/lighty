@@ -56,7 +56,7 @@ public final class FileUtils {
             }
             return buildAction.buildEffective();
         } catch (IOException | YangParserException | ReactorException e) {
-            throw new RuntimeException("Constructing schema from provided path failed!", e);
+            throw new IllegalStateException("Constructing schema from provided path failed!", e);
         }
     }
 }

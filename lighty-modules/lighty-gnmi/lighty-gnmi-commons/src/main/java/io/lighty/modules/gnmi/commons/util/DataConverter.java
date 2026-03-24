@@ -141,7 +141,7 @@ public final class DataConverter {
             final Collection<DataContainerChild> values = resultContainer.body();
             return values.size() == 1 ? values.iterator().next() : resultContainer;
         } catch (IOException e) {
-            throw new RuntimeException("IO error while closing JsonParserStream", e);
+            throw new IllegalStateException("IO error while closing JsonParserStream", e);
         }
     }
 
