@@ -22,16 +22,10 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- FIXME remove this when ODL bumps to newer jetty -->
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-server</artifactId>
-                <version>9.4.58.v20250814</version>
-            </dependency>
             <dependency>
                 <groupId>org.opendaylight.odlparent</groupId>
                 <artifactId>odlparent</artifactId>
-                <version>14.1.7</version>
+                <version>14.3.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -40,49 +34,49 @@
             <dependency>
                 <groupId>org.opendaylight.aaa</groupId>
                 <artifactId>aaa-artifacts</artifactId>
-                <version>0.21.3</version>
+                <version>0.21.4</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.controller</groupId>
                 <artifactId>controller-artifacts</artifactId>
-                <version>11.0.3</version>
+                <version>11.0.4</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.infrautils</groupId>
                 <artifactId>infrautils-artifacts</artifactId>
-                <version>7.1.10</version>
+                <version>7.1.12</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-artifacts</artifactId>
-                <version>14.0.20</version>
+                <version>14.0.21</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.netconf</groupId>
                 <artifactId>netconf-artifacts</artifactId>
-                <version>9.0.1</version>
+                <version>9.0.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.yangtools</groupId>
                 <artifactId>yangtools-artifacts</artifactId>
-                <version>14.0.21</version>
+                <version>14.0.23</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.bgpcep</groupId>
                 <artifactId>bgpcep-artifacts</artifactId>
-                <version>0.23.1</version>
+                <version>0.23.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -120,34 +114,6 @@
                 <artifactId>jsonassert</artifactId>
                 <version>1.5.3</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.fusesource.leveldbjni</groupId>
-                <artifactId>leveldbjni-all</artifactId>
-                <version>1.8</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.spotbugs</groupId>
-                <artifactId>spotbugs-annotations</artifactId>
-                <version>4.8.6</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>5.14.1</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>3.20.0</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>2.21.0</version>
             </dependency>
             <dependency>
                 <groupId>org.awaitility</groupId>
