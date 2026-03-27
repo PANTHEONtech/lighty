@@ -7,11 +7,18 @@
  */
 package io.lighty.aaa.config;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.opendaylight.aaa.cert.api.ICertificateManager;
 import org.opendaylight.aaa.cert.impl.KeyStoresDataUtils;
 import org.opendaylight.mdsal.binding.api.DataBroker;
@@ -26,26 +33,24 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev1603
 import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321.key.stores.SslDataBuilder;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class CertificateManagerConfigTest {
 
     private static final String BUNDLE_NAME = "opendaylight";
 
     @Mock
-    DataBroker bindingDataBroker;
+    private DataBroker bindingDataBroker;
 
     @Mock
-    ReadTransaction readTransaction;
+    private ReadTransaction readTransaction;
 
     @Mock
-    RpcProviderService rpcProviderService;
+    private RpcProviderService rpcProviderService;
 
-    @BeforeClass
-    void init() {
-        MockitoAnnotations.initMocks(this);
+    @BeforeEach
+    void setUp() {
         DataObjectIdentifier<AaaEncryptServiceConfig> build = DataObjectIdentifier
             .builder(AaaEncryptServiceConfig.class).build();
         when(bindingDataBroker.newReadOnlyTransaction()).thenReturn(readTransaction);
@@ -69,10 +74,10 @@ class CertificateManagerConfigTest {
         ICertificateManager certificateManager = CertificateManagerConfig.getDefault(bindingDataBroker,
                 rpcProviderService);
 
-        Assert.assertNotNull(certificateManager);
-        Assert.assertNotNull(certificateManager.getServerContext());
-        Assert.assertEquals(certificateManager.getServerContext().getProtocol(), "TLS");
-        Assert.assertNotNull(certificateManager.getServerContext().getProvider());
-        Assert.assertNotNull(certificateManager.getServerContext().getDefaultSSLParameters());
+        assertNotNull(certificateManager);
+        assertNotNull(certificateManager.getServerContext());
+        assertEquals("TLS", certificateManager.getServerContext().getProtocol());
+        assertNotNull(certificateManager.getServerContext().getProvider());
+        assertNotNull(certificateManager.getServerContext().getDefaultSSLParameters());
     }
 }

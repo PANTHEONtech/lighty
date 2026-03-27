@@ -7,10 +7,11 @@
  */
 package io.lighty.aaa;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.expectThrows;
-import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertTrue;
 
 import io.lighty.aaa.config.AAAConfiguration;
 import io.lighty.aaa.config.CertificateManagerConfig;
@@ -19,8 +20,10 @@ import io.lighty.server.LightyJettyServerProvider;
 import java.net.InetSocketAddress;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.aaa.api.CredentialAuth;
 import org.opendaylight.aaa.api.PasswordCredentials;
 import org.opendaylight.mdsal.binding.api.DataBroker;
@@ -36,31 +39,26 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev1603
 import org.opendaylight.yang.gen.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321.key.stores.SslDataKey;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 class ShiroInitializationTest {
-    private static final AAAConfiguration AAA_CONFIGURATION = AAAConfigUtils.createDefaultAAAConfiguration();
     private static final String BUNDLE_NAME = "opendaylight";
-    @Mock
-    private LightyJettyServerProvider server;
-    @Mock
-    private DataBroker bindingDataBroker;
-    @Mock
-    private ReadTransaction readTransaction;
-    @Mock
-    private CredentialAuth<PasswordCredentials> credentialAuth;
-    @Mock
-    private RpcProviderService rpcProviderService;
+    private static LightyJettyServerProvider server;
+    private static DataBroker bindingDataBroker;
+    private static ReadTransaction readTransaction;
+    private static CredentialAuth<PasswordCredentials> credentialAuth;
+    private static RpcProviderService rpcProviderService;
+
+    private AAAConfiguration aaaConfiguration;
     private AAALighty aaaLighty;
 
-    @BeforeClass
-    void init() {
-        // Initialize the mock objects
-        MockitoAnnotations.initMocks(this);
+    @BeforeAll
+    static void initAll() {
+        server = mock(LightyJettyServerProvider.class);
+        bindingDataBroker = mock(DataBroker.class);
+        readTransaction = mock(ReadTransaction.class);
+        credentialAuth = mock(CredentialAuth.class);
+        rpcProviderService = mock(RpcProviderService.class);
 
-        // Set up mocks for some datastore reads
         final DataObjectIdentifier<AaaEncryptServiceConfig> aaaEncryptInstanceIdentifier = DataObjectIdentifier
             .builder(AaaEncryptServiceConfig.class).build();
         when(bindingDataBroker.newReadOnlyTransaction()).thenReturn(readTransaction);
@@ -70,7 +68,7 @@ class ShiroInitializationTest {
 
         final KeyStores keyStores = new KeyStoresBuilder().build();
         when(readTransaction.read(LogicalDatastoreType.CONFIGURATION, DataObjectIdentifier
-            .builder(KeyStores.class).build())) // DataObjectIdentifier.builder(KeyStores.class).build();
+            .builder(KeyStores.class).build()))
             .thenReturn(FluentFutures.immediateFluentFuture(Optional.of(keyStores)));
 
         final SslData sslData = new SslDataBuilder().setBundleName(BUNDLE_NAME).build();
@@ -80,7 +78,12 @@ class ShiroInitializationTest {
                 .thenReturn(FluentFutures.immediateFluentFuture(Optional.of(sslData)));
     }
 
-    @AfterMethod
+    @BeforeEach
+    void setUp() {
+        aaaConfiguration = AAAConfigUtils.createDefaultAAAConfiguration();
+    }
+
+    @AfterEach
     void tearDown() {
         if (aaaLighty != null) {
             // Stop the object and ensure that stopping was successful
@@ -93,18 +96,18 @@ class ShiroInitializationTest {
     @Test
     void testStopProcedureWithFailedInitialization() {
         // Create an AAALighty object with mocked dependencies
-        this.aaaLighty = new AAALighty(bindingDataBroker, credentialAuth, server, AAA_CONFIGURATION);
+        this.aaaLighty = new AAALighty(bindingDataBroker, credentialAuth, server, aaaConfiguration);
         // Ensure that the object was created successfully
         assertNotNull(aaaLighty);
         // Expect an Exception to be thrown when trying to initialize the object
-        expectThrows(Exception.class, () -> aaaLighty.initProcedure());
+        assertThrows(Exception.class, () -> aaaLighty.initProcedure());
     }
 
     // Test that the AAALighty object can be successfully initialized and stopped
     @Test
     void testSuccessfulInitialization() throws InterruptedException {
         // set CertificateManager
-        AAA_CONFIGURATION.setCertificateManager(
+        aaaConfiguration.setCertificateManager(
                 CertificateManagerConfig.getDefault(bindingDataBroker, rpcProviderService));
 
         // Create a LightyServerBuilder object
@@ -112,7 +115,7 @@ class ShiroInitializationTest {
                 new InetSocketAddress("localhost/127.0.0.1", 8182));
 
         // Create an AAALighty object
-        this.aaaLighty = new AAALighty(bindingDataBroker, null, serverBuilder, AAA_CONFIGURATION);
+        this.aaaLighty = new AAALighty(bindingDataBroker, null, serverBuilder, aaaConfiguration);
         // Ensure that the object was created successfully
         assertNotNull(aaaLighty);
 

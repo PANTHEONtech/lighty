@@ -10,8 +10,8 @@ package io.lighty.core.common;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.concurrent.TimeUnit;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 class SocketAnalyzerTest {
 
@@ -21,7 +21,7 @@ class SocketAnalyzerTest {
     void socketAnalyzerAwaitPortSuccess() throws IOException, InterruptedException {
         final int availablePort = findAvailablePort();
         try (ServerSocket ignored = new ServerSocket(availablePort)) {
-            Assert.assertFalse(SocketAnalyzer.awaitPortAvailable(availablePort, TIMEOUT, TimeUnit.SECONDS));
+            Assertions.assertFalse(SocketAnalyzer.awaitPortAvailable(availablePort, TIMEOUT, TimeUnit.SECONDS));
         }
     }
 
