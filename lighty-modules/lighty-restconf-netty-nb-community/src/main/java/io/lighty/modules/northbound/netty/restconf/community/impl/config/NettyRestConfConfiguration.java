@@ -35,6 +35,8 @@ public class NettyRestConfConfiguration {
     private InetAddress inetAddress = InetAddress.getLoopbackAddress();
     private int httpPort = 8888;
     private String restconfServletContextPath = "restconf";
+    private String groupName = "lighty-netty-worker"; //use as default
+    private int workThreads = 0; //default 0 which is ODL netconf default allowing to use Netty default
 
     public NettyRestConfConfiguration() {
     }
@@ -49,6 +51,7 @@ public class NettyRestConfConfiguration {
         this.domActionService = restConfConfiguration.getDomActionService();
         this.domNotificationService = restConfConfiguration.getDomNotificationService();
         this.domMountPointService = restConfConfiguration.getDomMountPointService();
+        this.workThreads = restConfConfiguration.getWorkThreads();
     }
 
     public NettyRestConfConfiguration(final DOMDataBroker domDataBroker, final DOMSchemaService schemaService,
@@ -60,6 +63,26 @@ public class NettyRestConfConfiguration {
         this.domActionService = domActionService;
         this.domNotificationService = domNotificationService;
         this.domMountPointService = domMountPointService;
+    }
+
+
+    public int getWorkThreads() {
+        return workThreads;
+    }
+
+    public void setWorkThreads(int workThreads) {
+        if (workThreads < 0) {
+            throw new IllegalArgumentException("workThreads cannot be negative");
+        }
+        this.workThreads = workThreads;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     public InetAddress getInetAddress() {
@@ -147,13 +170,15 @@ public class NettyRestConfConfiguration {
             && Objects.equals(domNotificationService, that.domNotificationService)
             && Objects.equals(domMountPointService, that.domMountPointService)
             && Objects.equals(inetAddress, that.inetAddress)
-            && Objects.equals(restconfServletContextPath, that.restconfServletContextPath);
+            && Objects.equals(restconfServletContextPath, that.restconfServletContextPath)
+            && Objects.equals(groupName, that.groupName)
+            && Objects.equals(workThreads, that.workThreads);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(domDataBroker, schemaService, domRpcService, domActionService, domNotificationService,
-            domMountPointService, inetAddress, httpPort, restconfServletContextPath);
+            domMountPointService, inetAddress, httpPort, restconfServletContextPath, groupName, workThreads);
     }
 
 }
