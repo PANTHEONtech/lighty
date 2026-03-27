@@ -33,7 +33,7 @@ public class SampleConfigTest {
             .getModules().size();
         assertTrue(lightyController.shutdown(TIME_OUT, TimeUnit.SECONDS));
 
-        assertEquals(loadedModulesSize, 18);
+        assertEquals(loadedModulesSize, 26);
     }
 
     @Test
@@ -45,7 +45,7 @@ public class SampleConfigTest {
             .getModules().size();
         assertTrue(lightyController.shutdown(TIME_OUT, TimeUnit.SECONDS));
 
-        assertEquals(loadedModulesSize, 18);
+        assertEquals(loadedModulesSize, 26);
     }
 
     private LightyController getLightyController(final String resource) throws Exception {
