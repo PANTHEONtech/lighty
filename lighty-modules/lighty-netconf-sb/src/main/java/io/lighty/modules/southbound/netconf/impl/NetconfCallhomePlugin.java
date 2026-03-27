@@ -184,6 +184,26 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
         }
 
         @Override
+        public String key$_$exchange() {
+            return "";
+        }
+
+        @Override
+        public String macs() {
+            return "";
+        }
+
+        @Override
+        public String encryption() {
+            return "";
+        }
+
+        @Override
+        public String host$_$keys() {
+            return "";
+        }
+
+        @Override
         public Class<? extends Annotation> annotationType() {
             return null;
         }
