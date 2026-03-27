@@ -58,8 +58,6 @@ public abstract class OpenApiLightyTestBase {
                 .getDefaultRestConfConfiguration(lightyController.getServices());
         communityRestConf = CommunityRestConfBuilder.from(restConfConfiguration).build();
         communityRestConf.start().get();
-        lightyController.getServices().withJaxRsEndpoint(communityRestConf.getJaxRsEndpoint());
-
 
         final LightyJettyServerProvider jettyServerBuilder = new LightyJettyServerProvider(new InetSocketAddress(
                 restConfConfiguration.getInetAddress(), restConfConfiguration.getHttpPort()));
@@ -70,7 +68,8 @@ public abstract class OpenApiLightyTestBase {
         openApiModule.start().get();
         communityRestConf.startServer();
         LOG.info("Lighty OpenApi started");
-        jaxRsOpenApi = new JaxRsOpenApi(openApiModule.getjaxRsOpenApi());
+        jaxRsOpenApi = new JaxRsOpenApi(openApiModule.getjaxRsOpenApi(),
+            restConfConfiguration.getRestconfServletContextPath());
     }
 
     @BeforeMethod

@@ -63,7 +63,7 @@ public class OpenApiLighty extends AbstractLightyModule {
     protected boolean initProcedure() {
         LOG.info("initializing openapi");
         this.openApiService = new OpenApiServiceImpl(lightyServices.getDOMSchemaService(),
-            lightyServices.getDOMMountPointService(), lightyServices.getJaxRsEndpoint());
+            lightyServices.getDOMMountPointService());
 
         final var webContextBuilder = WebContext.builder()
             .name("OpenAPI")
@@ -73,7 +73,8 @@ public class OpenApiLighty extends AbstractLightyModule {
                 .servlet(new JerseyServletSupport().createHttpServletBuilder(new Application() {
                     @Override
                     public Set<Object> getSingletons() {
-                        return Set.of(new JaxRsOpenApi(openApiService),
+                        return Set.of(new JaxRsOpenApi(openApiService,
+                                restConfConfiguration.getRestconfServletContextPath()),
                             new OpenApiBodyWriter(new JsonFactoryBuilder().build()));
                     }
                 }).build())
