@@ -15,7 +15,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import io.lighty.applications.rnc.module.RncLightyModule;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 class MainTest {
 

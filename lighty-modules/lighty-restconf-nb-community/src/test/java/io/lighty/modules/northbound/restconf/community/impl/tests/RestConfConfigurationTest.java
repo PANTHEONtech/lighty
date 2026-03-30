@@ -13,8 +13,8 @@ import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfi
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import java.io.InputStream;
 import java.net.InetAddress;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 class RestConfConfigurationTest {
 
@@ -23,23 +23,23 @@ class RestConfConfigurationTest {
         RestConfConfiguration defaultRestConfConfiguration = RestConfConfigUtils.getDefaultRestConfConfiguration();
         RestConfConfiguration restConfConfiguration = new RestConfConfiguration(defaultRestConfConfiguration);
 
-        Assert.assertEquals(defaultRestConfConfiguration, restConfConfiguration);
-        Assert.assertTrue(defaultRestConfConfiguration.hashCode() == restConfConfiguration.hashCode());
+        Assertions.assertEquals(defaultRestConfConfiguration, restConfConfiguration);
+        Assertions.assertTrue(defaultRestConfConfiguration.hashCode() == restConfConfiguration.hashCode());
 
         restConfConfiguration.setHttpPort(3333);
         restConfConfiguration.setInetAddress(InetAddress.getLoopbackAddress());
 
-        Assert.assertNotEquals(defaultRestConfConfiguration, restConfConfiguration);
-        Assert.assertFalse(defaultRestConfConfiguration.hashCode() == restConfConfiguration.hashCode());
+        Assertions.assertNotEquals(defaultRestConfConfiguration, restConfConfiguration);
+        Assertions.assertFalse(defaultRestConfConfiguration.hashCode() == restConfConfiguration.hashCode());
     }
 
     @Test
     void testRestConfConfigurationUtilsLoadFromStrem() throws ConfigurationException {
         InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("restconf-config.json");
         RestConfConfiguration restConfConfiguration = RestConfConfigUtils.getRestConfConfiguration(resourceAsStream);
-        Assert.assertNotNull(restConfConfiguration);
-        Assert.assertTrue(restConfConfiguration.getHttpPort() == 5555);
-        Assert.assertEquals(restConfConfiguration.getInetAddress().getHostAddress(), "127.0.0.3");
+        Assertions.assertNotNull(restConfConfiguration);
+        Assertions.assertTrue(restConfConfiguration.getHttpPort() == 5555);
+        Assertions.assertEquals(restConfConfiguration.getInetAddress().getHostAddress(), "127.0.0.3");
     }
 
 }

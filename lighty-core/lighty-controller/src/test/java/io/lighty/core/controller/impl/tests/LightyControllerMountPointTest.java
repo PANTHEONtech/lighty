@@ -9,13 +9,13 @@ package io.lighty.core.controller.impl.tests;
 
 import io.lighty.core.controller.api.LightyController;
 import java.util.Optional;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMMountPointListener;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 class LightyControllerMountPointTest extends LightyControllerTestBase {
 
@@ -30,13 +30,13 @@ class LightyControllerMountPointTest extends LightyControllerTestBase {
         domMountPointService.registerProvisionListener(new DOMMountPointListener() {
             @Override
             public void onMountPointCreated(DOMMountPoint mountPoint) {
-                Assert.assertEquals(mountPoint.getIdentifier(), testYangIID);
+                Assertions.assertEquals(mountPoint.getIdentifier(), testYangIID);
                 listenerMethodsCalled[0]++;
             }
 
             @Override
             public void onMountPointRemoved(final YangInstanceIdentifier path) {
-                Assert.assertEquals(path, testYangIID);
+                Assertions.assertEquals(path, testYangIID);
                 listenerMethodsCalled[1]++;
             }
         });
@@ -48,18 +48,18 @@ class LightyControllerMountPointTest extends LightyControllerTestBase {
 
         // 2. get MP from service service
         final Optional<DOMMountPoint> registeredMP = domMountPointService.getMountPoint(testYangIID);
-        Assert.assertTrue(registeredMP.isPresent());
+        Assertions.assertTrue(registeredMP.isPresent());
 
         // 3. unregister registered MP
         mountPointRegistration.close();
 
         // 4. check if there isn't registered any MP
         final Optional<DOMMountPoint> unregisterredMP = domMountPointService.getMountPoint(testYangIID);
-        Assert.assertFalse(unregisterredMP.isPresent());
+        Assertions.assertFalse(unregisterredMP.isPresent());
 
         // check if MP listener methods were called
-        Assert.assertEquals(listenerMethodsCalled[0], 1);
-        Assert.assertEquals(listenerMethodsCalled[1], 1);
+        Assertions.assertEquals(listenerMethodsCalled[0], 1);
+        Assertions.assertEquals(listenerMethodsCalled[1], 1);
     }
 
 }

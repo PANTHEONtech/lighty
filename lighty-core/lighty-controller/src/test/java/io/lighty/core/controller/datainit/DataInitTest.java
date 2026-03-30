@@ -15,14 +15,14 @@ import java.io.InputStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.http.netconfcentral.org.ns.toaster.rev091120.Toaster;
 import org.opendaylight.yangtools.binding.DataObjectIdentifier;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.Test;
 
 class DataInitTest {
     private static final String PATH_TO_JSON_INIT_CONFIG = "/DataInitJsonConfig.json";
@@ -53,7 +53,7 @@ class DataInitTest {
         // Should receive notification even when listener is registered after data was changed
         registerToasterListener(services.getBindingDataBroker(), NODE_ID, listenerLatch);
         listenerLatch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-        Assert.assertEquals(listenerLatch.getCount(), 0);
+        Assertions.assertEquals(0, listenerLatch.getCount());
     }
 
     /*
@@ -73,7 +73,7 @@ class DataInitTest {
         // Should receive notification even when listener is registered after data was changed
         registerToasterListener(services.getBindingDataBroker(), NODE_ID, listenerLatch);
         listenerLatch.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-        Assert.assertEquals(listenerLatch.getCount(), 0);
+        Assertions.assertEquals(0, listenerLatch.getCount());
     }
 
     @Test
@@ -83,7 +83,7 @@ class DataInitTest {
                 .from(ControllerConfigUtils.getConfiguration(configStream))
                 .build();
         boolean result = lightyController.start().get(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-        Assert.assertEquals(result,false);
+        Assertions.assertFalse(result);
     }
 
     @Test
@@ -92,7 +92,7 @@ class DataInitTest {
         lightyController = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getConfiguration(configStream))
                 .build();
-        Assert.assertThrows(ExecutionException.class,
+        Assertions.assertThrows(ExecutionException.class,
                 () -> lightyController.start().get(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
     }
 
@@ -103,10 +103,10 @@ class DataInitTest {
                 .from(ControllerConfigUtils.getConfiguration(configStream))
                 .build();
         boolean result = lightyController.start().get(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-        Assert.assertEquals(result,false);
+        Assertions.assertFalse(result);
     }
 
-    @AfterMethod
+    @AfterEach
     void shutdownLighty() {
         if (registration != null) {
             registration.close();

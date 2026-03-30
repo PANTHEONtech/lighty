@@ -8,10 +8,10 @@
 
 package io.lighty.aaa.config;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.aaa.app.config.rev170619.DatastoreConfig;
 import org.opendaylight.yangtools.yang.common.Uint64;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 class DatastoreConfigurationConfigTest {
 
@@ -19,10 +19,10 @@ class DatastoreConfigurationConfigTest {
     void getDefaultTest() {
         DatastoreConfig config = DatastoreConfigurationConfig.getDefault();
 
-        Assert.assertNotNull(config);
+        Assertions.assertNotNull(config);
 
-        Assert.assertEquals(config.getStore(), DatastoreConfig.Store.H2DataStore);
-        Assert.assertEquals(config.getTimeToLive(), Uint64.valueOf(36000));
-        Assert.assertEquals(config.getTimeToWait(), Uint64.valueOf(3600));
+        Assertions.assertEquals(config.getStore(), DatastoreConfig.Store.H2DataStore);
+        Assertions.assertEquals(config.getTimeToLive(), Uint64.valueOf(36000));
+        Assertions.assertEquals(config.getTimeToWait(), Uint64.valueOf(3600));
     }
 }
