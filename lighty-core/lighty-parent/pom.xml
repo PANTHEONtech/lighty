@@ -88,7 +88,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.3.1</version>
+                    <version>3.4.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -110,17 +110,17 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.7.1</version>
+                    <version>3.8.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>3.5.4</version>
+                    <version>3.5.5</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.5.4</version>
+                    <version>3.5.5</version>
                     <configuration>
                         <forkCount>1</forkCount>
                         <reuseForks>true</reuseForks>
@@ -152,7 +152,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>3.3.1</version>
+                    <version>3.4.0</version>
                     <executions>
                         <execution>
                             <id>attach-sources</id>
@@ -192,7 +192,7 @@
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
                             <!-- This should match the dependency management on com.puppycrawl.tools:checkstyle above -->
-                            <version>12.1.2</version>
+                            <version>13.2.0</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>
