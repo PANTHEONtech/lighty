@@ -115,12 +115,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>3.5.4</version>
+                    <version>3.5.5</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.5.4</version>
+                    <version>3.5.5</version>
                     <configuration>
                         <forkCount>1</forkCount>
                         <reuseForks>true</reuseForks>
@@ -192,7 +192,7 @@
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
                             <!-- This should match the dependency management on com.puppycrawl.tools:checkstyle above -->
-                            <version>12.1.2</version>
+                            <version>13.2.0</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>
@@ -202,7 +202,7 @@
                         <dependency>
                             <groupId>org.opendaylight.odlparent</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>14.1.7</version>
+                            <version>14.3.1</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -219,7 +219,7 @@
                         <dependency>
                             <groupId>org.opendaylight.odlparent</groupId>
                             <artifactId>spotbugs</artifactId>
-                            <version>14.1.7</version>
+                            <version>14.3.1</version>
                         </dependency>
                         <!-- The SpotBugs Maven plugin uses SLF4J-2 -->
                         <dependency>

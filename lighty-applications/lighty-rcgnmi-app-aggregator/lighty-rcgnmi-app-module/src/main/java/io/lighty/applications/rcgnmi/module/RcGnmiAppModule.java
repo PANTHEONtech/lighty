@@ -82,7 +82,6 @@ public class RcGnmiAppModule {
 
             this.lightyRestconf = initRestconf(this.appModuleConfig.getRestconfConfig(),
                     this.lightyController.getServices());
-            lightyController.getServices().withJaxRsEndpoint(lightyRestconf.getJaxRsEndpoint());
             startAndWaitLightyModule(this.lightyRestconf);
 
             final AAAEncryptionService encryptionService = createEncryptionServiceWithErrorHandling();
