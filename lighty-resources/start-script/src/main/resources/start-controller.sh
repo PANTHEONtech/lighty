@@ -19,8 +19,8 @@ fi;
 # Find out lighty application name and version number
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 JAR_FILE=`ls -1 "${SCRIPT_DIR}" | grep .jar | head -n1`
-APP_NAME=`echo "${JAR_FILE}" | sed -e 's/^\(.*\)-\([0-9]\+\.[0-9]\+\.[0-9]\+\)\(-SNAPSHOT\)\?\(-javadoc\)\?\.jar$/\1/'`
-APP_VERSION=`echo "${JAR_FILE}" | sed -e 's/^.*-\([0-9]\+\.[0-9]\+\.[0-9]\+\)\(-SNAPSHOT\)\?\(-javadoc\)\?\.jar$/\1\2/'`
+APP_NAME=`echo "${JAR_FILE}" | sed -e 's/^\(.*\)-\([0-9]\+\.[0-9]\+\.[0-9]\+\)\(-javadoc\)\?\.jar$/\1/'`
+APP_VERSION=`echo "${JAR_FILE}" | sed -e 's/^.*-\([0-9]\+\.[0-9]\+\.[0-9]\+\)\(-javadoc\)\?\.jar$/\1\2/'`
 
 # Run the application
 ( cd "${SCRIPT_DIR}" && ${JAVA_HOME}/bin/java -jar "${APP_NAME}-${APP_VERSION}.jar" $* )
