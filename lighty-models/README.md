@@ -56,13 +56,13 @@ my-model/pom.xml
     <parent>
         <groupId>io.lighty.core</groupId>
         <artifactId>lighty-binding-parent</artifactId>
-        <version>22.2.0-SNAPSHOT</version>
+        <version>22.2.0</version>
         <relativePath/>
     </parent>
 
     <groupId>org.mygroup</groupId>
     <artifactId>my-model</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
 
 </project>
 ```
@@ -75,7 +75,7 @@ On LightyController startup, it is necessary to register all YANG models with de
   <dependecy>
     <groupId>org.mygroup</groupId>
     <artifactId>my-model</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
   </dependecy>
 ```
 
