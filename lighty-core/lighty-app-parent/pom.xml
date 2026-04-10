@@ -81,7 +81,7 @@
                                     <!--
                                         Config json uses unlocked snapshot filenames,
                                         this is needed for the generated Class-Path to also have unlocked names.
-                                        https://stackoverflow.com/questions/41982167/maven-jar-plugin-wrong-class-path-entry-for-snapshot-dependency
+                                        https://stackoverflow.com/questions/41982167/maven-jar-plugin-wrong-class-path-entry-for-dependency
                                     -->
                                     <useUniqueVersions>false</useUniqueVersions>
                                     <!--
