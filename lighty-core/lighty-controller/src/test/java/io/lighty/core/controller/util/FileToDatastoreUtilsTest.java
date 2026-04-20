@@ -8,8 +8,8 @@
 
 package io.lighty.core.controller.util;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
@@ -18,6 +18,9 @@ import io.lighty.core.controller.impl.util.FileToDatastoreUtils;
 import io.lighty.core.controller.impl.util.FileToDatastoreUtils.ImportFileFormat;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -35,9 +38,6 @@ import org.opendaylight.yangtools.binding.DataRoot;
 import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 class FileToDatastoreUtilsTest {
     private static final String INITIAL_CONTAINER_PATH = "/data/container-value-1.json";
@@ -70,11 +70,11 @@ class FileToDatastoreUtilsTest {
 
     private static final long TIMEOUT_MILLIS = 60_000;
 
-    private LightyController lightyController;
-    private DataBroker dataBroker;
+    private static LightyController lightyController;
+    private static DataBroker dataBroker;
 
-    @BeforeClass
-    void startUp() throws Exception {
+    @BeforeAll
+    static void startUp() throws Exception {
         lightyController = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(
                         Set.of(YangModuleInfoImpl.getInstance())))
@@ -83,8 +83,8 @@ class FileToDatastoreUtilsTest {
         dataBroker = lightyController.getServices().getBindingDataBroker();
     }
 
-    @AfterClass
-    void tearDown() {
+    @AfterAll
+    static void tearDown() {
         assertTrue(lightyController.shutdown(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
     }
 

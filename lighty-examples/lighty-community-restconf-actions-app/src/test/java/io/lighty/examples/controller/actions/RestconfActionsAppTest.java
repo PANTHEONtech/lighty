@@ -7,15 +7,15 @@
  */
 package io.lighty.examples.controller.actions;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.lighty.examples.controllers.actions.Main;
 import java.net.http.HttpResponse;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 /**
  * This test starts Lighty.io RESTCONF Actions application.
@@ -41,8 +41,8 @@ class RestconfActionsAppTest {
     private static Main restconfApp;
     private static RestClient restClient;
 
-    @BeforeClass
-    public static void init() {
+    @BeforeAll
+    static void init() {
         restconfApp = new Main();
         restconfApp.start();
         restClient = new RestClient("http://localhost:8888/");
@@ -104,8 +104,8 @@ class RestconfActionsAppTest {
     }
 
     @SuppressWarnings("checkstyle:illegalCatch")
-    @AfterClass
-    public static void shutdown() {
+    @AfterAll
+    static void shutdown() {
         restconfApp.shutdown();
         try {
             restClient.close();

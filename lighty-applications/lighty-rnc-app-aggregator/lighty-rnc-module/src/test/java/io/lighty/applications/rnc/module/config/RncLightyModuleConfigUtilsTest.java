@@ -7,9 +7,9 @@
  */
 package io.lighty.applications.rnc.module.config;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.lighty.applications.util.ModulesConfig;
 import io.lighty.core.controller.impl.config.ConfigurationException;
@@ -17,7 +17,7 @@ import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.DatastoreConfigurationUtils;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 class RncLightyModuleConfigUtilsTest {
 
