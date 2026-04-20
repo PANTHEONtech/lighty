@@ -70,7 +70,8 @@ public abstract class OpenApiLightyTestBase {
         openApiModule.start().get();
         communityRestConf.startServer();
         LOG.info("Lighty OpenApi started");
-        jaxRsOpenApi = new JaxRsOpenApi(openApiModule.getjaxRsOpenApi());
+        jaxRsOpenApi = new JaxRsOpenApi(openApiModule.getjaxRsOpenApi(),
+            restConfConfiguration.getRestconfServletContextPath());
     }
 
     @BeforeMethod
