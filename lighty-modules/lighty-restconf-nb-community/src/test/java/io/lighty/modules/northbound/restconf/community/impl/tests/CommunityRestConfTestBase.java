@@ -15,30 +15,62 @@ import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
 import io.lighty.modules.northbound.restconf.community.impl.util.RestConfConfigUtils;
 import java.lang.reflect.Method;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.extension.TestWatcher;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.ITestResult;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 
 /**
  * author: vincent on 15.8.2017.
  */
-public abstract class CommunityRestConfTestBase {
+abstract class CommunityRestConfTestBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(CommunityRestConfTestBase.class);
     public static final long SHUTDOWN_TIMEOUT_MILLIS = 60_000;
 
-    private LightyController lightyController;
-    private CommunityRestConf communityRestConf;
+    private static LightyController lightyController;
+    private static CommunityRestConf communityRestConf;
 
-    @BeforeClass(timeOut = 60_000)
-    public void startControllerAndRestConf() throws Exception {
+    @RegisterExtension
+    final TestWatcher resultLogger = new TestWatcher() {
+        @Override
+        public void testSuccessful(ExtensionContext context) {
+            LOG.info("Test {} completed and resulted in SUCCESS, with throwables null",
+                context.getRequiredTestMethod().getName());
+        }
+
+        @Override
+        public void testFailed(ExtensionContext context, Throwable cause) {
+            LOG.info("Test {} completed and resulted in FAILURE, with throwables {}",
+                context.getRequiredTestMethod().getName(), cause);
+        }
+
+        @Override
+        public void testAborted(ExtensionContext context, Throwable cause) {
+            LOG.info("Test {} completed and resulted in SKIP/ABORTED, with throwables {}",
+                context.getRequiredTestMethod().getName(), cause);
+        }
+
+        @Override
+        public void testDisabled(ExtensionContext context, Optional<String> reason) {
+            LOG.info("Test {} completed and resulted in DISABLED",
+                context.getRequiredTestMethod().getName());
+        }
+    };
+
+    @BeforeAll
+    @Timeout(value = 60_000, unit = TimeUnit.MILLISECONDS)
+    static void startControllerAndRestConf() throws Exception {
 
         final Set<YangModuleInfo> moduleInfos = new java.util.HashSet<>(RestConfConfigUtils.YANG_MODELS);
         moduleInfos.add(org.opendaylight.yang.svc.v1.instance.identifier.patch.module.rev151121
@@ -64,44 +96,19 @@ public abstract class CommunityRestConfTestBase {
         LOG.info("CommunityRestConf started");
     }
 
-    @BeforeMethod
-    public void handleTestMethodName(Method method) {
-        String testName = method.getName();
+    @BeforeEach
+    void handleTestMethodName(TestInfo testInfo) {
+        String testName = testInfo.getTestMethod().map(Method::getName).orElse(testInfo.getDisplayName());
         LOG.info("Running test {}", testName);
     }
 
-    @AfterMethod
-    public void afterTest(ITestResult result) {
-        LOG.info("Test {} completed and resulted in {}, with throwables {}",
-                result.getName(), parseTestNGStatus(result.getStatus()), result.getThrowable());
-    }
-
-    @AfterClass
-    public void shutdownLighty() {
+    @AfterAll
+    static void shutdownLighty() {
         if (communityRestConf != null) {
             communityRestConf.shutdown(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         }
         if (lightyController != null) {
             lightyController.shutdown(SHUTDOWN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-        }
-    }
-
-    private static String parseTestNGStatus(int testResultStatus) {
-        switch (testResultStatus) {
-            case -1:
-                return "CREATED";
-            case 1:
-                return "SUCCESS";
-            case 2:
-                return "FAILURE";
-            case 3:
-                return "SKIP";
-            case 4:
-                return "SUCCESS_PERCENTAGE_FAILURE";
-            case 16:
-                return "STARTED";
-            default:
-                return "N/A";
         }
     }
 

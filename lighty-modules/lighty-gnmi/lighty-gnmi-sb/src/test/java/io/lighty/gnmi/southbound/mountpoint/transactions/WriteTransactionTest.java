@@ -8,11 +8,11 @@
 
 package io.lighty.gnmi.southbound.mountpoint.transactions;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertNotNull;
 
 import com.google.gson.Gson;
 import gnmi.Gnmi;
@@ -42,7 +42,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.json.JSONException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -111,7 +110,7 @@ class WriteTransactionTest {
 
         final GnmiConfiguration gnmiConfiguration = GnmiConfigUtils.getGnmiConfiguration(
                 this.getClass().getResourceAsStream(OPENCONFIG_GNMI_CONFIG));
-        Assertions.assertNotNull(gnmiConfiguration.getYangModulesInfo());
+        assertNotNull(gnmiConfiguration.getYangModulesInfo());
         final TestYangDataStoreService dataStoreService = new TestYangDataStoreService();
         final List<GnmiDeviceCapability> completeCapabilities
                 = new ByClassPathYangLoaderService(gnmiConfiguration.getYangModulesInfo()).load(dataStoreService);

@@ -7,15 +7,15 @@
  */
 package io.lighty.modules.northbound.restconf.community.impl.tests;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 class CommunityRestConfTest extends CommunityRestConfTestBase {
 
     @Test
     void simpleRestconfTest() {
-        Assert.assertNotNull(getLightyController());
-        Assert.assertNotNull(getCommunityRestConf());
+        Assertions.assertNotNull(getLightyController());
+        Assertions.assertNotNull(getCommunityRestConf());
     }
 
 }

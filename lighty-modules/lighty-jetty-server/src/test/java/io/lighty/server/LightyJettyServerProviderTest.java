@@ -7,15 +7,15 @@
  */
 package io.lighty.server;
 
-import static org.testng.AssertJUnit.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import io.lighty.server.util.LightyServerConfigUtils;
 import java.net.InetSocketAddress;
+import org.junit.jupiter.api.Test;
 import org.opendaylight.aaa.filterchain.configuration.impl.CustomFilterAdapterConfigurationImpl;
 import org.opendaylight.aaa.filterchain.filters.CustomFilterAdapter;
 import org.opendaylight.aaa.web.FilterDetails;
 import org.opendaylight.aaa.web.WebContext;
-import org.testng.annotations.Test;
 
 class LightyJettyServerProviderTest {
 
