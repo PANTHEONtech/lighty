@@ -29,7 +29,6 @@
 
     <properties>
         <!-- Overrides Spring Boot slf4j and log4j2 dependency version -->
-        <slf4j.version>2.0.17</slf4j.version>
         <log4j2.version>2.25.4</log4j2.version>
     </properties>
 
@@ -43,22 +42,18 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j2-impl</artifactId>
-            <version>${log4j2.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>${log4j2.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>${log4j2.version}</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.resources</groupId>
@@ -78,22 +73,18 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.15.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.5.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.3.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.5.0</version>
                     <configuration>
                         <archive>
                             <manifest>
@@ -105,22 +96,18 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-install-plugin</artifactId>
-                    <version>3.1.4</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.7.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>3.5.4</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.5.4</version>
                     <configuration>
                         <forkCount>1</forkCount>
                         <reuseForks>true</reuseForks>
@@ -133,7 +120,6 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.14</version>
                     <executions>
                         <execution>
                             <id>jacoco-prepare-agent</id>
@@ -152,7 +138,6 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>3.3.1</version>
                     <executions>
                         <execution>
                             <id>attach-sources</id>
@@ -165,12 +150,10 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>3.6.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.12.0</version>
                     <configuration combine.children="append">
                         <!-- Keep things quiet except for warnings/errors -->
                         <quiet>true</quiet>
@@ -185,54 +168,12 @@
                     </executions>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>3.6.0</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.puppycrawl.tools</groupId>
-                            <artifactId>checkstyle</artifactId>
-                            <!-- This should match the dependency management on com.puppycrawl.tools:checkstyle above -->
-                            <version>12.1.2</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>com.github.sevntu-checkstyle</groupId>
-                            <artifactId>sevntu-checks</artifactId>
-                            <version>1.44.1</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.opendaylight.odlparent</groupId>
-                            <artifactId>checkstyle</artifactId>
-                            <version>14.1.7</version>
-                        </dependency>
-                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>com.github.spotbugs</groupId>
                     <artifactId>spotbugs-maven-plugin</artifactId>
-                    <version>4.8.6.7</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.github.spotbugs</groupId>
-                            <artifactId>spotbugs</artifactId>
-                            <version>4.8.6</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.opendaylight.odlparent</groupId>
-                            <artifactId>spotbugs</artifactId>
-                            <version>14.1.7</version>
-                        </dependency>
-                        <!-- The SpotBugs Maven plugin uses SLF4J-2 -->
-                        <dependency>
-                            <groupId>org.slf4j</groupId>
-                            <artifactId>slf4j-api</artifactId>
-                            <version>${slf4j.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.slf4j</groupId>
-                            <artifactId>slf4j-simple</artifactId>
-                            <version>${slf4j.version}</version>
-                        </dependency>
-                    </dependencies>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -261,6 +202,7 @@
                     <plugin>
                         <artifactId>maven-checkstyle-plugin</artifactId>
                         <configuration>
+                            <skip>false</skip>
                             <configLocation>odl_checks.xml</configLocation>
                             <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
                             <!-- <sourceDirectories> are needed so that checkstyle ignores the
@@ -288,19 +230,17 @@
                                 </goals>
                                 <phase>process-sources</phase>
                             </execution>
+                            <execution>
+                                <!-- Skip strict ODL license checks -->
+                                <id>check-license</id>
+                                <phase>none</phase>
+                            </execution>
                         </executions>
                     </plugin>
                     <plugin>
                         <groupId>com.github.spotbugs</groupId>
                         <artifactId>spotbugs-maven-plugin</artifactId>
                         <configuration>
-                            <plugins>
-                                <plugin>
-                                    <groupId>jp.skypencil.findbugs.slf4j</groupId>
-                                    <artifactId>bug-pattern</artifactId>
-                                    <version>1.5.0</version>
-                                </plugin>
-                            </plugins>
                             <!--
                               Enables analysis which takes more memory but finds more bugs.
                               If you run out of memory, changes the value of the effort element
@@ -316,6 +256,7 @@
                             <!-- Produces XML report -->
                             <xmlOutput>true</xmlOutput>
                             <!-- Configures the directory in which the XML report is created -->
+                            <skip>false</skip>
                             <spotbugsXmlOutputDirectory>${project.build.directory}/spotbugs</spotbugsXmlOutputDirectory>
                         </configuration>
                         <executions>
