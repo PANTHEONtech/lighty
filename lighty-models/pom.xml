@@ -21,6 +21,5 @@
 
     <modules>
         <module>test</module>
-        <module>openconfig-models</module>
     </modules>
 </project>
