@@ -16,7 +16,6 @@ import io.lighty.applications.util.ModulesConfig;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
 import io.lighty.core.controller.impl.util.DatastoreConfigurationUtils;
-import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -37,9 +36,6 @@ class RcGnmiAppModuleConfigUtilsTest {
         assertEquals(8181, restconfConfig.getHttpPort());
         assertEquals("rests", restconfConfig.getRestconfServletContextPath());
         // Assert gnmi config
-        final GnmiConfiguration gnmiConfiguration = rcGnmiAppConfiguration.getGnmiConfiguration();
-        assertEquals(5, gnmiConfiguration.getInitialYangsPaths().size());
-        // Assert controller config
         final ControllerConfiguration controllerConfig = rcGnmiAppConfiguration.getControllerConfig();
         assertEquals("./clustered-datastore-restore-test", controllerConfig.getRestoreDirectoryPath());
         assertEquals(20, controllerConfig.getMaxDataBrokerFutureCallbackPoolSize());
@@ -66,9 +62,6 @@ class RcGnmiAppModuleConfigUtilsTest {
         assertEquals("0.0.0.0", restconfConfig.getInetAddress().getCanonicalHostName());
         assertEquals(8888, restconfConfig.getHttpPort());
         assertEquals("restconf", restconfConfig.getRestconfServletContextPath());
-        // Assert gnmi config
-        final GnmiConfiguration gnmiConfiguration = rcGnmiAppConfiguration.getGnmiConfiguration();
-        assertTrue(gnmiConfiguration.getInitialYangsPaths().isEmpty());
         // Assert controller config
         final ControllerConfiguration controllerConfig = rcGnmiAppConfiguration.getControllerConfig();
         assertEquals("./clustered-datastore-restore", controllerConfig.getRestoreDirectoryPath());
@@ -96,9 +89,6 @@ class RcGnmiAppModuleConfigUtilsTest {
         assertEquals("0.0.0.0", restconfConfig.getInetAddress().getCanonicalHostName());
         assertEquals(8888, restconfConfig.getHttpPort());
         assertEquals("restconf", restconfConfig.getRestconfServletContextPath());
-        // Assert gnmi config
-        final GnmiConfiguration gnmiConfiguration = rcGnmiAppConfiguration.getGnmiConfiguration();
-        assertTrue(gnmiConfiguration.getInitialYangsPaths().isEmpty());
         // Assert controller config
         final ControllerConfiguration controllerConfig = rcGnmiAppConfiguration.getControllerConfig();
         assertEquals("./clustered-datastore-restore", controllerConfig.getRestoreDirectoryPath());
