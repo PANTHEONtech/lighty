@@ -25,6 +25,7 @@ import org.opendaylight.gnmi.southbound.schema.loader.api.YangLoaderService;
 import org.opendaylight.gnmi.southbound.schema.loader.impl.ByClassPathYangLoaderService;
 import org.opendaylight.gnmi.southbound.schema.loader.impl.ByPathYangLoaderService;
 import org.opendaylight.gnmi.southbound.yangmodule.config.GnmiConfiguration;
+import org.opendaylight.yangtools.yang.parser.impl.DefaultReactors;
 import org.opendaylight.yangtools.yang.parser.ri.DefaultYangParserFactory;
 import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ public final class LightyGnmiSouthboundModule extends AbstractLightyModule {
         this.gnmiExecutorService = Objects.requireNonNull(gnmiExecutorService);
         this.encryptionService = encryptionService;
         this.gnmiConfiguration = configuration;
-        this.customReactor = customReactor;
+        this.customReactor = customReactor != null ? customReactor : DefaultReactors.defaultReactor();
     }
 
     @Override
