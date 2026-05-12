@@ -76,7 +76,15 @@ public final class RcGnmiAppModuleConfigUtils {
         }
 
         LOG.debug("Loading lighty.io gNMI module configuration...");
-        final GnmiConfiguration gnmiConfiguration = getGnmiConfiguration(Files.newInputStream(path));
+        var gnmiConfiguration = getGnmiConfiguration(Files.newInputStream(path));
+
+        if (gnmiConfiguration == null) {
+            gnmiConfiguration = new GnmiConfiguration();
+        }
+
+        if (gnmiConfiguration.getYangModulesInfo() == null || gnmiConfiguration.getYangModulesInfo().isEmpty()) {
+            gnmiConfiguration.setYangModulesInfo(controllerConfig.getSchemaServiceConfig().getModels());
+        }
 
         LOG.debug("Loading lighty.io app modules configuration...");
         final ModulesConfig modulesConfig = ModulesConfig.getModulesConfig(Files.newInputStream(path));
