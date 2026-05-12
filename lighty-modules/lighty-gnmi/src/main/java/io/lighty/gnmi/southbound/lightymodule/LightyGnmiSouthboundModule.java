@@ -25,6 +25,7 @@ import org.opendaylight.gnmi.southbound.schema.loader.api.YangLoaderService;
 import org.opendaylight.gnmi.southbound.schema.loader.impl.ByClassPathYangLoaderService;
 import org.opendaylight.gnmi.southbound.schema.loader.impl.ByPathYangLoaderService;
 import org.opendaylight.gnmi.southbound.yangmodule.config.GnmiConfiguration;
+import org.opendaylight.yangtools.yang.parser.ri.DefaultYangParserFactory;
 import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,10 +89,11 @@ public final class LightyGnmiSouthboundModule extends AbstractLightyModule {
         final List<YangLoaderService> services = new ArrayList<>();
         if (config != null) {
             config.getInitialYangsPaths().stream()
-                    .map(path -> new ByPathYangLoaderService(Path.of(path)))
+                    .map(path -> new ByPathYangLoaderService(Path.of(path), new DefaultYangParserFactory()))
                     .forEach(services::add);
             if (config.getYangModulesInfo() != null) {
-                services.add(new ByClassPathYangLoaderService(config.getYangModulesInfo()));
+                services.add(new ByClassPathYangLoaderService(config.getYangModulesInfo(),
+                    new DefaultYangParserFactory()));
             }
         }
         return services;
