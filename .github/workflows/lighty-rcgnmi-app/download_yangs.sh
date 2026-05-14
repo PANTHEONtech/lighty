@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-wget https://raw.githubusercontent.com/YangModels/yang/4b12d5017eb94a0760746d72c6fd93cb02943d45/standard/ietf/RFC/ietf-interfaces%402014-05-08.yang -P yangs
+wget https://raw.githubusercontent.com/opendaylight/ietf/refs/heads/master/model/rfc/rfc8343/src/main/yang/ietf-interfaces%402018-02-20.yang -P yangs
 wget https://raw.githubusercontent.com/YangModels/yang/4b12d5017eb94a0760746d72c6fd93cb02943d45/standard/ietf/RFC/ietf-yang-types@2013-07-15.yang -P yangs
 wget https://raw.githubusercontent.com/openconfig/public/ed650bd969afc2eb5f66d60b86b62ffa6fd5fb8e/release/models/system/openconfig-aaa.yang -P yangs
 wget https://raw.githubusercontent.com/openconfig/public/ed650bd969afc2eb5f66d60b86b62ffa6fd5fb8e/release/models/system/openconfig-aaa-radius.yang -P yangs
