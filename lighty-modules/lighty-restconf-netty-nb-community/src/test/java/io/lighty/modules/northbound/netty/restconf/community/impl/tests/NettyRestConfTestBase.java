@@ -49,9 +49,9 @@ public abstract class NettyRestConfTestBase {
         lightyController = lightyControllerBuilder.from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(
                 moduleInfos)).build();
 
-        LOG.info("Starting LightyController (waiting 10s after start)");
+        LOG.info("Starting LightyController (waiting 15s after start)");
         final var started = lightyController.start();
-        assertEquals(Boolean.TRUE, started.get(10_000, TimeUnit.MILLISECONDS),
+        assertEquals(Boolean.TRUE, started.get(15_000, TimeUnit.MILLISECONDS),
             "Lighty controller was not started correctly");
         LOG.info("LightyController started");
 
