@@ -102,7 +102,7 @@ public class Main {
                 Set<YangModuleInfo> modelPaths = Stream.concat(NettyRestConfUtils.YANG_MODELS.stream(),
                     NetconfConfigUtils.NETCONF_TOPOLOGY_MODELS.stream()).collect(Collectors.toSet());
                 modelPaths.add(org.opendaylight.yang.svc.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321
-                        .YangModuleInfoImpl.getInstance());
+                        .YangModuleInfoImpl.INSTANCE);
                 ArrayNode arrayNode = YangModuleUtils
                     .generateJSONModelSetConfiguration(
                         Stream.concat(ControllerConfigUtils.YANG_MODELS.stream(), modelPaths.stream())
