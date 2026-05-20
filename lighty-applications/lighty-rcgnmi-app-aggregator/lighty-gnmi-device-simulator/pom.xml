@@ -28,12 +28,12 @@
         <dependency>
             <groupId>org.opendaylight.gnmi</groupId>
             <artifactId>gnmi-device-simulator</artifactId>
-            <version>2.0.0</version>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.gnmi</groupId>
             <artifactId>openconfig-models</artifactId>
-            <version>2.0.0</version>
+            <version>3.0.0</version>
         </dependency>
     </dependencies>
 
