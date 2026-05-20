@@ -36,11 +36,11 @@ public final class AAAConfigUtils {
 
     public static final Set<YangModuleInfo> YANG_MODELS = Set.of(
             org.opendaylight.yang.svc.v1.config.aaa.authn.encrypt.service.config.rev240202
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.aaa.rev161214
-                    .YangModuleInfoImpl.getInstance());
+                    .YangModuleInfoImpl.INSTANCE);
 
     private static final Provider BCPROV;
 

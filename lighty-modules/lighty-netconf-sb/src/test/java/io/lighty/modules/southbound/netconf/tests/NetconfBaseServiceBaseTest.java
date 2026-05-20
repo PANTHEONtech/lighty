@@ -37,21 +37,21 @@ abstract class NetconfBaseServiceBaseTest {
     static void beforeTest() throws YangParserException {
         final Set<YangModuleInfo> yangModuleInfos = Set.of(
                 org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214
-                        .YangModuleInfoImpl.getInstance(),
+                        .YangModuleInfoImpl.INSTANCE,
                 org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.yang.metadata.rev160805
-                        .YangModuleInfoImpl.getInstance(),
+                        .YangModuleInfoImpl.INSTANCE,
                 org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.origin.rev180214
-                        .YangModuleInfoImpl.getInstance(),
+                        .YangModuleInfoImpl.INSTANCE,
                 org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601
-                        .YangModuleInfoImpl.getInstance(),
+                        .YangModuleInfoImpl.INSTANCE,
                 org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.with.defaults.rev110601
-                        .YangModuleInfoImpl.getInstance(),
+                        .YangModuleInfoImpl.INSTANCE,
                 org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.monitoring.rev101004
-                        .YangModuleInfoImpl.getInstance(),
+                        .YangModuleInfoImpl.INSTANCE,
                 org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.nmda.rev190107
-                        .YangModuleInfoImpl.getInstance(),
+                        .YangModuleInfoImpl.INSTANCE,
                 org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220
-                        .YangModuleInfoImpl.getInstance()
+                        .YangModuleInfoImpl.INSTANCE
         );
         effectiveModelContext = getEffectiveModelContext(new ArrayList<>(yangModuleInfos));
         mountContext = MountPointContext.of(effectiveModelContext);

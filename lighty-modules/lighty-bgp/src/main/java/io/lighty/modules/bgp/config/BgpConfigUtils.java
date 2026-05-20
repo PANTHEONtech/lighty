@@ -22,85 +22,85 @@ public final class BgpConfigUtils {
 
     private static final Set<YangModuleInfo> BASE_MODELS = Set.of(
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.bgp.rib.rev180329
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.bgp.peer.rpc.rev180329
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.bgp.openconfig.extensions.rev180329
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.http.openconfig.net.yang.bgp.rev151009
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.http.openconfig.net.yang.bgp.multiprotocol.rev151009
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.http.openconfig.net.yang.bgp.operational.rev151009
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.http.openconfig.net.yang.bgp.policy.rev151009
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.http.openconfig.net.yang.bgp.types.rev151009
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.http.openconfig.net.yang.interfaces.rev160412
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.http.openconfig.net.yang.local.routing.rev151009
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.http.openconfig.net.yang.network.instance.rev151018
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.http.openconfig.net.yang.network.instance.types.rev151018
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.http.openconfig.net.yang.openconfig.ext.rev151009
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.http.openconfig.net.yang.openconfig.types.rev151009
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.http.openconfig.net.yang.policy.types.rev151009
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.http.openconfig.net.yang.routing.policy.rev151009
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.bgp.inet.rev180329
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.bgp.route.target.constrain.rev180618
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.bgp.ll.graceful.restart.rev181112
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.odl.bgp._default.policy.rev200120
-                    .YangModuleInfoImpl.getInstance()
+                    .YangModuleInfoImpl.INSTANCE
     );
 
     private static final Set<YangModuleInfo> TOPOLOGY_MODELS = Set.of(
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.odl.bgp.topology.config.rev180329
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.odl.bgp.topology.types.rev160524
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.tbd.params.xml.ns.yang.network.isis.topology.rev131021
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.tbd.params.xml.ns.yang.network.ted.rev131021
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.tbd.params.xml.ns.yang.ospf.topology.rev131021
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.topology.sr.rev130819
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.topology.tunnel.sr.rev130819
-                    .YangModuleInfoImpl.getInstance()
+                    .YangModuleInfoImpl.INSTANCE
     );
 
     private static final Set<YangModuleInfo> EXTENSIONS_MODELS = Set.of(
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.bgp.evpn.rev200120
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.bgp.flowspec.rev200120
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.bgp.mvpn.rev200120
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.bgp.mvpn.ipv4.rev180417
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.bgp.mvpn.ipv6.rev180417
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.pmsi.tunnel.rev200120
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.bgp.route.target.constrain.rev180618
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.bgp.labeled.unicast.rev180329
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.bgp.linkstate.rev241219
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.graph.rev250115
-                    .YangModuleInfoImpl.getInstance()
+                    .YangModuleInfoImpl.INSTANCE
     );
 
     public static final Set<YangModuleInfo> ALL_BGP_MODELS = Set.copyOf(

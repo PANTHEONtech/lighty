@@ -77,7 +77,7 @@ class FileToDatastoreUtilsTest {
     static void startUp() throws Exception {
         lightyController = new LightyControllerBuilder()
                 .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(
-                        Set.of(YangModuleInfoImpl.getInstance())))
+                        Set.of(YangModuleInfoImpl.INSTANCE)))
                 .build();
         assertTrue(lightyController.start().get(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
         dataBroker = lightyController.getServices().getBindingDataBroker();

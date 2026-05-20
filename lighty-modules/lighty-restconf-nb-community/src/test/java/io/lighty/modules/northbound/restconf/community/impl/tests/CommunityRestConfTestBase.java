@@ -42,7 +42,7 @@ abstract class CommunityRestConfTestBase {
 
         final Set<YangModuleInfo> moduleInfos = new java.util.HashSet<>(RestConfConfigUtils.YANG_MODELS);
         moduleInfos.add(org.opendaylight.yang.svc.v1.instance.identifier.patch.module.rev151121
-            .YangModuleInfoImpl.getInstance());
+            .YangModuleInfoImpl.INSTANCE);
 
         LOG.info("Building LightyController");
         LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();

@@ -40,9 +40,9 @@ abstract class NettyRestConfTestBase {
     static void startControllerAndRestConf() throws Exception {
         final var moduleInfos = new HashSet<>(NettyRestConfUtils.YANG_MODELS);
         moduleInfos.add(org.opendaylight.yang.svc.v1.instance.identifier.patch.module.rev151121
-            .YangModuleInfoImpl.getInstance());
+            .YangModuleInfoImpl.INSTANCE);
         moduleInfos.add(org.opendaylight.yang.svc.v1.urn.opendaylight.yang.aaa.cert.mdsal.rev160321
-            .YangModuleInfoImpl.getInstance());
+            .YangModuleInfoImpl.INSTANCE);
 
         LOG.info("Building LightyController");
         final var lightyControllerBuilder = new LightyControllerBuilder();

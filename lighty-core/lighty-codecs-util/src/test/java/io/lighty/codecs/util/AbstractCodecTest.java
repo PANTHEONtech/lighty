@@ -43,9 +43,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
-import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
 import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
-import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
 import org.xml.sax.SAXException;
 
 abstract class AbstractCodecTest {

@@ -40,30 +40,30 @@ public final class ControllerConfigUtils {
      */
     public static final Set<YangModuleInfo> YANG_MODELS = Set.of(
         org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev230126
-                .YangModuleInfoImpl.getInstance(),
+                .YangModuleInfoImpl.INSTANCE,
         org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220
-                .YangModuleInfoImpl.getInstance(),
+                .YangModuleInfoImpl.INSTANCE,
         org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715
-                .YangModuleInfoImpl.getInstance(),
+                .YangModuleInfoImpl.INSTANCE,
         org.opendaylight.yang.svc.v1.urn.opendaylight.l2.types.rev130827
-                .YangModuleInfoImpl.getInstance(),
+                .YangModuleInfoImpl.INSTANCE,
         org.opendaylight.yang.svc.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021
-                .YangModuleInfoImpl.getInstance(),
+                .YangModuleInfoImpl.INSTANCE,
         org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715
-                .YangModuleInfoImpl.getInstance(),
+                .YangModuleInfoImpl.INSTANCE,
         org.opendaylight.yang.svc.v1.urn.opendaylight.yang.extension.yang.ext.rev130709
-                .YangModuleInfoImpl.getInstance(),
+                .YangModuleInfoImpl.INSTANCE,
         org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.controller.config.distributed.datastore
                 .provider.rev250130
-                .YangModuleInfoImpl.getInstance(),
+                .YangModuleInfoImpl.INSTANCE,
         org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.controller.entity.owners.norev
-                .YangModuleInfoImpl.getInstance(),
+                .YangModuleInfoImpl.INSTANCE,
         org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev250131
-                .YangModuleInfoImpl.getInstance(),
+                .YangModuleInfoImpl.INSTANCE,
         org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930
-                .YangModuleInfoImpl.getInstance(),
+                .YangModuleInfoImpl.INSTANCE,
         org.opendaylight.yang.svc.v1.urn.opendaylight.yang.aaa.cert.rpc.rev151215
-                .YangModuleInfoImpl.getInstance()
+                .YangModuleInfoImpl.INSTANCE
     );
 
     public static final String CONTROLLER_CONFIG_ROOT_ELEMENT_NAME = "controller";

@@ -51,7 +51,7 @@ public class LightyConfiguration extends LightyCoreSpringConfiguration {
             final LightyControllerBuilder lightyControllerBuilder = new LightyControllerBuilder();
             final Set<YangModuleInfo> mavenModelPaths = new HashSet<>();
             mavenModelPaths.addAll(NetconfConfigUtils.NETCONF_TOPOLOGY_MODELS);
-            mavenModelPaths.add(YangModuleInfoImpl.getInstance());
+            mavenModelPaths.add(YangModuleInfoImpl.INSTANCE);
             final LightyController lightyController = lightyControllerBuilder
                     .from(ControllerConfigUtils.getDefaultSingleNodeConfiguration(mavenModelPaths))
                     .build();

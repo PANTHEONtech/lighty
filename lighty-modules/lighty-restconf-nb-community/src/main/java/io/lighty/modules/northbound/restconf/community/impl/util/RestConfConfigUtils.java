@@ -34,19 +34,19 @@ public final class RestConfConfigUtils {
     private static final String RESTCONF_SERVLET_CONTEXT_PATH = "restconfServletContextPath";
     public static final Set<YangModuleInfo> YANG_MODELS = Set.of(
             org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev170126
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.monitoring.rev170126
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.remote.rev140114
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.sal.restconf.event.subscription.rev231103
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.yang.patch.rev170222
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.device.notification.rev240218
-                     .YangModuleInfoImpl.getInstance());
+                     .YangModuleInfoImpl.INSTANCE);
     public static final int MAXIMUM_FRAGMENT_LENGTH = 0;
     public static final int IDLE_TIMEOUT =  30000;
     public static final int HEARTBEAT_INTERVAL = 10000;
