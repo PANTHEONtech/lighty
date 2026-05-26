@@ -42,6 +42,10 @@
             <artifactId>restconf-openapi</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.opendaylight.netconf</groupId>
+            <artifactId>restconf-openapi-jaxrs</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.lighty.resources</groupId>
             <artifactId>singlenode-configuration</artifactId>
             <scope>test</scope>
