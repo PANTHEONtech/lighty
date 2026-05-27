@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.opendaylight.netconf.api.xml.XmlElement;
@@ -27,7 +28,7 @@ import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 
 class ConverterUtilsTest extends AbstractCodecTest {
 
-    ConverterUtilsTest() throws YangParserException {
+    ConverterUtilsTest() throws YangParserException, IOException {
         // Constructor required to declare YangParserException due to superclass.
     }
 

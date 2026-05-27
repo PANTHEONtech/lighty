@@ -66,7 +66,7 @@ abstract class AbstractCodecTest {
     protected final BindingCodecContext bindingCodecContext;
     protected final EffectiveModelContext effectiveModelContext;
 
-    AbstractCodecTest() throws YangParserException {
+    AbstractCodecTest() throws YangParserException, IOException {
         this.bindingCodecContext = createCodecContext(loadModuleInfos());
         this.effectiveModelContext = bindingCodecContext.getRuntimeContext().modelContext();
 
@@ -80,9 +80,9 @@ abstract class AbstractCodecTest {
     }
 
     private static BindingCodecContext createCodecContext(final List<YangModuleInfo> moduleInfos)
-            throws YangParserException {
         final YangXPathParserFactory xpathFactory = new AntlrXPathParserFactory();
         final DefaultYangParserFactory defaultYangParserFactory = new DefaultYangParserFactory(xpathFactory);
+        throws YangParserException, IOException {
         final DefaultBindingRuntimeGenerator bindingRuntimeGenerator = new DefaultBindingRuntimeGenerator();
         final ModuleInfoSnapshotBuilder moduleInfoSnapshotBuilder = new ModuleInfoSnapshotBuilder(
                 defaultYangParserFactory);

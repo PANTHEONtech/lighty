@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import io.lighty.codecs.util.exception.DeserializationException;
 import io.lighty.codecs.util.exception.SerializationException;
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.Writer;
 import org.junit.jupiter.api.Disabled;
@@ -31,7 +32,7 @@ class XmlNodeConverterTest extends AbstractCodecTest {
 
     private final NodeConverter bindingSerializer;
 
-    XmlNodeConverterTest() throws YangParserException {
+    XmlNodeConverterTest() throws YangParserException, IOException {
         bindingSerializer = new XmlNodeConverter(this.effectiveModelContext);
     }
 
