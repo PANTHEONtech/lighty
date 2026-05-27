@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.util.Set;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.aaa.api.IDMStoreException;
-import org.opendaylight.aaa.api.IIDMStore;
 import org.opendaylight.aaa.api.StoreBuilder;
 import org.opendaylight.aaa.datastore.h2.H2Store;
 import org.opendaylight.aaa.datastore.h2.IdmLightConfig;
@@ -104,7 +103,7 @@ public final class NettyRestConfUtils {
 
         try {
             final StoreBuilder storeBuilder = new StoreBuilder(iidmStore);
-            final String domain = storeBuilder.initDomainAndRolesWithoutUsers(IIDMStore.DEFAULT_DOMAIN);
+            final String domain = storeBuilder.initDomainAndRolesWithoutUsers();
             if (domain != null) {
                 storeBuilder.createUser(domain, aaaConfiguration.getUsername(), aaaConfiguration.getPassword(), true);
             }
