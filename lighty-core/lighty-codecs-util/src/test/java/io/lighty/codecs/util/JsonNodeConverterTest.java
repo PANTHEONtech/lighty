@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import io.lighty.codecs.util.exception.DeserializationException;
 import io.lighty.codecs.util.exception.SerializationException;
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.Writer;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ class JsonNodeConverterTest extends AbstractCodecTest {
 
     private final NodeConverter bindingSerializer;
 
-    JsonNodeConverterTest() throws YangParserException {
+    JsonNodeConverterTest() throws YangParserException, IOException {
         bindingSerializer = new JsonNodeConverter(this.effectiveModelContext);
     }
 

@@ -8,6 +8,7 @@
 
 package io.lighty.modules.southbound.netconf.tests;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -34,7 +35,7 @@ abstract class NetconfBaseServiceBaseTest {
     protected static BaseNetconfSchema baseSchema;
 
     @BeforeAll
-    static void beforeTest() throws YangParserException {
+    static void beforeTest() throws YangParserException, IOException {
         final Set<YangModuleInfo> yangModuleInfos = Set.of(
                 org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214
                         .YangModuleInfoImpl.INSTANCE,
@@ -87,8 +88,8 @@ abstract class NetconfBaseServiceBaseTest {
     }
 
     private static EffectiveModelContext getEffectiveModelContext(final List<YangModuleInfo> moduleInfos)
-            throws YangParserException {
         final DefaultYangParserFactory yangParserFactory = new DefaultYangParserFactory(new AntlrXPathParserFactory());
+            throws YangParserException, IOException {
         ModuleInfoSnapshotBuilder moduleInfoSnapshotBuilder = new ModuleInfoSnapshotBuilder(yangParserFactory);
         moduleInfoSnapshotBuilder.add(moduleInfos);
         return moduleInfoSnapshotBuilder.build().modelContext();
