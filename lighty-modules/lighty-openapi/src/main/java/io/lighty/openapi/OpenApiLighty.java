@@ -63,7 +63,7 @@ public class OpenApiLighty extends AbstractLightyModule {
     protected boolean initProcedure() {
         LOG.info("initializing openapi");
         this.openApiService = new OpenApiServiceImpl(lightyServices.getDOMSchemaService(),
-            lightyServices.getDOMMountPointService(), lightyServices.getJaxRsEndpoint());
+            lightyServices.getDOMMountPointService(), restConfConfiguration.getRestconfServletContextPath());
 
         final var webContextBuilder = WebContext.builder()
             .name("OpenAPI")
