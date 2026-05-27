@@ -32,7 +32,6 @@ import org.opendaylight.restconf.server.mdsal.MdsalDatabindProvider;
 import org.opendaylight.restconf.server.mdsal.MdsalRestconfServer;
 import org.opendaylight.restconf.server.mdsal.MdsalRestconfStreamRegistry;
 import org.opendaylight.restconf.server.spi.ErrorTagMapping;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.http.server.rev240208.http.server.stack.grouping.transport.TcpBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IetfInetUtil;
 import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint32;
@@ -81,10 +80,11 @@ public class NettyRestConf extends AbstractLightyModule {
         server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService, domActionService,
             domMountPointService);
 
-        final var tcpConfig = NettyRestConfUtils.getTcpConfig(
+        final var transport = NettyRestConfUtils.serverTransportTcp(
             IetfInetUtil.ipAddressFor(inetAddress), Uint16.valueOf(httpPort));
         final PrincipalService service = new AAAShiroPrincipalService((AAAShiroWebEnvironment) webEnvironment);
-        final var serverStackGrouping = new HttpServerStackConfiguration(new TcpBuilder().setTcp(tcpConfig).build());
+        final var serverStackGrouping = new HttpServerStackConfiguration(transport);
+
         final NettyEndpointConfiguration configuration = new NettyEndpointConfiguration(ErrorTagMapping.RFC8040,
             PrettyPrintParam.FALSE, Uint16.valueOf(0), Uint32.valueOf(10000), restconfServletContextPath,
             MessageEncoding.JSON, serverStackGrouping);
