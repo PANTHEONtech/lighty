@@ -103,7 +103,7 @@ public final class AAALightyShiroProvider {
         }
         try {
             final var storeBuilder = new StoreBuilder(iidmStore);
-            final var created = storeBuilder.initDomainAndRolesWithoutUsers(IIDMStore.DEFAULT_DOMAIN);
+            final var created = storeBuilder.initDomainAndRolesWithoutUsers();
             if (created == null) {
                 LOG.debug("Default AAA domain has been already there, nothing to create");
             } else {
