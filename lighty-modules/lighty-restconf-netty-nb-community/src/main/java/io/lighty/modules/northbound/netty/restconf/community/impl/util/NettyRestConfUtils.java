@@ -38,9 +38,9 @@ import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.restconf.api.query.PrettyPrintParam;
 import org.opendaylight.restconf.server.jaxrs.JaxRsEndpointConfiguration;
 import org.opendaylight.restconf.server.spi.ErrorTagMapping;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.http.server.rev240208.http.server.stack.grouping.transport.tcp.Tcp;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.http.server.rev240208.http.server.stack.grouping.transport.tcp.TcpBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.http.server.rev240208.http.server.stack.grouping.transport.tcp.tcp.TcpServerParametersBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.http.server.rev260204.http.server.listen.stack.grouping.transport.HttpOverTcp;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.http.server.rev260204.http.server.listen.stack.grouping.transport.HttpOverTcpBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.http.server.rev260204.http.server.listen.stack.grouping.transport.http.over.tcp.http.over.tcp.TcpServerParametersBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.tcp.server.rev241010.tcp.server.grouping.LocalBindBuilder;
@@ -122,15 +122,20 @@ public final class NettyRestConfUtils {
             new JerseyServletSupport());
     }
 
-    public static Tcp getTcpConfig(final IpAddress address, final Uint16 httpPort) {
-        return new TcpBuilder().setTcpServerParameters(
-            new TcpServerParametersBuilder()
-                .setLocalBind(BindingMap.of(new LocalBindBuilder()
-                    .setLocalAddress(address)
-                    .setLocalPort(new PortNumber(httpPort))
-                    .build()))
-                .build()).build();
+    public static HttpOverTcp serverTransportTcp(final IpAddress address, final Uint16 httpPort) {
+        final var tcpParams = new TcpServerParametersBuilder()
+            .setLocalBind(BindingMap.of(new LocalBindBuilder()
+                .setLocalAddress(address)
+                .setLocalPort(new PortNumber(httpPort))
+                .build()))
+            .build();
 
+        return new HttpOverTcpBuilder()
+            .setHttpOverTcp(new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.http.server.rev260204
+                .http.server.listen.stack.grouping.transport.http.over.tcp.HttpOverTcpBuilder()
+                .setTcpServerParameters(tcpParams)
+                .build())
+            .build();
     }
 
     /**
