@@ -30,7 +30,7 @@ class RcGnmiAppModuleTest {
     @Test
     void gnmiModuleSmokeTest() throws ConfigurationException {
         rcgnmiModule = new RcGnmiAppModule(RcGnmiAppModuleConfigUtils.loadDefaultConfig(),
-                Executors.newCachedThreadPool(), null);
+                Executors.newCachedThreadPool(), null, null);
         assertTrue(rcgnmiModule.initModules());
     }
 
@@ -38,7 +38,7 @@ class RcGnmiAppModuleTest {
     void gnmiModuleStartFailedTest() throws ConfigurationException {
         final var config = spy(RcGnmiAppModuleConfigUtils.loadDefaultConfig());
         when(config.getControllerConfig()).thenReturn(null);
-        rcgnmiModule = new RcGnmiAppModule(config, Executors.newCachedThreadPool(), null);
+        rcgnmiModule = new RcGnmiAppModule(config, Executors.newCachedThreadPool(), null, null);
         assertFalse(rcgnmiModule.initModules());
     }
 }
