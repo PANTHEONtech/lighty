@@ -264,7 +264,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.yangParserFactory = new DefaultYangParserFactory();
 
         //INIT schema context
-        this.snapshotResolver = new ModuleInfoSnapshotResolver("binding-dom-codec", yangParserFactory);
+        this.snapshotResolver = new ModuleInfoSnapshotResolver("binding-dom-codec",
+                new DefaultYangTextToIRSourceTransformer(), yangParserFactory);
         this.modelsRegistration = snapshotResolver.registerModuleInfos(modelSet);
         this.moduleInfoSnapshot = snapshotResolver.takeSnapshot();
         this.schemaService = new FixedDOMSchemaService(() -> moduleInfoSnapshot.modelContext(), sourceId -> {
