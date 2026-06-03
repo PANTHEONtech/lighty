@@ -157,7 +157,6 @@ public class Main {
         if (!restconfStartOk) {
             throw new ModuleStartupException("Community Restconf startup failed!");
         }
-        lightyController.getServices().withJaxRsEndpoint(restconf.getJaxRsEndpoint());
 
         this.openApi =
             new OpenApiLighty(restconfConfiguration, jettyServerBuilder, this.lightyController.getServices(), null);
