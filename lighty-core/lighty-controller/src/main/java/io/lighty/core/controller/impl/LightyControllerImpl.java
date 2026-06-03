@@ -122,9 +122,8 @@ import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.model.repo.api.MissingSchemaSourceException;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
-import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
-import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
-import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
+import org.opendaylight.yangtools.yang.parser.ri.DefaultYangParserFactory;
+import org.opendaylight.yangtools.yang.source.ir.DefaultYangTextToIRSourceTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -262,8 +261,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.datastoreSnapshotRestore = new DefaultDatastoreSnapshotRestore(this.restoreDirectoryPath);
 
         // INIT yang parser factory
-        final YangXPathParserFactory xpathFactory = new AntlrXPathParserFactory();
-        this.yangParserFactory = new DefaultYangParserFactory(xpathFactory);
+        this.yangParserFactory = new DefaultYangParserFactory();
 
         //INIT schema context
         this.snapshotResolver = new ModuleInfoSnapshotResolver("binding-dom-codec", yangParserFactory);
