@@ -27,6 +27,7 @@ import org.opendaylight.netconf.topology.impl.NetconfTopologyImpl;
 import org.opendaylight.netconf.topology.spi.NetconfClientConfigurationBuilderFactory;
 import org.opendaylight.netconf.topology.spi.NetconfClientConfigurationBuilderFactoryImpl;
 import org.opendaylight.netconf.topology.spi.NetconfTopologySchemaAssembler;
+import org.opendaylight.yangtools.yang.source.ir.DefaultYangTextToIRSourceTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +64,8 @@ public final class NetconfTopologyPlugin extends AbstractTopologyPlugin {
         final NetconfClientConfigurationBuilderFactory factory = new NetconfClientConfigurationBuilderFactoryImpl(
             encryptionService, credentialProvider, factoryProvider);
         final SchemaResourceManager schemaResourceManager =
-                new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
+                new DefaultSchemaResourceManager(lightyServices.getYangParserFactory(),
+                    new DefaultYangTextToIRSourceTransformer());
         netconfTopologyImpl = new NetconfTopologyImpl(topologyId, netconfFactory, timer, assembler,
                 schemaResourceManager, lightyServices.getBindingDataBroker(), lightyServices.getDOMMountPointService(),
                 encryptionService, factory, lightyServices.getRpcProviderService(),

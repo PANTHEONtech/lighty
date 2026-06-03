@@ -22,6 +22,7 @@ import org.opendaylight.netconf.topology.callhome.CallHomeMountStatusReporter;
 import org.opendaylight.netconf.topology.callhome.CallHomeSshAuthProvider;
 import org.opendaylight.netconf.topology.callhome.IetfZeroTouchCallHomeServerProvider;
 import org.opendaylight.netconf.topology.spi.NetconfTopologySchemaAssembler;
+import org.opendaylight.yangtools.yang.source.ir.DefaultYangTextToIRSourceTransformer;
 import org.slf4j.LoggerFactory;
 
 public class NetconfCallhomePlugin extends AbstractLightyModule {
@@ -39,7 +40,8 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
         super(executorService);
         final DefaultBaseNetconfSchemaProvider defaultBaseNetconfSchemas = new
                 DefaultBaseNetconfSchemaProvider(lightyServices.getYangParserFactory());
-        final SchemaResourceManager manager = new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
+        final SchemaResourceManager manager = new DefaultSchemaResourceManager(lightyServices.getYangParserFactory(),
+            new DefaultYangTextToIRSourceTransformer());
         mountStatusReporter = new CallHomeMountStatusReporter(
                 lightyServices.getBindingDataBroker());
         final CallHomeSshAuthProvider authProvider = new CallHomeMountSshAuthProvider(
