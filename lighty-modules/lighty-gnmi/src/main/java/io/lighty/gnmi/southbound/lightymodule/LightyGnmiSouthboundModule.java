@@ -8,6 +8,8 @@
 
 package io.lighty.gnmi.southbound.lightymodule;
 
+import static org.opendaylight.gnmi.southbound.yangmodule.util.GnmiConfigUtils.OPENCONFIG_YANG_MODELS;
+
 import io.lighty.core.controller.api.AbstractLightyModule;
 import io.lighty.core.controller.api.LightyServices;
 import java.nio.file.Path;
@@ -25,9 +27,10 @@ import org.opendaylight.gnmi.southbound.schema.loader.api.YangLoaderService;
 import org.opendaylight.gnmi.southbound.schema.loader.impl.ByClassPathYangLoaderService;
 import org.opendaylight.gnmi.southbound.schema.loader.impl.ByPathYangLoaderService;
 import org.opendaylight.gnmi.southbound.yangmodule.config.GnmiConfiguration;
-import org.opendaylight.yangtools.yang.parser.impl.DefaultReactors;
+import org.opendaylight.yangtools.yang.model.spi.source.YangTextToIRSourceTransformer;
+import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.opendaylight.yangtools.yang.parser.ri.DefaultYangParserFactory;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
+import org.opendaylight.yangtools.yang.source.ir.DefaultYangTextToIRSourceTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,19 +41,23 @@ public final class LightyGnmiSouthboundModule extends AbstractLightyModule {
     private final AAAEncryptionService encryptionService;
     private final GnmiConfiguration gnmiConfiguration;
     private final ExecutorService gnmiExecutorService;
-    private final CrossSourceStatementReactor customReactor;
+    private final YangParserFactory parserFactory;
+    private final YangTextToIRSourceTransformer textToIrTransformer;
     private GnmiSouthboundProvider gnmiProvider;
 
     public LightyGnmiSouthboundModule(final LightyServices services, final ExecutorService gnmiExecutorService,
                                 final AAAEncryptionService encryptionService,
                                 @Nullable final GnmiConfiguration configuration,
-                                @Nullable final CrossSourceStatementReactor customReactor) {
+                                @Nullable final YangParserFactory parserFactory,
+                                @Nullable  final YangTextToIRSourceTransformer textToIrTransformer) {
 
         this.lightyServices = Objects.requireNonNull(services);
         this.gnmiExecutorService = Objects.requireNonNull(gnmiExecutorService);
         this.encryptionService = encryptionService;
         this.gnmiConfiguration = configuration;
-        this.customReactor = customReactor != null ? customReactor : DefaultReactors.defaultReactor();
+        this.parserFactory = parserFactory != null ? parserFactory : new DefaultYangParserFactory();
+        this.textToIrTransformer = textToIrTransformer != null ? textToIrTransformer :
+            new DefaultYangTextToIRSourceTransformer();
     }
 
     @Override
@@ -60,7 +67,7 @@ public final class LightyGnmiSouthboundModule extends AbstractLightyModule {
         try {
             gnmiProvider = new GnmiSouthboundProvider(lightyServices.getDOMMountPointService(),
                     lightyServices.getBindingDataBroker(), lightyServices.getRpcProviderService(), gnmiExecutorService,
-                    initialLoaders, encryptionService, customReactor);
+                    initialLoaders, encryptionService, parserFactory, textToIrTransformer);
 
             gnmiProvider.init();
             return true;
@@ -90,13 +97,14 @@ public final class LightyGnmiSouthboundModule extends AbstractLightyModule {
         final List<YangLoaderService> services = new ArrayList<>();
         if (config != null) {
             config.getInitialYangsPaths().stream()
-                    .map(path -> new ByPathYangLoaderService(Path.of(path), new DefaultYangParserFactory()))
+                    .map(path -> new ByPathYangLoaderService(Path.of(path), parserFactory, textToIrTransformer))
                     .forEach(services::add);
             if (config.getYangModulesInfo() != null) {
-                services.add(new ByClassPathYangLoaderService(config.getYangModulesInfo(),
-                    new DefaultYangParserFactory()));
+                services.add(new ByClassPathYangLoaderService(config.getYangModulesInfo(), parserFactory,
+                    textToIrTransformer));
             }
         }
+        services.add(new ByClassPathYangLoaderService(OPENCONFIG_YANG_MODELS, parserFactory, textToIrTransformer));
         return services;
     }
 

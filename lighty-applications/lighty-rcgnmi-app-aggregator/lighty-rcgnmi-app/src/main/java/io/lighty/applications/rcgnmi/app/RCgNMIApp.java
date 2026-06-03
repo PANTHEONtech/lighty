@@ -22,7 +22,8 @@ import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
+import org.opendaylight.yangtools.yang.model.spi.source.YangTextToIRSourceTransformer;
+import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +76,7 @@ public class RCgNMIApp {
                 .getControllerConfig().getSchemaServiceConfig().getModels()));
         final ExecutorService executorService = SpecialExecutors.newBoundedCachedThreadPool(10,
                 100, "gnmi_executor", Logger.class);
-        rcgnmiLightyModule = createRgnmiAppModule(rgnmiModuleConfig, executorService, null);
+        rcgnmiLightyModule = createRgnmiAppModule(rgnmiModuleConfig, executorService, null, null);
 
         // Initialize RcGNMI modules
         if (rcgnmiLightyModule.initModules()) {
@@ -92,8 +93,9 @@ public class RCgNMIApp {
 
     public RcGnmiAppModule createRgnmiAppModule(final RcGnmiAppConfiguration rcGnmiAppConfiguration,
                                                 final ExecutorService gnmiExecutorService,
-                                                @Nullable final CrossSourceStatementReactor customReactor) {
-        return new RcGnmiAppModule(rcGnmiAppConfiguration, gnmiExecutorService, customReactor);
+                                                @Nullable final YangParserFactory parserfactory,
+                                                @Nullable final YangTextToIRSourceTransformer textTransformer) {
+        return new RcGnmiAppModule(rcGnmiAppConfiguration, gnmiExecutorService, parserfactory, textTransformer);
     }
 
     public void stop() {
