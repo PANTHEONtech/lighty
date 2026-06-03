@@ -26,6 +26,7 @@ import org.opendaylight.netconf.topology.singleton.impl.NetconfTopologyManager;
 import org.opendaylight.netconf.topology.spi.NetconfClientConfigurationBuilderFactory;
 import org.opendaylight.netconf.topology.spi.NetconfClientConfigurationBuilderFactoryImpl;
 import org.opendaylight.netconf.topology.spi.NetconfTopologySchemaAssembler;
+import org.opendaylight.yangtools.yang.source.ir.DefaultYangTextToIRSourceTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +51,8 @@ public final class NetconfClusteredTopologyPlugin extends AbstractTopologyPlugin
         final var defaultBaseNetconfSchemas =
                 new DefaultBaseNetconfSchemaProvider(lightyServices.getYangParserFactory());
         final SchemaResourceManager schemaResourceManager
-                = new DefaultSchemaResourceManager(lightyServices.getYangParserFactory());
+                = new DefaultSchemaResourceManager(lightyServices.getYangParserFactory(),
+                    new DefaultYangTextToIRSourceTransformer());
         final var keystoreService = new DefaultNetconfKeystoreService(lightyServices.getBindingDataBroker(),
                 lightyServices.getRpcProviderService(), lightyServices.getClusterSingletonServiceProvider(),
                 encryptionService);
