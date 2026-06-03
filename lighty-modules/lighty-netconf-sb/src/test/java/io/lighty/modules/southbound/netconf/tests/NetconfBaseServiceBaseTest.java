@@ -24,8 +24,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.MountPointContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
-import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
-import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
+import org.opendaylight.yangtools.yang.parser.ri.DefaultYangParserFactory;
 import org.w3c.dom.Element;
 
 abstract class NetconfBaseServiceBaseTest {
@@ -88,8 +87,8 @@ abstract class NetconfBaseServiceBaseTest {
     }
 
     private static EffectiveModelContext getEffectiveModelContext(final List<YangModuleInfo> moduleInfos)
-        final DefaultYangParserFactory yangParserFactory = new DefaultYangParserFactory(new AntlrXPathParserFactory());
             throws YangParserException, IOException {
+        final DefaultYangParserFactory yangParserFactory = new DefaultYangParserFactory();
         ModuleInfoSnapshotBuilder moduleInfoSnapshotBuilder = new ModuleInfoSnapshotBuilder(yangParserFactory);
         moduleInfoSnapshotBuilder.add(moduleInfos);
         return moduleInfoSnapshotBuilder.build().modelContext();
