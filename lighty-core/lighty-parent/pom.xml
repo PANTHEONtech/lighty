@@ -27,11 +27,6 @@
         Parent pom for code artifacts using Lighty.io.
     </description>
 
-    <properties>
-        <!-- Overrides Spring Boot slf4j and log4j2 dependency version -->
-        <log4j2.version>2.25.4</log4j2.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
