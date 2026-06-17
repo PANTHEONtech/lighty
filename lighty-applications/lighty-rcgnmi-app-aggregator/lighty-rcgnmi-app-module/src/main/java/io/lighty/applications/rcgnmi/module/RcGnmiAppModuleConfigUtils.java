@@ -62,13 +62,20 @@ public final class RcGnmiAppModuleConfigUtils {
 
     public static RcGnmiAppConfiguration loadConfiguration(final Path path) throws ConfigurationException, IOException {
         LOG.debug("Loading lighty.io controller module configuration...");
-        final ControllerConfiguration controllerConfig = ControllerConfigUtils
-                .getConfiguration(Files.newInputStream(path));
+        final ControllerConfiguration controllerConfig;
+        try (InputStream is = Files.newInputStream(path)) {
+            controllerConfig = ControllerConfigUtils.getConfiguration(is);
+        }
+
         final Config pekkoConfig = controllerConfig.getActorSystemConfig().getConfig().resolve();
         controllerConfig.getActorSystemConfig().setConfig(pekkoConfig);
+
         LOG.debug("Loading lighty.io RESTCONF module configuration...");
-        final RestConfConfiguration restconfConfig = RestConfConfigUtils
-                .getRestConfConfiguration(Files.newInputStream(path));
+        final RestConfConfiguration restconfConfig;
+        try (InputStream is = Files.newInputStream(path)) {
+            restconfConfig = RestConfConfigUtils.getRestConfConfiguration(is);
+        }
+
         final RestConfConfiguration defaultRestconfConfig = RestConfConfigUtils.getDefaultRestConfConfiguration();
         if (restconfConfig.getInetAddress().equals(defaultRestconfConfig.getInetAddress())) {
             // by default listen on any IP address (0.0.0.0) not only on loopback
@@ -76,18 +83,21 @@ public final class RcGnmiAppModuleConfigUtils {
         }
 
         LOG.debug("Loading lighty.io gNMI module configuration...");
-        var gnmiConfiguration = getGnmiConfiguration(Files.newInputStream(path));
-
+        GnmiConfiguration gnmiConfiguration;
+        try (InputStream is = Files.newInputStream(path)) {
+            gnmiConfiguration = getGnmiConfiguration(is);
+        }
         if (gnmiConfiguration == null) {
             gnmiConfiguration = new GnmiConfiguration();
         }
-
         if (gnmiConfiguration.getYangModulesInfo() == null || gnmiConfiguration.getYangModulesInfo().isEmpty()) {
             gnmiConfiguration.setYangModulesInfo(controllerConfig.getSchemaServiceConfig().getModels());
         }
-
         LOG.debug("Loading lighty.io app modules configuration...");
-        final ModulesConfig modulesConfig = ModulesConfig.getModulesConfig(Files.newInputStream(path));
+        final ModulesConfig modulesConfig;
+        try (InputStream is = Files.newInputStream(path)) {
+            modulesConfig = ModulesConfig.getModulesConfig(is);
+        }
         return new RcGnmiAppConfiguration(controllerConfig, restconfConfig, gnmiConfiguration, modulesConfig);
     }
 
