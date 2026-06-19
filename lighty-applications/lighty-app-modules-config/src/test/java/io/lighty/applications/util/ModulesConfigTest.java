@@ -22,7 +22,7 @@ class ModulesConfigTest {
         final var config = ModulesConfig.getModulesConfig(this.getClass().getClassLoader()
                 .getResourceAsStream("sampleModulesConfig.json"));
 
-        assertEquals(config.getModuleTimeoutSeconds(), 180);
+        assertEquals(180, config.getModuleTimeoutSeconds());
     }
 
     @Test
@@ -30,7 +30,7 @@ class ModulesConfigTest {
         final var config = ModulesConfig.getModulesConfig(this.getClass().getClassLoader()
                 .getResourceAsStream("missingModulesConfig.json"));
 
-        assertEquals(config.getModuleTimeoutSeconds(), 60);
+        assertEquals(60, config.getModuleTimeoutSeconds());
     }
 
     @Test
