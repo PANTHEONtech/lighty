@@ -30,13 +30,13 @@ class LightyControllerMountPointTest extends LightyControllerTestBase {
         domMountPointService.registerProvisionListener(new DOMMountPointListener() {
             @Override
             public void onMountPointCreated(DOMMountPoint mountPoint) {
-                Assertions.assertEquals(mountPoint.getIdentifier(), testYangIID);
+                Assertions.assertEquals(testYangIID, mountPoint.getIdentifier());
                 listenerMethodsCalled[0]++;
             }
 
             @Override
             public void onMountPointRemoved(final YangInstanceIdentifier path) {
-                Assertions.assertEquals(path, testYangIID);
+                Assertions.assertEquals(testYangIID, path);
                 listenerMethodsCalled[1]++;
             }
         });

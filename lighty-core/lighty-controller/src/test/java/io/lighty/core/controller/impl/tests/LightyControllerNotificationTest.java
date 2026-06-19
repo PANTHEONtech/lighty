@@ -45,7 +45,7 @@ class LightyControllerNotificationTest extends LightyControllerTestBase {
         final DOMNotificationService domNotificationService = lightyController.getServices()
                 .getDOMNotificationService();
         domNotificationService.registerNotificationListener(notification -> {
-            Assertions.assertEquals(notification, testNotification);
+            Assertions.assertEquals(testNotification, notification);
             listenerMethodsCalled[0]++;
         }, absolutePath);
 
