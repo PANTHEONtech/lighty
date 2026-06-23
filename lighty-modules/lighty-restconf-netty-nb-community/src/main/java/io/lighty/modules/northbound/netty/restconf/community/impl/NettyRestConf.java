@@ -32,10 +32,10 @@ import org.opendaylight.restconf.server.mdsal.MdsalDatabindProvider;
 import org.opendaylight.restconf.server.mdsal.MdsalRestconfServer;
 import org.opendaylight.restconf.server.mdsal.MdsalRestconfStreamRegistry;
 import org.opendaylight.restconf.server.spi.ErrorTagMapping;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.http.server.rev240208.http.server.stack.grouping.transport.TcpBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IetfInetUtil;
 import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint32;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,13 +81,18 @@ public class NettyRestConf extends AbstractLightyModule {
         server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService, domActionService,
             domMountPointService);
 
-        final var tcpConfig = NettyRestConfUtils.getTcpConfig(
+        final var transport = NettyRestConfUtils.serverTransportTcp(
             IetfInetUtil.ipAddressFor(inetAddress), Uint16.valueOf(httpPort));
         final PrincipalService service = new AAAShiroPrincipalService((AAAShiroWebEnvironment) webEnvironment);
-        final var serverStackGrouping = new HttpServerStackConfiguration(new TcpBuilder().setTcp(tcpConfig).build());
-        final NettyEndpointConfiguration configuration = new NettyEndpointConfiguration(ErrorTagMapping.RFC8040,
-            PrettyPrintParam.FALSE, Uint16.valueOf(0), Uint32.valueOf(10000), restconfServletContextPath,
-            MessageEncoding.JSON, serverStackGrouping);
+        final var serverStackGrouping = new HttpServerStackConfiguration(transport);
+
+        final var configuration = new NettyEndpointConfiguration(ErrorTagMapping.RFC8040, PrettyPrintParam.TRUE,
+            Uint16.ZERO, Uint32.valueOf(10_000), "restconf", MessageEncoding.JSON, serverStackGrouping,
+            Uint32.valueOf(256 * 1024), Uint32.valueOf(16 * 1024), Uint32.valueOf(32 * 1024),
+            Uint32.valueOf(64 * 1024), "h3=\":8443\"; ma=3600", Uint32.valueOf(3600),
+            Uint64.valueOf(4L * 1024 * 1024),
+            Uint64.valueOf(256L * 1024), Uint32.valueOf(100));
+
         final ClusterSingletonServiceProvider cssProvider = SingletonService -> {
             SingletonService.instantiateServiceInstance();
             return SingletonService::closeServiceInstance;

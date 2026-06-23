@@ -69,7 +69,7 @@ public final class YangModulesTool {
         }
         LOG.info(TOP_LEVEL_MODELS_LIST, topLevelModels.size());
         for (final YangModuleInfo yangModuleInfo: topLevelModels) {
-            System.out.println(yangModuleInfo.getClass().getCanonicalName() + ".getInstance(),");
+            System.out.println(yangModuleInfo.getClass().getCanonicalName() + ".INSTANCE,");
         }
     }
 

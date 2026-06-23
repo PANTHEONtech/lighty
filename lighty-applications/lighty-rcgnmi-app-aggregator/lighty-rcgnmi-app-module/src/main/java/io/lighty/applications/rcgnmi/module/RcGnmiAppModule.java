@@ -15,9 +15,7 @@ import io.lighty.core.controller.api.LightyServices;
 import io.lighty.core.controller.impl.LightyControllerBuilder;
 import io.lighty.core.controller.impl.config.ConfigurationException;
 import io.lighty.core.controller.impl.config.ControllerConfiguration;
-import io.lighty.gnmi.southbound.lightymodule.GnmiSouthboundModule;
-import io.lighty.gnmi.southbound.lightymodule.GnmiSouthboundModuleBuilder;
-import io.lighty.gnmi.southbound.lightymodule.config.GnmiConfiguration;
+import io.lighty.gnmi.southbound.lightymodule.LightyGnmiSouthboundModule;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConf;
 import io.lighty.modules.northbound.restconf.community.impl.CommunityRestConfBuilder;
 import io.lighty.modules.northbound.restconf.community.impl.config.RestConfConfiguration;
@@ -43,9 +41,11 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.aaa.encrypt.AAAEncryptionService;
+import org.opendaylight.gnmi.southbound.yangmodule.config.GnmiConfiguration;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev240202.AaaEncryptServiceConfig;
 import org.opendaylight.yang.gen.v1.config.aaa.authn.encrypt.service.config.rev240202.AaaEncryptServiceConfigBuilder;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
+import org.opendaylight.yangtools.yang.model.spi.source.YangTextToIRSourceTransformer;
+import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,19 +58,22 @@ public class RcGnmiAppModule {
     private final long lightyModuleTimeout;
     private final RcGnmiAppConfiguration appModuleConfig;
     private final ExecutorService gnmiExecutorService;
-    private final CrossSourceStatementReactor customReactor;
+    private final YangParserFactory parserFactory;
+    private final YangTextToIRSourceTransformer yangTextToIRSourceTransformer;
     private LightyController lightyController;
     private CommunityRestConf lightyRestconf;
-    private GnmiSouthboundModule gnmiSouthboundModule;
+    private LightyGnmiSouthboundModule gnmiSouthboundModule;
 
     public RcGnmiAppModule(final RcGnmiAppConfiguration appModuleConfig,
                            final ExecutorService gnmiExecutorService,
-                           @Nullable final CrossSourceStatementReactor customReactor) {
+                           @Nullable final YangParserFactory parserFactory,
+                           @Nullable final YangTextToIRSourceTransformer yangTextToIRSourceTransformer) {
         LOG.info("Creating instance of RgNMI lighty.io module...");
         this.appModuleConfig = Objects.requireNonNull(appModuleConfig);
         this.gnmiExecutorService = Objects.requireNonNull(gnmiExecutorService);
         this.lightyModuleTimeout = appModuleConfig.getModulesConfig().getModuleTimeoutSeconds();
-        this.customReactor = customReactor;
+        this.parserFactory = parserFactory;
+        this.yangTextToIRSourceTransformer = yangTextToIRSourceTransformer;
         LOG.info("Instance of RCgNMI lighty.io module created!");
     }
 
@@ -82,13 +85,12 @@ public class RcGnmiAppModule {
 
             this.lightyRestconf = initRestconf(this.appModuleConfig.getRestconfConfig(),
                     this.lightyController.getServices());
-            lightyController.getServices().withJaxRsEndpoint(lightyRestconf.getJaxRsEndpoint());
             startAndWaitLightyModule(this.lightyRestconf);
 
             final AAAEncryptionService encryptionService = createEncryptionServiceWithErrorHandling();
             this.gnmiSouthboundModule = initGnmiModule(this.lightyController.getServices(),
                     this.gnmiExecutorService, this.appModuleConfig.getGnmiConfiguration(), encryptionService,
-                    this.customReactor);
+                    this.parserFactory, this.yangTextToIRSourceTransformer);
             startAndWaitLightyModule(this.gnmiSouthboundModule);
 
         } catch (RcGnmiAppException e) {
@@ -113,19 +115,15 @@ public class RcGnmiAppModule {
         return CommunityRestConfBuilder.from(conf).build();
     }
 
-    private GnmiSouthboundModule initGnmiModule(final LightyServices services,
+    private LightyGnmiSouthboundModule initGnmiModule(final LightyServices services,
                                                 final ExecutorService gnmiExecService,
                                                 final GnmiConfiguration gnmiConfiguration,
                                                 final AAAEncryptionService encryptionService,
-                                                final CrossSourceStatementReactor reactor) {
+                                                final YangParserFactory parserfactory,
+                                                final YangTextToIRSourceTransformer textToIRSourceTransformer) {
 
-        return new GnmiSouthboundModuleBuilder()
-                .withConfig(gnmiConfiguration)
-                .withLightyServices(services)
-                .withExecutorService(gnmiExecService)
-                .withEncryptionService(encryptionService)
-                .withReactor(reactor)
-                .build();
+        return new LightyGnmiSouthboundModule(services, gnmiExecService, encryptionService, gnmiConfiguration,
+            parserfactory, textToIRSourceTransformer);
     }
 
     private void startAndWaitLightyModule(final LightyModule lightyModule) throws RcGnmiAppException {

@@ -45,10 +45,10 @@ data:
             { "usedBy": "RESTCONF", "name": "sal-remote-augment", "revision": "2023-11-03", "nameSpace": "urn:sal:restconf:event:subscription"},
             { "usedBy": "RESTCONF", "name": "ietf-yang-library", "revision": "2019-01-04", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-yang-library"},
             { "usedBy": "RESTCONF", "name": "ietf-restconf", "revision": "2017-01-26", "nameSpace": "urn:ietf:params:xml:ns:yang:ietf-restconf"},
-            { "usedBy": "GNMI", "name": "gnmi-topology", "revision": "2021-03-16", "nameSpace": "urn:lighty:gnmi:topology"},
-            { "usedBy": "GNMI", "name": "gnmi-yang-storage", "revision": "2021-03-31", "nameSpace": "urn:lighty:gnmi:yang:storage"},
-            { "usedBy": "GNMI", "name": "gnmi-certificate-storage", "revision": "2021-05-04", "nameSpace": "urn:lighty:gnmi:certificate:storage"},
-            { "usedBy": "GNMI", "name": "gnmi-force-capabilities", "revision": "2021-07-02", "nameSpace": "urn:lighty:gnmi:force:capabilities"},
+            { "usedBy": "GNMI", "name": "gnmi-topology", "revision": "2021-03-16", "nameSpace": "urn:opendaylight:gnmi:topology"},
+            { "usedBy": "GNMI", "name": "gnmi-yang-storage", "revision": "2021-03-31", "nameSpace": "urn:opendaylight:gnmi:yang:storage"},
+            { "usedBy": "GNMI", "name": "gnmi-certificate-storage", "revision": "2021-05-04", "nameSpace": "urn:opendaylight:gnmi:certificate:storage"},
+            { "usedBy": "GNMI", "name": "gnmi-force-capabilities", "revision": "2021-07-02", "nameSpace": "urn:opendaylight:gnmi:force:capabilities"},
             { "usedBy": "CLUSTER", "name": "netconf-clustered-topology-config", "revision": "2017-04-19", "nameSpace": "urn:opendaylight:netconf:topology:singleton:config"}
           ]
         }

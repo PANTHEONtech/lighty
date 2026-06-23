@@ -44,10 +44,7 @@ ls -1 yangs
 #Run simulator for testing purpose
 printLine
 echo -e "-- Starting gNMI simulator device --\n"
-java -jar ${GITHUB_WORKSPACE}/lighty-modules/lighty-gnmi/lighty-gnmi-device-simulator/target/lighty-gnmi-device-simulator-24.0.0-SNAPSHOT.jar -c ./simulator/example_config.json > /dev/null 2>&1 &
-
-#Add yangs into controller through REST rpc
-./add_yangs_via_rpc.sh
+java -jar ${GITHUB_WORKSPACE}/lighty-applications/lighty-rcgnmi-app-aggregator/lighty-gnmi-device-simulator/target/lighty-gnmi-device-simulator-24.0.0-SNAPSHOT.jar -c ./simulator/example_config.json > /dev/null 2>&1 &
 
 # check if simulator has opened port
 for i in {1..5} ; do
@@ -79,6 +76,21 @@ assertNodeConnected() {
     echo "FAILURE"
   fi
 }
+
+# 1. WAIT FOR CONTROLLER TO WAKE UP
+# Service healthcheck (:30888/restconf/operations)
+for i in {1..30}; do
+  status=$(curl -o /dev/null -s -w "%{http_code}\n" --user admin:admin -H "Content-Type: application/json" --insecure http://$MINIKUBE_IP:$CONTROLLER_PORT/restconf/operations || echo "000")
+  if [[ "$status" == "200" ]]; then
+    echo "Controller is UP!"
+    break
+  fi
+  sleep 2
+done
+
+# 2. NOW THAT CONTROLLER IS UP, UPLOAD THE YANG MODELS
+printLine
+./add_yangs_via_rpc.sh
 
 printLine
 echo -e "-- Lighty-rcgnmi-app curl tests --\n"

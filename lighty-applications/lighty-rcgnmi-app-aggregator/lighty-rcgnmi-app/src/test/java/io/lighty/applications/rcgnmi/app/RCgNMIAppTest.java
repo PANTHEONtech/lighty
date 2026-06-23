@@ -25,9 +25,9 @@ class RCgNMIAppTest {
         final RcGnmiAppModule appModule = Mockito.mock(RcGnmiAppModule.class);
         doReturn(true).when(appModule).initModules();
         doReturn(true).when(appModule).close();
-        doReturn(appModule).when(app).createRgnmiAppModule(any(), any(), any());
+        doReturn(appModule).when(app).createRgnmiAppModule(any(), any(), any(), any());
         app.start(new String[]{});
-        verify(app, times(1)).createRgnmiAppModule(any(), any(), any());
+        verify(app, times(1)).createRgnmiAppModule(any(), any(), any(), any());
     }
 
     @Test
@@ -36,15 +36,15 @@ class RCgNMIAppTest {
         final RcGnmiAppModule appModule = Mockito.mock(RcGnmiAppModule.class);
         doReturn(true).when(appModule).initModules();
         doReturn(true).when(appModule).close();
-        doReturn(appModule).when(app).createRgnmiAppModule(any(), any(), any());
+        doReturn(appModule).when(app).createRgnmiAppModule(any(), any(), any(), any());
         app.start(new String[]{"-c", "src/main/resources/example-config/example_config.json"});
-        verify(app, times(1)).createRgnmiAppModule(any(), any(), any());
+        verify(app, times(1)).createRgnmiAppModule(any(), any(), any(), any());
     }
 
     @Test
     void testStartWithConfigFileNoSuchFile() {
         final RCgNMIApp app = Mockito.spy(new RCgNMIApp());
         app.start(new String[]{"-c", "no_config.json"});
-        verify(app, never()).createRgnmiAppModule(any(), any(), any());
+        verify(app, never()).createRgnmiAppModule(any(), any(), any(), any());
     }
 }

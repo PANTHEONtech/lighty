@@ -83,7 +83,6 @@ public class RncLightyModule {
             }
 
             if (rncModuleConfig.getServerConfig().isEnableOpenApi()) {
-                lightyController.getServices().withJaxRsEndpoint(lightyRestconf.getJaxRsEndpoint());
                 this.openApi = initOpenApiLighty(this.rncModuleConfig.getRestconfConfig(),
                                                  this.jettyServerBuilder,
                                                  this.lightyController.getServices());

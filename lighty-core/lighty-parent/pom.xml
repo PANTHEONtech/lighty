@@ -27,12 +27,6 @@
         Parent pom for code artifacts using Lighty.io.
     </description>
 
-    <properties>
-        <!-- Overrides Spring Boot slf4j and log4j2 dependency version -->
-        <slf4j.version>2.0.17</slf4j.version>
-        <log4j2.version>2.25.4</log4j2.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -43,22 +37,18 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j2-impl</artifactId>
-            <version>${log4j2.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>${log4j2.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>${log4j2.version}</version>
         </dependency>
         <dependency>
             <groupId>io.lighty.resources</groupId>
@@ -202,7 +192,7 @@
                         <dependency>
                             <groupId>org.opendaylight.odlparent</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>14.1.7</version>
+                            <version>14.3.1</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -219,18 +209,7 @@
                         <dependency>
                             <groupId>org.opendaylight.odlparent</groupId>
                             <artifactId>spotbugs</artifactId>
-                            <version>14.1.7</version>
-                        </dependency>
-                        <!-- The SpotBugs Maven plugin uses SLF4J-2 -->
-                        <dependency>
-                            <groupId>org.slf4j</groupId>
-                            <artifactId>slf4j-api</artifactId>
-                            <version>${slf4j.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.slf4j</groupId>
-                            <artifactId>slf4j-simple</artifactId>
-                            <version>${slf4j.version}</version>
+                            <version>14.3.1</version>
                         </dependency>
                     </dependencies>
                 </plugin>

@@ -106,7 +106,6 @@ import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
 import org.opendaylight.mdsal.singleton.impl.EOSClusterSingletonServiceProvider;
 import org.opendaylight.netconf.yanglib.writer.YangLibraryWriterSingleton;
 import org.opendaylight.raft.spi.DefaultRaftPolicyResolver;
-import org.opendaylight.restconf.server.jaxrs.JaxRsEndpoint;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.yangtools.binding.data.codec.impl.BindingCodecContext;
 import org.opendaylight.yangtools.binding.data.codec.impl.di.DefaultDynamicBindingDataCodec;
@@ -122,9 +121,8 @@ import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.model.repo.api.MissingSchemaSourceException;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
-import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
-import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
-import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
+import org.opendaylight.yangtools.yang.parser.ri.DefaultYangParserFactory;
+import org.opendaylight.yangtools.yang.source.ir.DefaultYangTextToIRSourceTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -191,8 +189,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private Optional<InitialConfigData> initialConfigData;
     private RpcService rpcConsumerRegistry;
     private YangLibraryWriterSingleton yangLibraryWriter;
-    private JaxRsEndpoint jaxRsEndpoint;
-
 
     public LightyControllerImpl(final ExecutorService executorService, final Config actorSystemConfig,
                                 final ClassLoader actorSystemClassLoader,
@@ -262,11 +258,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         this.datastoreSnapshotRestore = new DefaultDatastoreSnapshotRestore(this.restoreDirectoryPath);
 
         // INIT yang parser factory
-        final YangXPathParserFactory xpathFactory = new AntlrXPathParserFactory();
-        this.yangParserFactory = new DefaultYangParserFactory(xpathFactory);
+        this.yangParserFactory = new DefaultYangParserFactory();
 
         //INIT schema context
-        this.snapshotResolver = new ModuleInfoSnapshotResolver("binding-dom-codec", yangParserFactory);
+        this.snapshotResolver = new ModuleInfoSnapshotResolver("binding-dom-codec",
+                new DefaultYangTextToIRSourceTransformer(), yangParserFactory);
         this.modelsRegistration = snapshotResolver.registerModuleInfos(modelSet);
         this.moduleInfoSnapshot = snapshotResolver.takeSnapshot();
         this.schemaService = new FixedDOMSchemaService(() -> moduleInfoSnapshot.modelContext(), sourceId -> {
@@ -626,16 +622,6 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     @Override
     public RpcService getRpcConsumerRegistry() {
         return rpcConsumerRegistry;
-    }
-
-    @Override
-    public JaxRsEndpoint getJaxRsEndpoint() {
-        return this.jaxRsEndpoint;
-    }
-
-    @Override
-    public void withJaxRsEndpoint(JaxRsEndpoint endpoint) {
-        this.jaxRsEndpoint = endpoint;
     }
 
     @Override
