@@ -8,6 +8,7 @@
 
 package io.lighty.modules.southbound.netconf.tests;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,8 +24,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.MountPointContext;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
-import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
-import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
+import org.opendaylight.yangtools.yang.parser.ri.DefaultYangParserFactory;
 import org.w3c.dom.Element;
 
 abstract class NetconfBaseServiceBaseTest {
@@ -34,24 +34,24 @@ abstract class NetconfBaseServiceBaseTest {
     protected static BaseNetconfSchema baseSchema;
 
     @BeforeAll
-    static void beforeTest() throws YangParserException {
+    static void beforeTest() throws YangParserException, IOException {
         final Set<YangModuleInfo> yangModuleInfos = Set.of(
                 org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.datastores.rev180214
-                        .YangModuleInfoImpl.getInstance(),
+                        .YangModuleInfoImpl.INSTANCE,
                 org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.yang.metadata.rev160805
-                        .YangModuleInfoImpl.getInstance(),
+                        .YangModuleInfoImpl.INSTANCE,
                 org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.origin.rev180214
-                        .YangModuleInfoImpl.getInstance(),
+                        .YangModuleInfoImpl.INSTANCE,
                 org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601
-                        .YangModuleInfoImpl.getInstance(),
+                        .YangModuleInfoImpl.INSTANCE,
                 org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.with.defaults.rev110601
-                        .YangModuleInfoImpl.getInstance(),
+                        .YangModuleInfoImpl.INSTANCE,
                 org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.monitoring.rev101004
-                        .YangModuleInfoImpl.getInstance(),
+                        .YangModuleInfoImpl.INSTANCE,
                 org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.nmda.rev190107
-                        .YangModuleInfoImpl.getInstance(),
+                        .YangModuleInfoImpl.INSTANCE,
                 org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220
-                        .YangModuleInfoImpl.getInstance()
+                        .YangModuleInfoImpl.INSTANCE
         );
         effectiveModelContext = getEffectiveModelContext(new ArrayList<>(yangModuleInfos));
         mountContext = MountPointContext.of(effectiveModelContext);
@@ -87,8 +87,8 @@ abstract class NetconfBaseServiceBaseTest {
     }
 
     private static EffectiveModelContext getEffectiveModelContext(final List<YangModuleInfo> moduleInfos)
-            throws YangParserException {
-        final DefaultYangParserFactory yangParserFactory = new DefaultYangParserFactory(new AntlrXPathParserFactory());
+            throws YangParserException, IOException {
+        final DefaultYangParserFactory yangParserFactory = new DefaultYangParserFactory();
         ModuleInfoSnapshotBuilder moduleInfoSnapshotBuilder = new ModuleInfoSnapshotBuilder(yangParserFactory);
         moduleInfoSnapshotBuilder.add(moduleInfos);
         return moduleInfoSnapshotBuilder.build().modelContext();

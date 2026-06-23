@@ -35,7 +35,6 @@ import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
-import org.opendaylight.restconf.server.jaxrs.JaxRsEndpoint;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.yangtools.binding.data.codec.impl.di.DefaultDynamicBindingDataCodec;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
@@ -113,9 +112,5 @@ public interface LightyServices extends LightyModuleRegistryService {
     ActionService getActionService();
 
     RpcService getRpcConsumerRegistry();
-
-    JaxRsEndpoint getJaxRsEndpoint();
-
-    void withJaxRsEndpoint(JaxRsEndpoint endpoint);
 
 }

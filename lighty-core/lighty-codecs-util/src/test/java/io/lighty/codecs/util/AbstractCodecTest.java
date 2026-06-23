@@ -43,9 +43,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.spi.node.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
-import org.opendaylight.yangtools.yang.parser.impl.DefaultYangParserFactory;
-import org.opendaylight.yangtools.yang.xpath.api.YangXPathParserFactory;
-import org.opendaylight.yangtools.yang.xpath.impl.AntlrXPathParserFactory;
+import org.opendaylight.yangtools.yang.parser.ri.DefaultYangParserFactory;
 import org.xml.sax.SAXException;
 
 abstract class AbstractCodecTest {
@@ -68,7 +66,7 @@ abstract class AbstractCodecTest {
     protected final BindingCodecContext bindingCodecContext;
     protected final EffectiveModelContext effectiveModelContext;
 
-    AbstractCodecTest() throws YangParserException {
+    AbstractCodecTest() throws YangParserException, IOException {
         this.bindingCodecContext = createCodecContext(loadModuleInfos());
         this.effectiveModelContext = bindingCodecContext.getRuntimeContext().modelContext();
 
@@ -82,9 +80,8 @@ abstract class AbstractCodecTest {
     }
 
     private static BindingCodecContext createCodecContext(final List<YangModuleInfo> moduleInfos)
-            throws YangParserException {
-        final YangXPathParserFactory xpathFactory = new AntlrXPathParserFactory();
-        final DefaultYangParserFactory defaultYangParserFactory = new DefaultYangParserFactory(xpathFactory);
+        throws YangParserException, IOException {
+        final DefaultYangParserFactory defaultYangParserFactory = new DefaultYangParserFactory();
         final DefaultBindingRuntimeGenerator bindingRuntimeGenerator = new DefaultBindingRuntimeGenerator();
         final ModuleInfoSnapshotBuilder moduleInfoSnapshotBuilder = new ModuleInfoSnapshotBuilder(
                 defaultYangParserFactory);

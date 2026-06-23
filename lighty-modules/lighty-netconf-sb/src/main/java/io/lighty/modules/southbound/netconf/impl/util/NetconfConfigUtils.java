@@ -40,23 +40,23 @@ public final class NetconfConfigUtils {
     public static final String NETCONF_CONFIG_ROOT_ELEMENT_NAME = "netconf";
     public static final Set<YangModuleInfo> NETCONF_TOPOLOGY_MODELS = Set.of(
             org.opendaylight.yang.svc.v1.urn.opendaylight.netconf.keystore.rev240708
-                    .YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.svc.v1.urn.opendaylight.netconf.node.topology.rev251103
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
+            org.opendaylight.yang.svc.v1.urn.opendaylight.netconf.node.topology.rev251205
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.netconf.node.optional.rev221225
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.opendaylight.yang.extension.yang.ext.rev130709
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.netconf.base._1._0.rev110601
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.monitoring.rev101004
-                    .YangModuleInfoImpl.getInstance(),
+                    .YangModuleInfoImpl.INSTANCE,
             org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.yang.library.rev190104
-                    .YangModuleInfoImpl.getInstance()
+                    .YangModuleInfoImpl.INSTANCE
     );
     public static final Set<YangModuleInfo> NETCONF_CALLHOME_MODELS = Set.of(
         org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.netconf.callhome.server.rev240129
-                    .YangModuleInfoImpl.getInstance()
+                    .YangModuleInfoImpl.INSTANCE
     );
     private static final Logger LOG = LoggerFactory.getLogger(NetconfConfigUtils.class);
     private static final SecureRandom RANDOM = new SecureRandom();

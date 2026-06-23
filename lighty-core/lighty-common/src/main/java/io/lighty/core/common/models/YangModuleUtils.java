@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.opendaylight.yangtools.binding.meta.YangModelBindingProvider;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.slf4j.Logger;
@@ -88,15 +87,20 @@ public final class YangModuleUtils {
     public static Set<YangModuleInfo> getModelsFromClasspath(final Set<ModuleId> filter) {
         Map<ModuleId, YangModuleInfo> resolvedModules = new HashMap<>();
         ServiceLoader<YangModelBindingProvider> yangProviderLoader = ServiceLoader.load(YangModelBindingProvider.class);
-        for (ModuleId moduleId: filter) {
-            Set<YangModuleInfo> filteredSet = filterYangModelBindingProviders(moduleId, yangProviderLoader);
-            for (YangModuleInfo yangModuleInfo : filteredSet) {
-                resolvedModules.put(ModuleId.from(yangModuleInfo), yangModuleInfo);
-                LOG.info(ADDING_MODULE_INTO_KNOWN_MODULES, yangModuleInfo);
-                addDependencies(resolvedModules, yangModuleInfo.getImportedModules());
+        final var allProviders = new HashMap<>();
+        for (YangModelBindingProvider provider : yangProviderLoader) {
+            YangModuleInfo info = provider.getModuleInfo();
+            allProviders.put(ModuleId.from(info), info);
+        }
+        for (ModuleId moduleId : filter) {
+            YangModuleInfo info = (YangModuleInfo) allProviders.get(moduleId);
+            if (info != null) {
+                resolvedModules.put(ModuleId.from(info), info);
+                LOG.info(ADDING_MODULE_INTO_KNOWN_MODULES, info);
+                addDependencies(resolvedModules, info.getImportedModules());
             }
         }
-        return Collections.unmodifiableSet(resolvedModules.values().stream().collect(Collectors.toSet()));
+        return Set.copyOf(resolvedModules.values());
     }
 
 
@@ -107,17 +111,6 @@ public final class YangModuleUtils {
             LOG.info(ADDING_MODULE_INTO_KNOWN_MODULES, yangModuleInfo);
             addDependencies(resolvedModules, yangModuleInfo.getImportedModules());
         }
-    }
-
-    private static Set<YangModuleInfo> filterYangModelBindingProviders(final ModuleId moduleId,
-            final ServiceLoader<YangModelBindingProvider> yangProviderLoader) {
-        Set<YangModuleInfo> filteredSet = new HashSet<>();
-        for (YangModelBindingProvider yangModelBindingProvider : yangProviderLoader) {
-            if (moduleId.getQName().equals(yangModelBindingProvider.getModuleInfo().getName())) {
-                filteredSet.add(yangModelBindingProvider.getModuleInfo());
-            }
-        }
-        return filteredSet;
     }
 
     private static boolean isDependentModel(final Set<YangModuleInfo> models, final YangModuleInfo yangModuleInfo) {
