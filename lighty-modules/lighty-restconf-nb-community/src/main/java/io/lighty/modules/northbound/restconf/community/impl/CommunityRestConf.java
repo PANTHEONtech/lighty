@@ -26,6 +26,7 @@ import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
+import org.opendaylight.netconf.sal.remote.impl.CreateNotificationStreamRpc;
 import org.opendaylight.restconf.server.jaxrs.JaxRsEndpoint;
 import org.opendaylight.restconf.server.jaxrs.JaxRsEndpointConfiguration;
 import org.opendaylight.restconf.server.jaxrs.JaxRsLocationProvider;
@@ -100,12 +101,27 @@ public class CommunityRestConf extends AbstractLightyModule {
         }
 
         final MdsalDatabindProvider databindProvider = new MdsalDatabindProvider(domSchemaService);
-        this.server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService,
-            domActionService, domMountPointService);
 
         this.jettyServer = this.lightyServerBuilder.getServer();
         this.mdsalRestconfStreamRegistry = new MdsalRestconfStreamRegistry(domDataBroker, domNotificationService,
             domSchemaService, new JaxRsLocationProvider(), databindProvider);
+
+        final CreateNotificationStreamRpc createStreamRpc = new CreateNotificationStreamRpc(
+            this.mdsalRestconfStreamRegistry,
+            databindProvider,
+            this.domNotificationService
+        );
+
+        // 4. Create the server, passing the local RPC at the end of the constructor
+        this.server = new MdsalRestconfServer(
+            databindProvider,
+            domDataBroker,
+            domRpcService,
+            domActionService,
+            domMountPointService,
+            createStreamRpc //
+        );
+
         this.jaxRsEndpoint = new JaxRsEndpoint(
             jettyServer,
             this.webContextSecurer,
