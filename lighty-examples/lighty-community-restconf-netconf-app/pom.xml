@@ -51,6 +51,10 @@
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-annotations</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.netconf</groupId>
+            <artifactId>rfc8639-impl</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

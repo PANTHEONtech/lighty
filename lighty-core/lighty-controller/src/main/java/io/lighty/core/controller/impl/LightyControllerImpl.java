@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -111,6 +112,7 @@ import org.opendaylight.yangtools.binding.data.codec.api.BindingNormalizedNodeSe
 import org.opendaylight.yangtools.binding.data.codec.impl.BindingCodecContext;
 import org.opendaylight.yangtools.binding.data.codec.impl.di.DefaultDynamicBindingDataCodec;
 import org.opendaylight.yangtools.binding.generator.impl.DefaultBindingRuntimeGenerator;
+import org.opendaylight.yangtools.binding.meta.YangFeatureProvider;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
 import org.opendaylight.yangtools.binding.runtime.api.BindingRuntimeGenerator;
 import org.opendaylight.yangtools.binding.runtime.api.BindingRuntimeTypes;
@@ -267,6 +269,13 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
         //INIT schema context
         this.snapshotResolver = new ModuleInfoSnapshotResolver("binding-dom-codec", yangParserFactory);
+        for (YangFeatureProvider featureProvider : ServiceLoader.load(YangFeatureProvider.class,
+            YangFeatureProvider.class.getClassLoader())) {
+            this.snapshotResolver.registerModuleFeatures(
+                featureProvider.boundModule(),
+                featureProvider.supportedFeatures()
+            );
+        }
         this.modelsRegistration = snapshotResolver.registerModuleInfos(modelSet);
         this.moduleInfoSnapshot = snapshotResolver.takeSnapshot();
         this.schemaService = new FixedDOMSchemaService(() -> moduleInfoSnapshot.modelContext(), sourceId -> {
