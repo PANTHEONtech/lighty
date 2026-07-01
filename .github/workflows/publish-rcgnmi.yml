@@ -21,6 +21,9 @@ jobs:
       run:
         shell: bash
     env:
+      CHECKOUT_REF: ${{ github.event.inputs.checkout-ref }}
+      TARGET_VERSION: ${{ github.event.inputs.version }}
+      TARGET_IMAGE_TAG_LATEST: ${{ github.event.inputs.image-tag-latest }}
       APP-MODULES: ":lighty-rcgnmi-app,:lighty-rcgnmi-app-docker,:lighty-rcgnmi-app-module"
       APP-DOCKER-POM-PATH: "lighty-applications/lighty-rcgnmi-app-aggregator/lighty-rcgnmi-app-docker/pom.xml"
       APP-HELM-FOLDER-PATH: "lighty-applications/lighty-rcgnmi-app-aggregator/lighty-rcgnmi-app-helm/helm/"
@@ -36,7 +39,7 @@ jobs:
         if: ${{ github.event.inputs.checkout-ref != 'default' }}
         uses: actions/checkout@v6
         with:
-          ref: ${{ github.event.inputs.checkout-ref }}
+          ref: ${{ env.CHECKOUT_REF }}
       - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:
@@ -59,8 +62,8 @@ jobs:
           app-docker-pom-path: ${{ env.APP-DOCKER-POM-PATH }}
           app-helm-values-path: ${{ env.APP-HELM-VALUES-PATH }}
           image-name: ${{ env.IMAGE-NAME }}
-          version: ${{ github.event.inputs.version }}
-          image-tag-latest: ${{ github.event.inputs.image-tag-latest }}
+          version: ${{ env.TARGET_VERSION }}
+          image-tag-latest: ${{ env.TARGET_IMAGE_TAG_LATEST }}
           publish-access-key: ${{ env.PUBLISH_ACCESS_KEY }}
       - name: "Publish RCgNMI Helm chart to Helm repository (Version: ${{ github.event.inputs.version }} )"
         if: ${{ github.event.inputs.version != '' }}
@@ -71,4 +74,4 @@ jobs:
           charts_url: https://pantheontech.github.io/helm-charts/
           repository: helm-charts
           branch: main
-          chart_version: ${{ github.event.inputs.version }}
+          chart_version: ${{ env.TARGET_VERSION }}
