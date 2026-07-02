@@ -63,7 +63,15 @@ public final class ControllerConfigUtils {
         org.opendaylight.yang.svc.v1.urn.opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930
                 .YangModuleInfoImpl.getInstance(),
         org.opendaylight.yang.svc.v1.urn.opendaylight.yang.aaa.cert.rpc.rev151215
-                .YangModuleInfoImpl.getInstance()
+                .YangModuleInfoImpl.getInstance(),
+        org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.netconf.notification._1._0.rev080714
+            .YangModuleInfoImpl.getInstance(),
+        org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.notifications.rev120206
+            .YangModuleInfoImpl.getInstance(),
+        org.opendaylight.yang.svc.v1.urn.opendaylight.device.notification.rev240218
+            .YangModuleInfoImpl.getInstance(),
+        org.opendaylight.yang.svc.v1.urn.ietf.params.xml.ns.yang.ietf.subscribed.notifications.rev190909
+            .YangModuleInfoImpl.getInstance()
     );
 
     public static final String CONTROLLER_CONFIG_ROOT_ELEMENT_NAME = "controller";
