@@ -34,6 +34,7 @@ import org.opendaylight.restconf.server.jaxrs.JaxRsLocationProvider;
 import org.opendaylight.restconf.server.mdsal.MdsalDatabindProvider;
 import org.opendaylight.restconf.server.mdsal.MdsalRestconfServer;
 import org.opendaylight.restconf.server.mdsal.MdsalRestconfStreamRegistry;
+import org.opendaylight.restconf.subscription.EstablishSubscriptionRpc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -117,7 +118,8 @@ public class CommunityRestConf extends AbstractLightyModule {
             domMountPointService
         );
 
-        // 4. Create the server, passing the local RPC at the end of the constructor
+        final EstablishSubscriptionRpc subscriptionRpc = new EstablishSubscriptionRpc(this.mdsalRestconfStreamRegistry);
+
         this.server = new MdsalRestconfServer(
             databindProvider,
             domDataBroker,
@@ -125,7 +127,8 @@ public class CommunityRestConf extends AbstractLightyModule {
             domActionService,
             domMountPointService,
             createStreamRpc,
-            subscribeDeviceRpc
+            subscribeDeviceRpc,
+            subscriptionRpc
         );
 
         this.jaxRsEndpoint = new JaxRsEndpoint(
