@@ -72,6 +72,10 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.netconf</groupId>
+            <artifactId>restconf-subscription</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.netconf</groupId>
             <artifactId>sal-remote-impl</artifactId>
         </dependency>
         <dependency>
