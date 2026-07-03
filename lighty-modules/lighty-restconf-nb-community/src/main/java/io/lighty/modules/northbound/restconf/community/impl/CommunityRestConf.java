@@ -28,6 +28,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
 import org.opendaylight.netconf.odl.device.notification.SubscribeDeviceNotificationRpc;
+import org.opendaylight.netconf.rfc8639.EstablishSubscriptionRpc;
 import org.opendaylight.netconf.sal.remote.impl.CreateNotificationStreamRpc;
 import org.opendaylight.restconf.server.jaxrs.JaxRsEndpoint;
 import org.opendaylight.restconf.server.jaxrs.JaxRsEndpointConfiguration;
@@ -122,7 +123,8 @@ public class CommunityRestConf extends AbstractLightyModule {
                 domMountPointService
             );
 
-        // 4. Create the server, passing the local RPC at the end of the constructor
+        final EstablishSubscriptionRpc subscriptionRpc = new EstablishSubscriptionRpc(this.mdsalRestconfStreamRegistry);
+
         this.server = new MdsalRestconfServer(
             databindProvider,
             domDataBroker,
@@ -131,7 +133,7 @@ public class CommunityRestConf extends AbstractLightyModule {
             domMountPointService,
             createStreamRpc,
             subscribeDeviceRpc,
-            subscribeDeviceRpc
+            subscriptionRpc
         );
 
         this.jaxRsEndpoint = new JaxRsEndpoint(
