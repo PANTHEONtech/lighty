@@ -53,7 +53,7 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.netconf</groupId>
-            <artifactId>rfc8639-impl</artifactId>
+            <artifactId>restconf-subscription</artifactId>
         </dependency>
     </dependencies>
 
