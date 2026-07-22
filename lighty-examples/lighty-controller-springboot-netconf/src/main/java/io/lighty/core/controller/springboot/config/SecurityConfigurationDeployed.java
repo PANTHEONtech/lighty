@@ -38,9 +38,7 @@ public class SecurityConfigurationDeployed {
     @Order(1)
     protected SecurityFilterChain auth0FilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
+                .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterBefore(new JCasBinFilter(enforcer, userAccessService), BasicAuthenticationFilter.class)
                 .securityMatcher("/services/data/**")
                 .build();

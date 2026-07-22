@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -37,8 +38,7 @@ public class SecurityConfigurationNotDeployed {
     @Order(1)
     protected SecurityFilterChain auth0FilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .csrf()
-                .disable()
+                .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(new JCasBinFilter(enforcer, userAccessService), BasicAuthenticationFilter.class)
                 .securityMatcher("/services/data/**")
                 .build();
