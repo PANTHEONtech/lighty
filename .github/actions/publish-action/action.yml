@@ -33,10 +33,11 @@ runs:
         APP_DOCKER_POM_PATH: ${{ inputs.app-docker-pom-path }}
         APP_HELM_VALUES_PATH: ${{ inputs.app-helm-values-path }}
         DOCKER_IMAGE_NAME: ghcr.io/pantheontech/${{ inputs.image-name }}
-        DOCKER_IMAGE_VERSION: ${{ inputs.version }}\
+        DOCKER_IMAGE_VERSION: ${{ inputs.version }}
         DOCKER_IMAGE_TAG_LATEST: ${{ inputs.image-tag-latest }}
         PUBLISH_ACCESS_KEY: ${{ inputs.publish-access-key }}
         DOCKER_IMAGE_NAME_TAG: ghcr.io/pantheontech/${{ inputs.image-name }}:${{ inputs.version }}
+        GHCR_ACTOR: ${{ github.actor }}
       shell: bash
       run: |
         echo "APP_MODULES=$(echo $APP_MODULES)" >> $GITHUB_ENV
@@ -47,6 +48,7 @@ runs:
         echo "DOCKER_IMAGE_TAG_LATEST=$(echo $DOCKER_IMAGE_TAG_LATEST)" >> $GITHUB_ENV
         echo "PUBLISH_ACCESS_KEY=$(echo $PUBLISH_ACCESS_KEY)" >> $GITHUB_ENV
         echo "DOCKER_IMAGE_NAME_TAG=$(echo $DOCKER_IMAGE_NAME_TAG)" >> $GITHUB_ENV
+        echo "GHCR_ACTOR=$(echo $GHCR_ACTOR)" >> $GITHUB_ENV
     - name: Build docker image
       shell: bash
       run: mvn install -B -pl $APP_MODULES -P docker
@@ -66,7 +68,7 @@ runs:
     - name: Docker log in (ghcr.io)
       shell: bash
       run: |
-        echo $PUBLISH_ACCESS_KEY | docker login  --username ${{ github.actor }} --password-stdin ghcr.io
+        echo $PUBLISH_ACCESS_KEY | docker login  --username $GHCR_ACTOR --password-stdin ghcr.io
     - name: Publish docker image (ghcr.io)
       shell: bash
       run: |

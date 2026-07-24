@@ -35,7 +35,7 @@ jobs:
       - name: Clone Repository
         if: ${{ github.event.inputs.checkout-ref == 'default' }}
         uses: actions/checkout@v6
-      - name: "Clone Repository, Ref: ${{ github.event.inputs.checkout-ref }}"
+      - name: "Clone Repository, Ref: ${{ env.CHECKOUT_REF }}"
         if: ${{ github.event.inputs.checkout-ref != 'default' }}
         uses: actions/checkout@v6
         with:
@@ -65,7 +65,7 @@ jobs:
           version: ${{ env.TARGET_VERSION }}
           image-tag-latest: ${{ env.TARGET_IMAGE_TAG_LATEST }}
           publish-access-key: ${{ env.PUBLISH_ACCESS_KEY }}
-      - name: "Publish RNC Helm chart to Helm repository (Version: ${{ github.event.inputs.version }} )"
+      - name: "Publish RNC Helm chart to Helm repository (Version: ${{ env.TARGET_VERSION }} )"
         if: ${{ github.event.inputs.version != '' }}
         uses: stefanprodan/helm-gh-pages@master
         with:
