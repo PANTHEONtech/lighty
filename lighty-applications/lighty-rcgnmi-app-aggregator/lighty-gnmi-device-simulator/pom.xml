@@ -12,17 +12,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>io.lighty.applications.rcgnmi</groupId>
-        <artifactId>lighty-rcgnmi-app-aggregator</artifactId>
+        <groupId>io.lighty.core</groupId>
+        <artifactId>lighty-app-parent</artifactId>
         <version>24.0.0-SNAPSHOT</version>
+        <relativePath>../../../lighty-core/lighty-app-parent/pom.xml</relativePath>
     </parent>
-    <artifactId>lighty-gnmi-device-simulator</artifactId>
 
-    <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <groupId>io.lighty.applications.rcgnmi</groupId>
+    <artifactId>lighty-gnmi-device-simulator</artifactId>
 
     <dependencies>
         <dependency>
