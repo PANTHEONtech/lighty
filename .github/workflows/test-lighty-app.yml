@@ -19,6 +19,10 @@ jobs:
     defaults:
       run:
         shell: bash
+    env:
+      APP_NAME: ${{ inputs.app-name }}
+      OVERRIDE_HELM_VALUES: ${{ inputs.override-helm-values }}
+      TEST_SCRIPT_FILE: ${{ inputs.test-script-file }}
     steps:
       - name: Clone Repository
         uses: actions/checkout@v6
@@ -65,27 +69,27 @@ jobs:
       - name: Start ${{ inputs.app-name }} in docker container
         run: |
           echo "Exporting Docker image to .tar ..."
-          image_name=$(mvn help:evaluate -f lighty-applications/${{ inputs.app-name }}-aggregator/${{ inputs.app-name }}-docker/pom.xml -Dexpression=image.name -q -DforceStdout)
-          docker save --output="./${{ inputs.app-name }}.tar" $image_name
+          image_name=$(mvn help:evaluate -f "lighty-applications/${APP_NAME}-aggregator/${APP_NAME}-docker/pom.xml" -Dexpression=image.name -q -DforceStdout)
+          docker save --output="./${APP_NAME}.tar" "$image_name"
           echo "Loading docker image to minikube"
-          docker load --input ./${{ inputs.app-name }}.tar
-          rm ./${{ inputs.app-name }}.tar
+          docker load --input "./${APP_NAME}.tar"
+          rm "./${APP_NAME}.tar"
         shell: bash
       - name: Install app helm chart
         run: |
-          if [ "${{ inputs.override-helm-values }}" == "" ]; then
+          if [ "$OVERRIDE_HELM_VALUES" == "" ]; then
               echo "Use default helm values"
-              helm install ${{ inputs.app-name }} lighty-applications/${{ inputs.app-name }}-aggregator/${{ inputs.app-name }}-helm/helm/${{ inputs.app-name }}-helm
+              helm install "$APP_NAME" "lighty-applications/${APP_NAME}-aggregator/${APP_NAME}-helm/helm/${APP_NAME}-helm"
           else
-              echo "Set helm values to: ${{ inputs.override-helm-values }}"
-              helm install ${{ inputs.app-name }} lighty-applications/${{ inputs.app-name }}-aggregator/${{ inputs.app-name }}-helm/helm/${{ inputs.app-name }}-helm \
-                  --set ${{ inputs.override-helm-values }}
+              echo "Set helm values to: $OVERRIDE_HELM_VALUES"
+              helm install "$APP_NAME" "lighty-applications/${APP_NAME}-aggregator/${APP_NAME}-helm/helm/${APP_NAME}-helm" \
+                  --set "$OVERRIDE_HELM_VALUES"
           fi
           sleep 35 # Wait for app to start
         shell: bash
       - name: Run apps testing scripts
         run: |
-          chmod +x "${{ inputs.test-script-file }}"
+          chmod +x "$TEST_SCRIPT_FILE"
           # run script
-          "${{ inputs.test-script-file }}"
+          "$TEST_SCRIPT_FILE"
         shell: bash
