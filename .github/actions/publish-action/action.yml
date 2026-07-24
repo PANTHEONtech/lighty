@@ -89,7 +89,7 @@ runs:
       shell: bash
       run: |
         yq eval '.image.name=$DOCKER_IMAGE_NAME | .image.version=$DOCKER_IMAGE_VERSION' $APP_HELM_VALUES_PATH -i
-    - name: Print values.yaml
+    - name: Print image section of values.yaml
       shell: bash
       run: |
-        cat -A $APP_HELM_VALUES_PATH
+        yq eval '.image' $APP_HELM_VALUES_PATH
