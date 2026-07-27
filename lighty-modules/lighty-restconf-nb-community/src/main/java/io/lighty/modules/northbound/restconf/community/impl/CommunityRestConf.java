@@ -34,7 +34,10 @@ import org.opendaylight.restconf.server.jaxrs.JaxRsLocationProvider;
 import org.opendaylight.restconf.server.mdsal.MdsalDatabindProvider;
 import org.opendaylight.restconf.server.mdsal.MdsalRestconfServer;
 import org.opendaylight.restconf.server.mdsal.MdsalRestconfStreamRegistry;
+import org.opendaylight.restconf.subscription.DeleteSubscriptionRpc;
 import org.opendaylight.restconf.subscription.EstablishSubscriptionRpc;
+import org.opendaylight.restconf.subscription.KillSubscriptionRpc;
+import org.opendaylight.restconf.subscription.ModifySubscriptionRpc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,7 +121,13 @@ public class CommunityRestConf extends AbstractLightyModule {
                 domMountPointService
             );
 
-        final EstablishSubscriptionRpc subscriptionRpc = new EstablishSubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final EstablishSubscriptionRpc establishSubscriptionRpc =
+            new EstablishSubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final ModifySubscriptionRpc modifySubscriptionRpc =
+            new ModifySubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final DeleteSubscriptionRpc deleteSubscriptionRpc =
+            new DeleteSubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final KillSubscriptionRpc killSubscriptionRpc = new KillSubscriptionRpc(this.mdsalRestconfStreamRegistry);
 
         this.server = new MdsalRestconfServer(
             databindProvider,
@@ -128,7 +137,10 @@ public class CommunityRestConf extends AbstractLightyModule {
             domMountPointService,
             createStreamRpc,
             subscribeDeviceRpc,
-            subscriptionRpc
+            establishSubscriptionRpc,
+            modifySubscriptionRpc,
+            deleteSubscriptionRpc,
+            killSubscriptionRpc
         );
 
         this.jaxRsEndpoint = new JaxRsEndpoint(
