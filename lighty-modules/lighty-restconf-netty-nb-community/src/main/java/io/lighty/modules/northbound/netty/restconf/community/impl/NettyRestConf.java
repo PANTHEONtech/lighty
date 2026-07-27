@@ -24,6 +24,7 @@ import org.opendaylight.netconf.rfc8639.DeleteSubscriptionRpc;
 import org.opendaylight.netconf.rfc8639.EstablishSubscriptionRpc;
 import org.opendaylight.netconf.rfc8639.KillSubscriptionRpc;
 import org.opendaylight.netconf.rfc8639.ModifySubscriptionRpc;
+import org.opendaylight.netconf.sal.remote.impl.CreateDataChangeEventSubscriptionRpc;
 import org.opendaylight.netconf.sal.remote.impl.CreateNotificationStreamRpc;
 import org.opendaylight.netconf.transport.http.HttpServerStackConfiguration;
 import org.opendaylight.netconf.transport.tcp.BootstrapFactory;
@@ -104,10 +105,13 @@ public class NettyRestConf extends AbstractLightyModule {
             new DeleteSubscriptionRpc(this.mdsalRestconfStreamRegistry);
         final KillSubscriptionRpc killSubscriptionRpc =
             new KillSubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final CreateDataChangeEventSubscriptionRpc createDataChangeEventSubscriptionRpc =
+            new CreateDataChangeEventSubscriptionRpc(this.mdsalRestconfStreamRegistry, databindProvider,
+                domDataBroker);
 
         server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService, domActionService,
             domMountPointService, createStreamRpc, subscribeDeviceRpc, establishSubscriptionRpc,
-            modifySubscriptionRpc, deleteSubscriptionRpc, killSubscriptionRpc);
+            modifySubscriptionRpc, deleteSubscriptionRpc, killSubscriptionRpc, createDataChangeEventSubscriptionRpc);
 
         final var transport = NettyRestConfUtils.serverTransportTcp(
             IetfInetUtil.ipAddressFor(inetAddress), Uint16.valueOf(httpPort));
