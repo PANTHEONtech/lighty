@@ -19,6 +19,9 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
+import org.opendaylight.netconf.odl.device.notification.SubscribeDeviceNotificationRpc;
+import org.opendaylight.netconf.rfc8639.EstablishSubscriptionRpc;
+import org.opendaylight.netconf.sal.remote.impl.CreateNotificationStreamRpc;
 import org.opendaylight.netconf.transport.http.HttpServerStackConfiguration;
 import org.opendaylight.netconf.transport.tcp.BootstrapFactory;
 import org.opendaylight.restconf.api.query.PrettyPrintParam;
@@ -78,8 +81,23 @@ public class NettyRestConf extends AbstractLightyModule {
     @Override
     protected boolean initProcedure() {
         databindProvider = new MdsalDatabindProvider(domSchemaService);
+
+        final ClusterSingletonServiceProvider cssProvider = SingletonService -> {
+            SingletonService.instantiateServiceInstance();
+            return SingletonService::closeServiceInstance;
+        };
+        this.mdsalRestconfStreamRegistry = new MdsalRestconfStreamRegistry(domDataBroker, domNotificationService,
+            domSchemaService, new JaxRsLocationProvider(), databindProvider, cssProvider);
+
+        final CreateNotificationStreamRpc createStreamRpc = new CreateNotificationStreamRpc(
+            this.mdsalRestconfStreamRegistry, databindProvider, domNotificationService);
+        final SubscribeDeviceNotificationRpc subscribeDeviceRpc = new SubscribeDeviceNotificationRpc(
+            this.mdsalRestconfStreamRegistry, domMountPointService);
+        final EstablishSubscriptionRpc subscriptionRpc =
+            new EstablishSubscriptionRpc(this.mdsalRestconfStreamRegistry);
+
         server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService, domActionService,
-            domMountPointService);
+            domMountPointService, createStreamRpc, subscribeDeviceRpc, subscriptionRpc);
 
         final var transport = NettyRestConfUtils.serverTransportTcp(
             IetfInetUtil.ipAddressFor(inetAddress), Uint16.valueOf(httpPort));
@@ -93,12 +111,6 @@ public class NettyRestConf extends AbstractLightyModule {
             Uint64.valueOf(4L * 1024 * 1024),
             Uint64.valueOf(256L * 1024), Uint32.valueOf(100));
 
-        final ClusterSingletonServiceProvider cssProvider = SingletonService -> {
-            SingletonService.instantiateServiceInstance();
-            return SingletonService::closeServiceInstance;
-        };
-        this.mdsalRestconfStreamRegistry = new MdsalRestconfStreamRegistry(domDataBroker, domNotificationService,
-            domSchemaService, new JaxRsLocationProvider(), databindProvider, cssProvider);
         nettyEndpoint = new SimpleNettyEndpoint(server, service, mdsalRestconfStreamRegistry,
             new BootstrapFactory("lighty-restconf-nb-worker", 0), configuration);
 
