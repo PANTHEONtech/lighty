@@ -27,6 +27,7 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.netconf.odl.device.notification.SubscribeDeviceNotificationRpc;
+import org.opendaylight.netconf.sal.remote.impl.CreateDataChangeEventSubscriptionRpc;
 import org.opendaylight.netconf.sal.remote.impl.CreateNotificationStreamRpc;
 import org.opendaylight.restconf.server.jaxrs.JaxRsEndpoint;
 import org.opendaylight.restconf.server.jaxrs.JaxRsEndpointConfiguration;
@@ -128,6 +129,9 @@ public class CommunityRestConf extends AbstractLightyModule {
         final DeleteSubscriptionRpc deleteSubscriptionRpc =
             new DeleteSubscriptionRpc(this.mdsalRestconfStreamRegistry);
         final KillSubscriptionRpc killSubscriptionRpc = new KillSubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final CreateDataChangeEventSubscriptionRpc createDataChangeEventSubscriptionRpc =
+            new CreateDataChangeEventSubscriptionRpc(this.mdsalRestconfStreamRegistry, databindProvider,
+                domDataBroker);
 
         this.server = new MdsalRestconfServer(
             databindProvider,
@@ -140,7 +144,8 @@ public class CommunityRestConf extends AbstractLightyModule {
             establishSubscriptionRpc,
             modifySubscriptionRpc,
             deleteSubscriptionRpc,
-            killSubscriptionRpc
+            killSubscriptionRpc,
+            createDataChangeEventSubscriptionRpc
         );
 
         this.jaxRsEndpoint = new JaxRsEndpoint(
