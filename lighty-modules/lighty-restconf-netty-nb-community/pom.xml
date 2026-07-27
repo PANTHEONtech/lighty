@@ -45,6 +45,14 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
             <groupId>org.opendaylight.netconf.model</groupId>
             <artifactId>sal-remote</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.netconf</groupId>
+            <artifactId>sal-remote-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.netconf</groupId>
+            <artifactId>rfc8639-impl</artifactId>
+        </dependency>
 
         <!--Tests-->
         <dependency>
