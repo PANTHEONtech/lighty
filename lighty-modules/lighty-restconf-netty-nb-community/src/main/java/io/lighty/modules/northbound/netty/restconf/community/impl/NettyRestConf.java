@@ -19,7 +19,10 @@ import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
 import org.opendaylight.netconf.odl.device.notification.SubscribeDeviceNotificationRpc;
+import org.opendaylight.netconf.rfc8639.DeleteSubscriptionRpc;
 import org.opendaylight.netconf.rfc8639.EstablishSubscriptionRpc;
+import org.opendaylight.netconf.rfc8639.KillSubscriptionRpc;
+import org.opendaylight.netconf.rfc8639.ModifySubscriptionRpc;
 import org.opendaylight.netconf.sal.remote.impl.CreateNotificationStreamRpc;
 import org.opendaylight.netconf.transport.http.HTTPServerOverTcp;
 import org.opendaylight.netconf.transport.http.HttpServerStackConfiguration;
@@ -92,11 +95,18 @@ public class NettyRestConf extends AbstractLightyModule {
             this.mdsalRestconfStreamRegistry, databindProvider, domNotificationService);
         final SubscribeDeviceNotificationRpc subscribeDeviceRpc = new SubscribeDeviceNotificationRpc(
             this.mdsalRestconfStreamRegistry, domMountPointService);
-        final EstablishSubscriptionRpc subscriptionRpc =
+        final EstablishSubscriptionRpc establishSubscriptionRpc =
             new EstablishSubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final ModifySubscriptionRpc modifySubscriptionRpc =
+            new ModifySubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final DeleteSubscriptionRpc deleteSubscriptionRpc =
+            new DeleteSubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final KillSubscriptionRpc killSubscriptionRpc =
+            new KillSubscriptionRpc(this.mdsalRestconfStreamRegistry);
 
         server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService, domActionService,
-            domMountPointService, createStreamRpc, subscribeDeviceRpc, subscriptionRpc);
+            domMountPointService, createStreamRpc, subscribeDeviceRpc, establishSubscriptionRpc,
+            modifySubscriptionRpc, deleteSubscriptionRpc, killSubscriptionRpc);
 
         final PrincipalService service = new AAAShiroPrincipalService((AAAShiroWebEnvironment) webEnvironment);
         final var serverStackGrouping = new HttpServerStackConfiguration(
