@@ -28,7 +28,10 @@ import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
 import org.opendaylight.netconf.odl.device.notification.SubscribeDeviceNotificationRpc;
+import org.opendaylight.netconf.rfc8639.DeleteSubscriptionRpc;
 import org.opendaylight.netconf.rfc8639.EstablishSubscriptionRpc;
+import org.opendaylight.netconf.rfc8639.KillSubscriptionRpc;
+import org.opendaylight.netconf.rfc8639.ModifySubscriptionRpc;
 import org.opendaylight.netconf.sal.remote.impl.CreateNotificationStreamRpc;
 import org.opendaylight.restconf.server.jaxrs.JaxRsEndpoint;
 import org.opendaylight.restconf.server.jaxrs.JaxRsEndpointConfiguration;
@@ -123,7 +126,13 @@ public class CommunityRestConf extends AbstractLightyModule {
                 domMountPointService
             );
 
-        final EstablishSubscriptionRpc subscriptionRpc = new EstablishSubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final EstablishSubscriptionRpc establishSubscriptionRpc =
+            new EstablishSubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final ModifySubscriptionRpc modifySubscriptionRpc =
+            new ModifySubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final DeleteSubscriptionRpc deleteSubscriptionRpc =
+            new DeleteSubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final KillSubscriptionRpc killSubscriptionRpc = new KillSubscriptionRpc(this.mdsalRestconfStreamRegistry);
 
         this.server = new MdsalRestconfServer(
             databindProvider,
@@ -133,7 +142,10 @@ public class CommunityRestConf extends AbstractLightyModule {
             domMountPointService,
             createStreamRpc,
             subscribeDeviceRpc,
-            subscriptionRpc
+            establishSubscriptionRpc,
+            modifySubscriptionRpc,
+            deleteSubscriptionRpc,
+            killSubscriptionRpc
         );
 
         this.jaxRsEndpoint = new JaxRsEndpoint(
