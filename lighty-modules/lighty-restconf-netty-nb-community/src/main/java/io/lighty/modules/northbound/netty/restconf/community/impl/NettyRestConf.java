@@ -34,7 +34,10 @@ import org.opendaylight.restconf.server.mdsal.MdsalDatabindProvider;
 import org.opendaylight.restconf.server.mdsal.MdsalRestconfServer;
 import org.opendaylight.restconf.server.mdsal.MdsalRestconfStreamRegistry;
 import org.opendaylight.restconf.server.spi.ErrorTagMapping;
+import org.opendaylight.restconf.subscription.DeleteSubscriptionRpc;
 import org.opendaylight.restconf.subscription.EstablishSubscriptionRpc;
+import org.opendaylight.restconf.subscription.KillSubscriptionRpc;
+import org.opendaylight.restconf.subscription.ModifySubscriptionRpc;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.http.server.rev240208.http.server.stack.grouping.transport.TcpBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IetfInetUtil;
 import org.opendaylight.yangtools.yang.common.Uint16;
@@ -98,11 +101,18 @@ public class NettyRestConf extends AbstractLightyModule {
             this.mdsalRestconfStreamRegistry, databindProvider, domNotificationService);
         final SubscribeDeviceNotificationRpc subscribeDeviceRpc = new SubscribeDeviceNotificationRpc(
             this.mdsalRestconfStreamRegistry, domMountPointService);
-        final EstablishSubscriptionRpc subscriptionRpc =
+        final EstablishSubscriptionRpc establishSubscriptionRpc =
             new EstablishSubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final ModifySubscriptionRpc modifySubscriptionRpc =
+            new ModifySubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final DeleteSubscriptionRpc deleteSubscriptionRpc =
+            new DeleteSubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final KillSubscriptionRpc killSubscriptionRpc =
+            new KillSubscriptionRpc(this.mdsalRestconfStreamRegistry);
 
         final MdsalRestconfServer server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService,
-            domActionService, domMountPointService, createStreamRpc, subscribeDeviceRpc, subscriptionRpc);
+            domActionService, domMountPointService, createStreamRpc, subscribeDeviceRpc, establishSubscriptionRpc,
+            modifySubscriptionRpc, deleteSubscriptionRpc, killSubscriptionRpc);
 
         final var tcpConfig = NettyRestConfUtils.getTcpConfig(
             IetfInetUtil.ipAddressFor(inetAddress), Uint16.valueOf(httpPort));
