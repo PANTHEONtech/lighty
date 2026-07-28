@@ -32,6 +32,13 @@
             <artifactId>openconfig-models</artifactId>
             <version>3.0.0</version>
         </dependency>
+        <!-- lighty-core/dependency-versions manages this to test scope, but gnmi-device-simulator
+             needs it at runtime for its CLI argument parsing; pin it back to compile here. -->
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
