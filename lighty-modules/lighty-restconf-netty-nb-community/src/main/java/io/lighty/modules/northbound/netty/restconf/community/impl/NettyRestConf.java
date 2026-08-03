@@ -19,6 +19,9 @@ import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
+import org.opendaylight.netconf.odl.device.notification.SubscribeDeviceNotificationRpc;
+import org.opendaylight.netconf.sal.remote.impl.CreateDataChangeEventSubscriptionRpc;
+import org.opendaylight.netconf.sal.remote.impl.CreateNotificationStreamRpc;
 import org.opendaylight.netconf.transport.http.HttpServerStackConfiguration;
 import org.opendaylight.netconf.transport.tcp.BootstrapFactory;
 import org.opendaylight.restconf.api.query.PrettyPrintParam;
@@ -32,6 +35,10 @@ import org.opendaylight.restconf.server.mdsal.MdsalDatabindProvider;
 import org.opendaylight.restconf.server.mdsal.MdsalRestconfServer;
 import org.opendaylight.restconf.server.mdsal.MdsalRestconfStreamRegistry;
 import org.opendaylight.restconf.server.spi.ErrorTagMapping;
+import org.opendaylight.restconf.subscription.DeleteSubscriptionRpc;
+import org.opendaylight.restconf.subscription.EstablishSubscriptionRpc;
+import org.opendaylight.restconf.subscription.KillSubscriptionRpc;
+import org.opendaylight.restconf.subscription.ModifySubscriptionRpc;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.http.server.rev240208.http.server.stack.grouping.transport.TcpBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IetfInetUtil;
 import org.opendaylight.yangtools.yang.common.Uint16;
@@ -54,6 +61,8 @@ public class NettyRestConf extends AbstractLightyModule {
     private final String restconfServletContextPath;
     private MdsalRestconfStreamRegistry mdsalRestconfStreamRegistry;
     private SimpleNettyEndpoint nettyEndpoint;
+    private MdsalDatabindProvider databindProvider;
+    private MdsalRestconfServer server;
 
     public NettyRestConf(final DOMDataBroker domDataBroker, final DOMRpcService domRpcService,
         final DOMNotificationService domNotificationService,
@@ -79,9 +88,30 @@ public class NettyRestConf extends AbstractLightyModule {
 
     @Override
     protected boolean initProcedure() {
-        final MdsalDatabindProvider databindProvider = new MdsalDatabindProvider(domSchemaService);
-        final MdsalRestconfServer server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService,
-            domActionService, domMountPointService);
+        databindProvider = new MdsalDatabindProvider(domSchemaService);
+
+        this.mdsalRestconfStreamRegistry = new MdsalRestconfStreamRegistry(domDataBroker, domNotificationService,
+            domSchemaService, new JaxRsLocationProvider(), databindProvider);
+
+        final CreateNotificationStreamRpc createStreamRpc = new CreateNotificationStreamRpc(
+            this.mdsalRestconfStreamRegistry, databindProvider, domNotificationService);
+        final SubscribeDeviceNotificationRpc subscribeDeviceRpc = new SubscribeDeviceNotificationRpc(
+            this.mdsalRestconfStreamRegistry, domMountPointService);
+        final EstablishSubscriptionRpc establishSubscriptionRpc =
+            new EstablishSubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final ModifySubscriptionRpc modifySubscriptionRpc =
+            new ModifySubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final DeleteSubscriptionRpc deleteSubscriptionRpc =
+            new DeleteSubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final KillSubscriptionRpc killSubscriptionRpc =
+            new KillSubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final CreateDataChangeEventSubscriptionRpc createDataChangeEventSubscriptionRpc =
+            new CreateDataChangeEventSubscriptionRpc(this.mdsalRestconfStreamRegistry, databindProvider,
+                domDataBroker);
+
+        server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService, domActionService,
+            domMountPointService, createStreamRpc, subscribeDeviceRpc, establishSubscriptionRpc,
+            modifySubscriptionRpc, deleteSubscriptionRpc, killSubscriptionRpc, createDataChangeEventSubscriptionRpc);
 
         final var tcpConfig = NettyRestConfUtils.getTcpConfig(
             IetfInetUtil.ipAddressFor(inetAddress), Uint16.valueOf(httpPort));
@@ -91,8 +121,7 @@ public class NettyRestConf extends AbstractLightyModule {
         final NettyEndpointConfiguration configuration = new NettyEndpointConfiguration(ErrorTagMapping.RFC8040,
             PrettyPrintParam.FALSE, Uint16.valueOf(0), Uint32.valueOf(10000), restconfServletContextPath,
             MessageEncoding.JSON, serverStackGrouping, Uint32.valueOf(262144), Uint32.valueOf(16384));
-        this.mdsalRestconfStreamRegistry = new MdsalRestconfStreamRegistry(domDataBroker, domNotificationService,
-            domSchemaService, new JaxRsLocationProvider(), databindProvider);
+
         nettyEndpoint = new SimpleNettyEndpoint(server, service, mdsalRestconfStreamRegistry,
             new BootstrapFactory("lighty-restconf-nb-worker", 0), configuration);
 
@@ -100,14 +129,42 @@ public class NettyRestConf extends AbstractLightyModule {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:illegalCatch")
     protected boolean stopProcedure() {
-        try {
-            nettyEndpoint.close();
-        } catch (InterruptedException | ExecutionException e) {
-            LOG.error("Failed to stop Netty endpoint!", e);
-            return false;
+        boolean stopSuccessful = true;
+        if (nettyEndpoint != null) {
+            try {
+                nettyEndpoint.close();
+            } catch (InterruptedException | ExecutionException e) {
+                LOG.error("Failed to stop Netty endpoint!", e);
+                stopSuccessful = false;
+            }
+        }
+        if (mdsalRestconfStreamRegistry != null) {
+            try {
+                mdsalRestconfStreamRegistry.close();
+            } catch (Exception e) {
+                LOG.error("Failed to stop MdsalRestconfStreamRegistry!", e);
+                stopSuccessful = false;
+            }
+        }
+        if (server != null) {
+            try {
+                server.close();
+            } catch (Exception e) {
+                LOG.error("Failed to stop MdsalRestconfServer!", e);
+                stopSuccessful = false;
+            }
+        }
+        if (databindProvider != null) {
+            try {
+                databindProvider.close();
+            } catch (Exception e) {
+                LOG.error("Failed to stop MdsalDatabindProvider!", e);
+                stopSuccessful = false;
+            }
         }
         LOG.info("Netty endpoint stopped successfully.");
-        return true;
+        return stopSuccessful;
     }
 }

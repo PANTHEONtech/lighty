@@ -26,12 +26,19 @@ import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
+import org.opendaylight.netconf.odl.device.notification.SubscribeDeviceNotificationRpc;
+import org.opendaylight.netconf.sal.remote.impl.CreateDataChangeEventSubscriptionRpc;
+import org.opendaylight.netconf.sal.remote.impl.CreateNotificationStreamRpc;
 import org.opendaylight.restconf.server.jaxrs.JaxRsEndpoint;
 import org.opendaylight.restconf.server.jaxrs.JaxRsEndpointConfiguration;
 import org.opendaylight.restconf.server.jaxrs.JaxRsLocationProvider;
 import org.opendaylight.restconf.server.mdsal.MdsalDatabindProvider;
 import org.opendaylight.restconf.server.mdsal.MdsalRestconfServer;
 import org.opendaylight.restconf.server.mdsal.MdsalRestconfStreamRegistry;
+import org.opendaylight.restconf.subscription.DeleteSubscriptionRpc;
+import org.opendaylight.restconf.subscription.EstablishSubscriptionRpc;
+import org.opendaylight.restconf.subscription.KillSubscriptionRpc;
+import org.opendaylight.restconf.subscription.ModifySubscriptionRpc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,12 +107,47 @@ public class CommunityRestConf extends AbstractLightyModule {
         }
 
         final MdsalDatabindProvider databindProvider = new MdsalDatabindProvider(domSchemaService);
-        this.server = new MdsalRestconfServer(databindProvider, domDataBroker, domRpcService,
-            domActionService, domMountPointService);
 
         this.jettyServer = this.lightyServerBuilder.getServer();
         this.mdsalRestconfStreamRegistry = new MdsalRestconfStreamRegistry(domDataBroker, domNotificationService,
             domSchemaService, new JaxRsLocationProvider(), databindProvider);
+
+        final CreateNotificationStreamRpc createStreamRpc = new CreateNotificationStreamRpc(
+                this.mdsalRestconfStreamRegistry,
+                databindProvider,
+                this.domNotificationService
+            );
+        final SubscribeDeviceNotificationRpc subscribeDeviceRpc = new SubscribeDeviceNotificationRpc(
+                this.mdsalRestconfStreamRegistry,
+                domMountPointService
+            );
+
+        final EstablishSubscriptionRpc establishSubscriptionRpc =
+            new EstablishSubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final ModifySubscriptionRpc modifySubscriptionRpc =
+            new ModifySubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final DeleteSubscriptionRpc deleteSubscriptionRpc =
+            new DeleteSubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final KillSubscriptionRpc killSubscriptionRpc = new KillSubscriptionRpc(this.mdsalRestconfStreamRegistry);
+        final CreateDataChangeEventSubscriptionRpc createDataChangeEventSubscriptionRpc =
+            new CreateDataChangeEventSubscriptionRpc(this.mdsalRestconfStreamRegistry, databindProvider,
+                domDataBroker);
+
+        this.server = new MdsalRestconfServer(
+            databindProvider,
+            domDataBroker,
+            domRpcService,
+            domActionService,
+            domMountPointService,
+            createStreamRpc,
+            subscribeDeviceRpc,
+            establishSubscriptionRpc,
+            modifySubscriptionRpc,
+            deleteSubscriptionRpc,
+            killSubscriptionRpc,
+            createDataChangeEventSubscriptionRpc
+        );
+
         this.jaxRsEndpoint = new JaxRsEndpoint(
             jettyServer,
             this.webContextSecurer,
