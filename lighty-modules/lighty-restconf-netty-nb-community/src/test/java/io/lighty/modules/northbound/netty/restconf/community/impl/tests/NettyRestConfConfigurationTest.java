@@ -21,11 +21,11 @@ public class NettyRestConfConfigurationTest {
         final var defaultRestConfConfiguration = NettyRestConfUtils.getDefaultNettyRestConfConfiguration();
         final var restConfConfiguration = new NettyRestConfConfiguration(defaultRestConfConfiguration);
 
-        Assertions.assertEquals(0, defaultRestConfConfiguration.getWorkThreads());
-        Assertions.assertEquals("lighty-restconf-nb-worker", defaultRestConfConfiguration.getGroupName());
+        Assert.assertEquals(defaultRestConfConfiguration.getWorkThreads(), 0);
+        Assert.assertEquals(defaultRestConfConfiguration.getGroupName(), "lighty-restconf-nb-worker");
 
-        Assertions.assertEquals(defaultRestConfConfiguration, restConfConfiguration);
-        Assertions.assertEquals(restConfConfiguration.hashCode(), defaultRestConfConfiguration.hashCode());
+        Assert.assertEquals(defaultRestConfConfiguration, restConfConfiguration);
+        Assert.assertEquals(restConfConfiguration.hashCode(), defaultRestConfConfiguration.hashCode());
 
         restConfConfiguration.setHttpPort(3333);
         restConfConfiguration.setInetAddress(InetAddress.getLoopbackAddress());
@@ -38,11 +38,11 @@ public class NettyRestConfConfigurationTest {
     public void testNettyRestConfConfigurationUtilsLoadFromStream() throws ConfigurationException {
         final var resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("restconf-config.json");
         final var restConfConfiguration = NettyRestConfUtils.getNettyRestConfConfiguration(resourceAsStream);
-        Assertions.assertNotNull(restConfConfiguration);
-        Assertions.assertEquals(5555, restConfConfiguration.getHttpPort());
-        Assertions.assertEquals("127.0.0.3", restConfConfiguration.getInetAddress().getHostAddress());
-        Assertions.assertEquals("netty-group-name", restConfConfiguration.getGroupName());
-        Assertions.assertEquals(2, restConfConfiguration.getWorkThreads());
+        Assert.assertNotNull(restConfConfiguration);
+        Assert.assertEquals(restConfConfiguration.getHttpPort(), 5555);
+        Assert.assertEquals(restConfConfiguration.getInetAddress().getHostAddress(), "127.0.0.3");
+        Assert.assertEquals(restConfConfiguration.getGroupName(), "netty-group-name");
+        Assert.assertEquals(restConfConfiguration.getWorkThreads(), 2);
     }
 
 }
