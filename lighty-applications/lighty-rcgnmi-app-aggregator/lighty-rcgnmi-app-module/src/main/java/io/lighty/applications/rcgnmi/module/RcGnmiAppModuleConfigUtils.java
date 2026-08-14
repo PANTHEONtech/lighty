@@ -54,9 +54,11 @@ public final class RcGnmiAppModuleConfigUtils {
         final RestConfConfiguration restconfConfig = RestConfConfigUtils.getDefaultRestConfConfiguration();
         // by default listen on any IP address (0.0.0.0) not only on loopback
         restconfConfig.setInetAddress(new InetSocketAddress(restconfConfig.getHttpPort()).getAddress());
+        LOG.debug("Loading default lighty.io gNMI module configuration...");
+        final GnmiConfiguration gnmiConfiguration = new GnmiConfiguration();
         LOG.debug("Loading default lighty.io app modules configuration...");
         final ModulesConfig modulesConfig = ModulesConfig.getDefaultModulesConfig();
-        return new RcGnmiAppConfiguration(controllerConfig, restconfConfig, new GnmiConfiguration(), modulesConfig);
+        return new RcGnmiAppConfiguration(controllerConfig, restconfConfig, gnmiConfiguration, modulesConfig);
     }
 
     public static RcGnmiAppConfiguration loadConfiguration(final Path path) throws ConfigurationException, IOException {
