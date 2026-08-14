@@ -39,7 +39,6 @@ public final class RcGnmiAppModuleConfigUtils {
     public static final String GNMI_CONFIG_JSON_ROOT_ELEMENT = "gnmi";
     public static final String SCHEMA_SERVICE_ELEMENT_NAME = "schemaServiceConfig";
 
-
     private RcGnmiAppModuleConfigUtils() {
         throw new UnsupportedOperationException();
     }
@@ -107,7 +106,7 @@ public final class RcGnmiAppModuleConfigUtils {
     }
 
     private static GnmiConfiguration getGnmiConfiguration(final InputStream jsonConfigInputStream)
-        throws ConfigurationException {
+            throws ConfigurationException {
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode configNode;
         try {
@@ -121,11 +120,10 @@ public final class RcGnmiAppModuleConfigUtils {
         }
         final GnmiConfiguration gnmiConfiguration;
         try {
-            JsonNode gnmiConfigJsonNode = configNode.path(GNMI_CONFIG_JSON_ROOT_ELEMENT);
-            gnmiConfiguration
-                = mapper.treeToValue(gnmiConfigJsonNode, GnmiConfiguration.class);
-            final Optional<Set<YangModuleInfo>> yangModulesInfo
-                = getYangModulesInfoFromConfig(mapper, gnmiConfigJsonNode);
+            final JsonNode gnmiConfigJsonNode = configNode.path(GNMI_CONFIG_JSON_ROOT_ELEMENT);
+            gnmiConfiguration = mapper.treeToValue(gnmiConfigJsonNode, GnmiConfiguration.class);
+            final Optional<Set<YangModuleInfo>> yangModulesInfo = getYangModulesInfoFromConfig(mapper,
+                gnmiConfigJsonNode);
             yangModulesInfo.ifPresent(gnmiConfiguration::setYangModulesInfo);
         } catch (final JsonProcessingException e) {
             throw new ConfigurationException(String.format("Cannot bind Json tree to type: %s",
@@ -134,9 +132,8 @@ public final class RcGnmiAppModuleConfigUtils {
         return gnmiConfiguration;
     }
 
-
     public static Optional<Set<YangModuleInfo>> getYangModulesInfoFromConfig(final ObjectMapper mapper,
-        final JsonNode gnmiConfigJsonNode) throws JsonProcessingException {
+            final JsonNode gnmiConfigJsonNode) throws JsonProcessingException {
         if (gnmiConfigJsonNode.has(SCHEMA_SERVICE_ELEMENT_NAME)) {
             final JsonNode schemaServiceElement = gnmiConfigJsonNode.path(SCHEMA_SERVICE_ELEMENT_NAME);
             if (schemaServiceElement.isArray()) {
