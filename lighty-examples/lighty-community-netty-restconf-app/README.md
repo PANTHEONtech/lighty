@@ -23,13 +23,13 @@ build the project: ```mvn clean install```
 ### Start this demo example
 * build the project using ```mvn clean install```
 * go to target directory ```cd lighty-examples/lighty-community-netty-restconf-app/target```
-* unzip example application bundle ```unzip lighty-community-netty-restconf-app-24.0.0-bin.zip```
-* go to unzipped application directory ```cd lighty-community-netty-restconf-app-24.0.0```
-* start the example controller application ```java -jar lighty-community-netty-restconf-app-24.0.0.jar```
+* unzip example application bundle ```unzip lighty-community-netty-restconf-app-24.0.0-SNAPSHOT-bin.zip```
+* go to unzipped application directory ```cd lighty-community-netty-restconf-app-24.0.0-SNAPSHOT```
+* start the example controller application ```java -jar lighty-community-netty-restconf-app-24.0.0-SNAPSHOT.jar```
 
 ### Test example application
 Once the example application has been started using the command
-```java -jar lighty-community-netty-restconf-app-24.0.0.jar```
+```java -jar lighty-community-netty-restconf-app-24.0.0-SNAPSHOT.jar```
 RESTCONF web interface is available at URL ```http://localhost:8888/restconf/*```
 
 Unlike `lighty-community-restconf-netconf-app`, this application requires HTTP Basic authentication on every
