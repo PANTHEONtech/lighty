@@ -21,6 +21,13 @@
     <groupId>io.lighty.applications.rcgnmi</groupId>
     <artifactId>lighty-gnmi-device-simulator</artifactId>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/PANTHEONtech/lighty</url>
+
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.gnmi</groupId>
