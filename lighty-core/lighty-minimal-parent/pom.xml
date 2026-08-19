@@ -108,8 +108,6 @@
                                 <artifactId>lighty-community-restconf-netconf-app</artifactId>
                                 <artifactId>lighty-controller-springboot</artifactId>
                                 <artifactId>lighty-core-aggregator</artifactId>
-                                <artifactId>lighty-gnmi-models</artifactId>
-                                <artifactId>lighty-gnmi-test</artifactId>
                                 <artifactId>lighty-gnmi</artifactId>
                                 <artifactId>lighty-guice-app</artifactId>
                                 <artifactId>lighty-models-aggregator</artifactId>
