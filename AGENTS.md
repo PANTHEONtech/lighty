@@ -14,7 +14,7 @@ lighty.io is a Java SDK/runtime built on OpenDaylight (ODL) core components, pac
 - **lighty-resources** - Resource artifacts.
 - **lighty-tests-report** - Test reporting.
 
-Current branch tracks OpenDaylight 2026-03 "Chromium" release compatibility.
+Current branch tracks OpenDaylight 2026-09 "Manganese" release compatibility.
 
 ## Build & test
 
