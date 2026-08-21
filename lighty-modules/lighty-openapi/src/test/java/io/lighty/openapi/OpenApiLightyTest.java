@@ -10,6 +10,7 @@ package io.lighty.openapi;
 
 import java.io.IOException;
 import java.net.URI;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -32,11 +33,12 @@ public abstract class OpenApiLightyTest extends OpenApiLightyTestBase {
     }
 
     public void testGetAllModulesDoc(UriInfo uriInfo) throws IOException {
-        assertSuccessResponse(getJaxRsOpenapi().getAllModulesDoc(uriInfo, 0, 0, 0, 0));
+        assertSuccessResponse(getJaxRsOpenapi().getAllModulesDoc(uriInfo, mockHttpHeaders(), 0, 0, 0, 0));
     }
 
     public void testGetDocByModule(UriInfo uriInfo, String modelName, String revisionDate) throws IOException {
-        assertSuccessResponse(getJaxRsOpenapi().getDocByModule(modelName, revisionDate, uriInfo, 0, 0));
+        assertSuccessResponse(
+            getJaxRsOpenapi().getDocByModule(modelName, revisionDate, uriInfo, mockHttpHeaders(), 0, 0));
     }
 
     public void testGetApiExplorer(UriInfo uriInfo) {
@@ -49,6 +51,12 @@ public abstract class OpenApiLightyTest extends OpenApiLightyTestBase {
     private void assertSuccessResponse(Response response) {
         Assert.assertEquals(response.getStatus(), 200);
         Assert.assertNotNull(response.getEntity());
+    }
+
+    protected HttpHeaders mockHttpHeaders() {
+        final HttpHeaders headers = Mockito.mock(HttpHeaders.class);
+        Mockito.when(headers.getHeaderString(Mockito.anyString())).thenReturn(null);
+        return headers;
     }
 
     protected UriInfo mockUriInfo(String path) {

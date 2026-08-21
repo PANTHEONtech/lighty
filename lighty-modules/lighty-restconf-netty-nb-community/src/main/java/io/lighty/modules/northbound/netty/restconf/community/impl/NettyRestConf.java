@@ -118,7 +118,8 @@ public class NettyRestConf extends AbstractLightyModule {
         final var serverStackGrouping = new HttpServerStackConfiguration(new TcpBuilder().setTcp(tcpConfig).build());
         final NettyEndpointConfiguration configuration = new NettyEndpointConfiguration(ErrorTagMapping.RFC8040,
             PrettyPrintParam.FALSE, Uint16.valueOf(0), Uint32.valueOf(10000), restconfServletContextPath,
-            MessageEncoding.JSON, serverStackGrouping, Uint32.valueOf(262144), Uint32.valueOf(16384));
+            MessageEncoding.JSON, serverStackGrouping, Uint32.valueOf(262144), Uint32.valueOf(16384),
+            Uint32.valueOf(32 * 1024),  Uint32.valueOf(64 * 1024));
         final var bootstrapFactory = new BootstrapFactory(groupName, workThreads);
         nettyEndpoint = new SimpleNettyEndpoint(server, service, mdsalRestconfStreamRegistry,
             bootstrapFactory, configuration);
