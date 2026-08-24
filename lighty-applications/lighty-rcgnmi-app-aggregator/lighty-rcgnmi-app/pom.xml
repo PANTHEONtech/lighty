@@ -36,7 +36,7 @@
             <artifactId>lighty-rcgnmi-app-module</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.beust</groupId>
+            <groupId>org.jcommander</groupId>
             <artifactId>jcommander</artifactId>
             <scope>compile</scope>
         </dependency>
