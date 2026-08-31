@@ -41,7 +41,6 @@ import org.opendaylight.restconf.server.mdsal.MdsalRestconfStreamRegistry;
 import org.opendaylight.restconf.server.spi.ErrorTagMapping;
 import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint32;
-import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -131,9 +130,8 @@ public class NettyRestConf extends AbstractLightyModule {
             Uint32.valueOf(16 * 1024),
             Uint32.valueOf(32 * 1024),
             Uint32.valueOf(64 * 1024),
-            "h3=\":8443\"; ma=3600",
-            Uint32.valueOf(3600));
-
+            "h3=\":8443\"; ma=0",
+            Uint32.valueOf(0));
 
         final var bootstrapFactory = new BootstrapFactory(groupName, workThreads);
         nettyEndpoint = new SimpleNettyEndpoint(server, service, mdsalRestconfStreamRegistry,
