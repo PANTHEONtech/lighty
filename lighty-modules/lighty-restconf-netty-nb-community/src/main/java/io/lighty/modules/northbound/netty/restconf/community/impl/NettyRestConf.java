@@ -126,7 +126,6 @@ public class NettyRestConf extends AbstractLightyModule {
             restconfServletContextPath,
             MessageEncoding.JSON,
             serverStackGrouping,
-            Uint32.valueOf(256 * 1024),
             Uint32.valueOf(16 * 1024),
             Uint32.valueOf(32 * 1024),
             Uint32.valueOf(64 * 1024),
