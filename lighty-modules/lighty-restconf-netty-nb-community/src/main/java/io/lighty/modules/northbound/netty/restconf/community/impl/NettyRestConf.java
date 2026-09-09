@@ -124,10 +124,10 @@ public class NettyRestConf extends AbstractLightyModule {
 
         final var configuration = new NettyEndpointConfiguration(ErrorTagMapping.RFC8040, PrettyPrintParam.TRUE,
             Uint16.ZERO, Uint32.valueOf(10_000), "restconf", MessageEncoding.JSON, serverStackGrouping,
-            Uint32.valueOf(256 * 1024), Uint32.valueOf(16 * 1024), Uint32.valueOf(32 * 1024),
             Uint32.valueOf(64 * 1024), "h3=\":8443\"; ma=3600", Uint32.valueOf(3600),
             Uint64.valueOf(4L * 1024 * 1024),
             Uint64.valueOf(256L * 1024), Uint32.valueOf(100));
+            Uint32.valueOf(256 * 1024), Uint32.valueOf(32 * 1024),
 
         final var bootstrapFactory = new BootstrapFactory(groupName, workThreads);
         nettyEndpoint = new SimpleNettyEndpoint(server, service, mdsalRestconfStreamRegistry,
