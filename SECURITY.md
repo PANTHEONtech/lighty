@@ -5,17 +5,20 @@
 Lighty.io version contains 3 numbers representing MAJOR.MINOR.PATCH (X.Y.Z) levels.
 
 MAJOR number is mapped to major OpenDaylight release
-| Lighty.io | OpenDaylight       |
-|-----------|--------------------|
-| 22.Y.Z    | Titanium (2025.03) |
-| 21.Y.Z    | Scandium (2024.09) |
-| ...       |                    |
+| Lighty.io | OpenDaylight           |
+|-----------|------------------------|
+| 24.Y.Z    | Chromium (2026.03)     |
+| 22.Y.Z    | Titanium (2025.03) LTS |
+| ...       |                        |
+
+Titanium (2025.03) LTS is maintained till March 2028. It's expected that Titanium Tail release will have more than 2
+SRs as compared to short-lived Tip releases like Chromium.
 
 MINOR number is mapped to OpenDaylight service release (SR1, SR2, SR3, ..)
 | Lighty.io | OpenDaylight    |
 |-----------|-----------------|
-| 22.1.Z    | Titanium SR1    |
-| 22.2.Z    | Titanium SR2    |
+| 24.1.Z    | Chromium SR1    |
+| 24.2.Z    | Chromium SR2    |
 | ...       |                 |
 
 PATCH number represents Lighty.io release, usually security & bug fixes.
