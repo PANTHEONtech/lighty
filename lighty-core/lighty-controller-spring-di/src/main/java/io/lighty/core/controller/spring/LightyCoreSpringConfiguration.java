@@ -11,9 +11,9 @@ import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModuleRegistryService;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
+import org.opendaylight.controller.pekko.support.ActorSystemInstance;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -127,8 +127,8 @@ public abstract class LightyCoreSpringConfiguration {
     }
 
     @Bean(destroyMethod = "")
-    public ActorSystemProvider actorSystemProvider() {
-        return this.lightyController.getServices().getActorSystemProvider();
+    public ActorSystemInstance actorSystemProvider() {
+        return this.lightyController.getServices().getActorSystemInstance();
     }
 
     @Bean(destroyMethod = "")

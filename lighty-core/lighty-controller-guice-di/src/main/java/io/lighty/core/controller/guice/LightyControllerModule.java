@@ -11,9 +11,9 @@ import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
 import io.lighty.core.controller.api.LightyModuleRegistryService;
 import io.lighty.core.controller.api.LightyServices;
-import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
+import org.opendaylight.controller.pekko.support.ActorSystemInstance;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -56,8 +56,8 @@ public class LightyControllerModule extends AbstractModule {
         LOG.info("initializing Lighty bindings ...");
         bind(DiagStatusService.class)
                 .toInstance(lightyServices.getDiagStatusService());
-        bind(ActorSystemProvider.class)
-                .toInstance(lightyServices.getActorSystemProvider());
+        bind(ActorSystemInstance.class)
+                .toInstance(lightyServices.getActorSystemInstance());
         bind(DOMSchemaService.class)
                 .toInstance(lightyServices.getDOMSchemaService());
         bind(DOMNotificationRouter.class)

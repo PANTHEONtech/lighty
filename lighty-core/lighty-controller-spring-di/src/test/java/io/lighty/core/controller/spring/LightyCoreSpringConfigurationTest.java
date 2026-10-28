@@ -20,9 +20,9 @@ import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
-import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
+import org.opendaylight.controller.pekko.support.ActorSystemInstance;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -72,7 +72,7 @@ class LightyCoreSpringConfigurationTest extends AbstractJUnit4SpringContextTests
     DiagStatusService diagStatusServiceTestProperty;
 
     @Autowired
-    ActorSystemProvider actorSystemProviderTestProperty;
+    ActorSystemInstance actorSystemProviderTestProperty;
 
     @Autowired
     DOMSchemaService domSchemaServiceTestProperty;

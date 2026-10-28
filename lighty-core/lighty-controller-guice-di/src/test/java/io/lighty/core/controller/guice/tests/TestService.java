@@ -11,9 +11,9 @@ import io.lighty.core.controller.api.LightyModuleRegistryService;
 import io.lighty.core.controller.api.LightyServices;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
+import org.opendaylight.controller.pekko.support.ActorSystemInstance;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -41,7 +41,7 @@ public class TestService {
     private DiagStatusService diagStatusService;
 
     @Inject
-    private ActorSystemProvider actorSystemProvider;
+    private ActorSystemInstance actorSystemProvider;
 
     @Inject
     private DOMSchemaService domSchemaService;
@@ -120,7 +120,7 @@ public class TestService {
         return diagStatusService;
     }
 
-    public ActorSystemProvider getActorSystemProvider() {
+    public ActorSystemInstance getActorSystemInstance() {
         return actorSystemProvider;
     }
 

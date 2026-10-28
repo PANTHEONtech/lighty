@@ -26,6 +26,7 @@ import io.lighty.core.controller.impl.util.FileToDatastoreUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,17 +35,13 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.apache.pekko.actor.Terminated;
+import org.apache.pekko.actor.Address;
 import org.apache.pekko.management.javadsl.PekkoManagement;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.controller.cluster.ActorSystemProvider;
-import org.opendaylight.controller.cluster.akka.impl.ActorSystemProviderImpl;
-import org.opendaylight.controller.cluster.common.actor.QuarantinedMonitorActor;
 import org.opendaylight.controller.cluster.databroker.ConcurrentDOMDataBroker;
 import org.opendaylight.controller.cluster.datastore.AbstractDataStore;
 import org.opendaylight.controller.cluster.datastore.DatastoreContext;
@@ -60,6 +57,8 @@ import org.opendaylight.controller.cluster.datastore.config.Configuration;
 import org.opendaylight.controller.cluster.datastore.config.ConfigurationImpl;
 import org.opendaylight.controller.cluster.datastore.config.HybridModuleShardConfigProvider;
 import org.opendaylight.controller.eos.akka.AkkaEntityOwnershipService;
+import org.opendaylight.controller.pekko.support.ActorSystemInstance;
+import org.opendaylight.controller.pekko.support.dagger.ActorSystemCreator;
 import org.opendaylight.controller.remote.rpc.RemoteOpsProvider;
 import org.opendaylight.controller.remote.rpc.RemoteOpsProviderConfig;
 import org.opendaylight.controller.remote.rpc.RemoteOpsProviderFactory;
@@ -150,7 +149,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private final boolean metricCaptureEnabled;
 
     private Configuration clusterConfiguration;
-    private ActorSystemProviderImpl actorSystemProvider;
+    private ActorSystemInstance.WithShutdown actorSystemProvider;
     private DatastoreSnapshotRestore datastoreSnapshotRestore;
     private AbstractDataStore configDatastore;
     private AbstractDataStore operDatastore;
@@ -239,10 +238,22 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         final Stopwatch stopwatch = Stopwatch.createStarted();
 
         //INIT actor system provider
-        this.actorSystemProvider = new ActorSystemProviderImpl(this.actorSystemClassLoader,
-                QuarantinedMonitorActor.props(() -> { }), this.actorSystemConfig);
+        this.actorSystemProvider = ServiceLoader.load(ActorSystemCreator.class).findFirst()
+                .orElseThrow(() -> new IllegalStateException("No ActorSystemCreator available"))
+                .createInstance("opendaylight-cluster-data", this.actorSystemConfig.atKey("odl-cluster-data"),
+                        new ActorSystemCreator.Callbacks() {
+                            @Override
+                            public void onLocalDown() {
+                                LOG.warn("This member has been downed");
+                            }
 
-        this.pekkoManagement = PekkoManagement.get(actorSystemProvider.getActorSystem());
+                            @Override
+                            public void onRemoteQuarantined(final Address quarantinedBy) {
+                                LOG.warn("Actor system quarantined by {}", quarantinedBy);
+                            }
+                        });
+
+        this.pekkoManagement = PekkoManagement.get(actorSystemProvider.actorSystem());
         pekkoManagement.start();
 
         //INIT cluster bootstrap
@@ -374,7 +385,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private AbstractDataStore prepareDataStore(final DatastoreContext datastoreContext,
             final Configuration configuration, final DOMSchemaService domSchemaService,
             final DatastoreSnapshotRestore newDatastoreSnapshotRestore,
-            final ActorSystemProvider newActorSystemProvider) {
+            final ActorSystemInstance newActorSystemInstance) {
         final DefaultDatastoreContextIntrospectorFactory introspectorFactory
             = new DefaultDatastoreContextIntrospectorFactory(new DefaultRaftPolicyResolver(),
             this.codec.currentSerializer());
@@ -383,7 +394,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         final DatastoreContextPropertiesUpdater updater = new DatastoreContextPropertiesUpdater(introspector,
                 datastoreProperties);
         return DistributedDataStoreFactory.createInstance(Path.of("data"), domSchemaService, datastoreContext,
-                newDatastoreSnapshotRestore, newActorSystemProvider, introspector, updater, configuration);
+                newDatastoreSnapshotRestore, newActorSystemInstance.actorSystem(), introspector, updater,
+                configuration);
     }
 
     @Override
@@ -429,25 +441,19 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             this.pekkoManagement.stop();
         }
         if (this.actorSystemProvider != null) {
-
-            final CompletableFuture<Terminated> actorSystemTerminatedFuture = this.actorSystemProvider
-                    .getActorSystem()
-                    .getWhenTerminated().toCompletableFuture();
             final int actorSystemPort = this.actorSystemConfig.getInt("pekko.remote.artery.canonical.port");
 
             try {
-                this.actorSystemProvider.close();
+                this.actorSystemProvider.shutdownAndWait(Duration.ofSeconds(ACTOR_SYSTEM_TERMINATE_TIMEOUT));
             } catch (TimeoutException e) {
-                LOG.error("Closing pekko ActorSystemProvider timed out!", e);
+                LOG.error("Closing pekko ActorSystemInstance timed out!", e);
                 stopSuccessful = false;
             }
 
-            try {
-                actorSystemTerminatedFuture.get(ACTOR_SYSTEM_TERMINATE_TIMEOUT, TimeUnit.SECONDS);
-                SocketAnalyzer.awaitPortAvailable(actorSystemPort, ACTOR_SYSTEM_TERMINATE_TIMEOUT, TimeUnit.SECONDS);
-            } catch (ExecutionException | TimeoutException e) {
+            if (!SocketAnalyzer.awaitPortAvailable(actorSystemPort, ACTOR_SYSTEM_TERMINATE_TIMEOUT,
+                    TimeUnit.SECONDS)) {
                 LOG.error("Actor system port {} not released in last {} {}", actorSystemPort,
-                        ACTOR_SYSTEM_TERMINATE_TIMEOUT, TimeUnit.SECONDS, e);
+                        ACTOR_SYSTEM_TERMINATE_TIMEOUT, TimeUnit.SECONDS);
                 stopSuccessful = false;
             }
         }
@@ -456,11 +462,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     private void createRemoteOpsProvider() {
         final RemoteOpsProviderConfig remoteOpsProviderConfig = new RemoteOpsProviderConfig.Builder(
-            this.actorSystemProvider.getActorSystem().name())
+            this.actorSystemProvider.actorSystem().name())
                 .metricCaptureEnabled(this.metricCaptureEnabled)
                 .mailboxCapacity(this.mailboxCapacity).build();
         this.remoteOpsProvider = RemoteOpsProviderFactory.createInstance(routerDOMRpcProviderService,
-            routerDomRpcService, this.actorSystemProvider.getActorSystem(), remoteOpsProviderConfig,
+            routerDomRpcService, this.actorSystemProvider.actorSystem(), remoteOpsProviderConfig,
             this.domActionProviderService, this.domActionService);
         this.remoteOpsProvider.start();
     }
@@ -498,7 +504,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public ActorSystemProvider getActorSystemProvider() {
+    public ActorSystemInstance getActorSystemInstance() {
         return this.actorSystemProvider;
     }
 

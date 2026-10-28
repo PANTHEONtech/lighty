@@ -66,7 +66,7 @@ public final class NetconfClusteredTopologyPlugin extends AbstractTopologyPlugin
         topology = new NetconfTopologyManager(defaultBaseNetconfSchemas,
                 lightyServices.getBindingDataBroker(),
                 lightyServices.getClusterSingletonServiceProvider(), new DefaultNetconfTimer(),
-                new NetconfTopologySchemaAssembler(1), lightyServices.getActorSystemProvider(),
+                new NetconfTopologySchemaAssembler(1), lightyServices.getActorSystemInstance(),
                 netconfClientFactory, lightyServices.getDOMMountPointService(), encryptionService,
                 lightyServices.getRpcProviderService(), new DeviceActionFactoryImpl(), schemaResourceManager, factory);
         return true;
