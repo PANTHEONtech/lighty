@@ -120,6 +120,7 @@ import org.opendaylight.yangtools.binding.runtime.spi.ModuleInfoSnapshotResolver
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
+import org.opendaylight.yangtools.yang.data.tree.dagger.ReferenceDataTreeFactoryModule;
 import org.opendaylight.yangtools.yang.model.repo.api.MissingSchemaSourceException;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.opendaylight.yangtools.yang.parser.ri.DefaultYangParserFactory;
@@ -386,8 +387,10 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             final DatastoreSnapshotRestore newDatastoreSnapshotRestore,
             final ActorSystemInstance newActorSystemInstance) {
         final DefaultDatastoreContextIntrospectorFactory introspectorFactory
-            = new DefaultDatastoreContextIntrospectorFactory(new DefaultRaftPolicyResolver(),
-            this.codec.currentSerializer());
+            = new DefaultDatastoreContextIntrospectorFactory(
+                ReferenceDataTreeFactoryModule.provideDataTreeFactory(),
+                new DefaultRaftPolicyResolver(),
+                this.codec.currentSerializer());
         final DatastoreContextIntrospector introspector = introspectorFactory
                 .newInstance(datastoreContext.getLogicalStoreType(), datastoreProperties);
         final DatastoreContextPropertiesUpdater updater = new DatastoreContextPropertiesUpdater(introspector,
