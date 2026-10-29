@@ -32,7 +32,7 @@ import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingNormalizedNodeSerializer;
-import org.opendaylight.yangtools.binding.data.codec.impl.di.DefaultDynamicBindingDataCodec;
+import org.opendaylight.yangtools.binding.data.codec.dynamic.DynamicBindingDataCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +70,7 @@ public class LightyControllerModule extends AbstractModule {
                 .toInstance(lightyServices.getOperationalDatastore());
         bind(BindingNormalizedNodeSerializer.class)
                 .toInstance(lightyServices.getBindingNormalizedNodeSerializer());
-        bind(DefaultDynamicBindingDataCodec.class)
+        bind(DynamicBindingDataCodec.class)
                 .toInstance(lightyServices.getBindingCodecTreeFactory());
         bind(DOMEntityOwnershipService.class)
                 .toInstance(lightyServices.getDOMEntityOwnershipService());

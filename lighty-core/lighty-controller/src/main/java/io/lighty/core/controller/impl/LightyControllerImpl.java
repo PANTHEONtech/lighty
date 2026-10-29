@@ -107,8 +107,8 @@ import org.opendaylight.mdsal.singleton.impl.EOSClusterSingletonServiceProvider;
 import org.opendaylight.netconf.yanglib.writer.YangLibraryWriterSingleton;
 import org.opendaylight.raft.spi.DefaultRaftPolicyResolver;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.yangtools.binding.data.codec.dynamic.DynamicBindingDataCodec;
 import org.opendaylight.yangtools.binding.data.codec.impl.BindingCodecContext;
-import org.opendaylight.yangtools.binding.data.codec.impl.di.DefaultDynamicBindingDataCodec;
 import org.opendaylight.yangtools.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.yangtools.binding.meta.YangFeatureProvider;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
@@ -176,7 +176,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private ModuleInfoSnapshotResolver snapshotResolver;
     private DOMSchemaService schemaService;
     private ConstantAdapterContext codec;
-    private DefaultDynamicBindingDataCodec bindingCodecTreeFactory;
+    private DynamicBindingDataCodec bindingCodecTreeFactory;
     private DefaultYangParserFactory yangParserFactory;
     private BindingAdapterFactory bindingAdapterFactory;
     private RpcProviderService rpcProviderService;
@@ -300,9 +300,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         final DefaultBindingRuntimeContext bindingRuntimeContext
                 = new DefaultBindingRuntimeContext(bindingRuntimeTypes, moduleInfoSnapshot);
 
-        this.bindingCodecTreeFactory = new DefaultDynamicBindingDataCodec(bindingRuntimeContext);
-
         final BindingCodecContext bindingCodecContext = new BindingCodecContext(bindingRuntimeContext);
+        this.bindingCodecTreeFactory = bindingCodecContext;
         this.codec = new ConstantAdapterContext(bindingCodecContext);
 
         // CONFIG DATASTORE
@@ -544,7 +543,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public DefaultDynamicBindingDataCodec getBindingCodecTreeFactory() {
+    public DynamicBindingDataCodec getBindingCodecTreeFactory() {
         return this.bindingCodecTreeFactory;
     }
 

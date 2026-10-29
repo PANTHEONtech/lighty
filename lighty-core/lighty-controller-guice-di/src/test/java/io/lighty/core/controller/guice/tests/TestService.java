@@ -32,7 +32,7 @@ import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingNormalizedNodeSerializer;
-import org.opendaylight.yangtools.binding.data.codec.impl.di.DefaultDynamicBindingDataCodec;
+import org.opendaylight.yangtools.binding.data.codec.dynamic.DynamicBindingDataCodec;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
 
 public class TestService {
@@ -61,7 +61,7 @@ public class TestService {
     private BindingNormalizedNodeSerializer bindingNormalizedNodeSerializer;
 
     @Inject
-    private DefaultDynamicBindingDataCodec bindingCodecTreeFactory;
+    private DynamicBindingDataCodec bindingCodecTreeFactory;
 
     @Inject
     private DOMEntityOwnershipService domEntityOwnershipService;
@@ -148,7 +148,7 @@ public class TestService {
         return bindingNormalizedNodeSerializer;
     }
 
-    public DefaultDynamicBindingDataCodec getBindingCodecTreeFactory() {
+    public DynamicBindingDataCodec getBindingCodecTreeFactory() {
         return bindingCodecTreeFactory;
     }
 

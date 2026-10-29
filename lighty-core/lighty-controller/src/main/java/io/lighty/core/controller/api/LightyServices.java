@@ -36,7 +36,7 @@ import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingNormalizedNodeSerializer;
-import org.opendaylight.yangtools.binding.data.codec.impl.di.DefaultDynamicBindingDataCodec;
+import org.opendaylight.yangtools.binding.data.codec.dynamic.DynamicBindingDataCodec;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 
 /**
@@ -69,7 +69,7 @@ public interface LightyServices extends LightyModuleRegistryService {
 
     BindingNormalizedNodeSerializer getBindingNormalizedNodeSerializer();
 
-    DefaultDynamicBindingDataCodec getBindingCodecTreeFactory();
+    DynamicBindingDataCodec getBindingCodecTreeFactory();
 
     DOMEntityOwnershipService getDOMEntityOwnershipService();
 
