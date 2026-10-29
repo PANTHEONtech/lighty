@@ -89,6 +89,11 @@
             <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>yang-data-tree-ri</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.framework</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         <!--odl-mdsal-binding-base-->
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
