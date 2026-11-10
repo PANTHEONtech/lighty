@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 public interface LightyModule {
     /**
      * Start in background and return immediately.
+     *
      * @return true if module initialization was successful, false or exception otherwise.
      */
     ListenableFuture<Boolean> start();

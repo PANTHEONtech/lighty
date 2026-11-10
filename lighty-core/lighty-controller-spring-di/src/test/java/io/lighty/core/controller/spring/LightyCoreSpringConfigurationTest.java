@@ -20,9 +20,9 @@ import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
-import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
+import org.opendaylight.controller.pekko.support.ActorSystemInstance;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -41,7 +41,7 @@ import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingNormalizedNodeSerializer;
-import org.opendaylight.yangtools.binding.data.codec.impl.di.DefaultDynamicBindingDataCodec;
+import org.opendaylight.yangtools.binding.data.codec.dynamic.DynamicBindingDataCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +72,7 @@ class LightyCoreSpringConfigurationTest extends AbstractJUnit4SpringContextTests
     DiagStatusService diagStatusServiceTestProperty;
 
     @Autowired
-    ActorSystemProvider actorSystemProviderTestProperty;
+    ActorSystemInstance actorSystemProviderTestProperty;
 
     @Autowired
     DOMSchemaService domSchemaServiceTestProperty;
@@ -113,7 +113,7 @@ class LightyCoreSpringConfigurationTest extends AbstractJUnit4SpringContextTests
     BindingNormalizedNodeSerializer bindingNormalizedNodeSerializerTestProperty;
 
     @Autowired
-    DefaultDynamicBindingDataCodec bindingCodecTreeFactoryTestProperty;
+    DynamicBindingDataCodec bindingCodecTreeFactoryTestProperty;
 
     @Autowired
     DOMEntityOwnershipService domEntityOwnershipServiceTestProperty;

@@ -26,6 +26,7 @@ import io.lighty.core.controller.impl.util.FileToDatastoreUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,17 +35,13 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.apache.pekko.actor.Terminated;
+import org.apache.pekko.actor.Address;
 import org.apache.pekko.management.javadsl.PekkoManagement;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.controller.cluster.ActorSystemProvider;
-import org.opendaylight.controller.cluster.akka.impl.ActorSystemProviderImpl;
-import org.opendaylight.controller.cluster.common.actor.QuarantinedMonitorActor;
 import org.opendaylight.controller.cluster.databroker.ConcurrentDOMDataBroker;
 import org.opendaylight.controller.cluster.datastore.AbstractDataStore;
 import org.opendaylight.controller.cluster.datastore.DatastoreContext;
@@ -60,6 +57,8 @@ import org.opendaylight.controller.cluster.datastore.config.Configuration;
 import org.opendaylight.controller.cluster.datastore.config.ConfigurationImpl;
 import org.opendaylight.controller.cluster.datastore.config.HybridModuleShardConfigProvider;
 import org.opendaylight.controller.eos.akka.AkkaEntityOwnershipService;
+import org.opendaylight.controller.pekko.support.ActorSystemInstance;
+import org.opendaylight.controller.pekko.support.dagger.ActorSystemCreator;
 import org.opendaylight.controller.remote.rpc.RemoteOpsProvider;
 import org.opendaylight.controller.remote.rpc.RemoteOpsProviderConfig;
 import org.opendaylight.controller.remote.rpc.RemoteOpsProviderFactory;
@@ -108,8 +107,8 @@ import org.opendaylight.mdsal.singleton.impl.EOSClusterSingletonServiceProvider;
 import org.opendaylight.netconf.yanglib.writer.YangLibraryWriterSingleton;
 import org.opendaylight.raft.spi.DefaultRaftPolicyResolver;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.yangtools.binding.data.codec.dynamic.DynamicBindingDataCodec;
 import org.opendaylight.yangtools.binding.data.codec.impl.BindingCodecContext;
-import org.opendaylight.yangtools.binding.data.codec.impl.di.DefaultDynamicBindingDataCodec;
 import org.opendaylight.yangtools.binding.generator.impl.DefaultBindingRuntimeGenerator;
 import org.opendaylight.yangtools.binding.meta.YangFeatureProvider;
 import org.opendaylight.yangtools.binding.meta.YangModuleInfo;
@@ -121,6 +120,7 @@ import org.opendaylight.yangtools.binding.runtime.spi.ModuleInfoSnapshotResolver
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
+import org.opendaylight.yangtools.yang.data.tree.dagger.ReferenceDataTreeFactoryModule;
 import org.opendaylight.yangtools.yang.model.repo.api.MissingSchemaSourceException;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.opendaylight.yangtools.yang.parser.ri.DefaultYangParserFactory;
@@ -150,7 +150,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private final boolean metricCaptureEnabled;
 
     private Configuration clusterConfiguration;
-    private ActorSystemProviderImpl actorSystemProvider;
+    private ActorSystemInstance.WithShutdown actorSystemProvider;
     private DatastoreSnapshotRestore datastoreSnapshotRestore;
     private AbstractDataStore configDatastore;
     private AbstractDataStore operDatastore;
@@ -177,7 +177,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private ModuleInfoSnapshotResolver snapshotResolver;
     private DOMSchemaService schemaService;
     private ConstantAdapterContext codec;
-    private DefaultDynamicBindingDataCodec bindingCodecTreeFactory;
+    private DynamicBindingDataCodec bindingCodecTreeFactory;
     private DefaultYangParserFactory yangParserFactory;
     private BindingAdapterFactory bindingAdapterFactory;
     private RpcProviderService rpcProviderService;
@@ -239,10 +239,22 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         final Stopwatch stopwatch = Stopwatch.createStarted();
 
         //INIT actor system provider
-        this.actorSystemProvider = new ActorSystemProviderImpl(this.actorSystemClassLoader,
-                QuarantinedMonitorActor.props(() -> { }), this.actorSystemConfig);
+        this.actorSystemProvider = ServiceLoader.load(ActorSystemCreator.class).findFirst()
+                .orElseThrow(() -> new IllegalStateException("No ActorSystemCreator available"))
+                .createInstance("opendaylight-cluster-data", this.actorSystemConfig.atKey("odl-cluster-data"),
+                        new ActorSystemCreator.Callbacks() {
+                            @Override
+                            public void onLocalDown() {
+                                LOG.warn("This member has been downed");
+                            }
 
-        this.pekkoManagement = PekkoManagement.get(actorSystemProvider.getActorSystem());
+                            @Override
+                            public void onRemoteQuarantined(final Address quarantinedBy) {
+                                LOG.warn("Actor system quarantined by {}", quarantinedBy);
+                            }
+                        });
+
+        this.pekkoManagement = PekkoManagement.get(actorSystemProvider.actorSystem());
         pekkoManagement.start();
 
         //INIT cluster bootstrap
@@ -289,9 +301,8 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
         final DefaultBindingRuntimeContext bindingRuntimeContext
                 = new DefaultBindingRuntimeContext(bindingRuntimeTypes, moduleInfoSnapshot);
 
-        this.bindingCodecTreeFactory = new DefaultDynamicBindingDataCodec(bindingRuntimeContext);
-
         final BindingCodecContext bindingCodecContext = new BindingCodecContext(bindingRuntimeContext);
+        this.bindingCodecTreeFactory = bindingCodecContext;
         this.codec = new ConstantAdapterContext(bindingCodecContext);
 
         // CONFIG DATASTORE
@@ -374,16 +385,19 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     private AbstractDataStore prepareDataStore(final DatastoreContext datastoreContext,
             final Configuration configuration, final DOMSchemaService domSchemaService,
             final DatastoreSnapshotRestore newDatastoreSnapshotRestore,
-            final ActorSystemProvider newActorSystemProvider) {
+            final ActorSystemInstance newActorSystemInstance) {
         final DefaultDatastoreContextIntrospectorFactory introspectorFactory
-            = new DefaultDatastoreContextIntrospectorFactory(new DefaultRaftPolicyResolver(),
-            this.codec.currentSerializer());
+            = new DefaultDatastoreContextIntrospectorFactory(
+                ReferenceDataTreeFactoryModule.provideDataTreeFactory(),
+                new DefaultRaftPolicyResolver(),
+                this.codec.currentSerializer());
         final DatastoreContextIntrospector introspector = introspectorFactory
                 .newInstance(datastoreContext.getLogicalStoreType(), datastoreProperties);
         final DatastoreContextPropertiesUpdater updater = new DatastoreContextPropertiesUpdater(introspector,
                 datastoreProperties);
         return DistributedDataStoreFactory.createInstance(Path.of("data"), domSchemaService, datastoreContext,
-                newDatastoreSnapshotRestore, newActorSystemProvider, introspector, updater, configuration);
+                newDatastoreSnapshotRestore, newActorSystemInstance.actorSystem(), introspector, updater,
+                configuration);
     }
 
     @Override
@@ -429,25 +443,19 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
             this.pekkoManagement.stop();
         }
         if (this.actorSystemProvider != null) {
-
-            final CompletableFuture<Terminated> actorSystemTerminatedFuture = this.actorSystemProvider
-                    .getActorSystem()
-                    .getWhenTerminated().toCompletableFuture();
             final int actorSystemPort = this.actorSystemConfig.getInt("pekko.remote.artery.canonical.port");
 
             try {
-                this.actorSystemProvider.close();
+                this.actorSystemProvider.shutdownAndWait(Duration.ofSeconds(ACTOR_SYSTEM_TERMINATE_TIMEOUT));
             } catch (TimeoutException e) {
-                LOG.error("Closing pekko ActorSystemProvider timed out!", e);
+                LOG.error("Closing pekko ActorSystemInstance timed out!", e);
                 stopSuccessful = false;
             }
 
-            try {
-                actorSystemTerminatedFuture.get(ACTOR_SYSTEM_TERMINATE_TIMEOUT, TimeUnit.SECONDS);
-                SocketAnalyzer.awaitPortAvailable(actorSystemPort, ACTOR_SYSTEM_TERMINATE_TIMEOUT, TimeUnit.SECONDS);
-            } catch (ExecutionException | TimeoutException e) {
+            if (!SocketAnalyzer.awaitPortAvailable(actorSystemPort, ACTOR_SYSTEM_TERMINATE_TIMEOUT,
+                    TimeUnit.SECONDS)) {
                 LOG.error("Actor system port {} not released in last {} {}", actorSystemPort,
-                        ACTOR_SYSTEM_TERMINATE_TIMEOUT, TimeUnit.SECONDS, e);
+                        ACTOR_SYSTEM_TERMINATE_TIMEOUT, TimeUnit.SECONDS);
                 stopSuccessful = false;
             }
         }
@@ -456,11 +464,11 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
 
     private void createRemoteOpsProvider() {
         final RemoteOpsProviderConfig remoteOpsProviderConfig = new RemoteOpsProviderConfig.Builder(
-            this.actorSystemProvider.getActorSystem().name())
+            this.actorSystemProvider.actorSystem().name())
                 .metricCaptureEnabled(this.metricCaptureEnabled)
                 .mailboxCapacity(this.mailboxCapacity).build();
         this.remoteOpsProvider = RemoteOpsProviderFactory.createInstance(routerDOMRpcProviderService,
-            routerDomRpcService, this.actorSystemProvider.getActorSystem(), remoteOpsProviderConfig,
+            routerDomRpcService, this.actorSystemProvider.actorSystem(), remoteOpsProviderConfig,
             this.domActionProviderService, this.domActionService);
         this.remoteOpsProvider.start();
     }
@@ -498,7 +506,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public ActorSystemProvider getActorSystemProvider() {
+    public ActorSystemInstance getActorSystemInstance() {
         return this.actorSystemProvider;
     }
 
@@ -538,7 +546,7 @@ public class LightyControllerImpl extends AbstractLightyModule implements Lighty
     }
 
     @Override
-    public DefaultDynamicBindingDataCodec getBindingCodecTreeFactory() {
+    public DynamicBindingDataCodec getBindingCodecTreeFactory() {
         return this.bindingCodecTreeFactory;
     }
 

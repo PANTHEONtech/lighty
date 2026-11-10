@@ -21,6 +21,7 @@ public final class NettyRestConfBuilder {
 
     /**
      * Create new instance of {@link NettyRestConfBuilder} from {@link NettyRestConfConfiguration}.
+     *
      * @param configuration input RestConf configuration.
      * @return instance of {@link NettyRestConfBuilder}.
      */
@@ -41,6 +42,7 @@ public final class NettyRestConfBuilder {
 
     /**
      * Build new {@link NettyRestConf} instance from {@link NettyRestConfBuilder}.
+     *
      * @return instance of CommunityRestConf.
      */
     public NettyRestConf build() {

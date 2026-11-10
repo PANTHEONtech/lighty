@@ -24,6 +24,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
 import org.opendaylight.protocol.bgp.openconfig.routing.policy.impl.DefaultBGPRibRoutingPolicyFactory;
 import org.opendaylight.protocol.bgp.openconfig.routing.policy.spi.SimpleStatementRegistry;
+import org.opendaylight.protocol.bgp.openconfig.routing.policy.statement.LegacyDefinedSetsIndex;
 import org.opendaylight.protocol.bgp.openconfig.routing.policy.statement.StatementActivator;
 import org.opendaylight.protocol.bgp.openconfig.spi.BGPTableTypeRegistryConsumer;
 import org.opendaylight.protocol.bgp.openconfig.spi.DefaultBGPTableTypeRegistryConsumer;
@@ -235,7 +236,7 @@ public class BgpModule extends AbstractLightyModule {
 
     private static SimpleStatementRegistry createStatementRegistry(final DataBroker dataBroker) {
         return new SimpleStatementRegistry(
-                List.of(new StatementActivator(dataBroker),
+                List.of(new StatementActivator(new LegacyDefinedSetsIndex(dataBroker)),
                         new org.opendaylight.protocol.bgp.route.targetcontrain.impl.activators.StatementActivator()));
     }
 

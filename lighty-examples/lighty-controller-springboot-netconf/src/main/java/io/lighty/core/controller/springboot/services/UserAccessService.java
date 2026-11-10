@@ -20,6 +20,7 @@ public interface UserAccessService {
 
     /**
      * Login session with username / password credentials.
+     *
      * @param sessionId unique session id to login
      * @param loginRequest username / password credentials
      * @return {@link Optional} of {@link UserData}, present if user credentials are valid, empty otherwise.
@@ -28,6 +29,7 @@ public interface UserAccessService {
 
     /**
      * Check is session is authenticated.
+     *
      * @param sessionId unique session id to check
      * @return {@link Optional} of {@link UserData}, present if session has been previously authenticated, empty otherwise.
      */
@@ -35,6 +37,7 @@ public interface UserAccessService {
 
     /**
      * Logout session.
+     *
      * @param sessionId unique session id to logout
      */
     void logout(String sessionId);

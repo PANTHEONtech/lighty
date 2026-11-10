@@ -11,9 +11,9 @@ import io.lighty.core.controller.api.LightyController;
 import io.lighty.core.controller.api.LightyModuleRegistryService;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
+import org.opendaylight.controller.pekko.support.ActorSystemInstance;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -32,7 +32,7 @@ import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingNormalizedNodeSerializer;
-import org.opendaylight.yangtools.binding.data.codec.impl.di.DefaultDynamicBindingDataCodec;
+import org.opendaylight.yangtools.binding.data.codec.dynamic.DynamicBindingDataCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -127,8 +127,8 @@ public abstract class LightyCoreSpringConfiguration {
     }
 
     @Bean(destroyMethod = "")
-    public ActorSystemProvider actorSystemProvider() {
-        return this.lightyController.getServices().getActorSystemProvider();
+    public ActorSystemInstance actorSystemProvider() {
+        return this.lightyController.getServices().getActorSystemInstance();
     }
 
     @Bean(destroyMethod = "")
@@ -195,7 +195,7 @@ public abstract class LightyCoreSpringConfiguration {
     }
 
     @Bean(destroyMethod = "")
-    public DefaultDynamicBindingDataCodec bindingCodecTreeFactory() {
+    public DynamicBindingDataCodec bindingCodecTreeFactory() {
         return this.lightyController.getServices().getBindingCodecTreeFactory();
     }
 
