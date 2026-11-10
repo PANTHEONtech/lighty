@@ -33,6 +33,7 @@ public class NetconfCallhomePluginBuilder {
     /**
      * Create new instance of {@link NetconfCallhomePluginBuilder} from {@link NetconfConfiguration} and
      * {@link LightyServices}.
+     *
      * @param config input Netconf configuration.
      * @param services services from {@link LightyController}
      * @return instance of {@link NetconfCallhomePluginBuilder} class.
@@ -44,6 +45,7 @@ public class NetconfCallhomePluginBuilder {
 
     /**
      * Inject executor service to execute futures.
+     *
      * @param executor injected executor service.
      * @return instance of {@link NetconfCallhomePluginBuilder}.
      */
@@ -54,6 +56,7 @@ public class NetconfCallhomePluginBuilder {
 
     /**
      * Build new instance of {@link NetconfCallhomePlugin} from {@link NetconfCallhomePluginBuilder}.
+     *
      * @return instance of NetconfSouthboundPlugin.
      */
     public NetconfCallhomePlugin build() {

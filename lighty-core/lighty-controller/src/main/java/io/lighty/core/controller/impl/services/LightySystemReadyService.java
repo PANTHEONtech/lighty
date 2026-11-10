@@ -24,6 +24,7 @@ public interface LightySystemReadyService {
      * Called when lighty application star sequence is completed. This sets internal state of {@link SystemReadyMonitor}
      * to {@link SystemState#ACTIVE}, all registered listeners will be notified by calling
      * {@link SystemReadyListener#onSystemBootReady()} method.
+     *
      * @return number of registered listeners notified about system ready state change.
      */
     int onSystemBootReady();
@@ -31,6 +32,7 @@ public interface LightySystemReadyService {
     /**
      * Called when lighty application star sequence is fails. This sets internal state of {@link SystemReadyMonitor}
      * to {@link SystemState#FAILURE}, no listeners are notified.
+     *
      * @return number of registered listeners in {@link SystemReadyMonitor}.
      */
     int onSystemBootFailed();

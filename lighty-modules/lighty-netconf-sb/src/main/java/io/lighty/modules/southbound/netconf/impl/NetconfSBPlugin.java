@@ -18,12 +18,14 @@ public interface NetconfSBPlugin extends LightyModule {
 
     /**
      * Indicates if this instance is clustered or not.
+     *
      * @return True if this instance of NETCONF SBP is clustered, false otherwise.
      */
     boolean isClustered();
 
     /**
      * Create an instance of {@link NetconfBaseService} for specific device (mount point).
+     *
      * @param nodeId Unique identifier of Netconf node in topology-netconf.
      * @return Instance of {@link NetconfBaseService} or empty if node is not found by nodeId.
      */
@@ -31,6 +33,7 @@ public interface NetconfSBPlugin extends LightyModule {
 
     /**
      * Create an instance of {@link NetconfNmdaBaseService} for specific device (mount point).
+     *
      * @param nodeId Unique identifier of Netconf node in topology-netconf.
      * @return Instance of {@link NetconfNmdaBaseService} or empty if node is not found by nodeId.
      */

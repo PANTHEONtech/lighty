@@ -85,6 +85,7 @@ public final class ControllerConfigUtils {
 
     /**
      * Read configuration from InputStream representing JSON configuration data.
+     *
      * @param jsonConfigInputStream InputStream representing JSON configuration.
      * @return Instance of LightyController configuration data.
      * @throws ConfigurationException Thrown in case that JSON configuration is not readable or incorrect, or yang
@@ -197,6 +198,7 @@ public final class ControllerConfigUtils {
 
     /**
      * Get typical single node configuration with default model set.
+     *
      * @return Instance of LightyController configuration data.
      * @throws ConfigurationException if unable to find pekko config files
      */
@@ -207,6 +209,7 @@ public final class ControllerConfigUtils {
 
     /**
      * Get typical single node configuration with custom model set.
+     *
      * @param additionalModels List of models which is used in addition to default model set.
      * @return Instance of LightyController configuration data.
      * @throws ConfigurationException if unable to find pekko config files

@@ -29,6 +29,7 @@ public class NetconfTopologyPluginBuilder {
     /**
      * Create new instance of {@link NetconfTopologyPluginBuilder} from {@link NetconfConfiguration}
      * and {@link LightyServices}.
+     *
      * @param config input single-node Netconf configuration.
      * @param services services from {@link LightyController}.
      * @return instance of {@link NetconfTopologyPluginBuilder}.
@@ -40,6 +41,7 @@ public class NetconfTopologyPluginBuilder {
 
     /**
      * Inject executor service to execute futures.
+     *
      * @param executor injeted executor service.
      * @return instance of {@link NetconfTopologyPluginBuilder}.
      */
@@ -50,6 +52,7 @@ public class NetconfTopologyPluginBuilder {
 
     /**
      * Build new instance of {@link NetconfTopologyPlugin} from {@link NetconfTopologyPluginBuilder}.
+     *
      * @return instance of NetconfSouthboundPlugin.
      */
     public NetconfSBPlugin build() {
