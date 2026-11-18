@@ -23,10 +23,11 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContext;
 import org.opendaylight.yangtools.yang.data.util.DataSchemaContextTree;
 import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+import org.opendaylight.yangtools.yang.model.api.EffectiveStatementEquivalent;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
-import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
-import org.opendaylight.yangtools.yang.model.api.SchemaNode;
+import org.opendaylight.yangtools.yang.model.api.stmt.NotificationEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.RpcEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.SchemaTreeEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.util.SchemaInferenceStack.Inference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -41,21 +42,22 @@ public final class ConverterUtils {
     }
 
     /**
-     * Returns the {@link RpcDefinition} from the given {@link EffectiveModelContext} and given {@link QName}.
-     * The {@link QName} of a rpc can be constructed via
+     * Returns the {@link RpcEffectiveStatement} from the given {@link EffectiveModelContext} and given
+     * {@link QName}. The {@link QName} of a rpc can be constructed via
      *
      * <p>{@code
      * QName.create("http://netconfcentral.org/ns/toaster", "2009-11-20", "make-toast");
      * } , where {@code "make-toast"} is the name of the RPC given in the yang model.
      *
-     * <p>If the given RPC was found in the {@link EffectiveModelContext} the {@link RpcDefinition} will be returned
+     * <p>If the given RPC was found in the {@link EffectiveModelContext} the {@link RpcEffectiveStatement} will be
+     * returned
      *
      * @param effectiveModelContext the effective model context used for the RPC resolution
      * @param rpcQName              {@link QName} of the RPC
-     * @return {@link Optional} representation of the {@link RpcDefinition}
+     * @return {@link Optional} representation of the {@link RpcEffectiveStatement}
      * @see QName
      */
-    public static Optional<? extends RpcDefinition> loadRpc(final EffectiveModelContext effectiveModelContext,
+    public static Optional<RpcEffectiveStatement> loadRpc(final EffectiveModelContext effectiveModelContext,
             final QName rpcQName) {
         Optional<Module> findModule = findModule(effectiveModelContext, rpcQName);
         if (findModule.isEmpty()) {
@@ -65,13 +67,13 @@ public final class ConverterUtils {
     }
 
     /**
-     * Utility method to extract the {@link SchemaNode} for the given Notification.
+     * Utility method to extract the {@link NotificationEffectiveStatement} for the given Notification.
      *
      * @param effectiveModelContext to be used
      * @param notificationQname     yang RPC name
-     * @return {@link Optional} of {@link SchemaNode}
+     * @return {@link Optional} of {@link NotificationEffectiveStatement}
      */
-    public static Optional<? extends NotificationDefinition> loadNotification(
+    public static Optional<NotificationEffectiveStatement> loadNotification(
             final EffectiveModelContext effectiveModelContext, final QName notificationQname) {
         Optional<Module> findModule = findModule(effectiveModelContext, notificationQname);
         if (!findModule.isPresent()) {
@@ -271,8 +273,11 @@ public final class ConverterUtils {
                 : moduleByNamespace.iterator().next());
     }
 
-    private static <T extends SchemaNode> Optional<T> findDefinition(final QName qname, final Collection<T> nodes) {
-        List<T> foundNodes = nodes.stream().filter(node -> node.getQName().getLocalName().equals(qname.getLocalName()))
+    private static <E extends SchemaTreeEffectiveStatement<?>> Optional<E> findDefinition(final QName qname,
+            final Collection<? extends EffectiveStatementEquivalent<E>> nodes) {
+        List<E> foundNodes = nodes.stream()
+                .map(EffectiveStatementEquivalent::asEffectiveStatement)
+                .filter(stmt -> stmt.argument().getLocalName().equals(qname.getLocalName()))
                 .collect(Collectors.toList());
         return Optional.ofNullable(foundNodes.size() != 1 ? null : foundNodes.get(0));
     }
