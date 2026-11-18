@@ -12,7 +12,7 @@ import io.lighty.core.cluster.config.ClusteringConfigUtils;
 import io.lighty.core.cluster.kubernetes.KubernetesClusteringHandlerImpl;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.controller.cluster.ActorSystemProvider;
+import org.opendaylight.controller.pekko.support.ActorSystemInstance;
 
 public final class ClusteringHandlerProvider {
 
@@ -20,7 +20,7 @@ public final class ClusteringHandlerProvider {
         // should not be instantiated
     }
 
-    public static Optional<ClusteringHandler> getClusteringHandler(@NonNull ActorSystemProvider actorSystemProvider,
+    public static Optional<ClusteringHandler> getClusteringHandler(@NonNull ActorSystemInstance actorSystemProvider,
                                                                    @NonNull Config pekkoDeploymentConfig) {
         if (ClusteringConfigUtils.isKubernetesDeployment(pekkoDeploymentConfig)) {
             return Optional.of(new KubernetesClusteringHandlerImpl(actorSystemProvider, pekkoDeploymentConfig));

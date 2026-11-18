@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.pekko.cluster.Cluster;
 import org.apache.pekko.management.cluster.bootstrap.ClusterBootstrap;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.controller.cluster.ActorSystemProvider;
+import org.opendaylight.controller.pekko.support.ActorSystemInstance;
 import org.opendaylight.mdsal.binding.api.RpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev250131.AddReplicasForAllShards;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.cluster.admin.rev250131.AddReplicasForAllShardsInput;
@@ -37,10 +37,10 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
     private static final Logger LOG = LoggerFactory.getLogger(KubernetesClusteringHandlerImpl.class);
 
     private final Config pekkoDeploymentConfig;
-    private final ActorSystemProvider actorSystemProvider;
+    private final ActorSystemInstance actorSystemProvider;
     private Optional<Config> moduleShardsConfig;
 
-    public KubernetesClusteringHandlerImpl(@NonNull final ActorSystemProvider actorSystemProvider,
+    public KubernetesClusteringHandlerImpl(@NonNull final ActorSystemInstance actorSystemProvider,
                                            @NonNull final Config pekkoDeploymentConfig) {
         this.actorSystemProvider = actorSystemProvider;
         this.pekkoDeploymentConfig = pekkoDeploymentConfig;
@@ -56,7 +56,7 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
     @Override
     public void initClustering() {
         LOG.info("Starting ClusterBootstrap");
-        ClusterBootstrap clusterBootstrap = ClusterBootstrap.get(actorSystemProvider.getActorSystem());
+        ClusterBootstrap clusterBootstrap = ClusterBootstrap.get(actorSystemProvider.actorSystem());
         clusterBootstrap.start();
         final CountDownLatch latch = new CountDownLatch(1);
         try {
@@ -71,9 +71,9 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
         }
 
         LOG.info("Cluster is formed, leader= {}",
-                Cluster.get(actorSystemProvider.getActorSystem()).state().getLeader());
-        if (Cluster.get(actorSystemProvider.getActorSystem()).selfAddress()
-                .equals(Cluster.get(actorSystemProvider.getActorSystem()).state().getLeader())) {
+                Cluster.get(actorSystemProvider.actorSystem()).state().getLeader());
+        if (Cluster.get(actorSystemProvider.actorSystem()).selfAddress()
+                .equals(Cluster.get(actorSystemProvider.actorSystem()).state().getLeader())) {
             LOG.info("I am leader, generating custom module-shards.conf");
             final List<String> memberRoles = pekkoDeploymentConfig.getStringList("pekko.cluster.roles");
             final String data = ClusteringConfigUtils.generateModuleShardsForMembers(memberRoles);
@@ -85,7 +85,7 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
 
     @Override
     public void start(@NonNull final RpcService clusterAdminRPCService) {
-        this.actorSystemProvider.getActorSystem().actorOf(
+        this.actorSystemProvider.actorSystem().actorOf(
                 MemberRemovedListener.props(clusterAdminRPCService), "memberRemovedListener");
         this.askForShards(clusterAdminRPCService.getRpc(AddReplicasForAllShards.class));
     }
@@ -100,8 +100,8 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
      * the leader for snapshots of the shards.
      */
     private void askForShards(final Rpc<AddReplicasForAllShardsInput, ?> clusterAdminRpcService) {
-        if (!Cluster.get(actorSystemProvider.getActorSystem()).selfAddress()
-                .equals(Cluster.get(actorSystemProvider.getActorSystem()).state().getLeader())) {
+        if (!Cluster.get(actorSystemProvider.actorSystem()).selfAddress()
+                .equals(Cluster.get(actorSystemProvider.actorSystem()).state().getLeader())) {
             LOG.info("RPC call - Asking for Shard Snapshots");
             try {
                 final var rpcResult = clusterAdminRpcService.invoke(
@@ -123,7 +123,7 @@ public class KubernetesClusteringHandlerImpl implements ClusteringHandler {
         ListeningScheduledExecutorService listeningScheduledExecutorService =
                 MoreExecutors.listeningDecorator(Executors.newSingleThreadScheduledExecutor());
         return listeningScheduledExecutorService.scheduleAtFixedRate(() -> {
-            if (Cluster.get(actorSystemProvider.getActorSystem()).state().getLeader() != null) {
+            if (Cluster.get(actorSystemProvider.actorSystem()).state().getLeader() != null) {
                 latch.countDown();
             }
         }, 1, 1, TimeUnit.SECONDS);

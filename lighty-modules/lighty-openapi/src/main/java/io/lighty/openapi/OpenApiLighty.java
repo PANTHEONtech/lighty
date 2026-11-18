@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * OpenApi initializer for lighty.io.
+ *
  * @author juraj.veverka
  */
 public class OpenApiLighty extends AbstractLightyModule {

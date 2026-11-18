@@ -27,6 +27,7 @@ public final class CommunityRestConfBuilder {
 
     /**
      * Create new instance of {@link CommunityRestConfBuilder} from {@link RestConfConfiguration}.
+     *
      * @param configuration input RestConf configuration.
      * @return instance of {@link CommunityRestConfBuilder}.
      */
@@ -66,6 +67,7 @@ public final class CommunityRestConfBuilder {
 
     /**
      * Build new {@link CommunityRestConf} instance from {@link CommunityRestConfBuilder}.
+     *
      * @return instance of CommunityRestConf.
      */
     public CommunityRestConf build() {

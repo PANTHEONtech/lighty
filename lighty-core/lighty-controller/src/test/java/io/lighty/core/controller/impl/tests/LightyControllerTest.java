@@ -29,8 +29,8 @@ class LightyControllerTest extends LightyControllerTestBase {
         assertEquals(new HashSet<>(),
                 lightyController.getServices().getDiagStatusService().getAllServiceDescriptors());
 
-        assertNotNull(lightyController.getServices().getActorSystemProvider());
-        assertNotNull(lightyController.getServices().getActorSystemProvider().getActorSystem());
+        assertNotNull(lightyController.getServices().getActorSystemInstance());
+        assertNotNull(lightyController.getServices().getActorSystemInstance().actorSystem());
         assertNotNull(lightyController.getServices().getDOMSchemaService());
         assertNotNull(lightyController.getServices().getYangTextSourceExtension());
         assertNotNull(lightyController.getServices().getDOMNotificationRouter());

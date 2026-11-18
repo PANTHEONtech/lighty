@@ -17,6 +17,7 @@ public interface LightyController extends LightyModule {
 
     /**
      * Get important controller services.
+     *
      * @return running controller services.
      */
     LightyServices getServices();

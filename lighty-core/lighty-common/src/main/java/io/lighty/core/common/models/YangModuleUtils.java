@@ -32,6 +32,7 @@ public final class YangModuleUtils {
 
     /**
      * Get all Yang modules from classpath using ServiceLoader scanning.
+     *
      * @return Complete list of models found on classpath.
      */
     public static Set<YangModuleInfo> getAllModelsFromClasspath() {
@@ -47,6 +48,7 @@ public final class YangModuleUtils {
     /**
      * Filter top-level models from given entry set.
      * Top level model is considered the model which is never used as dependency for other model.
+     *
      * @param models Unfiltered entry set of models.
      * @return Filtered set of top-level models only.
      */
@@ -63,6 +65,7 @@ public final class YangModuleUtils {
     /**
      * Filter unique models from given entry set.
      * This filter scans recursively dependencies and returns minimal set of models that are unique.
+     *
      * @param models Unfiltered entry set of models.
      * @return Filtered set of unique models only.
      */
@@ -135,6 +138,7 @@ public final class YangModuleUtils {
 
     /**
      * Generate JSON configuration snippet containing list of models from set of {@link YangModuleInfo}.
+     *
      * @param models input set of models.
      * @return JSON configuration snippet as {@link ArrayNode}.
      */

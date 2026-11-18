@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.aaa</groupId>
-            <artifactId>aaa-encrypt-service</artifactId>
+            <artifactId>aaa-encrypt-service-api</artifactId>
         </dependency>
     </dependencies>
 

@@ -56,7 +56,7 @@ public class NetconfCallhomePlugin extends AbstractLightyModule {
                 manager, defaultBaseNetconfSchemas, lightyServices.getBindingDataBroker(),
                 lightyServices.getDOMMountPointService(), new DeviceActionFactoryImpl(), configuration);
         this.provider = new IetfZeroTouchCallHomeServerProvider(timer, dispatcher, authProvider, mountStatusReporter,
-                configuration);
+                lightyServices.getBindingDataBroker(), configuration);
     }
 
     @Override

@@ -64,8 +64,8 @@ class GuiceDITest {
     }
 
     @Test
-    void testDIActorSystemProvider() {
-        assertNotNull(testService.getActorSystemProvider());
+    void testDIActorSystemInstance() {
+        assertNotNull(testService.getActorSystemInstance());
     }
 
     @Test

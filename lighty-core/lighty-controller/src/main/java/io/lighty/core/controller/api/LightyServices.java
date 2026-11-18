@@ -8,9 +8,9 @@
 package io.lighty.core.controller.api;
 
 import io.lighty.core.controller.impl.services.LightySystemReadyService;
-import org.opendaylight.controller.cluster.ActorSystemProvider;
 import org.opendaylight.controller.cluster.datastore.DistributedDataStoreInterface;
 import org.opendaylight.controller.cluster.datastore.admin.ClusterAdminRpcService;
+import org.opendaylight.controller.pekko.support.ActorSystemInstance;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.infrautils.ready.SystemReadyMonitor;
 import org.opendaylight.mdsal.binding.api.ActionProviderService;
@@ -36,7 +36,7 @@ import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingNormalizedNodeSerializer;
-import org.opendaylight.yangtools.binding.data.codec.impl.di.DefaultDynamicBindingDataCodec;
+import org.opendaylight.yangtools.binding.data.codec.dynamic.DynamicBindingDataCodec;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 
 /**
@@ -53,7 +53,7 @@ public interface LightyServices extends LightyModuleRegistryService {
 
     LightySystemReadyService getLightySystemReadyService();
 
-    ActorSystemProvider getActorSystemProvider();
+    ActorSystemInstance getActorSystemInstance();
 
     DOMSchemaService getDOMSchemaService();
 
@@ -69,7 +69,7 @@ public interface LightyServices extends LightyModuleRegistryService {
 
     BindingNormalizedNodeSerializer getBindingNormalizedNodeSerializer();
 
-    DefaultDynamicBindingDataCodec getBindingCodecTreeFactory();
+    DynamicBindingDataCodec getBindingCodecTreeFactory();
 
     DOMEntityOwnershipService getDOMEntityOwnershipService();
 
