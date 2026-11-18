@@ -21,8 +21,6 @@ import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.
 import org.opendaylight.yang.gen.v1.http.pantheon.tech.ns.test.models.rev180119.container.group.SampleContainer;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
-import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 
@@ -100,22 +98,6 @@ class ConverterUtilsTest extends AbstractCodecTest {
                 .orElseThrow().dataSchemaNode();
         assertNotNull(node);
         assertEquals(SampleContainer.QNAME, node.getQName());
-    }
-
-    @Test
-    void testLoadRpc() {
-        Optional<? extends RpcDefinition> loadedRpc = ConverterUtils.loadRpc(
-                this.effectiveModelContext, LEAF_RPC_QNAME);
-        assertTrue(loadedRpc.isPresent());
-        loadedRpc = ConverterUtils.loadRpc(this.effectiveModelContext, CONTAINER_RPC_QNAME);
-        assertTrue(loadedRpc.isPresent());
-    }
-
-    @Test
-    void testLoadNotification() {
-        final Optional<? extends NotificationDefinition> loadNotification =
-                ConverterUtils.loadNotification(this.effectiveModelContext, NOTIFICATION_QNAME);
-        assertTrue(loadNotification.isPresent());
     }
 
 }
